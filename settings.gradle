@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "PIA"
 include ':app'
 include ':login'
+include ':account'

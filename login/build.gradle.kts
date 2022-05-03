@@ -12,6 +12,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("int", "VERSION_CODE", "1")
+        buildConfigField("String", "VERSION_NAME", "\"1.0\"")
     }
 
     buildTypes {
@@ -49,6 +52,8 @@ dependencies {
     implementation(Kotlin.serializationCore)
     implementation(Kotlin.serializationJson)
     implementation(Kotlin.dateTime)
+
+    implementation(project(mapOf("path" to ":account")))
 
     testImplementation(UnitTest.junit)
     testImplementation(UnitTest.coroutines)
