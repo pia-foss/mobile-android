@@ -1,6 +1,5 @@
-package com.kape.pia
+package com.kape.login
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,13 +10,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.kape.login.LoginActivity
-import com.kape.pia.ui.theme.PIATheme
+import com.kape.login.ui.LoginScreen
+import com.kape.login.ui.theme.PIATheme
 
-class MainActivity : ComponentActivity() {
+class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startActivity(Intent(this, LoginActivity::class.java))
+        setContent {
+            PIATheme {
+                // A surface container using the 'background' color from the theme
+                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+                    LoginScreen()
+                }
+            }
+        }
     }
 }
 

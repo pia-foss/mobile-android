@@ -54,6 +54,12 @@ dependencies {
     implementation Android.lifecycle
     implementation Compose.activity
 
+    implementation(Koin.core)
+    implementation(Koin.android)
+    implementation(Koin.compose)
+
+    implementation project(path: ':login')
+
     testImplementation UnitTest.junit
     androidTestImplementation AndroidTest.jUnit
     androidTestImplementation AndroidTest.espressoCore
