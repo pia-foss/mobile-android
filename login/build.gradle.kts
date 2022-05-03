@@ -11,7 +11,7 @@ android {
         minSdk = 23
         targetSdk = 32
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.kape.login.AndroidTestRunner"
         consumerProguardFiles("consumer-rules.pro")
 
         buildConfigField("int", "VERSION_CODE", "1")
@@ -81,6 +81,7 @@ dependencies {
     testRuntimeOnly(UnitTest.jUnit5Engine)
     testImplementation(UnitTest.jUnit5Params)
     testImplementation(UnitTest.mockk)
+    testImplementation(UnitTest.androidCoreArch)
 
     androidTestImplementation(AndroidTest.jUnit)
     androidTestImplementation(AndroidTest.espressoCore)

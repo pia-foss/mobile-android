@@ -29,7 +29,7 @@ internal class LoginRepositoryTest : BaseTest() {
     private lateinit var repo: LoginRepository
 
     @BeforeEach
-    fun setUp() {
+    internal fun setUp() {
         repo = LoginRepository(api, prefs)
     }
 

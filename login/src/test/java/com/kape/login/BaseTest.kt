@@ -3,10 +3,28 @@ package com.kape.login
 import com.kape.login.utils.ApiError
 import com.kape.login.utils.ApiResult
 import com.privateinternetaccess.account.AccountRequestError
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.resetMain
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.params.provider.Arguments
+import org.koin.test.KoinTest
 import java.util.stream.Stream
 
-open class BaseTest {
+@OptIn(ExperimentalCoroutinesApi::class)
+open class BaseTest : KoinTest {
+
+    @OptIn(DelicateCoroutinesApi::class)
+    val mainThreadSurrogate = newSingleThreadContext("UI thread")
+
+    @AfterEach
+    internal fun tearDown() {
+        Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
+        mainThreadSurrogate.close()
+    }
 
     companion object {
 
@@ -17,15 +35,6 @@ open class BaseTest {
             Arguments.of(listOf(AccountRequestError(code = 401, message = null)), ApiResult.Error(ApiError.AuthFailed)),
             Arguments.of(listOf(AccountRequestError(code = 402, message = null)), ApiResult.Error(ApiError.AccountExpired)),
             Arguments.of(emptyList<AccountRequestError>(), ApiResult.Success)
-        )
-
-        @JvmStatic
-        fun repoResults() = Stream.of(
-            Arguments.of(null, ApiResult.Success),
-            Arguments.of(ApiError.Unknown, ApiResult.Error(ApiError.Unknown)),
-            Arguments.of(ApiError.Throttled, ApiResult.Error(ApiError.Throttled)),
-            Arguments.of(ApiError.AuthFailed, ApiResult.Error(ApiError.AuthFailed)),
-            Arguments.of(ApiError.AccountExpired, ApiResult.Error(ApiError.AccountExpired))
         )
 
         @JvmStatic

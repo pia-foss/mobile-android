@@ -31,13 +31,14 @@ object Kotlin {
 object UnitTest {
     const val junit = "junit:junit:4.13.2"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
-    const val turbine = "app.cash.turbine:turbine:0.7.0"
+    const val turbine = "app.cash.turbine:turbine:0.8.0"
     const val koinTestJunit5 = "io.insert-koin:koin-test-junit5:3.1.6"
     const val koinTest = "io.insert-koin:koin-test:3.1.6"
     const val jUnit5Api = "org.junit.jupiter:junit-jupiter-api:5.8.2"
     const val jUnit5Engine = "org.junit.jupiter:junit-jupiter-engine:5.8.2"
     const val jUnit5Params = "org.junit.jupiter:junit-jupiter-params:5.8.2"
     const val mockk = "io.mockk:mockk:1.12.3"
+    const val androidCoreArch = "androidx.arch.core:core-testing:2.1.0"
 }
 
 object AndroidTest {

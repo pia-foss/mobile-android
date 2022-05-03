@@ -14,14 +14,9 @@ class LoginViewModel(private val useCase: LoginUseCase) : ViewModel() {
     val loginState: StateFlow<LoginScreenState> = _state
 
     fun login(username: String, password: String) = viewModelScope.launch {
-        _state.value = LOADING
+        _state.emit(LOADING)
         useCase.login(username, password).collect {
-            when (it) {
-                LoginState.Expired -> _state.value = EXPIRED
-                LoginState.Failed -> _state.value = FAILED
-                LoginState.Successful -> _state.value = SUCCESS
-                LoginState.Throttled -> _state.value = THROTTLED
-            }
+            _state.emit(getScreenState(it))
         }
     }
 
@@ -34,5 +29,12 @@ class LoginViewModel(private val useCase: LoginUseCase) : ViewModel() {
         val THROTTLED = LoginScreenState(idle = true, loading = false, error = "throttled", flowCompleted = false)
         val FAILED = LoginScreenState(idle = true, loading = false, error = "failed auth", flowCompleted = false)
         val EXPIRED = LoginScreenState(idle = true, loading = false, error = "expired account", flowCompleted = false)
+    }
+
+    fun getScreenState(state: LoginState): LoginScreenState = when (state) {
+        LoginState.Expired -> EXPIRED
+        LoginState.Failed -> FAILED
+        LoginState.Successful -> SUCCESS
+        LoginState.Throttled -> THROTTLED
     }
 }
