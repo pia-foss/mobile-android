@@ -1,13 +1,14 @@
 package com.kape.login.ui
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTextInput
 import com.kape.login.ui.theme.PIATheme
 import com.kape.login.ui.vm.LoginViewModel
+import com.kape.login.ui.vm.LoginViewModel.Companion.EXPIRED
 import com.kape.login.ui.vm.LoginViewModel.Companion.FAILED
-import io.mockk.coEvery
+import com.kape.login.ui.vm.LoginViewModel.Companion.SUCCESS
+import com.kape.login.ui.vm.LoginViewModel.Companion.THROTTLED
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.After
@@ -18,7 +19,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.KoinTest
-import kotlin.test.assertEquals
 
 
 class LoginScreenKtTest : KoinTest {
@@ -26,18 +26,20 @@ class LoginScreenKtTest : KoinTest {
     @get:Rule
     val rule = createComposeRule()
 
-    private val viewModel: LoginViewModel = mockk()
-
     @After
     fun tearDown() {
         stopKoin()
     }
 
     @Test
-    fun loginSuccessful() {
-
+    fun loginAuthFailed() {
         val mockModule = module {
-            viewModel { mockk<LoginViewModel>(relaxed = true) }
+            viewModel {
+                mockk<LoginViewModel>(relaxed = true) {
+                    every { loginState } returns MutableStateFlow(FAILED)
+                    every { loginState.value } returns FAILED
+                }
+            }
         }
 
         startKoin {
@@ -53,7 +55,88 @@ class LoginScreenKtTest : KoinTest {
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
         rule.onNodeWithContentDescription("Submit").performClick()
-        assertEquals("failed auth", viewModel.loginState.value.error)
-
+        rule.onNodeWithText("failed auth").assertIsDisplayed()
     }
+
+    @Test
+    fun loginThrottled() {
+        val mockModule = module {
+            viewModel {
+                mockk<LoginViewModel>(relaxed = true) {
+                    every { loginState } returns MutableStateFlow(THROTTLED)
+                    every { loginState.value } returns THROTTLED
+                }
+            }
+        }
+
+        startKoin {
+            modules(mockModule)
+        }
+
+        rule.setContent {
+            PIATheme {
+                LoginScreen()
+            }
+        }
+
+        rule.onNodeWithContentDescription("Enter username").performTextInput("username")
+        rule.onNodeWithContentDescription("Enter password").performTextInput("password")
+        rule.onNodeWithContentDescription("Submit").performClick()
+        rule.onNodeWithText("throttled").assertIsDisplayed()
+    }
+
+    @Test
+    fun loginAccountExpired() {
+        val mockModule = module {
+            viewModel {
+                mockk<LoginViewModel>(relaxed = true) {
+                    every { loginState } returns MutableStateFlow(EXPIRED)
+                    every { loginState.value } returns EXPIRED
+                }
+            }
+        }
+
+        startKoin {
+            modules(mockModule)
+        }
+
+        rule.setContent {
+            PIATheme {
+                LoginScreen()
+            }
+        }
+
+        rule.onNodeWithContentDescription("Enter username").performTextInput("username")
+        rule.onNodeWithContentDescription("Enter password").performTextInput("password")
+        rule.onNodeWithContentDescription("Submit").performClick()
+        rule.onNodeWithText("expired account").assertIsDisplayed()
+    }
+
+    @Test
+    fun loginSuccessful() {
+        val mockModule = module {
+            viewModel {
+                mockk<LoginViewModel>(relaxed = true) {
+                    every { loginState } returns MutableStateFlow(SUCCESS)
+                    every { loginState.value } returns SUCCESS
+                }
+            }
+        }
+
+        startKoin {
+            modules(mockModule)
+        }
+
+        rule.setContent {
+            PIATheme {
+                LoginScreen()
+            }
+        }
+
+        rule.onNodeWithContentDescription("Enter username").performTextInput("username")
+        rule.onNodeWithContentDescription("Enter password").performTextInput("password")
+        rule.onNodeWithContentDescription("Submit").performClick()
+        rule.onNodeWithText("failed auth").assertDoesNotExist()
+    }
+
 }
