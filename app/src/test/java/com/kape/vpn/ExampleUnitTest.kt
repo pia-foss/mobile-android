@@ -1,4 +1,4 @@
-package com.kape.pia
+package com.kape.vpn
 
 import org.junit.Test
 

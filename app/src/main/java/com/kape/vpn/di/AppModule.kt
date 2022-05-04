@@ -1,9 +1,8 @@
-package com.kape.pia.di
+package com.kape.vpn.di
 
 import android.content.Context
 import com.kape.login.BuildConfig
-import com.kape.login.di.loginModule
-import com.kape.pia.provider.AccountModuleStateProvider
+import com.kape.vpn.provider.AccountModuleStateProvider
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform

@@ -1,4 +1,4 @@
-package com.kape.pia.ui.theme
+package com.kape.vpn.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

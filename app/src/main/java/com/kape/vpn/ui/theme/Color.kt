@@ -1,4 +1,4 @@
-package com.kape.pia.ui.theme
+package com.kape.vpn.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

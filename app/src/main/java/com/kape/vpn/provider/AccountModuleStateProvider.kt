@@ -1,4 +1,4 @@
-package com.kape.pia.provider
+package com.kape.vpn.provider
 
 import com.privateinternetaccess.account.AccountEndpoint
 import com.privateinternetaccess.account.IAccountEndpointProvider
