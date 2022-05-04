@@ -1,14 +1,13 @@
 package com.kape.login
 
-import com.kape.login.utils.ApiError
-import com.kape.login.utils.ApiResult
+import com.kape.core.ApiError
+import com.kape.core.ApiResult
 import com.privateinternetaccess.account.AccountRequestError
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.resetMain
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.params.provider.Arguments
 import org.koin.test.KoinTest

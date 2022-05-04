@@ -1,9 +1,10 @@
 package com.kape.login.domain
 
 import app.cash.turbine.test
+import com.kape.core.ApiError
+import com.kape.core.ApiResult
 import com.kape.login.BaseTest
-import com.kape.login.utils.ApiError
-import com.kape.login.utils.ApiResult
+import com.kape.login.data.AuthenticationDataSource
 import com.kape.login.utils.LoginState
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -20,19 +21,19 @@ import kotlin.test.assertEquals
 @ExperimentalCoroutinesApi
 internal class LoginUseCaseTest : BaseTest() {
 
-    private val repo = mockk<LoginRepository>()
+    private val source = mockk<AuthenticationDataSource>()
 
     private lateinit var useCase: LoginUseCase
 
     @BeforeEach
     internal fun setUp() {
-        useCase = LoginUseCase(repo)
+        useCase = LoginUseCase(source)
     }
 
     @ParameterizedTest(name = "repo: {0}, expected: {1}")
     @MethodSource("useCaseLogin")
     fun login(result: ApiResult, expected: LoginState) = runTest {
-        coEvery { repo.login(any(), any()) } returns flow {
+        coEvery { source.login(any(), any()) } returns flow {
             emit(result)
         }
         useCase.login("user", "pass").test {
