@@ -1,16 +1,16 @@
 package com.kape.login.domain
 
-import com.kape.login.data.LoginRepository
-import com.kape.login.utils.ApiError
-import com.kape.login.utils.ApiResult
+import com.kape.core.ApiError
+import com.kape.core.ApiResult
+import com.kape.login.data.AuthenticationDataSource
 import com.kape.login.utils.LoginState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class LoginUseCase(private val repo: LoginRepository) {
+class LoginUseCase(private val source: AuthenticationDataSource) {
 
     suspend fun login(username: String, password: String): Flow<LoginState> = flow {
-        repo.login(username, password).collect {
+        source.login(username, password).collect {
             when (it) {
                 ApiResult.Success -> emit(LoginState.Successful)
                 is ApiResult.Error -> {

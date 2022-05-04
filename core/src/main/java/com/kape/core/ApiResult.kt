@@ -1,4 +1,4 @@
-package com.kape.login.utils
+package com.kape.core
 
 sealed class ApiResult {
     object Success : ApiResult() {

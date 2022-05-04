@@ -1,4 +1,4 @@
-package com.kape.login.provider
+package com.kape.pia.provider
 
 import com.privateinternetaccess.account.AccountEndpoint
 import com.privateinternetaccess.account.IAccountEndpointProvider

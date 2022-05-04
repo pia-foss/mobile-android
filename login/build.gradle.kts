@@ -71,6 +71,7 @@ dependencies {
     implementation(Kotlin.dateTime)
 
     implementation(project(mapOf("path" to ":account")))
+    implementation(project(mapOf("path" to ":core")))
 
     testImplementation(UnitTest.junit)
     testImplementation(UnitTest.coroutines)

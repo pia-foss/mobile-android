@@ -1,37 +1,40 @@
-package com.kape.login.data
+package com.kape.login.domain
 
-import com.kape.login.utils.ApiResult
-import com.kape.login.utils.Prefs
-import com.kape.login.utils.getApiError
+import com.kape.core.ApiResult
+import com.kape.core.getApiError
+import com.kape.login.data.AuthenticationDataSource
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class LoginRepository(private val api: AndroidAccountAPI, private val prefs: Prefs) {
+class AuthenticationDataSourceImpl : AuthenticationDataSource, KoinComponent {
 
-    fun isUserLoggedIn() = prefs.isUserLoggedIn()
+    private val api: AndroidAccountAPI by inject()
 
-    fun login(username: String, password: String): Flow<ApiResult> = callbackFlow {
+    override fun isUserLoggedIn(): Boolean {
+        return !api.apiToken().isNullOrEmpty() && !api.vpnToken().isNullOrEmpty()
+    }
+
+    override fun login(username: String, password: String): Flow<ApiResult> = callbackFlow {
         api.loginWithCredentials(username, password) {
             if (it.isNotEmpty()) {
-                prefs.setUserLoggedIn(false)
                 trySend(ApiResult.Error(getApiError(it.last().code)))
                 return@loginWithCredentials
             }
-            prefs.setUserLoggedIn(true)
             trySend(ApiResult.Success)
         }
         awaitClose { channel.close() }
     }
 
-    fun logout(): Flow<ApiResult> = callbackFlow {
+    override fun logout(): Flow<ApiResult> = callbackFlow {
         api.logout {
             if (it.isNotEmpty()) {
                 trySend(ApiResult.Error(getApiError(it.last().code)))
                 return@logout
             }
-            prefs.setUserLoggedIn(false)
             trySend(ApiResult.Success)
         }
         awaitClose { channel.close() }

@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/account" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/buildSrc" />
+            <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/login" />
           </set>
         </option>

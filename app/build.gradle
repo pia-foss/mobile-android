@@ -59,6 +59,7 @@ dependencies {
     implementation(Koin.compose)
 
     implementation project(path: ':login')
+    implementation project(path: ':account')
 
     testImplementation UnitTest.junit
     androidTestImplementation AndroidTest.jUnit
