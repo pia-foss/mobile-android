@@ -12,15 +12,15 @@ import org.junit.jupiter.params.provider.MethodSource
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class GetUserLoggedInTest : BaseTest() {
+internal class GetUserLoggedInUseCaseTest : BaseTest() {
 
     private val source = mockk<AuthenticationDataSource>()
 
-    private lateinit var useCase: GetUserLoggedIn
+    private lateinit var useCase: GetUserLoggedInUseCase
 
     @BeforeEach
     internal fun setUp() {
-        useCase = GetUserLoggedIn(source)
+        useCase = GetUserLoggedInUseCase(source)
     }
 
     @ParameterizedTest(name = "expected: {0}")
