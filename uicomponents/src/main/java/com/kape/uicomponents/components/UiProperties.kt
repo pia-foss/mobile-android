@@ -1,4 +1,4 @@
-package com.kape.login.ui.components
+package com.kape.uicomponents.components
 
 data class InputFieldProperties(val label: String, var error: String? = null, val maskInput: Boolean, var content: String = "")
 
