@@ -13,10 +13,6 @@ object Compose {
     const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
 }
 
-object Google {
-    const val gson = "com.google.code.gson:gson:2.9.0"
-}
-
 object Koin {
     const val core = "io.insert-koin:koin-core:3.1.6"
     const val android = "io.insert-koin:koin-android:3.1.6"

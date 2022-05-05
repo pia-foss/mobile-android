@@ -38,7 +38,6 @@ dependencies {
     implementation(Koin.core)
     implementation(Koin.android)
     implementation(Koin.compose)
-    implementation(Google.gson)
 
     implementation(project(mapOf("path" to ":account")))
     implementation(project(mapOf("path" to ":core")))
