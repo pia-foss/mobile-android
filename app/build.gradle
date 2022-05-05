@@ -60,6 +60,7 @@ dependencies {
 
     implementation project(path: ':login')
     implementation project(path: ':account')
+    implementation project(path: ':profile')
 
     testImplementation UnitTest.junit
     androidTestImplementation AndroidTest.jUnit
