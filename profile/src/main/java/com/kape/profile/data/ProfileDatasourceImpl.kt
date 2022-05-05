@@ -1,10 +1,10 @@
-package com.kape.profile.domain
+package com.kape.profile.data
 
 import android.text.format.DateFormat
-import com.kape.profile.data.NetworkDatasource
-import com.kape.profile.data.NetworkDatasource.Companion.DATE_FORMAT
+import com.kape.profile.domain.ProfileDatasource
 import com.kape.profile.models.Profile
 import com.kape.profile.models.Subscription
+import com.kape.profile.models.Subscription.Companion.DATE_FORMAT
 import com.privateinternetaccess.account.AccountAPI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -13,7 +13,7 @@ import org.koin.core.component.inject
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class NetworkDatasourceImpl : NetworkDatasource, KoinComponent {
+class ProfileDatasourceImpl : ProfileDatasource, KoinComponent {
     private val api: AccountAPI by inject()
 
     override fun accountDetails(): Flow<Profile> = callbackFlow {
