@@ -1,8 +1,8 @@
 package com.kape.profile.gateways
 
+import com.google.gson.Gson
 import com.kape.profile.data.CacheDatasource
 import com.kape.profile.models.Profile
-import com.kape.profile.models.Subscription
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.component.KoinComponent
@@ -24,15 +24,14 @@ class CacheGatewayImpl : CacheGateway, KoinComponent {
     }
 
     private fun serialize(profile: Profile): String {
-        return profile.username // TODO SK: gson?
+        return Gson().toJson(profile)
     }
 
     private fun deserialize(s: String?): Profile? {
         return if (s == null) {
             null
         } else {
-            // TODO SK: gson?
-            Profile(s, Subscription(false, ""))
+            Gson().fromJson(s, Profile::class.java)
         }
     }
 

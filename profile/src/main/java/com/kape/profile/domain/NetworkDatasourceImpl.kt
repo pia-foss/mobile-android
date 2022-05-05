@@ -2,6 +2,7 @@ package com.kape.profile.domain
 
 import android.text.format.DateFormat
 import com.kape.profile.data.NetworkDatasource
+import com.kape.profile.data.NetworkDatasource.Companion.DATE_FORMAT
 import com.kape.profile.models.Profile
 import com.kape.profile.models.Subscription
 import com.privateinternetaccess.account.AccountAPI
@@ -27,6 +28,6 @@ class NetworkDatasourceImpl : NetworkDatasource, KoinComponent {
 
     private fun getExpirationDate(daysRemaining: Int): String {
         val timestamp = Calendar.getInstance().timeInMillis + TimeUnit.DAYS.toMillis(daysRemaining.toLong())
-        return DateFormat.format("M dd, yyyy", timestamp).toString()
+        return DateFormat.format(DATE_FORMAT, timestamp).toString()
     }
 }

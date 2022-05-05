@@ -34,11 +34,12 @@ dependencies {
     implementation(Android.androidCore)
     implementation(Compose.ui)
     implementation(Compose.material)
-
     implementation(Kotlin.coroutinesCore)
     implementation(Koin.core)
     implementation(Koin.android)
     implementation(Koin.compose)
+    implementation(Google.gson)
+
     implementation(project(mapOf("path" to ":account")))
     implementation(project(mapOf("path" to ":core")))
 
