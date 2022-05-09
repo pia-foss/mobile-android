@@ -1,7 +1,7 @@
 package com.kape.login.di
 
-import com.kape.login.data.AuthenticationDataSource
-import com.kape.login.domain.AuthenticationDataSourceImpl
+import com.kape.login.data.AuthenticationDataSourceImpl
+import com.kape.login.domain.AuthenticationDataSource
 import com.kape.login.domain.GetUserLoggedInUseCase
 import com.kape.login.domain.LoginUseCase
 import com.kape.login.domain.LogoutUseCase

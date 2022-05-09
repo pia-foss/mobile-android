@@ -1,4 +1,4 @@
-package com.kape.login.data
+package com.kape.login.domain
 
 import com.kape.core.ApiResult
 import kotlinx.coroutines.flow.Flow

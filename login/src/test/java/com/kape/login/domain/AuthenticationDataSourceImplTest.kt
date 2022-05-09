@@ -3,7 +3,7 @@ package com.kape.login.domain
 import app.cash.turbine.test
 import com.kape.core.ApiResult
 import com.kape.login.BaseTest
-import com.kape.login.data.AuthenticationDataSource
+import com.kape.login.data.AuthenticationDataSourceImpl
 import com.kape.login.di.loginModule
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -16,12 +16,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
-import java.util.stream.Stream
 
 @ExperimentalCoroutinesApi
 internal class AuthenticationDataSourceImplTest : BaseTest() {

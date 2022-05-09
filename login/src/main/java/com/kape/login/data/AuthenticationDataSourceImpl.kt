@@ -1,8 +1,8 @@
-package com.kape.login.domain
+package com.kape.login.data
 
 import com.kape.core.ApiResult
 import com.kape.core.getApiError
-import com.kape.login.data.AuthenticationDataSource
+import com.kape.login.domain.AuthenticationDataSource
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
