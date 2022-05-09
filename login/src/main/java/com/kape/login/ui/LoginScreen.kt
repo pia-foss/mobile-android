@@ -18,12 +18,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kape.login.R
-import com.kape.login.ui.components.ButtonProperties
-import com.kape.login.ui.components.InputField
-import com.kape.login.ui.components.InputFieldProperties
-import com.kape.login.ui.components.PrimaryButton
-import com.kape.login.ui.theme.Typography
 import com.kape.login.ui.vm.LoginViewModel
+import com.kape.uicomponents.components.ButtonProperties
+import com.kape.uicomponents.components.InputField
+import com.kape.uicomponents.components.InputFieldProperties
+import com.kape.uicomponents.components.PrimaryButton
+import com.kape.uicomponents.theme.Typography
 import org.koin.androidx.compose.viewModel
 
 @Composable

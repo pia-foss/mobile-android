@@ -1,4 +1,4 @@
-package com.kape.login.ui.components
+package com.kape.uicomponents.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,10 +14,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.kape.login.ui.theme.ButtonBackground
-import com.kape.login.ui.theme.DarkGreen20
-import com.kape.login.ui.theme.Grey92
-import com.kape.login.ui.theme.InputFieldBackground
+import com.kape.uicomponents.theme.ButtonBackground
+import com.kape.uicomponents.theme.DarkGreen20
+import com.kape.uicomponents.theme.Grey92
+import com.kape.uicomponents.theme.InputFieldBackground
 
 
 @Composable

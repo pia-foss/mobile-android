@@ -1,4 +1,4 @@
-package com.kape.login.ui.theme
+package com.kape.uicomponents.theme
 
 import androidx.compose.ui.graphics.Color
 
