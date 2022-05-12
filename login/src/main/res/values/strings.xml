@@ -7,4 +7,9 @@
     <string name="sign_in">Sign in to your account</string>
     <string name="no_internet">No Internet connection is available</string>
 
+    <string name="error_username_password_invalid">Username/Password invalid</string>
+    <string name="error_username_invalid">Please make sure you are logging in with your main username, which should start with \"p\" (e.g. p12345)</string>
+    <string name="error_throttled">Too many failed login attempts with this username. Please try again later.</string>
+    <string name="error_operation_failed">Failure to Login. Please try again later.</string>
+    <string name="error_missing_credentials">You must enter a username and password</string>
 </resources>

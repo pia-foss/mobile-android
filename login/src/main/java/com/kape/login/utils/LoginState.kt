@@ -13,4 +13,7 @@ sealed class LoginState {
     object Throttled: LoginState() {
         override fun toString() = "LoginState.Throttled"
     }
+    object ServiceUnavailable: LoginState() {
+        override fun toString() = "LoginState.ServiceUnavailable"
+    }
 }
