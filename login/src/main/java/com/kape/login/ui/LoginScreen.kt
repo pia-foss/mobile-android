@@ -17,15 +17,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kape.core.InternetConnectionState
 import com.kape.login.R
 import com.kape.login.ui.vm.LoginViewModel
-import com.kape.uicomponents.components.ButtonProperties
-import com.kape.uicomponents.components.InputField
-import com.kape.uicomponents.components.InputFieldProperties
-import com.kape.uicomponents.components.PrimaryButton
+import com.kape.login.utils.connectivityState
+import com.kape.uicomponents.components.*
 import com.kape.uicomponents.theme.Typography
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.viewModel
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun LoginScreen() {
 
@@ -40,6 +41,9 @@ fun LoginScreen() {
         viewModel.login(userProperties.content, passProperties.content)
     })
 
+    val connection by connectivityState()
+    val isConnected = connection === InternetConnectionState.Connected
+
     if (state.flowCompleted) {
         Toast.makeText(LocalContext.current, "Login Successful", Toast.LENGTH_LONG).show()
     }
@@ -47,6 +51,9 @@ fun LoginScreen() {
     passProperties.error = state.error
 
     Column(modifier = Modifier.fillMaxSize()) {
+        if (!isConnected) {
+            NoNetworkBanner(noNetworkMessage = stringResource(id = R.string.no_internet))
+        }
         Image(painter = painterResource(id = R.drawable.ic_pia_logo),
             contentDescription = "logo",
             modifier = Modifier

@@ -5,5 +5,6 @@
     <string name="enter_password">Enter password</string>
     <string name="submit">Submit</string>
     <string name="sign_in">Sign in to your account</string>
+    <string name="no_internet">No Internet connection is available</string>
 
 </resources>

@@ -10,5 +10,5 @@ val Shapes = Shapes(
     large = RoundedCornerShape(0.dp)
 )
 
-val InputFieldBackground = RoundedCornerShape(6.dp, 6.dp)
-val ButtonBackground = RoundedCornerShape(6.dp)
+val InputFieldBackground = RoundedCornerShape(Corner.InputField, Corner.InputField)
+val ButtonBackground = RoundedCornerShape(Corner.Button)
