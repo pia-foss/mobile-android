@@ -2,12 +2,12 @@ package com.kape.login.ui
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.kape.login.ui.theme.PIATheme
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.ui.vm.LoginViewModel.Companion.EXPIRED
 import com.kape.login.ui.vm.LoginViewModel.Companion.FAILED
 import com.kape.login.ui.vm.LoginViewModel.Companion.SUCCESS
 import com.kape.login.ui.vm.LoginViewModel.Companion.THROTTLED
+import com.kape.uicomponents.theme.PIATheme
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,9 +1,7 @@
 package com.kape.uicomponents.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -13,11 +11,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.kape.uicomponents.theme.ButtonBackground
-import com.kape.uicomponents.theme.DarkGreen20
-import com.kape.uicomponents.theme.Grey92
-import com.kape.uicomponents.theme.InputFieldBackground
+import com.kape.uicomponents.theme.*
 
 
 @Composable
@@ -30,7 +26,7 @@ fun InputField(modifier: Modifier, properties: InputFieldProperties) {
                 properties.content = it
             },
             colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.White,
+                backgroundColor = White,
                 focusedIndicatorColor = Grey92,
                 unfocusedIndicatorColor = Grey92,
                 focusedLabelColor = Color.Black,
@@ -46,7 +42,7 @@ fun InputField(modifier: Modifier, properties: InputFieldProperties) {
             label = { Text(properties.label) })
         properties.error?.let {
             Text(text = it, color = Color.Red, modifier = Modifier
-                .padding(vertical = 2.dp)
+                .padding(vertical = Space.SMALL_VERTICAL)
                 .semantics { contentDescription = it })
         }
     }
@@ -61,9 +57,23 @@ fun PrimaryButton(modifier: Modifier, properties: ButtonProperties) {
         ), shape = ButtonBackground,
         modifier = modifier
             .semantics { contentDescription = properties.label }
-            .height(48.dp)
+            .height(Height.DEFAULT)
             .fillMaxWidth(), enabled = properties.enabled
     ) {
         Text(text = properties.label)
+    }
+}
+
+@Composable
+fun NoNetworkBanner(noNetworkMessage: String) {
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .background(ErrorRed)) {
+        Text(text = noNetworkMessage,
+            color = White,
+            textAlign = TextAlign.Center, modifier = Modifier
+                .fillMaxWidth()
+                .padding(Space.NORMAL)
+        )
     }
 }
