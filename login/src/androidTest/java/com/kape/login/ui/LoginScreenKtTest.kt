@@ -55,7 +55,7 @@ class LoginScreenKtTest : KoinTest {
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
         rule.onNodeWithContentDescription("Submit").performClick()
-        rule.onNodeWithText("failed auth").assertIsDisplayed()
+        rule.onNodeWithTag("errorMessage").assertIsDisplayed()
     }
 
     @Test
@@ -82,7 +82,7 @@ class LoginScreenKtTest : KoinTest {
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
         rule.onNodeWithContentDescription("Submit").performClick()
-        rule.onNodeWithText("throttled").assertIsDisplayed()
+        rule.onNodeWithTag("errorMessage").assertIsDisplayed()
     }
 
     @Test
@@ -109,7 +109,7 @@ class LoginScreenKtTest : KoinTest {
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
         rule.onNodeWithContentDescription("Submit").performClick()
-        rule.onNodeWithText("expired account").assertIsDisplayed()
+        rule.onNodeWithTag("errorMessage").assertIsDisplayed()
     }
 
     @Test
@@ -136,7 +136,6 @@ class LoginScreenKtTest : KoinTest {
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
         rule.onNodeWithContentDescription("Submit").performClick()
-        rule.onNodeWithText("failed auth").assertDoesNotExist()
+        rule.onNodeWithTag("errorMessage").assertDoesNotExist()
     }
-
 }

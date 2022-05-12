@@ -36,7 +36,7 @@ fun LoginScreen() {
 
     val userProperties = InputFieldProperties(label = stringResource(id = R.string.enter_username), maskInput = false)
     val passProperties =
-        InputFieldProperties(label = stringResource(id = R.string.enter_password), error = state.error, maskInput = true)
+        InputFieldProperties(label = stringResource(id = R.string.enter_password), error = getErrorMessage(state = state), maskInput = true)
     val buttonProperties = ButtonProperties(label = stringResource(id = R.string.submit), enabled = true, onClick = {
         viewModel.login(userProperties.content, passProperties.content)
     })
@@ -47,8 +47,6 @@ fun LoginScreen() {
     if (state.flowCompleted) {
         Toast.makeText(LocalContext.current, "Login Successful", Toast.LENGTH_LONG).show()
     }
-
-    passProperties.error = state.error
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (!isConnected) {
@@ -66,6 +64,18 @@ fun LoginScreen() {
         InputField(modifier = Modifier.padding(24.dp, 8.dp), properties = userProperties)
         InputField(modifier = Modifier.padding(24.dp, 8.dp), properties = passProperties)
         PrimaryButton(modifier = Modifier.padding(24.dp, 4.dp), properties = buttonProperties)
+    }
+}
+
+@Composable
+private fun getErrorMessage(state: LoginViewModel.LoginScreenState): String? {
+    return when (state.error) {
+        LoginViewModel.LoginError.Expired -> "account expired flow" // TODO: handle when signup module is built
+        LoginViewModel.LoginError.Failed -> stringResource(id = R.string.error_username_password_invalid)
+        LoginViewModel.LoginError.Invalid -> stringResource(id = R.string.error_missing_credentials)
+        LoginViewModel.LoginError.Throttled -> stringResource(id = R.string.error_throttled)
+        LoginViewModel.LoginError.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
+        null -> null
     }
 }
 

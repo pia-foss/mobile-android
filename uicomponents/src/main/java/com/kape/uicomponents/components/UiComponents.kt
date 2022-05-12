@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -43,7 +44,8 @@ fun InputField(modifier: Modifier, properties: InputFieldProperties) {
         properties.error?.let {
             Text(text = it, color = Color.Red, modifier = Modifier
                 .padding(vertical = Space.SMALL_VERTICAL)
-                .semantics { contentDescription = it })
+                .semantics { contentDescription = it }
+                .testTag("errorMessage"))
         }
     }
 }
