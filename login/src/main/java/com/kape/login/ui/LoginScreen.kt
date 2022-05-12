@@ -31,18 +31,23 @@ import org.koin.androidx.compose.viewModel
 fun LoginScreen() {
 
     val viewModel: LoginViewModel by viewModel()
-
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
+    val connection by connectivityState()
+    val isConnected = connection === InternetConnectionState.Connected
+    
+    val currentContext = LocalContext.current
+    val noNetworkMessage = stringResource(id = R.string.no_internet)
 
     val userProperties = InputFieldProperties(label = stringResource(id = R.string.enter_username), maskInput = false)
     val passProperties =
         InputFieldProperties(label = stringResource(id = R.string.enter_password), error = getErrorMessage(state = state), maskInput = true)
     val buttonProperties = ButtonProperties(label = stringResource(id = R.string.submit), enabled = true, onClick = {
-        viewModel.login(userProperties.content, passProperties.content)
+        if (isConnected) {
+            viewModel.login(userProperties.content, passProperties.content)
+        } else {
+            Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
+        }
     })
-
-    val connection by connectivityState()
-    val isConnected = connection === InternetConnectionState.Connected
 
     if (state.flowCompleted) {
         Toast.makeText(LocalContext.current, "Login Successful", Toast.LENGTH_LONG).show()
