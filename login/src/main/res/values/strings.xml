@@ -3,9 +3,11 @@
 
     <string name="enter_username">Enter username</string>
     <string name="enter_password">Enter password</string>
-    <string name="submit">Submit</string>
+    <string name="login">Login</string>
     <string name="sign_in">Sign in to your account</string>
     <string name="no_internet">No Internet connection is available</string>
+    <string name="login_with_receipt">Login using purchase receipt</string>
+    <string name="login_with_magic_link">Login using magic email link</string>
 
     <string name="error_username_password_invalid">Username/Password invalid</string>
     <string name="error_username_invalid">Please make sure you are logging in with your main username, which should start with \"p\" (e.g. p12345)</string>
