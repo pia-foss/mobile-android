@@ -13,6 +13,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startActivity(Intent(this, LoginActivity::class.java))
+        // TODO: The finish() function is called only for testing single module features, this is to be removed in the final app
+        finish()
     }
 }
 
