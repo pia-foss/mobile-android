@@ -5,6 +5,6 @@ data class Subscription(
         val expirationDate: String
 ) {
     companion object {
-        const val DATE_FORMAT = "M dd, yyyy"
+        const val DATE_FORMAT = "MM dd, yyyy"
     }
 }
