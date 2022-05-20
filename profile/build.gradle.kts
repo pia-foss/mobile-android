@@ -34,6 +34,7 @@ dependencies {
     implementation(Android.androidCore)
     implementation(Compose.ui)
     implementation(Compose.material)
+    implementation(Compose.preview)
     implementation(Kotlin.coroutinesCore)
     implementation(Koin.core)
     implementation(Koin.android)
