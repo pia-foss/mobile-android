@@ -1,4 +1,4 @@
-package com.kape.login.ui.theme
+package com.kape.uicomponents.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -10,3 +10,4 @@ val Grey92 = Color(0xFFEEEEEE)
 val Grey85 = Color(0xFFD7D8D9)
 val DarkGreen50 = Color(0xFF037900)
 val DarkGreen20 = Color(0xFF4CB647)
+val ErrorRed = Color(0xFFF5515F)

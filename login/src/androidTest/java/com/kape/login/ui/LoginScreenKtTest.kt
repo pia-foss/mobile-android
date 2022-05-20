@@ -2,12 +2,12 @@ package com.kape.login.ui
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.kape.login.ui.theme.PIATheme
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.ui.vm.LoginViewModel.Companion.EXPIRED
 import com.kape.login.ui.vm.LoginViewModel.Companion.FAILED
 import com.kape.login.ui.vm.LoginViewModel.Companion.SUCCESS
 import com.kape.login.ui.vm.LoginViewModel.Companion.THROTTLED
+import com.kape.uicomponents.theme.PIATheme
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,7 +55,7 @@ class LoginScreenKtTest : KoinTest {
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
         rule.onNodeWithContentDescription("Submit").performClick()
-        rule.onNodeWithText("failed auth").assertIsDisplayed()
+        rule.onNodeWithTag("errorMessage").assertIsDisplayed()
     }
 
     @Test
@@ -82,7 +82,7 @@ class LoginScreenKtTest : KoinTest {
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
         rule.onNodeWithContentDescription("Submit").performClick()
-        rule.onNodeWithText("throttled").assertIsDisplayed()
+        rule.onNodeWithTag("errorMessage").assertIsDisplayed()
     }
 
     @Test
@@ -109,7 +109,7 @@ class LoginScreenKtTest : KoinTest {
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
         rule.onNodeWithContentDescription("Submit").performClick()
-        rule.onNodeWithText("expired account").assertIsDisplayed()
+        rule.onNodeWithTag("errorMessage").assertIsDisplayed()
     }
 
     @Test
@@ -136,7 +136,6 @@ class LoginScreenKtTest : KoinTest {
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
         rule.onNodeWithContentDescription("Submit").performClick()
-        rule.onNodeWithText("failed auth").assertDoesNotExist()
+        rule.onNodeWithTag("errorMessage").assertDoesNotExist()
     }
-
 }

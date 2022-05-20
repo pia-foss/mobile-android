@@ -1,4 +1,4 @@
-package com.kape.login.ui.theme
+package com.kape.uicomponents.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
@@ -10,5 +10,5 @@ val Shapes = Shapes(
     large = RoundedCornerShape(0.dp)
 )
 
-val InputFieldBackground = RoundedCornerShape(6.dp, 6.dp)
-val ButtonBackground = RoundedCornerShape(6.dp)
+val InputFieldBackground = RoundedCornerShape(Corner.InputField, Corner.InputField)
+val ButtonBackground = RoundedCornerShape(Corner.Button)
