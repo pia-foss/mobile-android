@@ -43,6 +43,7 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    namespace 'com.kape.vpn'
 }
 
 dependencies {
@@ -60,6 +61,7 @@ dependencies {
 
     implementation project(path: ':login')
     implementation project(path: ':account')
+    implementation project(path: ':vpn_permissions')
 
     testImplementation UnitTest.junit
     androidTestImplementation AndroidTest.jUnit

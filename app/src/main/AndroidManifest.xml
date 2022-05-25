@@ -15,15 +15,20 @@
         <activity
             android:name="com.kape.vpn.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.PIA">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.kape.login.LoginActivity" />
+
+        <activity
+            android:name="com.kape.login.LoginActivity"
+            android:exported="true" />
+
+        <activity
+            android:name="com.kape.vpn_permissions.HandleVpnSystemProfileActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

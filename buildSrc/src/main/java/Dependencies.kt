@@ -48,6 +48,7 @@ object AndroidTest {
     const val mockk = "io.mockk:mockk-android:1.12.3"
     const val koinTest = "io.insert-koin:koin-test:3.1.6"
     const val androidCore = "androidx.test:core-ktx:1.4.0"
+    const val uiAutomator = "androidx.test.uiautomator:uiautomator:2.2.0"
 }
 
 object DebugTest {
