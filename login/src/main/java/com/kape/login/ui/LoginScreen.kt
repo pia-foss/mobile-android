@@ -19,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kape.core.InternetConnectionState
 import com.kape.login.R
 import com.kape.login.ui.vm.LoginViewModel
@@ -63,10 +62,10 @@ fun LoginScreen() {
         if (!isConnected) {
             NoNetworkBanner(noNetworkMessage = stringResource(id = R.string.no_internet))
         }
-        Image(painter = painterResource(id = R.drawable.ic_pia_logo),
+        Image(painter = painterResource(id = UiResources.bigAppLogo),
             contentDescription = "logo",
             modifier = Modifier
-                .padding(start = 150.dp, top = 36.dp, bottom = Space.MEDIUM, end = 150.dp))
+                .padding(start = Space.CENT_FIFTY, top = Space.BIGGER, bottom = Space.MEDIUM, end = Space.CENT_FIFTY))
         Text(text = stringResource(id = R.string.sign_in),
             style = Typography.subtitle1,
             modifier = Modifier

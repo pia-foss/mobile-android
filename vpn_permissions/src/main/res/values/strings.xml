@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="setup_vpn_profile_description" comment="Main content on the 'Setup VPN profile' screen">"To secure your traffic we need to add an VPN system profile to your phone settings."</string>
+    <string name="setup_vpn_profile_ok_button" comment="Main content on the 'Setup VPN profile' screen">"OK"</string>
+    <string name="setup_vpn_profile_privacy_statement" comment="Will be shown on the 'Setup VPN profile' screen below the OK button">"We\'ll never track, share or restrict any of your activities."</string>
+
+    <string name="toast_vpn_profile_granted">"Permission Granted"</string>
+    <string name="toast_vpn_profile_not_granted">"Permission not Granted"</string>
+</resources>
