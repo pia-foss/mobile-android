@@ -17,8 +17,7 @@ class ProfileDatasourceImpl : ProfileDatasource, KoinComponent {
     private val api: AccountAPI by inject()
 
     override fun accountDetails(): Flow<Profile> = callbackFlow {
-        api.accountDetails { details, errors ->
-            // TODO error handling
+        api.accountDetails { details, _ ->
             if (details != null) {
                 val subscription = Subscription(details.recurring, getExpirationDate(details.daysRemaining))
                 Profile(details.username, subscription)
