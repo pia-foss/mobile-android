@@ -19,9 +19,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.kape.core.InternetConnectionState
 import com.kape.login.R
 import com.kape.login.ui.vm.LoginViewModel
+import com.kape.login.utils.Login
+import com.kape.login.utils.LoginError
+import com.kape.login.utils.LoginScreenState
 import com.kape.login.utils.connectivityState
 import com.kape.uicomponents.components.*
 import com.kape.uicomponents.theme.DarkGreen20
@@ -32,7 +37,7 @@ import org.koin.androidx.compose.viewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
 
     val viewModel: LoginViewModel by viewModel()
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
@@ -88,28 +93,25 @@ fun LoginScreen() {
                 .align(CenterHorizontally)
                 .padding(Space.NORMAL, Space.SMALL, Space.NORMAL, Space.NORMAL)
                 .clickable {
-                    Toast
-                        .makeText(currentContext, "NOT IMPLEMENTED YET", Toast.LENGTH_SHORT)
-                        .show()
+                    navController.navigate(Login.WithEmail)
                 })
     }
 }
 
 @Composable
-private fun getErrorMessage(state: LoginViewModel.LoginScreenState): String? {
+private fun getErrorMessage(state: LoginScreenState): String? {
     return when (state.error) {
-        LoginViewModel.LoginError.Expired -> "account expired flow" // TODO: handle when signup module is built
-        LoginViewModel.LoginError.Failed -> stringResource(id = R.string.error_username_password_invalid)
-        LoginViewModel.LoginError.Invalid -> stringResource(id = R.string.error_missing_credentials)
-        LoginViewModel.LoginError.Throttled -> stringResource(id = R.string.error_throttled)
-        LoginViewModel.LoginError.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
+        LoginError.Expired -> "account expired flow" // TODO: handle when signup module is built
+        LoginError.Failed -> stringResource(id = R.string.error_username_password_invalid)
+        LoginError.Invalid -> stringResource(id = R.string.error_missing_credentials)
+        LoginError.Throttled -> stringResource(id = R.string.error_throttled)
+        LoginError.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
         null -> null
     }
 }
 
 @Preview
 @Composable
-
 fun ShowLoginScreen() {
-    LoginScreen()
+    LoginScreen(rememberNavController())
 }
