@@ -39,4 +39,15 @@ class AuthenticationDataSourceImpl : AuthenticationDataSource, KoinComponent {
         }
         awaitClose { channel.close() }
     }
+
+    override fun loginWithEmail(email: String): Flow<ApiResult> = callbackFlow {
+        api.loginLink(email) {
+            if (it.isNotEmpty()) {
+                trySend(ApiResult.Error(getApiError(it.last().code)))
+                return@loginLink
+            }
+            trySend(ApiResult.Success)
+        }
+        awaitClose { channel.close() }
+    }
 }

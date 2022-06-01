@@ -10,7 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.kape.login.ui.LoginScreen
+import com.kape.login.ui.LoginFlow
 import com.kape.uicomponents.theme.PIATheme
 
 class LoginActivity : ComponentActivity() {
@@ -18,9 +18,8 @@ class LoginActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             PIATheme {
-                // A surface container using the 'background' color from the theme
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    LoginScreen()
+                    LoginFlow()
                 }
             }
         }

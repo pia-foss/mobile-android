@@ -11,6 +11,7 @@ object Compose {
     const val preview = "androidx.compose.ui:ui-tooling-preview:1.1.1"
     const val activity = "androidx.activity:activity-compose:1.4.0"
     const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
+    const val navigation = "androidx.navigation:navigation-compose:2.4.2"
 }
 
 object Koin {
