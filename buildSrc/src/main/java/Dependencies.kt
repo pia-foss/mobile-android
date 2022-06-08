@@ -57,9 +57,3 @@ object DebugTest {
     const val composeUI = "androidx.compose.ui:ui-tooling:1.1.1"
     const val composeManifest = "androidx.compose.ui:ui-test-manifest:1.1.1"
 }
-
-
-
-
-
-

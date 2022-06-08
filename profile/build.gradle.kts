@@ -48,6 +48,8 @@ dependencies {
     implementation(project(mapOf("path" to ":core")))
 
     testImplementation(UnitTest.junit)
+    testImplementation(UnitTest.mockk)
+    testImplementation(UnitTest.koinTest)
 
     androidTestImplementation(AndroidTest.jUnit)
     androidTestImplementation(AndroidTest.espressoCore)
