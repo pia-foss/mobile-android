@@ -59,6 +59,7 @@ dependencies {
     implementation(Android.viewmodel)
     implementation(Compose.viewmodel)
     implementation(Compose.activity)
+    implementation(Compose.navigation)
     implementation(Android.security)
     implementation(Koin.core)
     implementation(Koin.android)

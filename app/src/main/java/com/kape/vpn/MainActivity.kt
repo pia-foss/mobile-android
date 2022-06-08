@@ -8,12 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.kape.login.LoginActivity
 import com.kape.vpn.ui.theme.PIATheme
-import com.kape.vpn_permissions.HandleVpnSystemProfileActivity
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startActivity(Intent(this, HandleVpnSystemProfileActivity::class.java))
+        startActivity(Intent(this, LoginActivity::class.java))
         // TODO: The finish() function is called only for testing single module features, this is to be removed in the final app
         finish()
     }

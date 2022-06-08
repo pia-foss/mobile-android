@@ -8,19 +8,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val useCase: LoginUseCase) : ViewModel() {
+class LoginWithEmailViewModel(private val useCase: LoginUseCase) : ViewModel() {
 
     private val _state = MutableStateFlow(IDLE)
     val loginState: StateFlow<LoginScreenState> = _state
 
-    fun login(username: String, password: String) = viewModelScope.launch {
+    fun loginWithEmail(email: String) = viewModelScope.launch {
         _state.emit(LOADING)
-        if (username.isEmpty() || password.isEmpty()) {
+        if (email.isEmpty()) {
             _state.emit(INVALID)
             return@launch
         }
-        useCase.login(username, password).collect {
-            _state.emit(getScreenState(it))
+        useCase.loginWithEmail(email).collect {
+            _state.emit(SUCCESS)
         }
     }
 }

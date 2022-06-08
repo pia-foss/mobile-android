@@ -10,4 +10,6 @@ interface AuthenticationDataSource {
     fun login(username: String, password: String): Flow<ApiResult>
 
     fun logout(): Flow<ApiResult>
+
+    fun loginWithEmail(email: String): Flow<ApiResult>
 }

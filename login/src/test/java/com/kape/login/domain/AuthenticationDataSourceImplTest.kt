@@ -69,6 +69,20 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
             }
         }
 
+    @ParameterizedTest(name = "api: {0}, expected: {1}")
+    @MethodSource("accountApiResults")
+    fun loginWithEmail(errorList: List<AccountRequestError>, expected: ApiResult) =
+        runTest {
+            coEvery { api.loginLink(any(), any()) } answers {
+                lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
+            }
+
+            source.loginWithEmail("email").test {
+                val actual = awaitItem()
+                assertEquals(expected, actual)
+            }
+        }
+
     @Test
     fun `isUserLoggedIn with apiToken = null and vpnToken = null returns false`() = runTest {
         every { api.apiToken() } returns null
