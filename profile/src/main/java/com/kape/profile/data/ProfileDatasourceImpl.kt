@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.*
-import java.util.concurrent.TimeUnit
+import java.time.Duration
+
 
 class ProfileDatasourceImpl : ProfileDatasource, KoinComponent {
     private val api: AccountAPI by inject()
@@ -26,7 +26,7 @@ class ProfileDatasourceImpl : ProfileDatasource, KoinComponent {
     }
 
     private fun getExpirationDate(daysRemaining: Int): String {
-        val timestamp = Calendar.getInstance().timeInMillis + TimeUnit.DAYS.toMillis(daysRemaining.toLong())
+        val timestamp = System.currentTimeMillis() + Duration.ofDays(daysRemaining.toLong()).toMillis()
         return DateFormat.format(DATE_FORMAT, timestamp).toString()
     }
 }

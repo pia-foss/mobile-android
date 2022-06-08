@@ -3,6 +3,7 @@ object Android {
     const val lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
     const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
     const val security = "androidx.security:security-crypto:1.0.0"
+    const val desugar = "com.android.tools:desugar_jdk_libs:1.1.5"
 }
 
 object Compose {
