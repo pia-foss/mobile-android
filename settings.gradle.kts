@@ -19,10 +19,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "PIA"
 
-include ':app'
-include ':login'
-include ':account'
-include ':core'
-include ':profile'
-include ':vpn_permissions'
-include ':uicomponents'
+include(":app")
+include(":login")
+include(":account")
+include(":core")
+include(":profile")
+include(":vpn_permissions")
+include(":uicomponents")
