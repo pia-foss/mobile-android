@@ -48,6 +48,10 @@ dependencies {
     implementation(project(mapOf("path" to ":core")))
 
     testImplementation(UnitTest.junit)
+    testImplementation(UnitTest.coroutines)
+    testImplementation(UnitTest.jUnit5Api)
+    testRuntimeOnly(UnitTest.jUnit5Engine)
+    testImplementation(UnitTest.jUnit5Params)
     testImplementation(UnitTest.mockk)
     testImplementation(UnitTest.koinTest)
 
