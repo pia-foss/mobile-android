@@ -12,6 +12,9 @@ android {
 
         testInstrumentationRunner = "com.kape.profile.AndroidTestRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("int", "VERSION_CODE", "1")
+        buildConfigField("String", "VERSION_NAME", "\"1.0\"")
     }
 
     buildTypes {
@@ -29,6 +32,15 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
+    buildFeatures {
+        compose = true
+    }
+    namespace = "com.kape.profile"
 }
 
 dependencies {
@@ -36,13 +48,16 @@ dependencies {
     coreLibraryDesugaring(Android.desugar)
 
     implementation(Android.androidCore)
+
     implementation(Compose.ui)
     implementation(Compose.material)
     implementation(Compose.preview)
-    implementation(Kotlin.coroutinesCore)
+
     implementation(Koin.core)
     implementation(Koin.android)
     implementation(Koin.compose)
+
+    implementation(Kotlin.coroutinesCore)
 
     implementation(project(mapOf("path" to ":account")))
     implementation(project(mapOf("path" to ":core")))
@@ -60,4 +75,11 @@ dependencies {
 
     androidTestImplementation(AndroidTest.jUnit)
     androidTestImplementation(AndroidTest.espressoCore)
+    androidTestImplementation(AndroidTest.composeUI)
+    androidTestImplementation(AndroidTest.mockk)
+    androidTestImplementation(AndroidTest.koinTest)
+    androidTestImplementation(AndroidTest.androidCore)
+
+    debugImplementation(DebugTest.composeUI)
+    debugImplementation(DebugTest.composeManifest)
 }
