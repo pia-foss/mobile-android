@@ -5,7 +5,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kape.profile.ui.vm.ProfileViewModel
 import org.koin.androidx.compose.viewModel
 
-@Composable
+/*@Composable
 fun ProfileScreen() {
     val viewModel: ProfileViewModel by viewModel()
 
@@ -16,3 +16,4 @@ fun ProfileScreen() {
 fun ShowLoginScreen() {
     ProfileScreen()
 }
+*/

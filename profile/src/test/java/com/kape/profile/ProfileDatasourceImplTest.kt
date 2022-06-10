@@ -1,6 +1,7 @@
 package com.kape.profile
 
 import android.text.format.DateFormat
+import app.cash.turbine.test
 import com.kape.profile.data.ProfileDatasourceImpl
 import com.kape.profile.di.profileModule
 import com.kape.profile.domain.ProfileDatasource
@@ -11,8 +12,14 @@ import com.privateinternetaccess.account.model.response.AccountInformation
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
@@ -21,8 +28,11 @@ import org.koin.dsl.module
 import org.koin.test.KoinTest
 import kotlin.test.assertEquals
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 class ProfileDatasourceImplTest : KoinTest {
+
+    @OptIn(DelicateCoroutinesApi::class)
+    val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     private val api: AndroidAccountAPI = mockk(relaxed = true)
     private lateinit var dataSource: ProfileDatasource
@@ -33,6 +43,7 @@ class ProfileDatasourceImplTest : KoinTest {
 
     @BeforeEach
     internal fun setUp() {
+        Dispatchers.setMain(mainThreadSurrogate)
         stopKoin()
         startKoin {
             modules(appModule, profileModule)
@@ -40,8 +51,14 @@ class ProfileDatasourceImplTest : KoinTest {
         dataSource = ProfileDatasourceImpl()
     }
 
+    @AfterEach
+    internal fun tearDown() {
+        Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
+        mainThreadSurrogate.close()
+    }
+
     @Test
-    suspend fun `test ProfileDatasourceImpl converts AccountInformation to Profile`() = runTest {
+    fun `test ProfileDatasourceImpl converts AccountInformation to Profile`() = runTest {
         val username = "John Doe"
         val isRenewing = true
         val daysRemaining = 0
@@ -58,7 +75,8 @@ class ProfileDatasourceImplTest : KoinTest {
         }
 
         // when
-        dataSource.accountDetails().collect { profile ->
+        dataSource.accountDetails().test {
+            val profile = awaitItem()
 
             // then
             assertEquals(username, profile.username)
