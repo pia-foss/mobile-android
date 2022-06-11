@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
 android {
@@ -40,6 +41,9 @@ android {
     buildFeatures {
         compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.1.1"
+    }
     namespace = "com.kape.profile"
 }
 
@@ -58,6 +62,9 @@ dependencies {
     implementation(Koin.compose)
 
     implementation(Kotlin.coroutinesCore)
+    implementation(Kotlin.serializationCore)
+    implementation(Kotlin.serializationJson)
+    implementation(Kotlin.dateTime)
 
     implementation(project(mapOf("path" to ":account")))
     implementation(project(mapOf("path" to ":core")))
