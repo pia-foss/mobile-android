@@ -6,6 +6,7 @@ import com.kape.profile.models.Profile
 import com.kape.profile.models.Subscription
 import com.kape.profile.models.Subscription.Companion.DATE_FORMAT
 import com.privateinternetaccess.account.AccountAPI
+import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -15,7 +16,7 @@ import java.time.Duration
 
 
 class ProfileDatasourceImpl : ProfileDatasource, KoinComponent {
-    private val api: AccountAPI by inject()
+    private val api: AndroidAccountAPI by inject()
 
     override fun accountDetails(): Flow<Profile> = callbackFlow {
         api.accountDetails { details, errorList ->
@@ -31,6 +32,6 @@ class ProfileDatasourceImpl : ProfileDatasource, KoinComponent {
 
     private fun getExpirationDate(daysRemaining: Int): String {
         val timestamp = System.currentTimeMillis() + Duration.ofDays(daysRemaining.toLong()).toMillis()
-        return DateFormat.format(DATE_FORMAT, timestamp).toString()
+        return DATE_FORMAT.format(timestamp)
     }
 }

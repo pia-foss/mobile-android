@@ -61,7 +61,7 @@ internal class ProfileDatasourceImplTest {
         val isRenewing = true
         val daysRemaining = 0
         val now = System.currentTimeMillis()
-        val today = DateFormat.format(Subscription.DATE_FORMAT, now).toString()
+        val today = Subscription.DATE_FORMAT.format(now)
 
         // given
         val mockedAccount: AccountInformation = mockk()
@@ -75,7 +75,6 @@ internal class ProfileDatasourceImplTest {
         // when
         dataSource.accountDetails().test {
             val profile = awaitItem()
-            awaitComplete()
             // then
             assertEquals(username, profile.username)
             assertEquals(isRenewing, profile.subscription.isRenewing)
