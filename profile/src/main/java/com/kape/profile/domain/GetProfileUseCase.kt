@@ -6,9 +6,13 @@ import kotlinx.coroutines.flow.flow
 
 class GetProfileUseCase(private val profile: ProfileDatasource) {
 
-    suspend fun getProfile(): Flow<Profile> = flow {
-        profile.accountDetails().collect { profile ->
-            emit(profile)
+    suspend fun getProfile(): Flow<Profile?> = flow {
+        try {
+            profile.accountDetails().collect { profile ->
+                emit(profile)
+            }
+        } catch (t: Throwable) {
+            emit(null)
         }
     }
 }
