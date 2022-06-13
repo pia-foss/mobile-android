@@ -8,10 +8,10 @@ android {
     compileSdk = 32
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 21
         targetSdk = 32
 
-        testInstrumentationRunner = "com.kape.login.AndroidTestRunner"
+        testInstrumentationRunner = "com.kape.profile.AndroidTestRunner"
         consumerProguardFiles("consumer-rules.pro")
 
         buildConfigField("int", "VERSION_CODE", "1")
@@ -25,6 +25,8 @@ android {
         }
     }
     compileOptions {
+        // Flag to enable support for the new language APIs
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -42,39 +44,30 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.1.1"
     }
-    packagingOptions {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    namespace = "com.kape.login"
+    namespace = "com.kape.profile"
 }
 
 dependencies {
+
+    coreLibraryDesugaring(Android.desugar)
+
     implementation(Android.androidCore)
+
     implementation(Compose.ui)
     implementation(Compose.material)
     implementation(Compose.preview)
-    implementation(Android.lifecycle)
-    implementation(Android.viewmodel)
-    implementation(Compose.viewmodel)
-    implementation(Compose.activity)
-    implementation(Compose.navigation)
-    implementation(Android.security)
+
     implementation(Koin.core)
     implementation(Koin.android)
     implementation(Koin.compose)
 
-    implementation(Kotlin.ktor)
     implementation(Kotlin.coroutinesCore)
-    implementation(Kotlin.coroutinesAndroid)
     implementation(Kotlin.serializationCore)
     implementation(Kotlin.serializationJson)
     implementation(Kotlin.dateTime)
 
     implementation(project(mapOf("path" to ":account")))
     implementation(project(mapOf("path" to ":core")))
-    implementation(project(mapOf("path" to ":uicomponents")))
 
     testImplementation(UnitTest.junit)
     testImplementation(UnitTest.coroutines)
