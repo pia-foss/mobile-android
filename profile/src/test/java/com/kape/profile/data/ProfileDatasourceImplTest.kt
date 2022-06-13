@@ -1,8 +1,7 @@
-package com.kape.profile
+package com.kape.profile.data
 
 import android.text.format.DateFormat
 import app.cash.turbine.test
-import com.kape.profile.data.ProfileDatasourceImpl
 import com.kape.profile.di.profileModule
 import com.kape.profile.domain.ProfileDatasource
 import com.kape.profile.models.Subscription
@@ -19,17 +18,16 @@ import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
+import org.junit.Assert.assertEquals
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
-import org.koin.test.KoinTest
-import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class ProfileDatasourceImplTest : KoinTest {
+internal class ProfileDatasourceImplTest {
 
     @OptIn(DelicateCoroutinesApi::class)
     val mainThreadSurrogate = newSingleThreadContext("UI thread")
@@ -77,7 +75,7 @@ class ProfileDatasourceImplTest : KoinTest {
         // when
         dataSource.accountDetails().test {
             val profile = awaitItem()
-
+            awaitComplete()
             // then
             assertEquals(username, profile.username)
             assertEquals(isRenewing, profile.subscription.isRenewing)
