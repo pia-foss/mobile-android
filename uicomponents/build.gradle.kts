@@ -46,6 +46,12 @@ dependencies {
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)
+    implementation(Android.swipeRefreshLayout)
+
     implementation(Compose.ui)
     implementation(Compose.material)
+    implementation(Compose.activity)
+    implementation(Compose.preview)
+    debugImplementation(DebugTest.composeUI)
+    debugImplementation(DebugTest.composeManifest)
 }

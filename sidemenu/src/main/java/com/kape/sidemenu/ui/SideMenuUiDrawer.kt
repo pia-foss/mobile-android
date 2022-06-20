@@ -36,7 +36,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.kape.sidemenu.R
 import com.kape.sidemenu.di.sideMenuModule
-import com.kape.sidemenu.models.*
 import com.kape.sidemenu.ui.vm.SideMenuViewModel
 import com.kape.uicomponents.theme.CommonSideMenuColors
 import com.kape.uicomponents.theme.SideMenuRippleTheme
