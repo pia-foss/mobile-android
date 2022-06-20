@@ -26,6 +26,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -36,7 +37,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.1.1"
+        kotlinCompilerExtensionVersion = Compose.COMPOSE_VERSION
     }
     packagingOptions {
         resources {
@@ -47,6 +48,8 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(Android.desugarJdkLibs)
+
     implementation(Android.androidCore)
     implementation(Compose.ui)
     implementation(Compose.material)
@@ -61,6 +64,7 @@ dependencies {
     implementation(project(path = ":login"))
     implementation(project(path = ":account"))
     implementation(project(path = ":vpn_permissions"))
+    implementation(project(path = ":sidemenu"))
 
     testImplementation(UnitTest.junit)
     androidTestImplementation(AndroidTest.jUnit)

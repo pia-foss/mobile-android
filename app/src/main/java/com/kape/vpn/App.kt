@@ -2,6 +2,7 @@ package com.kape.vpn
 
 import android.app.Application
 import com.kape.login.di.loginModule
+import com.kape.sidemenu.di.sideMenuModule
 import com.kape.profile.di.profileModule
 import com.kape.vpn_permissions.di.permissionModule
 import com.kape.vpn.di.appModule
@@ -21,6 +22,7 @@ class App : Application() {
             add(appModule)
             add(loginModule)
             add(permissionModule)
+            add(sideMenuModule)
             add(profileModule)
         })
     }

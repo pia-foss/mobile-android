@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~  Copyright (c) 2020 Private Internet Access, Inc.
+  ~
+  ~  This file is part of the Private Internet Access Android Client.
+  ~
+  ~  The Private Internet Access Android Client is free software: you can redistribute it and/or
+  ~  modify it under the terms of the GNU General Public License as published by the Free
+  ~  Software Foundation, either version 3 of the License, or (at your option) any later version.
+  ~
+  ~  The Private Internet Access Android Client is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  ~  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+  ~  details.
+  ~
+  ~  You should have received a copy of the GNU General Public License along with the Private
+  ~  Internet Access Android Client.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <group
+        android:pivotX="24"
+        android:pivotY="24"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        >
+        <path
+            android:fillColor="#56BE53"
+            android:pathData="
+                M 24, 25.5
+                m -1.7, 0
+                a 1.7,1.7 0 1,0 3.4,0
+                a 1.7,1.7 0 1,0 -3.4,0
+            " />
+
+        <path
+            android:fillColor="#56BE53"
+            android:pathData="
+                  M 24, 22
+                  m -3, 0
+                  a 3,3 0 1,0 6,0
+                  a 3,3 0 1,0 -6,0
+              " />
+
+        <path
+            android:fillColor="#56BE53"
+            android:pathData="M24,43.95Q17,42.2 12.5,35.825Q8,29.45 8,21.85V9.95L24,3.95L40,9.95V21.85Q40,29.45 35.5,35.825Q31,42.2 24,43.95ZM24,24.55Q24,24.55 24,24.55Q24,24.55 24,24.55Q24,24.55 24,24.55Q24,24.55 24,24.55ZM24,40.85Q29.75,38.95 33.375,33.675Q37,28.4 37,21.85V12.05L24,7.15L11,12.05V21.85Q11,28.4 14.625,33.675Q18.25,38.95 24,40.85Z" />
+    </group>
+</vector>
