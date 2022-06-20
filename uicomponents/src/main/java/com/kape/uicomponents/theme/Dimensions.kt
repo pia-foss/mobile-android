@@ -7,6 +7,8 @@ object Space {
     val CENT = 100.dp
     val FIFTY = 50.dp
 
+    val VERY_HUGE = 64.dp
+    val HUGER = 56.dp
     val HUGE = 48.dp
     val VERY_BIG = 40.dp
     val BIGGER = 36.dp

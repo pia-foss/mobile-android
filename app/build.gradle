@@ -62,6 +62,7 @@ dependencies {
     implementation project(path: ':login')
     implementation project(path: ':account')
     implementation project(path: ':profile')
+    implementation project(path: ':sidemenu')
     implementation project(path: ':vpn_permissions')
 
     testImplementation UnitTest.junit

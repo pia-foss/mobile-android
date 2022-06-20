@@ -11,11 +11,8 @@ android {
         minSdk = 23
         targetSdk = 32
 
-        testInstrumentationRunner = "com.kape.login.AndroidTestRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
-        buildConfigField("int", "VERSION_CODE", "1")
-        buildConfigField("String", "VERSION_NAME", "\"1.0\"")
     }
 
     buildTypes {
@@ -48,7 +45,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    namespace = "com.kape.login"
+    namespace = "com.kape.sidemenu"
 }
 
 dependencies {
@@ -62,21 +59,14 @@ dependencies {
     implementation(Android.viewmodel)
     implementation(Compose.viewmodel)
     implementation(Compose.activity)
-    implementation(Compose.navigation)
-    implementation(Android.security)
     implementation(Koin.core)
     implementation(Koin.android)
     implementation(Koin.compose)
 
-    implementation(Kotlin.ktor)
     implementation(Kotlin.coroutinesCore)
     implementation(Kotlin.coroutinesAndroid)
-    implementation(Kotlin.serializationCore)
-    implementation(Kotlin.serializationJson)
-    implementation(Kotlin.dateTime)
 
     implementation(project(mapOf("path" to ":account")))
-    implementation(project(mapOf("path" to ":core")))
     implementation(project(mapOf("path" to ":uicomponents")))
 
     testImplementation(UnitTest.junit)
@@ -96,6 +86,7 @@ dependencies {
     androidTestImplementation(AndroidTest.mockk)
     androidTestImplementation(AndroidTest.koinTest)
     androidTestImplementation(AndroidTest.androidCore)
+    androidTestImplementation(AndroidTest.uiAutomator)
 
     debugImplementation(DebugTest.composeUI)
     debugImplementation(DebugTest.composeManifest)

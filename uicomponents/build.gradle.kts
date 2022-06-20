@@ -21,6 +21,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -31,7 +32,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.1.1"
+        kotlinCompilerExtensionVersion = Compose.COMPOSE_VERSION
     }
     packagingOptions {
         resources {
@@ -42,6 +43,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)
     implementation(Compose.ui)

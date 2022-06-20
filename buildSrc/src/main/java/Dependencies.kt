@@ -3,13 +3,15 @@ object Android {
     const val lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
     const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
     const val security = "androidx.security:security-crypto:1.0.0"
-    const val desugar = "com.android.tools:desugar_jdk_libs:1.1.5"
+    const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:1.1.5"
 }
 
 object Compose {
-    const val ui = "androidx.compose.ui:ui:1.1.1"
-    const val material = "androidx.compose.material:material:1.1.1"
-    const val preview = "androidx.compose.ui:ui-tooling-preview:1.1.1"
+    const val COMPOSE_VERSION: String = "1.1.1"
+
+    const val ui = "androidx.compose.ui:ui:$COMPOSE_VERSION"
+    const val material = "androidx.compose.material:material:$COMPOSE_VERSION"
+    const val preview = "androidx.compose.ui:ui-tooling-preview:$COMPOSE_VERSION"
     const val activity = "androidx.activity:activity-compose:1.4.0"
     const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1"
     const val navigation = "androidx.navigation:navigation-compose:2.4.2"
@@ -46,7 +48,7 @@ object UnitTest {
 object AndroidTest {
     const val jUnit = "androidx.test.ext:junit:1.1.3"
     const val espressoCore = "androidx.test.espresso:espresso-core:3.4.0"
-    const val composeUI = "androidx.compose.ui:ui-test-junit4:1.1.1"
+    const val composeUI = "androidx.compose.ui:ui-test-junit4:${Compose.COMPOSE_VERSION}"
     const val mockk = "io.mockk:mockk-android:1.12.3"
     const val koinTest = "io.insert-koin:koin-test:3.1.6"
     const val androidCore = "androidx.test:core-ktx:1.4.0"
@@ -54,6 +56,6 @@ object AndroidTest {
 }
 
 object DebugTest {
-    const val composeUI = "androidx.compose.ui:ui-tooling:1.1.1"
-    const val composeManifest = "androidx.compose.ui:ui-test-manifest:1.1.1"
+    const val composeUI = "androidx.compose.ui:ui-tooling:${Compose.COMPOSE_VERSION}"
+    const val composeManifest = "androidx.compose.ui:ui-test-manifest:${Compose.COMPOSE_VERSION}"
 }

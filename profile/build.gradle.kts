@@ -49,7 +49,7 @@ android {
 
 dependencies {
 
-    coreLibraryDesugaring(Android.desugar)
+    coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)
 
