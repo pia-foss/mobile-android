@@ -3,27 +3,36 @@ package com.kape.vpn.di
 import android.content.Context
 import com.kape.login.BuildConfig
 import com.kape.vpn.provider.AccountModuleStateProvider
+import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
+import com.privateinternetaccess.regions.RegionsAPI
+import com.privateinternetaccess.regions.RegionsBuilder
 import org.koin.dsl.module
 import java.io.BufferedReader
 
 val appModule = module {
     single { provideCertificate(get()) }
     single { AccountModuleStateProvider(get()) }
+    single { RegionsModuleStateProvider(get()) }
     single { provideAndroidAccountApi(get()) }
+    single { provideRegionsApi(get()) }
 }
 
-private fun provideAndroidAccountApi(
-    provider: AccountModuleStateProvider
-): AndroidAccountAPI {
-
+private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
     return AccountBuilder<AndroidAccountAPI>()
         .setEndpointProvider(provider)
         .setCertificate(provider.certificate)
         .setPlatform(Platform.ANDROID)
         .setUserAgentValue(provideUserAgent())
+        .build()
+}
+
+private fun provideRegionsApi(provider: RegionsModuleStateProvider): RegionsAPI {
+    return RegionsBuilder().setEndpointProvider(provider)
+        .setCertificate(provider.certificate)
+        .setUserAgent(provideUserAgent())
         .build()
 }
 

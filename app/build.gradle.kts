@@ -67,6 +67,7 @@ dependencies {
     implementation(project(path = ":region_selection"))
     implementation(project(path = ":vpn_permissions"))
     implementation(project(path = ":sidemenu"))
+    implementation(project(path = ":regions"))
 
     testImplementation(UnitTest.junit)
     androidTestImplementation(AndroidTest.jUnit)

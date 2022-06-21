@@ -60,11 +60,6 @@ class AccountModuleStateProvider(val certificate: String) : IAccountEndpointProv
         return mutableListOf()
     }
 
-    private data class GenericEndpoint(
-        val endpoint: String,
-        val isProxy: Boolean,
-        val usePinnedCertificate: Boolean,
-        val certificateCommonName: String?,
-    )
+
 
 }
