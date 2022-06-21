@@ -63,6 +63,8 @@ dependencies {
 
     implementation(project(path = ":login"))
     implementation(project(path = ":account"))
+    implementation(project(path = ":profile"))
+    implementation(project(path = ":region_selection"))
     implementation(project(path = ":vpn_permissions"))
     implementation(project(path = ":sidemenu"))
 

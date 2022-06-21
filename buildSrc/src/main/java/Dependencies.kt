@@ -6,6 +6,9 @@ object Android {
     const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
     const val security = "androidx.security:security-crypto:1.0.0"
     const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:1.1.5"
+
+    const val cryptoEddsa = "net.i2p.crypto:eddsa:0.3.0"
+    const val spongyCastle = "com.madgag.spongycastle:core:1.54.0.0"
 }
 
 object Compose {
@@ -26,8 +29,14 @@ object Koin {
 }
 
 object Kotlin {
-    const val ktor = "io.ktor:ktor-client-okhttp:1.6.5"
-    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
+    const val KTOR_VERSION = "1.6.5"
+    const val COROUTINES_VERSION = "1.6.0-native-mt"
+
+    const val kotlinStdLib = "org.jetbrains.kotlin:kotlin-stdlib"
+    const val kotlinStdLibCommon = "org.jetbrains.kotlin:kotlin-stdlib-common"
+    const val ktor = "io.ktor:ktor-client-okhttp:$KTOR_VERSION"
+    const val ktorClientCore = "io.ktor:ktor-client-core:$KTOR_VERSION"
+    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$COROUTINES_VERSION"
     const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
     const val serializationCore = "org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2"
     const val serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2"
@@ -55,6 +64,9 @@ object AndroidTest {
     const val koinTest = "io.insert-koin:koin-test:3.1.6"
     const val androidCore = "androidx.test:core-ktx:1.4.0"
     const val uiAutomator = "androidx.test.uiautomator:uiautomator:2.2.0"
+
+    const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Kotlin.COROUTINES_VERSION}"
+    const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Kotlin.COROUTINES_VERSION}"
 }
 
 object DebugTest {
