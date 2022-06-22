@@ -2,11 +2,12 @@ package com.kape.login.ui
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.navigation.compose.rememberNavController
 import com.kape.login.ui.vm.LoginViewModel
-import com.kape.login.ui.vm.LoginViewModel.Companion.EXPIRED
-import com.kape.login.ui.vm.LoginViewModel.Companion.FAILED
-import com.kape.login.ui.vm.LoginViewModel.Companion.SUCCESS
-import com.kape.login.ui.vm.LoginViewModel.Companion.THROTTLED
+import com.kape.login.utils.EXPIRED
+import com.kape.login.utils.FAILED
+import com.kape.login.utils.SUCCESS
+import com.kape.login.utils.THROTTLED
 import com.kape.uicomponents.theme.PIATheme
 import io.mockk.every
 import io.mockk.mockk
@@ -48,13 +49,13 @@ class LoginScreenKtTest : KoinTest {
 
         rule.setContent {
             PIATheme {
-                LoginScreen()
+                LoginScreen(rememberNavController())
             }
         }
 
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
-        rule.onNodeWithContentDescription("Submit").performClick()
+        rule.onNodeWithTag("LOGIN").performClick()
         rule.onNodeWithTag("errorMessage").assertIsDisplayed()
     }
 
@@ -75,13 +76,13 @@ class LoginScreenKtTest : KoinTest {
 
         rule.setContent {
             PIATheme {
-                LoginScreen()
+                LoginScreen(rememberNavController())
             }
         }
 
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
-        rule.onNodeWithContentDescription("Submit").performClick()
+        rule.onNodeWithContentDescription("LOGIN").performClick()
         rule.onNodeWithTag("errorMessage").assertIsDisplayed()
     }
 
@@ -102,13 +103,13 @@ class LoginScreenKtTest : KoinTest {
 
         rule.setContent {
             PIATheme {
-                LoginScreen()
+                LoginScreen(rememberNavController())
             }
         }
 
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
-        rule.onNodeWithContentDescription("Submit").performClick()
+        rule.onNodeWithContentDescription("LOGIN").performClick()
         rule.onNodeWithTag("errorMessage").assertIsDisplayed()
     }
 
@@ -129,13 +130,13 @@ class LoginScreenKtTest : KoinTest {
 
         rule.setContent {
             PIATheme {
-                LoginScreen()
+                LoginScreen(rememberNavController())
             }
         }
 
         rule.onNodeWithContentDescription("Enter username").performTextInput("username")
         rule.onNodeWithContentDescription("Enter password").performTextInput("password")
-        rule.onNodeWithContentDescription("Submit").performClick()
+        rule.onNodeWithContentDescription("LOGIN").performClick()
         rule.onNodeWithTag("errorMessage").assertDoesNotExist()
     }
 }

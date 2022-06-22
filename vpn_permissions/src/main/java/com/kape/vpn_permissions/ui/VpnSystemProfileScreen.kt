@@ -74,18 +74,11 @@ fun VpnSystemProfileScreen() {
         )
 
         when (state) {
-            PermissionsViewModel.ShowState.IDLE -> viewModel.resetShowState()
-            PermissionsViewModel.ShowState.START -> viewModel.onScreenLaunch()
-            PermissionsViewModel.ShowState.SHOW_VPN_PROFILE_GRANTED_TOAST -> {
-                viewModel.resetShowState()
-                Toast.makeText(LocalContext.current, getVpnProfileToastText(granted = true), Toast.LENGTH_LONG).show()
-            }
+            PermissionsViewModel.ShowState.IDLE -> viewModel.onScreenLaunch()
             PermissionsViewModel.ShowState.SHOW_VPN_PROFILE_NOT_GRANTED_TOAST -> {
-                viewModel.resetShowState()
                 Toast.makeText(LocalContext.current, getVpnProfileToastText(granted = false), Toast.LENGTH_LONG).show()
             }
             PermissionsViewModel.ShowState.REQUEST_VPN_PROFILE -> {
-                viewModel.resetShowState()
                 val intent = VpnService.prepare(LocalContext.current) ?: return
                 startForResult.launch(intent)
             }

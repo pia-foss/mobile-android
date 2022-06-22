@@ -2,6 +2,7 @@ package com.kape.vpn.di
 
 import android.content.Context
 import com.kape.login.BuildConfig
+import com.kape.router.Router
 import com.kape.vpn.provider.AccountModuleStateProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.privateinternetaccess.account.AccountBuilder
@@ -18,6 +19,7 @@ val appModule = module {
     single { RegionsModuleStateProvider(get()) }
     single { provideAndroidAccountApi(get()) }
     single { provideRegionsApi(get()) }
+    single { Router() }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {

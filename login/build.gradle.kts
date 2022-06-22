@@ -78,6 +78,7 @@ dependencies {
     implementation(project(mapOf("path" to ":account")))
     implementation(project(mapOf("path" to ":core")))
     implementation(project(mapOf("path" to ":uicomponents")))
+    implementation(project(mapOf("path" to ":router")))
 
     testImplementation(UnitTest.junit)
     testImplementation(UnitTest.coroutines)

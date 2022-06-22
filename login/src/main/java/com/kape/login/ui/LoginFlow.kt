@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kape.login.utils.Login
+import com.kape.router.Login
 
 @Composable
 fun LoginFlow() {

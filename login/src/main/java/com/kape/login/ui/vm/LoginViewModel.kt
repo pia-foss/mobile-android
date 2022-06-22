@@ -4,12 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.login.domain.LoginUseCase
 import com.kape.login.utils.*
+import com.kape.router.ExitFlow
+import com.kape.router.Router
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class LoginViewModel(private val useCase: LoginUseCase) : ViewModel() {
+class LoginViewModel(private val useCase: LoginUseCase) : ViewModel(), KoinComponent {
 
+    private val router: Router by inject()
     private val _state = MutableStateFlow(IDLE)
     val loginState: StateFlow<LoginScreenState> = _state
 
@@ -20,6 +25,10 @@ class LoginViewModel(private val useCase: LoginUseCase) : ViewModel() {
             return@launch
         }
         useCase.login(username, password).collect {
+            if (it == LoginState.Successful) {
+                router.handleFlow(ExitFlow.Login)
+                return@collect
+            }
             _state.emit(getScreenState(it))
         }
     }

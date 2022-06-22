@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.kape.uicomponents.theme.PIATheme
+import com.kape.vpn_permissions.ui.VpnPermissionFlow
 import com.kape.vpn_permissions.ui.VpnSystemProfileScreen
 
 class HandleVpnSystemProfileActivity : ComponentActivity() {
@@ -18,7 +19,7 @@ class HandleVpnSystemProfileActivity : ComponentActivity() {
         setContent {
             PIATheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-                    VpnSystemProfileScreen()
+                    VpnPermissionFlow()
                 }
             }
         }
