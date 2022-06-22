@@ -56,6 +56,7 @@ dependencies {
     implementation(Compose.preview)
     implementation(Android.lifecycle)
     implementation(Compose.activity)
+    implementation(Compose.navigation)
 
     implementation(Koin.core)
     implementation(Koin.android)
@@ -67,7 +68,10 @@ dependencies {
     implementation(project(path = ":region_selection"))
     implementation(project(path = ":vpn_permissions"))
     implementation(project(path = ":sidemenu"))
+    implementation(project(path = ":uicomponents"))
     implementation(project(path = ":regions"))
+    implementation(project(path = ":router"))
+    implementation(project(path = ":splash"))
 
     testImplementation(UnitTest.junit)
     androidTestImplementation(AndroidTest.jUnit)

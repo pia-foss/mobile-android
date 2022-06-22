@@ -24,10 +24,10 @@ import androidx.navigation.compose.rememberNavController
 import com.kape.core.InternetConnectionState
 import com.kape.login.R
 import com.kape.login.ui.vm.LoginViewModel
-import com.kape.login.utils.Login
 import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
 import com.kape.login.utils.connectivityState
+import com.kape.router.Login
 import com.kape.uicomponents.components.*
 import com.kape.uicomponents.theme.DarkGreen20
 import com.kape.uicomponents.theme.Space
@@ -58,10 +58,6 @@ fun LoginScreen(navController: NavController) {
                 Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
             }
         })
-
-    if (state.flowCompleted) {
-        Toast.makeText(LocalContext.current, "Login Successful", Toast.LENGTH_LONG).show()
-    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (!isConnected) {

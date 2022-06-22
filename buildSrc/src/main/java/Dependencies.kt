@@ -26,6 +26,7 @@ object Koin {
     const val core = "io.insert-koin:koin-core:3.1.6"
     const val android = "io.insert-koin:koin-android:3.1.6"
     const val compose = "io.insert-koin:koin-androidx-compose:3.1.6"
+    const val navigation = "io.insert-koin:koin-androidx-navigation:3.1.6"
 }
 
 object Kotlin {

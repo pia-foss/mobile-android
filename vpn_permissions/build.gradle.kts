@@ -62,11 +62,13 @@ dependencies {
     implementation(Koin.core)
     implementation(Koin.android)
     implementation(Koin.compose)
+    implementation(Compose.navigation)
 
     implementation(Kotlin.coroutinesCore)
     implementation(Kotlin.coroutinesAndroid)
 
     implementation(project(mapOf("path" to ":uicomponents")))
+    implementation(project(mapOf("path" to ":router")))
 
     testImplementation(UnitTest.junit)
     testImplementation(UnitTest.coroutines)

@@ -18,7 +18,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "PIA"
-
 include(":app")
 include(":login")
 include(":account")
@@ -29,3 +28,6 @@ include(":uicomponents")
 include(":region_selection")
 include(":regions")
 include(":sidemenu")
+include(":router")
+include(":splash")
+
