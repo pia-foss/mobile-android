@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import com.kape.profile.R
 import com.kape.profile.di.profileModule
 import com.kape.profile.ui.vm.ProfileViewModel
+import com.kape.uicomponents.theme.Grey20
+import com.kape.uicomponents.theme.Grey55
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.compose.viewModel
 import org.koin.core.context.GlobalContext
@@ -30,23 +32,30 @@ fun ProfileScreen() {
 
     val viewModel: ProfileViewModel by viewModel()
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
-
     viewModel.loadProfile()
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = stringResource(id = R.string.username))
-        Text(text = "p111111") // TODO get username
-        Text(text = stringResource(id = R.string.message_other_devices))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(30.dp))
+        Text(color = Grey55, text = stringResource(id = R.string.username))
+        Text(color = Grey20, text = state.username?.asString() ?: "")
+        Spacer(modifier = Modifier.height(30.dp))
+        Text(color = Grey55, text = stringResource(id = R.string.message_other_devices))
+        Spacer(modifier = Modifier.height(15.dp))
         Row {
-            Text(text = stringResource(id = R.string.message_expiration))
-            Text(text = "Nov 29, 2024") // TODO get expiration date
+            Text(color = Grey55, text = state.expirationMessage?.asString() ?: "")
+            Spacer(modifier = Modifier.width(3.dp))
+            Text(color = Grey20, text = state.expirationDate?.asString() ?: "")
         }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
-@Composable
 @SuppressLint("ComposableNaming")
+@Composable
 private fun setupKoinDependencyInjection() {
     if (GlobalContext.getKoinApplicationOrNull() != null) {
         return

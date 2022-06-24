@@ -3,6 +3,7 @@ package com.kape.profile.models
 import java.text.SimpleDateFormat
 
 data class Subscription(
+        val isExpired: Boolean,
         val isRenewing: Boolean,
         val expirationDate: String
 ) {

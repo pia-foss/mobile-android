@@ -56,6 +56,7 @@ dependencies {
     implementation(Compose.ui)
     implementation(Compose.material)
     implementation(Compose.preview)
+    implementation(Compose.viewmodel)
 
     implementation(Koin.core)
     implementation(Koin.android)
@@ -68,6 +69,7 @@ dependencies {
 
     implementation(project(mapOf("path" to ":account")))
     implementation(project(mapOf("path" to ":core")))
+    implementation(project(mapOf("path" to ":uicomponents")))
 
     testImplementation(UnitTest.junit)
     testImplementation(UnitTest.coroutines)
