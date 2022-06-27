@@ -19,6 +19,7 @@ import com.kape.profile.di.profileModule
 import com.kape.profile.ui.vm.ProfileViewModel
 import com.kape.uicomponents.theme.Grey20
 import com.kape.uicomponents.theme.Grey55
+import com.kape.uicomponents.theme.Space
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.compose.viewModel
 import org.koin.core.context.GlobalContext
@@ -36,20 +37,20 @@ fun ProfileScreen() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = Space.NORMAL)
     ) {
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(Space.BIG))
         Text(color = Grey55, text = stringResource(id = R.string.username))
         Text(color = Grey20, text = state.username?.asString() ?: "")
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(Space.BIG))
         Text(color = Grey55, text = stringResource(id = R.string.message_other_devices))
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(Space.NORMAL))
         Row {
             Text(color = Grey55, text = state.expirationMessage?.asString() ?: "")
-            Spacer(modifier = Modifier.width(3.dp))
+            Spacer(modifier = Modifier.width(Space.MINI))
             Text(color = Grey20, text = state.expirationDate?.asString() ?: "")
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Space.NORMAL))
     }
 }
 
