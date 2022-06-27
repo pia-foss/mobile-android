@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.kape.profile.R
 import com.kape.profile.di.profileModule
 import com.kape.profile.ui.vm.ProfileViewModel
@@ -41,14 +40,23 @@ fun ProfileScreen() {
     ) {
         Spacer(modifier = Modifier.height(Space.BIG))
         Text(color = Grey55, text = stringResource(id = R.string.username))
-        Text(color = Grey20, text = state.username?.asString() ?: "")
+        Text(
+            color = Grey20,
+            text = state.username?.asString() ?: stringResource(id = R.string.empty)
+        )
         Spacer(modifier = Modifier.height(Space.BIG))
         Text(color = Grey55, text = stringResource(id = R.string.message_other_devices))
         Spacer(modifier = Modifier.height(Space.NORMAL))
         Row {
-            Text(color = Grey55, text = state.expirationMessage?.asString() ?: "")
+            Text(
+                color = Grey55,
+                text = state.expirationMessage?.asString() ?: stringResource(id = R.string.empty)
+            )
             Spacer(modifier = Modifier.width(Space.MINI))
-            Text(color = Grey20, text = state.expirationDate?.asString() ?: "")
+            Text(
+                color = Grey20,
+                text = state.expirationDate?.asString() ?: stringResource(id = R.string.empty)
+            )
         }
         Spacer(modifier = Modifier.height(Space.NORMAL))
     }
