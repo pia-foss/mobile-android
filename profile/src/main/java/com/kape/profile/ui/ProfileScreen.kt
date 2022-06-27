@@ -32,7 +32,6 @@ fun ProfileScreen() {
 
     val viewModel: ProfileViewModel by viewModel()
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
-    viewModel.loadProfile()
 
     Column(
         modifier = Modifier

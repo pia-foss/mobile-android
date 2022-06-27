@@ -15,6 +15,10 @@ class ProfileViewModel(private val useCase: GetProfileUseCase) : ViewModel() {
     private val _state = MutableStateFlow(IDLE)
     val screenState: StateFlow<ProfileScreenState> = _state
 
+    init {
+        loadProfile()
+    }
+
     fun loadProfile() = viewModelScope.launch {
         _state.emit(LOADING)
         useCase.getProfile().collect { profile ->
