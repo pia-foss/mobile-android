@@ -12,6 +12,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PIA">
+
+        <provider
+            android:name="com.privateinternetaccess.account.AccountContentProvider"
+            android:authorities="com.privateinternetaccess.account.AccountContentProvider"
+            android:exported="false" />
+
         <activity
             android:name="com.kape.vpn.MainActivity"
             android:exported="true"

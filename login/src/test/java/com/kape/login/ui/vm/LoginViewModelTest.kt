@@ -1,6 +1,7 @@
 package com.kape.login.ui.vm
 
 import com.kape.login.BaseTest
+import com.kape.login.domain.GetUserLoggedInUseCase
 import com.kape.login.domain.LoginUseCase
 import com.kape.login.utils.LoginState
 import io.mockk.coEvery
@@ -22,13 +23,14 @@ import kotlin.test.assertFalse
 internal class LoginViewModelTest : BaseTest() {
 
     private val useCase: LoginUseCase = mockk(relaxed = true)
+    private val userLoggedInUseCase: GetUserLoggedInUseCase = mockk(relaxed = true)
 
     private lateinit var viewModel: LoginViewModel
 
     @BeforeEach
     internal fun setUp() {
         Dispatchers.setMain(mainThreadSurrogate)
-        viewModel = LoginViewModel(useCase)
+        viewModel = LoginViewModel(useCase, userLoggedInUseCase)
     }
 
     @Test

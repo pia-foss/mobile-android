@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -58,6 +55,10 @@ fun LoginScreen(navController: NavController) {
                 Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
             }
         })
+
+    LaunchedEffect(key1 = state) {
+        viewModel.checkUserLoggedIn()
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (!isConnected) {
