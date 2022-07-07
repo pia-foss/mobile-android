@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.vpn_permissions.domain.IsVpnProfileInstalledUseCase
+import com.kape.vpn_permissions.utils.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -12,20 +13,16 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class PermissionsViewModel(
-        private val useCaseIsVpnProfileInstalled: IsVpnProfileInstalledUseCase
+    private val useCaseIsVpnProfileInstalled: IsVpnProfileInstalledUseCase,
 ) : ViewModel(), KoinComponent {
 
     private val router: Router by inject()
-    private val _showState = MutableStateFlow(ShowState.IDLE)
-    val showState: StateFlow<ShowState> = _showState
+    private val _vpnPermissionState = MutableStateFlow(IDLE)
+    val vpnPermissionState: StateFlow<VpnProfileState> = _vpnPermissionState
 
-    fun onScreenLaunch() {
-        viewModelScope.launch {
-            if (useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
-                router.handleFlow(ExitFlow.VpnPermission)
-                return@launch
-            }
-            _showState.emit(ShowState.IDLE)
+    fun checkFlowCompleted() {
+        if (useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
+            router.handleFlow(ExitFlow.VpnPermission)
         }
     }
 
@@ -35,23 +32,18 @@ class PermissionsViewModel(
                 router.handleFlow(ExitFlow.VpnPermission)
                 return@launch
             }
-            _showState.emit(ShowState.REQUEST_VPN_PROFILE)
+            _vpnPermissionState.emit(REQUEST)
         }
     }
 
     fun onVpnProfileStateChange() {
         viewModelScope.launch {
             if (useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
+                _vpnPermissionState.emit(GRANTED)
                 router.handleFlow(ExitFlow.VpnPermission)
                 return@launch
             }
-            _showState.emit(ShowState.SHOW_VPN_PROFILE_NOT_GRANTED_TOAST)
+            _vpnPermissionState.emit(NOT_GRANTED)
         }
-    }
-
-    enum class ShowState {
-        IDLE,
-        REQUEST_VPN_PROFILE,
-        SHOW_VPN_PROFILE_NOT_GRANTED_TOAST
     }
 }

@@ -9,10 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,13 +24,17 @@ import com.kape.uicomponents.theme.Space
 import com.kape.uicomponents.theme.Typography
 import com.kape.vpn_permissions.R
 import com.kape.vpn_permissions.ui.vm.PermissionsViewModel
+import com.kape.vpn_permissions.utils.GRANTED
+import com.kape.vpn_permissions.utils.IDLE
+import com.kape.vpn_permissions.utils.NOT_GRANTED
+import com.kape.vpn_permissions.utils.REQUEST
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun VpnSystemProfileScreen() {
 
     val viewModel: PermissionsViewModel = getViewModel()
-    val state by remember(viewModel) { viewModel.showState }.collectAsState()
+    val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsState()
     val startForResult =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             viewModel.onVpnProfileStateChange()
@@ -45,6 +46,20 @@ fun VpnSystemProfileScreen() {
             viewModel.onOkButtonClicked()
         }
     )
+
+    LaunchedEffect(key1 = state) {
+        viewModel.checkFlowCompleted()
+    }
+
+    when (state) {
+        IDLE -> {}
+        REQUEST -> {
+            val intent = VpnService.prepare(LocalContext.current) ?: return
+            startForResult.launch(intent)
+        }
+        GRANTED -> {}
+        NOT_GRANTED -> Toast.makeText(LocalContext.current, getVpnProfileToastText(granted = false), Toast.LENGTH_LONG).show()
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -72,17 +87,6 @@ fun VpnSystemProfileScreen() {
                 .align(CenterHorizontally)
                 .padding(Space.HUGE)
         )
-
-        when (state) {
-            PermissionsViewModel.ShowState.IDLE -> viewModel.onScreenLaunch()
-            PermissionsViewModel.ShowState.SHOW_VPN_PROFILE_NOT_GRANTED_TOAST -> {
-                Toast.makeText(LocalContext.current, getVpnProfileToastText(granted = false), Toast.LENGTH_LONG).show()
-            }
-            PermissionsViewModel.ShowState.REQUEST_VPN_PROFILE -> {
-                val intent = VpnService.prepare(LocalContext.current) ?: return
-                startForResult.launch(intent)
-            }
-        }
     }
 }
 

@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
 }
 
@@ -7,16 +7,11 @@ android {
     compileSdk = 32
 
     defaultConfig {
-        applicationId = "com.kape.pia"
         minSdk = 23
         targetSdk = 32
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -26,7 +21,6 @@ android {
         }
     }
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -44,10 +38,15 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    namespace = "com.kape.vpn"
+    namespace = "com.kape.connection"
 }
 
 dependencies {
+
+    implementation(project(mapOf("path" to ":uicomponents")))
+    implementation(project(mapOf("path" to ":sidemenu")))
+    implementation(project(mapOf("path" to ":router")))
+
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)
@@ -55,31 +54,19 @@ dependencies {
     implementation(Compose.material)
     implementation(Compose.preview)
     implementation(Android.lifecycle)
+    implementation(Android.viewmodel)
+    implementation(Compose.viewmodel)
     implementation(Compose.activity)
     implementation(Compose.navigation)
-
+    implementation(Android.security)
     implementation(Koin.core)
     implementation(Koin.android)
     implementation(Koin.compose)
 
-    implementation(Android.multiplatformSettings)
-    implementation(Android.crypto)
-
-    implementation(project(mapOf("path" to ":connection")))
-    implementation(project(mapOf("path" to ":login")))
-    implementation(project(mapOf("path" to ":account")))
-    implementation(project(mapOf("path" to ":profile")))
-    implementation(project(mapOf("path" to ":region_selection")))
-    implementation(project(mapOf("path" to ":vpn_permissions")))
-    implementation(project(mapOf("path" to ":sidemenu")))
-    implementation(project(mapOf("path" to ":regions")))
-    implementation(project(mapOf("path" to ":uicomponents")))
-    implementation(project(mapOf("path" to ":router")))
-    implementation(project(mapOf("path" to ":splash")))
-
-    testImplementation(UnitTest.junit)
-    androidTestImplementation(AndroidTest.jUnit)
-    androidTestImplementation(AndroidTest.espressoCore)
-    androidTestImplementation(AndroidTest.composeUI)
-    debugImplementation(DebugTest.composeUI)
+    implementation(Kotlin.ktor)
+    implementation(Kotlin.coroutinesCore)
+    implementation(Kotlin.coroutinesAndroid)
+    implementation(Kotlin.serializationCore)
+    implementation(Kotlin.serializationJson)
+    implementation(Kotlin.dateTime)
 }

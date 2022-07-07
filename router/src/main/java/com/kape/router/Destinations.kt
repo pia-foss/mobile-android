@@ -12,3 +12,7 @@ object VpnPermission {
 object Splash {
     const val Main = "splash-screen"
 }
+
+object Connection {
+    const val Main = "connection-screen"
+}

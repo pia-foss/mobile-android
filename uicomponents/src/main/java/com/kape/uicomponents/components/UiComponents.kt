@@ -367,7 +367,6 @@ private class MyWebViewClient(
             val responseHeaders: Map<String, String> = connection.headerFields.mapValuesTo(mutableMapOf<String, String>()) { values -> values.value.firstOrNull() ?: "" }.filterValues { v -> v.isNotBlank() }
             return WebResourceResponse(connection.contentType, connection.contentEncoding, connection.responseCode, connection.responseMessage, responseHeaders, connection.inputStream)
         } catch (t: Throwable) {
-            Log.e("WebViewScreen", t.stackTraceToString())
             return WebResourceResponse(null, null, 503, "unavailable", null, null)
         }
     }

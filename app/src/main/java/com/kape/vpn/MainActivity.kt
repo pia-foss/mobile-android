@@ -14,12 +14,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kape.connection.ui.ConnectionScreen
 import com.kape.login.ui.LoginScreen
 import com.kape.login.ui.LoginWithEmailScreen
-import com.kape.router.Login
-import com.kape.router.Router
-import com.kape.router.Splash
-import com.kape.router.VpnPermission
+import com.kape.router.*
 import com.kape.splash.ui.SplashScreen
 import com.kape.uicomponents.theme.PIATheme
 import com.kape.vpn_permissions.ui.VpnSystemProfileScreen
@@ -28,6 +26,7 @@ import org.koin.android.ext.android.inject
 class MainActivity : ComponentActivity() {
 
     private val router: Router by inject()
+    private val destinationsForClearBackStack = listOf(Splash.Main, Login.Main, VpnPermission.Main, Connection.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +38,8 @@ class MainActivity : ComponentActivity() {
                 router.navigation.collect {
                     if (it.isNotBlank()) {
                         navController.navigate(it) {
-                            if (it == Login.Main || it == Splash.Main) {
+                            launchSingleTop = true
+                            if (it in destinationsForClearBackStack) {
                                 navController.popBackStack()
                             }
                         }
@@ -54,6 +54,7 @@ class MainActivity : ComponentActivity() {
                         composable(Login.WithEmail) { LoginWithEmailScreen(navController = navController) }
                         composable(VpnPermission.Main) { VpnSystemProfileScreen() }
                         composable(Splash.Main) { SplashScreen() }
+                        composable(Connection.Main) { ConnectionScreen() }
                     }
                 }
             }
