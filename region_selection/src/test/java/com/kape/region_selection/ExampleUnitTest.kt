@@ -1,4 +1,4 @@
-package com.kape.vpn
+package com.kape.region_selection
 
 import org.junit.Test
 

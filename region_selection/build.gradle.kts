@@ -49,6 +49,7 @@ android {
 }
 
 dependencies {
+
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)
@@ -59,16 +60,20 @@ dependencies {
     implementation(Android.viewmodel)
     implementation(Compose.viewmodel)
     implementation(Compose.activity)
+    implementation(Compose.navigation)
+    implementation(Android.security)
     implementation(Koin.core)
     implementation(Koin.android)
     implementation(Koin.compose)
 
+    implementation(Kotlin.ktor)
     implementation(Kotlin.coroutinesCore)
     implementation(Kotlin.coroutinesAndroid)
+    implementation(Kotlin.serializationCore)
+    implementation(Kotlin.serializationJson)
+    implementation(Kotlin.dateTime)
 
-    implementation(project(mapOf("path" to ":account")))
     implementation(project(mapOf("path" to ":regions")))
-    implementation(project(mapOf("path" to ":uicomponents")))
 
     testImplementation(UnitTest.junit)
     testImplementation(UnitTest.coroutines)
@@ -87,22 +92,7 @@ dependencies {
     androidTestImplementation(AndroidTest.mockk)
     androidTestImplementation(AndroidTest.koinTest)
     androidTestImplementation(AndroidTest.androidCore)
-    androidTestImplementation(AndroidTest.uiAutomator)
 
     debugImplementation(DebugTest.composeUI)
     debugImplementation(DebugTest.composeManifest)
-
-    implementation (Kotlin.kotlinStdLib)
-    implementation (Kotlin.kotlinStdLibCommon)
-    implementation (Kotlin.ktorClientCore)
-    implementation (Kotlin.serializationCore)
-    implementation (Kotlin.serializationJson)
-    implementation (Kotlin.dateTime)
-
-    implementation (Android.cryptoEddsa)
-    implementation (Android.spongyCastle)
-    implementation (Kotlin.ktor)
-
-    androidTestImplementation(AndroidTest.coroutinesAndroid)
-    androidTestImplementation(AndroidTest.coroutinesTest)
 }
