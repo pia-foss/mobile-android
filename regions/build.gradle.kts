@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file("regions-release-1.5.0.aar"))
+artifacts.add("default", file("regions-release-1.4.1.aar"))
