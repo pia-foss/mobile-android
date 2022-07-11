@@ -51,6 +51,7 @@ android {
 dependencies {
 
     implementation(project(mapOf("path" to ":core")))
+    implementation(project(mapOf("path" to ":uicomponents")))
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)

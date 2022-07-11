@@ -23,10 +23,16 @@ object Space {
 
 object Height {
     val DEFAULT = 48.dp
+    val FLAG = 22.dp
+    val SERVER_ICON = 18.dp
+    val FAVOURITE = 20.dp
 }
 
 object Width {
     val TOOLBAR_LOGO = 80.dp
+    val FLAG = 32.dp
+    val SERVER_ICON = 18.dp
+    val FAVOURITE = 24.dp
 }
 
 object Corner {
@@ -37,4 +43,5 @@ object Corner {
 object FontSize {
     val Title = 18.sp
     val Normal = 14.sp
+    val Small = 12.sp
 }
