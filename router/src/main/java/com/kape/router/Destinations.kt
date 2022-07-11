@@ -16,3 +16,7 @@ object Splash {
 object Connection {
     const val Main = "connection-screen"
 }
+
+object RegionSelection {
+    const val Main = "region-selection-screen"
+}

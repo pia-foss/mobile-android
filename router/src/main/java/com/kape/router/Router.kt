@@ -21,6 +21,7 @@ class Router {
             EnterFlow.VpnPermission -> _navigation.value = VpnPermission.Main
             EnterFlow.Splash -> _navigation.value = Splash.Main
             EnterFlow.Connection -> _navigation.value = Connection.Main
+            EnterFlow.RegionSelection -> _navigation.value = RegionSelection.Main
         }
     }
 
@@ -33,6 +34,7 @@ class Router {
             }
             ExitFlow.Splash -> handleEnterFlow(EnterFlow.Login)
             ExitFlow.Connection -> TODO()
+            ExitFlow.RegionSelection -> TODO()
         }
     }
 }
