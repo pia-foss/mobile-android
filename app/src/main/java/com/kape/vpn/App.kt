@@ -4,6 +4,7 @@ import android.app.Application
 import com.kape.login.di.loginModule
 import com.kape.sidemenu.di.sideMenuModule
 import com.kape.profile.di.profileModule
+import com.kape.region_selection.di.regionModule
 import com.kape.vpn_permissions.di.permissionModule
 import com.kape.vpn.di.appModule
 import org.koin.android.ext.koin.androidContext
@@ -24,6 +25,7 @@ class App : Application() {
             add(permissionModule)
             add(sideMenuModule)
             add(profileModule)
+            add(regionModule)
         })
     }
 }

@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.kape.connection.ui.ConnectionScreen
 import com.kape.login.ui.LoginScreen
 import com.kape.login.ui.LoginWithEmailScreen
+import com.kape.region_selection.ui.RegionSelectionScreen
 import com.kape.router.*
 import com.kape.splash.ui.SplashScreen
 import com.kape.uicomponents.theme.PIATheme
@@ -55,6 +56,7 @@ class MainActivity : ComponentActivity() {
                         composable(VpnPermission.Main) { VpnSystemProfileScreen() }
                         composable(Splash.Main) { SplashScreen() }
                         composable(Connection.Main) { ConnectionScreen() }
+                        composable(RegionSelection.Main) { RegionSelectionScreen() }
                     }
                 }
             }

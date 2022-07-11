@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
-class Prefs(context: Context, name: String) {
+open class Prefs(context: Context, name: String) {
 
     private val prefs: SharedPreferences
 
