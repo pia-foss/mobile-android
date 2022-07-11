@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.region_selection.domain.GetRegionsUseCase
 import com.kape.region_selection.domain.UpdateLatencyUseCase
+import com.kape.region_selection.server.Server
 import com.kape.region_selection.utils.IDLE
 import com.kape.region_selection.utils.LOADING
 import com.kape.region_selection.utils.RegionSelectionScreenState
@@ -25,5 +26,9 @@ class RegionSelectionViewModel(
         getRegionsUseCase.loadRegions(locale).collect {
             _state.emit(loaded(it))
         }
+    }
+
+    fun onRegionSelected(server: Server) {
+        // TODO: handle region selection
     }
 }
