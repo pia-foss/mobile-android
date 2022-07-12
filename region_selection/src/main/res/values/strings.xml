@@ -8,6 +8,8 @@
     <string name="favorites">Favorites</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="automatic">Automatic</string>
+    <string name="automatic_iso">world</string>
 
     <string-array name="sorting_options">
         <item>@string/name</item>
