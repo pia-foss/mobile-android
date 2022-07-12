@@ -3,5 +3,7 @@
     <string name="menu">Menu</string>
     <string name="logo">Logo</string>
     <string name="back">Back</string>
-    <string name="more">More</string>
+    <string name="sort">Sort</string>
+    <string name="search">Search</string>
+    <string name="close">Close</string>
 </resources>

@@ -50,7 +50,7 @@ fun AppBar(onClick: () -> Unit, state: AppBarState, onOverflowClick: (() -> Unit
             IconButton(onClick = onOverflowClick!!, modifier = Modifier.align(CenterVertically)) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_sort),
-                    contentDescription = stringResource(id = R.string.more),
+                    contentDescription = stringResource(id = R.string.sort),
                 )
             }
         }

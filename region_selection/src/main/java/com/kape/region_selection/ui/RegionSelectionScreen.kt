@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.core.os.ConfigurationCompat
@@ -24,6 +25,7 @@ import com.kape.region_selection.utils.LOADING
 import com.kape.uicomponents.components.AppBar
 import com.kape.uicomponents.components.AppBarColors
 import com.kape.uicomponents.components.AppBarState
+import com.kape.uicomponents.components.SearchBar
 import com.kape.uicomponents.theme.*
 import org.koin.androidx.compose.viewModel
 
@@ -33,6 +35,7 @@ fun RegionSelectionScreen() {
         val viewModel: RegionSelectionViewModel by viewModel()
         val state by remember(viewModel) { viewModel.state }.collectAsState()
         val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0].language
+        val searchTextState = remember { mutableStateOf(TextFieldValue("")) }
 
         LaunchedEffect(Unit) {
             viewModel.loadRegions(locale)
@@ -60,6 +63,7 @@ fun RegionSelectionScreen() {
                 }
                 else -> {
                     // state loaded
+                    SearchBar(searchTextState = searchTextState)
                     viewModel.initAutoRegion(stringResource(id = R.string.automatic), stringResource(id = R.string.automatic_iso))
                     SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = state.loading), onRefresh = {
                         viewModel.loadRegions(locale)
@@ -73,6 +77,7 @@ fun RegionSelectionScreen() {
                             }
                         }
                     }
+                    viewModel.filterByName(searchTextState.value.text)
                     if (state.showSortingOptions) {
                         SortingOptions(viewModel = viewModel)
                     }

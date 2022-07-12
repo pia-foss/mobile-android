@@ -1,5 +1,7 @@
 package com.kape.region_selection.ui.vm
 
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.region_selection.domain.GetRegionsUseCase
@@ -58,5 +60,13 @@ class RegionSelectionViewModel(
 
     fun hideSortingOptions() = viewModelScope.launch {
         _state.emit(loaded(regions))
+    }
+
+    fun filterByName(value: String) = viewModelScope.launch {
+        if (value.isEmpty()) {
+            _state.emit(loaded(regions))
+        } else {
+            _state.emit(loaded(regions.filter { it.name.toLowerCase(Locale.current).contains(value.toLowerCase(Locale.current)) }))
+        }
     }
 }

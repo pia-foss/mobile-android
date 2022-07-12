@@ -36,6 +36,10 @@ object Width {
     val FAVOURITE = 24.dp
 }
 
+object Size {
+    val ICON = 24.dp
+}
+
 object Corner {
     val InputField = 6.dp
     val Button = 6.dp
