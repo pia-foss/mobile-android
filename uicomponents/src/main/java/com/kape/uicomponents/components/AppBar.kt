@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -49,7 +49,7 @@ fun AppBar(onClick: () -> Unit, state: AppBarState, onOverflowClick: (() -> Unit
         if (state.showOverflow) {
             IconButton(onClick = onOverflowClick!!, modifier = Modifier.align(CenterVertically)) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_overflow),
+                    painter = painterResource(id = R.drawable.ic_sort),
                     contentDescription = stringResource(id = R.string.more),
                 )
             }
