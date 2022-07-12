@@ -28,21 +28,23 @@ class RegionSelectionViewModel(
     }
 
     fun initAutoRegion(name: String, iso: String) {
-        regions.add(0, Server(
-            name = name,
-            iso = iso,
-            dns = "",
-            latency = null,
-            endpoints = emptyMap(),
-            key = "",
-            latitude = null,
-            longitude = null,
-            isGeo = false,
-            isAllowsPF = false,
-            isOffline = false,
-            dipToken = null,
-            dedicatedIp = null
-        ))
+        if (regions.none { it.name == name }) {
+            regions.add(0, Server(
+                name = name,
+                iso = iso,
+                dns = "",
+                latency = null,
+                endpoints = emptyMap(),
+                key = "",
+                latitude = null,
+                longitude = null,
+                isGeo = false,
+                isAllowsPF = false,
+                isOffline = false,
+                dipToken = null,
+                dedicatedIp = null
+            ))
+        }
     }
 
 
