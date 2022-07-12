@@ -1,6 +1,7 @@
 object Android {
     const val androidCore = "androidx.core:core-ktx:1.7.0"
     const val swipeRefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:0.19.0"
 
     const val lifecycle = "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
     const val viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"

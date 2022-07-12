@@ -60,6 +60,7 @@ dependencies {
     implementation(Compose.preview)
     implementation(Android.lifecycle)
     implementation(Android.viewmodel)
+    implementation(Android.swipeRefresh)
     implementation(Compose.viewmodel)
     implementation(Compose.activity)
     implementation(Compose.navigation)

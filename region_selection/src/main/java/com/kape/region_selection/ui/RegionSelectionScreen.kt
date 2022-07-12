@@ -15,6 +15,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.core.os.ConfigurationCompat
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kape.region_selection.R
 import com.kape.region_selection.ui.vm.RegionSelectionViewModel
 import com.kape.region_selection.utils.IDLE
@@ -59,12 +61,16 @@ fun RegionSelectionScreen() {
                 else -> {
                     // state loaded
                     viewModel.initAutoRegion(stringResource(id = R.string.automatic), stringResource(id = R.string.automatic_iso))
-                    LazyColumn {
-                        items(state.regions.size) { index ->
-                            ServerListItem(server = state.regions[index], onClick = {
-                                viewModel.onRegionSelected(it)
-                            })
-                            Divider(color = Grey85)
+                    SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = state.loading), onRefresh = {
+                        viewModel.loadRegions(locale)
+                    }) {
+                        LazyColumn {
+                            items(state.regions.size) { index ->
+                                ServerListItem(server = state.regions[index], onClick = {
+                                    viewModel.onRegionSelected(it)
+                                })
+                                Divider(color = Grey85)
+                            }
                         }
                     }
                     if (state.showSortingOptions) {
