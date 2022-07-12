@@ -58,6 +58,7 @@ fun RegionSelectionScreen() {
                 }
                 else -> {
                     // state loaded
+                    viewModel.initAutoRegion(stringResource(id = R.string.automatic), stringResource(id = R.string.automatic_iso))
                     LazyColumn {
                         items(state.regions.size) { index ->
                             ServerListItem(server = state.regions[index], onClick = {
@@ -95,7 +96,8 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
                                 selectedValue.value = it
                             },
                             role = Role.RadioButton
-                        ).padding(vertical = Space.MINI)
+                        )
+                        .padding(vertical = Space.MINI)
                 ) {
                     RadioButton(
                         selected = (it == selectedValue.value),

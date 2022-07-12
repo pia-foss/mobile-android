@@ -17,15 +17,34 @@ class RegionSelectionViewModel(
 
     private val _state = MutableStateFlow(IDLE)
     val state: StateFlow<RegionSelectionScreenState> = _state
-    private var regions = emptyList<Server>()
+    private var regions = mutableListOf<Server>()
 
     fun loadRegions(locale: String) = viewModelScope.launch {
         _state.emit(LOADING)
         getRegionsUseCase.loadRegions(locale).collect {
-            regions = it
-            _state.emit(loaded(it))
+            regions.addAll(it)
+            _state.emit(loaded(regions))
         }
     }
+
+    fun initAutoRegion(name: String, iso: String) {
+        regions.add(0, Server(
+            name = name,
+            iso = iso,
+            dns = "",
+            latency = null,
+            endpoints = emptyMap(),
+            key = "",
+            latitude = null,
+            longitude = null,
+            isGeo = false,
+            isAllowsPF = false,
+            isOffline = false,
+            dipToken = null,
+            dedicatedIp = null
+        ))
+    }
+
 
     fun onRegionSelected(server: Server) {
         // TODO: handle region selection
