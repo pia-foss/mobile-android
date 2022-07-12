@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="region_selection_title">Region Selection</string>
+
+    <string name="sort_regions_title">Sort regions by</string>
+    <string name="name">Name</string>
+    <string name="latency">Latency</string>
+    <string name="favorites">Favorites</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+
+    <string-array name="sorting_options">
+        <item>@string/name</item>
+        <item>@string/latency</item>
+        <item>@string/favorites</item>
+    </string-array>
+</resources>

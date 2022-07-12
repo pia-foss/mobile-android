@@ -23,6 +23,7 @@ object Space {
 
 object Height {
     val DEFAULT = 48.dp
+    val APP_BAR = 56.dp
     val FLAG = 22.dp
     val SERVER_ICON = 18.dp
     val FAVOURITE = 20.dp

@@ -1,50 +1,125 @@
 package com.kape.region_selection.ui
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.core.os.ConfigurationCompat
+import com.kape.region_selection.R
 import com.kape.region_selection.ui.vm.RegionSelectionViewModel
 import com.kape.region_selection.utils.IDLE
 import com.kape.region_selection.utils.LOADING
-import com.kape.uicomponents.theme.Grey85
+import com.kape.uicomponents.components.AppBar
+import com.kape.uicomponents.components.AppBarColors
+import com.kape.uicomponents.components.AppBarState
+import com.kape.uicomponents.theme.*
 import org.koin.androidx.compose.viewModel
 
 @Composable
 fun RegionSelectionScreen() {
-    val viewModel: RegionSelectionViewModel by viewModel()
-    val state by remember(viewModel) { viewModel.state }.collectAsState()
-    val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0].language
+    PIATheme {
+        val viewModel: RegionSelectionViewModel by viewModel()
+        val state by remember(viewModel) { viewModel.state }.collectAsState()
+        val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0].language
 
-    LaunchedEffect(Unit) {
-        viewModel.loadRegions(locale)
-    }
-
-    when (state) {
-        IDLE -> {
-
+        LaunchedEffect(Unit) {
+            viewModel.loadRegions(locale)
         }
-        LOADING -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
-        }
-        else -> {
-            // state loaded
-            LazyColumn {
-                items(state.regions.size) { index ->
-                    ServerListItem(server = state.regions[index], onClick = {
-                        viewModel.onRegionSelected(it)
-                    })
-                    Divider(color = Grey85)
+
+        Column {
+            AppBar(onClick = { /*TODO*/ },
+                state = AppBarState(stringResource(id = R.string.region_selection_title),
+                    AppBarColors.Default,
+                    showLogo = false,
+                    showMenu = false,
+                    showOverflow = true),
+                onOverflowClick = {
+                    viewModel.showSortingOptions()
+                })
+
+            when (state) {
+                IDLE -> {
+
+                }
+                LOADING -> {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+                }
+                else -> {
+                    // state loaded
+                    LazyColumn {
+                        items(state.regions.size) { index ->
+                            ServerListItem(server = state.regions[index], onClick = {
+                                viewModel.onRegionSelected(it)
+                            })
+                            Divider(color = Grey85)
+                        }
+                    }
+                    if (state.showSortingOptions) {
+                        SortingOptions(viewModel = viewModel)
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+fun SortingOptions(viewModel: RegionSelectionViewModel) {
+    AlertDialog(onDismissRequest = {
+        viewModel.hideSortingOptions()
+    }, title = {
+        Text(text = stringResource(id = R.string.sort_regions_title), fontSize = FontSize.Title)
+    }, text = {
+        val selectedValue = remember { mutableStateOf("") }
+        Column(modifier = Modifier.fillMaxWidth()) {
+            stringArrayResource(id = R.array.sorting_options).forEach {
+                Row(
+                    verticalAlignment = CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = (it == selectedValue.value),
+                            onClick = {
+                                selectedValue.value = it
+                            },
+                            role = Role.RadioButton
+                        ).padding(vertical = Space.MINI)
+                ) {
+                    RadioButton(
+                        selected = (it == selectedValue.value),
+                        onClick = null,
+                        colors = RadioButtonDefaults.colors(selectedColor = DarkGreen20),
+                        modifier = Modifier
+                            .padding(end = Space.SMALL)
+                            .align(CenterVertically)
+                    )
+                    Text(
+                        text = it,
+                        modifier = Modifier
+                            .align(CenterVertically)
+                    )
+                }
+            }
+        }
+    }, confirmButton = {
+        TextButton(onClick = { /*TODO*/ }) {
+            Text(text = stringResource(id = R.string.ok), fontSize = FontSize.Normal, color = DarkGreen20)
+        }
+    }, dismissButton = {
+        TextButton(onClick = { viewModel.hideSortingOptions() }) {
+            Text(text = stringResource(id = R.string.cancel).toUpperCase(Locale.current), fontSize = FontSize.Normal, color = DarkGreen20)
+        }
+    })
 }
