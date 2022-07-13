@@ -68,6 +68,7 @@ fun RegionSelectionScreen() {
                     SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = state.loading), onRefresh = {
                         viewModel.loadRegions(locale)
                     }) {
+                        viewModel.filterByName(searchTextState.value.text)
                         LazyColumn {
                             items(state.regions.size) { index ->
                                 ServerListItem(server = state.regions[index], onClick = {
@@ -77,7 +78,7 @@ fun RegionSelectionScreen() {
                             }
                         }
                     }
-                    viewModel.filterByName(searchTextState.value.text)
+
                     if (state.showSortingOptions) {
                         SortingOptions(viewModel = viewModel)
                     }

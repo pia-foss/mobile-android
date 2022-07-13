@@ -13,4 +13,5 @@ val IDLE = RegionSelectionScreenState(idle = true, loading = false, regions = em
 val LOADING = RegionSelectionScreenState(idle = false, loading = true, regions = emptyList())
 fun showFilteringOptions(regions: List<Server>) = RegionSelectionScreenState(idle = false, loading = false, regions, true)
 
-fun loaded(regions: List<Server>) = RegionSelectionScreenState(idle = false, loading = false, regions)
+fun loaded(regions: List<Server>, showSort: Boolean = false) =
+    RegionSelectionScreenState(idle = false, loading = false, regions, showSortingOptions = showSort)

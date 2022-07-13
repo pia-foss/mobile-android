@@ -64,7 +64,7 @@ class RegionSelectionViewModel(
 
     fun filterByName(value: String) = viewModelScope.launch {
         if (value.isEmpty()) {
-            _state.emit(loaded(regions))
+            _state.emit(loaded(regions, state.value.showSortingOptions))
         } else {
             _state.emit(loaded(regions.filter { it.name.toLowerCase(Locale.current).contains(value.toLowerCase(Locale.current)) }))
         }
