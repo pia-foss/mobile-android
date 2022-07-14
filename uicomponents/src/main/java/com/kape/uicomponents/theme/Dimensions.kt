@@ -34,10 +34,13 @@ object Width {
     val FLAG = 32.dp
     val SERVER_ICON = 18.dp
     val FAVOURITE = 24.dp
+    val SIDE_MENU = 300.dp
 }
 
-object Size {
+object Square {
     val ICON = 24.dp
+    val DEFAULT = 48.dp
+    val EXPIRY_NOTICE = 36.dp
 }
 
 object Corner {
@@ -47,6 +50,8 @@ object Corner {
 
 object FontSize {
     val Title = 18.sp
+    val Big = 16.sp
     val Normal = 14.sp
     val Small = 12.sp
+    val Tiny = 10.sp
 }

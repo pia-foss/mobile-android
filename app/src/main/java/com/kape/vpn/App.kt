@@ -2,11 +2,11 @@ package com.kape.vpn
 
 import android.app.Application
 import com.kape.login.di.loginModule
-import com.kape.sidemenu.di.sideMenuModule
 import com.kape.profile.di.profileModule
 import com.kape.region_selection.di.regionModule
-import com.kape.vpn_permissions.di.permissionModule
+import com.kape.sidemenu.di.sideMenuModule
 import com.kape.vpn.di.appModule
+import com.kape.vpn_permissions.di.permissionModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -23,7 +23,7 @@ class App : Application() {
             add(appModule)
             add(loginModule)
             add(permissionModule)
-            add(sideMenuModule)
+            add(sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
             add(profileModule)
             add(regionModule)
         })
