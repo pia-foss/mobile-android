@@ -43,11 +43,13 @@ fun RegionSelectionScreen() {
 
         Column {
             AppBar(onClick = { /*TODO*/ },
-                state = AppBarState(stringResource(id = R.string.region_selection_title),
+                state = AppBarState(
+                    stringResource(id = R.string.region_selection_title),
                     AppBarColors.Default,
                     showLogo = false,
                     showMenu = false,
-                    showOverflow = true),
+                    showOverflow = true
+                ),
                 onOverflowClick = {
                     viewModel.showSortingOptions()
                 })
@@ -71,9 +73,15 @@ fun RegionSelectionScreen() {
                         viewModel.filterByName(searchTextState.value.text)
                         LazyColumn {
                             items(state.regions.size) { index ->
-                                ServerListItem(server = state.regions[index], onClick = {
-                                    viewModel.onRegionSelected(it)
-                                })
+                                ServerListItem(
+                                    server = state.regions[index],
+                                    isFavorite = mutableStateOf(viewModel.isServerFavorite(state.regions[index].name)),
+                                    onClick = {
+                                        viewModel.onRegionSelected(it)
+                                    },
+                                    onFavoriteClick = {
+                                        viewModel.onFavoriteClicked(it)
+                                    })
                                 Divider(color = Grey85)
                             }
                         }
