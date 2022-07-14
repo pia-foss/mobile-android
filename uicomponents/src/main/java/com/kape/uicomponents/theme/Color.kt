@@ -24,3 +24,9 @@ val ConnectingGradient = listOf(ConnectingStart, ConnectingEnd)
 val ConnectedStart = Color(0xFF5DDF5A)
 val ConnectedEnd = Color(0xFF4CB649)
 val ConnectedGradient = listOf(ConnectedStart, ConnectedEnd)
+
+object Latency {
+    val Green = ConnectedStart
+    val Yellow = ConnectingStart
+    val Red = DisconnectedStart
+}
