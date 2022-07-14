@@ -25,30 +25,41 @@ class RegionSelectionViewModel(
         _state.emit(LOADING)
         getRegionsUseCase.loadRegions(locale).collect {
             regions.addAll(it)
+            updateLatencies()
             _state.emit(loaded(regions))
         }
     }
 
     fun initAutoRegion(name: String, iso: String) {
         if (regions.none { it.name == name }) {
-            regions.add(0, Server(
-                name = name,
-                iso = iso,
-                dns = "",
-                latency = null,
-                endpoints = emptyMap(),
-                key = "",
-                latitude = null,
-                longitude = null,
-                isGeo = false,
-                isAllowsPF = false,
-                isOffline = false,
-                dipToken = null,
-                dedicatedIp = null
-            ))
+            regions.add(
+                0, Server(
+                    name = name,
+                    iso = iso,
+                    dns = "",
+                    latency = null,
+                    endpoints = emptyMap(),
+                    key = "",
+                    latitude = null,
+                    longitude = null,
+                    isGeo = false,
+                    isAllowsPF = false,
+                    isOffline = false,
+                    dipToken = null,
+                    dedicatedIp = null
+                )
+            )
         }
     }
 
+    private fun updateLatencies() = viewModelScope.launch {
+        updateLatencyUseCase.updateLatencies().collect { updatedServers ->
+            for (server in updatedServers) {
+                regions.filter { it.name == server.name }[0].latency = server.latency
+            }
+            _state.emit(loaded(regions, state.value.showSortingOptions))
+        }
+    }
 
     fun onRegionSelected(server: Server) {
         // TODO: handle region selection

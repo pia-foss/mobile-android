@@ -8,14 +8,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.kape.region_selection.R
 import com.kape.region_selection.server.Server
-import com.kape.uicomponents.theme.FontSize
-import com.kape.uicomponents.theme.Height
-import com.kape.uicomponents.theme.Space
-import com.kape.uicomponents.theme.Width
+import com.kape.uicomponents.theme.*
 import java.util.*
 
 @Composable
@@ -27,51 +26,81 @@ fun ServerListItem(server: Server, onClick: ((server: Server) -> Unit)) {
             onClick(server)
         }
         .padding(horizontal = Space.NORMAL), verticalAlignment = Alignment.CenterVertically) {
-        Image(painter = painterResource(id = getFlagResource(LocalContext.current, server.iso)),
-            contentDescription = "flag",
+        Image(
+            painter = painterResource(id = getFlagResource(LocalContext.current, server.iso)),
+            contentDescription = stringResource(id = R.string.flag),
             modifier = Modifier
                 .width(Width.FLAG)
-                .height(Height.FLAG))
+                .height(Height.FLAG)
+        )
         Text(text = server.name, fontSize = FontSize.Normal, modifier = Modifier.padding(horizontal = Space.SMALL))
 
         if (server.isGeo) {
-            Image(painter = painterResource(id = R.drawable.ic_geo_default),
-                contentDescription = "geo",
+            Image(
+                painter = painterResource(id = R.drawable.ic_geo_default),
+                contentDescription = stringResource(id = R.string.geo),
                 modifier = Modifier
                     .padding(end = Space.SMALL)
                     .width(Width.SERVER_ICON)
-                    .height(Height.SERVER_ICON))
+                    .height(Height.SERVER_ICON)
+            )
         }
 
         if (server.isAllowsPF) {
-            Image(painter = painterResource(id = R.drawable.ic_port_forwarding),
-                contentDescription = "port forwarding",
+            Image(
+                painter = painterResource(id = R.drawable.ic_port_forwarding),
+                contentDescription = stringResource(id = R.string.port_forwarding),
                 modifier = Modifier
                     .padding(end = Space.SMALL)
                     .width(Width.SERVER_ICON)
-                    .height(Height.SERVER_ICON))
+                    .height(Height.SERVER_ICON)
+            )
         }
 
         // TODO: if server is selected - add appropriate image && update respective colors
 
         if (server.isOffline) {
-            Image(painter = painterResource(id = R.drawable.ic_server_selected),
-                contentDescription = "selected",
+            Image(
+                painter = painterResource(id = R.drawable.ic_offline),
+                contentDescription = stringResource(id = R.string.offline),
                 modifier = Modifier
                     .padding(end = Space.SMALL)
                     .width(Width.SERVER_ICON)
-                    .height(Height.SERVER_ICON))
+                    .height(Height.SERVER_ICON)
+            )
         }
 
-
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = server.latency ?: "234 ms", fontSize = FontSize.Small, modifier = Modifier.padding(horizontal = Space.SMALL))
-        Image(painter = painterResource(id = R.drawable.ic_favourite_default),
-            contentDescription = "favourite",
+
+        Text(
+            text = if (server.latency != null) {
+                stringResource(id = R.string.latency_to_format).format(server.latency)
+            } else {
+                ""
+            },
+            fontSize = FontSize.Small,
+            color = getLatencyTextColor(server.latency),
+            modifier = Modifier.padding(horizontal = Space.SMALL)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.ic_favourite_default),
+            contentDescription = stringResource(id = R.string.favorite),
             modifier = Modifier
                 .width(Width.FAVOURITE)
-                .height(Height.FAVOURITE))
+                .height(Height.FAVOURITE)
+        )
 
+    }
+}
+
+fun getLatencyTextColor(latency: String?): Color {
+    if (latency == null) {
+        return Color.White
+    }
+    return when (latency.toLong()) {
+        in 0..200 -> Latency.Green
+        in 200..500 -> Latency.Yellow
+        else -> Latency.Red
     }
 }
 
