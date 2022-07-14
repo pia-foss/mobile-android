@@ -16,7 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import com.kape.uicomponents.R
-import com.kape.uicomponents.theme.Size
+import com.kape.uicomponents.theme.Square
 import com.kape.uicomponents.theme.Space
 
 @Composable
@@ -33,7 +33,7 @@ fun SearchBar(searchTextState: MutableState<TextFieldValue>) {
                 contentDescription = stringResource(id = R.string.search),
                 modifier = Modifier
                     .padding(Space.NORMAL)
-                    .size(Size.ICON)
+                    .size(Square.ICON)
             )
         },
         trailingIcon = {
@@ -49,7 +49,7 @@ fun SearchBar(searchTextState: MutableState<TextFieldValue>) {
                         contentDescription = stringResource(id = R.string.close),
                         modifier = Modifier
                             .padding(Space.NORMAL)
-                            .size(Size.ICON)
+                            .size(Square.ICON)
                     )
                 }
             }

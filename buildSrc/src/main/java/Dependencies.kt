@@ -45,7 +45,7 @@ object Kotlin {
     const val coroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
     const val serializationCore = "org.jetbrains.kotlinx:kotlinx-serialization-core:1.3.2"
     const val serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2"
-    const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.3.2"
+    const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 }
 
 object UnitTest {

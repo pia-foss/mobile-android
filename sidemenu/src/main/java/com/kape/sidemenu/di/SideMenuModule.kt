@@ -4,8 +4,8 @@ import com.kape.sidemenu.ui.vm.SideMenuViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
-val sideMenuModule = module {
+fun sideMenuModule(versionCode: Int, versionName: String) = module {
     viewModel {
-        SideMenuViewModel()
+        SideMenuViewModel(get(), versionCode, versionName)
     }
 }
