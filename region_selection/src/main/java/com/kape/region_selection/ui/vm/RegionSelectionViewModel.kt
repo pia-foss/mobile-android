@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 class RegionSelectionViewModel(
     private val getRegionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
+    private val prefs: RegionPrefs
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(IDLE)
@@ -63,6 +64,18 @@ class RegionSelectionViewModel(
 
     fun onRegionSelected(server: Server) {
         // TODO: handle region selection
+    }
+
+    fun onFavoriteClicked(serverName: String) {
+        if (prefs.isFavorite(serverName)) {
+            prefs.removeFromFavorites(serverName)
+        } else {
+            prefs.addToFavorites(serverName)
+        }
+    }
+
+    fun isServerFavorite(serverName: String): Boolean {
+        return prefs.isFavorite(serverName)
     }
 
     fun showSortingOptions() = viewModelScope.launch {

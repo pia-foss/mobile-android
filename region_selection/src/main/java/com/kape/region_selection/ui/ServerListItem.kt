@@ -4,8 +4,12 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,7 +22,12 @@ import com.kape.uicomponents.theme.*
 import java.util.*
 
 @Composable
-fun ServerListItem(server: Server, onClick: ((server: Server) -> Unit)) {
+fun ServerListItem(
+    server: Server,
+    isFavorite: MutableState<Boolean>,
+    onClick: ((server: Server) -> Unit),
+    onFavoriteClick: ((serverName: String) -> Unit)
+) {
     Row(modifier = Modifier
         .fillMaxWidth()
         .height(Height.DEFAULT)
@@ -82,14 +91,19 @@ fun ServerListItem(server: Server, onClick: ((server: Server) -> Unit)) {
             color = getLatencyTextColor(server.latency),
             modifier = Modifier.padding(horizontal = Space.SMALL)
         )
-        Image(
-            painter = painterResource(id = R.drawable.ic_favourite_default),
-            contentDescription = stringResource(id = R.string.favorite),
-            modifier = Modifier
-                .width(Width.FAVOURITE)
-                .height(Height.FAVOURITE)
-        )
 
+        IconButton(onClick = {
+            isFavorite.value = !isFavorite.value
+            onFavoriteClick(server.name)
+        }) {
+            Image(
+                painter = painterResource(id = if (isFavorite.value) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_default),
+                contentDescription = stringResource(id = R.string.favorite),
+                modifier = Modifier
+                    .width(Width.FAVOURITE)
+                    .height(Height.FAVOURITE)
+            )
+        }
     }
 }
 
