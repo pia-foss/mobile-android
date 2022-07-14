@@ -51,6 +51,9 @@ android {
 dependencies {
     implementation(project(mapOf("path" to ":login")))
     implementation(project(mapOf("path" to ":profile")))
+    implementation(project(mapOf("path" to ":router")))
+    implementation(project(mapOf("path" to ":uicomponents")))
+
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)
@@ -68,8 +71,6 @@ dependencies {
     implementation(Kotlin.coroutinesCore)
     implementation(Kotlin.coroutinesAndroid)
     implementation(Kotlin.dateTime)
-
-    implementation(project(mapOf("path" to ":uicomponents")))
 
     testImplementation(UnitTest.junit)
     testImplementation(UnitTest.coroutines)
