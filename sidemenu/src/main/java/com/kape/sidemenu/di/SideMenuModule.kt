@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 fun sideMenuModule(versionCode: Int, versionName: String) = module {
     viewModel {
-        SideMenuViewModel(get(), versionCode, versionName)
+        SideMenuViewModel(get(), get(), versionCode, versionName)
     }
 }

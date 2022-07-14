@@ -140,7 +140,7 @@ private fun DrawerContent() {
                 resIcon = R.drawable.ic_drawer_logout,
                 resTitle = R.string.drawer_item_title_logout,
                 onClick = {
-                    // TODO: "action: logout user & relaunch screen navigation" 
+                    viewModel.logout()
                 }
             )
 
@@ -313,9 +313,12 @@ private fun SubscriptionExpiryView(
 ) {
     val title: String = when (daysRemaining) {
         1 -> stringResource(R.string.drawer_item_title_subscription_expires_format).format(stringResource(R.string.duration_one_day))
-        in 2..30 -> stringResource(R.string.drawer_item_title_subscription_expires_format).format(stringResource(R.string.duration_x_days).format(
-            Locale.ENGLISH,
-            daysRemaining))
+        in 2..30 -> stringResource(R.string.drawer_item_title_subscription_expires_format).format(
+            stringResource(R.string.duration_x_days).format(
+                Locale.ENGLISH,
+                daysRemaining
+            )
+        )
         else -> ""
     }
 
