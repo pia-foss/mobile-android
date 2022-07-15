@@ -54,4 +54,8 @@ class SideMenuViewModel(
     fun navigateToRegionSelection() {
         router.handleFlow(EnterFlow.RegionSelection)
     }
+
+    fun navigateToProfile() {
+        router.handleFlow(EnterFlow.Profile)
+    }
 }

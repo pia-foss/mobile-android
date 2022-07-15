@@ -111,7 +111,10 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resIcon = R.drawable.ic_drawer_account,
                 resTitle = R.string.drawer_item_title_account,
                 onClick = {
-                    // TODO: "action: open 'account info' screen"
+                    viewModel.navigateToProfile()
+                    scope.launch {
+                        drawerState.close()
+                    }
                 }
             )
 

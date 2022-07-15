@@ -6,10 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.kape.connection.ui.ConnectionScreen
 import com.kape.login.ui.LoginScreen
 import com.kape.login.ui.LoginWithEmailScreen
+import com.kape.profile.ui.ProfileScreen
 import com.kape.region_selection.ui.RegionSelectionScreen
 import com.kape.router.*
 import com.kape.splash.ui.SplashScreen
@@ -61,22 +59,10 @@ class MainActivity : ComponentActivity() {
                         composable(Splash.Main) { SplashScreen() }
                         composable(Connection.Main) { ConnectionScreen() }
                         composable(RegionSelection.Main) { RegionSelectionScreen() }
+                        composable(Profile.Main) { ProfileScreen() }
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    PIATheme {
-        Greeting("Android")
     }
 }

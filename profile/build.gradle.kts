@@ -48,6 +48,10 @@ android {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":account")))
+    implementation(project(mapOf("path" to ":core")))
+    implementation(project(mapOf("path" to ":uicomponents")))
+    implementation(project(mapOf("path" to ":router")))
 
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
@@ -66,10 +70,6 @@ dependencies {
     implementation(Kotlin.serializationCore)
     implementation(Kotlin.serializationJson)
     implementation(Kotlin.dateTime)
-
-    implementation(project(mapOf("path" to ":account")))
-    implementation(project(mapOf("path" to ":core")))
-    implementation(project(mapOf("path" to ":uicomponents")))
 
     testImplementation(UnitTest.junit)
     testImplementation(UnitTest.coroutines)

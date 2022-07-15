@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProfileDatasource {
 
-    fun accountDetails(): Flow<Profile>
+    fun accountDetails(): Flow<Profile?>
 }

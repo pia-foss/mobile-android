@@ -1,25 +1,18 @@
 package com.kape.profile.ui
 
-import com.kape.profile.R
-import com.kape.uicomponents.components.UiText
-
 data class ProfileScreenState(
     val loading: Boolean,
-    val username: UiText? = null,
-    val expirationMessage: UiText? = null,
-    val expirationDate: UiText? = null,
-    val errorMessage: UiText? = null
+    val username: String,
+    val expirationDate: String,
+    val expired: Boolean
 )
 
-val IDLE = ProfileScreenState(loading = false)
-val LOADING = ProfileScreenState(loading = true)
-val NO_PROFILE = ProfileScreenState(
+val IDLE = ProfileScreenState(loading = false, username = "", expirationDate = "", expired = false)
+val LOADING = ProfileScreenState(loading = true, username = "", expirationDate = "", expired = false)
+
+fun createSuccessState(username: String, expirationDate: String, expired: Boolean) = ProfileScreenState(
     loading = false,
-    errorMessage = UiText.StringResource(R.string.error_no_profile)
-)
-
-fun createSuccessState(expirationMessage: UiText?, expirationDate: UiText?) = ProfileScreenState(
-    expirationMessage = expirationMessage,
+    username = username,
     expirationDate = expirationDate,
-    loading = false
+    expired = expired
 )

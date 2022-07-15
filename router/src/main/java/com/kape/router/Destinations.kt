@@ -22,3 +22,7 @@ object Connection {
 object RegionSelection {
     const val Main = "region-selection-screen"
 }
+
+object Profile {
+    const val Main = "profile-screen"
+}

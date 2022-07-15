@@ -16,6 +16,6 @@ data class Subscription(
     }
 
     companion object {
-        val DATE_FORMAT = SimpleDateFormat("MM dd, yyyy")
+        val DATE_FORMAT = SimpleDateFormat("MMM dd, yyyy")
     }
 }

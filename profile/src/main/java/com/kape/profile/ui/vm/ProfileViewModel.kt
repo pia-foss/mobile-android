@@ -2,16 +2,23 @@ package com.kape.profile.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.profile.R
 import com.kape.profile.domain.GetProfileUseCase
 import com.kape.profile.models.Profile
-import com.kape.profile.ui.*
-import com.kape.uicomponents.components.UiText
+import com.kape.profile.ui.IDLE
+import com.kape.profile.ui.LOADING
+import com.kape.profile.ui.ProfileScreenState
+import com.kape.profile.ui.createSuccessState
+import com.kape.router.Back
+import com.kape.router.Router
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-class ProfileViewModel(private val useCase: GetProfileUseCase) : ViewModel() {
+class ProfileViewModel(private val useCase: GetProfileUseCase) : ViewModel(), KoinComponent {
+
+    private val router: Router by inject()
     private val _state = MutableStateFlow(IDLE)
     val screenState: StateFlow<ProfileScreenState> = _state
 
@@ -19,27 +26,22 @@ class ProfileViewModel(private val useCase: GetProfileUseCase) : ViewModel() {
         loadProfile()
     }
 
-    fun loadProfile() = viewModelScope.launch {
+    fun navigateBack() {
+        router.handleFlow(Back)
+    }
+
+    private fun loadProfile() = viewModelScope.launch {
         _state.emit(LOADING)
         useCase.getProfile().collect { profile ->
-            _state.emit(getState(profile))
+            if (profile == null) {
+                _state.emit(IDLE)
+            } else {
+                _state.emit(getState(profile))
+            }
         }
     }
 
-    private fun getState(profile: Profile?): ProfileScreenState {
-        return if (profile != null) {
-            val expirationMessage: UiText
-            val expirationDate: UiText
-            if (profile.subscription.isExpired) {
-                expirationMessage = UiText.StringResource(R.string.message_expiration)
-                expirationDate = UiText.DynamicString(profile.subscription.expirationDate)
-            } else {
-                expirationMessage = UiText.StringResource(R.string.message_expired)
-                expirationDate = UiText.StringResource(R.string.subscription_status_expired)
-            }
-            createSuccessState(expirationMessage, expirationDate)
-        } else {
-            NO_PROFILE
-        }
+    private fun getState(profile: Profile): ProfileScreenState {
+        return createSuccessState(profile.username, profile.subscription.expirationDate, profile.subscription.isExpired)
     }
 }
