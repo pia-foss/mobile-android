@@ -14,13 +14,13 @@ import org.koin.core.component.inject
 class ProfileDatasourceImpl : ProfileDatasource, KoinComponent {
     private val api: AndroidAccountAPI by inject()
 
-    override fun accountDetails(): Flow<Profile> = callbackFlow {
+    override fun accountDetails(): Flow<Profile?> = callbackFlow {
         api.accountDetails { details, errorList ->
             if (details != null) {
                 val subscription = Subscription(details.expired, details.daysRemaining, details.expireAlert)
                 trySend(Profile(details.username, subscription))
             } else {
-                error(errorList)
+                trySend(null)
             }
         }
         awaitClose { channel.close() }

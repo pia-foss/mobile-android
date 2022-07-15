@@ -23,6 +23,7 @@ class Router {
             EnterFlow.Splash -> _navigation.value = Splash.Main
             EnterFlow.Connection -> _navigation.value = Connection.Main
             EnterFlow.RegionSelection -> _navigation.value = RegionSelection.Main
+            EnterFlow.Profile -> _navigation.value = Profile.Main
         }
     }
 
@@ -36,6 +37,7 @@ class Router {
             ExitFlow.Splash -> handleEnterFlow(EnterFlow.Login)
             ExitFlow.Connection -> TODO()
             ExitFlow.RegionSelection -> TODO()
+            ExitFlow.Profile -> TODO()
         }
     }
 
