@@ -8,8 +8,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import com.kape.region_selection.R
 import com.kape.region_selection.server.Server
 import com.kape.uicomponents.theme.*
+import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import java.util.*
 
 @Composable
@@ -82,7 +81,7 @@ fun ServerListItem(
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
-            text = if (server.latency != null) {
+            text = if (server.latency != null && server.latency!!.toInt() < REGIONS_PING_TIMEOUT) {
                 stringResource(id = R.string.latency_to_format).format(server.latency)
             } else {
                 ""
