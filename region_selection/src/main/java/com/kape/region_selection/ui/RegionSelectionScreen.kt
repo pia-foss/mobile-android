@@ -98,29 +98,32 @@ fun RegionSelectionScreen() {
 
 @Composable
 fun SortingOptions(viewModel: RegionSelectionViewModel) {
+    val sortBySelectedOption: MutableState<RegionSelectionViewModel.SortByOption> = remember {
+        viewModel.sortBySelectedOption
+    }
     AlertDialog(onDismissRequest = {
         viewModel.hideSortingOptions()
     }, title = {
         Text(text = stringResource(id = R.string.sort_regions_title), fontSize = FontSize.Title)
     }, text = {
-        val selectedValue = remember { mutableStateOf("") }
         Column(modifier = Modifier.fillMaxWidth()) {
-            stringArrayResource(id = R.array.sorting_options).forEach {
+            val options = stringArrayResource(id = R.array.sorting_options)
+            options.forEach {
                 Row(
                     verticalAlignment = CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                         .selectable(
-                            selected = (it == selectedValue.value),
+                            selected = (options.indexOf(it) == sortBySelectedOption.value.index),
                             onClick = {
-                                selectedValue.value = it
+                                sortBySelectedOption.value = viewModel.getSortingOption(options.indexOf(it))
                             },
                             role = Role.RadioButton
                         )
                         .padding(vertical = Space.MINI)
                 ) {
                     RadioButton(
-                        selected = (it == selectedValue.value),
+                        selected = (options.indexOf(it) == sortBySelectedOption.value.index),
                         onClick = null,
                         colors = RadioButtonDefaults.colors(selectedColor = DarkGreen20),
                         modifier = Modifier
@@ -136,7 +139,9 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
             }
         }
     }, confirmButton = {
-        TextButton(onClick = { /*TODO*/ }) {
+        TextButton(onClick = {
+            viewModel.sortBy(sortBySelectedOption.value)
+        }) {
             Text(text = stringResource(id = R.string.ok), fontSize = FontSize.Normal, color = DarkGreen20)
         }
     }, dismissButton = {
