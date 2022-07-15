@@ -12,6 +12,7 @@ class Router {
         when (flow) {
             is EnterFlow -> handleEnterFlow(flow)
             is ExitFlow -> handleExitFlow(flow)
+            is Back -> handleBack()
         }
     }
 
@@ -36,5 +37,9 @@ class Router {
             ExitFlow.Connection -> TODO()
             ExitFlow.RegionSelection -> TODO()
         }
+    }
+
+    private fun handleBack() {
+        _navigation.value = NavigateBack
     }
 }

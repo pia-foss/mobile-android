@@ -42,7 +42,9 @@ fun RegionSelectionScreen() {
         }
 
         Column {
-            AppBar(onClick = { /*TODO*/ },
+            AppBar(onClick = {
+                viewModel.navigateBack()
+            },
                 state = AppBarState(
                     stringResource(id = R.string.region_selection_title),
                     AppBarColors.Default,

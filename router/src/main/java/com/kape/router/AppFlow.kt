@@ -7,7 +7,7 @@ sealed class EnterFlow : AppFlow {
     object VpnPermission : EnterFlow()
     object Splash : EnterFlow()
     object Connection : EnterFlow()
-    object RegionSelection: EnterFlow()
+    object RegionSelection : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -15,5 +15,7 @@ sealed class ExitFlow : AppFlow {
     object VpnPermission : ExitFlow()
     object Splash : ExitFlow()
     object Connection : ExitFlow()
-    object RegionSelection: ExitFlow()
+    object RegionSelection : ExitFlow()
 }
+
+object Back : AppFlow
