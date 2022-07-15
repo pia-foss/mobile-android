@@ -60,7 +60,7 @@ fun SideMenuUiDrawer(
         drawerState = drawerState,
         drawerShape = DrawerShape(maxSizePx = with(LocalDensity.current) { Width.SIDE_MENU.toPx() }),
         drawerContent = {
-            DrawerContent()
+            DrawerContent(scope, drawerState)
         },
         content = {
             drawerScope.screenContent()
@@ -69,7 +69,7 @@ fun SideMenuUiDrawer(
 }
 
 @Composable
-private fun DrawerContent() {
+private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
     val viewModel: SideMenuViewModel by viewModel()
     val state by remember(viewModel) { viewModel.sideMenuState }.collectAsState()
 
@@ -100,7 +100,10 @@ private fun DrawerContent() {
                 resIcon = R.drawable.ic_drawer_region,
                 resTitle = R.string.drawer_item_title_region_selection,
                 onClick = {
-                    // TODO: "action: open 'region selection' screen"
+                    viewModel.navigateToRegionSelection()
+                    scope.launch {
+                        drawerState.close()
+                    }
                 }
             )
 

@@ -10,17 +10,22 @@ import com.kape.region_selection.domain.GetRegionsUseCase
 import com.kape.region_selection.domain.UpdateLatencyUseCase
 import com.kape.region_selection.server.Server
 import com.kape.region_selection.utils.*
+import com.kape.router.Back
+import com.kape.router.Router
 import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class RegionSelectionViewModel(
     private val getRegionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
     private val prefs: RegionPrefs
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
 
+    private val router: Router by inject()
     private val _state = MutableStateFlow(IDLE)
     val state: StateFlow<RegionSelectionScreenState> = _state
     private var regions = mutableListOf<Server>()
@@ -122,6 +127,10 @@ class RegionSelectionViewModel(
             SortByOption.FAVORITE.index -> SortByOption.FAVORITE
             else -> throw Exception("Sorting option not defined")
         }
+    }
+
+    fun navigateBack() {
+        router.handleFlow(Back)
     }
 
     sealed class SortByOption(val index: Int) {

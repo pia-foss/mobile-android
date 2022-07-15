@@ -38,10 +38,14 @@ class MainActivity : ComponentActivity() {
             lifecycleScope.launchWhenCreated {
                 router.navigation.collect {
                     if (it.isNotBlank()) {
-                        navController.navigate(it) {
-                            launchSingleTop = true
-                            if (it in destinationsForClearBackStack) {
-                                navController.popBackStack()
+                        if (it == NavigateBack) {
+                            navController.navigateUp()
+                        } else {
+                            navController.navigate(it) {
+                                launchSingleTop = true
+                                if (it in destinationsForClearBackStack) {
+                                    navController.popBackStack()
+                                }
                             }
                         }
                     }
