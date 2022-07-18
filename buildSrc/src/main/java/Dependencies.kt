@@ -48,6 +48,11 @@ object Kotlin {
     const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0"
 }
 
+object Payments {
+    const val amazon = "com.amazon.device:amazon-appstore-sdk:3.0.3"
+    const val google = "com.android.billingclient:billing-ktx:5.0.0"
+}
+
 object UnitTest {
     const val junit = "junit:junit:4.13.2"
     const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
