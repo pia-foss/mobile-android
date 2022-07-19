@@ -25,6 +25,19 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+            applicationId = "com.privateinternetaccess.android"
+        }
+        create("google") {
+            dimension = "provider"
+            applicationId = "com.privateinternetaccess.android"
+        }
+    }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -48,6 +61,19 @@ android {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":connection")))
+    implementation(project(mapOf("path" to ":login")))
+    implementation(project(mapOf("path" to ":account")))
+    implementation(project(mapOf("path" to ":profile")))
+    implementation(project(mapOf("path" to ":region_selection")))
+    implementation(project(mapOf("path" to ":vpn_permissions")))
+    implementation(project(mapOf("path" to ":sidemenu")))
+    implementation(project(mapOf("path" to ":regions")))
+    implementation(project(mapOf("path" to ":uicomponents")))
+    implementation(project(mapOf("path" to ":router")))
+    implementation(project(mapOf("path" to ":splash")))
+    implementation(project(mapOf("path" to ":payments")))
+
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)
@@ -65,17 +91,8 @@ dependencies {
     implementation(Android.multiplatformSettings)
     implementation(Android.crypto)
 
-    implementation(project(mapOf("path" to ":connection")))
-    implementation(project(mapOf("path" to ":login")))
-    implementation(project(mapOf("path" to ":account")))
-    implementation(project(mapOf("path" to ":profile")))
-    implementation(project(mapOf("path" to ":region_selection")))
-    implementation(project(mapOf("path" to ":vpn_permissions")))
-    implementation(project(mapOf("path" to ":sidemenu")))
-    implementation(project(mapOf("path" to ":regions")))
-    implementation(project(mapOf("path" to ":uicomponents")))
-    implementation(project(mapOf("path" to ":router")))
-    implementation(project(mapOf("path" to ":splash")))
+    "amazonImplementation"(Payments.amazon)
+    "googleImplementation"(Payments.google)
 
     testImplementation(UnitTest.junit)
     androidTestImplementation(AndroidTest.jUnit)

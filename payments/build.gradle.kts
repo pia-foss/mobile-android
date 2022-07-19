@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("kotlinx-serialization")
     id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
@@ -61,6 +62,8 @@ android {
 
 dependencies {
 
+    implementation(project(mapOf("path" to ":account")))
+    implementation(project(mapOf("path" to ":core")))
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)
@@ -87,7 +90,13 @@ dependencies {
     "amazonImplementation"(Payments.amazon)
     "googleImplementation"(Payments.google)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    testImplementation(UnitTest.junit)
+    testImplementation(UnitTest.coroutines)
+    testImplementation(UnitTest.turbine)
+    testImplementation(UnitTest.koinTest)
+    testImplementation(UnitTest.koinTestJunit5)
+    testImplementation(UnitTest.jUnit5Api)
+    testRuntimeOnly(UnitTest.jUnit5Engine)
+    testImplementation(UnitTest.jUnit5Params)
+    testImplementation(UnitTest.mockk)
 }

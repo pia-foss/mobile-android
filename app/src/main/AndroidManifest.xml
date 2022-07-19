@@ -18,6 +18,15 @@
             android:authorities="com.privateinternetaccess.account.AccountContentProvider"
             android:exported="false" />
 
+        <receiver
+            android:name="com.amazon.device.iap.ResponseReceiver"
+            android:exported="false"
+            android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY">
+            <intent-filter>
+                <action android:name="com.amazon.inapp.purchasing.NOTIFY" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name="com.kape.vpn.MainActivity"
             android:exported="true"

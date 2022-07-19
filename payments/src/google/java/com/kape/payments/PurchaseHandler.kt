@@ -1,8 +1,9 @@
 package com.kape.payments
 
 import android.content.Context
+import com.kape.payments.utils.SubscriptionPrefs
 
-class PurchaseHandler : PurchaseUtil {
+class PurchaseHandler(private val prefs: SubscriptionPrefs) : PurchaseUtil {
 
     override fun init(context: Context) {
         TODO("Not yet implemented")
@@ -16,7 +17,7 @@ class PurchaseHandler : PurchaseUtil {
         TODO("Not yet implemented")
     }
 
-    override fun selectProduct() {
+    override fun selectProduct(isYearly: Boolean) {
         TODO("Not yet implemented")
     }
 

@@ -1,6 +1,9 @@
-package com.kape.payments
+package com.kape.payments.utils
 
 import android.content.Context
+
+const val monthlyPlan = "MONTHLY"
+const val yearlyPlan = "YEARLY"
 
 interface PurchaseUtil {
 
@@ -10,7 +13,7 @@ interface PurchaseUtil {
 
     fun purchaseSelectedProduct()
 
-    fun selectProduct()
+    fun selectProduct(isYearly: Boolean)
 
     fun getSelectedProductId(): String?
 
