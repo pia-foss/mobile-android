@@ -4,10 +4,17 @@ import android.content.Context
 import com.kape.login.BuildConfig
 import com.kape.router.Router
 import com.kape.vpn.provider.AccountModuleStateProvider
+import com.kape.vpn.provider.KPI_PREFS_NAME
+import com.kape.vpn.provider.KpiModuleStateProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
+import com.privateinternetaccess.kpi.KPIAPI
+import com.privateinternetaccess.kpi.KPIBuilder
+import com.privateinternetaccess.kpi.KPIRequestFormat
+import com.privateinternetaccess.kpi.KPISendEventsMode
+import com.privateinternetaccess.kpi.internals.utils.KTimeUnit
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.RegionsBuilder
 import org.koin.dsl.module
@@ -17,8 +24,10 @@ val appModule = module {
     single { provideCertificate(get()) }
     single { AccountModuleStateProvider(get()) }
     single { RegionsModuleStateProvider(get()) }
+    single { KpiModuleStateProvider(get(), get()) }
     single { provideAndroidAccountApi(get()) }
     single { provideRegionsApi(get()) }
+    single { provideKpiApi(get()) }
     single { Router() }
 }
 
@@ -35,6 +44,18 @@ private fun provideRegionsApi(provider: RegionsModuleStateProvider): RegionsAPI 
     return RegionsBuilder().setEndpointProvider(provider)
         .setCertificate(provider.certificate)
         .setUserAgent(provideUserAgent())
+        .build()
+}
+
+private fun provideKpiApi(provider: KpiModuleStateProvider): KPIAPI {
+    return KPIBuilder().setKPIClientStateProvider(provider)
+        .setKPIFlushEventMode(KPISendEventsMode.PER_BATCH)
+        .setEventTimeRoundGranularity(KTimeUnit.HOURS)
+        .setEventTimeSendGranularity(KTimeUnit.MILLISECONDS)
+        .setRequestFormat(KPIRequestFormat.KAPE)
+        .setPreferenceName(KPI_PREFS_NAME)
+        .setUserAgent(provideUserAgent())
+        .setCertificate(provider.certificate)
         .build()
 }
 
