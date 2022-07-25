@@ -2,6 +2,7 @@ package com.kape.vpn
 
 import android.app.Application
 import com.kape.login.di.loginModule
+import com.kape.payments.di.paymentsModule
 import com.kape.profile.di.profileModule
 import com.kape.region_selection.di.regionModule
 import com.kape.sidemenu.di.sideMenuModule
@@ -26,6 +27,7 @@ class App : Application() {
             add(sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
             add(profileModule)
             add(regionModule)
+            add(paymentsModule)
         })
     }
 }

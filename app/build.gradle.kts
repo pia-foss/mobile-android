@@ -38,6 +38,15 @@ android {
         }
     }
 
+    sourceSets {
+        getByName("amazon") {
+            manifest.srcFile("amazon/AndroidManifest.xml")
+        }
+        getByName("google") {
+            manifest.srcFile("google/AndroidManifest.xml")
+        }
+    }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
