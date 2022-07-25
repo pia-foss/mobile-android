@@ -83,6 +83,7 @@ dependencies {
     implementation(project(mapOf("path" to ":splash")))
     implementation(project(mapOf("path" to ":payments")))
     implementation(project(mapOf("path" to ":signup")))
+    implementation(project(mapOf("path" to ":kpi")))
 
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
