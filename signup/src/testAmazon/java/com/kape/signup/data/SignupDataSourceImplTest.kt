@@ -1,4 +1,4 @@
-package com.kape.signup
+package com.kape.signup.data
 
 import app.cash.turbine.test
 import com.kape.signup.di.signupModule
@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
+import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class SignupDataSourceImplTest {
@@ -39,24 +40,24 @@ internal class SignupDataSourceImplTest {
     fun `signup success`() = runTest {
         val expected = Credentials("ok", "username", "password")
         val signupInfo = SignUpInformation(expected.status, expected.username, expected.password)
-        coEvery { api.signUp(any(), any()) } answers {
+        coEvery { api.amazonSignUp(any(), any()) } answers {
             lastArg<(SignUpInformation?, List<Error>) -> Unit>().invoke(signupInfo, emptyList())
         }
-        source.signup("orderId", "token", "productId").test {
+        source.signup("userId", "receiptId").test {
             val actual = awaitItem()
-            kotlin.test.assertEquals(expected, actual)
+            assertEquals(expected, actual)
         }
     }
 
     @Test
     fun `signup fails`() = runTest {
         val expected = null
-        coEvery { api.signUp(any(), any()) } answers {
+        coEvery { api.amazonSignUp(any(), any()) } answers {
             lastArg<(SignUpInformation?, List<Error>) -> Unit>().invoke(expected, listOf(Error()))
         }
-        source.signup("orderId", "token", "productId").test {
+        source.signup("userId", "receiptId").test {
             val actual = awaitItem()
-            kotlin.test.assertEquals(expected, actual)
+            assertEquals(expected, actual)
         }
     }
 }
