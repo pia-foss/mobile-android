@@ -19,10 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.kape.signup.R
 import com.kape.signup.ui.vm.SubscribeViewModel
 import com.kape.signup.utils.Plan
-import com.kape.uicomponents.components.ButtonProperties
-import com.kape.uicomponents.components.PrimaryButton
-import com.kape.uicomponents.components.SecondaryButton
-import com.kape.uicomponents.components.UiResources
+import com.kape.uicomponents.components.*
 import com.kape.uicomponents.theme.*
 import org.koin.androidx.compose.viewModel
 
@@ -88,11 +85,9 @@ fun SubscriptionScreen() {
                 PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = subscribeProperties)
                 SecondaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = loginProperties)
                 Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = stringResource(id = R.string.footer), fontSize = FontSize.Normal, color = Grey55, modifier = Modifier
-                        .padding(Space.NORMAL)
-                        .align(CenterHorizontally)
-                )
+                HtmlText(textId = R.string.footer, modifier = Modifier
+                    .padding(Space.NORMAL)
+                    .align(CenterHorizontally))
             }
         }
     }

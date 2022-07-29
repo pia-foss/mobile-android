@@ -9,7 +9,7 @@
     <string name="best_value">BEST VALUE - FREE TRIAL</string>
     <string name="subscribe_now">Subscribe now</string>
     <string name="login">Login</string>
-    <string name="footer"><a href="privacy:">Privacy Policy</a> and <a href="terms:">Terms of Service</a></string>
+    <string name="footer"><a href="web-screen-privacy">Privacy Policy</a> and <a href="web-screen-terms">Terms of Service</a></string>
     <string name="monthly_ending">%1$s/mo</string>
     <string name="yearly_month_ending">%2$s%1$s/mo</string>
     <string name="yearly_ending">%1$s per year</string>
