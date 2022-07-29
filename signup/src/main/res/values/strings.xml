@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="logo">Logo</string>
+    <string name="background">background</string>
+    <string name="checkbox">Checkbox</string>
+
+    <string name="screen_title">Connect to any region easily</string>
+    <string name="screen_description">With servers around the globe, you are always under protection. Start your 7 days free trial then %s .</string>
+    <string name="best_value">BEST VALUE - FREE TRIAL</string>
+    <string name="subscribe_now">Subscribe now</string>
+    <string name="login">Login</string>
+    <string name="footer"><a href="privacy:">Privacy Policy</a> and <a href="terms:">Terms of Service</a></string>
+    <string name="monthly_ending">%1$s/mo</string>
+    <string name="yearly_month_ending">%2$s%1$s/mo</string>
+    <string name="yearly_ending">%1$s per year</string>
+
+</resources>

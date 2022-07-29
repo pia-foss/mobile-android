@@ -24,6 +24,7 @@ class Router {
             EnterFlow.Connection -> _navigation.value = Connection.Main
             EnterFlow.RegionSelection -> _navigation.value = RegionSelection.Main
             EnterFlow.Profile -> _navigation.value = Profile.Main
+            EnterFlow.Subscribe -> _navigation.value = Subscribe.Main
         }
     }
 
@@ -34,10 +35,11 @@ class Router {
                 // TODO: this flow will change to analytics consent once implemented
                 handleEnterFlow(EnterFlow.Connection)
             }
-            ExitFlow.Splash -> handleEnterFlow(EnterFlow.Login)
+            ExitFlow.Splash -> handleEnterFlow(EnterFlow.Subscribe)
             ExitFlow.Connection -> TODO()
             ExitFlow.RegionSelection -> TODO()
             ExitFlow.Profile -> TODO()
+            ExitFlow.Subscribe -> TODO()
         }
     }
 

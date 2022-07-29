@@ -22,7 +22,7 @@ class SubscriptionDataSourceImpl(private val prefs: SubscriptionPrefs) : Subscri
             }
             val data = mutableListOf<Subscription>()
             for (item in details.availableProducts) {
-                data.add(Subscription(item.id, item.legacy, item.plan, item.price))
+                data.add(Subscription(item.id, item.legacy, item.plan, item.price, null))
             }
             prefs.storeSubscriptions(data)
             trySend(prefs.getSubscriptions())

@@ -17,6 +17,7 @@ import com.kape.login.ui.LoginWithEmailScreen
 import com.kape.profile.ui.ProfileScreen
 import com.kape.region_selection.ui.RegionSelectionScreen
 import com.kape.router.*
+import com.kape.signup.ui.SubscriptionScreen
 import com.kape.splash.ui.SplashScreen
 import com.kape.uicomponents.theme.PIATheme
 import com.kape.vpn_permissions.ui.VpnSystemProfileScreen
@@ -60,6 +61,7 @@ class MainActivity : ComponentActivity() {
                         composable(Connection.Main) { ConnectionScreen() }
                         composable(RegionSelection.Main) { RegionSelectionScreen() }
                         composable(Profile.Main) { ProfileScreen() }
+                        composable(Subscribe.Main) { SubscriptionScreen() }
                     }
                 }
             }

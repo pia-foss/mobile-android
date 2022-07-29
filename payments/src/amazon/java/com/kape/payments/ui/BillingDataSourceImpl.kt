@@ -2,29 +2,32 @@ package com.kape.payments.ui
 
 import android.app.Activity
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import com.amazon.device.drm.LicensingService
 import com.amazon.device.iap.PurchasingListener
 import com.amazon.device.iap.PurchasingService
 import com.amazon.device.iap.model.*
 import com.kape.payments.domain.BillingDataSource
 import com.kape.payments.models.PurchaseData
+import com.kape.payments.models.Subscription
 import com.kape.payments.utils.PurchaseState
 import com.kape.payments.utils.SubscriptionPrefs
+import com.kape.payments.utils.monthlySubscription
+import com.kape.payments.utils.yearlySubscription
+import kotlinx.coroutines.flow.MutableStateFlow
 
-private const val monthlySubscription = "MONTHLY"
-private const val yearlySubscription = "YEARLY"
-private const val monthlySubscriptionPeriod = "Monthly"
-private const val yearlySubscriptionPeriod = "Annually"
+private const val M1 = "PIA-M1"
+private const val Y1 = "PIA-Y1"
 
 class BillingDataSourceImpl(context: Context, private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
     BillingDataSource {
 
-    private val products = hashSetOf(monthlySubscription, yearlySubscription, "PIA-M1", "PIA-Y1")
+    private val products = hashSetOf(monthlySubscription, yearlySubscription, M1, Y1)
     private var selectedProduct: Product? = null
 
     var availableProducts = mutableListOf<Product>()
-    val purchaseState = mutableStateOf<PurchaseState>(PurchaseState.Default)
+    override val purchaseState: MutableStateFlow<PurchaseState> = MutableStateFlow(PurchaseState.Default)
+    override fun getMonthlySubscription(): Subscription = prefs.getSubscriptions().first { plan -> plan.id == M1 }
+    override fun getYearlySubscription(): Subscription = prefs.getSubscriptions().first() { plan -> plan.id == Y1 }
 
     init {
         LicensingService.verifyLicense(context) {
@@ -44,6 +47,10 @@ class BillingDataSourceImpl(context: Context, private val prefs: SubscriptionPre
                         availableProducts.clear()
                         availableProducts.add(perMonth)
                         availableProducts.add(perYear)
+
+                        getYearlySubscription().formattedPrice = perYear.price
+                        getMonthlySubscription().formattedPrice = perMonth.price
+                        prefs.storeSubscriptions(listOf(getYearlySubscription(), getMonthlySubscription()))
                         purchaseState.value = PurchaseState.ProductsLoadedSuccess
                     } else {
                         purchaseState.value = PurchaseState.ProductsLoadedFailed
@@ -69,12 +76,12 @@ class BillingDataSourceImpl(context: Context, private val prefs: SubscriptionPre
         PurchasingService.getProductData(products)
     }
 
-    override fun purchaseSelectedProduct(periodOrId: String) {
-        selectedProduct = availableProducts.filter { it.subscriptionPeriod == periodOrId }[0]
+    override fun purchaseSelectedProduct(id: String) {
+        selectedProduct = availableProducts.first { it.sku == id }
         selectedProduct?.let {
-            when (it.subscriptionPeriod) {
-                monthlySubscriptionPeriod -> PurchasingService.purchase(monthlySubscription)
-                yearlySubscriptionPeriod -> PurchasingService.purchase(yearlySubscription)
+            when (it.sku) {
+                monthlySubscription -> PurchasingService.purchase(monthlySubscription)
+                yearlySubscription -> PurchasingService.purchase(yearlySubscription)
                 else -> {
                     // do nothing
                 }
