@@ -49,7 +49,7 @@ object Kotlin {
 }
 
 object Payments {
-    const val amazon = "com.amazon.device:amazon-appstore-sdk:3.0.3"
+    const val amazon = "com.amazon.device:amazon-appstore-sdk:3.0.2"
     const val google = "com.android.billingclient:billing-ktx:5.0.0"
 }
 

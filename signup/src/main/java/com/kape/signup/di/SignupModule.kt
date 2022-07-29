@@ -6,6 +6,9 @@ import com.kape.signup.domain.EmailDataSource
 import com.kape.signup.domain.SetEmailUseCase
 import com.kape.signup.domain.SignupDataSource
 import com.kape.signup.domain.SignupUseCase
+import com.kape.signup.ui.vm.SubscribeViewModel
+import com.kape.signup.utils.PriceFormatter
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val signupModule = module {
@@ -13,4 +16,6 @@ val signupModule = module {
     single<EmailDataSource> { EmailDataSourceImpl() }
     single { SignupUseCase(get(), get()) }
     single { SetEmailUseCase(get()) }
+    single { PriceFormatter(get()) }
+    viewModel { SubscribeViewModel(get(), get()) }
 }

@@ -6,6 +6,8 @@ import com.kape.payments.di.paymentsModule
 import com.kape.profile.di.profileModule
 import com.kape.region_selection.di.regionModule
 import com.kape.sidemenu.di.sideMenuModule
+import com.kape.signup.di.signupModule
+import com.kape.splash.di.splashModule
 import com.kape.vpn.di.appModule
 import com.kape.vpn_permissions.di.permissionModule
 import org.koin.android.ext.koin.androidContext
@@ -28,6 +30,8 @@ class App : Application() {
             add(profileModule)
             add(regionModule)
             add(paymentsModule)
+            add(splashModule)
+            add(signupModule)
         })
     }
 }

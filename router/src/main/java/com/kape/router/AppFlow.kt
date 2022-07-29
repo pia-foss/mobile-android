@@ -9,6 +9,7 @@ sealed class EnterFlow : AppFlow {
     object Connection : EnterFlow()
     object RegionSelection : EnterFlow()
     object Profile : EnterFlow()
+    object Subscribe : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -18,6 +19,7 @@ sealed class ExitFlow : AppFlow {
     object Connection : ExitFlow()
     object RegionSelection : ExitFlow()
     object Profile : ExitFlow()
+    object Subscribe : ExitFlow()
 }
 
 object Back : AppFlow

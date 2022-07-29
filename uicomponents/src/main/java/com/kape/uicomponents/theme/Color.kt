@@ -14,6 +14,7 @@ val Transparent = Color(0xFF000000)
 val DarkGreen50 = Color(0xFF037900)
 val DarkGreen20 = Color(0xFF4CB647)
 val ErrorRed = Color(0xFFF5515F)
+val ConnectingOrange = Color(0xFFFFA500)
 
 val DisconnectedStart = Color(0xFFF5515F)
 val DisconnectedEnd = Color(0xFFC82B3C)

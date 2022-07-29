@@ -27,6 +27,8 @@ object Height {
     val FLAG = 22.dp
     val SERVER_ICON = 18.dp
     val FAVOURITE = 20.dp
+    val BIG_LOGO = 80.dp
+    val PLAN = 112.dp
 }
 
 object Width {
@@ -41,6 +43,8 @@ object Square {
     val ICON = 24.dp
     val DEFAULT = 48.dp
     val EXPIRY_NOTICE = 36.dp
+    val GLOBE = 148.dp
+    val PLAN = 36.dp
 }
 
 object Corner {

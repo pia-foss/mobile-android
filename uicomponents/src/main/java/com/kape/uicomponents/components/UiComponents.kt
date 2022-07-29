@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.webkit.*
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -90,11 +91,28 @@ fun PrimaryButton(modifier: Modifier, properties: ButtonProperties) {
 }
 
 @Composable
+fun SecondaryButton(modifier: Modifier, properties: ButtonProperties) {
+    OutlinedButton(
+        onClick = properties.onClick, border = BorderStroke(1.dp, DarkGreen20), shape = ButtonBackground,
+        modifier = modifier
+            .semantics { contentDescription = properties.label }
+            .testTag(properties.label)
+            .height(Height.DEFAULT)
+            .fillMaxWidth(), enabled = properties.enabled
+    ) {
+        Text(text = properties.label, color = DarkGreen20)
+    }
+}
+
+@Composable
 fun NoNetworkBanner(noNetworkMessage: String) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .background(ErrorRed)) {
-        Text(text = noNetworkMessage,
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(ErrorRed)
+    ) {
+        Text(
+            text = noNetworkMessage,
             color = White,
             textAlign = TextAlign.Center, modifier = Modifier
                 .fillMaxWidth()
