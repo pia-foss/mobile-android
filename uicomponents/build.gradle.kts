@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+    implementation(project(mapOf("path" to ":router")))
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)
@@ -52,6 +53,11 @@ dependencies {
     implementation(Compose.material)
     implementation(Compose.activity)
     implementation(Compose.preview)
+
+    implementation(Koin.core)
+    implementation(Koin.android)
+    implementation(Koin.compose)
+
     debugImplementation(DebugTest.composeUI)
     debugImplementation(DebugTest.composeManifest)
 }

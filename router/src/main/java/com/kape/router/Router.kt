@@ -25,6 +25,8 @@ class Router {
             EnterFlow.RegionSelection -> _navigation.value = RegionSelection.Main
             EnterFlow.Profile -> _navigation.value = Profile.Main
             EnterFlow.Subscribe -> _navigation.value = Subscribe.Main
+            EnterFlow.PrivacyPolicy -> _navigation.value = WebContent.Privacy
+            EnterFlow.TermsOfService -> _navigation.value = WebContent.Terms
         }
     }
 

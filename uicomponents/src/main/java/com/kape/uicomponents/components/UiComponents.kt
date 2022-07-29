@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import android.view.ViewGroup
 import android.webkit.*
 import androidx.activity.compose.BackHandler
@@ -13,8 +12,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -237,22 +234,6 @@ fun WebViewScreen(
     var screenTitle: String by remember { mutableStateOf("") }
 
     Column {
-        TopAppBar(
-                modifier = Modifier.wrapContentHeight(),
-                title = {
-                    Text(
-                            text = screenTitle,
-                            maxLines = 1
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Filled.Menu, contentDescription = "")
-                    }
-                },
-                backgroundColor = MaterialTheme.colors.primaryVariant
-        )
-
         WebViewComponent(
                 properties = WebViewComponentProperties(
                         url = initialUrl,
@@ -260,7 +241,6 @@ fun WebViewScreen(
                         onPageTitle = { title ->
                             if (screenTitle != title) {
                                 screenTitle = title
-                                Log.i("WebViewScreenPrivacyPolicy", "screen title: '$title'")
                             }
                         },
                         javaScriptEnabled = true

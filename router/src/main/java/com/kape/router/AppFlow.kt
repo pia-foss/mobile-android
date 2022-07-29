@@ -10,6 +10,8 @@ sealed class EnterFlow : AppFlow {
     object RegionSelection : EnterFlow()
     object Profile : EnterFlow()
     object Subscribe : EnterFlow()
+    object TermsOfService : EnterFlow()
+    object PrivacyPolicy : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {

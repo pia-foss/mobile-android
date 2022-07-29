@@ -1,5 +1,6 @@
 package com.kape.vpn
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +20,7 @@ import com.kape.region_selection.ui.RegionSelectionScreen
 import com.kape.router.*
 import com.kape.signup.ui.SubscriptionScreen
 import com.kape.splash.ui.SplashScreen
+import com.kape.uicomponents.components.WebViewScreen
 import com.kape.uicomponents.theme.PIATheme
 import com.kape.vpn_permissions.ui.VpnSystemProfileScreen
 import org.koin.android.ext.android.inject
@@ -62,6 +64,8 @@ class MainActivity : ComponentActivity() {
                         composable(RegionSelection.Main) { RegionSelectionScreen() }
                         composable(Profile.Main) { ProfileScreen() }
                         composable(Subscribe.Main) { SubscriptionScreen() }
+                        composable(WebContent.Terms) { WebViewScreen(initialUrl = Uri.parse(getString(R.string.url_terms_of_service))) }
+                        composable(WebContent.Privacy) { WebViewScreen(initialUrl = Uri.parse(getString(R.string.url_privacy_policy))) }
                     }
                 }
             }
