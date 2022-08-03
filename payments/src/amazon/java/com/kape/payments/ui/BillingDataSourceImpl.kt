@@ -87,7 +87,9 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
         }
         selectedProduct = availableProducts.firstOrNull { it.sku == productId }
         selectedProduct?.let {
-            PurchasingService.purchase(id)
+            PurchasingService.purchase(productId)
+            // without this line Amazon's purchase dialog never shows
+            activity?.recreate()
         }
     }
 

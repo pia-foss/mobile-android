@@ -18,6 +18,7 @@ import com.kape.login.ui.LoginWithEmailScreen
 import com.kape.profile.ui.ProfileScreen
 import com.kape.region_selection.ui.RegionSelectionScreen
 import com.kape.router.*
+import com.kape.signup.ui.ConsentScreen
 import com.kape.signup.ui.SubscriptionScreen
 import com.kape.splash.ui.SplashScreen
 import com.kape.uicomponents.components.WebViewScreen
@@ -63,7 +64,8 @@ class MainActivity : ComponentActivity() {
                         composable(Connection.Main) { ConnectionScreen() }
                         composable(RegionSelection.Main) { RegionSelectionScreen() }
                         composable(Profile.Main) { ProfileScreen() }
-                        composable(Subscribe.Main) { SubscriptionScreen() }
+                        composable(Subscribe.Main) { SubscriptionScreen(navController = navController) }
+                        composable(Subscribe.Consent) { ConsentScreen(navController = navController) }
                         composable(WebContent.Terms) { WebViewScreen(initialUrl = Uri.parse(getString(R.string.url_terms_of_service))) }
                         composable(WebContent.Privacy) { WebViewScreen(initialUrl = Uri.parse(getString(R.string.url_privacy_policy))) }
                     }

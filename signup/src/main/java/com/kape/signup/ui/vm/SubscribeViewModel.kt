@@ -4,14 +4,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.payments.domain.BillingDataSource
-import com.kape.payments.ui.BillingDataSourceImpl
 import com.kape.payments.utils.PurchaseState
 import com.kape.router.EnterFlow
 import com.kape.router.Router
-import com.kape.signup.utils.Plan
-import com.kape.signup.utils.PriceFormatter
-import com.kape.signup.utils.SubscribeScreenState
-import com.kape.signup.utils.SubscriptionData
+import com.kape.router.Subscribe
+import com.kape.signup.utils.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -27,7 +24,7 @@ class SubscribeViewModel(
 
     private val router: Router by inject()
     private var data: SubscriptionData? = null
-    private val _state = MutableStateFlow(SubscribeScreenState(idle = true, loading = false))
+    private val _state = MutableStateFlow(IDLE)
     val state: StateFlow<SubscribeScreenState> = _state
 
     init {
@@ -64,17 +61,21 @@ class SubscribeViewModel(
                             mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice!!)
                         )
                         data = SubscriptionData(mutableStateOf(yearly), yearly, monthly)
-                        _state.emit(SubscribeScreenState(idle = true, loading = false, data))
+                        data?.let { subscriptionData ->
+                            _state.emit(loaded(subscriptionData))
+                        }
                     }
                     PurchaseState.PurchaseFailed -> {
                         // TODO: handle error
                     }
                     PurchaseState.PurchaseSuccess -> {
                         if (it == PurchaseState.PurchaseSuccess) {
-                            // TODO: navigate
+                            _state.emit(navigate(Subscribe.Consent))
                         } else if (it == PurchaseState.PurchaseFailed) {
                             // TODO: handle error?
-                            _state.emit(SubscribeScreenState(idle = false, loading = false, data))
+                            data?.let { subscriptionData ->
+                                _state.emit(loaded(subscriptionData))
+                            }
                         }
                     }
                 }
@@ -83,15 +84,13 @@ class SubscribeViewModel(
     }
 
     fun loadPrices() = viewModelScope.launch {
-        _state.emit(SubscribeScreenState(idle = false, loading = true))
+        _state.emit(LOADING)
         billingDataSource.loadProducts()
     }
 
     fun purchase(id: String) = viewModelScope.launch {
         _state.emit(SubscribeScreenState(idle = false, loading = true))
         billingDataSource.purchaseSelectedProduct(id)
-        // without this line Amazon's purchase dialog never shows
-        (billingDataSource as BillingDataSourceImpl).activity?.recreate()
     }
 
     fun navigateToLogin() {

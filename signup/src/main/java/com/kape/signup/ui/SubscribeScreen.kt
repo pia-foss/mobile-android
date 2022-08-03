@@ -18,15 +18,18 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.kape.signup.R
 import com.kape.signup.ui.vm.SubscribeViewModel
+import com.kape.signup.utils.IDLE
+import com.kape.signup.utils.LOADING
 import com.kape.signup.utils.Plan
 import com.kape.uicomponents.components.*
 import com.kape.uicomponents.theme.*
 import org.koin.androidx.compose.viewModel
 
 @Composable
-fun SubscriptionScreen() {
+fun SubscriptionScreen(navController: NavController) {
 
     val viewModel: SubscribeViewModel by viewModel()
     val state by remember(viewModel) { viewModel.state }.collectAsState()
@@ -47,60 +50,74 @@ fun SubscriptionScreen() {
         viewModel.loadPrices()
     }
 
-    if (state.loading) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = DarkGreen20)
-        }
-    } else {
-        state.data?.let {
+    when (state) {
+        IDLE -> {}
+        LOADING -> {
             Box(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .fillMaxSize()
-                ) {
-                    Image(
-                        painter = painterResource(id = UiResources.bigAppLogo),
-                        contentDescription = stringResource(id = R.string.logo),
-                        modifier = Modifier
-                            .height(Height.BIG_LOGO)
-                            .fillMaxWidth()
-                            .padding(Space.NORMAL)
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_globe),
-                        contentDescription = stringResource(id = R.string.logo),
-                        modifier = Modifier
-                            .padding(Space.NORMAL)
-                            .fillMaxWidth()
-                            .size(Square.GLOBE)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.screen_title),
-                        fontSize = FontSize.Title,
-                        modifier = Modifier
-                            .align(CenterHorizontally)
-                    )
-                    Text(
-                        text = stringResource(id = R.string.screen_description).format(it.yearly.mainPrice),
-                        fontSize = FontSize.Normal, modifier = Modifier
-                            .align(CenterHorizontally)
-                            .padding(horizontal = Space.BIG, vertical = Space.SMALL),
-                        textAlign = TextAlign.Center, color = Grey55
-                    )
-                    Spacer(modifier = Modifier.height(Space.NORMAL))
-                    PriceRow(state = it.yearly, it.selected.value == it.yearly, it.selected)
-                    Spacer(modifier = Modifier.height(Space.SMALL))
-                    PriceRow(state = it.monthly, it.selected.value == it.monthly, it.selected)
-                    Spacer(modifier = Modifier.height(Space.MEDIUM))
-                    PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = subscribeProperties)
-                    SecondaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = loginProperties)
-                    Spacer(modifier = Modifier.weight(1f))
-                    HtmlText(
-                        textId = R.string.footer, modifier = Modifier
-                            .padding(Space.NORMAL)
-                            .align(CenterHorizontally)
-                    )
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = DarkGreen20)
+            }
+        }
+        else -> {
+            if (state.destination != null) {
+                LaunchedEffect(key1 = Unit) {
+                    state.destination?.let {
+                        navController.navigate(it)
+                    }
+                }
+            }
+
+            if (state.data != null) {
+                state.data?.let {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(rememberScrollState())
+                                .fillMaxSize()
+                        ) {
+                            Image(
+                                painter = painterResource(id = UiResources.bigAppLogo),
+                                contentDescription = stringResource(id = R.string.logo),
+                                modifier = Modifier
+                                    .height(Height.BIG_LOGO)
+                                    .fillMaxWidth()
+                                    .padding(Space.NORMAL)
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_globe),
+                                contentDescription = stringResource(id = R.string.logo),
+                                modifier = Modifier
+                                    .padding(Space.NORMAL)
+                                    .fillMaxWidth()
+                                    .size(Square.GLOBE)
+                            )
+                            Text(
+                                text = stringResource(id = R.string.screen_title),
+                                fontSize = FontSize.Title,
+                                modifier = Modifier
+                                    .align(CenterHorizontally)
+                            )
+                            Text(
+                                text = stringResource(id = R.string.screen_description).format(it.yearly.mainPrice),
+                                fontSize = FontSize.Normal, modifier = Modifier
+                                    .align(CenterHorizontally)
+                                    .padding(horizontal = Space.BIG, vertical = Space.SMALL),
+                                textAlign = TextAlign.Center, color = Grey55
+                            )
+                            Spacer(modifier = Modifier.height(Space.NORMAL))
+                            PriceRow(state = it.yearly, it.selected.value == it.yearly, it.selected)
+                            Spacer(modifier = Modifier.height(Space.SMALL))
+                            PriceRow(state = it.monthly, it.selected.value == it.monthly, it.selected)
+                            Spacer(modifier = Modifier.height(Space.MEDIUM))
+                            PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = subscribeProperties)
+                            SecondaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = loginProperties)
+                            Spacer(modifier = Modifier.weight(1f))
+                            HtmlText(
+                                textId = R.string.footer, modifier = Modifier
+                                    .padding(Space.NORMAL)
+                                    .align(CenterHorizontally)
+                            )
+                        }
+                    }
                 }
             }
         }
