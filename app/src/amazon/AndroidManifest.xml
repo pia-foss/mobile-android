@@ -15,7 +15,7 @@
         <receiver
             tools:node="merge"
             android:name="com.amazon.device.iap.ResponseReceiver"
-            android:exported="false"
+            android:exported="true"
             android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY">
             <intent-filter>
                 <action android:name="com.amazon.inapp.purchasing.NOTIFY" />

@@ -9,6 +9,8 @@ interface BillingDataSource {
 
     val purchaseState: MutableStateFlow<PurchaseState>
 
+    fun register()
+
     fun getMonthlySubscription(): Subscription
 
     fun getYearlySubscription(): Subscription

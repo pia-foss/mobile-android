@@ -1,7 +1,6 @@
 package com.kape.payments.ui
 
 import android.app.Activity
-import android.content.Context
 import com.amazon.device.drm.LicensingService
 import com.amazon.device.iap.PurchasingListener
 import com.amazon.device.iap.PurchasingService
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 private const val M1 = "PIA-M1"
 private const val Y1 = "PIA-Y1"
 
-class BillingDataSourceImpl(context: Context, private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
+class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
     BillingDataSource {
 
     private val products = hashSetOf(monthlySubscription, yearlySubscription, M1, Y1)
@@ -26,14 +25,11 @@ class BillingDataSourceImpl(context: Context, private val prefs: SubscriptionPre
 
     var availableProducts = mutableListOf<Product>()
     override val purchaseState: MutableStateFlow<PurchaseState> = MutableStateFlow(PurchaseState.Default)
-    override fun getMonthlySubscription(): Subscription = prefs.getSubscriptions().first { plan -> plan.id == M1 }
-    override fun getYearlySubscription(): Subscription = prefs.getSubscriptions().first() { plan -> plan.id == Y1 }
-
-    init {
-        LicensingService.verifyLicense(context) {
+    override fun register() {
+        LicensingService.verifyLicense(activity) {
             // currently do nothing
         }
-        PurchasingService.registerListener(context, object : PurchasingListener {
+        PurchasingService.registerListener(activity, object : PurchasingListener {
             override fun onUserDataResponse(userData: UserDataResponse?) {
                 // currently do nothing
             }
@@ -48,9 +44,11 @@ class BillingDataSourceImpl(context: Context, private val prefs: SubscriptionPre
                         availableProducts.add(perMonth)
                         availableProducts.add(perYear)
 
-                        getYearlySubscription().formattedPrice = perYear.price
-                        getMonthlySubscription().formattedPrice = perMonth.price
-                        prefs.storeSubscriptions(listOf(getYearlySubscription(), getMonthlySubscription()))
+                        val yearly = getYearlySubscription()
+                        yearly.formattedPrice = perYear.price
+                        val monthly = getMonthlySubscription()
+                        monthly.formattedPrice = perMonth.price
+                        prefs.storeSubscriptions(listOf(yearly, monthly))
                         purchaseState.value = PurchaseState.ProductsLoadedSuccess
                     } else {
                         purchaseState.value = PurchaseState.ProductsLoadedFailed
@@ -72,20 +70,24 @@ class BillingDataSourceImpl(context: Context, private val prefs: SubscriptionPre
         })
     }
 
+    override fun getMonthlySubscription(): Subscription = prefs.getSubscriptions().first { plan -> plan.id == M1 }
+    override fun getYearlySubscription(): Subscription = prefs.getSubscriptions().first { plan -> plan.id == Y1 }
+
     override fun loadProducts() {
         PurchasingService.getProductData(products)
     }
 
     override fun purchaseSelectedProduct(id: String) {
-        selectedProduct = availableProducts.first { it.sku == id }
-        selectedProduct?.let {
-            when (it.sku) {
-                monthlySubscription -> PurchasingService.purchase(monthlySubscription)
-                yearlySubscription -> PurchasingService.purchase(yearlySubscription)
-                else -> {
-                    // do nothing
-                }
+        val productId = when (id) {
+            M1 -> monthlySubscription
+            Y1 -> yearlySubscription
+            else -> {
+                ""
             }
+        }
+        selectedProduct = availableProducts.firstOrNull { it.sku == productId }
+        selectedProduct?.let {
+            PurchasingService.purchase(id)
         }
     }
 

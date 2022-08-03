@@ -6,4 +6,4 @@ data class SubscribeScreenState(val idle: Boolean, val loading: Boolean, val dat
 
 data class SubscriptionData(val selected: MutableState<Plan>, val yearly: Plan, val monthly: Plan)
 
-data class Plan(val period: String, val bestValue: Boolean, val mainPrice: String, val secondaryPrice: String? = null)
+data class Plan(val id: String, val period: String, val bestValue: Boolean, val mainPrice: String, val secondaryPrice: String? = null)

@@ -12,5 +12,5 @@ val paymentsModule = module {
     single { SubscriptionPrefs(get()) }
     single<SubscriptionDataSource> { SubscriptionDataSourceImpl(get()) }
     single { GetSubscriptionsUseCase(get()) }
-    single<BillingDataSource> { BillingDataSourceImpl(get(), get()) }
+    single<BillingDataSource> { BillingDataSourceImpl(get()) }
 }
