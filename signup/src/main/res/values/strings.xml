@@ -33,4 +33,8 @@
     <string name="accept">Accept</string>
     <string name="no_thanks">No thanks</string>
     <string name="loading_text">Checking with our server</string>
+    <string name="email_title">Enter your email address</string>
+    <string name="email_text">We need your email to send you your username and password.</string>
+    <string name="email_hint">Email address</string>
+    <string name="submit">Submit</string>
 </resources>
