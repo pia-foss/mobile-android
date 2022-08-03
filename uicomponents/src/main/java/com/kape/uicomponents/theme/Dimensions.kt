@@ -29,6 +29,7 @@ object Height {
     val FAVOURITE = 20.dp
     val BIG_LOGO = 80.dp
     val PLAN = 112.dp
+    val SMALL_LOGO = 24.dp
 }
 
 object Width {
