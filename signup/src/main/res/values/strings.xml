@@ -32,5 +32,5 @@
         You will always be in control. You can see what data we’ve collected from Settings, and you can turn it off at any time.</string>
     <string name="accept">Accept</string>
     <string name="no_thanks">No thanks</string>
-
+    <string name="loading_text">Checking with our server</string>
 </resources>
