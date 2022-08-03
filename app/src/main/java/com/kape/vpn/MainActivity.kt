@@ -28,7 +28,7 @@ import org.koin.android.ext.android.inject
 class MainActivity : ComponentActivity() {
 
     private val router: Router by inject()
-    private val destinationsForClearBackStack = listOf(Splash.Main, Login.Main, VpnPermission.Main, Connection.Main)
+    private val destinationsForClearBackStack = listOf(Splash.Main, Subscribe.Main, VpnPermission.Main, Connection.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

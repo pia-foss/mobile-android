@@ -1,5 +1,6 @@
 package com.kape.splash.ui
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.kape.splash.ui.vm.SplashViewModel
 import com.kape.uicomponents.components.UiResources
@@ -18,6 +20,7 @@ import org.koin.androidx.compose.inject
 fun SplashScreen() {
 
     val viewModel: SplashViewModel by inject()
+    val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -30,6 +33,6 @@ fun SplashScreen() {
     }
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.load()
+        viewModel.load(context as Activity)
     }
 }

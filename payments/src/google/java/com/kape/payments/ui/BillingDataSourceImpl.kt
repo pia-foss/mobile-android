@@ -11,9 +11,9 @@ import com.kape.payments.utils.monthlySubscription
 import com.kape.payments.utils.yearlySubscription
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class BillingDataSourceImpl(context: Context, private val prefs: SubscriptionPrefs, var activity: Activity? = null) : BillingDataSource {
+class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) : BillingDataSource {
 
-    private var billingClient: BillingClient
+    private lateinit var billingClient: BillingClient
     private var selectedProduct: ProductDetails? = null
 
     private val availableProducts = mutableListOf<ProductDetails>()
@@ -29,31 +29,34 @@ class BillingDataSourceImpl(context: Context, private val prefs: SubscriptionPre
             }
         }
 
-    init {
-        billingClient = BillingClient.newBuilder(context)
-            .setListener(purchasesUpdatedListener)
-            .enablePendingPurchases()
-            .build()
+    override val purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.Default)
 
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    // TODO: handle success
-                    purchaseState.value = PurchaseState.InitSuccess
-                } else {
+    override fun register() {
+        activity?.let {
+            billingClient = BillingClient.newBuilder(it)
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases()
+                .build()
+
+            billingClient.startConnection(object : BillingClientStateListener {
+                override fun onBillingSetupFinished(billingResult: BillingResult) {
+                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                        // TODO: handle success
+                        purchaseState.value = PurchaseState.InitSuccess
+                    } else {
+                        // TODO: handle error
+                        purchaseState.value = PurchaseState.InitFailed
+                    }
+                }
+
+                override fun onBillingServiceDisconnected() {
                     // TODO: handle error
                     purchaseState.value = PurchaseState.InitFailed
                 }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                // TODO: handle error
-                purchaseState.value = PurchaseState.InitFailed
-            }
-        })
+            })
+        }
     }
 
-    override val purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.Default)
     override fun getMonthlySubscription(): Subscription = prefs.getSubscriptions().first {
         it.plan.lowercase() == monthlySubscription.lowercase()
     }

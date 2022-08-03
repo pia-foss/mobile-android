@@ -1,9 +1,11 @@
 package com.kape.splash.ui.vm
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.payments.domain.BillingDataSource
 import com.kape.payments.domain.GetSubscriptionsUseCase
+import com.kape.payments.ui.BillingDataSourceImpl
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import kotlinx.coroutines.launch
@@ -14,9 +16,10 @@ class SplashViewModel(private val useCase: GetSubscriptionsUseCase, private val 
 
     private val router: Router by inject()
 
-    fun load() = viewModelScope.launch {
+    fun load(activity: Activity) = viewModelScope.launch {
+        (billingDataSource as BillingDataSourceImpl).activity = activity
+        billingDataSource.register()
         useCase.getSubscriptions().collect {
-            billingDataSource.loadProducts()
             router.handleFlow(ExitFlow.Splash)
         }
     }

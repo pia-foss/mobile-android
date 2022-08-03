@@ -3,9 +3,11 @@ package com.kape.signup.ui
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -31,63 +33,75 @@ fun SubscriptionScreen() {
 
     val subscribeProperties =
         ButtonProperties(label = stringResource(id = R.string.subscribe_now).toUpperCase(Locale.current), enabled = true, onClick = {
+            state.data?.let {
+                viewModel.purchase(it.selected.value.id)
+            }
         })
 
     val loginProperties =
         ButtonProperties(label = stringResource(id = R.string.login).toUpperCase(Locale.current), enabled = true, onClick = {
+            viewModel.navigateToLogin()
         })
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadPrices()
     }
 
-    state.data?.let {
+    if (state.loading) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxSize()
-            ) {
-                Image(
-                    painter = painterResource(id = UiResources.bigAppLogo),
-                    contentDescription = stringResource(id = R.string.logo),
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = DarkGreen20)
+        }
+    } else {
+        state.data?.let {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
                     modifier = Modifier
-                        .height(Height.BIG_LOGO)
-                        .fillMaxWidth()
-                        .padding(Space.NORMAL)
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.ic_globe),
-                    contentDescription = stringResource(id = R.string.logo),
-                    modifier = Modifier
-                        .padding(Space.NORMAL)
-                        .fillMaxWidth()
-                        .size(Square.GLOBE)
-                )
-                Text(
-                    text = stringResource(id = R.string.screen_title),
-                    fontSize = FontSize.Title,
-                    modifier = Modifier
-                        .align(CenterHorizontally)
-                )
-                Text(
-                    text = stringResource(id = R.string.screen_description).format(it.yearly.mainPrice),
-                    fontSize = FontSize.Normal, modifier = Modifier
-                        .align(CenterHorizontally)
-                        .padding(horizontal = Space.BIG, vertical = Space.SMALL),
-                    textAlign = TextAlign.Center, color = Grey55
-                )
-                Spacer(modifier = Modifier.height(Space.NORMAL))
-                PriceRow(state = it.yearly, it.selected.value == it.yearly, it.selected)
-                Spacer(modifier = Modifier.height(Space.SMALL))
-                PriceRow(state = it.monthly, it.selected.value == it.monthly, it.selected)
-                Spacer(modifier = Modifier.height(Space.MEDIUM))
-                PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = subscribeProperties)
-                SecondaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = loginProperties)
-                Spacer(modifier = Modifier.weight(1f))
-                HtmlText(textId = R.string.footer, modifier = Modifier
-                    .padding(Space.NORMAL)
-                    .align(CenterHorizontally))
+                        .verticalScroll(rememberScrollState())
+                        .fillMaxSize()
+                ) {
+                    Image(
+                        painter = painterResource(id = UiResources.bigAppLogo),
+                        contentDescription = stringResource(id = R.string.logo),
+                        modifier = Modifier
+                            .height(Height.BIG_LOGO)
+                            .fillMaxWidth()
+                            .padding(Space.NORMAL)
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_globe),
+                        contentDescription = stringResource(id = R.string.logo),
+                        modifier = Modifier
+                            .padding(Space.NORMAL)
+                            .fillMaxWidth()
+                            .size(Square.GLOBE)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.screen_title),
+                        fontSize = FontSize.Title,
+                        modifier = Modifier
+                            .align(CenterHorizontally)
+                    )
+                    Text(
+                        text = stringResource(id = R.string.screen_description).format(it.yearly.mainPrice),
+                        fontSize = FontSize.Normal, modifier = Modifier
+                            .align(CenterHorizontally)
+                            .padding(horizontal = Space.BIG, vertical = Space.SMALL),
+                        textAlign = TextAlign.Center, color = Grey55
+                    )
+                    Spacer(modifier = Modifier.height(Space.NORMAL))
+                    PriceRow(state = it.yearly, it.selected.value == it.yearly, it.selected)
+                    Spacer(modifier = Modifier.height(Space.SMALL))
+                    PriceRow(state = it.monthly, it.selected.value == it.monthly, it.selected)
+                    Spacer(modifier = Modifier.height(Space.MEDIUM))
+                    PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = subscribeProperties)
+                    SecondaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = loginProperties)
+                    Spacer(modifier = Modifier.weight(1f))
+                    HtmlText(
+                        textId = R.string.footer, modifier = Modifier
+                            .padding(Space.NORMAL)
+                            .align(CenterHorizontally)
+                    )
+                }
             }
         }
     }
