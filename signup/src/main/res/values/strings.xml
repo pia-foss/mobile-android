@@ -14,4 +14,23 @@
     <string name="yearly_month_ending">%2$s%1$s/mo</string>
     <string name="yearly_ending">%1$s per year</string>
 
+    <string name="consent_title">Please help us improve our service</string>
+    <string name="consent_message">To help us ensure our service\'s connection performance, you can anonymously share your connection stats with us. These reports do not include any personally identifiable information.</string>
+    <string name="find_out_more">Find out more</string>
+    <string name="consent_more_info">This minimal information assists us in identifying and fixing potential connection issues. Note that sharing this information requires consent and manual activation as it is turned off by default. We will collect information about the following events:\n\n
+            • Connection Attempt\n
+            • Connection Canceled\n
+            • Connection Established\n
+            • Time to Connect\n\n
+        For all of these events, we will collect the following information:\n\n
+            • Platform\n
+            • App version\n
+            • App type (pre-release or not)\n
+            • Protocol used\n
+            • Connection source (manual or using automation)\n\n
+        All events will contain a unique ID, which is randomly generated. This ID is not associated with your user account. This unique ID is re-generated daily for privacy purposes.\n\n
+        You will always be in control. You can see what data we’ve collected from Settings, and you can turn it off at any time.</string>
+    <string name="accept">Accept</string>
+    <string name="no_thanks">No thanks</string>
+
 </resources>
