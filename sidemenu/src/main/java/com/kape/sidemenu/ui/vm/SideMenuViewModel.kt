@@ -46,8 +46,7 @@ class SideMenuViewModel(
 
     fun logout() = viewModelScope.launch {
         logoutUseCase.logout().collect {
-            // TODO: go to signup screen once implemented
-            router.handleFlow(EnterFlow.Login)
+            router.handleFlow(EnterFlow.Subscribe)
         }
     }
 

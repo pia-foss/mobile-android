@@ -18,25 +18,28 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.toUpperCase
 import androidx.navigation.NavController
+import com.kape.router.Subscribe
 import com.kape.signup.R
+import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.uicomponents.components.ButtonProperties
 import com.kape.uicomponents.components.PrimaryButton
 import com.kape.uicomponents.components.SecondaryButton
 import com.kape.uicomponents.theme.FontSize
 import com.kape.uicomponents.theme.Space
+import org.koin.androidx.compose.viewModel
 
 @Composable
-fun ConsentScreen(navController: NavController) {
+fun ConsentScreen(viewModel: SignupViewModel) {
 
     val showMoreInfo = remember { mutableStateOf(false) }
 
     val acceptProperties =
         ButtonProperties(label = stringResource(id = R.string.accept).toUpperCase(Locale.current), enabled = true, onClick = {
-            // TODO: handle accept click
+            viewModel.allowEventSharing(true)
         })
     val declineProperties =
         ButtonProperties(label = stringResource(id = R.string.no_thanks).toUpperCase(Locale.current), enabled = true, onClick = {
-            // TODO: handle no thanks click
+            viewModel.allowEventSharing(false)
         })
 
     Box(modifier = Modifier.fillMaxSize()) {

@@ -15,7 +15,7 @@ class SignupDataSourceImpl : SignupDataSource, KoinComponent {
     private val api: AndroidAccountAPI by inject()
 
     override fun signup(vararg data: String): Flow<Credentials?> = callbackFlow {
-        api.amazonSignUp(AmazonSignupInformation(data[0], data[1], "")) { details, error ->
+        api.amazonSignUp(AmazonSignupInformation(data[0], data[1], data[2])) { details, error ->
             if (error.isNotEmpty() || details == null) {
                 trySend(null)
                 return@amazonSignUp

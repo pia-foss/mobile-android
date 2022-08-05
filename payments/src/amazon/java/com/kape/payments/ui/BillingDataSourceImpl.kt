@@ -24,7 +24,9 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
     private var selectedProduct: Product? = null
 
     var availableProducts = mutableListOf<Product>()
-    override val purchaseState: MutableStateFlow<PurchaseState> = MutableStateFlow(PurchaseState.Default)
+    override val purchaseState: MutableStateFlow<PurchaseState> =
+        MutableStateFlow(PurchaseState.Default)
+
     override fun register() {
         LicensingService.verifyLicense(activity) {
             // currently do nothing
@@ -64,14 +66,22 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
 
             override fun onPurchaseUpdatesResponse(purchaseUpdate: PurchaseUpdatesResponse?) {
                 purchaseUpdate?.let {
-                    // TODO: handle purchase data in signup flow PurchaseData(it.userData.userId, it.receipts[0].receiptId)
+                    prefs.storePurchaseData(
+                        PurchaseData(
+                            it.userData.userId,
+                            it.receipts.first().receiptId
+                        )
+                    )
                 }
             }
         })
     }
 
-    override fun getMonthlySubscription(): Subscription = prefs.getSubscriptions().first { plan -> plan.id == M1 }
-    override fun getYearlySubscription(): Subscription = prefs.getSubscriptions().first { plan -> plan.id == Y1 }
+    override fun getMonthlySubscription(): Subscription =
+        prefs.getSubscriptions().first { plan -> plan.id == M1 }
+
+    override fun getYearlySubscription(): Subscription =
+        prefs.getSubscriptions().first { plan -> plan.id == Y1 }
 
     override fun loadProducts() {
         PurchasingService.getProductData(products)

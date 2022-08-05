@@ -3,11 +3,10 @@ package com.kape.signup.ui
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -18,108 +17,94 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.kape.signup.R
-import com.kape.signup.ui.vm.SubscribeViewModel
-import com.kape.signup.utils.IDLE
-import com.kape.signup.utils.LOADING
+import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.Plan
+import com.kape.signup.utils.SubscriptionData
 import com.kape.uicomponents.components.*
 import com.kape.uicomponents.theme.*
-import org.koin.androidx.compose.viewModel
 
 @Composable
-fun SubscriptionScreen(navController: NavController) {
-
-    val viewModel: SubscribeViewModel by viewModel()
-    val state by remember(viewModel) { viewModel.state }.collectAsState()
+fun SubscriptionScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData) {
 
     val subscribeProperties =
-        ButtonProperties(label = stringResource(id = R.string.subscribe_now).toUpperCase(Locale.current), enabled = true, onClick = {
-            state.data?.let {
-                viewModel.purchase(it.selected.value.id)
-            }
-        })
+        ButtonProperties(
+            label = stringResource(id = R.string.subscribe_now).toUpperCase(Locale.current),
+            enabled = true,
+            onClick = {
+                viewModel.purchase(subscriptionData.selected.value.id)
+            })
 
     val loginProperties =
-        ButtonProperties(label = stringResource(id = R.string.login).toUpperCase(Locale.current), enabled = true, onClick = {
-            viewModel.navigateToLogin()
-        })
+        ButtonProperties(
+            label = stringResource(id = R.string.login).toUpperCase(Locale.current),
+            enabled = true,
+            onClick = {
+                viewModel.navigateToLogin()
+            })
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.loadPrices()
-    }
-
-    when (state) {
-        IDLE -> {}
-        LOADING -> {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = DarkGreen20)
-            }
-        }
-        else -> {
-            if (state.destination != null) {
-                LaunchedEffect(key1 = Unit) {
-                    state.destination?.let {
-                        navController.navigate(it)
-                    }
-                }
-            }
-
-            if (state.data != null) {
-                state.data?.let {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Column(
-                            modifier = Modifier
-                                .verticalScroll(rememberScrollState())
-                                .fillMaxSize()
-                        ) {
-                            Image(
-                                painter = painterResource(id = UiResources.bigAppLogo),
-                                contentDescription = stringResource(id = R.string.logo),
-                                modifier = Modifier
-                                    .height(Height.BIG_LOGO)
-                                    .fillMaxWidth()
-                                    .padding(Space.NORMAL)
-                            )
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_globe),
-                                contentDescription = stringResource(id = R.string.logo),
-                                modifier = Modifier
-                                    .padding(Space.NORMAL)
-                                    .fillMaxWidth()
-                                    .size(Square.GLOBE)
-                            )
-                            Text(
-                                text = stringResource(id = R.string.screen_title),
-                                fontSize = FontSize.Title,
-                                modifier = Modifier
-                                    .align(CenterHorizontally)
-                            )
-                            Text(
-                                text = stringResource(id = R.string.screen_description).format(it.yearly.mainPrice),
-                                fontSize = FontSize.Normal, modifier = Modifier
-                                    .align(CenterHorizontally)
-                                    .padding(horizontal = Space.BIG, vertical = Space.SMALL),
-                                textAlign = TextAlign.Center, color = Grey55
-                            )
-                            Spacer(modifier = Modifier.height(Space.NORMAL))
-                            PriceRow(state = it.yearly, it.selected.value == it.yearly, it.selected)
-                            Spacer(modifier = Modifier.height(Space.SMALL))
-                            PriceRow(state = it.monthly, it.selected.value == it.monthly, it.selected)
-                            Spacer(modifier = Modifier.height(Space.MEDIUM))
-                            PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = subscribeProperties)
-                            SecondaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = loginProperties)
-                            Spacer(modifier = Modifier.weight(1f))
-                            HtmlText(
-                                textId = R.string.footer, modifier = Modifier
-                                    .padding(Space.NORMAL)
-                                    .align(CenterHorizontally)
-                            )
-                        }
-                    }
-                }
-            }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
+        ) {
+            Image(
+                painter = painterResource(id = UiResources.bigAppLogo),
+                contentDescription = stringResource(id = R.string.logo),
+                modifier = Modifier
+                    .height(Height.BIG_LOGO)
+                    .fillMaxWidth()
+                    .padding(Space.NORMAL)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.ic_globe),
+                contentDescription = stringResource(id = R.string.logo),
+                modifier = Modifier
+                    .padding(Space.NORMAL)
+                    .fillMaxWidth()
+                    .size(Square.GLOBE)
+            )
+            Text(
+                text = stringResource(id = R.string.subscribe_screen_title),
+                fontSize = FontSize.Title,
+                modifier = Modifier
+                    .align(CenterHorizontally)
+            )
+            Text(
+                text = stringResource(id = R.string.subscribe_screen_description).format(subscriptionData.yearly.mainPrice),
+                fontSize = FontSize.Normal, modifier = Modifier
+                    .align(CenterHorizontally)
+                    .padding(horizontal = Space.BIG, vertical = Space.SMALL),
+                textAlign = TextAlign.Center, color = Grey55
+            )
+            Spacer(modifier = Modifier.height(Space.NORMAL))
+            PriceRow(
+                state = subscriptionData.yearly,
+                subscriptionData.selected.value == subscriptionData.yearly,
+                subscriptionData.selected
+            )
+            Spacer(modifier = Modifier.height(Space.SMALL))
+            PriceRow(
+                state = subscriptionData.monthly,
+                subscriptionData.selected.value == subscriptionData.monthly,
+                subscriptionData.selected
+            )
+            Spacer(modifier = Modifier.height(Space.MEDIUM))
+            PrimaryButton(
+                modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
+                properties = subscribeProperties
+            )
+            SecondaryButton(
+                modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
+                properties = loginProperties
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            HtmlText(
+                textId = R.string.footer, modifier = Modifier
+                    .padding(Space.NORMAL)
+                    .align(CenterHorizontally)
+            )
         }
     }
 }
@@ -165,7 +150,10 @@ fun PriceRow(state: Plan, selected: Boolean, selectedState: MutableState<Plan>) 
                             text = stringResource(id = R.string.best_value),
                             fontSize = FontSize.Small,
                             color = Color.Black,
-                            modifier = Modifier.padding(horizontal = Space.MINI, vertical = Space.SMALL_VERTICAL)
+                            modifier = Modifier.padding(
+                                horizontal = Space.MINI,
+                                vertical = Space.SMALL_VERTICAL
+                            )
                         )
                     }
                 }

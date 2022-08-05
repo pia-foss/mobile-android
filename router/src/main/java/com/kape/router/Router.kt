@@ -34,14 +34,13 @@ class Router {
         when (flow) {
             ExitFlow.Login -> handleEnterFlow(EnterFlow.VpnPermission)
             ExitFlow.VpnPermission -> {
-                // TODO: this flow will change to analytics consent once implemented
                 handleEnterFlow(EnterFlow.Connection)
             }
             ExitFlow.Splash -> handleEnterFlow(EnterFlow.Subscribe)
             ExitFlow.Connection -> TODO()
             ExitFlow.RegionSelection -> TODO()
             ExitFlow.Profile -> TODO()
-            ExitFlow.Subscribe -> TODO()
+            ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.VpnPermission)
         }
     }
 

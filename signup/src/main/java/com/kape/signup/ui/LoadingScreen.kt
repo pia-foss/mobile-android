@@ -10,13 +10,12 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.kape.signup.R
 import com.kape.uicomponents.components.UiResources
 import com.kape.uicomponents.theme.*
 
 @Composable
-fun LoadingScreen(navController: NavController) {
+fun LoadingScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(Height.DEFAULT))
         Image(
@@ -27,7 +26,11 @@ fun LoadingScreen(navController: NavController) {
                 .align(Alignment.TopCenter)
         )
         Column(modifier = Modifier.align(Alignment.Center)) {
-            CircularProgressIndicator(modifier = Modifier.align(CenterHorizontally).size(Square.DEFAULT), color = DarkGreen20)
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(CenterHorizontally)
+                    .size(Square.DEFAULT), color = DarkGreen20
+            )
             Spacer(modifier = Modifier.height(Height.DEFAULT))
             Text(
                 text = stringResource(id = R.string.loading_text),

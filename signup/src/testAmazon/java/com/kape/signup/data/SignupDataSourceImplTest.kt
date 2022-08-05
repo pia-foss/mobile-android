@@ -43,7 +43,7 @@ internal class SignupDataSourceImplTest {
         coEvery { api.amazonSignUp(any(), any()) } answers {
             lastArg<(SignUpInformation?, List<Error>) -> Unit>().invoke(signupInfo, emptyList())
         }
-        source.signup("userId", "receiptId").test {
+        source.signup("userId", "receiptId", "email").test {
             val actual = awaitItem()
             assertEquals(expected, actual)
         }
@@ -55,7 +55,7 @@ internal class SignupDataSourceImplTest {
         coEvery { api.amazonSignUp(any(), any()) } answers {
             lastArg<(SignUpInformation?, List<Error>) -> Unit>().invoke(expected, listOf(Error()))
         }
-        source.signup("userId", "receiptId").test {
+        source.signup("userId", "receiptId", "email").test {
             val actual = awaitItem()
             assertEquals(expected, actual)
         }

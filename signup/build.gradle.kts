@@ -65,6 +65,8 @@ dependencies {
     implementation(project(mapOf("path" to ":account")))
     implementation(project(mapOf("path" to ":router")))
     implementation(project(mapOf("path" to ":payments")))
+    implementation(project(mapOf("path" to ":core")))
+    implementation(project(mapOf("path" to ":login")))
 
     coreLibraryDesugaring(Android.desugarJdkLibs)
 

@@ -18,8 +18,7 @@ import com.kape.login.ui.LoginWithEmailScreen
 import com.kape.profile.ui.ProfileScreen
 import com.kape.region_selection.ui.RegionSelectionScreen
 import com.kape.router.*
-import com.kape.signup.ui.ConsentScreen
-import com.kape.signup.ui.SubscriptionScreen
+import com.kape.signup.ui.*
 import com.kape.splash.ui.SplashScreen
 import com.kape.uicomponents.components.WebViewScreen
 import com.kape.uicomponents.theme.PIATheme
@@ -29,7 +28,8 @@ import org.koin.android.ext.android.inject
 class MainActivity : ComponentActivity() {
 
     private val router: Router by inject()
-    private val destinationsForClearBackStack = listOf(Splash.Main, Subscribe.Main, VpnPermission.Main, Connection.Main)
+    private val destinationsForClearBackStack =
+        listOf(Splash.Main, Subscribe.Main, VpnPermission.Main, Connection.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +55,10 @@ class MainActivity : ComponentActivity() {
             }
 
             PIATheme {
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.background
+                ) {
                     NavHost(navController = navController, startDestination = Splash.Main) {
                         composable(Login.Main) { LoginScreen(navController = navController) }
                         composable(Login.WithEmail) { LoginWithEmailScreen(navController = navController) }
@@ -64,10 +67,21 @@ class MainActivity : ComponentActivity() {
                         composable(Connection.Main) { ConnectionScreen() }
                         composable(RegionSelection.Main) { RegionSelectionScreen() }
                         composable(Profile.Main) { ProfileScreen() }
-                        composable(Subscribe.Main) { SubscriptionScreen(navController = navController) }
-                        composable(Subscribe.Consent) { ConsentScreen(navController = navController) }
-                        composable(WebContent.Terms) { WebViewScreen(initialUrl = Uri.parse(getString(R.string.url_terms_of_service))) }
-                        composable(WebContent.Privacy) { WebViewScreen(initialUrl = Uri.parse(getString(R.string.url_privacy_policy))) }
+                        composable(Subscribe.Main) { SignupScreensFlow() }
+                        composable(WebContent.Terms) {
+                            WebViewScreen(
+                                initialUrl = Uri.parse(
+                                    getString(R.string.url_terms_of_service)
+                                )
+                            )
+                        }
+                        composable(WebContent.Privacy) {
+                            WebViewScreen(
+                                initialUrl = Uri.parse(
+                                    getString(R.string.url_privacy_policy)
+                                )
+                            )
+                        }
                     }
                 }
             }

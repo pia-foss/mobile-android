@@ -1,9 +1,9 @@
 package com.kape.payments.ui
 
 import android.app.Activity
-import android.content.Context
 import com.android.billingclient.api.*
 import com.kape.payments.domain.BillingDataSource
+import com.kape.payments.models.PurchaseData
 import com.kape.payments.models.Subscription
 import com.kape.payments.utils.PurchaseState
 import com.kape.payments.utils.SubscriptionPrefs
@@ -22,8 +22,11 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
         PurchasesUpdatedListener { billingResult, purchases ->
             if (purchases != null) {
                 when (billingResult.responseCode) {
-                    BillingClient.BillingResponseCode.OK ->
+                    BillingClient.BillingResponseCode.OK -> {
+                        val purchase = purchases.first()
+                        prefs.storePurchaseData(PurchaseData(purchase.purchaseToken, purchase.products.first(), purchase.orderId))
                         purchaseState.value = PurchaseState.PurchaseSuccess
+                    }
                     else -> purchaseState.value = PurchaseState.PurchaseFailed
                 }
             }
