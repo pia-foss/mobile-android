@@ -51,6 +51,7 @@ android {
 dependencies {
 
     implementation(project(mapOf("path" to ":kpi")))
+    implementation(project(mapOf("path" to ":core")))
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
     implementation(Android.androidCore)
