@@ -29,10 +29,6 @@ object Profile {
 
 object Subscribe {
     const val Main = "subscription-screen"
-    const val Consent = "consent-screen"
-    const val Email = "email-screen"
-    const val Loading = "loading-screen"
-    const val Credentials = "credentials-screen"
 }
 
 object WebContent {

@@ -11,8 +11,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
-import androidx.navigation.NavController
 import com.kape.signup.R
+import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.uicomponents.components.*
 import com.kape.uicomponents.theme.FontSize
 import com.kape.uicomponents.theme.Grey55
@@ -20,13 +20,17 @@ import com.kape.uicomponents.theme.Height
 import com.kape.uicomponents.theme.Space
 
 @Composable
-fun EmailScreen(navController: NavController) {
+fun EmailScreen(viewModel: SignupViewModel) {
 
-    val emailProperties = InputFieldProperties(label = stringResource(id = R.string.email_hint), maskInput = false)
+    val emailProperties =
+        InputFieldProperties(label = stringResource(id = R.string.email_hint), maskInput = false)
     val buttonProperties =
-        ButtonProperties(label = stringResource(id = R.string.submit).toUpperCase(Locale.current), enabled = true, onClick = {
-            // TODO: implement actual user registration with backend
-        })
+        ButtonProperties(
+            label = stringResource(id = R.string.submit).toUpperCase(Locale.current),
+            enabled = true,
+            onClick = {
+                viewModel.register(emailProperties.content)
+            })
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(Height.DEFAULT))
@@ -54,8 +58,14 @@ fun EmailScreen(navController: NavController) {
                 .padding(horizontal = Space.MEDIUM)
         )
         Spacer(modifier = Modifier.height(Space.MEDIUM))
-        InputField(modifier = Modifier.padding(horizontal = Space.MEDIUM), properties = emailProperties)
+        InputField(
+            modifier = Modifier.padding(horizontal = Space.MEDIUM),
+            properties = emailProperties
+        )
         Spacer(modifier = Modifier.height(Space.NORMAL))
-        PrimaryButton(modifier = Modifier.padding(horizontal = Space.MEDIUM), properties = buttonProperties)
+        PrimaryButton(
+            modifier = Modifier.padding(horizontal = Space.MEDIUM),
+            properties = buttonProperties
+        )
     }
 }

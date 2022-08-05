@@ -14,18 +14,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import com.kape.signup.R
+import com.kape.signup.models.Credentials
+import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.uicomponents.components.ButtonProperties
 import com.kape.uicomponents.components.PrimaryButton
 import com.kape.uicomponents.components.UiResources
 import com.kape.uicomponents.theme.*
 
 @Composable
-fun CredentialsScreen() {
+fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) {
 
     val buttonProperties =
-        ButtonProperties(label = stringResource(id = R.string.get_started).toUpperCase(Locale.current), enabled = true, onClick = {
-            // TODO: implement navigation to main screen
-        })
+        ButtonProperties(
+            label = stringResource(id = R.string.get_started).toUpperCase(Locale.current),
+            enabled = true,
+            onClick = {
+                viewModel.completeSubscription()
+            })
 
     Column(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -76,9 +81,12 @@ fun CredentialsScreen() {
                 .border(1.dp, shape = OutlineBackground, color = Grey85)
                 .padding(Space.NORMAL)
         ) {
-            Text(text = stringResource(id = R.string.username), color = Grey55, fontSize = FontSize.Normal)
-            // TODO: hardcoded string to be removed with https://kape.atlassian.net/browse/VPN-3109
-            Text(text = "p26574203", fontSize = FontSize.Title)
+            Text(
+                text = stringResource(id = R.string.username),
+                color = Grey55,
+                fontSize = FontSize.Normal
+            )
+            Text(text = credentials.username, fontSize = FontSize.Title)
         }
         Spacer(modifier = Modifier.height(Space.SMALL))
         Column(
@@ -88,12 +96,17 @@ fun CredentialsScreen() {
                 .border(1.dp, shape = OutlineBackground, color = Grey85)
                 .padding(Space.NORMAL)
         ) {
-            Text(text = stringResource(id = R.string.password), color = Grey55, fontSize = FontSize.Normal)
-            // TODO: hardcoded string to be removed with https://kape.atlassian.net/browse/VPN-3109
-            Text(text = "PaSsWoRd", fontSize = FontSize.Title)
+            Text(
+                text = stringResource(id = R.string.password),
+                color = Grey55,
+                fontSize = FontSize.Normal
+            )
+            Text(text = credentials.password, fontSize = FontSize.Title)
         }
         Spacer(modifier = Modifier.height(Space.MINI))
-        PrimaryButton(modifier = Modifier.padding(horizontal = Space.MEDIUM), properties = buttonProperties)
+        PrimaryButton(
+            modifier = Modifier.padding(horizontal = Space.MEDIUM),
+            properties = buttonProperties
+        )
     }
-
 }

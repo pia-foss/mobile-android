@@ -4,8 +4,8 @@
     <string name="background">background</string>
     <string name="checkbox">Checkbox</string>
 
-    <string name="screen_title">Connect to any region easily</string>
-    <string name="screen_description">With servers around the globe, you are always under protection. Start your 7 days free trial then %s .</string>
+    <string name="subscribe_screen_title">Connect to any region easily</string>
+    <string name="subscribe_screen_description">With servers around the globe, you are always under protection. Start your 7 days free trial then %s .</string>
     <string name="best_value">BEST VALUE - FREE TRIAL</string>
     <string name="subscribe_now">Subscribe now</string>
     <string name="login">Login</string>

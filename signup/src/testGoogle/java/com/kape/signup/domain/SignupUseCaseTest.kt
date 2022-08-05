@@ -1,6 +1,8 @@
 package com.kape.signup.domain
 
 import app.cash.turbine.test
+import com.kape.login.domain.LoginUseCase
+import com.kape.login.utils.LoginState
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.payments.models.PurchaseData
 import com.kape.signup.models.Credentials
@@ -23,23 +25,31 @@ internal class SignupUseCaseTest : KoinTest {
 
     private val signupDataSource: SignupDataSource = mockk()
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase = mockk()
+    private val loginUseCase: LoginUseCase = mockk()
+    private val emailDataSource: EmailDataSource = mockk()
 
     private lateinit var useCase: SignupUseCase
 
     @BeforeEach
     fun setUp() {
-        useCase = SignupUseCase(signupDataSource, purchaseDetailsUseCase)
+        useCase = SignupUseCase(signupDataSource, loginUseCase, emailDataSource, purchaseDetailsUseCase)
     }
 
     @ParameterizedTest(name = "expected: {0}, data: {1}")
     @MethodSource("arguments")
     fun `test signup`(expected: Credentials?, purchaseData: PurchaseData?) = runTest {
         every { purchaseDetailsUseCase.getPurchaseDetails() } returns purchaseData
+        coEvery { loginUseCase.login(any(), any() ) } returns flow {
+            emit(LoginState.Successful)
+        }
+        every { emailDataSource.setEmail(any()) } returns flow {
+            emit(true)
+        }
         coEvery { signupDataSource.signup(any(), any(), any()) } returns flow {
             emit(expected)
         }
 
-        useCase.signup().test {
+        useCase.signup("email").test {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)
