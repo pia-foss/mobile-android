@@ -84,6 +84,7 @@ dependencies {
     implementation(project(mapOf("path" to ":payments")))
     implementation(project(mapOf("path" to ":signup")))
     implementation(project(mapOf("path" to ":kpi")))
+    implementation(project(mapOf("path" to ":share_events")))
 
     coreLibraryDesugaring(Android.desugarJdkLibs)
 

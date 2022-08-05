@@ -5,6 +5,7 @@ import com.kape.login.di.loginModule
 import com.kape.payments.di.paymentsModule
 import com.kape.profile.di.profileModule
 import com.kape.region_selection.di.regionModule
+import com.kape.share_events.di.kpiModule
 import com.kape.sidemenu.di.sideMenuModule
 import com.kape.signup.di.signupModule
 import com.kape.splash.di.splashModule
@@ -32,6 +33,7 @@ class App : Application() {
             add(paymentsModule)
             add(splashModule)
             add(signupModule)
+            add(kpiModule)
         })
     }
 }
