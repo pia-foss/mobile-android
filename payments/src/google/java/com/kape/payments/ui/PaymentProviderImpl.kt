@@ -2,7 +2,6 @@ package com.kape.payments.ui
 
 import android.app.Activity
 import com.android.billingclient.api.*
-import com.kape.payments.domain.BillingDataSource
 import com.kape.payments.models.PurchaseData
 import com.kape.payments.models.Subscription
 import com.kape.payments.utils.PurchaseState
@@ -11,7 +10,8 @@ import com.kape.payments.utils.monthlySubscription
 import com.kape.payments.utils.yearlySubscription
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) : BillingDataSource {
+class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
+    PaymentProvider {
 
     private lateinit var billingClient: BillingClient
     private var selectedProduct: ProductDetails? = null
@@ -24,7 +24,13 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {
                         val purchase = purchases.first()
-                        prefs.storePurchaseData(PurchaseData(purchase.purchaseToken, purchase.products.first(), purchase.orderId))
+                        prefs.storePurchaseData(
+                            PurchaseData(
+                                purchase.purchaseToken,
+                                purchase.products.first(),
+                                purchase.orderId
+                            )
+                        )
                         purchaseState.value = PurchaseState.PurchaseSuccess
                     }
                     else -> purchaseState.value = PurchaseState.PurchaseFailed
@@ -34,30 +40,29 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
 
     override val purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.Default)
 
-    override fun register() {
-        activity?.let {
-            billingClient = BillingClient.newBuilder(it)
-                .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
-                .build()
+    override fun register(activity: Activity) {
+        this.activity = activity
+        billingClient = BillingClient.newBuilder(activity)
+            .setListener(purchasesUpdatedListener)
+            .enablePendingPurchases()
+            .build()
 
-            billingClient.startConnection(object : BillingClientStateListener {
-                override fun onBillingSetupFinished(billingResult: BillingResult) {
-                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                        // TODO: handle success
-                        purchaseState.value = PurchaseState.InitSuccess
-                    } else {
-                        // TODO: handle error
-                        purchaseState.value = PurchaseState.InitFailed
-                    }
-                }
-
-                override fun onBillingServiceDisconnected() {
+        billingClient.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(billingResult: BillingResult) {
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    // TODO: handle success
+                    purchaseState.value = PurchaseState.InitSuccess
+                } else {
                     // TODO: handle error
                     purchaseState.value = PurchaseState.InitFailed
                 }
-            })
-        }
+            }
+
+            override fun onBillingServiceDisconnected() {
+                // TODO: handle error
+                purchaseState.value = PurchaseState.InitFailed
+            }
+        })
     }
 
     override fun getMonthlySubscription(): Subscription = prefs.getSubscriptions().first {
@@ -81,7 +86,9 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
                 for (item in productDetailsList) {
                     if (data.any { it.id == item.productId }) {
                         data.first { it.id == item.productId }.formattedPrice =
-                            item.subscriptionOfferDetails?.getOrNull(0)?.pricingPhases?.pricingPhaseList?.get(0)?.formattedPrice
+                            item.subscriptionOfferDetails?.getOrNull(0)?.pricingPhases?.pricingPhaseList?.get(
+                                0
+                            )?.formattedPrice
                     }
                 }
                 prefs.storeSubscriptions(data)
@@ -105,6 +112,10 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
                 billingClient.launchBillingFlow(currentActivity, billingFlowParams)
             }
         }
+    }
+
+    override fun getPurchaseUpdates() {
+        // no-op
     }
 
     private fun createProductsListForQuery(): List<QueryProductDetailsParams.Product> {
