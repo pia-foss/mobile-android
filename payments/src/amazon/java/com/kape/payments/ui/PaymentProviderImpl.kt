@@ -5,7 +5,6 @@ import com.amazon.device.drm.LicensingService
 import com.amazon.device.iap.PurchasingListener
 import com.amazon.device.iap.PurchasingService
 import com.amazon.device.iap.model.*
-import com.kape.payments.domain.BillingDataSource
 import com.kape.payments.models.PurchaseData
 import com.kape.payments.models.Subscription
 import com.kape.payments.utils.PurchaseState
@@ -17,8 +16,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 private const val M1 = "PIA-M1"
 private const val Y1 = "PIA-Y1"
 
-class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
-    BillingDataSource {
+class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
+    PaymentProvider {
 
     private val products = hashSetOf(monthlySubscription, yearlySubscription, M1, Y1)
     private var selectedProduct: Product? = null
@@ -27,7 +26,8 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
     override val purchaseState: MutableStateFlow<PurchaseState> =
         MutableStateFlow(PurchaseState.Default)
 
-    override fun register() {
+    override fun register(activity: Activity) {
+        this.activity = activity
         LicensingService.verifyLicense(activity) {
             // currently do nothing
         }
@@ -72,6 +72,7 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
                             it.receipts.first().receiptId
                         )
                     )
+                    purchaseState.value = PurchaseState.PurchaseSuccess
                 }
             }
         })
@@ -98,9 +99,11 @@ class BillingDataSourceImpl(private val prefs: SubscriptionPrefs, var activity: 
         selectedProduct = availableProducts.firstOrNull { it.sku == productId }
         selectedProduct?.let {
             PurchasingService.purchase(productId)
-            // without this line Amazon's purchase dialog never shows
-            activity?.recreate()
         }
+    }
+
+    override fun getPurchaseUpdates() {
+        PurchasingService.getPurchaseUpdates(false)
     }
 
     private fun handlePurchaseResponse(purchase: PurchaseResponse?) {

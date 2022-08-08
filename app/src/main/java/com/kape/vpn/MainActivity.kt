@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.kape.connection.ui.ConnectionScreen
 import com.kape.login.ui.LoginScreen
 import com.kape.login.ui.LoginWithEmailScreen
+import com.kape.payments.ui.PaymentProvider
 import com.kape.profile.ui.ProfileScreen
 import com.kape.region_selection.ui.RegionSelectionScreen
 import com.kape.router.*
@@ -28,11 +29,15 @@ import org.koin.android.ext.android.inject
 class MainActivity : ComponentActivity() {
 
     private val router: Router by inject()
+    private val paymentProvider: PaymentProvider by inject()
+    private var currentDestination: String = ""
     private val destinationsForClearBackStack =
         listOf(Splash.Main, Subscribe.Main, VpnPermission.Main, Connection.Main)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        paymentProvider.register(this)
 
         setContent {
             val navController = rememberNavController()
@@ -43,6 +48,7 @@ class MainActivity : ComponentActivity() {
                         if (it == NavigateBack) {
                             navController.navigateUp()
                         } else {
+                            currentDestination = it
                             navController.navigate(it) {
                                 launchSingleTop = true
                                 if (it in destinationsForClearBackStack) {
@@ -85,6 +91,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (currentDestination == Subscribe.Main) {
+            paymentProvider.getPurchaseUpdates()
         }
     }
 }

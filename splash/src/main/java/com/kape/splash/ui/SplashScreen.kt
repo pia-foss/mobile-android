@@ -33,6 +33,6 @@ fun SplashScreen() {
     }
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.load(context as Activity)
+        viewModel.load()
     }
 }

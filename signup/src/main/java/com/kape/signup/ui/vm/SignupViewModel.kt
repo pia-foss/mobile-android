@@ -3,7 +3,7 @@ package com.kape.signup.ui.vm
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.payments.domain.BillingDataSource
+import com.kape.payments.ui.PaymentProvider
 import com.kape.payments.utils.PurchaseState
 import com.kape.router.EnterFlow
 import com.kape.router.ExitFlow
@@ -19,7 +19,7 @@ import org.koin.core.component.inject
 import java.util.*
 
 class SignupViewModel(
-    private val billingDataSource: BillingDataSource,
+    private val paymentProvider: PaymentProvider,
     private val formatter: PriceFormatter,
     private val consentUseCase: ConsentUseCase,
     private val useCase: SignupUseCase
@@ -33,7 +33,7 @@ class SignupViewModel(
 
     init {
         viewModelScope.launch {
-            billingDataSource.purchaseState.collect {
+            paymentProvider.purchaseState.collect {
                 when (it) {
                     PurchaseState.Default -> {
                         // no op
@@ -48,8 +48,8 @@ class SignupViewModel(
                         // TODO: handle error
                     }
                     PurchaseState.ProductsLoadedSuccess -> {
-                        val yearlyPlan = billingDataSource.getYearlySubscription()
-                        val monthlyPlan = billingDataSource.getMonthlySubscription()
+                        val yearlyPlan = paymentProvider.getYearlySubscription()
+                        val monthlyPlan = paymentProvider.getMonthlySubscription()
                         val yearly =
                             Plan(
                                 yearlyPlan.id,
@@ -97,12 +97,12 @@ class SignupViewModel(
 
     fun loadPrices() = viewModelScope.launch {
         _state.emit(LOADING)
-        billingDataSource.loadProducts()
+        paymentProvider.loadProducts()
     }
 
     fun purchase(id: String) = viewModelScope.launch {
         _state.emit(LOADING)
-        billingDataSource.purchaseSelectedProduct(id)
+        paymentProvider.purchaseSelectedProduct(id)
     }
 
     fun navigateToLogin() {
@@ -132,5 +132,6 @@ class SignupViewModel(
 
     fun completeSubscription() {
         router.handleFlow(ExitFlow.Subscribe)
+        paymentProvider.purchaseState.value = PurchaseState.Default
     }
 }
