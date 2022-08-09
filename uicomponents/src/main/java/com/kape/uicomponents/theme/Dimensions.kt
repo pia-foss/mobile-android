@@ -46,6 +46,8 @@ object Square {
     val EXPIRY_NOTICE = 36.dp
     val GLOBE = 148.dp
     val PLAN = 36.dp
+    val CONNECTION_PROGRESS = 180.dp
+    val CONNECTION_IMAGE = 200.dp
 }
 
 object Corner {

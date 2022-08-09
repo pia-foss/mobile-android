@@ -3,6 +3,7 @@ package com.kape.signup.ui.vm
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.login.domain.GetUserLoggedInUseCase
 import com.kape.payments.ui.PaymentProvider
 import com.kape.payments.utils.PurchaseState
 import com.kape.router.EnterFlow
@@ -22,7 +23,8 @@ class SignupViewModel(
     private val paymentProvider: PaymentProvider,
     private val formatter: PriceFormatter,
     private val consentUseCase: ConsentUseCase,
-    private val useCase: SignupUseCase
+    private val useCase: SignupUseCase,
+    private val getUserLoggedInUseCase: GetUserLoggedInUseCase
 ) : ViewModel(), KoinComponent {
 
     private val router: Router by inject()
@@ -33,60 +35,64 @@ class SignupViewModel(
 
     init {
         viewModelScope.launch {
-            paymentProvider.purchaseState.collect {
-                when (it) {
-                    PurchaseState.Default -> {
-                        // no op
-                    }
-                    PurchaseState.InitFailed -> {
-                        // TODO: handle error?
-                    }
-                    PurchaseState.InitSuccess -> {
-                        // no-op
-                    }
-                    PurchaseState.ProductsLoadedFailed -> {
-                        // TODO: handle error
-                    }
-                    PurchaseState.ProductsLoadedSuccess -> {
-                        val yearlyPlan = paymentProvider.getYearlySubscription()
-                        val monthlyPlan = paymentProvider.getMonthlySubscription()
-                        val yearly =
-                            Plan(
-                                yearlyPlan.id,
-                                yearlyPlan.plan.replaceFirstChar { first ->
+            if (getUserLoggedInUseCase.isUserLoggedIn()) {
+                router.handleFlow(ExitFlow.Subscribe)
+            } else {
+                paymentProvider.purchaseState.collect {
+                    when (it) {
+                        PurchaseState.Default -> {
+                            // no op
+                        }
+                        PurchaseState.InitFailed -> {
+                            // TODO: handle error?
+                        }
+                        PurchaseState.InitSuccess -> {
+                            // no-op
+                        }
+                        PurchaseState.ProductsLoadedFailed -> {
+                            // TODO: handle error
+                        }
+                        PurchaseState.ProductsLoadedSuccess -> {
+                            val yearlyPlan = paymentProvider.getYearlySubscription()
+                            val monthlyPlan = paymentProvider.getMonthlySubscription()
+                            val yearly =
+                                Plan(
+                                    yearlyPlan.id,
+                                    yearlyPlan.plan.replaceFirstChar { first ->
+                                        if (first.isLowerCase()) first.titlecase(
+                                            Locale.getDefault()
+                                        ) else first.toString()
+                                    },
+                                    true,
+                                    mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice!!),
+                                    formatter.formatYearlyPerMonth(yearlyPlan.formattedPrice!!)
+                                )
+                            val monthly = Plan(
+                                monthlyPlan.id,
+                                monthlyPlan.plan.replaceFirstChar { first ->
                                     if (first.isLowerCase()) first.titlecase(
                                         Locale.getDefault()
                                     ) else first.toString()
                                 },
-                                true,
-                                mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice!!),
-                                formatter.formatYearlyPerMonth(yearlyPlan.formattedPrice!!)
+                                false,
+                                mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice!!)
                             )
-                        val monthly = Plan(
-                            monthlyPlan.id,
-                            monthlyPlan.plan.replaceFirstChar { first ->
-                                if (first.isLowerCase()) first.titlecase(
-                                    Locale.getDefault()
-                                ) else first.toString()
-                            },
-                            false,
-                            mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice!!)
-                        )
-                        data = SubscriptionData(mutableStateOf(yearly), yearly, monthly)
-                        data?.let { subscriptionData ->
-                            _state.emit(subscriptions(subscriptionData))
-                        }
-                    }
-                    PurchaseState.PurchaseFailed -> {
-                        // TODO: handle error
-                    }
-                    PurchaseState.PurchaseSuccess -> {
-                        if (it == PurchaseState.PurchaseSuccess) {
-                            _state.emit(CONSENT)
-                        } else if (it == PurchaseState.PurchaseFailed) {
-                            // TODO: handle error?
+                            data = SubscriptionData(mutableStateOf(yearly), yearly, monthly)
                             data?.let { subscriptionData ->
                                 _state.emit(subscriptions(subscriptionData))
+                            }
+                        }
+                        PurchaseState.PurchaseFailed -> {
+                            // TODO: handle error
+                        }
+                        PurchaseState.PurchaseSuccess -> {
+                            if (it == PurchaseState.PurchaseSuccess) {
+                                _state.emit(CONSENT)
+                            } else if (it == PurchaseState.PurchaseFailed) {
+                                // TODO: handle error?
+                                data?.let { subscriptionData ->
+                                    _state.emit(subscriptions(subscriptionData))
+                                }
                             }
                         }
                     }

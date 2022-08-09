@@ -19,29 +19,42 @@ import com.kape.uicomponents.theme.Width.TOOLBAR_LOGO
 
 @Composable
 fun AppBar(onClick: () -> Unit, state: AppBarState, onOverflowClick: (() -> Unit)? = null) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .height(Height.APP_BAR)
-        .background(state.color.brush)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Height.APP_BAR)
+            .background(state.color.brush)
+    ) {
 
         IconButton(onClick = onClick, modifier = Modifier.padding(Space.SMALL)) {
             if (state.showMenu) {
-                Icon(painter = painterResource(id = R.drawable.ic_menu),
-                    contentDescription = stringResource(id = R.string.menu))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_menu),
+                    contentDescription = stringResource(id = R.string.menu)
+                )
             } else {
-                Icon(painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = stringResource(id = R.string.back))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_back),
+                    contentDescription = stringResource(id = R.string.back)
+                )
             }
         }
 
         if (state.showLogo) {
-            Image(painter = painterResource(id = R.drawable.ic_pia_logo),
+            Image(
+                painter = painterResource(id = R.drawable.ic_pia_logo),
                 contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier
                     .width(TOOLBAR_LOGO)
-                    .align(CenterVertically))
+                    .align(CenterVertically)
+            )
         } else {
-            Text(text = state.title, modifier = Modifier.align(CenterVertically), fontSize = FontSize.Title, color = state.color.textColor)
+            Text(
+                text = state.title,
+                modifier = Modifier.align(CenterVertically),
+                fontSize = FontSize.Title,
+                color = state.color.textColor
+            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -57,10 +70,16 @@ fun AppBar(onClick: () -> Unit, state: AppBarState, onOverflowClick: (() -> Unit
     }
 }
 
-data class AppBarState(val title: String, val color: AppBarColors, val showLogo: Boolean, val showMenu: Boolean, val showOverflow: Boolean)
+data class AppBarState(
+    val title: String,
+    val color: AppBarColors,
+    val showLogo: Boolean,
+    val showMenu: Boolean,
+    val showOverflow: Boolean
+)
 
 sealed class AppBarColors(val brush: Brush, val textColor: Color) {
-    object Default : AppBarColors(Brush.verticalGradient(listOf(Grey85, Grey85)), Color.Black)
+    object Default : AppBarColors(Brush.verticalGradient(listOf(Grey92, Grey92)), Color.Black)
     object Disconnected : AppBarColors(Brush.verticalGradient(DisconnectedGradient), Color.White)
     object Connecting : AppBarColors(Brush.verticalGradient(ConnectingGradient), Color.White)
     object Connected : AppBarColors(Brush.verticalGradient(ConnectedGradient), Color.White)
