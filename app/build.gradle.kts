@@ -85,6 +85,7 @@ dependencies {
     implementation(project(mapOf("path" to ":signup")))
     implementation(project(mapOf("path" to ":kpi")))
     implementation(project(mapOf("path" to ":share_events")))
+    implementation(project(mapOf("path" to ":vpnmanager")))
 
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
