@@ -10,6 +10,8 @@ import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
+import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerAPI
+import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerBuilder
 import com.privateinternetaccess.kpi.KPIAPI
 import com.privateinternetaccess.kpi.KPIBuilder
 import com.privateinternetaccess.kpi.KPIRequestFormat
@@ -17,6 +19,7 @@ import com.privateinternetaccess.kpi.KPISendEventsMode
 import com.privateinternetaccess.kpi.internals.utils.KTimeUnit
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.RegionsBuilder
+import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 import java.io.BufferedReader
 
@@ -28,6 +31,7 @@ val appModule = module {
     single { provideAndroidAccountApi(get()) }
     single { provideRegionsApi(get()) }
     single { provideKpiApi(get()) }
+    single { provideVpnManagerApi(get()) }
     single { Router() }
 }
 
@@ -59,5 +63,14 @@ private fun provideKpiApi(provider: KpiModuleStateProvider): KPIAPI {
         .build()
 }
 
-private fun provideCertificate(context: Context) = context.assets.open("rsa4096.pem").bufferedReader().use(BufferedReader::readText)
-private fun provideUserAgent() = "privateinternetaccess.com Android Client/${BuildConfig.VERSION_CODE}(${BuildConfig.VERSION_CODE})"
+private fun provideVpnManagerApi(context: Context): VPNManagerAPI {
+    return VPNManagerBuilder().setContext(context)
+        .setCallbackCoroutineContext(Dispatchers.Main)
+        .build()
+}
+
+private fun provideCertificate(context: Context) =
+    context.assets.open("rsa4096.pem").bufferedReader().use(BufferedReader::readText)
+
+private fun provideUserAgent() =
+    "privateinternetaccess.com Android Client/${BuildConfig.VERSION_CODE}(${BuildConfig.VERSION_CODE})"
