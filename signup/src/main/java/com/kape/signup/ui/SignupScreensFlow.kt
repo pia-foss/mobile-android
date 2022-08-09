@@ -36,7 +36,9 @@ fun SignupScreensFlow() {
             }
             when (state.error) {
                 SignupError.EmailInvalid -> TODO()
-                SignupError.RegistrationFailed -> TODO()
+                SignupError.RegistrationFailed -> SignupErrorScreen {
+                    viewModel.navigateToLogin()
+                }
                 null -> {
                     // no-op
                 }

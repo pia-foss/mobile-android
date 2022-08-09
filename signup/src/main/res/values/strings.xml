@@ -43,4 +43,7 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="get_started">Get started</string>
+    <string name="error_account_creation_title">Account Creation Failure</string>
+    <string name="error_account_creation_message">We\'re unable to create an account at this time. Please try again later.\n\n Reopening the app will re-attempt to create an account.</string>
+    <string name="error_account_creation_action">Go to Login</string>
 </resources>
