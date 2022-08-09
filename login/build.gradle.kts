@@ -97,6 +97,7 @@ dependencies {
     androidTestImplementation(AndroidTest.mockk)
     androidTestImplementation(AndroidTest.koinTest)
     androidTestImplementation(AndroidTest.androidCore)
+    androidTestImplementation(AndroidTest.uiAutomator)
 
     debugImplementation(DebugTest.composeUI)
     debugImplementation(DebugTest.composeManifest)
