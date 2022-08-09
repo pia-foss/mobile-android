@@ -17,5 +17,5 @@ val signupModule = module {
     single { PriceFormatter(get()) }
     single { ConsentPrefs(get()) }
     single { ConsentUseCase(get()) }
-    viewModel { SignupViewModel(get(), get(), get(), get()) }
+    viewModel { SignupViewModel(get(), get(), get(), get(), get()) }
 }
