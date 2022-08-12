@@ -30,6 +30,7 @@ object Height {
     val BIG_LOGO = 80.dp
     val PLAN = 112.dp
     val SMALL_LOGO = 24.dp
+    val REGION_INFO_MAP = 60.dp
 }
 
 object Width {
@@ -38,6 +39,7 @@ object Width {
     val SERVER_ICON = 18.dp
     val FAVOURITE = 24.dp
     val SIDE_MENU = 300.dp
+    val REGION_INFO_MAP = 120.dp
 }
 
 object Square {
@@ -48,6 +50,7 @@ object Square {
     val PLAN = 36.dp
     val CONNECTION_PROGRESS = 180.dp
     val CONNECTION_IMAGE = 200.dp
+    val REGION_PIN = 6.dp
 }
 
 object Corner {
