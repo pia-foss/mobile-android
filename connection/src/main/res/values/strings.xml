@@ -2,4 +2,7 @@
 <resources>
     <string name="current_region">CURRENT REGION</string>
     <string name="map">map image</string>
+    <string name="public_ip">Public IP</string>
+    <string name="vpn_ip">VPN IP</string>
+    <string name="no_ip">---</string>
 </resources>

@@ -31,6 +31,8 @@ object Height {
     val PLAN = 112.dp
     val SMALL_LOGO = 24.dp
     val REGION_INFO_MAP = 60.dp
+    val SEPARATOR = 1.dp
+    val IP_ARROW = 20.dp
 }
 
 object Width {
@@ -40,6 +42,7 @@ object Width {
     val FAVOURITE = 24.dp
     val SIDE_MENU = 300.dp
     val REGION_INFO_MAP = 120.dp
+    val IP_ARROW = 10.dp
 }
 
 object Square {
