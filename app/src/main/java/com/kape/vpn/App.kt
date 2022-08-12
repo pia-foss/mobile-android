@@ -1,6 +1,7 @@
 package com.kape.vpn
 
 import android.app.Application
+import com.kape.connection.di.connectionModule
 import com.kape.login.di.loginModule
 import com.kape.payments.di.paymentsModule
 import com.kape.profile.di.profileModule
@@ -34,6 +35,7 @@ class App : Application() {
             add(splashModule)
             add(signupModule)
             add(kpiModule)
+            add(connectionModule)
         })
     }
 }

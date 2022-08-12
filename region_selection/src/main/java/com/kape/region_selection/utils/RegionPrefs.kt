@@ -4,6 +4,7 @@ import android.content.Context
 import com.kape.core.Prefs
 
 private const val FAVORITES = "favorites"
+private const val SELECTED_SERVER = "selected-server"
 
 class RegionPrefs(context: Context) : Prefs(context, "regions") {
 
@@ -22,5 +23,11 @@ class RegionPrefs(context: Context) : Prefs(context, "regions") {
     fun isFavorite(serverName: String): Boolean {
         return prefs.getStringSet(FAVORITES, emptySet())!!.contains(serverName)
     }
+
+    fun selectServer(serverName: String) {
+        prefs.edit().putString(SELECTED_SERVER, serverName).apply()
+    }
+
+    fun getSelectedServerKey() = prefs.getString(SELECTED_SERVER, "")
 
 }

@@ -74,7 +74,7 @@ class RegionSelectionViewModel(
     }
 
     fun onRegionSelected(server: Server) {
-        // TODO: handle region selection
+        prefs.selectServer(server.key)
     }
 
     fun onFavoriteClicked(serverName: String) {
