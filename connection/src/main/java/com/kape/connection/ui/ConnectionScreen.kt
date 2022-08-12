@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.core.os.ConfigurationCompat
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.sidemenu.ui.SideMenuUiDrawer
 import com.kape.uicomponents.components.AppBar
 import com.kape.uicomponents.components.AppBarColors
 import com.kape.uicomponents.components.AppBarState
+import com.kape.uicomponents.components.Separator
 import com.kape.uicomponents.theme.Space
 import org.koin.androidx.compose.viewModel
 import java.util.*
@@ -46,6 +45,9 @@ fun ConnectionScreen() {
             state.selectedServer?.let {
                 RegionInformationTile(server = it)
             }
+            Separator()
+            // TODO: hardcoded data for display purposes, will be updated when VPN manager is integrated
+            IpInformationTile(ip = "91.155.24.17", vpnIp = "---")
 
         }
     }
