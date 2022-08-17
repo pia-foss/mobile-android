@@ -33,6 +33,7 @@ object Height {
     val REGION_INFO_MAP = 60.dp
     val SEPARATOR = 1.dp
     val IP_ARROW = 20.dp
+    val QUICK_SETTINGS_ARROW = 18.dp
 }
 
 object Width {
@@ -43,6 +44,7 @@ object Width {
     val SIDE_MENU = 300.dp
     val REGION_INFO_MAP = 120.dp
     val IP_ARROW = 10.dp
+    val QUICK_SETTINGS_ARROW = 8.dp
 }
 
 object Square {
@@ -54,6 +56,7 @@ object Square {
     val CONNECTION_PROGRESS = 180.dp
     val CONNECTION_IMAGE = 200.dp
     val REGION_PIN = 6.dp
+    val QUICK_SETTING_ICON = 30.dp
 }
 
 object Corner {
