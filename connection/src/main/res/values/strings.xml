@@ -5,4 +5,8 @@
     <string name="public_ip">Public IP</string>
     <string name="vpn_ip">VPN IP</string>
     <string name="no_ip">---</string>
+    <string name="quick_settings">QUICK SETTINGS</string>
+    <string name="vpn_kill_switch">VPN Kill Switch</string>
+    <string name="automation">Automation</string>
+    <string name="private_browser">Private Browser</string>
 </resources>
