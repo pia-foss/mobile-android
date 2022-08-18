@@ -16,4 +16,9 @@
     <string name="snooze_description">Disconnects the VPN and automatically reconnects when the timer elapses.</string>
     <string name="resume">RESUME</string>
     <string name="paused_until">Paused until %s</string>
+    <string name="usage">USAGE</string>
+    <string name="download">Download</string>
+    <string name="upload">Upload</string>
+    <string name="usage_kb_to_format">%s kB</string>
+    <string name="usage_mb_to_format">%s mB</string>
 </resources>

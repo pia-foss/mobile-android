@@ -52,6 +52,8 @@ fun ConnectionScreen() {
             QuickSettingsTile()
             Separator()
             SnoozeTile(state.snoozeState, viewModel)
+            Separator()
+            UsageTile(state.usageState)
         }
     }
 }

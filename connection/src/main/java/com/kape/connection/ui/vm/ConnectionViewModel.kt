@@ -2,10 +2,7 @@ package com.kape.connection.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.connection.utils.ConnectionScreenState
-import com.kape.connection.utils.IDLE
-import com.kape.connection.utils.SNOOZE_STATE_DEFAULT
-import com.kape.connection.utils.SnoozeState
+import com.kape.connection.utils.*
 import com.kape.region_selection.domain.GetRegionsUseCase
 import com.kape.region_selection.domain.UpdateLatencyUseCase
 import com.kape.region_selection.server.Server
@@ -35,6 +32,7 @@ class ConnectionViewModel(
 
     private var availableServers = mutableListOf<Server>()
     private var selectedServer: Server? = null
+    private var usageState: UsageState = USAGE_STATE_DEFAULT
 
     fun loadServers(locale: String) = viewModelScope.launch {
         regionsUseCase.loadRegions(locale).collect {
@@ -59,7 +57,7 @@ class ConnectionViewModel(
                     SnoozeState(
                         active = true,
                         formatter.format(end)
-                    )
+                    ), usageState
                 )
             }
             SNOOZE_MEDIUM_MS -> {
@@ -68,7 +66,7 @@ class ConnectionViewModel(
                     selectedServer, SnoozeState(
                         active = true,
                         formatter.format(end)
-                    )
+                    ), usageState
                 )
             }
             SNOOZE_LONG_MS -> {
@@ -78,11 +76,11 @@ class ConnectionViewModel(
                     SnoozeState(
                         active = true,
                         formatter.format(end)
-                    )
+                    ), usageState
                 )
             }
             else -> {
-                newState = ConnectionScreenState(selectedServer, SNOOZE_STATE_DEFAULT)
+                newState = ConnectionScreenState(selectedServer, SNOOZE_STATE_DEFAULT, usageState)
             }
         }
         viewModelScope.launch {
@@ -98,7 +96,7 @@ class ConnectionViewModel(
             selectedServer?.let {
                 regionsUseCase.selectRegion(it.key)
             }
-            _state.emit(ConnectionScreenState(selectedServer, SNOOZE_STATE_DEFAULT))
+            _state.emit(ConnectionScreenState(selectedServer, SNOOZE_STATE_DEFAULT, usageState))
         }
     }
 }
