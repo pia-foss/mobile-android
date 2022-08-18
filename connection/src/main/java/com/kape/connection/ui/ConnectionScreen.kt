@@ -9,12 +9,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.kape.connection.ui.vm.ConnectionViewModel
+import com.kape.router.Router
 import com.kape.sidemenu.ui.SideMenuUiDrawer
 import com.kape.uicomponents.components.AppBar
 import com.kape.uicomponents.components.AppBarColors
 import com.kape.uicomponents.components.AppBarState
 import com.kape.uicomponents.components.Separator
 import com.kape.uicomponents.theme.Space
+import org.koin.androidx.compose.inject
 import org.koin.androidx.compose.viewModel
 import java.util.*
 
@@ -24,6 +26,7 @@ fun ConnectionScreen() {
     val viewModel: ConnectionViewModel by viewModel()
     val state by remember(viewModel) { viewModel.state }.collectAsState()
     val locale = Locale.getDefault().language
+    val router: Router by inject()
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadServers(locale)
@@ -47,7 +50,7 @@ fun ConnectionScreen() {
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             ConnectionButton(ConnectionState.Default)
-            InAppMessageTile("")
+            SurveyTile { viewModel.showSurvey() }
 
             state.selectedServer?.let {
                 RegionInformationTile(server = it)

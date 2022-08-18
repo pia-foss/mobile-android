@@ -12,6 +12,7 @@ sealed class EnterFlow : AppFlow {
     object Subscribe : EnterFlow()
     object TermsOfService : EnterFlow()
     object PrivacyPolicy : EnterFlow()
+    object Survey : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {

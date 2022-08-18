@@ -88,6 +88,13 @@ class MainActivity : ComponentActivity() {
                                 )
                             )
                         }
+                        composable(WebContent.Survey) {
+                            WebViewScreen(
+                                initialUrl = Uri.parse(
+                                    getString(R.string.url_survey)
+                                )
+                            )
+                        }
                     }
                 }
             }
