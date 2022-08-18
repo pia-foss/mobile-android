@@ -47,6 +47,7 @@ fun ConnectionScreen() {
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             ConnectionButton(ConnectionState.Default)
+            InAppMessageTile("")
 
             state.selectedServer?.let {
                 RegionInformationTile(server = it)
