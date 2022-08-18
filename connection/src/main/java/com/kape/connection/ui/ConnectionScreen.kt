@@ -50,7 +50,8 @@ fun ConnectionScreen() {
             IpInformationTile(ip = "91.155.24.17", vpnIp = "---")
             Separator()
             QuickSettingsTile()
-
+            Separator()
+            SnoozeTile(state.snoozeState, viewModel)
         }
     }
 }

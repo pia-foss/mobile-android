@@ -45,6 +45,7 @@ object Width {
     val REGION_INFO_MAP = 120.dp
     val IP_ARROW = 10.dp
     val QUICK_SETTINGS_ARROW = 8.dp
+    val OUTLINE = 1.dp
 }
 
 object Square {
