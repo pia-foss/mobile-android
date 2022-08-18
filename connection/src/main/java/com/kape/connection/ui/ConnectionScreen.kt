@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.kape.connection.ui.vm.ConnectionViewModel
@@ -28,7 +30,11 @@ fun ConnectionScreen() {
     }
 
     SideMenuUiDrawer {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
             AppBar(
                 onClick = { openDrawer() },
                 state = AppBarState(
@@ -54,6 +60,8 @@ fun ConnectionScreen() {
             SnoozeTile(state.snoozeState, viewModel)
             Separator()
             UsageTile(state.usageState)
+            Separator()
+            ConnectionInfoTile()
         }
     }
 }

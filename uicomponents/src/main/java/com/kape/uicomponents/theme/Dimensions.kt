@@ -58,6 +58,7 @@ object Square {
     val CONNECTION_IMAGE = 200.dp
     val REGION_PIN = 6.dp
     val QUICK_SETTING_ICON = 30.dp
+    val CONNECTION_INFO = 28.dp
 }
 
 object Corner {
