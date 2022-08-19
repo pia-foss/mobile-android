@@ -3,12 +3,15 @@ package com.kape.region_selection.domain
 import app.cash.turbine.test
 import com.kape.region_selection.data.RegionRepository
 import com.kape.region_selection.server.Server
+import com.kape.region_selection.utils.RegionPrefs
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -20,12 +23,13 @@ import kotlin.test.assertEquals
 internal class GetRegionsUseCaseTest : KoinTest {
 
     private val repo: RegionRepository = mockk(relaxed = true)
+    private val prefs: RegionPrefs = mockk()
 
     private lateinit var useCase: GetRegionsUseCase
 
     @BeforeEach
     internal fun setUp() {
-        useCase = GetRegionsUseCase(repo)
+        useCase = GetRegionsUseCase(repo, prefs)
     }
 
     @ParameterizedTest(name = "expected: {0}")
@@ -39,6 +43,16 @@ internal class GetRegionsUseCaseTest : KoinTest {
             awaitComplete()
             assertEquals(expected, actual)
         }
+    }
+
+    @Test
+    fun `select server`() = runTest {
+        val expected = "selectedServer"
+        every { prefs.selectServer(any()) } returns Unit
+        every { prefs.getSelectedServerKey() } returns expected
+        useCase.selectRegion(expected)
+        val actual = useCase.getSelectedRegion()
+        assertEquals(expected, actual)
     }
 
     companion object {

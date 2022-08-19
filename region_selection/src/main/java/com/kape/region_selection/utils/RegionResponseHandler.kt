@@ -90,7 +90,7 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
             null,
             null
         )
-        servers[region.id] = server
+        servers[region.name] = server
     }
     return servers
 }
