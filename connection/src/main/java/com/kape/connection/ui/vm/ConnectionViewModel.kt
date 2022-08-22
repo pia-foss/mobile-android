@@ -6,9 +6,13 @@ import com.kape.connection.utils.*
 import com.kape.region_selection.domain.GetRegionsUseCase
 import com.kape.region_selection.domain.UpdateLatencyUseCase
 import com.kape.region_selection.server.Server
+import com.kape.router.EnterFlow
+import com.kape.router.Router
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -16,7 +20,7 @@ import java.time.format.DateTimeFormatter
 class ConnectionViewModel(
     private val regionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
 
     private val oneHourLong = 1L
     private val fiveMinuteLong = 5L
@@ -29,6 +33,8 @@ class ConnectionViewModel(
 
     private val _state = MutableStateFlow(IDLE)
     val state: StateFlow<ConnectionScreenState> = _state
+
+    private val router: Router by inject()
 
     private var availableServers = mutableListOf<Server>()
     private var selectedServer: Server? = null
@@ -87,6 +93,8 @@ class ConnectionViewModel(
             _state.emit(newState)
         }
     }
+
+    fun showSurvey() = router.handleFlow(EnterFlow.Survey)
 
     private fun getSelectedServer() = viewModelScope.launch {
         if (availableServers.isNotEmpty()) {

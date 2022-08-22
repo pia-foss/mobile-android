@@ -35,4 +35,5 @@ object WebContent {
     // Please note these values are links within the signup module's strings file.
     const val Terms = "web-screen-terms"
     const val Privacy = "web-screen-privacy"
+    const val Survey = "web-screen-survey"
 }
