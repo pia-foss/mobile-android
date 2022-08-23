@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.kape.region_selection.R
 import com.kape.region_selection.server.Server
+import com.kape.region_selection.utils.getFlagResource
 import com.kape.uicomponents.theme.*
 import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import java.util.*
@@ -115,13 +116,4 @@ fun getLatencyTextColor(latency: String?): Color {
         in 200..500 -> Latency.Yellow
         else -> Latency.Red
     }
-}
-
-private fun getFlagResource(context: Context, serverIso: String): Int {
-    val resName = String.format(Locale.US, "flag_%s", serverIso.replace(" ", "_").replace(",", "").lowercase())
-    var flagResource: Int = context.resources.getIdentifier(resName, "drawable", context.packageName)
-    if (flagResource == 0) {
-        flagResource = R.drawable.flag_world
-    }
-    return flagResource
 }

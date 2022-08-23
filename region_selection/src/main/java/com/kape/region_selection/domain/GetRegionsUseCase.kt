@@ -14,6 +14,8 @@ class GetRegionsUseCase(private val repo: RegionRepository, private val prefs: R
         }
     }
 
+    fun getFavoriteServers(): List<String> = prefs.getFavoriteServers()
+
     fun getSelectedRegion() = prefs.getSelectedServerKey()
 
     fun selectRegion(key: String) = prefs.selectServer(key)

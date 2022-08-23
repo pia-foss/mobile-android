@@ -50,7 +50,6 @@ fun ConnectionScreen() {
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             ConnectionButton(ConnectionState.Default)
-            SurveyTile { viewModel.showSurvey() }
 
             state.selectedServer?.let {
                 RegionInformationTile(server = it)
@@ -60,6 +59,8 @@ fun ConnectionScreen() {
             IpInformationTile(ip = "91.155.24.17", vpnIp = "---")
             Separator()
             QuickSettingsTile()
+            Separator()
+            FavoritesTile(state.favoriteServers)
             Separator()
             SnoozeTile(state.snoozeState, viewModel)
             Separator()

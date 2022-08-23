@@ -21,7 +21,11 @@ class RegionPrefs(context: Context) : Prefs(context, "regions") {
     }
 
     fun isFavorite(serverName: String): Boolean {
-        return prefs.getStringSet(FAVORITES, emptySet())!!.contains(serverName)
+        return prefs.getStringSet(FAVORITES, emptySet())?.contains(serverName) ?: false
+    }
+
+    fun getFavoriteServers(): List<String> {
+        return prefs.getStringSet(FAVORITES, emptySet())?.toList() ?: emptyList()
     }
 
     fun selectServer(serverName: String) {

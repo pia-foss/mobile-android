@@ -55,15 +55,26 @@ internal class GetRegionsUseCaseTest : KoinTest {
         assertEquals(expected, actual)
     }
 
+    @Test
+    fun `get favorite servers if any`() = runTest {
+        val expected = listOf("Germany", "UK")
+        every { prefs.getFavoriteServers() } returns expected
+        val actual = useCase.getFavoriteServers()
+        assertEquals(expected, actual)
+    }
+
     companion object {
         @JvmStatic
         fun data() = Stream.of(
             Arguments.of(emptyList<Server>()),
-            Arguments.of(listOf(Server(name = "",
-                iso = "",
-                dns = "",
-                endpoints = emptyMap(),
-                key = "key",
+            Arguments.of(
+                listOf(
+                    Server(
+                        name = "",
+                        iso = "",
+                        dns = "",
+                        endpoints = emptyMap(),
+                        key = "key",
                 isGeo = false,
                 isOffline = false,
                 isAllowsPF = false,
