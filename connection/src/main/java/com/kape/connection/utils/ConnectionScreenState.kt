@@ -14,7 +14,8 @@ val USAGE_STATE_DEFAULT = UsageState(0, 0)
 data class ConnectionScreenState(
     val selectedServer: Server? = null,
     val snoozeState: SnoozeState,
-    val usageState: UsageState
+    val usageState: UsageState,
+    val favoriteServers: List<Server> = emptyList()
 )
 
 val IDLE =

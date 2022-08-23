@@ -39,64 +39,73 @@ class ConnectionViewModel(
     private var availableServers = mutableListOf<Server>()
     private var selectedServer: Server? = null
     private var usageState: UsageState = USAGE_STATE_DEFAULT
+    private var snoozeState: SnoozeState = SNOOZE_STATE_DEFAULT
+    private var favoriteServers: List<Server> = emptyList()
 
     fun loadServers(locale: String) = viewModelScope.launch {
         regionsUseCase.loadRegions(locale).collect {
             availableServers.clear()
             updateLatencyUseCase.updateLatencies().collect {
                 availableServers.addAll(it)
+                filterFavoriteServers()
                 getSelectedServer()
+                _state.emit(
+                    ConnectionScreenState(
+                        selectedServer,
+                        snoozeState,
+                        usageState,
+                        favoriteServers
+                    )
+                )
             }
         }
     }
 
     fun snooze(interval: Int) {
-        val newState: ConnectionScreenState
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val now = LocalTime.now()
         // TODO: implement missing logic
         when (interval) {
             SNOOZE_SHORT_MS -> {
                 val end = now.plusMinutes(fiveMinuteLong)
-                newState = ConnectionScreenState(
-                    selectedServer,
-                    SnoozeState(
-                        active = true,
-                        formatter.format(end)
-                    ), usageState
+                snoozeState = SnoozeState(
+                    active = true,
+                    formatter.format(end)
                 )
             }
             SNOOZE_MEDIUM_MS -> {
                 val end = now.plusMinutes(fifteenMinuteLong)
-                newState = ConnectionScreenState(
-                    selectedServer, SnoozeState(
-                        active = true,
-                        formatter.format(end)
-                    ), usageState
+                snoozeState = SnoozeState(
+                    active = true,
+                    formatter.format(end)
                 )
             }
             SNOOZE_LONG_MS -> {
                 val end = now.plusHours(oneHourLong)
-                newState = ConnectionScreenState(
-                    selectedServer,
-                    SnoozeState(
-                        active = true,
-                        formatter.format(end)
-                    ), usageState
+                snoozeState = SnoozeState(
+                    active = true,
+                    formatter.format(end)
                 )
             }
             else -> {
-                newState = ConnectionScreenState(selectedServer, SNOOZE_STATE_DEFAULT, usageState)
+                snoozeState = SNOOZE_STATE_DEFAULT
             }
         }
         viewModelScope.launch {
-            _state.emit(newState)
+            _state.emit(
+                ConnectionScreenState(
+                    selectedServer,
+                    snoozeState,
+                    usageState,
+                    favoriteServers
+                )
+            )
         }
     }
 
     fun showSurvey() = router.handleFlow(EnterFlow.Survey)
 
-    private fun getSelectedServer() = viewModelScope.launch {
+    private fun getSelectedServer() {
         if (availableServers.isNotEmpty()) {
             selectedServer =
                 availableServers.firstOrNull { it.key == regionsUseCase.getSelectedRegion() }
@@ -104,7 +113,12 @@ class ConnectionViewModel(
             selectedServer?.let {
                 regionsUseCase.selectRegion(it.key)
             }
-            _state.emit(ConnectionScreenState(selectedServer, SNOOZE_STATE_DEFAULT, usageState))
         }
     }
+
+    private fun filterFavoriteServers() {
+        favoriteServers =
+            availableServers.filter { it.name in regionsUseCase.getFavoriteServers() }
+    }
+
 }
