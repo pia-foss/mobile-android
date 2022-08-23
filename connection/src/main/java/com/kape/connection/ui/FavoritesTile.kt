@@ -5,6 +5,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -56,18 +57,35 @@ fun FavoritesTile(favoriteServers: List<Server>) {
 @Composable
 fun FavoriteServer(server: Server? = null, modifier: Modifier) {
     Column(modifier = modifier, horizontalAlignment = CenterHorizontally) {
-        Icon(
-            painter = painterResource(
-                id = server?.let { getFlagResource(LocalContext.current, it.iso) }
-                    ?: R.drawable.ic_map_empty
-            ),
-            contentDescription = stringResource(
-                id = com.kape.sidemenu.R.string.icon
-            ), tint = Color.Unspecified,
-            modifier = Modifier
-                .width(Width.FLAG)
-                .height(Height.FLAG)
-        )
+        Box {
+            Icon(
+                painter = painterResource(
+                    id = server?.let { getFlagResource(LocalContext.current, it.iso) }
+                        ?: R.drawable.ic_map_empty
+                ),
+                contentDescription = stringResource(
+                    id = com.kape.sidemenu.R.string.icon
+                ), tint = Color.Unspecified,
+                modifier = Modifier
+                    .padding(top = Space.MINI, end = Space.MINI)
+                    .width(Width.FLAG)
+                    .height(Height.FLAG)
+            )
+            server?.let {
+                if (it.isDedicatedIp()) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_dip_badge),
+                        contentDescription = stringResource(
+                            id = com.kape.sidemenu.R.string.icon
+                        ),
+                        tint = Color.Unspecified, modifier = Modifier
+                            .align(TopEnd)
+                            .size(Square.DIP_BADGE)
+                    )
+                }
+            }
+        }
+
         Spacer(modifier = Modifier.height(Space.MINI))
         Text(text = server?.iso ?: "", fontSize = FontSize.Tiny, color = Grey20)
     }
