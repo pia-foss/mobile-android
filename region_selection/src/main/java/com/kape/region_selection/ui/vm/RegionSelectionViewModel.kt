@@ -6,11 +6,12 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.core.server.Server
 import com.kape.region_selection.domain.GetRegionsUseCase
 import com.kape.region_selection.domain.UpdateLatencyUseCase
-import com.kape.region_selection.server.Server
 import com.kape.region_selection.utils.*
 import com.kape.router.Back
+import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,6 +76,7 @@ class RegionSelectionViewModel(
 
     fun onRegionSelected(server: Server) {
         prefs.selectServer(server.key)
+        router.handleFlow(ExitFlow.RegionSelection)
     }
 
     fun onFavoriteClicked(serverName: String) {

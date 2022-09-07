@@ -1,4 +1,4 @@
-package com.kape.connection.ui
+package com.kape.connection.ui.tiles
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -7,24 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.kape.connection.R
 import com.kape.connection.utils.UsageState
+import com.kape.uicomponents.components.ConnectionTile
 import com.kape.uicomponents.theme.FontSize
 import com.kape.uicomponents.theme.Grey20
-import com.kape.uicomponents.theme.Grey55
 import com.kape.uicomponents.theme.Space
 
 @Composable
 fun UsageTile(state: UsageState) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Space.NORMAL)
-    ) {
-        Text(
-            text = stringResource(id = R.string.usage),
-            color = Grey55,
-            fontSize = FontSize.Small
-        )
-        Spacer(modifier = Modifier.height(Space.SMALL))
+    ConnectionTile(labelId = R.string.usage) {
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {

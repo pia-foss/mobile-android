@@ -1,7 +1,7 @@
-package com.kape.region_selection.utils
+package com.kape.uicomponents.utils
 
 import android.content.Context
-import com.kape.region_selection.R
+import com.kape.uicomponents.R
 import java.util.*
 
 fun getFlagResource(context: Context, serverIso: String): Int {

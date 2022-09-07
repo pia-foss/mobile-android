@@ -25,4 +25,5 @@
     <string name="survey_message">Want to help make PIA better? Let us know how we can improve!</string>
     <string name="survey_action">Take the Survey</string>
     <string name="favorite_servers">FAVORITE SERVERS</string>
+    <string name="quick_connect">QUICK CONNECT</string>
 </resources>

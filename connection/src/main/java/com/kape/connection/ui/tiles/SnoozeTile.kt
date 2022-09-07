@@ -1,4 +1,4 @@
-package com.kape.connection.ui
+package com.kape.connection.ui.tiles
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,23 +11,14 @@ import androidx.compose.ui.res.stringResource
 import com.kape.connection.R
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.SnoozeState
+import com.kape.uicomponents.components.ConnectionTile
 import com.kape.uicomponents.theme.*
 
 // TODO: update state as needed; currently used for display purposes only
 
 @Composable
 fun SnoozeTile(state: SnoozeState, viewModel: ConnectionViewModel) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Space.NORMAL)
-    ) {
-        Text(
-            text = stringResource(id = R.string.vpn_snooze),
-            color = Grey55,
-            fontSize = FontSize.Small
-        )
-        Spacer(modifier = Modifier.height(Space.SMALL))
+    ConnectionTile(labelId = R.string.vpn_snooze) {
         if (state.active) {
             SnoozeTileActive(state.activeUntil) { viewModel.snooze(viewModel.SNOOZE_DEFAULT_MS) }
         } else {

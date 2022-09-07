@@ -1,6 +1,7 @@
 package com.kape.region_selection.utils
 
-import com.kape.region_selection.server.Server
+import com.kape.core.server.Server
+
 
 data class RegionSelectionScreenState(
     val idle: Boolean,

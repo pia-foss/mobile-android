@@ -48,6 +48,7 @@ dependencies {
     implementation(project(mapOf("path" to ":sidemenu")))
     implementation(project(mapOf("path" to ":router")))
     implementation(project(mapOf("path" to ":region_selection")))
+    implementation(project(mapOf("path" to ":core")))
 
     coreLibraryDesugaring(Android.desugarJdkLibs)
 

@@ -1,62 +1,23 @@
-package com.kape.connection.ui
+package com.kape.connection.ui.tiles
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.Alignment.Companion.TopEnd
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.kape.connection.R
-import com.kape.region_selection.server.Server
-import com.kape.region_selection.utils.getFlagResource
+import com.kape.core.server.Server
 import com.kape.uicomponents.theme.*
-
-const val MAX_FAVORITE_SERVERS = 6
-
-@Composable
-fun FavoritesTile(favoriteServers: List<Server>) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Space.NORMAL)
-    ) {
-        Text(
-            text = stringResource(id = R.string.favorite_servers),
-            color = Grey55,
-            fontSize = FontSize.Small
-        )
-        Spacer(modifier = Modifier.height(Space.SMALL))
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            if (favoriteServers.isEmpty()) {
-                for (index in 1..MAX_FAVORITE_SERVERS) {
-                    FavoriteServer(modifier = Modifier.weight(1f))
-                }
-            } else {
-                for (index in 0 until MAX_FAVORITE_SERVERS) {
-                    if (favoriteServers.getOrNull(index) != null) {
-                        FavoriteServer(
-                            server = favoriteServers[index],
-                            modifier = Modifier.weight(1f)
-                        )
-                    } else {
-                        FavoriteServer(modifier = Modifier.weight(1f))
-                    }
-                }
-            }
-        }
-    }
-}
+import com.kape.uicomponents.utils.getFlagResource
 
 @Composable
-fun FavoriteServer(server: Server? = null, modifier: Modifier) {
-    Column(modifier = modifier, horizontalAlignment = CenterHorizontally) {
+fun ServerTile(server: Server? = null, modifier: Modifier) {
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Box {
             Icon(
                 painter = painterResource(
@@ -79,7 +40,7 @@ fun FavoriteServer(server: Server? = null, modifier: Modifier) {
                             id = com.kape.sidemenu.R.string.icon
                         ),
                         tint = Color.Unspecified, modifier = Modifier
-                            .align(TopEnd)
+                            .align(Alignment.TopEnd)
                             .size(Square.DIP_BADGE)
                     )
                 }

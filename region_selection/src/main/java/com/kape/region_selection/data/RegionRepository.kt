@@ -1,8 +1,8 @@
 package com.kape.region_selection.data
 
+import com.kape.core.server.Server
+import com.kape.core.server.ServerInfo
 import com.kape.region_selection.domain.RegionDataSource
-import com.kape.region_selection.server.Server
-import com.kape.region_selection.server.ServerInfo
 import com.kape.region_selection.utils.adaptServers
 import com.kape.region_selection.utils.adaptServersInfo
 import kotlinx.coroutines.flow.Flow

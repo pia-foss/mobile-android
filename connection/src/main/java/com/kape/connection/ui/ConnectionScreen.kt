@@ -8,15 +8,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import com.kape.connection.ui.tiles.*
 import com.kape.connection.ui.vm.ConnectionViewModel
-import com.kape.router.Router
 import com.kape.sidemenu.ui.SideMenuUiDrawer
 import com.kape.uicomponents.components.AppBar
 import com.kape.uicomponents.components.AppBarColors
 import com.kape.uicomponents.components.AppBarState
 import com.kape.uicomponents.components.Separator
 import com.kape.uicomponents.theme.Space
-import org.koin.androidx.compose.inject
 import org.koin.androidx.compose.viewModel
 import java.util.*
 
@@ -26,7 +25,6 @@ fun ConnectionScreen() {
     val viewModel: ConnectionViewModel by viewModel()
     val state by remember(viewModel) { viewModel.state }.collectAsState()
     val locale = Locale.getDefault().language
-    val router: Router by inject()
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadServers(locale)
@@ -52,13 +50,17 @@ fun ConnectionScreen() {
             ConnectionButton(ConnectionState.Default)
 
             state.selectedServer?.let {
-                RegionInformationTile(server = it)
+                RegionInformationTile(server = it) {
+                    viewModel.showRegionSelection()
+                }
             }
             Separator()
             // TODO: hardcoded data for display purposes, will be updated when VPN manager is integrated
             IpInformationTile(ip = "91.155.24.17", vpnIp = "---")
             Separator()
             QuickSettingsTile()
+            Separator()
+            QuickConnectTile(servers = state.quickConnectServers)
             Separator()
             FavoritesTile(state.favoriteServers)
             Separator()

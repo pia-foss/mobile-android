@@ -2,10 +2,11 @@ package com.kape.connection.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.connection.ui.tiles.MAX_SERVERS
 import com.kape.connection.utils.*
+import com.kape.core.server.Server
 import com.kape.region_selection.domain.GetRegionsUseCase
 import com.kape.region_selection.domain.UpdateLatencyUseCase
-import com.kape.region_selection.server.Server
 import com.kape.router.EnterFlow
 import com.kape.router.Router
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +21,7 @@ import java.time.format.DateTimeFormatter
 class ConnectionViewModel(
     private val regionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
+    private val prefs: ConnectionPrefs
 ) : ViewModel(), KoinComponent {
 
     private val oneHourLong = 1L
@@ -41,6 +43,7 @@ class ConnectionViewModel(
     private var usageState: UsageState = USAGE_STATE_DEFAULT
     private var snoozeState: SnoozeState = SNOOZE_STATE_DEFAULT
     private var favoriteServers: List<Server> = emptyList()
+    private var quickConnectServers: List<Server> = emptyList()
 
     fun loadServers(locale: String) = viewModelScope.launch {
         regionsUseCase.loadRegions(locale).collect {
@@ -48,13 +51,18 @@ class ConnectionViewModel(
             updateLatencyUseCase.updateLatencies().collect {
                 availableServers.addAll(it)
                 filterFavoriteServers()
+                getQuickConnectServers()
                 getSelectedServer()
+                selectedServer?.let { server ->
+                    connectToServer(server)
+                }
                 _state.emit(
                     ConnectionScreenState(
                         selectedServer,
                         snoozeState,
                         usageState,
-                        favoriteServers
+                        favoriteServers,
+                        quickConnectServers
                     )
                 )
             }
@@ -97,13 +105,32 @@ class ConnectionViewModel(
                     selectedServer,
                     snoozeState,
                     usageState,
-                    favoriteServers
+                    favoriteServers,
+                    quickConnectServers
                 )
             )
         }
     }
 
     fun showSurvey() = router.handleFlow(EnterFlow.Survey)
+
+    private fun connectToServer(server: Server) {
+        selectedServer = server
+        regionsUseCase.selectRegion(server.key)
+        // TODO: init connection
+        prefs.addToQuickConnect(server.key)
+        viewModelScope.launch {
+            _state.emit(
+                ConnectionScreenState(
+                    selectedServer,
+                    snoozeState,
+                    usageState,
+                    favoriteServers,
+                    quickConnectServers
+                )
+            )
+        }
+    }
 
     private fun getSelectedServer() {
         if (availableServers.isNotEmpty()) {
@@ -119,6 +146,26 @@ class ConnectionViewModel(
     private fun filterFavoriteServers() {
         favoriteServers =
             availableServers.filter { it.name in regionsUseCase.getFavoriteServers() }
+    }
+
+    private fun getQuickConnectServers() {
+        val servers = mutableListOf<String>()
+        if (favoriteServers.size > MAX_SERVERS) {
+            for (index in MAX_SERVERS until favoriteServers.size) {
+                servers.add(favoriteServers[index].key)
+            }
+        }
+        val previousConnections =
+            availableServers.filter { it.key in prefs.getQuickConnectServers() }
+
+        for (server in previousConnections) {
+            servers.add(server.key)
+        }
+        quickConnectServers = availableServers.filter { it.key in servers }
+    }
+
+    fun showRegionSelection() {
+        router.handleFlow(EnterFlow.RegionSelection)
     }
 
 }

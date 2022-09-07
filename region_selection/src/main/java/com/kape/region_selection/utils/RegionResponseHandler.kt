@@ -1,7 +1,7 @@
 package com.kape.region_selection.utils
 
-import com.kape.region_selection.server.Server
-import com.kape.region_selection.server.ServerInfo
+import com.kape.core.server.Server
+import com.kape.core.server.ServerInfo
 import com.privateinternetaccess.regions.RegionsProtocol
 import com.privateinternetaccess.regions.model.RegionsResponse
 

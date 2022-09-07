@@ -1,8 +1,8 @@
 package com.kape.region_selection.domain
 
 import app.cash.turbine.test
+import com.kape.core.server.Server
 import com.kape.region_selection.data.RegionRepository
-import com.kape.region_selection.server.Server
 import com.kape.region_selection.utils.RegionPrefs
 import io.mockk.coEvery
 import io.mockk.every

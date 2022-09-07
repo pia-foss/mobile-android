@@ -1,4 +1,4 @@
-package com.kape.region_selection.server
+package com.kape.core.server
 
 data class ServerInfo(
     var autoRegions: List<String>? = null,

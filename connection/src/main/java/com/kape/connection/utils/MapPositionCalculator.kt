@@ -1,6 +1,6 @@
 package com.kape.connection.utils
 
-import com.kape.region_selection.server.Server
+import com.kape.core.server.Server
 import kotlin.math.ln
 import kotlin.math.tan
 

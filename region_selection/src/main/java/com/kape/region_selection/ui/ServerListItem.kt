@@ -1,6 +1,5 @@
 package com.kape.region_selection.ui
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,12 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.kape.core.server.Server
 import com.kape.region_selection.R
-import com.kape.region_selection.server.Server
-import com.kape.region_selection.utils.getFlagResource
 import com.kape.uicomponents.theme.*
+import com.kape.uicomponents.utils.getFlagResource
 import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
-import java.util.*
 
 @Composable
 fun ServerListItem(

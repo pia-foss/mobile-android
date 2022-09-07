@@ -1,4 +1,4 @@
-package com.kape.connection.ui
+package com.kape.connection.ui.tiles
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,22 +13,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.kape.connection.R
+import com.kape.uicomponents.components.ConnectionTile
 import com.kape.uicomponents.theme.*
 
 @Composable
 fun QuickSettingsTile() {
     Box(modifier = Modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Space.NORMAL)
-        ) {
-            Text(
-                text = stringResource(id = R.string.quick_settings),
-                color = Grey55,
-                fontSize = FontSize.Small
-            )
-            Spacer(modifier = Modifier.height(Space.NORMAL))
+        ConnectionTile(labelId = R.string.quick_settings) {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {

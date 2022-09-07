@@ -1,4 +1,4 @@
-package com.kape.connection.ui
+package com.kape.connection.ui.tiles
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
@@ -10,21 +10,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.kape.connection.R
-import com.kape.uicomponents.theme.*
+import com.kape.uicomponents.components.ConnectionTile
+import com.kape.uicomponents.theme.FontSize
+import com.kape.uicomponents.theme.Grey20
+import com.kape.uicomponents.theme.Space
+import com.kape.uicomponents.theme.Square
 
 @Composable
 fun ConnectionInfoTile() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Space.NORMAL)
-    ) {
-        Text(
-            text = stringResource(id = R.string.connection),
-            color = Grey55,
-            fontSize = FontSize.Small
-        )
-        Spacer(modifier = Modifier.height(Space.NORMAL))
+    ConnectionTile(labelId = R.string.connection) {
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {

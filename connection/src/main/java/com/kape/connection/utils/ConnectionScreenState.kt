@@ -1,6 +1,7 @@
 package com.kape.connection.utils
 
-import com.kape.region_selection.server.Server
+import com.kape.core.server.Server
+
 
 // TODO: temporary states, will evolve
 data class SnoozeState(val active: Boolean, val activeUntil: String? = null)
@@ -15,7 +16,8 @@ data class ConnectionScreenState(
     val selectedServer: Server? = null,
     val snoozeState: SnoozeState,
     val usageState: UsageState,
-    val favoriteServers: List<Server> = emptyList()
+    val favoriteServers: List<Server> = emptyList(),
+    val quickConnectServers: List<Server> = emptyList()
 )
 
 val IDLE =

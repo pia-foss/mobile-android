@@ -1,8 +1,8 @@
 package com.kape.region_selection.data
 
 import app.cash.turbine.test
+import com.kape.core.server.Server
 import com.kape.region_selection.domain.RegionDataSource
-import com.kape.region_selection.server.Server
 import com.kape.region_selection.utils.adaptServers
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.model.RegionsResponse

@@ -1,4 +1,4 @@
-package com.kape.connection.ui
+package com.kape.connection.ui.tiles
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
