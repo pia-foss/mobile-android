@@ -4,10 +4,7 @@ import android.app.Activity
 import com.android.billingclient.api.*
 import com.kape.payments.models.PurchaseData
 import com.kape.payments.models.Subscription
-import com.kape.payments.utils.PurchaseState
-import com.kape.payments.utils.SubscriptionPrefs
-import com.kape.payments.utils.monthlySubscription
-import com.kape.payments.utils.yearlySubscription
+import com.kape.payments.utils.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
@@ -39,6 +36,8 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
         }
 
     override val purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.Default)
+    override val purchaseHistoryState =
+        MutableStateFlow<PurchaseHistoryState>(PurchaseHistoryState.Default)
 
     override fun register(activity: Activity) {
         this.activity = activity
@@ -50,16 +49,13 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    // TODO: handle success
                     purchaseState.value = PurchaseState.InitSuccess
                 } else {
-                    // TODO: handle error
                     purchaseState.value = PurchaseState.InitFailed
                 }
             }
 
             override fun onBillingServiceDisconnected() {
-                // TODO: handle error
                 purchaseState.value = PurchaseState.InitFailed
             }
         })
@@ -116,6 +112,40 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
 
     override fun getPurchaseUpdates() {
         // no-op
+    }
+
+    override fun getPurchaseHistory() {
+        val params =
+            QueryPurchaseHistoryParams.newBuilder().setProductType(BillingClient.ProductType.SUBS)
+                .build()
+
+        val purchaseHistoryListener = object : PurchaseHistoryResponseListener {
+            override fun onPurchaseHistoryResponse(
+                billingResponse: BillingResult,
+                purchases: MutableList<PurchaseHistoryRecord>?
+            ) {
+                if (billingResponse.responseCode != BillingClient.BillingResponseCode.OK) {
+                    purchaseHistoryState.value = PurchaseHistoryState.PurchaseHistoryFailed
+                    return
+                }
+                if (purchases.isNullOrEmpty()) {
+                    purchaseHistoryState.value = PurchaseHistoryState.PurchaseHistoryFailed
+                    return
+                }
+
+                for (p: PurchaseHistoryRecord in purchases.sortedByDescending { it.purchaseTime }) {
+                    if (availableProducts.any { it.productId == p.products[0] }) {
+                        purchaseHistoryState.value =
+                            PurchaseHistoryState.PurchaseHistorySuccess(
+                                p.purchaseToken,
+                                p.products[0]
+                            )
+                        break
+                    }
+                }
+            }
+        }
+        billingClient.queryPurchaseHistoryAsync(params, purchaseHistoryListener)
     }
 
     private fun createProductsListForQuery(): List<QueryProductDetailsParams.Product> {

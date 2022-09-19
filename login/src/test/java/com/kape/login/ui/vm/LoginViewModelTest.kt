@@ -4,6 +4,7 @@ import com.kape.login.BaseTest
 import com.kape.login.domain.GetUserLoggedInUseCase
 import com.kape.login.domain.LoginUseCase
 import com.kape.login.utils.LoginState
+import com.kape.payments.ui.PaymentProvider
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -24,13 +25,14 @@ internal class LoginViewModelTest : BaseTest() {
 
     private val useCase: LoginUseCase = mockk(relaxed = true)
     private val userLoggedInUseCase: GetUserLoggedInUseCase = mockk(relaxed = true)
+    private val paymentProvider: PaymentProvider = mockk(relaxed = true)
 
     private lateinit var viewModel: LoginViewModel
 
     @BeforeEach
     internal fun setUp() {
         Dispatchers.setMain(mainThreadSurrogate)
-        viewModel = LoginViewModel(useCase, userLoggedInUseCase)
+        viewModel = LoginViewModel(useCase, userLoggedInUseCase, paymentProvider)
     }
 
     @Test

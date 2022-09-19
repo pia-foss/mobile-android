@@ -7,10 +7,7 @@ import com.amazon.device.iap.PurchasingService
 import com.amazon.device.iap.model.*
 import com.kape.payments.models.PurchaseData
 import com.kape.payments.models.Subscription
-import com.kape.payments.utils.PurchaseState
-import com.kape.payments.utils.SubscriptionPrefs
-import com.kape.payments.utils.monthlySubscription
-import com.kape.payments.utils.yearlySubscription
+import com.kape.payments.utils.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
 private const val M1 = "PIA-M1"
@@ -25,6 +22,8 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
     var availableProducts = mutableListOf<Product>()
     override val purchaseState: MutableStateFlow<PurchaseState> =
         MutableStateFlow(PurchaseState.Default)
+    override val purchaseHistoryState =
+        MutableStateFlow<PurchaseHistoryState>(PurchaseHistoryState.Default)
 
     override fun register(activity: Activity) {
         this.activity = activity
@@ -104,6 +103,10 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
 
     override fun getPurchaseUpdates() {
         PurchasingService.getPurchaseUpdates(false)
+    }
+
+    override fun getPurchaseHistory() {
+        // no-op
     }
 
     private fun handlePurchaseResponse(purchase: PurchaseResponse?) {

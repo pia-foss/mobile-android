@@ -20,6 +20,15 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
+    }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -49,6 +58,7 @@ dependencies {
     implementation(project(mapOf("path" to ":router")))
     implementation(project(mapOf("path" to ":region_selection")))
     implementation(project(mapOf("path" to ":core")))
+    implementation(project(mapOf("path" to ":payments")))
 
     coreLibraryDesugaring(Android.desugarJdkLibs)
 

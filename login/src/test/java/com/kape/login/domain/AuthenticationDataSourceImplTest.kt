@@ -83,6 +83,20 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
             }
         }
 
+    @ParameterizedTest(name = "api: {0}, expected: {1}")
+    @MethodSource("accountApiResults")
+    fun loginWithReceipt(errorList: List<AccountRequestError>, expected: ApiResult) =
+        runTest {
+            coEvery { api.loginWithReceipt(any(), any(), any(), any(), any()) } answers {
+                lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
+            }
+
+            source.loginWithReceipt("token", "product", "package").test {
+                val actual = awaitItem()
+                assertEquals(expected, actual)
+            }
+        }
+
     @Test
     fun `isUserLoggedIn with apiToken = null and vpnToken = null returns false`() = runTest {
         every { api.apiToken() } returns null

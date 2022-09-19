@@ -26,12 +26,12 @@ class App : Application() {
         androidContext(this@App)
         modules(mutableListOf<Module>().apply {
             add(appModule)
+            add(paymentsModule)
             add(loginModule)
             add(permissionModule)
             add(sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
             add(profileModule)
             add(regionModule)
-            add(paymentsModule)
             add(splashModule)
             add(signupModule)
             add(kpiModule)

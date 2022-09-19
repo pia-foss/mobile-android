@@ -21,6 +21,15 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
+    }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8

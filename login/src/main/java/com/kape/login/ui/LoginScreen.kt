@@ -80,9 +80,7 @@ fun LoginScreen(navController: NavController) {
             .align(CenterHorizontally)
             .padding(Space.NORMAL, Space.NORMAL, Space.NORMAL, Space.SMALL)
             .clickable {
-                Toast
-                    .makeText(currentContext, "NOT IMPLEMENTED YET", Toast.LENGTH_SHORT)
-                    .show()
+                viewModel.loginWithReceipt(currentContext.packageName)
             })
         Text(text = stringResource(id = R.string.login_with_magic_link).toUpperCase(Locale.current),
             color = DarkGreen20,

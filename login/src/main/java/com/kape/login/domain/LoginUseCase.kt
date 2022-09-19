@@ -39,4 +39,24 @@ class LoginUseCase(private val source: AuthenticationDataSource) {
             }
         }
     }
+
+    suspend fun loginWithReceipt(
+        receiptToken: String,
+        productId: String,
+        packageName: String
+    ): Flow<LoginState> = flow {
+        source.loginWithReceipt(receiptToken, productId, packageName).collect {
+            when (it) {
+                ApiResult.Success -> emit(LoginState.Successful)
+                is ApiResult.Error -> {
+                    when (it.error) {
+                        ApiError.AccountExpired -> emit(LoginState.Expired)
+                        ApiError.AuthFailed -> emit(LoginState.Failed)
+                        ApiError.Throttled -> emit(LoginState.Throttled)
+                        ApiError.Unknown -> emit(LoginState.Failed)
+                    }
+                }
+            }
+        }
+    }
 }

@@ -15,6 +15,6 @@ val loginModule = module {
     single { LoginUseCase(get()) }
     single { LogoutUseCase(get()) }
     single { GetUserLoggedInUseCase(get()) }
-    viewModel { LoginViewModel(get(), get()) }
+    viewModel { LoginViewModel(get(), get(), get()) }
     viewModel { LoginWithEmailViewModel(get()) }
 }

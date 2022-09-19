@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+private const val STORE = "google_play"
+
 class AuthenticationDataSourceImpl : AuthenticationDataSource, KoinComponent {
 
     private val api: AndroidAccountAPI by inject()
@@ -45,6 +47,21 @@ class AuthenticationDataSourceImpl : AuthenticationDataSource, KoinComponent {
             if (it.isNotEmpty()) {
                 trySend(ApiResult.Error(getApiError(it.last().code)))
                 return@loginLink
+            }
+            trySend(ApiResult.Success)
+        }
+        awaitClose { channel.close() }
+    }
+
+    override fun loginWithReceipt(
+        receiptToken: String,
+        productId: String,
+        packageName: String
+    ): Flow<ApiResult> = callbackFlow {
+        api.loginWithReceipt(STORE, receiptToken, productId, packageName) {
+            if (it.isNotEmpty()) {
+                trySend(ApiResult.Error(getApiError(it.last().code)))
+                return@loginWithReceipt
             }
             trySend(ApiResult.Success)
         }

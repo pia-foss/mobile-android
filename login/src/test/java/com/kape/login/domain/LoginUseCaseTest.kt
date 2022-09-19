@@ -55,6 +55,19 @@ internal class LoginUseCaseTest : BaseTest() {
         }
     }
 
+    @ParameterizedTest(name = "repo: {0}, expected: {1}")
+    @MethodSource("useCaseLogin")
+    fun loginWithReceipt(result: ApiResult, expected: LoginState) = runTest {
+        coEvery { source.loginWithReceipt(any(), any(), any()) } returns flow {
+            emit(result)
+        }
+        useCase.loginWithReceipt("token", "product", "package").test {
+            val actual = awaitItem()
+            awaitComplete()
+            assertEquals(expected, actual)
+        }
+    }
+
     companion object {
         @JvmStatic
         fun useCaseLogin() = Stream.of(
