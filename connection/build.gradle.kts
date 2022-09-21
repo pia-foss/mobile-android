@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
 android {
@@ -59,6 +60,8 @@ dependencies {
     implementation(project(mapOf("path" to ":region_selection")))
     implementation(project(mapOf("path" to ":core")))
     implementation(project(mapOf("path" to ":payments")))
+    implementation(project(mapOf("path" to ":vpnmanager")))
+    implementation(project(mapOf("path" to ":account")))
 
     coreLibraryDesugaring(Android.desugarJdkLibs)
 
@@ -82,4 +85,26 @@ dependencies {
     implementation(Kotlin.serializationCore)
     implementation(Kotlin.serializationJson)
     implementation(Kotlin.dateTime)
+
+    testImplementation(UnitTest.junit)
+    testImplementation(UnitTest.coroutines)
+    testImplementation(UnitTest.turbine)
+    testImplementation(UnitTest.koinTest)
+    testImplementation(UnitTest.koinTestJunit5)
+    testImplementation(UnitTest.jUnit5Api)
+    testRuntimeOnly(UnitTest.jUnit5Engine)
+    testImplementation(UnitTest.jUnit5Params)
+    testImplementation(UnitTest.mockk)
+    testImplementation(UnitTest.androidCoreArch)
+
+    androidTestImplementation(AndroidTest.jUnit)
+    androidTestImplementation(AndroidTest.espressoCore)
+    androidTestImplementation(AndroidTest.composeUI)
+    androidTestImplementation(AndroidTest.mockk)
+    androidTestImplementation(AndroidTest.koinTest)
+    androidTestImplementation(AndroidTest.androidCore)
+    androidTestImplementation(AndroidTest.uiAutomator)
+
+    debugImplementation(DebugTest.composeUI)
+    debugImplementation(DebugTest.composeManifest)
 }
