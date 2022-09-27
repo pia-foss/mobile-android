@@ -3,11 +3,13 @@ package com.kape.connection.data
 import app.cash.turbine.test
 import com.kape.connection.di.connectionModule
 import com.kape.connection.domain.ConnectionDataSource
+import com.privateinternetaccess.account.AccountAPI
 import com.privateinternetaccess.kapevpnmanager.models.ClientConfiguration
 import com.privateinternetaccess.kapevpnmanager.models.ServerPeerInformation
 import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerAPI
 import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerConnectionListener
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -22,12 +24,14 @@ import kotlin.test.assertEquals
 internal class ConnectionDataSourceImplTest {
 
     private val connectionApi: VPNManagerAPI = mockk(relaxed = true)
+    private val authenticationApi: AccountAPI = mockk(relaxed = true)
     private val clientConfiguration: ClientConfiguration = mockk()
     private val connectionListener: VPNManagerConnectionListener = mockk()
     private lateinit var source: ConnectionDataSource
 
     private val appModule = module {
         single { connectionApi }
+        single { authenticationApi }
     }
 
     @BeforeEach
@@ -82,5 +86,37 @@ internal class ConnectionDataSourceImplTest {
             val actual = awaitItem()
             assertEquals(false, actual)
         }
+    }
+
+    @Test
+    fun `getUsername - success`() = runTest {
+        val expected = "user"
+        every { authenticationApi.vpnToken() } returns "$expected:pass"
+        val actual = source.getUsername()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `getUsername - failure`() = runTest {
+        val expected = ""
+        every { authenticationApi.vpnToken() } returns null
+        val actual = source.getUsername()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `getPassword - success`() = runTest {
+        val expected = "pass"
+        every { authenticationApi.vpnToken() } returns "user:$expected"
+        val actual = source.getPassword()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `getPassword - failure`() = runTest {
+        val expected = ""
+        every { authenticationApi.vpnToken() } returns null
+        val actual = source.getPassword()
+        assertEquals(expected, actual)
     }
 }

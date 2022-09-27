@@ -1,6 +1,7 @@
 package com.kape.connection.data
 
 import com.kape.connection.domain.ConnectionDataSource
+import com.privateinternetaccess.account.AccountAPI
 import com.privateinternetaccess.kapevpnmanager.models.ClientConfiguration
 import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerAPI
 import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerConnectionListener
@@ -13,6 +14,7 @@ import org.koin.core.component.inject
 class ConnectionDataSourceImpl : ConnectionDataSource, KoinComponent {
 
     private val connectionApi: VPNManagerAPI by inject()
+    private val accountApi: AccountAPI by inject()
 
     override fun startConnection(
         clientConfiguration: ClientConfiguration,
@@ -31,5 +33,9 @@ class ConnectionDataSourceImpl : ConnectionDataSource, KoinComponent {
             trySend(it.isSuccess)
         }
         awaitClose { channel.close() }
+    }
+
+    override fun getVpnToken(): String {
+        return accountApi.vpnToken() ?: ""
     }
 }
