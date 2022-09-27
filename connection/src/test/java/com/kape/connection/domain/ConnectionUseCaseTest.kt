@@ -46,8 +46,7 @@ internal class ConnectionUseCaseTest {
         every { source.startConnection(any(), any()) } returns flow {
             emit(expected)
         }
-        every { source.getUsername() } returns "user"
-        every { source.getPassword() } returns "pass"
+        every { source.getVpnToken() } returns "username:password"
 
         useCase.startConnection(tempSettings, intent, notification, listener).test {
             val actual = awaitItem()
@@ -62,8 +61,7 @@ internal class ConnectionUseCaseTest {
         every { source.startConnection(any(), any()) } returns flow {
             emit(expected)
         }
-        every { source.getUsername() } returns "user"
-        every { source.getPassword() } returns "pass"
+        every { source.getVpnToken() } returns "username:password"
 
         useCase.startConnection(tempSettings, intent, notification, listener).test {
             val actual = awaitItem()
@@ -78,8 +76,7 @@ internal class ConnectionUseCaseTest {
         every { source.stopConnection() } returns flow {
             emit(expected)
         }
-        every { source.getUsername() } returns "user"
-        every { source.getPassword() } returns "pass"
+        every { source.getVpnToken() } returns "username:password"
 
         useCase.stopConnection().test {
             val actual = awaitItem()
@@ -94,8 +91,7 @@ internal class ConnectionUseCaseTest {
         every { source.stopConnection() } returns flow {
             emit(expected)
         }
-        every { source.getUsername() } returns "user"
-        every { source.getPassword() } returns "pass"
+        every { source.getVpnToken() } returns "username:password"
 
         useCase.stopConnection().test {
             val actual = awaitItem()

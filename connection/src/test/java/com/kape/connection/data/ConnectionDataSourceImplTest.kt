@@ -89,34 +89,18 @@ internal class ConnectionDataSourceImplTest {
     }
 
     @Test
-    fun `getUsername - success`() = runTest {
-        val expected = "user"
-        every { authenticationApi.vpnToken() } returns "$expected:pass"
-        val actual = source.getUsername()
+    fun `getVpnToken - success`() = runTest {
+        val expected = "user:pass"
+        every { authenticationApi.vpnToken() } returns expected
+        val actual = source.getVpnToken()
         assertEquals(expected, actual)
     }
 
     @Test
-    fun `getUsername - failure`() = runTest {
+    fun `getVpnToken - failure`() = runTest {
         val expected = ""
         every { authenticationApi.vpnToken() } returns null
-        val actual = source.getUsername()
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `getPassword - success`() = runTest {
-        val expected = "pass"
-        every { authenticationApi.vpnToken() } returns "user:$expected"
-        val actual = source.getPassword()
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `getPassword - failure`() = runTest {
-        val expected = ""
-        every { authenticationApi.vpnToken() } returns null
-        val actual = source.getPassword()
+        val actual = source.getVpnToken()
         assertEquals(expected, actual)
     }
 }
