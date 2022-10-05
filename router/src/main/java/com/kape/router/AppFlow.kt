@@ -13,6 +13,7 @@ sealed class EnterFlow : AppFlow {
     object TermsOfService : EnterFlow()
     object PrivacyPolicy : EnterFlow()
     object Survey : EnterFlow()
+    object Settings: EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -23,6 +24,7 @@ sealed class ExitFlow : AppFlow {
     object RegionSelection : ExitFlow()
     object Profile : ExitFlow()
     object Subscribe : ExitFlow()
+    object Settings: ExitFlow()
 }
 
 object Back : AppFlow

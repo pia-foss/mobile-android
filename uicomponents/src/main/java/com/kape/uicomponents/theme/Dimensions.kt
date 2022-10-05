@@ -34,6 +34,7 @@ object Height {
     val SEPARATOR = 1.dp
     val IP_ARROW = 20.dp
     val QUICK_SETTINGS_ARROW = 18.dp
+    val SETTINGS_ITEM = 56.dp
 }
 
 object Width {

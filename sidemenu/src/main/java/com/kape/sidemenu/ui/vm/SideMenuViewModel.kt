@@ -57,4 +57,8 @@ class SideMenuViewModel(
     fun navigateToProfile() {
         router.handleFlow(EnterFlow.Profile)
     }
+
+    fun navigateToSettings() {
+        router.handleFlow(EnterFlow.Settings)
+    }
 }

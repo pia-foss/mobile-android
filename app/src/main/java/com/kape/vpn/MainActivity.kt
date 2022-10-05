@@ -19,7 +19,8 @@ import com.kape.payments.ui.PaymentProvider
 import com.kape.profile.ui.ProfileScreen
 import com.kape.region_selection.ui.RegionSelectionScreen
 import com.kape.router.*
-import com.kape.signup.ui.*
+import com.kape.settings.ui.SettingsScreen
+import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
 import com.kape.uicomponents.components.WebViewScreen
 import com.kape.uicomponents.theme.PIATheme
@@ -94,6 +95,9 @@ class MainActivity : ComponentActivity() {
                                     getString(R.string.url_survey)
                                 )
                             )
+                        }
+                        composable(Settings.Main) {
+                            SettingsScreen()
                         }
                     }
                 }

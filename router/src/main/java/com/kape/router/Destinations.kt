@@ -31,6 +31,10 @@ object Subscribe {
     const val Main = "subscription-screen"
 }
 
+object Settings {
+    const val Main = "settings-screen"
+}
+
 object WebContent {
     // Please note these values are links within the signup module's strings file.
     const val Terms = "web-screen-terms"

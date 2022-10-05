@@ -28,6 +28,7 @@ class Router {
             EnterFlow.PrivacyPolicy -> _navigation.value = WebContent.Privacy
             EnterFlow.TermsOfService -> _navigation.value = WebContent.Terms
             EnterFlow.Survey -> _navigation.value = WebContent.Survey
+            EnterFlow.Settings -> _navigation.value = Settings.Main
         }
     }
 

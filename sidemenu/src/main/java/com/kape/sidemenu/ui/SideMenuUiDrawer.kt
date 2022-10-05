@@ -138,7 +138,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resIcon = R.drawable.ic_drawer_settings,
                 resTitle = R.string.drawer_item_title_settings,
                 onClick = {
-                    // TODO: "action: open 'settings' screen" 
+                    viewModel.navigateToSettings()
                 }
             )
 

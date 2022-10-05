@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">Settings</string>
+    <string name="icon">Icon</string>
+    <!--    General     -->
+    <string name="general">General</string>
+    <string name="protocols">Protocols</string>
+    <string name="networks">Networks</string>
+    <string name="privacy">Privacy</string>
+    <string name="automation">Automation</string>
+    <string name="obfuscation">Obfuscation</string>
+    <string name="help">Help</string>
+
+    <!--    Protocols      -->
+    <string name="open_vpn">OpenVPN</string>
+    <string name="wire_guard">Wireguard</string>
+
+    <string-array name="protocols">
+        <item>@string/open_vpn</item>
+        <item>@string/wire_guard</item>
+    </string-array>
+
+    <!--    Automation     -->
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
+
+    <string-array name="automation">
+        <item>@string/enabled</item>
+        <item>@string/disabled</item>
+    </string-array>
+</resources>
