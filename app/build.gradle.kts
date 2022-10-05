@@ -71,6 +71,7 @@ android {
 
 dependencies {
     implementation(project(mapOf("path" to ":connection")))
+    implementation(project(mapOf("path" to ":settings")))
     implementation(project(mapOf("path" to ":login")))
     implementation(project(mapOf("path" to ":account")))
     implementation(project(mapOf("path" to ":profile")))

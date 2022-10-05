@@ -54,6 +54,7 @@ android {
 
 dependencies {
 
+    implementation(project(mapOf("path" to ":settings")))
     implementation(project(mapOf("path" to ":uicomponents")))
     implementation(project(mapOf("path" to ":sidemenu")))
     implementation(project(mapOf("path" to ":router")))
