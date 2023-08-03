@@ -43,6 +43,7 @@ class Router {
             ExitFlow.RegionSelection -> _navigation.value = NavigateBack
             ExitFlow.Profile -> TODO()
             ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.VpnPermission)
+            ExitFlow.Settings -> TODO()
         }
     }
 

@@ -1,6 +1,6 @@
 package com.kape.vpn.provider
 
-import com.kape.vpn.BuildConfig
+import com.kape.login.BuildConfig
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.kpi.KPIClientStateProvider
 import com.privateinternetaccess.kpi.KPIEndpoint
