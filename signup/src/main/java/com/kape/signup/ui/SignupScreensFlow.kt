@@ -13,12 +13,12 @@ import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.SignupError
 import com.kape.signup.utils.SignupStep
 import com.kape.uicomponents.theme.DarkGreen20
+import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.viewModel
 
 @Composable
 fun SignupScreensFlow() {
-
-    val viewModel: SignupViewModel by viewModel()
+    val viewModel: SignupViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.state }.collectAsState()
 
     when (state.step) {
@@ -28,7 +28,7 @@ fun SignupScreensFlow() {
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
-                        color = DarkGreen20
+                        color = DarkGreen20,
                     )
                 }
             } else {
@@ -39,19 +39,22 @@ fun SignupScreensFlow() {
                 SignupError.RegistrationFailed -> SignupErrorScreen {
                     viewModel.navigateToLogin()
                 }
+
                 null -> {
                     // no-op
                 }
             }
         }
+
         SignupStep.Email -> EmailScreen(viewModel = viewModel)
         SignupStep.InProcess -> LoadingScreen()
         is SignupStep.SignedUp -> {
             CredentialsScreen(
                 viewModel = viewModel,
-                credentials = (state.step as SignupStep.SignedUp).credentials
+                credentials = (state.step as SignupStep.SignedUp).credentials,
             )
         }
+
         is SignupStep.Subscriptions -> {
             SubscriptionScreen(viewModel = viewModel, (state.step as SignupStep.Subscriptions).data)
         }

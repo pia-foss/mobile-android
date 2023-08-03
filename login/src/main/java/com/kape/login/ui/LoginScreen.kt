@@ -30,13 +30,13 @@ import com.kape.uicomponents.theme.DarkGreen20
 import com.kape.uicomponents.theme.Space
 import com.kape.uicomponents.theme.Typography
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.viewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun LoginScreen(navController: NavController) {
-
-    val viewModel: LoginViewModel by viewModel()
+    val viewModel: LoginViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val connection by connectivityState()
     val isConnected = connection === InternetConnectionState.Connected
@@ -64,32 +64,42 @@ fun LoginScreen(navController: NavController) {
         if (!isConnected) {
             NoNetworkBanner(noNetworkMessage = stringResource(id = R.string.no_internet))
         }
-        Image(painter = painterResource(id = UiResources.bigAppLogo),
+        Image(
+            painter = painterResource(id = UiResources.bigAppLogo),
             contentDescription = "logo",
             modifier = Modifier
-                .padding(start = Space.CENT_FIFTY, top = Space.BIGGER, bottom = Space.MEDIUM, end = Space.CENT_FIFTY))
-        Text(text = stringResource(id = R.string.sign_in),
+                .padding(start = Space.CENT_FIFTY, top = Space.BIGGER, bottom = Space.MEDIUM, end = Space.CENT_FIFTY),
+        )
+        Text(
+            text = stringResource(id = R.string.sign_in),
             style = Typography.subtitle1,
             modifier = Modifier
                 .align(CenterHorizontally)
-                .padding(bottom = Space.MEDIUM))
+                .padding(bottom = Space.MEDIUM),
+        )
         InputField(modifier = Modifier.padding(Space.MEDIUM, Space.SMALL), properties = userProperties)
         InputField(modifier = Modifier.padding(Space.MEDIUM, Space.SMALL), properties = passProperties)
         PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = buttonProperties)
-        Text(text = stringResource(id = R.string.login_with_receipt).toUpperCase(Locale.current), color = DarkGreen20, modifier = Modifier
-            .align(CenterHorizontally)
-            .padding(Space.NORMAL, Space.NORMAL, Space.NORMAL, Space.SMALL)
-            .clickable {
-                viewModel.loginWithReceipt(currentContext.packageName)
-            })
-        Text(text = stringResource(id = R.string.login_with_magic_link).toUpperCase(Locale.current),
+        Text(
+            text = stringResource(id = R.string.login_with_receipt).toUpperCase(Locale.current),
+            color = DarkGreen20,
+            modifier = Modifier
+                .align(CenterHorizontally)
+                .padding(Space.NORMAL, Space.NORMAL, Space.NORMAL, Space.SMALL)
+                .clickable {
+                    viewModel.loginWithReceipt(currentContext.packageName)
+                },
+        )
+        Text(
+            text = stringResource(id = R.string.login_with_magic_link).toUpperCase(Locale.current),
             color = DarkGreen20,
             modifier = Modifier
                 .align(CenterHorizontally)
                 .padding(Space.NORMAL, Space.SMALL, Space.NORMAL, Space.NORMAL)
                 .clickable {
                     navController.navigate(Login.WithEmail)
-                })
+                },
+        )
     }
 }
 

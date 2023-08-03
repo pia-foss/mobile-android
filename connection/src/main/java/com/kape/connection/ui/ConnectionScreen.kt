@@ -16,13 +16,14 @@ import com.kape.uicomponents.components.AppBarColors
 import com.kape.uicomponents.components.AppBarState
 import com.kape.uicomponents.components.Separator
 import com.kape.uicomponents.theme.Space
+import org.koin.androidx.compose.koinViewModel
 import org.koin.androidx.compose.viewModel
 import java.util.*
 
 @Composable
 fun ConnectionScreen() {
 
-    val viewModel: ConnectionViewModel by viewModel()
+    val viewModel: ConnectionViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.state }.collectAsState()
     val locale = Locale.getDefault().language
 

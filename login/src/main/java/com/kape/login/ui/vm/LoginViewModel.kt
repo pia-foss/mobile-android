@@ -19,8 +19,7 @@ class LoginViewModel(
     private val loginUseCase: LoginUseCase,
     private val userLoggedInUseCase: GetUserLoggedInUseCase,
     private val paymentProvider: PaymentProvider
-) : ViewModel(),
-    KoinComponent {
+) : ViewModel(), KoinComponent {
 
     private val router: Router by inject()
     private val _state = MutableStateFlow(IDLE)
@@ -44,9 +43,11 @@ class LoginViewModel(
                         }
                         _state.emit(getScreenState(state))
                     }
+
                     PurchaseHistoryState.Default -> {
                         _state.emit(IDLE)
                     }
+
                     PurchaseHistoryState.PurchaseHistoryFailed -> _state.emit(FAILED)
                 }
             }

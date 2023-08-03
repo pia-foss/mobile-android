@@ -1,10 +1,27 @@
 package com.kape.region_selection.ui
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material.RadioButton
+import androidx.compose.material.RadioButtonDefaults
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -26,64 +43,84 @@ import com.kape.uicomponents.components.AppBar
 import com.kape.uicomponents.components.AppBarColors
 import com.kape.uicomponents.components.AppBarState
 import com.kape.uicomponents.components.SearchBar
-import com.kape.uicomponents.theme.*
-import org.koin.androidx.compose.viewModel
+import com.kape.uicomponents.theme.DarkGreen20
+import com.kape.uicomponents.theme.FontSize
+import com.kape.uicomponents.theme.Grey85
+import com.kape.uicomponents.theme.PIATheme
+import com.kape.uicomponents.theme.Space
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegionSelectionScreen() {
     PIATheme {
-        val viewModel: RegionSelectionViewModel by viewModel()
+        val viewModel: RegionSelectionViewModel = koinViewModel()
         val state by remember(viewModel) { viewModel.state }.collectAsState()
-        val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0].language
+        val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
         val searchTextState = remember { mutableStateOf(TextFieldValue("")) }
 
         LaunchedEffect(Unit) {
-            viewModel.loadRegions(locale)
+            locale?.let {
+                viewModel.loadRegions(it)
+            }
         }
 
         Column {
-            AppBar(onClick = {
-                viewModel.navigateBack()
-            },
+            AppBar(
+                onClick = {
+                    viewModel.navigateBack()
+                },
                 state = AppBarState(
                     stringResource(id = R.string.region_selection_title),
                     AppBarColors.Default,
                     showLogo = false,
                     showMenu = false,
-                    showOverflow = true
+                    showOverflow = true,
                 ),
                 onOverflowClick = {
                     viewModel.showSortingOptions()
-                })
+                },
+            )
 
             when (state) {
                 IDLE -> {
-
                 }
+
                 LOADING -> {
                     Box(modifier = Modifier.fillMaxSize()) {
                         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     }
                 }
+
                 else -> {
                     // state loaded
                     SearchBar(searchTextState = searchTextState)
-                    viewModel.initAutoRegion(stringResource(id = R.string.automatic), stringResource(id = R.string.automatic_iso))
-                    SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = state.loading), onRefresh = {
-                        viewModel.loadRegions(locale)
-                    }) {
+                    viewModel.initAutoRegion(
+                        stringResource(id = R.string.automatic),
+                        stringResource(id = R.string.automatic_iso),
+                    )
+                    SwipeRefresh(
+                        state = rememberSwipeRefreshState(isRefreshing = state.loading),
+                        onRefresh = {
+                            locale?.let {
+                                viewModel.loadRegions(locale)
+                            }
+                        },
+                    ) {
                         viewModel.filterByName(searchTextState.value.text)
                         LazyColumn {
                             items(state.regions.size) { index ->
                                 ServerListItem(
                                     server = state.regions[index],
-                                    isFavorite = mutableStateOf(viewModel.isServerFavorite(state.regions[index].name)),
+                                    isFavorite = remember {
+                                        mutableStateOf(viewModel.isServerFavorite(state.regions[index].name))
+                                    },
                                     onClick = {
                                         viewModel.onRegionSelected(it)
                                     },
                                     onFavoriteClick = {
                                         viewModel.onFavoriteClicked(it)
-                                    })
+                                    },
+                                )
                                 Divider(color = Grey85)
                             }
                         }
@@ -118,11 +155,12 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
                         .selectable(
                             selected = (options.indexOf(it) == sortBySelectedOption.value.index),
                             onClick = {
-                                sortBySelectedOption.value = viewModel.getSortingOption(options.indexOf(it))
+                                sortBySelectedOption.value =
+                                    viewModel.getSortingOption(options.indexOf(it))
                             },
-                            role = Role.RadioButton
+                            role = Role.RadioButton,
                         )
-                        .padding(vertical = Space.MINI)
+                        .padding(vertical = Space.MINI),
                 ) {
                     RadioButton(
                         selected = (options.indexOf(it) == sortBySelectedOption.value.index),
@@ -130,12 +168,12 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
                         colors = RadioButtonDefaults.colors(selectedColor = DarkGreen20),
                         modifier = Modifier
                             .padding(end = Space.SMALL)
-                            .align(CenterVertically)
+                            .align(CenterVertically),
                     )
                     Text(
                         text = it,
                         modifier = Modifier
-                            .align(CenterVertically)
+                            .align(CenterVertically),
                     )
                 }
             }
@@ -144,11 +182,19 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
         TextButton(onClick = {
             viewModel.sortBy(sortBySelectedOption.value)
         }) {
-            Text(text = stringResource(id = R.string.ok), fontSize = FontSize.Normal, color = DarkGreen20)
+            Text(
+                text = stringResource(id = R.string.ok),
+                fontSize = FontSize.Normal,
+                color = DarkGreen20,
+            )
         }
     }, dismissButton = {
         TextButton(onClick = { viewModel.hideSortingOptions() }) {
-            Text(text = stringResource(id = R.string.cancel).toUpperCase(Locale.current), fontSize = FontSize.Normal, color = DarkGreen20)
+            Text(
+                text = stringResource(id = R.string.cancel).toUpperCase(Locale.current),
+                fontSize = FontSize.Normal,
+                color = DarkGreen20,
+            )
         }
     })
 }

@@ -35,15 +35,13 @@ class Router {
     private fun handleExitFlow(flow: ExitFlow) {
         when (flow) {
             ExitFlow.Login -> handleEnterFlow(EnterFlow.VpnPermission)
-            ExitFlow.VpnPermission -> {
-                handleEnterFlow(EnterFlow.Connection)
-            }
+            ExitFlow.VpnPermission -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.Splash -> handleEnterFlow(EnterFlow.Subscribe)
             ExitFlow.Connection -> TODO()
             ExitFlow.RegionSelection -> _navigation.value = NavigateBack
             ExitFlow.Profile -> TODO()
             ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.VpnPermission)
-            ExitFlow.Settings -> TODO()
+            ExitFlow.Settings -> handleEnterFlow(EnterFlow.Connection)
         }
     }
 

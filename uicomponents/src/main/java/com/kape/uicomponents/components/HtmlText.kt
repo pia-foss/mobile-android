@@ -18,8 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +35,7 @@ import com.kape.router.EnterFlow
 import com.kape.router.Router
 import com.kape.router.WebContent
 import com.kape.uicomponents.theme.DarkGreen20
-import org.koin.androidx.compose.inject
+import org.koin.compose.koinInject
 
 @Composable
 fun HtmlText(
@@ -40,7 +43,7 @@ fun HtmlText(
     @StringRes textId: Int,
     urlSpanStyle: SpanStyle = SpanStyle(
         color = DarkGreen20,
-        textDecoration = TextDecoration.Underline
+        textDecoration = TextDecoration.Underline,
     ),
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
@@ -61,10 +64,8 @@ fun HtmlText(
     val context = LocalContext.current
     val annotatedString = context.resources.getText(textId).toAnnotatedString(urlSpanStyle)
 
-    val uriHandler = LocalUriHandler.current
     val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
-
-    val router: Router by inject()
+    val router: Router = koinInject()
 
     Text(
         modifier = modifier.pointerInput(Unit) {
@@ -79,9 +80,11 @@ fun HtmlText(
                                     WebContent.Terms -> {
                                         router.handleFlow(EnterFlow.TermsOfService)
                                     }
+
                                     WebContent.Privacy -> {
                                         router.handleFlow(EnterFlow.PrivacyPolicy)
                                     }
+
                                     else -> {
                                         // do nothing
                                     }
@@ -109,14 +112,14 @@ fun HtmlText(
             layoutResult.value = it
             onTextLayout(it)
         },
-        style = style
+        style = style,
     )
 }
 
 fun CharSequence.toAnnotatedString(
     urlSpanStyle: SpanStyle = SpanStyle(
         color = Color.Blue,
-        textDecoration = TextDecoration.Underline
+        textDecoration = TextDecoration.Underline,
     ),
 ): AnnotatedString {
     return if (this is Spanned) {
@@ -131,7 +134,7 @@ fun CharSequence.toAnnotatedString(
 fun Spanned.toAnnotatedString(
     urlSpanStyle: SpanStyle = SpanStyle(
         color = Color.Blue,
-        textDecoration = TextDecoration.Underline
+        textDecoration = TextDecoration.Underline,
     ),
 ): AnnotatedString {
     return buildAnnotatedString {
@@ -152,7 +155,14 @@ fun Spanned.toAnnotatedString(
             when (styleSpan.style) {
                 Typeface.BOLD -> addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
                 Typeface.ITALIC -> addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
-                Typeface.BOLD_ITALIC -> addStyle(SpanStyle(fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic), start, end)
+                Typeface.BOLD_ITALIC -> addStyle(
+                    SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontStyle = FontStyle.Italic,
+                    ),
+                    start,
+                    end,
+                )
             }
         }
         underlineSpans.forEach { underlineSpan ->

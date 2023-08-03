@@ -29,13 +29,12 @@ import com.kape.uicomponents.components.*
 import com.kape.uicomponents.theme.Space
 import com.kape.uicomponents.theme.Typography
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.koin.androidx.compose.viewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun LoginWithEmailScreen(navController: NavController) {
-
-    val viewModel: LoginWithEmailViewModel by viewModel()
+    val viewModel: LoginWithEmailViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val connection by connectivityState()
     val isConnected = connection === InternetConnectionState.Connected
@@ -56,15 +55,19 @@ fun LoginWithEmailScreen(navController: NavController) {
         if (!isConnected) {
             NoNetworkBanner(noNetworkMessage = stringResource(id = R.string.no_internet))
         }
-        Image(painter = painterResource(id = com.kape.uicomponents.R.drawable.ic_pia_logo),
+        Image(
+            painter = painterResource(id = com.kape.uicomponents.R.drawable.ic_pia_logo),
             contentDescription = "logo",
             modifier = Modifier
-                .padding(start = 150.dp, top = 36.dp, bottom = Space.MEDIUM, end = 150.dp))
-        Text(text = stringResource(id = R.string.sign_in),
+                .padding(start = 150.dp, top = 36.dp, bottom = Space.MEDIUM, end = 150.dp),
+        )
+        Text(
+            text = stringResource(id = R.string.sign_in),
             style = Typography.subtitle1,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(bottom = Space.MEDIUM))
+                .padding(bottom = Space.MEDIUM),
+        )
         InputField(modifier = Modifier.padding(Space.MEDIUM, Space.SMALL), properties = emailProperties)
         PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = buttonProperties)
     }
@@ -84,7 +87,7 @@ private fun getErrorMessage(state: LoginScreenState): String? {
         LoginError.Expired -> "account expired flow" // TODO: handle when signup module is built
         LoginError.Failed,
         LoginError.Invalid,
-        LoginError.Throttled
+        LoginError.Throttled,
         -> stringResource(id = R.string.error_missing_email)
         LoginError.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
         null -> null

@@ -6,12 +6,31 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material.Divider
+import androidx.compose.material.DrawerState
+import androidx.compose.material.DrawerValue
+import androidx.compose.material.ModalDrawer
+import androidx.compose.material.Text
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -30,11 +49,18 @@ import androidx.compose.ui.unit.dp
 import com.kape.sidemenu.R
 import com.kape.sidemenu.ui.vm.SideMenuViewModel
 import com.kape.sidemenu.utils.SideMenuState
-import com.kape.uicomponents.theme.*
+import com.kape.uicomponents.theme.CommonSideMenuColors
+import com.kape.uicomponents.theme.FontSize
+import com.kape.uicomponents.theme.Height
+import com.kape.uicomponents.theme.SideMenuRippleTheme
+import com.kape.uicomponents.theme.SideMenuUiTheme
+import com.kape.uicomponents.theme.Space
+import com.kape.uicomponents.theme.Square
+import com.kape.uicomponents.theme.Width
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.viewModel
-import java.util.*
+import org.koin.androidx.compose.koinViewModel
+import java.util.Locale
 import kotlin.math.min
 
 interface SideMenuUiDrawerScope {
@@ -52,7 +78,7 @@ fun SideMenuUiDrawer(
     val drawerScope: SideMenuUiDrawerScope = remember(drawerState) {
         SideMenuUiDrawerScopeImpl(
             scope = scope,
-            drawerState = drawerState
+            drawerState = drawerState,
         )
     }
 
@@ -64,20 +90,20 @@ fun SideMenuUiDrawer(
         },
         content = {
             drawerScope.screenContent()
-        }
+        },
     )
 }
 
 @Composable
 private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
-    val viewModel: SideMenuViewModel by viewModel()
+    val viewModel: SideMenuViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.sideMenuState }.collectAsState()
 
     LazyColumn(
         modifier = Modifier
             .background(color = SideMenuUiTheme.colors.sideMenuBackground)
             .fillMaxSize(),
-        contentPadding = PaddingValues(start = 0.dp, end = 0.dp, top = Space.BIGGER, bottom = Space.HUGE)
+        contentPadding = PaddingValues(start = 0.dp, end = 0.dp, top = Space.BIGGER, bottom = Space.HUGE),
     ) {
         item {
             IconAppVersionWithUsernameView(state)
@@ -85,14 +111,15 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
             SeparatorView(
                 isSeparatorVisible = false,
                 topPadding = Space.BIG,
-                bottomPadding = 0.dp
+                bottomPadding = 0.dp,
             )
 
             if (state.showExpirationNotice) {
                 SubscriptionExpiryView(
                     onClick = {
                         // TODO:  "action: open 'purchase' dialog & trigger toast, if account is not renewable"
-                    }, state.daysRemaining
+                    },
+                    state.daysRemaining,
                 )
             }
 
@@ -104,7 +131,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                     scope.launch {
                         drawerState.close()
                     }
-                }
+                },
             )
 
             IconTitleView(
@@ -115,23 +142,23 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                     scope.launch {
                         drawerState.close()
                     }
-                }
+                },
             )
 
             IconTitleView(
                 resIcon = R.drawable.ic_drawer_dip_settings,
                 resTitle = R.string.drawer_item_title_dedicated_ip,
                 onClick = {
-                    // TODO: "action: open 'dedicated ip' screen" 
-                }
+                    // TODO: "action: open 'dedicated ip' screen"
+                },
             )
 
             IconTitleView(
                 resIcon = R.drawable.ic_drawer_per_app,
                 resTitle = R.string.drawer_item_title_per_app_settings,
                 onClick = {
-                    // TODO: "action: open 'per app settings' screen" 
-                }
+                    // TODO: "action: open 'per app settings' screen"
+                },
             )
 
             IconTitleView(
@@ -139,7 +166,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_settings,
                 onClick = {
                     viewModel.navigateToSettings()
-                }
+                },
             )
 
             IconTitleView(
@@ -147,45 +174,45 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_logout,
                 onClick = {
                     viewModel.logout()
-                }
+                },
             )
 
             SeparatorView(
                 isSeparatorVisible = true,
                 topPadding = Space.MEDIUM,
-                bottomPadding = Space.MEDIUM
+                bottomPadding = Space.MEDIUM,
             )
 
             IconTitleView(
                 resIcon = R.drawable.ic_drawer_about,
                 resTitle = R.string.drawer_item_title_about,
                 onClick = {
-                    // TODO: "action: open 'about' screen" 
-                }
+                    // TODO: "action: open 'about' screen"
+                },
             )
 
             IconTitleView(
                 resIcon = R.drawable.ic_privacy_link,
                 resTitle = R.string.drawer_item_title_privacy_policy,
                 onClick = {
-                    // TODO: "action: open 'privacy policy' in 'web view' screen" 
-                }
+                    // TODO: "action: open 'privacy policy' in 'web view' screen"
+                },
             )
 
             IconTitleView(
                 resIcon = R.drawable.ic_drawer_homepage,
                 resTitle = R.string.drawer_item_title_homepage,
                 onClick = {
-                    // TODO: "action: open 'home page' in 'web view' screen" 
-                }
+                    // TODO: "action: open 'home page' in 'web view' screen"
+                },
             )
 
             IconTitleView(
                 resIcon = R.drawable.ic_drawer_support,
                 resTitle = R.string.drawer_item_title_contact_support,
                 onClick = {
-                    // TODO: "action: open 'help desk' in 'web view' screen" 
-                }
+                    // TODO: "action: open 'help desk' in 'web view' screen"
+                },
             )
         }
     }
@@ -193,7 +220,6 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
 
 @Composable
 private fun IconAppVersionWithUsernameView(state: SideMenuState) {
-
     val appVersionFormat: String = stringResource(R.string.drawer_item_description_app_version_format)
 
     val title: String = state.username
@@ -206,14 +232,14 @@ private fun IconAppVersionWithUsernameView(state: SideMenuState) {
                 .align(CenterVertically)
                 .padding(start = Space.MEDIUM, top = Space.SMALL, bottom = Space.SMALL)
                 .size(Square.DEFAULT),
-            contentDescription = stringResource(id = R.string.icon)
+            contentDescription = stringResource(id = R.string.icon),
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(CenterVertically)
-                .padding(start = Space.NORMAL, top = Space.SMALL, bottom = Space.SMALL)
+                .padding(start = Space.NORMAL, top = Space.SMALL, bottom = Space.SMALL),
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -221,8 +247,8 @@ private fun IconAppVersionWithUsernameView(state: SideMenuState) {
                 fontSize = SideMenuUiTheme.PiaTextTitle.textSize,
                 fontFamily = SideMenuUiTheme.PiaTextTitle.fontFamily,
                 style = SideMenuUiTheme.PiaTextTitle.textStyle.copy(
-                    color = SideMenuUiTheme.colors.grey20_white
-                )
+                    color = SideMenuUiTheme.colors.grey20_white,
+                ),
             )
 
             Spacer(modifier = Modifier.height(Space.MINI))
@@ -233,7 +259,7 @@ private fun IconAppVersionWithUsernameView(state: SideMenuState) {
                 fontSize = FontSize.Normal,
                 fontFamily = SideMenuUiTheme.PiaTextTitle.fontFamily,
                 style = SideMenuUiTheme.PiaTextTitle.textStyle.copy(
-                    color = SideMenuUiTheme.colors.grey20_white
+                    color = SideMenuUiTheme.colors.grey20_white,
                 ),
             )
         }
@@ -247,17 +273,16 @@ private fun IconTitleView(
     onClick: (() -> Unit)?,
 ) {
     CompositionLocalProvider(
-        values = arrayOf(LocalRippleTheme provides SideMenuRippleTheme)
+        values = arrayOf(LocalRippleTheme provides SideMenuRippleTheme),
     ) {
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(Height.DEFAULT)
                 .makeClickable(
                     onClick = onClick,
-                    hasRipple = true
-                )
+                    hasRipple = true,
+                ),
         ) {
             Spacer(modifier = Modifier.width(Space.MEDIUM))
 
@@ -268,7 +293,7 @@ private fun IconTitleView(
                     .height(Square.ICON),
                 painter = painterResource(id = resIcon),
                 contentScale = ContentScale.Inside,
-                contentDescription = stringResource(id = R.string.icon)
+                contentDescription = stringResource(id = R.string.icon),
             )
 
             Spacer(modifier = Modifier.width(Space.SMALL))
@@ -280,13 +305,12 @@ private fun IconTitleView(
                     .align(CenterVertically),
                 fontSize = FontSize.Big,
                 style = SideMenuUiTheme.PiaTextBody2.textStyle.copy(
-                    color = SideMenuUiTheme.PiaTextBody2.textColor
+                    color = SideMenuUiTheme.PiaTextBody2.textColor,
                 ),
-                maxLines = 1
+                maxLines = 1,
             )
         }
     }
-
 }
 
 @Composable
@@ -300,16 +324,15 @@ private fun SeparatorView(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = topPadding, bottom = bottomPadding)
-                .background(SideMenuUiTheme.colors.pia_sidemenu_divider)
+                .background(SideMenuUiTheme.colors.pia_sidemenu_divider),
         )
     } else {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height = topPadding + bottomPadding)
+                .height(height = topPadding + bottomPadding),
         )
     }
-
 }
 
 @Composable
@@ -322,8 +345,8 @@ private fun SubscriptionExpiryView(
         in 2..30 -> stringResource(R.string.drawer_item_title_subscription_expires_format).format(
             stringResource(R.string.duration_x_days).format(
                 Locale.ENGLISH,
-                daysRemaining
-            )
+                daysRemaining,
+            ),
         )
         else -> ""
     }
@@ -334,8 +357,8 @@ private fun SubscriptionExpiryView(
             .background(color = CommonSideMenuColors.connecting_orange)
             .makeClickable(
                 onClick = onClick,
-                hasRipple = false
-            )
+                hasRipple = false,
+            ),
     ) {
         Spacer(modifier = Modifier.width(Space.NORMAL))
 
@@ -345,7 +368,7 @@ private fun SubscriptionExpiryView(
                 .padding(vertical = Space.MINI)
                 .size(Square.EXPIRY_NOTICE),
             painter = painterResource(id = R.drawable.ic_orange_arrow_circle),
-            contentDescription = stringResource(id = R.string.icon)
+            contentDescription = stringResource(id = R.string.icon),
         )
 
         Spacer(modifier = Modifier.width(Space.MINI))
@@ -353,7 +376,7 @@ private fun SubscriptionExpiryView(
         Column(
             modifier = Modifier
                 .align(CenterVertically)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -361,9 +384,9 @@ private fun SubscriptionExpiryView(
                 fontSize = FontSize.Small,
                 fontFamily = SideMenuUiTheme.PiaExpirationTitle.fontFamily,
                 style = SideMenuUiTheme.PiaExpirationTitle.textStyle.copy(
-                    color = SideMenuUiTheme.PiaExpirationTitle.textColor
+                    color = SideMenuUiTheme.PiaExpirationTitle.textColor,
                 ),
-                maxLines = 1
+                maxLines = 1,
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -371,9 +394,9 @@ private fun SubscriptionExpiryView(
                 fontSize = FontSize.Tiny,
                 fontFamily = SideMenuUiTheme.PiaExpirationDescription.fontFamily,
                 style = SideMenuUiTheme.PiaExpirationDescription.textStyle.copy(
-                    color = SideMenuUiTheme.PiaExpirationDescription.textColor
+                    color = SideMenuUiTheme.PiaExpirationDescription.textColor,
                 ),
-                maxLines = 1
+                maxLines = 1,
             )
         }
     }
@@ -389,7 +412,7 @@ private fun Modifier.makeClickable(
             indication = if (hasRipple) rememberRipple(bounded = true) else null,
             onClick = onClick@{
                 onClick()
-            }
+            },
         )
         else -> this
     }
@@ -425,8 +448,8 @@ private class DrawerShape(
                 left = 0f,
                 top = 0f,
                 right = min(maxSizePx, size.width),
-                bottom = size.height
-            )
+                bottom = size.height,
+            ),
         )
     }
 }
