@@ -4,7 +4,8 @@
 
     <application
         android:name="com.kape.vpn.App"
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -12,10 +13,10 @@
         android:theme="@style/Theme.PIA">
 
         <receiver
-            tools:node="merge"
             android:name="com.amazon.device.iap.ResponseReceiver"
             android:exported="true"
-            android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY">
+            android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY"
+            tools:node="merge">
             <intent-filter>
                 <action android:name="com.amazon.inapp.purchasing.NOTIFY" />
             </intent-filter>

@@ -11,7 +11,7 @@ object Android {
     const val cryptoEddsa = "net.i2p.crypto:eddsa:0.3.0"
     const val spongyCastle = "com.madgag.spongycastle:core:1.58.0.0"
     const val multiplatformSettings = "com.russhwolf:multiplatform-settings:0.8"
-    const val crypto = "androidx.security:security-crypto:1.1.0-alpha03"
+    const val crypto = "androidx.security:security-crypto-ktx:1.1.0-alpha06"
 
 }
 

@@ -3,6 +3,7 @@ package com.kape.core
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import androidx.security.crypto.MasterKeys
 
 open class Prefs(context: Context, name: String) {
@@ -10,11 +11,15 @@ open class Prefs(context: Context, name: String) {
     val prefs: SharedPreferences
 
     init {
-        val key = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
-        prefs = EncryptedSharedPreferences.create(name,
-            key,
+        val key = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+        prefs = EncryptedSharedPreferences(
             context,
+            name,
+            key,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM)
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
     }
 }

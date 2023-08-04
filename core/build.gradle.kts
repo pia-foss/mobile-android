@@ -36,5 +36,6 @@ dependencies {
 
     implementation(Android.androidCore)
     implementation(Android.security)
+    implementation(Android.crypto)
     implementation(Kotlin.coroutinesCore)
 }
