@@ -3,9 +3,6 @@ package com.kape.vpn.provider
 import com.privateinternetaccess.account.AccountEndpoint
 import com.privateinternetaccess.account.IAccountEndpointProvider
 
-private const val ACCOUNT_BASE_ROOT_DOMAIN = "privateinternetaccess.com"
-private const val ACCOUNT_PROXY_ROOT_DOMAIN = "piaproxy.net"
-
 class AccountModuleStateProvider(val certificate: String) : IAccountEndpointProvider {
     override fun accountEndpoints(): List<AccountEndpoint> {
         val endpoints = mutableListOf<AccountEndpoint>()
@@ -60,11 +57,6 @@ class AccountModuleStateProvider(val certificate: String) : IAccountEndpointProv
         return mutableListOf()
     }
 
-    private data class GenericEndpoint(
-        val endpoint: String,
-        val isProxy: Boolean,
-        val usePinnedCertificate: Boolean,
-        val certificateCommonName: String?,
-    )
+
 
 }

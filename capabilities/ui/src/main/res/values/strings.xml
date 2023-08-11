@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu">Menu</string>
+    <string name="logo">Logo</string>
+    <string name="back">Back</string>
+    <string name="sort">Sort</string>
+    <string name="search">Search</string>
+    <string name="close">Close</string>
+    <string name="button">Button</string>
+</resources>

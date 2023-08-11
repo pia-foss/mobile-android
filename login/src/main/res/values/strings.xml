@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">Login</string>
-
-    <string name="enter_username">Enter username</string>
-    <string name="enter_password">Enter password</string>
-    <string name="submit">Submit</string>
-    <string name="sign_in">Sign in to your account</string>
-
-</resources>
