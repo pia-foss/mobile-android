@@ -1,12 +1,14 @@
 package com.kape.vpn.di
 
 import android.content.Context
+import android.content.Intent
 import com.kape.vpn.provider.AccountModuleStateProvider
 import com.kape.vpn.provider.KPI_PREFS_NAME
 import com.kape.vpn.provider.KpiModuleStateProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.router.Router
 import com.kape.vpn.BuildConfig
+import com.kape.vpn.MainActivity
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
@@ -31,6 +33,7 @@ val appModule = module {
     single { provideAndroidAccountApi(get()) }
     single { provideRegionsApi(get()) }
     single { provideKpiApi(get()) }
+    single { provideConfigurationIntent(get()) }
     single { provideVpnManagerApi(get()) }
     single { Router() }
 }
@@ -67,6 +70,12 @@ private fun provideVpnManagerApi(context: Context): VPNManagerAPI {
     return VPNManagerBuilder().setContext(context)
         .setCallbackCoroutineContext(Dispatchers.Main)
         .build()
+}
+
+private fun provideConfigurationIntent(context: Context): Intent {
+    return Intent(context, MainActivity::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    }
 }
 
 private fun provideCertificate(context: Context) =

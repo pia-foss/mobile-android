@@ -89,10 +89,16 @@ dependencies {
     implementation(project(":core:payments"))
     implementation(project(":core:kpi"))
     implementation(project(":core:regions"))
+    implementation(project(":core:vpn:openvpn"))
+    implementation(project(":core:vpn:vpnprotocol"))
+    implementation(project(":core:vpn:serviceprovider"))
+    implementation(project(":core:vpn:targetprovider"))
     implementation(project(":core:vpn:vpnmanager"))
+    implementation(project(":core:vpn:wireguard"))
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))
+    implementation(project(":capabilities:notifications"))
 
     implementation(project(":features:splash"))
     implementation(project(":features:signup"))
