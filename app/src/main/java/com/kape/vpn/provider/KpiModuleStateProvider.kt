@@ -1,9 +1,9 @@
 package com.kape.vpn.provider
 
-import com.kape.login.BuildConfig
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.kpi.KPIClientStateProvider
 import com.privateinternetaccess.kpi.KPIEndpoint
+import com.privateinternetaccess.kpi.android.BuildConfig
 
 private const val KPI_ENDPOINT_PATH = "/api/client/v2/service-quality"
 private const val PRODUCTION_EVENT_TOKEN = "d5fe3babe96d218323dafe20a1981e4e"
@@ -11,7 +11,8 @@ private const val STAGING_EVENT_TOKEN = "3bd9fa1b7d7ae30b6d119e335afdcfa7"
 
 const val KPI_PREFS_NAME = "kpi-prefs"
 
-class KpiModuleStateProvider(val certificate: String, private val accountAPI: AndroidAccountAPI) : KPIClientStateProvider {
+class KpiModuleStateProvider(val certificate: String, private val accountAPI: AndroidAccountAPI) :
+    KPIClientStateProvider {
 
     override fun kpiAuthToken(): String? {
         return accountAPI.apiToken()

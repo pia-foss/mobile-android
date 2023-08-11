@@ -1,14 +1,23 @@
+import Dependencies.desugarJdkLibs
+import Dependencies.implementAndroidBase
+import Dependencies.implementCompose
+import Dependencies.implementComposeNavigation
+import Dependencies.implementKoin
+import Dependencies.implementMultiplatformSettings
+import Dependencies.implementViewModel
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
 
 android {
+    namespace = "com.kape.vpn"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.kape.pia"
-        minSdk = 23
+        applicationId = "com.kape.vpn"
+        minSdk = 21
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -22,7 +31,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 
@@ -49,68 +61,53 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
+        buildConfig = true
         compose = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-    namespace = "com.kape.vpn"
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":connection")))
-    implementation(project(mapOf("path" to ":settings")))
-    implementation(project(mapOf("path" to ":login")))
-    implementation(project(mapOf("path" to ":account")))
-    implementation(project(mapOf("path" to ":profile")))
-    implementation(project(mapOf("path" to ":region_selection")))
-    implementation(project(mapOf("path" to ":vpn_permissions")))
-    implementation(project(mapOf("path" to ":sidemenu")))
-    implementation(project(mapOf("path" to ":regions")))
-    implementation(project(mapOf("path" to ":uicomponents")))
-    implementation(project(mapOf("path" to ":router")))
-    implementation(project(mapOf("path" to ":splash")))
-    implementation(project(mapOf("path" to ":payments")))
-    implementation(project(mapOf("path" to ":signup")))
-    implementation(project(mapOf("path" to ":kpi")))
-    implementation(project(mapOf("path" to ":share_events")))
-    implementation(project(mapOf("path" to ":vpnmanager")))
+    coreLibraryDesugaring(desugarJdkLibs)
 
-    coreLibraryDesugaring(Android.desugarJdkLibs)
+    implementation(project(":core:router"))
+    implementation(project(":core:account"))
+    implementation(project(":core:payments"))
+    implementation(project(":core:kpi"))
+    implementation(project(":core:regions"))
+    implementation(project(":core:vpn:vpnmanager"))
 
-    implementation(Android.androidCore)
-    implementation(Compose.ui)
-    implementation(Compose.material)
-    implementation(Compose.preview)
-    implementation(Android.lifecycle)
-    implementation(Compose.activity)
-    implementation(Compose.navigation)
+    implementation(project(":capabilities:ui"))
+    implementation(project(":capabilities:shareevents"))
 
-    implementation(Koin.core)
-    implementation(Koin.android)
-    implementation(Koin.compose)
+    implementation(project(":features:splash"))
+    implementation(project(":features:signup"))
+    implementation(project(":features:login"))
+    implementation(project(":features:settings"))
+    implementation(project(":features:vpnpermission"))
+    implementation(project(":features:profile"))
+    implementation(project(":features:regionselection"))
+    implementation(project(":features:sidemenu"))
+    implementation(project(":features:connection"))
 
-    implementation(Android.multiplatformSettings)
-    implementation(Android.crypto)
-
-    "amazonImplementation"(Payments.amazon)
-    "googleImplementation"(Payments.google)
-
-    testImplementation(UnitTest.junit)
-    androidTestImplementation(AndroidTest.jUnit)
-    androidTestImplementation(AndroidTest.espressoCore)
-    androidTestImplementation(AndroidTest.composeUI)
-    debugImplementation(DebugTest.composeUI)
+    implementAndroidBase()
+    implementViewModel()
+    implementCompose()
+    implementComposeNavigation()
+    implementKoin()
+    implementMultiplatformSettings()
 }

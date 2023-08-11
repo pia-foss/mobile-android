@@ -1,12 +1,12 @@
 package com.kape.vpn.di
 
 import android.content.Context
-import com.kape.login.BuildConfig
-import com.kape.router.Router
 import com.kape.vpn.provider.AccountModuleStateProvider
 import com.kape.vpn.provider.KPI_PREFS_NAME
 import com.kape.vpn.provider.KpiModuleStateProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
+import com.kape.router.Router
+import com.kape.vpn.BuildConfig
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
@@ -73,4 +73,4 @@ private fun provideCertificate(context: Context) =
     context.assets.open("rsa4096.pem").bufferedReader().use(BufferedReader::readText)
 
 private fun provideUserAgent() =
-    "privateinternetaccess.com Android Client/${BuildConfig.VERSION_CODE}(${BuildConfig.VERSION_CODE})"
+    "privateinternetaccess.com Android Client/${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE}))"
