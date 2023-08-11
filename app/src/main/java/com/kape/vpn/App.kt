@@ -3,6 +3,7 @@ package com.kape.vpn
 import android.app.Application
 import com.kape.connection.di.connectionModule
 import com.kape.login.di.loginModule
+import com.kape.notifications.di.notificationModule
 import com.kape.payments.di.paymentsModule
 import com.kape.vpn.di.appModule
 import com.kape.profile.di.profileModule
@@ -28,6 +29,7 @@ class App : Application() {
         modules(
             mutableListOf<Module>().apply {
                 add(appModule)
+                add(notificationModule)
                 add(paymentsModule)
                 add(loginModule)
                 add(permissionModule)
