@@ -2,10 +2,10 @@ package com.kape.shareevents
 
 import app.cash.turbine.test
 import com.kape.shareevents.data.KpiDataSourceImpl
-import com.kape.shareevents.di.kpiModule
-import com.kape.shareevents.domain.KpiDataSource
 import com.kape.shareevents.data.models.KpiConnectionEvent
 import com.kape.shareevents.data.models.KpiConnectionSource
+import com.kape.shareevents.di.kpiModule
+import com.kape.shareevents.domain.KpiDataSource
 import com.kape.shareevents.utils.KpiPrefs
 import com.privateinternetaccess.kpi.KPIAPI
 import io.mockk.coEvery
@@ -20,7 +20,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import kotlin.test.assertTrue
-
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class KpiDataSourceImplTest {

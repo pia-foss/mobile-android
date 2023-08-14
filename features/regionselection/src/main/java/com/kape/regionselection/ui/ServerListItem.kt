@@ -2,7 +2,12 @@ package com.kape.regionselection.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,15 +18,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.kape.regionselection.R
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
+import com.kape.ui.theme.Latency
 import com.kape.ui.theme.Space
 import com.kape.ui.theme.Width
 import com.kape.ui.utils.getFlagResource
 import com.kape.utils.server.Server
 import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
-import com.kape.regionselection.R
-import com.kape.ui.theme.Latency
 
 @Composable
 fun ServerListItem(
@@ -30,13 +35,16 @@ fun ServerListItem(
     onClick: ((server: Server) -> Unit),
     onFavoriteClick: ((serverName: String) -> Unit)
 ) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .height(Height.DEFAULT)
-        .clickable {
-            onClick(server)
-        }
-        .padding(horizontal = Space.NORMAL), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Height.DEFAULT)
+            .clickable {
+                onClick(server)
+            }
+            .padding(horizontal = Space.NORMAL),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Image(
             painter = painterResource(id = getFlagResource(LocalContext.current, server.iso)),
             contentDescription = stringResource(id = R.string.flag),

@@ -3,7 +3,6 @@ package com.kape.regionselection.data
 import app.cash.turbine.test
 import com.kape.regionselection.di.regionModule
 import com.kape.regionselection.domain.RegionDataSource
-import com.kape.regionselection.data.RegionDataSourceImpl
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.model.RegionsResponse
@@ -25,7 +24,7 @@ import org.koin.test.KoinTest
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class RegionDataSourceImplTest: KoinTest {
+internal class RegionDataSourceImplTest : KoinTest {
 
     private val api: RegionsAPI = mockk(relaxed = true)
     private lateinit var source: RegionDataSource
@@ -99,5 +98,4 @@ internal class RegionDataSourceImplTest: KoinTest {
             assertEquals(expected, actual)
         }
     }
-
 }

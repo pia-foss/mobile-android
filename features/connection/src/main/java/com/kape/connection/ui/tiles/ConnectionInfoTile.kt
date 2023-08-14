@@ -47,7 +47,8 @@ fun InfoRow(iconId: Int, label: String) {
         Icon(
             painter = painterResource(id = iconId),
             contentDescription = null,
-            tint = Color.Unspecified, modifier = Modifier.size(Square.CONNECTION_INFO)
+            tint = Color.Unspecified,
+            modifier = Modifier.size(Square.CONNECTION_INFO)
         )
         Spacer(modifier = Modifier.width(Space.MINI))
         Text(text = label, fontSize = FontSize.Normal, color = LocalColors.current.onSurface)

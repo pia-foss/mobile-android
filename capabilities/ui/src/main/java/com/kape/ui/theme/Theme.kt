@@ -51,7 +51,7 @@ fun PIATheme(
 fun PiaScreen(
     darkTheme: Boolean = isSystemInDarkTheme(),
     vararg compositionLocalValues: ProvidedValue<*>,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     val materialColorScheme = if (darkTheme) AppDarkColorScheme else AppLightColorScheme
     val piaColorScheme = if (darkTheme) AppDarkColorScheme else AppLightColorScheme

@@ -9,5 +9,4 @@ interface RegionDataSource {
     fun fetchRegions(locale: String): Flow<RegionsResponse?>
 
     fun pingRequests(): Flow<List<RegionLowerLatencyInformation>?>
-
 }

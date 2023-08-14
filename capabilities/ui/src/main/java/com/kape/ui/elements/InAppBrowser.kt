@@ -5,40 +5,34 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.view.ViewGroup
-import android.webkit.*
+import android.webkit.RenderProcessGoneDetail
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.kape.ui.theme.ButtonBackground
-import com.kape.ui.theme.Height
-import com.kape.ui.theme.InputFieldBackground
-import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 import java.net.HttpURLConnection
 import java.net.URL
@@ -150,17 +144,18 @@ fun WebViewComponent(properties: WebViewComponentProperties) {
             Text(
                 modifier = Modifier.padding(start = 24.dp, end = 24.dp),
                 text = "WebView renderer\ncrashed ${
-                    max(
-                        a = min(
-                            a = properties.maxWebViewRestart - restartWebView,
-                            b = properties.maxWebViewRestart
-                        ), b = 0
-                    )
+                max(
+                    a = min(
+                        a = properties.maxWebViewRestart - restartWebView,
+                        b = properties.maxWebViewRestart
+                    ),
+                    b = 0
+                )
                 } times.",
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp,
-                color = Color.Black,
+                color = Color.Black
             )
         }
     }
@@ -282,7 +277,6 @@ private class MyWebViewClient(
         // never crash application
         return true
     }
-
 
     private fun updatePageTitle(view: WebView) {
         val pageTitle: String = view.title ?: ""

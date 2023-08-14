@@ -32,8 +32,12 @@ open class BaseTest : KoinTest {
             Arguments.of(listOf(AccountRequestError(code = 600, message = null)), ApiResult.Error(ApiError.Unknown)),
             Arguments.of(listOf(AccountRequestError(code = 429, message = null)), ApiResult.Error(ApiError.Throttled)),
             Arguments.of(listOf(AccountRequestError(code = 401, message = null)), ApiResult.Error(ApiError.AuthFailed)),
-            Arguments.of(listOf(AccountRequestError(code = 402, message = null)), ApiResult.Error(
-                ApiError.AccountExpired)),
+            Arguments.of(
+                listOf(AccountRequestError(code = 402, message = null)),
+                ApiResult.Error(
+                    ApiError.AccountExpired
+                )
+            ),
             Arguments.of(emptyList<AccountRequestError>(), ApiResult.Success)
         )
 

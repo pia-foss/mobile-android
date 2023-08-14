@@ -24,10 +24,11 @@ import com.kape.ui.theme.appbarDisconnectedStatus
 
 @Composable
 fun ConnectionButton(state: ConnectionState, onClick: () -> Unit) {
-
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight()) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
         if (state.showProgress) {
             CircularProgressIndicator(
                 modifier = Modifier
@@ -51,7 +52,6 @@ fun ConnectionButton(state: ConnectionState, onClick: () -> Unit) {
             )
         }
     }
-
 }
 
 sealed class ConnectionState(val color: Color, val resId: Int, val showProgress: Boolean) {

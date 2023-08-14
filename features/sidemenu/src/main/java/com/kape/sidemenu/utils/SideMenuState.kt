@@ -5,7 +5,7 @@ data class SideMenuState(
     val versionCode: Int,
     val versionName: String,
     val showExpirationNotice: Boolean,
-    val daysRemaining: Int,
+    val daysRemaining: Int
 )
 
 val IDLE = SideMenuState("", 0, "", false, 0)

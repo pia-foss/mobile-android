@@ -2,7 +2,12 @@ package com.kape.signup.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,14 +32,14 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) {
-
     val buttonProperties =
         ButtonProperties(
             label = stringResource(id = R.string.get_started).toUpperCase(Locale.current),
             enabled = true,
             onClick = {
                 viewModel.completeSubscription()
-            })
+            }
+        )
 
     Column(modifier = Modifier.fillMaxSize()) {
         Image(

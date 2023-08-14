@@ -18,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.kape.profile.R
 import com.kape.profile.ui.vm.ProfileViewModel
@@ -43,7 +42,7 @@ fun ProfileScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(LocalColors.current.surfaceVariant)
-                    .padding(horizontal = Space.NORMAL),
+                    .padding(horizontal = Space.NORMAL)
             ) {
                 Spacer(modifier = Modifier.height(Space.MEDIUM))
                 Text(
@@ -53,7 +52,7 @@ fun ProfileScreen() {
                 )
                 Text(
                     color = LocalColors.current.onSurfaceVariant,
-                    text = state.username,
+                    text = state.username
                 )
                 Spacer(modifier = Modifier.height(Space.MEDIUM))
                 Text(
@@ -66,13 +65,13 @@ fun ProfileScreen() {
                     Text(
                         color = LocalColors.current.outlineVariant,
                         text = stringResource(id = if (state.expired) R.string.message_expired else R.string.message_expiration),
-                        fontSize = FontSize.Small,
+                        fontSize = FontSize.Small
                     )
                     Spacer(modifier = Modifier.width(Space.MINI))
                     Text(
                         color = LocalColors.current.onSurface,
                         text = if (state.expired) stringResource(id = R.string.subscription_status_expired) else state.expirationDate,
-                        fontSize = FontSize.Small,
+                        fontSize = FontSize.Small
                     )
                 }
                 Spacer(modifier = Modifier.height(Space.NORMAL))

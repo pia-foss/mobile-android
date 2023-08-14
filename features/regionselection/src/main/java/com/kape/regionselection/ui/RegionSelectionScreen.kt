@@ -75,7 +75,7 @@ fun RegionSelectionScreen() {
                 SearchBar(searchTextState = searchTextState)
                 viewModel.initAutoRegion(
                     stringResource(id = R.string.automatic),
-                    stringResource(id = R.string.automatic_iso),
+                    stringResource(id = R.string.automatic_iso)
                 )
                 SwipeRefresh(
                     state = rememberSwipeRefreshState(isRefreshing = state.loading),
@@ -83,7 +83,7 @@ fun RegionSelectionScreen() {
                         locale?.let {
                             viewModel.loadRegions(locale)
                         }
-                    },
+                    }
                 ) {
                     viewModel.filterByName(searchTextState.value.text)
                     LazyColumn {
@@ -98,7 +98,7 @@ fun RegionSelectionScreen() {
                                 },
                                 onFavoriteClick = {
                                     viewModel.onFavoriteClicked(it)
-                                },
+                                }
                             )
                             Divider(color = LocalColors.current.outline)
                         }
@@ -121,58 +121,58 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
     AlertDialog(onDismissRequest = {
         viewModel.hideSortingOptions()
     }, title = {
-        Text(text = stringResource(id = R.string.sort_regions_title), fontSize = FontSize.Title)
-    }, text = {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            val options = stringArrayResource(id = R.array.sorting_options)
-            options.forEach {
-                Row(
-                    verticalAlignment = CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .selectable(
+            Text(text = stringResource(id = R.string.sort_regions_title), fontSize = FontSize.Title)
+        }, text = {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                val options = stringArrayResource(id = R.array.sorting_options)
+                options.forEach {
+                    Row(
+                        verticalAlignment = CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (options.indexOf(it) == sortBySelectedOption.value.index),
+                                onClick = {
+                                    sortBySelectedOption.value =
+                                        viewModel.getSortingOption(options.indexOf(it))
+                                },
+                                role = Role.RadioButton
+                            )
+                            .padding(vertical = Space.MINI)
+                    ) {
+                        RadioButton(
                             selected = (options.indexOf(it) == sortBySelectedOption.value.index),
-                            onClick = {
-                                sortBySelectedOption.value =
-                                    viewModel.getSortingOption(options.indexOf(it))
-                            },
-                            role = Role.RadioButton,
+                            onClick = null,
+                            colors = RadioButtonDefaults.colors(selectedColor = LocalColors.current.primary),
+                            modifier = Modifier
+                                .padding(end = Space.SMALL)
+                                .align(CenterVertically)
                         )
-                        .padding(vertical = Space.MINI),
-                ) {
-                    RadioButton(
-                        selected = (options.indexOf(it) == sortBySelectedOption.value.index),
-                        onClick = null,
-                        colors = RadioButtonDefaults.colors(selectedColor = LocalColors.current.primary),
-                        modifier = Modifier
-                            .padding(end = Space.SMALL)
-                            .align(CenterVertically),
-                    )
-                    Text(
-                        text = it,
-                        modifier = Modifier
-                            .align(CenterVertically),
-                    )
+                        Text(
+                            text = it,
+                            modifier = Modifier
+                                .align(CenterVertically)
+                        )
+                    }
                 }
             }
-        }
-    }, confirmButton = {
-        TextButton(onClick = {
-            viewModel.sortBy(sortBySelectedOption.value)
-        }) {
-            Text(
-                text = stringResource(id = R.string.ok),
-                fontSize = FontSize.Normal,
-                color = LocalColors.current.primary,
-            )
-        }
-    }, dismissButton = {
-        TextButton(onClick = { viewModel.hideSortingOptions() }) {
-            Text(
-                text = stringResource(id = R.string.cancel).toUpperCase(Locale.current),
-                fontSize = FontSize.Normal,
-                color = LocalColors.current.primary,
-            )
-        }
-    })
+        }, confirmButton = {
+            TextButton(onClick = {
+                viewModel.sortBy(sortBySelectedOption.value)
+            }) {
+                Text(
+                    text = stringResource(id = R.string.ok),
+                    fontSize = FontSize.Normal,
+                    color = LocalColors.current.primary
+                )
+            }
+        }, dismissButton = {
+            TextButton(onClick = { viewModel.hideSortingOptions() }) {
+                Text(
+                    text = stringResource(id = R.string.cancel).toUpperCase(Locale.current),
+                    fontSize = FontSize.Normal,
+                    color = LocalColors.current.primary
+                )
+            }
+        })
 }

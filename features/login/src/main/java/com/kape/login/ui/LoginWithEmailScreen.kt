@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -63,14 +67,14 @@ fun LoginWithEmailScreen(navController: NavController) {
             painter = painterResource(id = com.kape.ui.R.drawable.ic_pia_logo),
             contentDescription = "logo",
             modifier = Modifier
-                .padding(start = 150.dp, top = 36.dp, bottom = Space.MEDIUM, end = 150.dp),
+                .padding(start = 150.dp, top = 36.dp, bottom = Space.MEDIUM, end = 150.dp)
         )
         Text(
             text = stringResource(id = R.string.sign_in),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(bottom = Space.MEDIUM),
+                .padding(bottom = Space.MEDIUM)
         )
         InputField(modifier = Modifier.padding(Space.MEDIUM, Space.SMALL), properties = emailProperties)
         PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = buttonProperties)
@@ -91,7 +95,7 @@ private fun getErrorMessage(state: LoginScreenState): String? {
         LoginError.Expired -> "account expired flow" // TODO: handle when signup module is built
         LoginError.Failed,
         LoginError.Invalid,
-        LoginError.Throttled,
+        LoginError.Throttled
         -> stringResource(id = R.string.error_missing_email)
         LoginError.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
         null -> null

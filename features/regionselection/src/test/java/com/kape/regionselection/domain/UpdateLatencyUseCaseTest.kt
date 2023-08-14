@@ -1,9 +1,8 @@
-package com.kape.region_selection.domain
+package com.kape.regionselection.domain
 
 import app.cash.turbine.test
-import com.kape.core.server.Server
 import com.kape.regionselection.data.RegionRepository
-import com.kape.regionselection.domain.UpdateLatencyUseCase
+import com.kape.utils.server.Server
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -45,20 +44,25 @@ internal class UpdateLatencyUseCaseTest : KoinTest {
         @JvmStatic
         fun data() = Stream.of(
             Arguments.of(emptyList<Server>()),
-            Arguments.of(listOf(Server(name = "",
-                iso = "",
-                dns = "",
-                endpoints = emptyMap(),
-                key = "key",
-                isGeo = false,
-                isOffline = false,
-                isAllowsPF = false,
-                latency = "latency",
-                dedicatedIp = null,
-                dipToken = null,
-                latitude = null,
-                longitude = null
-            )))
+            Arguments.of(
+                listOf(
+                    Server(
+                        name = "",
+                        iso = "",
+                        dns = "",
+                        endpoints = emptyMap(),
+                        key = "key",
+                        isGeo = false,
+                        isOffline = false,
+                        isAllowsPF = false,
+                        latency = "latency",
+                        dedicatedIp = null,
+                        dipToken = null,
+                        latitude = null,
+                        longitude = null
+                    )
+                )
+            )
         )
     }
 }

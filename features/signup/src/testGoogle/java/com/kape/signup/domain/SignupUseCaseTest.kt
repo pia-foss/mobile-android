@@ -3,8 +3,8 @@ package com.kape.signup.domain
 import app.cash.turbine.test
 import com.kape.login.domain.LoginUseCase
 import com.kape.login.utils.LoginState
-import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.payments.data.models.PurchaseData
+import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.signup.data.models.Credentials
 import io.mockk.coEvery
 import io.mockk.every
@@ -39,7 +39,7 @@ internal class SignupUseCaseTest : KoinTest {
     @MethodSource("arguments")
     fun `test signup`(expected: Credentials?, purchaseData: PurchaseData?) = runTest {
         every { purchaseDetailsUseCase.getPurchaseDetails() } returns purchaseData
-        coEvery { loginUseCase.login(any(), any() ) } returns flow {
+        coEvery { loginUseCase.login(any(), any()) } returns flow {
             emit(LoginState.Successful)
         }
         every { emailDataSource.setEmail(any()) } returns flow {
@@ -62,7 +62,6 @@ internal class SignupUseCaseTest : KoinTest {
         val nullCredentials: Credentials? = null
         val purchaseData = PurchaseData("token", "productId", "orderId")
         val missingPurchaseData: PurchaseData? = null
-
 
         @JvmStatic
         fun arguments() = Stream.of(Arguments.of(credentials, purchaseData), Arguments.of(nullCredentials, missingPurchaseData))

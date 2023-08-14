@@ -3,7 +3,11 @@ package com.kape.login.ui.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.login.domain.LoginUseCase
-import com.kape.login.utils.*
+import com.kape.login.utils.IDLE
+import com.kape.login.utils.INVALID
+import com.kape.login.utils.LOADING
+import com.kape.login.utils.LoginScreenState
+import com.kape.login.utils.SUCCESS
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

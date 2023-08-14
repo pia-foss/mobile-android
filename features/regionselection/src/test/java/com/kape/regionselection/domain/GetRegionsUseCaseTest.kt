@@ -1,10 +1,9 @@
-package com.kape.region_selection.domain
+package com.kape.regionselection.domain
 
 import app.cash.turbine.test
-import com.kape.core.server.Server
 import com.kape.regionselection.data.RegionRepository
 import com.kape.regionselection.utils.RegionPrefs
-import com.kape.regionselection.domain.GetRegionsUseCase
+import com.kape.utils.server.Server
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -76,15 +75,17 @@ internal class GetRegionsUseCaseTest : KoinTest {
                         dns = "",
                         endpoints = emptyMap(),
                         key = "key",
-                isGeo = false,
-                isOffline = false,
-                isAllowsPF = false,
-                latency = null,
-                dedicatedIp = null,
-                dipToken = null,
-                latitude = null,
-                longitude = null
-            )))
+                        isGeo = false,
+                        isOffline = false,
+                        isAllowsPF = false,
+                        latency = null,
+                        dedicatedIp = null,
+                        dipToken = null,
+                        latitude = null,
+                        longitude = null
+                    )
+                )
+            )
         )
     }
 }

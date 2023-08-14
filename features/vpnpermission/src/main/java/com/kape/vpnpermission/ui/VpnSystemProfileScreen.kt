@@ -10,7 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -31,7 +35,6 @@ import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun VpnSystemProfileScreen() {
-
     val viewModel: PermissionsViewModel = getViewModel()
     val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsState()
     val startForResult =
@@ -39,11 +42,13 @@ fun VpnSystemProfileScreen() {
             viewModel.onVpnProfileStateChange()
         }
     val okButtonProperties =
-        ButtonProperties(label = stringResource(id = com.kape.vpnpermission.R.string.setup_vpn_profile_ok_button),
+        ButtonProperties(
+            label = stringResource(id = com.kape.vpnpermission.R.string.setup_vpn_profile_ok_button),
             enabled = true,
             onClick = {
                 viewModel.onOkButtonClicked()
-            })
+            }
+        )
 
     LaunchedEffect(key1 = state) {
         viewModel.checkFlowCompleted()
@@ -58,7 +63,9 @@ fun VpnSystemProfileScreen() {
 
         GRANTED -> {}
         NOT_GRANTED -> Toast.makeText(
-            LocalContext.current, getVpnProfileToastText(granted = false), Toast.LENGTH_LONG
+            LocalContext.current,
+            getVpnProfileToastText(granted = false),
+            Toast.LENGTH_LONG
         ).show()
     }
 
@@ -67,7 +74,10 @@ fun VpnSystemProfileScreen() {
             painter = painterResource(id = UiResources.bigAppLogo),
             contentDescription = "logo",
             modifier = Modifier.padding(
-                start = Space.CENT, top = Space.BIGGER, bottom = Space.HUGE, end = Space.CENT
+                start = Space.CENT,
+                top = Space.BIGGER,
+                bottom = Space.HUGE,
+                end = Space.CENT
             )
         )
         Text(
@@ -79,7 +89,8 @@ fun VpnSystemProfileScreen() {
                 .padding(Space.HUGE)
         )
         PrimaryButton(
-            modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = okButtonProperties
+            modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
+            properties = okButtonProperties
         )
         Text(
             text = stringResource(id = com.kape.vpnpermission.R.string.setup_vpn_profile_privacy_statement),

@@ -21,7 +21,8 @@ fun PrimaryButton(modifier: Modifier, properties: ButtonProperties) {
             .semantics { contentDescription = properties.label }
             .testTag(properties.label)
             .height(Height.DEFAULT)
-            .fillMaxWidth(), enabled = properties.enabled
+            .fillMaxWidth(),
+        enabled = properties.enabled
     ) {
         Text(text = properties.label)
     }

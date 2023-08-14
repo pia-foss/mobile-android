@@ -5,7 +5,7 @@ import android.net.VpnService
 import com.kape.vpnpermission.domain.VpnPermissionDataSource
 
 class VpnPermissionDataSourceImpl(
-        private val context: Context
-): VpnPermissionDataSource {
+    private val context: Context
+) : VpnPermissionDataSource {
     override fun isVpnProfileInstalled(): Boolean = VpnService.prepare(context) == null
 }

@@ -13,12 +13,12 @@ data class Server(
     val isOffline: Boolean,
     val isAllowsPF: Boolean,
     val dipToken: String?,
-    val dedicatedIp: String?,
+    val dedicatedIp: String?
 ) {
     data class ServerEndpointDetails(
         val ip: String,
         val cn: String,
-        val usesVanillaOpenVPN: Boolean,
+        val usesVanillaOpenVPN: Boolean
     )
 
     enum class ServerGroup {

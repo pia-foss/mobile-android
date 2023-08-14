@@ -1,7 +1,7 @@
 package com.kape.signup.data
 
-import com.kape.signup.domain.SignupDataSource
 import com.kape.signup.data.models.Credentials
+import com.kape.signup.domain.SignupDataSource
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.request.AndroidSignupInformation
 import kotlinx.coroutines.channels.awaitClose

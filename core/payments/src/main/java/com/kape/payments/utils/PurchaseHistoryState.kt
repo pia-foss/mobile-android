@@ -8,5 +8,4 @@ sealed class PurchaseHistoryState {
         PurchaseHistoryState()
 
     data object PurchaseHistoryFailed : PurchaseHistoryState()
-
 }

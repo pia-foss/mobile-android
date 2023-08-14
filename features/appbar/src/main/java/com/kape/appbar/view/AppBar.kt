@@ -34,8 +34,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.kape.ui.R
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.ui.R
 import com.kape.ui.theme.PiaScreen
 import com.kape.ui.theme.appbarConnectedGradient
 import com.kape.ui.theme.appbarConnectedStatus
@@ -50,13 +50,13 @@ fun ConnectionAppBar(
     viewModel: AppBarViewModel,
     onHeaderClick: () -> Unit,
     onLeftButtonClick: () -> Unit,
-    onRightButtonClick: () -> Unit = {},
+    onRightButtonClick: () -> Unit = {}
 ) {
     AppBar(
         state = AppBarState(
             title = stringResource(id = viewModel.appBarText),
             accessibilityPrefix = stringResource(id = viewModel.accessibilityPrefix),
-            connectionState = ConnectionState.Default,//viewModel.appBarConnectionState,
+            connectionState = ConnectionState.Default, // viewModel.appBarConnectionState,
             colorScheme = LocalColors.current,
             navigationState = NavigationState.Menu,
             contentAlignment = ContentAlignment.Centered,
@@ -66,7 +66,7 @@ fun ConnectionAppBar(
 //            } else {
 //                ContentType.Text
 //            },
-            darkIcons = shouldShowDarkIcons(ConnectionState.Default), //viewModel.appBarConnectionState
+            darkIcons = shouldShowDarkIcons(ConnectionState.Default) // viewModel.appBarConnectionState
         ),
         onHeaderClick = onHeaderClick,
         onLeftButtonClick = onLeftButtonClick,
@@ -78,17 +78,17 @@ fun ConnectionAppBar(
 fun NavigationAppBar(
     viewModel: AppBarViewModel,
     onLeftButtonClick: () -> Unit,
-    onRightButtonClick: () -> Unit = {},
+    onRightButtonClick: () -> Unit = {}
 ) {
     AppBar(
         state = AppBarState(
             title = stringResource(id = viewModel.appBarText),
-            connectionState = ConnectionState.Default,//viewModel.appBarConnectionState,
+            connectionState = ConnectionState.Default, // viewModel.appBarConnectionState,
             colorScheme = LocalColors.current,
             navigationState = NavigationState.Back,
             contentAlignment = ContentAlignment.LeftAligned,
             contentType = ContentType.Text,
-            darkIcons = shouldShowDarkIcons(ConnectionState.Default),
+            darkIcons = shouldShowDarkIcons(ConnectionState.Default)
         ),
         onLeftButtonClick = onLeftButtonClick,
         onRightButtonClick = onRightButtonClick
@@ -99,17 +99,17 @@ fun NavigationAppBar(
 fun InAppBrowserAppBar(
     viewModel: AppBarViewModel,
     onLeftButtonClick: () -> Unit,
-    onRightButtonClick: () -> Unit = {},
+    onRightButtonClick: () -> Unit = {}
 ) {
     AppBar(
         state = AppBarState(
             title = stringResource(id = viewModel.appBarText),
-            connectionState = ConnectionState.Default,//viewModel.appBarConnectionState,
+            connectionState = ConnectionState.Default, // viewModel.appBarConnectionState,
             colorScheme = LocalColors.current,
             navigationState = NavigationState.Back,
             contentAlignment = ContentAlignment.Centered,
             contentType = ContentType.Image,
-            darkIcons = shouldShowDarkIcons(ConnectionState.Default),
+            darkIcons = shouldShowDarkIcons(ConnectionState.Default)
         ),
         onLeftButtonClick = onLeftButtonClick,
         onRightButtonClick = onRightButtonClick
@@ -128,7 +128,7 @@ private fun AppBar(
     state: AppBarState,
     onHeaderClick: (() -> Unit)? = null,
     onLeftButtonClick: () -> Unit,
-    onRightButtonClick: () -> Unit,
+    onRightButtonClick: () -> Unit
 ) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
@@ -243,7 +243,7 @@ fun ImageContent(connectionState: ConnectionState, color: Color) {
         Icon(
             painter = painterResource(id = R.drawable.ic_pia_logo),
             contentDescription = null,
-            tint = color,
+            tint = color
         )
     }
 }
@@ -295,7 +295,7 @@ private data class AppBarState(
     val colors: AppBarColors = getAppBarColors(colorScheme, connectionState, darkIcons),
     val navigationState: NavigationState,
     val contentType: ContentType,
-    val contentAlignment: ContentAlignment,
+    val contentAlignment: ContentAlignment
 )
 
 private sealed class NavigationState {
@@ -318,7 +318,7 @@ private data class AppBarColors(
     val background: Brush,
     val foreground: Color,
     val statusBar: Color,
-    val darkIcons: Boolean,
+    val darkIcons: Boolean
 )
 
 @Composable
@@ -333,7 +333,7 @@ private fun shouldShowDarkIcons(connectionState: ConnectionState): Boolean {
 private fun getAppBarColors(
     scheme: ColorScheme,
     connectionState: ConnectionState,
-    darkIcons: Boolean,
+    darkIcons: Boolean
 ): AppBarColors {
     return when (connectionState) {
         ConnectionState.Connected -> AppBarColors(
@@ -384,7 +384,7 @@ fun PreviewDefaultState() {
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.ImageText,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Default),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Default)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -405,7 +405,7 @@ fun PreviewConnectingState() {
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Connecting),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Connecting)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -426,7 +426,7 @@ fun PreviewConnectedState() {
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Connected),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Connected)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -450,7 +450,7 @@ fun PreviewDisconnectedState() {
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Disconnected),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Disconnected)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -474,7 +474,7 @@ fun PreviewNavigationDefaultState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Default),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Default)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -498,7 +498,7 @@ fun PreviewNavigationConnectingState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Connecting),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Connecting)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -522,7 +522,7 @@ fun PreviewNavigationConnectedState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Connected),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Connected)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -546,7 +546,7 @@ fun PreviewNavigationDisconnectedState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Disconnected),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Disconnected)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -570,7 +570,7 @@ fun PreviewInAppBrowserDefaultState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Image,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Default),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Default)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -594,7 +594,7 @@ fun PreviewInAppBrowserConnectingState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Image,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Connecting),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Connecting)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -618,7 +618,7 @@ fun PreviewInAppBrowserDisconnectedState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Image,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Disconnected),
+                darkIcons = shouldShowDarkIcons(ConnectionState.Disconnected)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}

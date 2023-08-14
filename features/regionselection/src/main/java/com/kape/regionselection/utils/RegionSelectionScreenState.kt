@@ -6,7 +6,7 @@ data class RegionSelectionScreenState(
     val idle: Boolean,
     val loading: Boolean,
     val regions: List<Server>,
-    val showSortingOptions: Boolean = false,
+    val showSortingOptions: Boolean = false
 )
 
 val IDLE = RegionSelectionScreenState(idle = true, loading = false, regions = emptyList())

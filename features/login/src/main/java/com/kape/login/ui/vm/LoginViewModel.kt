@@ -4,7 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.login.domain.GetUserLoggedInUseCase
 import com.kape.login.domain.LoginUseCase
-import com.kape.login.utils.*
+import com.kape.login.utils.FAILED
+import com.kape.login.utils.IDLE
+import com.kape.login.utils.INVALID
+import com.kape.login.utils.LOADING
+import com.kape.login.utils.LoginScreenState
+import com.kape.login.utils.LoginState
+import com.kape.login.utils.getScreenState
 import com.kape.payments.ui.PaymentProvider
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.router.ExitFlow

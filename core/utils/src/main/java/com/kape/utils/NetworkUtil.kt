@@ -26,7 +26,7 @@ val Context.currentConnectivityState: InternetConnectionState
 
 @RequiresApi(Build.VERSION_CODES.M)
 private fun getCurrentConnectivityState(
-    connectivityManager: ConnectivityManager,
+    connectivityManager: ConnectivityManager
 ): InternetConnectionState {
     val connected = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false

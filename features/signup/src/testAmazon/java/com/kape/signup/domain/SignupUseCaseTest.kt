@@ -2,8 +2,8 @@ package com.kape.signup.domain
 
 import app.cash.turbine.test
 import com.kape.login.domain.LoginUseCase
-import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.payments.data.models.PurchaseData
+import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.signup.models.Credentials
 import io.mockk.coEvery
 import io.mockk.every
@@ -56,7 +56,6 @@ internal class SignupUseCaseTest : KoinTest {
         val nullCredentials: Credentials? = null
         val purchaseData = PurchaseData("userId", "receiptId")
         val missingPurchaseData: PurchaseData? = null
-
 
         @JvmStatic
         fun arguments() = Stream.of(

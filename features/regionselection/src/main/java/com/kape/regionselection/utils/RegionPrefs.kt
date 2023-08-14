@@ -33,5 +33,4 @@ class RegionPrefs(context: Context) : Prefs(context, "regions") {
     }
 
     fun getSelectedServerKey() = prefs.getString(SELECTED_SERVER, "")
-
 }
