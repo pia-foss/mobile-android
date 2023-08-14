@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.kape.ui.theme.InputFieldBackground
 import com.kape.ui.theme.Space
+import com.kape.ui.utils.LocalColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +39,7 @@ fun InputField(modifier: Modifier, properties: InputFieldProperties) {
                 .semantics { contentDescription = properties.label },
             label = { Text(properties.label) })
         properties.error?.let {
-            Text(text = it, color = Color.Red, modifier = Modifier
+            Text(text = it, color = LocalColors.current.error, modifier = Modifier
                 .padding(vertical = Space.SMALL_VERTICAL)
                 .semantics { contentDescription = it }
                 .testTag("errorMessage"))
