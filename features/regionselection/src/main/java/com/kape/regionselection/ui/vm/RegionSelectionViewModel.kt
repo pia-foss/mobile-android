@@ -55,7 +55,6 @@ class RegionSelectionViewModel(
                 Server(
                     name = name,
                     iso = iso,
-                    dns = "",
                     latency = null,
                     endpoints = emptyMap(),
                     key = "",

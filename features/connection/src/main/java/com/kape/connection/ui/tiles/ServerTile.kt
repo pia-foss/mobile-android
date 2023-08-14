@@ -42,7 +42,7 @@ fun ServerTile(server: Server? = null, modifier: Modifier) {
                     .height(Height.FLAG)
             )
             server?.let {
-                if (it.isDedicatedIp()) {
+                if (it.isDedicatedIp) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_dip_badge),
                         contentDescription = null,

@@ -81,8 +81,8 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementKtor() {
-        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:1.6.5")
-        add(IMPLEMENTATION, "io.ktor:ktor-client-core:1.6.5")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:2.3.3")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-core:2.3.3")
     }
 
     fun DependencyHandler.implementFeatureModule() {
@@ -121,7 +121,7 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementKpi() {
-        add(IMPLEMENTATION, "com.kape.android:kpi-android:1.2.0")
+        add(IMPLEMENTATION, "com.kape.android:kpi-android:1.2.1-rc01")
     }
 
     fun DependencyHandler.implementCsi() {

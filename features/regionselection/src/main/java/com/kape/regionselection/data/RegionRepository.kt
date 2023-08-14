@@ -1,5 +1,6 @@
 package com.kape.regionselection.data
 
+import android.util.Log
 import com.kape.regionselection.domain.RegionDataSource
 import com.kape.regionselection.utils.adaptServers
 import com.kape.regionselection.utils.adaptServersInfo
@@ -13,8 +14,9 @@ class RegionRepository(private val source: RegionDataSource) {
     private var serverMap: Map<String, Server> = hashMapOf()
     private var serverInfo: ServerInfo = ServerInfo()
 
-    suspend fun fetchRegions(locale: String): Flow<List<Server>> = flow {
+    fun fetchRegions(locale: String): Flow<List<Server>> = flow {
         source.fetchRegions(locale).collect {
+            Log.e("aaa", "serverResponse: $it")
             if (it == null) {
                 emit(emptyList())
             } else {
@@ -25,7 +27,7 @@ class RegionRepository(private val source: RegionDataSource) {
         }
     }
 
-    suspend fun fetchLatencies(): Flow<List<Server>> = flow {
+    fun fetchLatencies(): Flow<List<Server>> = flow {
         source.pingRequests().collect {
             if (it == null) {
                 emit(emptyList())

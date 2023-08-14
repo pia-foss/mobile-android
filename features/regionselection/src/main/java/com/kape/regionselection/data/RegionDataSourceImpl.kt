@@ -1,5 +1,6 @@
 package com.kape.regionselection.data
 
+import android.util.Log
 import com.kape.regionselection.domain.RegionDataSource
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.RegionsAPI
@@ -16,6 +17,7 @@ class RegionDataSourceImpl : RegionDataSource, KoinComponent {
 
     override fun fetchRegions(locale: String): Flow<RegionsResponse?> = callbackFlow {
         api.fetchRegions(locale) { response, error ->
+            Log.e("aaa", "response: $response, error: $error")
             if (error.isNotEmpty()) {
                 trySend(null)
                 return@fetchRegions
