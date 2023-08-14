@@ -2,7 +2,13 @@ package com.kape.connection.ui.tiles
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,7 +62,8 @@ private fun SnoozeTileDefault(viewModel: ConnectionViewModel) {
     }
     Spacer(modifier = Modifier.height(Space.SMALL))
     Text(
-        text = stringResource(id = R.string.snooze_description), color = LocalColors.current.onSurface,
+        text = stringResource(id = R.string.snooze_description),
+        color = LocalColors.current.onSurface,
         fontSize = FontSize.Tiny
     )
 }
@@ -67,7 +74,8 @@ private fun SnoozeTileActive(activeUntil: String?, onResumeClick: () -> Unit) {
         SnoozeTileButton(labelId = R.string.resume, onClick = onResumeClick, modifier = Modifier)
         Spacer(modifier = Modifier.height(Space.SMALL))
         Text(
-            text = stringResource(id = R.string.paused_until).format(activeUntil), color = LocalColors.current.onSurface,
+            text = stringResource(id = R.string.paused_until).format(activeUntil),
+            color = LocalColors.current.onSurface,
             fontSize = FontSize.Tiny
         )
     }
@@ -81,12 +89,13 @@ private fun SnoozeTileButton(labelId: Int, onClick: () -> Unit, modifier: Modifi
             .padding(Space.SMALL)
             .clickable {
                 onClick.invoke()
-            }, contentAlignment = Alignment.Center
+            },
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = stringResource(id = labelId),
             fontSize = FontSize.Tiny,
-            color = LocalColors.current.onSurfaceVariant,
+            color = LocalColors.current.onSurfaceVariant
         )
     }
 }

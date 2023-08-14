@@ -2,7 +2,15 @@ package com.kape.settings.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
@@ -34,8 +42,12 @@ fun SettingsScreen() {
                 SettingsItem(
                     nameId = item.labelId,
                     iconId = item.iconId,
-                    state = if (item.options.isNotEmpty()) item.selectedOption?.let { item.options[it] }
-                        ?: item.options[0] else null,
+                    state = if (item.options.isNotEmpty()) {
+                        item.selectedOption?.let { item.options[it] }
+                            ?: item.options[0]
+                    } else {
+                        null
+                    },
                     onClick = { /*TODO*/ },
                     modifier = Modifier
                 )
@@ -52,13 +64,15 @@ fun SettingsItem(
     onClick: () -> Unit,
     modifier: Modifier
 ) {
-    Box(modifier = modifier
-        .fillMaxWidth()
-        .background(LocalColors.current.surface)
-        .height(Height.SETTINGS_ITEM)
-        .clickable {
-            onClick.invoke()
-        }) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(LocalColors.current.surface)
+            .height(Height.SETTINGS_ITEM)
+            .clickable {
+                onClick.invoke()
+            }
+    ) {
         Row(
             modifier = modifier
                 .padding(Space.SMALL)
@@ -109,7 +123,6 @@ fun SettingsItem(
         )
     }
     Divider(color = LocalColors.current.outline)
-
 }
 
 @Composable
@@ -125,7 +138,8 @@ private fun getSettingsList(
             R.drawable.ic_setting_protocols,
             options = stringArrayResource(
                 id = R.array.protocols
-            ).toList(), protocolSelection
+            ).toList(),
+            protocolSelection
         )
     )
     settings.add(GeneralSetting(labelId = R.string.networks, R.drawable.ic_setting_network))

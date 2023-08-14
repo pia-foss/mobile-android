@@ -14,5 +14,4 @@ class AppBarViewModel : ViewModel(), KoinComponent {
         private set
     var accessibilityPrefix by mutableStateOf(R.string.menu)
         private set
-
 }

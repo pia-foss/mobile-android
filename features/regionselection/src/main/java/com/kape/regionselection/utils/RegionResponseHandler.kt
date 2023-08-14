@@ -30,7 +30,6 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
                             wireguardEndpoint.usesVanillaOVPN
                         )
                     )
-
                 }
                 regionEndpoints[Server.ServerGroup.WIREGUARD] = mappedEndpoints
             }
@@ -39,12 +38,13 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
         ovpnTcpEndpoints?.let {
             val mappedEndpoints = mutableListOf<Server.ServerEndpointDetails>()
             for (ovpnTcpEndpoint in it) {
-                mappedEndpoints.add(Server.ServerEndpointDetails(
-                    ovpnTcpEndpoint.ip,
-                    ovpnTcpEndpoint.cn,
-                    ovpnTcpEndpoint.usesVanillaOVPN
-                ))
-
+                mappedEndpoints.add(
+                    Server.ServerEndpointDetails(
+                        ovpnTcpEndpoint.ip,
+                        ovpnTcpEndpoint.cn,
+                        ovpnTcpEndpoint.usesVanillaOVPN
+                    )
+                )
             }
             regionEndpoints[Server.ServerGroup.OPENVPN_TCP] = mappedEndpoints
         }
@@ -52,12 +52,13 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
         ovpnUdpEndpoints?.let {
             val mappedEndpoints = mutableListOf<Server.ServerEndpointDetails>()
             for (ovpnUdpEndpoint in it) {
-                mappedEndpoints.add(Server.ServerEndpointDetails(
-                    ovpnUdpEndpoint.ip,
-                    ovpnUdpEndpoint.cn,
-                    ovpnUdpEndpoint.usesVanillaOVPN
-                ))
-
+                mappedEndpoints.add(
+                    Server.ServerEndpointDetails(
+                        ovpnUdpEndpoint.ip,
+                        ovpnUdpEndpoint.cn,
+                        ovpnUdpEndpoint.usesVanillaOVPN
+                    )
+                )
             }
             regionEndpoints[Server.ServerGroup.OPENVPN_UDP] = mappedEndpoints
         }
@@ -65,12 +66,13 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
         metaEndpoints?.let {
             val mappedEndpoints = mutableListOf<Server.ServerEndpointDetails>()
             for (metaEndpoint in it) {
-                mappedEndpoints.add(Server.ServerEndpointDetails(
-                    metaEndpoint.ip,
-                    metaEndpoint.cn,
-                    metaEndpoint.usesVanillaOVPN
-                ))
-
+                mappedEndpoints.add(
+                    Server.ServerEndpointDetails(
+                        metaEndpoint.ip,
+                        metaEndpoint.cn,
+                        metaEndpoint.usesVanillaOVPN
+                    )
+                )
             }
             regionEndpoints[Server.ServerGroup.META] = mappedEndpoints
         }

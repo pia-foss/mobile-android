@@ -42,7 +42,7 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
                         ip = settings.server,
                         commonName = settings.serverCommonName,
                         latency = 10
-                    ),
+                    )
                 )
             ),
             openVpnClientConfiguration = OpenVpnClientConfiguration(
@@ -68,5 +68,4 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
             emit(it)
         }
     }
-
 }

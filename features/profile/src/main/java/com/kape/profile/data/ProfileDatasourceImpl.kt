@@ -1,15 +1,14 @@
 package com.kape.profile.data
 
-import com.kape.profile.domain.ProfileDatasource
 import com.kape.profile.data.models.Profile
 import com.kape.profile.data.models.Subscription
+import com.kape.profile.domain.ProfileDatasource
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-
 
 class ProfileDatasourceImpl : ProfileDatasource, KoinComponent {
     private val api: AndroidAccountAPI by inject()

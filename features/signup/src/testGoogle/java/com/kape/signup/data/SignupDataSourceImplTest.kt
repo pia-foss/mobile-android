@@ -1,8 +1,8 @@
 package com.kape.signup.data
 
 import app.cash.turbine.test
-import com.kape.signup.di.signupModule
 import com.kape.signup.data.models.Credentials
+import com.kape.signup.di.signupModule
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.SignUpInformation
 import io.mockk.coEvery

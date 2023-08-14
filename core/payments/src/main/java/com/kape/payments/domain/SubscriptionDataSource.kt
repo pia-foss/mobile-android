@@ -6,5 +6,4 @@ import kotlinx.coroutines.flow.Flow
 interface SubscriptionDataSource {
 
     fun getAvailableSubscriptions(): Flow<List<Subscription>>
-
 }

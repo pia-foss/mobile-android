@@ -4,6 +4,7 @@ import Dependencies.implementFeatureModule
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("org.jlleitschuh.gradle.ktlint")
     id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
@@ -14,7 +15,7 @@ android {
     defaultConfig {
         minSdk = 21
     }
-    
+
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -24,7 +25,6 @@ android {
             dimension = "provider"
         }
     }
-
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -61,7 +61,5 @@ dependencies {
     implementation(project(":features:sidemenu"))
     implementation(project(":features:regionselection"))
 
-
     implementFeatureModule()
-
 }

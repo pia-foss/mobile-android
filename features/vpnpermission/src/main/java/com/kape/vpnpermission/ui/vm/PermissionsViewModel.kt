@@ -17,7 +17,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class PermissionsViewModel(
-    private val useCaseIsVpnProfileInstalled: IsVpnProfileInstalledUseCase,
+    private val useCaseIsVpnProfileInstalled: IsVpnProfileInstalledUseCase
 ) : ViewModel(), KoinComponent {
 
     private val router: Router by inject()

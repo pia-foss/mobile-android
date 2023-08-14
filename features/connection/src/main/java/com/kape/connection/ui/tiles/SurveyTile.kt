@@ -1,7 +1,12 @@
 package com.kape.connection.ui.tiles
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,7 +30,8 @@ fun SurveyTile(onClick: () -> Unit) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_alert_green),
                 contentDescription = null,
-                tint = Color.Unspecified, modifier = Modifier.weight(0.1f)
+                tint = Color.Unspecified,
+                modifier = Modifier.weight(0.1f)
             )
             Text(
                 text = stringResource(id = R.string.survey_message),
@@ -37,10 +43,11 @@ fun SurveyTile(onClick: () -> Unit) {
             )
             Icon(
                 painter = painterResource(id = com.kape.ui.R.drawable.ic_close),
-                contentDescription = null, tint = Color.Unspecified, modifier = Modifier
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier
                     .weight(0.1f)
                     .clickable {
-
                     }
             )
         }

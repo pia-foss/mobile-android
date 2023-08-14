@@ -2,7 +2,6 @@ package com.kape.connection.utils
 
 import com.kape.utils.server.Server
 
-
 // TODO: temporary states, will evolve
 data class SnoozeState(val active: Boolean, val activeUntil: String? = null)
 
@@ -22,4 +21,3 @@ data class ConnectionScreenState(
 
 val IDLE =
     ConnectionScreenState(snoozeState = SNOOZE_STATE_DEFAULT, usageState = USAGE_STATE_DEFAULT)
-

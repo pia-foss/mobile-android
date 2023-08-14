@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
-internal class LogoutUseCaseTest: BaseTest() {
+internal class LogoutUseCaseTest : BaseTest() {
     private val source = mockk<AuthenticationDataSource>()
 
     private lateinit var useCase: LogoutUseCase
@@ -24,7 +24,6 @@ internal class LogoutUseCaseTest: BaseTest() {
     internal fun setUp() {
         useCase = LogoutUseCase(source)
     }
-
 
     @ParameterizedTest(name = "source: {0}, expected: {1}")
     @MethodSource("data")

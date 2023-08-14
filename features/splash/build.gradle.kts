@@ -1,14 +1,10 @@
-import Dependencies.implementCompose
-import Dependencies.implementComposeNavigation
+
 import Dependencies.implementFeatureModule
-import Dependencies.implementKoin
-import Dependencies.implementKtor
-import Dependencies.implementSerialization
-import Dependencies.implementViewModel
 
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 android {

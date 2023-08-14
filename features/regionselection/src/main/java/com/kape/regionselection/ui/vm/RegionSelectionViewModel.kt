@@ -51,7 +51,8 @@ class RegionSelectionViewModel(
     fun initAutoRegion(name: String, iso: String) {
         if (regions.none { it.name == name }) {
             regions.add(
-                0, Server(
+                0,
+                Server(
                     name = name,
                     iso = iso,
                     dns = "",
@@ -108,8 +109,12 @@ class RegionSelectionViewModel(
         if (value.isEmpty()) {
             _state.emit(loaded(sorted.ifEmpty { regions }, state.value.showSortingOptions))
         } else {
-            _state.emit(loaded(sorted.ifEmpty { regions }
-                .filter { it.name.toLowerCase(Locale.current).contains(value.toLowerCase(Locale.current)) }))
+            _state.emit(
+                loaded(
+                    sorted.ifEmpty { regions }
+                        .filter { it.name.toLowerCase(Locale.current).contains(value.toLowerCase(Locale.current)) }
+                )
+            )
         }
     }
 

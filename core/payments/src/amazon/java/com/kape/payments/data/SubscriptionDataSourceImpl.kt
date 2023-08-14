@@ -1,7 +1,7 @@
 package com.kape.payments.data
 
-import com.kape.payments.domain.SubscriptionDataSource
 import com.kape.payments.data.models.Subscription
+import com.kape.payments.domain.SubscriptionDataSource
 import com.kape.payments.utils.SubscriptionPrefs
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose

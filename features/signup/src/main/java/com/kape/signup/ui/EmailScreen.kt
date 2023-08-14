@@ -1,7 +1,11 @@
 package com.kape.signup.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +29,6 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun EmailScreen(viewModel: SignupViewModel) {
-
     val emailProperties =
         InputFieldProperties(label = stringResource(id = R.string.email_hint), maskInput = false)
     val buttonProperties =
@@ -34,7 +37,8 @@ fun EmailScreen(viewModel: SignupViewModel) {
             enabled = true,
             onClick = {
                 viewModel.register(emailProperties.content)
-            })
+            }
+        )
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(Height.DEFAULT))

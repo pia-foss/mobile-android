@@ -6,7 +6,6 @@ import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
 import kotlinx.coroutines.flow.MutableStateFlow
 
-
 interface PaymentProvider {
 
     val purchaseState: MutableStateFlow<PurchaseState>

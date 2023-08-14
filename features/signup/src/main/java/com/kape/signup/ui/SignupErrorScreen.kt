@@ -1,7 +1,12 @@
 package com.kape.signup.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,13 +27,16 @@ import com.kape.ui.theme.Space
 
 @Composable
 fun SignupErrorScreen(toLogin: () -> Unit) {
-
     val buttonProperties =
-        ButtonProperties(label = stringResource(id = R.string.error_account_creation_action).toUpperCase(
-            Locale.current
-        ), enabled = true, onClick = {
-            toLogin.invoke()
-        })
+        ButtonProperties(
+            label = stringResource(id = R.string.error_account_creation_action).toUpperCase(
+                Locale.current
+            ),
+            enabled = true,
+            onClick = {
+                toLogin.invoke()
+            }
+        )
 
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(Height.DEFAULT))

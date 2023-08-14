@@ -11,7 +11,19 @@ import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.SignupUseCase
-import com.kape.signup.utils.*
+import com.kape.signup.utils.CONSENT
+import com.kape.signup.utils.DEFAULT
+import com.kape.signup.utils.EMAIL
+import com.kape.signup.utils.ERROR_EMAIL_INVALID
+import com.kape.signup.utils.ERROR_REGISTRATION
+import com.kape.signup.utils.IN_PROCESS
+import com.kape.signup.utils.LOADING
+import com.kape.signup.utils.Plan
+import com.kape.signup.utils.PriceFormatter
+import com.kape.signup.utils.SignupScreenState
+import com.kape.signup.utils.SubscriptionData
+import com.kape.signup.utils.signedUp
+import com.kape.signup.utils.subscriptions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -63,9 +75,13 @@ class SignupViewModel(
                                 Plan(
                                     yearlyPlan.id,
                                     yearlyPlan.plan.replaceFirstChar { first ->
-                                        if (first.isLowerCase()) first.titlecase(
-                                            Locale.getDefault()
-                                        ) else first.toString()
+                                        if (first.isLowerCase()) {
+                                            first.titlecase(
+                                                Locale.getDefault()
+                                            )
+                                        } else {
+                                            first.toString()
+                                        }
                                     },
                                     true,
                                     mainPrice =
@@ -81,9 +97,13 @@ class SignupViewModel(
                             val monthly = Plan(
                                 monthlyPlan.id,
                                 monthlyPlan.plan.replaceFirstChar { first ->
-                                    if (first.isLowerCase()) first.titlecase(
-                                        Locale.getDefault()
-                                    ) else first.toString()
+                                    if (first.isLowerCase()) {
+                                        first.titlecase(
+                                            Locale.getDefault()
+                                        )
+                                    } else {
+                                        first.toString()
+                                    }
                                 },
                                 false,
                                 mainPrice = monthlyPlan.formattedPrice?.let { formattedPrice ->

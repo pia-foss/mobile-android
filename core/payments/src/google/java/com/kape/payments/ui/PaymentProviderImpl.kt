@@ -1,10 +1,23 @@
 package com.kape.payments.ui
 
 import android.app.Activity
-import com.android.billingclient.api.*
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.PurchaseHistoryRecord
+import com.android.billingclient.api.PurchaseHistoryResponseListener
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.kape.payments.data.models.PurchaseData
 import com.kape.payments.data.models.Subscription
-import com.kape.payments.utils.*
+import com.kape.payments.utils.PurchaseHistoryState
+import com.kape.payments.utils.PurchaseState
+import com.kape.payments.utils.SubscriptionPrefs
+import com.kape.payments.utils.monthlySubscription
+import com.kape.payments.utils.yearlySubscription
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
@@ -76,7 +89,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                 .build()
 
         billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult,
-                                                                            productDetailsList ->
+            productDetailsList ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 val data = prefs.getSubscriptions()
                 for (item in productDetailsList) {

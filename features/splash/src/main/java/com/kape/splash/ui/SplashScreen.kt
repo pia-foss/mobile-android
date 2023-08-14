@@ -22,7 +22,7 @@ fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) {
             contentDescription = "logo",
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(Space.HUGE),
+                .padding(Space.HUGE)
         )
     }
 

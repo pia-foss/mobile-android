@@ -56,6 +56,6 @@ fun SearchBar(searchTextState: MutableState<TextFieldValue>) {
             }
         },
         singleLine = true,
-        shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
+        shape = RectangleShape // The TextFiled has rounded corners top left and right by default
     )
 }

@@ -11,8 +11,10 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun Separator() {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(Height.SEPARATOR)
-        .background(LocalColors.current.outline))
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Height.SEPARATOR)
+            .background(LocalColors.current.outline)
+    )
 }

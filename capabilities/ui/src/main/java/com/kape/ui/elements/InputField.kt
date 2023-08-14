@@ -12,7 +12,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -27,7 +26,8 @@ import com.kape.ui.utils.LocalColors
 fun InputField(modifier: Modifier, properties: InputFieldProperties) {
     var content by remember { mutableStateOf("") }
     Column(modifier) {
-        TextField(value = content,
+        TextField(
+            value = content,
             onValueChange = {
                 content = it
                 properties.content = it
@@ -37,12 +37,17 @@ fun InputField(modifier: Modifier, properties: InputFieldProperties) {
             modifier = Modifier
                 .fillMaxWidth()
                 .semantics { contentDescription = properties.label },
-            label = { Text(properties.label) })
+            label = { Text(properties.label) }
+        )
         properties.error?.let {
-            Text(text = it, color = LocalColors.current.error, modifier = Modifier
-                .padding(vertical = Space.SMALL_VERTICAL)
-                .semantics { contentDescription = it }
-                .testTag("errorMessage"))
+            Text(
+                text = it,
+                color = LocalColors.current.error,
+                modifier = Modifier
+                    .padding(vertical = Space.SMALL_VERTICAL)
+                    .semantics { contentDescription = it }
+                    .testTag("errorMessage")
+            )
         }
     }
 }

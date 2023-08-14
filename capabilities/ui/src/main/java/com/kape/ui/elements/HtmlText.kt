@@ -43,7 +43,7 @@ fun HtmlText(
     @StringRes textId: Int,
     urlSpanStyle: SpanStyle = SpanStyle(
         color = LocalColors.current.primary,
-        textDecoration = TextDecoration.Underline,
+        textDecoration = TextDecoration.Underline
     ),
     color: Color = Color.Unspecified,
     fontSize: TextUnit = TextUnit.Unspecified,
@@ -59,7 +59,7 @@ fun HtmlText(
     maxLines: Int = Int.MAX_VALUE,
     inlineContent: Map<String, InlineTextContent> = mapOf(),
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = LocalTextStyle.current,
+    style: TextStyle = LocalTextStyle.current
 ) {
     val context = LocalContext.current
     val annotatedString = context.resources.getText(textId).toAnnotatedString(urlSpanStyle)
@@ -112,15 +112,15 @@ fun HtmlText(
             layoutResult.value = it
             onTextLayout(it)
         },
-        style = style,
+        style = style
     )
 }
 
 fun CharSequence.toAnnotatedString(
     urlSpanStyle: SpanStyle = SpanStyle(
         color = Color.Blue,
-        textDecoration = TextDecoration.Underline,
-    ),
+        textDecoration = TextDecoration.Underline
+    )
 ): AnnotatedString {
     return if (this is Spanned) {
         this.toAnnotatedString(urlSpanStyle)
@@ -134,8 +134,8 @@ fun CharSequence.toAnnotatedString(
 fun Spanned.toAnnotatedString(
     urlSpanStyle: SpanStyle = SpanStyle(
         color = Color.Blue,
-        textDecoration = TextDecoration.Underline,
-    ),
+        textDecoration = TextDecoration.Underline
+    )
 ): AnnotatedString {
     return buildAnnotatedString {
         append(this@toAnnotatedString.toString())
@@ -158,10 +158,10 @@ fun Spanned.toAnnotatedString(
                 Typeface.BOLD_ITALIC -> addStyle(
                     SpanStyle(
                         fontWeight = FontWeight.Bold,
-                        fontStyle = FontStyle.Italic,
+                        fontStyle = FontStyle.Italic
                     ),
                     start,
-                    end,
+                    end
                 )
             }
         }

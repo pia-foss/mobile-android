@@ -99,5 +99,4 @@ internal class ConnectionUseCaseTest {
             assertEquals(expected, actual)
         }
     }
-
 }

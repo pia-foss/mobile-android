@@ -2,7 +2,7 @@ package com.kape.ui.utils
 
 import android.content.Context
 import com.kape.ui.R
-import java.util.*
+import java.util.Locale
 
 fun getFlagResource(context: Context, serverIso: String): Int {
     val resName = String.format(

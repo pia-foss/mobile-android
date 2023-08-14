@@ -2,8 +2,8 @@ package com.kape.profile.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.profile.domain.GetProfileUseCase
 import com.kape.profile.data.models.Profile
+import com.kape.profile.domain.GetProfileUseCase
 import com.kape.profile.ui.IDLE
 import com.kape.profile.ui.LOADING
 import com.kape.profile.ui.ProfileScreenState

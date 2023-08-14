@@ -1,11 +1,15 @@
 package com.kape.connection.ui.vm
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ui.tiles.MAX_SERVERS
-import com.kape.connection.utils.*
+import com.kape.connection.utils.ConnectionPrefs
+import com.kape.connection.utils.ConnectionScreenState
+import com.kape.connection.utils.IDLE
+import com.kape.connection.utils.SNOOZE_STATE_DEFAULT
+import com.kape.connection.utils.SnoozeState
+import com.kape.connection.utils.USAGE_STATE_DEFAULT
+import com.kape.connection.utils.UsageState
 import com.kape.regionselection.domain.GetRegionsUseCase
 import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.router.EnterFlow
@@ -71,7 +75,6 @@ class ConnectionViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun snooze(interval: Int) {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val now = LocalTime.now()
@@ -170,5 +173,4 @@ class ConnectionViewModel(
     fun showRegionSelection() {
         router.handleFlow(EnterFlow.RegionSelection)
     }
-
 }
