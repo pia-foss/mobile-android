@@ -115,4 +115,20 @@ object Dependencies {
         add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
         add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     }
+
+    fun DependencyHandler.implementAccount() {
+        add(IMPLEMENTATION, "com.kape.android:account-android:1.4.0")
+    }
+
+    fun DependencyHandler.implementKpi() {
+        add(IMPLEMENTATION, "com.kape.android:kpi-android:1.2.0")
+    }
+
+    fun DependencyHandler.implementCsi() {
+        add(IMPLEMENTATION, "com.kape.android:csi-android:1.3.0")
+    }
+
+    fun DependencyHandler.implementRegions() {
+        add(IMPLEMENTATION, "com.kape.android:regions-android:1.5.0")
+    }
 }

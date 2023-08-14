@@ -1,4 +1,5 @@
 import Dependencies.desugarJdkLibs
+import Dependencies.implementAccount
 import Dependencies.implementCoroutines
 import Dependencies.implementCrypto
 import Dependencies.implementKoin
@@ -55,7 +56,7 @@ android {
 dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
-    implementation(project(":core:account"))
+    implementAccount()
     implementation(project(":core:utils"))
 
     implementCrypto()

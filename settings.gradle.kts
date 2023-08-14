@@ -2,6 +2,7 @@ pluginManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
         gradlePluginPortal()
     }
 }
@@ -10,6 +11,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
 
@@ -21,11 +23,8 @@ include(":capabilities:ui")
 
 include(":core")
 include(":core:router")
-include(":core:account")
 include(":core:payments")
 include(":core:utils")
-include(":core:kpi")
-include(":core:regions")
 include(":core:vpn:wireguard")
 include(":core:vpn:openvpn")
 include(":core:vpn:targetprovider")

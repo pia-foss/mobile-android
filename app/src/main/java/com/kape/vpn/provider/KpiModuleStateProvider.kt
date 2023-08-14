@@ -1,9 +1,9 @@
 package com.kape.vpn.provider
 
+import com.kape.vpn.BuildConfig
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.kpi.KPIClientStateProvider
 import com.privateinternetaccess.kpi.KPIEndpoint
-import com.privateinternetaccess.kpi.android.BuildConfig
 
 private const val KPI_ENDPOINT_PATH = "/api/client/v2/service-quality"
 private const val PRODUCTION_EVENT_TOKEN = "d5fe3babe96d218323dafe20a1981e4e"

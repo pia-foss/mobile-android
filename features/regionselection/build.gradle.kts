@@ -1,5 +1,6 @@
 import Dependencies.desugarJdkLibs
 import Dependencies.implementFeatureModule
+import Dependencies.implementRegions
 import Dependencies.implementSerialization
 import Dependencies.implementSwipeToRefresh
 
@@ -38,9 +39,10 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":core:utils"))
-    implementation(project(":core:regions"))
     implementation(project(":core:router"))
     implementation(project(":capabilities:ui"))
+
+    implementRegions()
 
     implementFeatureModule()
     implementSerialization()
