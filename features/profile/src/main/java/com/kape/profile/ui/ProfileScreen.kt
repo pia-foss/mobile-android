@@ -42,7 +42,7 @@ fun ProfileScreen() {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(LocalColors.current.surfaceVariant)
                     .padding(horizontal = Space.NORMAL),
             ) {
                 Spacer(modifier = Modifier.height(Space.MEDIUM))
@@ -52,7 +52,7 @@ fun ProfileScreen() {
                     fontSize = FontSize.Small
                 )
                 Text(
-                    color = LocalColors.current.onSurface,
+                    color = LocalColors.current.onSurfaceVariant,
                     text = state.username,
                 )
                 Spacer(modifier = Modifier.height(Space.MEDIUM))

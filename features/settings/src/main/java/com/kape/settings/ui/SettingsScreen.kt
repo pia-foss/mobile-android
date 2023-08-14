@@ -27,19 +27,6 @@ import com.kape.ui.utils.LocalColors
 fun SettingsScreen() {
     // TODO: IVA: Reimplement appbar once added properly!
     Column {
-//        AppBar(
-//            onClick = {
-//
-//            },
-//            state = AppBarState(
-//                stringResource(id = R.string.settings),
-//                AppBarColors.Default,
-//                showLogo = false,
-//                showMenu = false,
-//                showOverflow = false
-//            )
-//        )
-
         val items = getSettingsList()
 
         LazyColumn {
@@ -67,7 +54,7 @@ fun SettingsItem(
 ) {
     Box(modifier = modifier
         .fillMaxWidth()
-        .background(Color.White)
+        .background(LocalColors.current.surface)
         .height(Height.SETTINGS_ITEM)
         .clickable {
             onClick.invoke()
