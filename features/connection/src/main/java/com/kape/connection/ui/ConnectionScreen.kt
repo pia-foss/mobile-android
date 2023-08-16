@@ -102,6 +102,10 @@ fun ConnectionScreen() {
 
 private fun getNotification(context: Context): Notification {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val notificationChannel = NotificationChannel(CHANNEL_ID, "channelName", NotificationManager.IMPORTANCE_DEFAULT)
+        notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val service = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(notificationChannel)
         val notificationBuilder = Notification.Builder(context, CHANNEL_ID)
         notificationBuilder.setOngoing(true)
             .setCategory(Notification.CATEGORY_SERVICE)
