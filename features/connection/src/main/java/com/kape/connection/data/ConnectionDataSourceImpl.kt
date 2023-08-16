@@ -4,7 +4,7 @@ import com.kape.connection.domain.ConnectionDataSource
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
-import com.privateinternetaccess.account.AccountAPI
+import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -14,7 +14,7 @@ import org.koin.core.component.inject
 class ConnectionDataSourceImpl : ConnectionDataSource, KoinComponent {
 
     private val connectionApi: VPNManagerAPI by inject()
-    private val accountApi: AccountAPI by inject()
+    private val accountApi: AndroidAccountAPI by inject()
 
     override fun startConnection(
         clientConfiguration: ClientConfiguration,

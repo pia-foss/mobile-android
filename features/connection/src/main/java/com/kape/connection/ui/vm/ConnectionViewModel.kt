@@ -1,7 +1,11 @@
 package com.kape.connection.ui.vm
 
+import android.app.Notification
+import android.app.PendingIntent
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.connection.domain.ConnectionUseCase
 import com.kape.connection.ui.tiles.MAX_SERVERS
 import com.kape.connection.utils.ConnectionPrefs
 import com.kape.connection.utils.ConnectionScreenState
@@ -15,6 +19,8 @@ import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Router
 import com.kape.utils.server.Server
+import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import com.kape.vpnmanager.presenters.VPNManagerConnectionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -27,6 +33,7 @@ import java.time.format.DateTimeFormatter
 class ConnectionViewModel(
     private val regionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
+    private val connectionUseCase: ConnectionUseCase,
     private val prefs: ConnectionPrefs
 ) : ViewModel(), KoinComponent {
 
@@ -172,5 +179,28 @@ class ConnectionViewModel(
 
     fun showRegionSelection() {
         router.handleFlow(EnterFlow.RegionSelection)
+    }
+
+    fun connect(notification: Notification, pendingIntent: PendingIntent) {
+        viewModelScope.launch {
+            selectedServer?.let {
+                connectionUseCase.startConnection(
+                    it,
+                    pendingIntent,
+                    notification,
+                    object : VPNManagerConnectionListener {
+                        override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
+                            Log.e("aaa", "handleConnectionStatusChange: $status")
+                        }
+                    }).collect {
+                    Log.e("aaa", "collected/connected: $it")
+                }
+            }
+
+        }
+    }
+
+    fun disconnect() {
+
     }
 }

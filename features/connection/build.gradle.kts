@@ -1,6 +1,7 @@
 import Dependencies.desugarJdkLibs
 import Dependencies.implementAccount
 import Dependencies.implementFeatureModule
+import Dependencies.implementSerialization
 import Dependencies.implementVpnManager
 
 plugins {
@@ -12,7 +13,7 @@ plugins {
 
 android {
     namespace = "com.kape.connection"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
@@ -53,6 +54,7 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":capabilities:ui"))
+    implementation(project(":capabilities:notifications"))
     implementAccount()
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
@@ -64,4 +66,5 @@ dependencies {
 
     implementFeatureModule()
     implementVpnManager()
+    implementSerialization()
 }

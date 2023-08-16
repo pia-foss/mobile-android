@@ -2,14 +2,18 @@ package com.kape.connection.domain
 
 import android.app.Notification
 import android.app.PendingIntent
+import android.util.Log
 import com.kape.connection.utils.TempSettings
+import com.kape.utils.server.Server
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.OpenVpnClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -18,37 +22,74 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
     private val certificate: String by inject()
 
     suspend fun startConnection(
-        settings: TempSettings,
+        server: Server,
         configureIntent: PendingIntent,
         notification: Notification,
         listener: VPNManagerConnectionListener
     ): Flow<Boolean> = flow {
         val index = connectionSource.getVpnToken().indexOf(":")
+        var transport = "udp"
+        val serverGroup = when (transport) {
+            "udp" -> {
+                Server.ServerGroup.OPENVPN_UDP
+            }
+
+            "tcp" -> {
+                Server.ServerGroup.OPENVPN_TCP
+            }
+
+            else -> {
+                Server.ServerGroup.WIREGUARD
+            }
+        }
+        val details = server.endpoints[serverGroup]
+        Log.e("aaa", "server: $server")
+        Log.e("aaa", "serverDetails - serverGroup: $serverGroup")
+        val ip: String
+        val cn: String
+        val port: Int
+
+        if (!details.isNullOrEmpty()) {
+            if (details[0].ip.contains(":")) {
+                ip = details[0].ip.substring(0, details[0].ip.indexOf(":"))
+                port = details[0].ip.substring(details[0].ip.indexOf(":") + 1).toInt()
+            } else {
+                ip = details[0].ip
+                port = 8080
+            }
+            cn = details[0].cn
+        } else {
+            ip = ""
+            cn = ""
+            port = 8080
+        }
+
+        Log.e("aaa", "IP: $ip, CN: $cn, port: $port")
         val clientConfiguration = ClientConfiguration(
-            sessionName = settings.sessionName,
+            sessionName = Clock.System.now().toString(),
             configureIntent = configureIntent,
-            protocolTarget = settings.protocol,
-            mtu = settings.mtu,
-            port = settings.port,
-            dnsList = listOf(settings.dns),
+            protocolTarget = VPNManagerProtocolTarget.OPENVPN,
+            mtu = 1280,
+            port = port,
+            dnsList = emptyList(),
             notificationId = 123,
             notification = notification,
             allowedApplicationPackages = emptyList(),
             disallowedApplicationPackages = emptyList(),
-            allowLocalNetworkAccess = settings.allowLocalNetworkAccess,
+            allowLocalNetworkAccess = server.isAllowsPF,
             serverList = ServerList(
                 servers = listOf(
                     ServerList.Server(
-                        ip = settings.server,
-                        commonName = settings.serverCommonName,
-                        latency = 10
+                        ip = ip,
+                        commonName = cn,
+                        latency = server.latency?.toLong()
                     )
                 )
             ),
             openVpnClientConfiguration = OpenVpnClientConfiguration(
                 caCertificate = certificate,
-                cipher = settings.openVpnCipher,
-                transport = settings.openVpnTransport,
+                cipher = "AES-128-GCM",
+                transport = transport,
                 username = connectionSource.getVpnToken().substring(0, index),
                 password = connectionSource.getVpnToken().substring(index + 1)
             ),
