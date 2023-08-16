@@ -2,85 +2,74 @@ package com.kape.regionselection.utils
 
 import com.kape.utils.server.Server
 import com.kape.utils.server.ServerInfo
-import com.privateinternetaccess.regions.RegionsProtocol
 import com.privateinternetaccess.regions.model.RegionsResponse
+
+private var openVpnTcpEndpoints = mutableListOf<RegionsResponse.Region.Server>()
+private var openVpnUdpEndpoints = mutableListOf<RegionsResponse.Region.Server>()
 
 fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
     val servers = mutableMapOf<String, Server>()
     for (region in regionsResponse.regions) {
-        val wireguardEndpoints = region.servers[RegionsProtocol.WIREGUARD.protocol]
-        val ovpnTcpEndpoints = region.servers[RegionsProtocol.OPENVPN_TCP.protocol]
-        val ovpnUdpEndpoints = region.servers[RegionsProtocol.OPENVPN_UDP.protocol]
-        val metaEndpoints = region.servers[RegionsProtocol.META.protocol]
+        val wireguardEndpoints =
+            region.servers.filter { it.services.any { service -> service.service == Server.ServerGroup.WIREGUARD.toString() } }
+        openVpnTcpEndpoints.addAll(region.servers.filter { it.services.any { service -> service.service == Server.ServerGroup.OPENVPN_TCP.toString() } })
+        openVpnUdpEndpoints.addAll(region.servers.filter { it.services.any { service -> service.service == Server.ServerGroup.OPENVPN_UDP.toString() } })
+
+        val metaEndpoints =
+            region.servers.filter { it.services.any { service -> service.service == Server.ServerGroup.META.toString() } }
 
         val regionEndpoints =
             mutableMapOf<Server.ServerGroup, List<Server.ServerEndpointDetails>>()
 
-        regionsResponse.groups[RegionsProtocol.WIREGUARD.protocol]?.let { group ->
-            val port = group.first().ports.first().toString()
-            wireguardEndpoints?.let {
-                val mappedEndpoints = mutableListOf<Server.ServerEndpointDetails>()
-                for (wireguardEndpoint in it) {
-                    // Application does not support the user option to choose wg ports and
-                    // expect the format `endpoint:port`, as it is not aware of wg ports.
-                    mappedEndpoints.add(
-                        Server.ServerEndpointDetails(
-                            "${wireguardEndpoint.ip}:$port",
-                            wireguardEndpoint.cn,
-                            wireguardEndpoint.usesVanillaOVPN
-                        )
-                    )
-                }
-                regionEndpoints[Server.ServerGroup.WIREGUARD] = mappedEndpoints
-            }
-        }
-
-        ovpnTcpEndpoints?.let {
-            val mappedEndpoints = mutableListOf<Server.ServerEndpointDetails>()
-            for (ovpnTcpEndpoint in it) {
-                mappedEndpoints.add(
-                    Server.ServerEndpointDetails(
-                        ovpnTcpEndpoint.ip,
-                        ovpnTcpEndpoint.cn,
-                        ovpnTcpEndpoint.usesVanillaOVPN
-                    )
+        val mappedEndpoints = mutableListOf<Server.ServerEndpointDetails>()
+        for (wireguardEndpoint in wireguardEndpoints) {
+            // Application does not support the user option to choose wg ports and
+            // expect the format `endpoint:port`, as it is not aware of wg ports.
+            mappedEndpoints.add(
+                Server.ServerEndpointDetails(
+                    "${wireguardEndpoint.ip}:${wireguardEndpoint.services.first().ports.first()}",
+                    wireguardEndpoint.cn,
                 )
-            }
-            regionEndpoints[Server.ServerGroup.OPENVPN_TCP] = mappedEndpoints
+            )
         }
+        regionEndpoints[Server.ServerGroup.WIREGUARD] = mappedEndpoints
 
-        ovpnUdpEndpoints?.let {
-            val mappedEndpoints = mutableListOf<Server.ServerEndpointDetails>()
-            for (ovpnUdpEndpoint in it) {
-                mappedEndpoints.add(
-                    Server.ServerEndpointDetails(
-                        ovpnUdpEndpoint.ip,
-                        ovpnUdpEndpoint.cn,
-                        ovpnUdpEndpoint.usesVanillaOVPN
-                    )
+        mappedEndpoints.clear()
+        for (ovpnTcpEndpoint in openVpnTcpEndpoints) {
+            mappedEndpoints.add(
+                Server.ServerEndpointDetails(
+                    ovpnTcpEndpoint.ip,
+                    ovpnTcpEndpoint.cn,
                 )
-            }
-            regionEndpoints[Server.ServerGroup.OPENVPN_UDP] = mappedEndpoints
+            )
         }
+        regionEndpoints[Server.ServerGroup.OPENVPN_TCP] = mappedEndpoints
 
-        metaEndpoints?.let {
-            val mappedEndpoints = mutableListOf<Server.ServerEndpointDetails>()
-            for (metaEndpoint in it) {
-                mappedEndpoints.add(
-                    Server.ServerEndpointDetails(
-                        metaEndpoint.ip,
-                        metaEndpoint.cn,
-                        metaEndpoint.usesVanillaOVPN
-                    )
+        mappedEndpoints.clear()
+        for (ovpnUdpEndpoint in openVpnUdpEndpoints) {
+            mappedEndpoints.add(
+                Server.ServerEndpointDetails(
+                    ovpnUdpEndpoint.ip,
+                    ovpnUdpEndpoint.cn,
                 )
-            }
-            regionEndpoints[Server.ServerGroup.META] = mappedEndpoints
+            )
         }
+        regionEndpoints[Server.ServerGroup.OPENVPN_UDP] = mappedEndpoints
 
-        val server = Server(
+        mappedEndpoints.clear()
+        for (metaEndpoint in metaEndpoints) {
+            mappedEndpoints.add(
+                Server.ServerEndpointDetails(
+                    metaEndpoint.ip,
+                    metaEndpoint.cn,
+                )
+            )
+        }
+        regionEndpoints[Server.ServerGroup.META] = mappedEndpoints
+
+        servers[region.id] = Server(
             region.name,
             region.country,
-            region.dns,
             null,
             regionEndpoints,
             region.id,
@@ -92,7 +81,6 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
             null,
             null
         )
-        servers[region.id] = server
     }
     return servers
 }
@@ -102,13 +90,17 @@ fun adaptServersInfo(regionsResponse: RegionsResponse): ServerInfo {
     regionsResponse.regions.filter { it.autoRegion }.forEach { region ->
         autoRegions.add(region.id)
     }
-    val ovpntcp = mutableListOf<Int>()
-    regionsResponse.groups[RegionsProtocol.OPENVPN_TCP.protocol]?.forEach { protocolPorts ->
-        ovpntcp.addAll(protocolPorts.ports)
+    val openVpnTcp = mutableListOf<Int>()
+    openVpnTcpEndpoints.forEach {
+        it.services.forEach { service ->
+            openVpnTcp.addAll(service.ports)
+        }
     }
-    val ovpnudp = mutableListOf<Int>()
-    regionsResponse.groups[RegionsProtocol.OPENVPN_UDP.protocol]?.forEach { protocolPorts ->
-        ovpnudp.addAll(protocolPorts.ports)
+    val openVpnUdp = mutableListOf<Int>()
+    openVpnUdpEndpoints.forEach {
+        it.services.forEach { service ->
+            openVpnUdp.addAll(service.ports)
+        }
     }
-    return ServerInfo(autoRegions, ovpnudp, ovpntcp)
+    return ServerInfo(autoRegions, openVpnUdp, openVpnTcp)
 }

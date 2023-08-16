@@ -1,4 +1,5 @@
 import Dependencies.desugarJdkLibs
+import Dependencies.implementAccount
 import Dependencies.implementFeatureModule
 
 plugins {
@@ -50,7 +51,7 @@ android {
 dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
-    implementation(project(":core:account"))
+    implementAccount()
     implementation(project(":core:payments"))
     implementation(project(":core:router"))
     implementation(project(":core:utils"))

@@ -1,9 +1,12 @@
 import Dependencies.desugarJdkLibs
+import Dependencies.implementAccount
 import Dependencies.implementAndroidBase
 import Dependencies.implementCompose
 import Dependencies.implementComposeNavigation
 import Dependencies.implementKoin
+import Dependencies.implementKpi
 import Dependencies.implementMultiplatformSettings
+import Dependencies.implementRegions
 import Dependencies.implementViewModel
 
 plugins {
@@ -85,10 +88,10 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":core:router"))
-    implementation(project(":core:account"))
+    implementAccount()
     implementation(project(":core:payments"))
-    implementation(project(":core:kpi"))
-    implementation(project(":core:regions"))
+    implementKpi()
+    implementRegions()
     implementation(project(":core:vpn:openvpn"))
     implementation(project(":core:vpn:vpnprotocol"))
     implementation(project(":core:vpn:serviceprovider"))

@@ -13,7 +13,7 @@ class RegionRepository(private val source: RegionDataSource) {
     private var serverMap: Map<String, Server> = hashMapOf()
     private var serverInfo: ServerInfo = ServerInfo()
 
-    suspend fun fetchRegions(locale: String): Flow<List<Server>> = flow {
+    fun fetchRegions(locale: String): Flow<List<Server>> = flow {
         source.fetchRegions(locale).collect {
             if (it == null) {
                 emit(emptyList())
@@ -25,7 +25,7 @@ class RegionRepository(private val source: RegionDataSource) {
         }
     }
 
-    suspend fun fetchLatencies(): Flow<List<Server>> = flow {
+    fun fetchLatencies(): Flow<List<Server>> = flow {
         source.pingRequests().collect {
             if (it == null) {
                 emit(emptyList())

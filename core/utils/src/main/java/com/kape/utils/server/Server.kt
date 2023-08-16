@@ -3,7 +3,6 @@ package com.kape.utils.server
 data class Server(
     val name: String,
     val iso: String,
-    val dns: String,
     var latency: String?,
     val endpoints: Map<ServerGroup, List<ServerEndpointDetails>>,
     val key: String,
@@ -13,28 +12,28 @@ data class Server(
     val isOffline: Boolean,
     val isAllowsPF: Boolean,
     val dipToken: String?,
-    val dedicatedIp: String?
+    val dedicatedIp: String?,
+    val isDedicatedIp: Boolean = !dedicatedIp.isNullOrEmpty()
 ) {
     data class ServerEndpointDetails(
         val ip: String,
-        val cn: String,
-        val usesVanillaOpenVPN: Boolean
+        val cn: String
     )
 
     enum class ServerGroup {
         OPENVPN_TCP {
             override fun toString(): String {
-                return "ovpntcp"
+                return "openvpn_tcp"
             }
         },
         OPENVPN_UDP {
             override fun toString(): String {
-                return "ovpnudp"
+                return "openvpn_udp"
             }
         },
         WIREGUARD {
             override fun toString(): String {
-                return "wg"
+                return "wireguard"
             }
         },
         META {
@@ -43,6 +42,4 @@ data class Server(
             }
         }
     }
-
-    fun isDedicatedIp() = dedicatedIp != null && dedicatedIp.isNotEmpty()
 }

@@ -1,5 +1,6 @@
 import Dependencies.desugarJdkLibs
 import Dependencies.implementFeatureModule
+import Dependencies.implementKpi
 import Dependencies.implementSerialization
 
 plugins {
@@ -30,7 +31,7 @@ android {
 dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
-    implementation(project(":core:kpi"))
+    implementKpi()
     implementation(project(":core:utils"))
 
     implementSerialization()

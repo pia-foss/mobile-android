@@ -9,6 +9,7 @@ import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.router.Router
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
+import com.kape.vpn.provider.PlatformProvider
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
@@ -28,10 +29,11 @@ import java.io.BufferedReader
 val appModule = module {
     single { provideCertificate(get()) }
     single { AccountModuleStateProvider(get()) }
+    single { PlatformProvider(get()) }
     single { RegionsModuleStateProvider(get()) }
     single { KpiModuleStateProvider(get(), get()) }
     single { provideAndroidAccountApi(get()) }
-    single { provideRegionsApi(get()) }
+    single { provideRegionsApi(get(), get()) }
     single { provideKpiApi(get()) }
     single { provideConfigurationIntent(get()) }
     single { provideVpnManagerApi(get()) }
@@ -47,10 +49,16 @@ private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): Andr
         .build()
 }
 
-private fun provideRegionsApi(provider: RegionsModuleStateProvider): RegionsAPI {
+private fun provideRegionsApi(
+    provider: RegionsModuleStateProvider,
+    platformProvider: PlatformProvider
+): RegionsAPI {
     return RegionsBuilder().setEndpointProvider(provider)
         .setCertificate(provider.certificate)
         .setUserAgent(provideUserAgent())
+        .setMetadataRequestPath("/vpninfo/regions/v2")
+        .setRegionsListRequestPath("/vpninfo/servers/v5")
+        .setPlatformInstancesProvider(platformProvider)
         .build()
 }
 

@@ -1,4 +1,5 @@
 import Dependencies.desugarJdkLibs
+import Dependencies.implementAccount
 import Dependencies.implementFeatureModule
 
 plugins {
@@ -51,7 +52,7 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":capabilities:ui"))
-    implementation(project(":core:account"))
+    implementAccount()
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
     implementation(project(":core:vpn:vpnmanager"))
