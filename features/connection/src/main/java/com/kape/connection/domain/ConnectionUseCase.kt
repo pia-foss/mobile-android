@@ -3,11 +3,11 @@ package com.kape.connection.domain
 import android.app.Notification
 import android.app.PendingIntent
 import com.kape.connection.utils.TempSettings
-import com.privateinternetaccess.kapevpnmanager.models.ClientConfiguration
-import com.privateinternetaccess.kapevpnmanager.models.OpenVpnClientConfiguration
-import com.privateinternetaccess.kapevpnmanager.models.ServerList
-import com.privateinternetaccess.kapevpnmanager.models.WireguardClientConfiguration
-import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerConnectionListener
+import com.kape.vpnmanager.data.models.ClientConfiguration
+import com.kape.vpnmanager.data.models.OpenVpnClientConfiguration
+import com.kape.vpnmanager.data.models.ServerList
+import com.kape.vpnmanager.data.models.WireguardClientConfiguration
+import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.component.KoinComponent

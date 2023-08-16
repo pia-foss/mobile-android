@@ -1,10 +1,10 @@
 package com.kape.connection.data
 
 import com.kape.connection.domain.ConnectionDataSource
+import com.kape.vpnmanager.data.models.ClientConfiguration
+import com.kape.vpnmanager.presenters.VPNManagerAPI
+import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.privateinternetaccess.account.AccountAPI
-import com.privateinternetaccess.kapevpnmanager.models.ClientConfiguration
-import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerAPI
-import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerConnectionListener
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow

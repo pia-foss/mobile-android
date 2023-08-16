@@ -1,7 +1,7 @@
 package com.kape.connection.domain
 
-import com.privateinternetaccess.kapevpnmanager.models.ClientConfiguration
-import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerConnectionListener
+import com.kape.vpnmanager.data.models.ClientConfiguration
+import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import kotlinx.coroutines.flow.Flow
 
 interface ConnectionDataSource {

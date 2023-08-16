@@ -1,6 +1,7 @@
 import Dependencies.desugarJdkLibs
 import Dependencies.implementAccount
 import Dependencies.implementFeatureModule
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
@@ -55,7 +56,6 @@ dependencies {
     implementAccount()
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
-    implementation(project(":core:vpn:vpnmanager"))
     implementation(project(":core:utils"))
     implementation(project(":features:appbar"))
     implementation(project(":features:settings"))
@@ -63,4 +63,5 @@ dependencies {
     implementation(project(":features:regionselection"))
 
     implementFeatureModule()
+    implementVpnManager()
 }

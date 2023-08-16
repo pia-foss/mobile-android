@@ -8,6 +8,7 @@ import Dependencies.implementKpi
 import Dependencies.implementMultiplatformSettings
 import Dependencies.implementRegions
 import Dependencies.implementViewModel
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.application")
@@ -92,12 +93,6 @@ dependencies {
     implementation(project(":core:payments"))
     implementKpi()
     implementRegions()
-    implementation(project(":core:vpn:openvpn"))
-    implementation(project(":core:vpn:vpnprotocol"))
-    implementation(project(":core:vpn:serviceprovider"))
-    implementation(project(":core:vpn:targetprovider"))
-    implementation(project(":core:vpn:vpnmanager"))
-    implementation(project(":core:vpn:wireguard"))
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))
@@ -119,4 +114,5 @@ dependencies {
     implementComposeNavigation()
     implementKoin()
     implementMultiplatformSettings()
+    implementVpnManager()
 }

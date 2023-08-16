@@ -10,11 +10,12 @@ import com.kape.router.Router
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
 import com.kape.vpn.provider.PlatformProvider
+import com.kape.vpn.provider.VpnManagerProvider
+import com.kape.vpnmanager.presenters.VPNManagerAPI
+import com.kape.vpnmanager.presenters.VPNManagerBuilder
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
-import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerAPI
-import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerBuilder
 import com.privateinternetaccess.kpi.KPIAPI
 import com.privateinternetaccess.kpi.KPIBuilder
 import com.privateinternetaccess.kpi.KPIRequestFormat
@@ -30,13 +31,14 @@ val appModule = module {
     single { provideCertificate(get()) }
     single { AccountModuleStateProvider(get()) }
     single { PlatformProvider(get()) }
+    single { VpnManagerProvider() }
     single { RegionsModuleStateProvider(get()) }
     single { KpiModuleStateProvider(get(), get()) }
     single { provideAndroidAccountApi(get()) }
     single { provideRegionsApi(get(), get()) }
     single { provideKpiApi(get()) }
     single { provideConfigurationIntent(get()) }
-    single { provideVpnManagerApi(get()) }
+    single { provideVpnManagerApi(get(), get()) }
     single { Router() }
 }
 
@@ -74,9 +76,14 @@ private fun provideKpiApi(provider: KpiModuleStateProvider): KPIAPI {
         .build()
 }
 
-private fun provideVpnManagerApi(context: Context): VPNManagerAPI {
-    return VPNManagerBuilder().setContext(context)
-        .setCallbackCoroutineContext(Dispatchers.Main)
+private fun provideVpnManagerApi(
+    context: Context,
+    vpnManagerProvider: VpnManagerProvider
+): VPNManagerAPI {
+    return VPNManagerBuilder().setContext(context).setClientCoroutineContext(Dispatchers.Main)
+        .setProtocolByteCountDependency(vpnManagerProvider)
+        .setPermissionsDependency(vpnManagerProvider)
+        .setDebugLoggingDependency(vpnManagerProvider)
         .build()
 }
 

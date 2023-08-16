@@ -1,6 +1,7 @@
 package com.kape.connection.utils
 
-import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerProtocolTarget
+import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
+
 
 // TODO: remove when settings module is implemented
 data class TempSettings(
