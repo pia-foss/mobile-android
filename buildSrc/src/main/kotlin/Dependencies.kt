@@ -80,17 +80,11 @@ object Dependencies {
         add(AMAZON_IMPLEMENTATION, "com.amazon.device:amazon-appstore-sdk:3.0.2")
     }
 
-    fun DependencyHandler.implementKtor() {
-        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:2.3.3")
-        add(IMPLEMENTATION, "io.ktor:ktor-client-core:2.3.3")
-    }
-
     fun DependencyHandler.implementFeatureModule() {
         implementCompose()
         implementComposeNavigation()
         implementViewModel()
         implementKoin()
-        implementKtor()
         implementCoroutines()
 
         implementTest()
