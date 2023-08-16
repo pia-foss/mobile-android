@@ -14,6 +14,7 @@ import com.kape.connection.utils.SNOOZE_STATE_DEFAULT
 import com.kape.connection.utils.SnoozeState
 import com.kape.connection.utils.USAGE_STATE_DEFAULT
 import com.kape.connection.utils.UsageState
+import com.kape.notifications.data.NotificationChannelManager
 import com.kape.regionselection.domain.GetRegionsUseCase
 import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.router.EnterFlow
@@ -34,6 +35,7 @@ class ConnectionViewModel(
     private val regionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
     private val connectionUseCase: ConnectionUseCase,
+    private val notificationChannelManager: NotificationChannelManager,
     private val prefs: ConnectionPrefs
 ) : ViewModel(), KoinComponent {
 
@@ -182,6 +184,7 @@ class ConnectionViewModel(
     }
 
     fun connect(notification: Notification, pendingIntent: PendingIntent) {
+        notificationChannelManager.createVpnChannel()
         viewModelScope.launch {
             selectedServer?.let {
                 connectionUseCase.startConnection(

@@ -13,25 +13,20 @@ class NotificationChannelManager(
     private val context: Context
 ) : KoinComponent {
 
-    init {
+    fun createVpnChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createVpnChannel()
+            val notificationManager: NotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationChannel =
+                NotificationChannel(
+                    NOTIFICATION_ID,
+                    CHANNEL_ID,
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+            notificationChannel.lightColor = Color.BLUE
+            notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            notificationManager.createNotificationChannel(notificationChannel)
         }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createVpnChannel() {
-        val notificationManager: NotificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationChannel =
-            NotificationChannel(
-                NOTIFICATION_ID,
-                CHANNEL_ID,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-        notificationChannel.lightColor = Color.BLUE
-        notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-        notificationManager.createNotificationChannel(notificationChannel)
     }
 
     companion object {
