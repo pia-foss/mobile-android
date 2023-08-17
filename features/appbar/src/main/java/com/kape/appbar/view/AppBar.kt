@@ -234,7 +234,7 @@ fun ImageContent(connectionState: ConnectionListener.ConnectionStatus, color: Co
         Icon(
             painter = painterResource(id = R.drawable.ic_pia_logo),
             contentDescription = null,
-            tint = color
+            tint = Color.Unspecified,
         )
     }
 }
