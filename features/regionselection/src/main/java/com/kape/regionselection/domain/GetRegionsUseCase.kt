@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.flow
 
 class GetRegionsUseCase(private val repo: RegionRepository, private val prefs: RegionPrefs) {
 
-    suspend fun loadRegions(locale: String): Flow<List<Server>> = flow {
+    fun loadRegions(locale: String): Flow<List<Server>> = flow {
         repo.fetchRegions(locale).collect {
             emit(it)
         }

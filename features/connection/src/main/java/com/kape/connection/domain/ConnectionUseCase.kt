@@ -2,8 +2,6 @@ package com.kape.connection.domain
 
 import android.app.Notification
 import android.app.PendingIntent
-import android.util.Log
-import com.kape.connection.utils.TempSettings
 import com.kape.utils.server.Server
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.OpenVpnClientConfiguration
@@ -21,7 +19,7 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
 
     private val certificate: String by inject()
 
-    suspend fun startConnection(
+    fun startConnection(
         server: Server,
         configureIntent: PendingIntent,
         notification: Notification,
@@ -43,8 +41,6 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
             }
         }
         val details = server.endpoints[serverGroup]
-        Log.e("aaa", "server: $server")
-        Log.e("aaa", "serverDetails - serverGroup: $serverGroup")
         val ip: String
         val cn: String
         val port: Int
@@ -64,7 +60,6 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
             port = 8080
         }
 
-        Log.e("aaa", "IP: $ip, CN: $cn, port: $port")
         val clientConfiguration = ClientConfiguration(
             sessionName = Clock.System.now().toString(),
             configureIntent = configureIntent,
@@ -104,7 +99,7 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
         }
     }
 
-    suspend fun stopConnection(): Flow<Boolean> = flow {
+    fun stopConnection(): Flow<Boolean> = flow {
         connectionSource.stopConnection().collect {
             emit(it)
         }

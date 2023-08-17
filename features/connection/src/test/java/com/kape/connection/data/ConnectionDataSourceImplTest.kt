@@ -3,15 +3,14 @@ package com.kape.connection.data
 import app.cash.turbine.test
 import com.kape.connection.di.connectionModule
 import com.kape.connection.domain.ConnectionDataSource
-import com.privateinternetaccess.account.AccountAPI
-import com.privateinternetaccess.kapevpnmanager.models.ClientConfiguration
-import com.privateinternetaccess.kapevpnmanager.models.ServerPeerInformation
-import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerAPI
-import com.privateinternetaccess.kapevpnmanager.presenters.VPNManagerConnectionListener
+import com.kape.vpnmanager.data.models.ClientConfiguration
+import com.kape.vpnmanager.data.models.ServerPeerInformation
+import com.kape.vpnmanager.presenters.VPNManagerAPI
+import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import com.privateinternetaccess.account.AndroidAccountAPI
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -20,11 +19,10 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class ConnectionDataSourceImplTest {
 
     private val connectionApi: VPNManagerAPI = mockk(relaxed = true)
-    private val authenticationApi: AccountAPI = mockk(relaxed = true)
+    private val authenticationApi: AndroidAccountAPI = mockk(relaxed = true)
     private val clientConfiguration: ClientConfiguration = mockk()
     private val connectionListener: VPNManagerConnectionListener = mockk()
     private lateinit var source: ConnectionDataSource

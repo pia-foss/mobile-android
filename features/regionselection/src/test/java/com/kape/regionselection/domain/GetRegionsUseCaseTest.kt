@@ -19,7 +19,6 @@ import org.koin.test.KoinTest
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class GetRegionsUseCaseTest : KoinTest {
 
     private val repo: RegionRepository = mockk(relaxed = true)
@@ -72,7 +71,6 @@ internal class GetRegionsUseCaseTest : KoinTest {
                     Server(
                         name = "",
                         iso = "",
-                        dns = "",
                         endpoints = emptyMap(),
                         key = "key",
                         isGeo = false,

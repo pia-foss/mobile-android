@@ -49,7 +49,6 @@ internal class UpdateLatencyUseCaseTest : KoinTest {
                     Server(
                         name = "",
                         iso = "",
-                        dns = "",
                         endpoints = emptyMap(),
                         key = "key",
                         isGeo = false,

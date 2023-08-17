@@ -2,7 +2,6 @@ package com.kape.connection.ui.vm
 
 import android.app.Notification
 import android.app.PendingIntent
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.domain.ConnectionUseCase
@@ -193,17 +192,15 @@ class ConnectionViewModel(
                     notification,
                     object : VPNManagerConnectionListener {
                         override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
-                            Log.e("aaa", "handleConnectionStatusChange: $status")
                         }
                     }).collect {
-                    Log.e("aaa", "collected/connected: $it")
                 }
             }
 
         }
     }
 
-    fun disconnect() {
-
+    fun disconnect() = viewModelScope.launch {
+        connectionUseCase.stopConnection()
     }
 }
