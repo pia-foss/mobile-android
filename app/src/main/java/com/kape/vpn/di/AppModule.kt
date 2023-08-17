@@ -8,6 +8,7 @@ import com.kape.vpn.provider.KpiModuleStateProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.router.Router
 import com.kape.utils.ConnectionListener
+import com.kape.utils.R
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
 import com.kape.vpn.provider.PlatformProvider
@@ -35,7 +36,7 @@ val appModule = module {
     single { VpnManagerProvider() }
     single { RegionsModuleStateProvider(get()) }
     single { KpiModuleStateProvider(get(), get()) }
-    single { provideConnectionListener() }
+    single { provideConnectionListener(get()) }
     single { provideAndroidAccountApi(get()) }
     single { provideRegionsApi(get(), get()) }
     single { provideKpiApi(get()) }
@@ -95,7 +96,16 @@ private fun provideConfigurationIntent(context: Context): Intent {
     }
 }
 
-private fun provideConnectionListener(): ConnectionListener = ConnectionListener()
+private fun provideConnectionListener(context: Context): ConnectionListener {
+    val values = mutableMapOf<ConnectionListener.ConnectionStatus, String>()
+    values[ConnectionListener.ConnectionStatus.CONNECTING] = context.getString(R.string.connecting)
+    values[ConnectionListener.ConnectionStatus.CONNECTED] =
+        context.getString(R.string.connected_to_format)
+    values[ConnectionListener.ConnectionStatus.DISCONNECTED] = ""
+    values[ConnectionListener.ConnectionStatus.RECONNECTING] =
+        context.getString(R.string.reconnecting)
+    return ConnectionListener(values)
+}
 
 private fun provideCertificate(context: Context) =
     context.assets.open("rsa4096.pem").bufferedReader().use(BufferedReader::readText)

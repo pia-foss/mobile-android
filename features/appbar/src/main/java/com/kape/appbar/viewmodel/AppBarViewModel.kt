@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.appbar.R
 import com.kape.utils.ConnectionListener
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -15,43 +14,36 @@ class AppBarViewModel : ViewModel(), KoinComponent {
 
     private val connectionListener: ConnectionListener by inject()
 
-    var appBarText by mutableStateOf(R.string.none)
+    var appBarText by mutableStateOf("")
         private set
-    var accessibilityPrefix by mutableStateOf(R.string.none)
+    var accessibilityPrefix by mutableStateOf("")
         private set
 
-    var appBarConnectionState: ConnectionListener.ConnectionStatus by mutableStateOf(
-        connectionListener.connectionStatus.value
-    )
+    lateinit var appBarConnectionState: ConnectionListener.ConnectionStatus
         private set
 
     init {
         viewModelScope.launch {
             connectionListener.connectionStatus.collect {
-                refreshConnectionState(it)
+                refreshConnectionState(it.second!!)
+                appBarConnectionState = it.first
             }
         }
     }
 
-    fun appBarText(titleId: Int?) {
-        appBarText = titleId ?: appBarTitle(connectionListener.connectionStatus.value)
+    fun appBarText(title: String?) {
+        appBarText = title ?: appBarTitle(connectionListener.connectionStatus.value.second!!)
     }
 
-    private fun refreshAppBarTitle(status: ConnectionListener.ConnectionStatus) {
+    private fun refreshAppBarTitle(status: String) {
         appBarText = appBarTitle(status)
     }
 
-    private fun refreshConnectionState(status: ConnectionListener.ConnectionStatus) {
+    private fun refreshConnectionState(status: String) {
         refreshAppBarTitle(status)
-        appBarConnectionState = connectionListener.connectionStatus.value
     }
 
-    private fun appBarTitle(status: ConnectionListener.ConnectionStatus): Int {
-        return when (status) {
-            ConnectionListener.ConnectionStatus.CONNECTED -> R.string.connected_to_format
-            ConnectionListener.ConnectionStatus.CONNECTING -> R.string.connecting
-            ConnectionListener.ConnectionStatus.DISCONNECTED -> R.string.none
-            ConnectionListener.ConnectionStatus.RECONNECTING -> R.string.reconnecting
-        }
+    private fun appBarTitle(status: String): String {
+        return status
     }
 }

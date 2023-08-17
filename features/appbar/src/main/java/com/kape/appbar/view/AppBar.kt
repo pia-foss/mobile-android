@@ -1,7 +1,6 @@
 package com.kape.appbar.view
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -42,8 +41,6 @@ import com.kape.ui.theme.appbarConnectedGradient
 import com.kape.ui.theme.appbarConnectedStatus
 import com.kape.ui.theme.appbarConnectingGradient
 import com.kape.ui.theme.appbarConnectingStatus
-import com.kape.ui.theme.appbarDisconnectedGradient
-import com.kape.ui.theme.appbarDisconnectedStatus
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.ConnectionListener
 
@@ -54,11 +51,10 @@ fun ConnectionAppBar(
     onLeftButtonClick: () -> Unit,
     onRightButtonClick: () -> Unit = {}
 ) {
-    Log.e("aaa", "connection app bar")
     AppBar(
         state = AppBarState(
-            title = stringResource(id = viewModel.appBarText),
-            accessibilityPrefix = stringResource(id = viewModel.accessibilityPrefix),
+            title = viewModel.appBarText,
+            accessibilityPrefix = viewModel.accessibilityPrefix,
             connectionState = viewModel.appBarConnectionState,
             colorScheme = LocalColors.current,
             navigationState = NavigationState.Menu,
@@ -84,7 +80,7 @@ fun NavigationAppBar(
 ) {
     AppBar(
         state = AppBarState(
-            title = stringResource(id = viewModel.appBarText),
+            title = viewModel.appBarText,
             connectionState = viewModel.appBarConnectionState,
             colorScheme = LocalColors.current,
             navigationState = NavigationState.Back,
@@ -105,7 +101,7 @@ fun InAppBrowserAppBar(
 ) {
     AppBar(
         state = AppBarState(
-            title = stringResource(id = viewModel.appBarText),
+            title = viewModel.appBarText,
             connectionState = viewModel.appBarConnectionState,
             colorScheme = LocalColors.current,
             navigationState = NavigationState.Back,

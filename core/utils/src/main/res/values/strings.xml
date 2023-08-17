@@ -3,5 +3,4 @@
     <string name="connected_to_format">Connected to %s</string>
     <string name="connecting">Connecting&#8230;</string>
     <string name="reconnecting">Reconnecting&#8230;</string>
-    <string name="none"></string>
 </resources>

@@ -1,21 +1,24 @@
 package com.kape.utils
 
-import android.util.Log
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerConnectionStatus
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
 
-class ConnectionListener : VPNManagerConnectionListener {
+class ConnectionListener(private val values: Map<ConnectionStatus, String>) :
+    VPNManagerConnectionListener {
 
     private val _serverName = MutableStateFlow("")
-    val serverName: StateFlow<String> = _serverName
+    private val serverName: StateFlow<String> = _serverName
 
     private val _connectionStatus =
-        MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
-    val connectionStatus: StateFlow<ConnectionStatus> = _connectionStatus
+        MutableStateFlow<Pair<ConnectionStatus, String?>>(
+            Pair(
+                ConnectionStatus.DISCONNECTED,
+                values[ConnectionStatus.DISCONNECTED]
+            )
+        )
+    val connectionStatus: StateFlow<Pair<ConnectionStatus, String?>> = _connectionStatus
 
     override
     fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
@@ -25,19 +28,21 @@ class ConnectionListener : VPNManagerConnectionListener {
             VPNManagerConnectionStatus.RECONNECTING -> ConnectionStatus.RECONNECTING
             VPNManagerConnectionStatus.CONNECTED -> ConnectionStatus.CONNECTED
         }
-        _connectionStatus.value = currentStatus
         if (currentStatus is ConnectionStatus.DISCONNECTED) {
             _serverName.value = ""
         }
-        Log.e("aaa", "status: $status")
+
+        values[currentStatus]?.let {
+            _connectionStatus.value =
+                Pair(currentStatus, String.format(it, serverName.value))
+        }
     }
 
     fun setCurrentServerName(name: String) {
         _serverName.value = name
-        Log.e("aaa", "server: $name")
     }
 
-    fun isConnected(): Boolean = connectionStatus.value == ConnectionStatus.CONNECTED
+    fun isConnected(): Boolean = connectionStatus.value.first == ConnectionStatus.CONNECTED
 
     sealed class ConnectionStatus {
         data object DISCONNECTED : ConnectionStatus()
