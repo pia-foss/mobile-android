@@ -36,6 +36,9 @@ import com.kape.notifications.data.NotificationChannelManager.Companion.CHANNEL_
 import com.kape.sidemenu.ui.SideMenuUiDrawer
 import com.kape.ui.elements.Separator
 import com.kape.ui.theme.Space
+import com.kape.utils.ConnectionListener
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.util.Locale
@@ -48,10 +51,19 @@ fun ConnectionScreen() {
     val locale = Locale.getDefault().language
     val context = LocalContext.current
     val intent: Intent = koinInject()
+    val connectionListener: ConnectionListener = koinInject()
+    val connectionStatus = connectionListener.connectionStatus.collectAsState()
+    val connectionState = when (connectionStatus.value.first) {
+        ConnectionListener.ConnectionStatus.CONNECTED -> ConnectionState.Connected
+        ConnectionListener.ConnectionStatus.CONNECTING -> ConnectionState.Connecting
+        ConnectionListener.ConnectionStatus.DISCONNECTED -> ConnectionState.Default
+        ConnectionListener.ConnectionStatus.RECONNECTING -> ConnectionState.Connecting
+    }
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadServers(locale)
     }
+
 
     SideMenuUiDrawer {
         Column(
@@ -65,7 +77,7 @@ fun ConnectionScreen() {
                 onLeftButtonClick = { openDrawer() }
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
-            ConnectionButton(ConnectionState.Default) {
+            ConnectionButton(connectionState) {
                 viewModel.onConnectionButtonClicked(
                     getNotification(context), PendingIntent.getActivity(
                         context,
