@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerConnectionStatus
 
-class ConnectionListener : VPNManagerConnectionListener {
+class VpnConnectionListener : VPNManagerConnectionListener {
 
     private val connectionStatus = mutableStateOf(VPNManagerConnectionStatus.DISCONNECTED)
 

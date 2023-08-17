@@ -2,7 +2,7 @@ package com.kape.vpn.di
 
 import android.content.Context
 import android.content.Intent
-import com.kape.connection.utils.ConnectionListener
+import com.kape.connection.utils.VpnConnectionListener
 import com.kape.vpn.provider.AccountModuleStateProvider
 import com.kape.vpn.provider.KPI_PREFS_NAME
 import com.kape.vpn.provider.KpiModuleStateProvider
@@ -95,7 +95,7 @@ private fun provideConfigurationIntent(context: Context): Intent {
     }
 }
 
-private fun provideConnectionListener(): ConnectionListener = ConnectionListener()
+private fun provideConnectionListener(): VpnConnectionListener = VpnConnectionListener()
 
 private fun provideCertificate(context: Context) =
     context.assets.open("rsa4096.pem").bufferedReader().use(BufferedReader::readText)

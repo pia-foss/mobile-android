@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.PendingIntent
 import app.cash.turbine.test
 import com.kape.utils.server.Server
-import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
@@ -22,7 +21,6 @@ internal class ConnectionUseCaseTest {
     private val server: Server = mockk()
     private val intent: PendingIntent = mockk()
     private val notification: Notification = mockk()
-    private val listener: VPNManagerConnectionListener = mockk()
     private lateinit var useCase: ConnectionUseCase
 
     private val appModule = module {
@@ -46,7 +44,7 @@ internal class ConnectionUseCaseTest {
         }
         every { source.getVpnToken() } returns "username:password"
 
-        useCase.startConnection(server, intent, notification, listener).test {
+        useCase.startConnection(server, intent, notification).test {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)
@@ -61,7 +59,7 @@ internal class ConnectionUseCaseTest {
         }
         every { source.getVpnToken() } returns "username:password"
 
-        useCase.startConnection(server, intent, notification, listener).test {
+        useCase.startConnection(server, intent, notification).test {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)
