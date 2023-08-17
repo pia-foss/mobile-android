@@ -2,7 +2,7 @@ package com.kape.connection.domain
 
 import android.app.Notification
 import android.app.PendingIntent
-import com.kape.connection.utils.VpnConnectionListener
+import com.kape.utils.ConnectionListener
 import com.kape.utils.server.Server
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.OpenVpnClientConfiguration
@@ -18,13 +18,14 @@ import org.koin.core.component.inject
 class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : KoinComponent {
 
     private val certificate: String by inject()
-    private val connectionListener: VpnConnectionListener by inject()
+    private val connectionListener: ConnectionListener by inject()
 
     fun startConnection(
         server: Server,
         configureIntent: PendingIntent,
         notification: Notification,
     ): Flow<Boolean> = flow {
+        connectionListener.setCurrentServerName(server.name)
         val index = connectionSource.getVpnToken().indexOf(":")
         var transport = "udp"
         val serverGroup = when (transport) {

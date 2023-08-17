@@ -1,6 +1,7 @@
 import Dependencies.desugarJdkLibs
 import Dependencies.implementCoroutines
 import Dependencies.implementCrypto
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
@@ -30,4 +31,5 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
     implementCrypto()
     implementCoroutines()
+    implementVpnManager()
 }

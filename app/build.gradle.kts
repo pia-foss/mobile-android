@@ -89,6 +89,7 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":core:router"))
+    implementation(project(":core:utils"))
     implementAccount()
     implementation(project(":core:payments"))
     implementKpi()
