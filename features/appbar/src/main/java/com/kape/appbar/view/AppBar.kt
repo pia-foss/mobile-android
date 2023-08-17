@@ -259,7 +259,7 @@ fun ImageTextContent(prefix: String, title: String, color: Color) {
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleMedium,
             color = color
         )
     }
@@ -272,11 +272,10 @@ fun TextContent(needsSpacing: Boolean, prefix: String, title: String, color: Col
     }
     Text(
         text = title,
-        style = MaterialTheme.typography.headlineMedium,
+        style = MaterialTheme.typography.titleMedium,
         color = color,
         modifier = Modifier.semantics(mergeDescendants = true) {
-            contentDescription =
-                (prefix ?: "") + " $title"
+            contentDescription = "$prefix $title"
         }
     )
 }
