@@ -2,6 +2,7 @@ package com.kape.vpn.di
 
 import android.content.Context
 import android.content.Intent
+import com.kape.connection.utils.ConnectionListener
 import com.kape.vpn.provider.AccountModuleStateProvider
 import com.kape.vpn.provider.KPI_PREFS_NAME
 import com.kape.vpn.provider.KpiModuleStateProvider
@@ -34,6 +35,7 @@ val appModule = module {
     single { VpnManagerProvider() }
     single { RegionsModuleStateProvider(get()) }
     single { KpiModuleStateProvider(get(), get()) }
+    single { provideConnectionListener() }
     single { provideAndroidAccountApi(get()) }
     single { provideRegionsApi(get(), get()) }
     single { provideKpiApi(get()) }
@@ -92,6 +94,8 @@ private fun provideConfigurationIntent(context: Context): Intent {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
 }
+
+private fun provideConnectionListener(): ConnectionListener = ConnectionListener()
 
 private fun provideCertificate(context: Context) =
     context.assets.open("rsa4096.pem").bufferedReader().use(BufferedReader::readText)

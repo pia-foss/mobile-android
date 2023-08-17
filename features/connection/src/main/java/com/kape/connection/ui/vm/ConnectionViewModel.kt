@@ -23,6 +23,7 @@ import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerConnectionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -95,6 +96,7 @@ class ConnectionViewModel(
                     formatter.format(end)
                 )
             }
+
             SNOOZE_MEDIUM_MS -> {
                 val end = now.plusMinutes(fifteenMinuteLong)
                 snoozeState = SnoozeState(
@@ -102,6 +104,7 @@ class ConnectionViewModel(
                     formatter.format(end)
                 )
             }
+
             SNOOZE_LONG_MS -> {
                 val end = now.plusHours(oneHourLong)
                 snoozeState = SnoozeState(
@@ -109,6 +112,7 @@ class ConnectionViewModel(
                     formatter.format(end)
                 )
             }
+
             else -> {
                 snoozeState = SNOOZE_STATE_DEFAULT
             }
@@ -182,25 +186,28 @@ class ConnectionViewModel(
         router.handleFlow(EnterFlow.RegionSelection)
     }
 
-    fun connect(notification: Notification, pendingIntent: PendingIntent) {
+    fun onConnectionButtonClicked(notification: Notification, pendingIntent: PendingIntent) {
+        if (connectionUseCase.isConnected()) {
+            disconnect()
+        } else {
+            connect(notification, pendingIntent)
+        }
+    }
+
+    private fun connect(notification: Notification, pendingIntent: PendingIntent) {
         notificationChannelManager.createVpnChannel()
         viewModelScope.launch {
             selectedServer?.let {
                 connectionUseCase.startConnection(
                     it,
                     pendingIntent,
-                    notification,
-                    object : VPNManagerConnectionListener {
-                        override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
-                        }
-                    }).collect {
-                }
+                    notification
+                ).collect()
             }
-
         }
     }
 
-    fun disconnect() = viewModelScope.launch {
-        connectionUseCase.stopConnection()
+    private fun disconnect() = viewModelScope.launch {
+        connectionUseCase.stopConnection().collect()
     }
 }

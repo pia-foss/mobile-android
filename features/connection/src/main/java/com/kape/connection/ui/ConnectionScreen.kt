@@ -66,7 +66,7 @@ fun ConnectionScreen() {
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             ConnectionButton(ConnectionState.Default) {
-                viewModel.connect(
+                viewModel.onConnectionButtonClicked(
                     getNotification(context), PendingIntent.getActivity(
                         context,
                         123,
@@ -102,7 +102,8 @@ fun ConnectionScreen() {
 
 private fun getNotification(context: Context): Notification {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val notificationChannel = NotificationChannel(CHANNEL_ID, "channelName", NotificationManager.IMPORTANCE_DEFAULT)
+        val notificationChannel =
+            NotificationChannel(CHANNEL_ID, "channelName", NotificationManager.IMPORTANCE_DEFAULT)
         notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         val service = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(notificationChannel)

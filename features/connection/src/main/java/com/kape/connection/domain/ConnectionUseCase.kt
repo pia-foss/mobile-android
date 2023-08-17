@@ -2,12 +2,12 @@ package com.kape.connection.domain
 
 import android.app.Notification
 import android.app.PendingIntent
+import com.kape.connection.utils.ConnectionListener
 import com.kape.utils.server.Server
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.OpenVpnClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
-import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,12 +18,12 @@ import org.koin.core.component.inject
 class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : KoinComponent {
 
     private val certificate: String by inject()
+    private val connectionListener: ConnectionListener by inject()
 
     fun startConnection(
         server: Server,
         configureIntent: PendingIntent,
         notification: Notification,
-        listener: VPNManagerConnectionListener
     ): Flow<Boolean> = flow {
         val index = connectionSource.getVpnToken().indexOf(":")
         var transport = "udp"
@@ -94,7 +94,7 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
             )
         )
 
-        connectionSource.startConnection(clientConfiguration, listener).collect {
+        connectionSource.startConnection(clientConfiguration, connectionListener).collect {
             emit(it)
         }
     }
@@ -104,4 +104,6 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
             emit(it)
         }
     }
+
+    fun isConnected(): Boolean = connectionListener.isConnected()
 }
