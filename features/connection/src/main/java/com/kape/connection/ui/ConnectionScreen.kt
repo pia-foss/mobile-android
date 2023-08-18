@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,12 +32,12 @@ import com.kape.connection.ui.tiles.SnoozeTile
 import com.kape.connection.ui.tiles.UsageTile
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.notifications.data.NotificationChannelManager.Companion.CHANNEL_ID
+import com.kape.notifications.data.NotificationChannelManager.Companion.CHANNEL_NAME
 import com.kape.sidemenu.ui.SideMenuUiDrawer
 import com.kape.ui.elements.Separator
 import com.kape.ui.theme.Space
-import com.kape.utils.ConnectionListener
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
+import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.util.Locale
@@ -51,19 +50,18 @@ fun ConnectionScreen() {
     val locale = Locale.getDefault().language
     val context = LocalContext.current
     val intent: Intent = koinInject()
-    val connectionListener: ConnectionListener = koinInject()
-    val connectionStatus = connectionListener.connectionStatus.collectAsState()
-    val connectionState = when (connectionStatus.value.first) {
-        ConnectionListener.ConnectionStatus.CONNECTED -> ConnectionState.Connected
-        ConnectionListener.ConnectionStatus.CONNECTING -> ConnectionState.Connecting
-        ConnectionListener.ConnectionStatus.DISCONNECTED -> ConnectionState.Default
-        ConnectionListener.ConnectionStatus.RECONNECTING -> ConnectionState.Connecting
+    val connectionManager: ConnectionManager = koinInject()
+    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val connectionState = when (connectionStatus.value) {
+        ConnectionStatus.CONNECTED -> ConnectionState.Connected
+        ConnectionStatus.CONNECTING -> ConnectionState.Connecting
+        ConnectionStatus.DISCONNECTED -> ConnectionState.Default
+        ConnectionStatus.RECONNECTING -> ConnectionState.Connecting
     }
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadServers(locale)
     }
-
 
     SideMenuUiDrawer {
         Column(
@@ -115,7 +113,7 @@ fun ConnectionScreen() {
 private fun getNotification(context: Context): Notification {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val notificationChannel =
-            NotificationChannel(CHANNEL_ID, "channelName", NotificationManager.IMPORTANCE_DEFAULT)
+            NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
         notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         val service = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         service.createNotificationChannel(notificationChannel)

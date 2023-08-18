@@ -1,15 +1,17 @@
-package com.kape.connection.domain
+package com.kape.vpnconnect.domain
 
 import android.app.Notification
 import android.app.PendingIntent
-import com.kape.utils.ConnectionListener
 import com.kape.utils.server.Server
+import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.OpenVpnClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
@@ -18,14 +20,17 @@ import org.koin.core.component.inject
 class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : KoinComponent {
 
     private val certificate: String by inject()
-    private val connectionListener: ConnectionListener by inject()
+    private val connectionManager: ConnectionManager by inject()
+
+    private val _serverName = MutableStateFlow("")
+    val serverName: StateFlow<String> = _serverName
 
     fun startConnection(
         server: Server,
         configureIntent: PendingIntent,
         notification: Notification,
     ): Flow<Boolean> = flow {
-        connectionListener.setCurrentServerName(server.name)
+        _serverName.value = server.name
         val index = connectionSource.getVpnToken().indexOf(":")
         var transport = "udp"
         val serverGroup = when (transport) {
@@ -72,7 +77,7 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
             notification = notification,
             allowedApplicationPackages = emptyList(),
             disallowedApplicationPackages = emptyList(),
-            allowLocalNetworkAccess = server.isAllowsPF,
+            allowLocalNetworkAccess = false,
             serverList = ServerList(
                 servers = listOf(
                     ServerList.Server(
@@ -95,16 +100,17 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
             )
         )
 
-        connectionSource.startConnection(clientConfiguration, connectionListener).collect {
+        connectionSource.startConnection(clientConfiguration, connectionManager).collect {
             emit(it)
         }
     }
 
     fun stopConnection(): Flow<Boolean> = flow {
         connectionSource.stopConnection().collect {
+            _serverName.value = ""
             emit(it)
         }
     }
 
-    fun isConnected(): Boolean = connectionListener.isConnected()
+    fun isConnected(): Boolean = connectionManager.isConnected()
 }

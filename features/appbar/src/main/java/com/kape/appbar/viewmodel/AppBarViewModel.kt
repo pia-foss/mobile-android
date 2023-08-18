@@ -1,38 +1,38 @@
 package com.kape.appbar.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.utils.ConnectionListener
+import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnconnect.utils.ConnectionStatus
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class AppBarViewModel : ViewModel(), KoinComponent {
-
-    private val connectionListener: ConnectionListener by inject()
+class AppBarViewModel(private val connectionManager: ConnectionManager) : ViewModel(),
+    KoinComponent {
 
     var appBarText by mutableStateOf("")
         private set
     var accessibilityPrefix by mutableStateOf("")
         private set
 
-    lateinit var appBarConnectionState: ConnectionListener.ConnectionStatus
+    lateinit var appBarConnectionState: ConnectionStatus
         private set
 
     init {
         viewModelScope.launch {
-            connectionListener.connectionStatus.collect {
-                refreshConnectionState(it.second!!)
-                appBarConnectionState = it.first
+            connectionManager.connectionStatusTitle.collect {
+                refreshConnectionState(it)
+                appBarConnectionState = connectionManager.connectionStatus.value
             }
         }
     }
 
     fun appBarText(title: String?) {
-        appBarText = title ?: appBarTitle(connectionListener.connectionStatus.value.second!!)
+        appBarText = title ?: appBarTitle(connectionManager.connectionStatusTitle.value)
     }
 
     private fun refreshAppBarTitle(status: String) {

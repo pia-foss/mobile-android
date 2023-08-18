@@ -92,6 +92,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementAccount()
     implementation(project(":core:payments"))
+    implementation(project(":core:vpnconnect"))
     implementKpi()
     implementRegions()
 
@@ -108,6 +109,7 @@ dependencies {
     implementation(project(":features:regionselection"))
     implementation(project(":features:sidemenu"))
     implementation(project(":features:connection"))
+    implementation(project(":features:appbar"))
 
     implementAndroidBase()
     implementViewModel()

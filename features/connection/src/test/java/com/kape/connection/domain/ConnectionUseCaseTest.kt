@@ -4,6 +4,8 @@ import android.app.Notification
 import android.app.PendingIntent
 import app.cash.turbine.test
 import com.kape.utils.server.Server
+import com.kape.vpnconnect.domain.ConnectionDataSource
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow

@@ -1,6 +1,6 @@
-package com.kape.connection.data
+package com.kape.vpnconnect.data
 
-import com.kape.connection.domain.ConnectionDataSource
+import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener

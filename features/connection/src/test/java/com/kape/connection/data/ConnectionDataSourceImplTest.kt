@@ -2,7 +2,8 @@ package com.kape.connection.data
 
 import app.cash.turbine.test
 import com.kape.connection.di.connectionModule
-import com.kape.connection.domain.ConnectionDataSource
+import com.kape.vpnconnect.domain.ConnectionDataSource
+import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerPeerInformation
 import com.kape.vpnmanager.presenters.VPNManagerAPI

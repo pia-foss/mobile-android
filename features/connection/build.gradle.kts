@@ -55,9 +55,9 @@ dependencies {
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:notifications"))
-    implementAccount()
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
+    implementation(project(":core:vpnconnect"))
     implementation(project(":core:utils"))
     implementation(project(":features:appbar"))
     implementation(project(":features:settings"))

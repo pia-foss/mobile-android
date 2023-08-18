@@ -44,7 +44,7 @@ android {
 
 dependencies {
     implementation(project(":capabilities:ui"))
-    implementation(project(":core:utils"))
+    implementation(project(":core:vpnconnect"))
     implementCompose()
     implementViewModel()
     implementKoin()

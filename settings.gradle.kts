@@ -40,3 +40,4 @@ include(":features:profile")
 include(":features:vpnpermission")
 include(":features:regionselection")
 
+include(":core:vpnconnect")

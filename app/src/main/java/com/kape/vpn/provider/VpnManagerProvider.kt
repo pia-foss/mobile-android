@@ -13,6 +13,7 @@ class VpnManagerProvider : VPNManagerPermissionsDependency, VPNManagerProtocolBy
 
     override fun requestNecessaryPermissions(callback: VPNManagerResultCallback<Boolean>) {
         // TODO: implement
+        callback.invoke(Result.success(false))
     }
 
     override fun byteCount(tx: Long, rx: Long) {

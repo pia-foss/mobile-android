@@ -31,6 +31,7 @@ class NotificationChannelManager(
 
     companion object {
         const val CHANNEL_ID = "pia"
+        const val CHANNEL_NAME = "pia-vpn"
         const val NOTIFICATION_ID = "vpn"
     }
 }
