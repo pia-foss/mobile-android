@@ -1,9 +1,9 @@
-package com.kape.connection.data
+package com.kape.vpnconnect.data
 
 import app.cash.turbine.test
-import com.kape.connection.di.connectionModule
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
+import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerPeerInformation
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -37,7 +37,7 @@ internal class ConnectionDataSourceImplTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, connectionModule)
+            modules(appModule, vpnConnectModule)
         }
         source = ConnectionDataSourceImpl()
     }

@@ -1,9 +1,10 @@
-package com.kape.connection.domain
+package com.kape.vpnconnect.domain
 
 import android.app.Notification
 import android.app.PendingIntent
 import app.cash.turbine.test
 import com.kape.utils.server.Server
+import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import io.mockk.every
@@ -20,7 +21,11 @@ import kotlin.test.assertEquals
 internal class ConnectionUseCaseTest {
 
     private val source: ConnectionDataSource = mockk()
-    private val server: Server = mockk()
+    private val server: Server = mockk<Server>(relaxed = true).apply {
+        every { endpoints } returns emptyMap()
+        every { latency } returns "0"
+        every { name } returns "name"
+    }
     private val intent: PendingIntent = mockk()
     private val notification: Notification = mockk()
     private lateinit var useCase: ConnectionUseCase
@@ -33,7 +38,7 @@ internal class ConnectionUseCaseTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule)
+            modules(appModule, vpnConnectModule)
         }
         useCase = ConnectionUseCase(source)
     }

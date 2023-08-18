@@ -1,12 +1,15 @@
 import Dependencies.implementAccount
+import Dependencies.implementCoroutines
 import Dependencies.implementKoin
 import Dependencies.implementSerialization
+import Dependencies.implementTest
 import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint")
+    id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
 android {
@@ -33,4 +36,7 @@ dependencies {
     implementKoin()
     implementAccount()
     implementSerialization()
+    implementCoroutines()
+
+    implementTest()
 }
