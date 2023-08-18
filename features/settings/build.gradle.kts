@@ -15,7 +15,15 @@ android {
     defaultConfig {
         minSdk = 21
     }
-
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
+    }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
@@ -41,6 +49,7 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":capabilities:ui"))
+    implementation(project(":features:appbar"))
 
     implementFeatureModule()
 }

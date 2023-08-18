@@ -24,18 +24,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.kape.appbar.view.NavigationAppBar
+import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
 import com.kape.ui.theme.Space
 import com.kape.ui.theme.Square
 import com.kape.ui.utils.LocalColors
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SettingsScreen() {
-    // TODO: IVA: Reimplement appbar once added properly!
+
+    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
+        appBarText(stringResource(id = R.string.settings))
+    }
+
     Column {
         val items = getSettingsList()
+
+        NavigationAppBar(
+            viewModel = appBarViewModel,
+            onLeftButtonClick = {
+                // TODO: Navigate back
+            })
 
         LazyColumn {
             items(items) { item: GeneralSetting ->

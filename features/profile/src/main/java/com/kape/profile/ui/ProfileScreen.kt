@@ -19,6 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.kape.appbar.view.NavigationAppBar
+import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.profile.R
 import com.kape.profile.ui.vm.ProfileViewModel
 import com.kape.ui.theme.FontSize
@@ -29,10 +31,15 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ProfileScreen() {
     val viewModel: ProfileViewModel = koinViewModel()
+    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
+        appBarText(stringResource(id = R.string.account))
+    }
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
 
     Column {
-        // TODO: Iva! Add AppBar
+        NavigationAppBar(
+            viewModel = appBarViewModel,
+            onLeftButtonClick = { viewModel.navigateBack() })
         if (state.loading) {
             Box(modifier = Modifier.fillMaxSize()) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

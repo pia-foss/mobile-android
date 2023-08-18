@@ -20,6 +20,16 @@ android {
         minSdk = 21
     }
 
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
+    }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
@@ -42,6 +52,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:router"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":features:appbar"))
 
     implementRegions()
 

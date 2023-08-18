@@ -14,5 +14,5 @@ val connectionModule = module {
     single<ConnectionDataSource> { ConnectionDataSourceImpl() }
     viewModel { AppBarViewModel() }
     single { ConnectionUseCase(get()) }
-    viewModel { ConnectionViewModel(get(), get(), get(), get(), get()) }
+    viewModel { ConnectionViewModel(get(), get(), get(), get()) }
 }
