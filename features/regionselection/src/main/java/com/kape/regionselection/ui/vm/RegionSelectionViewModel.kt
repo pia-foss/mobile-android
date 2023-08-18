@@ -28,10 +28,10 @@ import org.koin.core.component.inject
 class RegionSelectionViewModel(
     private val getRegionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
+    private val router: Router,
     private val prefs: RegionPrefs
 ) : ViewModel(), KoinComponent {
 
-    private val router: Router by inject()
     private val _state = MutableStateFlow(IDLE)
     val state: StateFlow<RegionSelectionScreenState> = _state
     private var regions = mutableListOf<Server>()

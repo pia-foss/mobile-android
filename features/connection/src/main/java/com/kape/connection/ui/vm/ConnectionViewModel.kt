@@ -32,6 +32,7 @@ class ConnectionViewModel(
     private val regionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
     private val connectionUseCase: ConnectionUseCase,
+    private val router: Router,
     private val prefs: ConnectionPrefs
 ) : ViewModel(), KoinComponent {
 
@@ -46,8 +47,6 @@ class ConnectionViewModel(
 
     private val _state = MutableStateFlow(IDLE)
     val state: StateFlow<ConnectionScreenState> = _state
-
-    private val router: Router by inject()
 
     private var availableServers = mutableListOf<Server>()
     private var selectedServer: Server? = null

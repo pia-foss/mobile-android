@@ -11,6 +11,6 @@ val permissionModule = module {
     single<VpnPermissionDataSource> { VpnPermissionDataSourceImpl(context = get()) }
     single { IsVpnProfileInstalledUseCase(dataSource = get()) }
     viewModel {
-        PermissionsViewModel(get())
+        PermissionsViewModel(get(), get())
     }
 }

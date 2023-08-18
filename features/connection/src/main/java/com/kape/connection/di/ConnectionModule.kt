@@ -7,5 +7,5 @@ import org.koin.dsl.module
 
 val connectionModule = module {
     single { ConnectionPrefs(get()) }
-    viewModel { ConnectionViewModel(get(), get(), get(), get()) }
+    viewModel { ConnectionViewModel(get(), get(), get(), get(), get()) }
 }

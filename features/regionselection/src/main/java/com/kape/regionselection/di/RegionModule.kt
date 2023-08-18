@@ -16,5 +16,5 @@ val regionModule = module {
     single { RegionRepository(get()) }
     single { GetRegionsUseCase(get(), get()) }
     single { UpdateLatencyUseCase(get()) }
-    viewModel { RegionSelectionViewModel(get(), get(), get()) }
+    viewModel { RegionSelectionViewModel(get(), get(), get(), get()) }
 }

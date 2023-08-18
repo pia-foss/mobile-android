@@ -17,10 +17,10 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class PermissionsViewModel(
-    private val useCaseIsVpnProfileInstalled: IsVpnProfileInstalledUseCase
+    private val useCaseIsVpnProfileInstalled: IsVpnProfileInstalledUseCase,
+    private val router: Router
 ) : ViewModel(), KoinComponent {
 
-    private val router: Router by inject()
     private val _vpnPermissionState = MutableStateFlow(IDLE)
     val vpnPermissionState: StateFlow<VpnProfileState> = _vpnPermissionState
 

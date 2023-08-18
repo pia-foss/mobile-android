@@ -12,10 +12,9 @@ import org.koin.core.component.inject
 
 class SplashViewModel(
     private val useCase: GetSubscriptionsUseCase,
-    private val notificationPermissionManager: NotificationPermissionManager
+    private val notificationPermissionManager: NotificationPermissionManager,
+    private val router: Router
 ) : ViewModel(), KoinComponent {
-
-    private val router: Router by inject()
 
     fun load() = viewModelScope.launch {
         useCase.getSubscriptions().collect {

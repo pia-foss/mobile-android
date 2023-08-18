@@ -36,10 +36,10 @@ class SignupViewModel(
     private val formatter: PriceFormatter,
     private val consentUseCase: ConsentUseCase,
     private val useCase: SignupUseCase,
-    private val getUserLoggedInUseCase: GetUserLoggedInUseCase
+    private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
+    private val router: Router
 ) : ViewModel(), KoinComponent {
 
-    private val router: Router by inject()
     private val _state = MutableStateFlow(DEFAULT)
     val state: StateFlow<SignupScreenState> = _state
 

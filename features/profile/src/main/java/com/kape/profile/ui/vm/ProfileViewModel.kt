@@ -16,9 +16,9 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class ProfileViewModel(private val useCase: GetProfileUseCase) : ViewModel(), KoinComponent {
+class ProfileViewModel(private val useCase: GetProfileUseCase, private val router: Router) :
+    ViewModel(), KoinComponent {
 
-    private val router: Router by inject()
     private val _state = MutableStateFlow(IDLE)
     val screenState: StateFlow<ProfileScreenState> = _state
 
@@ -42,6 +42,10 @@ class ProfileViewModel(private val useCase: GetProfileUseCase) : ViewModel(), Ko
     }
 
     private fun getState(profile: Profile): ProfileScreenState {
-        return createSuccessState(profile.username, profile.subscription.expirationDate, profile.subscription.isExpired)
+        return createSuccessState(
+            profile.username,
+            profile.subscription.expirationDate,
+            profile.subscription.isExpired
+        )
     }
 }
