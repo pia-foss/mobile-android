@@ -41,7 +41,7 @@ class App : Application() {
                 add(profileModule(appModule))
                 add(regionModule(appModule))
                 add(splashModule)
-                add(signupModule)
+                add(signupModule(appModule))
                 add(kpiModule)
                 add(connectionModule)
             },

@@ -8,9 +8,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class EmailDataSourceImpl : EmailDataSource, KoinComponent {
-
-    private val api: AndroidAccountAPI by inject()
+class EmailDataSourceImpl(private val api: AndroidAccountAPI) : EmailDataSource, KoinComponent {
 
     override fun setEmail(email: String): Flow<Boolean> = callbackFlow {
         api.setEmail(email, false) { temporaryPassword, error ->
