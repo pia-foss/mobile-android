@@ -7,6 +7,7 @@ import com.kape.utils.server.Server
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.utils.ConnectionManager
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
@@ -26,6 +27,8 @@ internal class ConnectionUseCaseTest {
         every { latency } returns "0"
         every { name } returns "name"
     }
+    private val certificate: String = "mockCertificate"
+    private val connectionManager: ConnectionManager = mockk()
     private val intent: PendingIntent = mockk()
     private val notification: Notification = mockk()
     private lateinit var useCase: ConnectionUseCase
@@ -38,9 +41,10 @@ internal class ConnectionUseCaseTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, vpnConnectModule)
+            modules(appModule, vpnConnectModule(appModule))
         }
-        useCase = ConnectionUseCase(source)
+        useCase = ConnectionUseCase(source, certificate, connectionManager)
+        every { connectionManager.setConnectedServerName(any()) } returns Unit
     }
 
     @Test
