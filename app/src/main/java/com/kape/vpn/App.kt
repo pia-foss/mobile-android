@@ -42,7 +42,7 @@ class App : Application() {
                 add(regionModule(appModule))
                 add(splashModule)
                 add(signupModule(appModule))
-                add(kpiModule)
+                add(kpiModule(appModule))
                 add(connectionModule)
             },
         )
