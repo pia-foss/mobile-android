@@ -43,9 +43,9 @@ internal class ProfileDatasourceImplTest {
         Dispatchers.setMain(mainThreadSurrogate)
         stopKoin()
         startKoin {
-            modules(appModule, profileModule)
+            modules(appModule, profileModule(appModule))
         }
-        dataSource = ProfileDatasourceImpl()
+        dataSource = ProfileDatasourceImpl(api)
     }
 
     @AfterEach
