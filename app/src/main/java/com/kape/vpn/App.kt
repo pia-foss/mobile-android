@@ -34,7 +34,7 @@ class App : Application() {
                 add(vpnConnectModule)
                 add(appBarModule)
                 add(notificationModule)
-                add(paymentsModule)
+                add(paymentsModule(appModule))
                 add(loginModule(appModule))
                 add(permissionModule)
                 add(sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))

@@ -10,9 +10,10 @@ import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SubscriptionDataSourceImpl(private val prefs: SubscriptionPrefs) : SubscriptionDataSource, KoinComponent {
-
-    private val api: AndroidAccountAPI by inject()
+class SubscriptionDataSourceImpl(
+    private val prefs: SubscriptionPrefs,
+    private val api: AndroidAccountAPI
+) : SubscriptionDataSource, KoinComponent {
 
     override fun getAvailableSubscriptions(): Flow<List<Subscription>> = callbackFlow {
         api.amazonSubscriptions { details, error ->
