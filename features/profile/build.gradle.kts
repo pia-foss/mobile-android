@@ -11,10 +11,20 @@ plugins {
 
 android {
     namespace = "com.kape.profile"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
+    }
+
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
     }
 
     compileOptions {
@@ -45,6 +55,7 @@ dependencies {
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":features:appbar"))
 
     implementFeatureModule()
 }

@@ -8,6 +8,7 @@ import Dependencies.implementKpi
 import Dependencies.implementMultiplatformSettings
 import Dependencies.implementRegions
 import Dependencies.implementViewModel
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.application")
@@ -16,12 +17,12 @@ plugins {
 
 android {
     namespace = "com.kape.vpn"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.kape.vpn"
         minSdk = 21
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -88,16 +89,12 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":core:router"))
+    implementation(project(":core:utils"))
     implementAccount()
     implementation(project(":core:payments"))
+    implementation(project(":core:vpnconnect"))
     implementKpi()
     implementRegions()
-    implementation(project(":core:vpn:openvpn"))
-    implementation(project(":core:vpn:vpnprotocol"))
-    implementation(project(":core:vpn:serviceprovider"))
-    implementation(project(":core:vpn:targetprovider"))
-    implementation(project(":core:vpn:vpnmanager"))
-    implementation(project(":core:vpn:wireguard"))
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))
@@ -112,6 +109,7 @@ dependencies {
     implementation(project(":features:regionselection"))
     implementation(project(":features:sidemenu"))
     implementation(project(":features:connection"))
+    implementation(project(":features:appbar"))
 
     implementAndroidBase()
     implementViewModel()
@@ -119,4 +117,5 @@ dependencies {
     implementComposeNavigation()
     implementKoin()
     implementMultiplatformSettings()
+    implementVpnManager()
 }

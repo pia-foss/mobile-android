@@ -41,9 +41,8 @@ import com.kape.ui.theme.appbarConnectedGradient
 import com.kape.ui.theme.appbarConnectedStatus
 import com.kape.ui.theme.appbarConnectingGradient
 import com.kape.ui.theme.appbarConnectingStatus
-import com.kape.ui.theme.appbarDisconnectedGradient
-import com.kape.ui.theme.appbarDisconnectedStatus
 import com.kape.ui.utils.LocalColors
+import com.kape.vpnconnect.utils.ConnectionStatus
 
 @Composable
 fun ConnectionAppBar(
@@ -54,19 +53,18 @@ fun ConnectionAppBar(
 ) {
     AppBar(
         state = AppBarState(
-            title = stringResource(id = viewModel.appBarText),
-            accessibilityPrefix = stringResource(id = viewModel.accessibilityPrefix),
-            connectionState = ConnectionState.Default, // viewModel.appBarConnectionState,
+            title = viewModel.appBarText,
+            accessibilityPrefix = viewModel.accessibilityPrefix,
+            connectionState = viewModel.appBarConnectionState,
             colorScheme = LocalColors.current,
             navigationState = NavigationState.Menu,
             contentAlignment = ContentAlignment.Centered,
-            contentType = ContentType.Image,
-//            if (viewModel.appBarConnectionState == ConnectionState.Default) {
-//                ContentType.ImageText
-//            } else {
-//                ContentType.Text
-//            },
-            darkIcons = shouldShowDarkIcons(ConnectionState.Default) // viewModel.appBarConnectionState
+            contentType = if (viewModel.appBarConnectionState == ConnectionStatus.DISCONNECTED) {
+                ContentType.ImageText
+            } else {
+                ContentType.Text
+            },
+            darkIcons = shouldShowDarkIcons(viewModel.appBarConnectionState)
         ),
         onHeaderClick = onHeaderClick,
         onLeftButtonClick = onLeftButtonClick,
@@ -82,13 +80,13 @@ fun NavigationAppBar(
 ) {
     AppBar(
         state = AppBarState(
-            title = stringResource(id = viewModel.appBarText),
-            connectionState = ConnectionState.Default, // viewModel.appBarConnectionState,
+            title = viewModel.appBarText,
+            connectionState = viewModel.appBarConnectionState,
             colorScheme = LocalColors.current,
             navigationState = NavigationState.Back,
             contentAlignment = ContentAlignment.LeftAligned,
             contentType = ContentType.Text,
-            darkIcons = shouldShowDarkIcons(ConnectionState.Default)
+            darkIcons = shouldShowDarkIcons(viewModel.appBarConnectionState)
         ),
         onLeftButtonClick = onLeftButtonClick,
         onRightButtonClick = onRightButtonClick
@@ -103,24 +101,17 @@ fun InAppBrowserAppBar(
 ) {
     AppBar(
         state = AppBarState(
-            title = stringResource(id = viewModel.appBarText),
-            connectionState = ConnectionState.Default, // viewModel.appBarConnectionState,
+            title = viewModel.appBarText,
+            connectionState = viewModel.appBarConnectionState,
             colorScheme = LocalColors.current,
             navigationState = NavigationState.Back,
             contentAlignment = ContentAlignment.Centered,
             contentType = ContentType.Image,
-            darkIcons = shouldShowDarkIcons(ConnectionState.Default)
+            darkIcons = shouldShowDarkIcons(viewModel.appBarConnectionState)
         ),
         onLeftButtonClick = onLeftButtonClick,
         onRightButtonClick = onRightButtonClick
     )
-}
-
-sealed class ConnectionState {
-    data object Default : ConnectionState()
-    data object Connecting : ConnectionState()
-    data object Connected : ConnectionState()
-    data object Disconnected : ConnectionState()
 }
 
 @Composable
@@ -231,8 +222,8 @@ private fun AppBar(
 }
 
 @Composable
-fun ImageContent(connectionState: ConnectionState, color: Color) {
-    if (connectionState is ConnectionState.Default) {
+fun ImageContent(connectionState: ConnectionStatus, color: Color) {
+    if (connectionState is ConnectionStatus.CONNECTED) {
         Icon(
             painter = painterResource(id = R.drawable.ic_pia_logo),
             contentDescription = null,
@@ -243,7 +234,7 @@ fun ImageContent(connectionState: ConnectionState, color: Color) {
         Icon(
             painter = painterResource(id = R.drawable.ic_pia_logo),
             contentDescription = null,
-            tint = color
+            tint = Color.Unspecified,
         )
     }
 }
@@ -264,7 +255,7 @@ fun ImageTextContent(prefix: String, title: String, color: Color) {
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = title,
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleMedium,
             color = color
         )
     }
@@ -277,11 +268,10 @@ fun TextContent(needsSpacing: Boolean, prefix: String, title: String, color: Col
     }
     Text(
         text = title,
-        style = MaterialTheme.typography.headlineMedium,
+        style = MaterialTheme.typography.titleMedium,
         color = color,
         modifier = Modifier.semantics(mergeDescendants = true) {
-            contentDescription =
-                (prefix ?: "") + " $title"
+            contentDescription = "$prefix $title"
         }
     )
 }
@@ -289,7 +279,7 @@ fun TextContent(needsSpacing: Boolean, prefix: String, title: String, color: Col
 private data class AppBarState(
     val title: String,
     val accessibilityPrefix: String? = null,
-    val connectionState: ConnectionState,
+    val connectionState: ConnectionStatus,
     val colorScheme: ColorScheme,
     val darkIcons: Boolean,
     val colors: AppBarColors = getAppBarColors(colorScheme, connectionState, darkIcons),
@@ -322,35 +312,36 @@ private data class AppBarColors(
 )
 
 @Composable
-private fun shouldShowDarkIcons(connectionState: ConnectionState): Boolean {
+private fun shouldShowDarkIcons(connectionState: ConnectionStatus): Boolean {
     return when (connectionState) {
-        ConnectionState.Connected, ConnectionState.Connecting -> true
-        ConnectionState.Default -> !isSystemInDarkTheme()
-        ConnectionState.Disconnected -> false
+        ConnectionStatus.DISCONNECTED -> !isSystemInDarkTheme()
+        ConnectionStatus.RECONNECTING,
+        ConnectionStatus.CONNECTED,
+        ConnectionStatus.CONNECTING -> true
     }
 }
 
 private fun getAppBarColors(
     scheme: ColorScheme,
-    connectionState: ConnectionState,
+    connectionState: ConnectionStatus,
     darkIcons: Boolean
 ): AppBarColors {
     return when (connectionState) {
-        ConnectionState.Connected -> AppBarColors(
+        ConnectionStatus.CONNECTED -> AppBarColors(
             background = Brush.verticalGradient(appbarConnectedGradient),
             foreground = Color.Black,
             statusBar = appbarConnectedStatus,
             darkIcons = darkIcons
         )
 
-        ConnectionState.Connecting -> AppBarColors(
+        ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> AppBarColors(
             background = Brush.verticalGradient(appbarConnectingGradient),
             foreground = Color.Black,
             statusBar = appbarConnectingStatus,
             darkIcons = darkIcons
         )
 
-        ConnectionState.Default -> AppBarColors(
+        ConnectionStatus.DISCONNECTED -> AppBarColors(
             background = Brush.verticalGradient(
                 listOf(
                     scheme.surface,
@@ -359,13 +350,6 @@ private fun getAppBarColors(
             ),
             foreground = scheme.onSurface,
             statusBar = scheme.surface,
-            darkIcons = darkIcons
-        )
-
-        ConnectionState.Disconnected -> AppBarColors(
-            background = Brush.verticalGradient(appbarDisconnectedGradient),
-            foreground = Color.White,
-            statusBar = appbarDisconnectedStatus,
             darkIcons = darkIcons
         )
     }
@@ -379,12 +363,12 @@ fun PreviewDefaultState() {
         AppBar(
             state = AppBarState(
                 title = "Not Connected",
-                connectionState = ConnectionState.Default,
+                connectionState = ConnectionStatus.DISCONNECTED,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.ImageText,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Default)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -400,12 +384,12 @@ fun PreviewConnectingState() {
         AppBar(
             state = AppBarState(
                 title = "Connecting",
-                connectionState = ConnectionState.Connecting,
+                connectionState = ConnectionStatus.CONNECTING,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Connecting)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTING)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -421,12 +405,12 @@ fun PreviewConnectedState() {
         AppBar(
             state = AppBarState(
                 title = "Connected",
-                connectionState = ConnectionState.Connected,
+                connectionState = ConnectionStatus.CONNECTED,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Connected)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTED)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -445,12 +429,12 @@ fun PreviewDisconnectedState() {
         AppBar(
             state = AppBarState(
                 title = "Error",
-                connectionState = ConnectionState.Disconnected,
+                connectionState = ConnectionStatus.DISCONNECTED,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Disconnected)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -469,12 +453,12 @@ fun PreviewNavigationDefaultState() {
         AppBar(
             state = AppBarState(
                 title = "Title",
-                connectionState = ConnectionState.Default,
+                connectionState = ConnectionStatus.DISCONNECTED,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Default)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -493,12 +477,12 @@ fun PreviewNavigationConnectingState() {
         AppBar(
             state = AppBarState(
                 title = "Title",
-                connectionState = ConnectionState.Connecting,
+                connectionState = ConnectionStatus.CONNECTING,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Connecting)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTING)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -517,12 +501,12 @@ fun PreviewNavigationConnectedState() {
         AppBar(
             state = AppBarState(
                 title = "Title",
-                connectionState = ConnectionState.Connected,
+                connectionState = ConnectionStatus.CONNECTED,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Connected)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTED)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -541,12 +525,12 @@ fun PreviewNavigationDisconnectedState() {
         AppBar(
             state = AppBarState(
                 title = "Title",
-                connectionState = ConnectionState.Disconnected,
+                connectionState = ConnectionStatus.DISCONNECTED,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Disconnected)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -565,12 +549,12 @@ fun PreviewInAppBrowserDefaultState() {
         AppBar(
             state = AppBarState(
                 title = "Title",
-                connectionState = ConnectionState.Default,
+                connectionState = ConnectionStatus.DISCONNECTED,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Image,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Default)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -589,12 +573,12 @@ fun PreviewInAppBrowserConnectingState() {
         AppBar(
             state = AppBarState(
                 title = "Title",
-                connectionState = ConnectionState.Connecting,
+                connectionState = ConnectionStatus.CONNECTING,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Image,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Connecting)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTING)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}
@@ -613,12 +597,12 @@ fun PreviewInAppBrowserDisconnectedState() {
         AppBar(
             state = AppBarState(
                 title = "Title",
-                connectionState = ConnectionState.Disconnected,
+                connectionState = ConnectionStatus.DISCONNECTED,
                 colorScheme = LocalColors.current,
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Image,
-                darkIcons = shouldShowDarkIcons(ConnectionState.Disconnected)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
             ),
             onLeftButtonClick = {},
             onRightButtonClick = {}

@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.kape.splash"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":capabilities:notifications"))
 
     implementFeatureModule()
 }

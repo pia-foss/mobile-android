@@ -1,6 +1,7 @@
 import Dependencies.desugarJdkLibs
 import Dependencies.implementCoroutines
 import Dependencies.implementCrypto
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
@@ -10,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.kape.utils"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
@@ -30,4 +31,5 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
     implementCrypto()
     implementCoroutines()
+    implementVpnManager()
 }

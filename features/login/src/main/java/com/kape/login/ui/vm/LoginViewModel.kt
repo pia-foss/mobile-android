@@ -24,10 +24,10 @@ import org.koin.core.component.inject
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
     private val userLoggedInUseCase: GetUserLoggedInUseCase,
-    private val paymentProvider: PaymentProvider
+    private val paymentProvider: PaymentProvider,
+    private val router: Router
 ) : ViewModel(), KoinComponent {
 
-    private val router: Router by inject()
     private val _state = MutableStateFlow(IDLE)
     val loginState: StateFlow<LoginScreenState> = _state
 

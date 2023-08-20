@@ -18,11 +18,11 @@ class SideMenuViewModel(
     private val profileUseCase: GetProfileUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val versionCode: Int,
-    private val versionName: String
+    private val versionName: String,
+    private val router: Router
 ) :
     ViewModel(), KoinComponent {
 
-    private val router: Router by inject()
     private val _state = MutableStateFlow(IDLE)
     val sideMenuState: StateFlow<SideMenuState> = _state
 

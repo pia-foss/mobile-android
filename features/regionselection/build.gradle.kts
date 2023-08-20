@@ -9,14 +9,25 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlinx-serialization")
     id("org.jlleitschuh.gradle.ktlint")
+    id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
 android {
     namespace = "com.kape.regionselection"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
+    }
+
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
     }
 
     compileOptions {
@@ -41,6 +52,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:router"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":features:appbar"))
 
     implementRegions()
 

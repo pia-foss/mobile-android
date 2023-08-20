@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.kape.signup"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21

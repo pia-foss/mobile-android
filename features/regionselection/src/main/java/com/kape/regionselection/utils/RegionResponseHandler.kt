@@ -21,7 +21,7 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
         val regionEndpoints =
             mutableMapOf<Server.ServerGroup, List<Server.ServerEndpointDetails>>()
 
-        val mappedEndpoints = mutableListOf<Server.ServerEndpointDetails>()
+        var mappedEndpoints = mutableListOf<Server.ServerEndpointDetails>()
         for (wireguardEndpoint in wireguardEndpoints) {
             // Application does not support the user option to choose wg ports and
             // expect the format `endpoint:port`, as it is not aware of wg ports.
@@ -34,7 +34,7 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
         }
         regionEndpoints[Server.ServerGroup.WIREGUARD] = mappedEndpoints
 
-        mappedEndpoints.clear()
+        mappedEndpoints = mutableListOf()
         for (ovpnTcpEndpoint in openVpnTcpEndpoints) {
             mappedEndpoints.add(
                 Server.ServerEndpointDetails(
@@ -45,7 +45,7 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
         }
         regionEndpoints[Server.ServerGroup.OPENVPN_TCP] = mappedEndpoints
 
-        mappedEndpoints.clear()
+        mappedEndpoints = mutableListOf()
         for (ovpnUdpEndpoint in openVpnUdpEndpoints) {
             mappedEndpoints.add(
                 Server.ServerEndpointDetails(
@@ -56,7 +56,7 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
         }
         regionEndpoints[Server.ServerGroup.OPENVPN_UDP] = mappedEndpoints
 
-        mappedEndpoints.clear()
+        mappedEndpoints = mutableListOf()
         for (metaEndpoint in metaEndpoints) {
             mappedEndpoints.add(
                 Server.ServerEndpointDetails(

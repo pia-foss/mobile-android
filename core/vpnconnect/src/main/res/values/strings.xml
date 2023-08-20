@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="connected_to_format">Connected to %s</string>
+    <string name="connecting">Connecting&#8230;</string>
+    <string name="reconnecting">Reconnecting&#8230;</string>
+</resources>

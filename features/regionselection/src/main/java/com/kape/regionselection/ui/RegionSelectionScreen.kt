@@ -11,6 +11,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
@@ -35,6 +36,8 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.core.os.ConfigurationCompat
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.kape.appbar.view.NavigationAppBar
+import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.regionselection.R
 import com.kape.regionselection.ui.vm.RegionSelectionViewModel
 import com.kape.regionselection.utils.IDLE
@@ -48,6 +51,9 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun RegionSelectionScreen() {
     val viewModel: RegionSelectionViewModel = koinViewModel()
+    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
+        appBarText(stringResource(id = R.string.region_selection_title))
+    }
     val state by remember(viewModel) { viewModel.state }.collectAsState()
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
     val searchTextState = remember { mutableStateOf(TextFieldValue("")) }
@@ -58,7 +64,9 @@ fun RegionSelectionScreen() {
         }
     }
     Column {
-        // TODO: Iva! Add AppBar
+        NavigationAppBar(
+            viewModel = appBarViewModel,
+            onLeftButtonClick = { viewModel.navigateBack() })
 
         when (state) {
             IDLE -> {
@@ -121,58 +129,58 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
     AlertDialog(onDismissRequest = {
         viewModel.hideSortingOptions()
     }, title = {
-            Text(text = stringResource(id = R.string.sort_regions_title), fontSize = FontSize.Title)
-        }, text = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                val options = stringArrayResource(id = R.array.sorting_options)
-                options.forEach {
-                    Row(
-                        verticalAlignment = CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (options.indexOf(it) == sortBySelectedOption.value.index),
-                                onClick = {
-                                    sortBySelectedOption.value =
-                                        viewModel.getSortingOption(options.indexOf(it))
-                                },
-                                role = Role.RadioButton
-                            )
-                            .padding(vertical = Space.MINI)
-                    ) {
-                        RadioButton(
+        Text(text = stringResource(id = R.string.sort_regions_title), fontSize = FontSize.Title)
+    }, text = {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            val options = stringArrayResource(id = R.array.sorting_options)
+            options.forEach {
+                Row(
+                    verticalAlignment = CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectable(
                             selected = (options.indexOf(it) == sortBySelectedOption.value.index),
-                            onClick = null,
-                            colors = RadioButtonDefaults.colors(selectedColor = LocalColors.current.primary),
-                            modifier = Modifier
-                                .padding(end = Space.SMALL)
-                                .align(CenterVertically)
+                            onClick = {
+                                sortBySelectedOption.value =
+                                    viewModel.getSortingOption(options.indexOf(it))
+                            },
+                            role = Role.RadioButton
                         )
-                        Text(
-                            text = it,
-                            modifier = Modifier
-                                .align(CenterVertically)
-                        )
-                    }
+                        .padding(vertical = Space.MINI)
+                ) {
+                    RadioButton(
+                        selected = (options.indexOf(it) == sortBySelectedOption.value.index),
+                        onClick = null,
+                        colors = RadioButtonDefaults.colors(selectedColor = LocalColors.current.primary),
+                        modifier = Modifier
+                            .padding(end = Space.SMALL)
+                            .align(CenterVertically)
+                    )
+                    Text(
+                        text = it,
+                        modifier = Modifier
+                            .align(CenterVertically)
+                    )
                 }
             }
-        }, confirmButton = {
-            TextButton(onClick = {
-                viewModel.sortBy(sortBySelectedOption.value)
-            }) {
-                Text(
-                    text = stringResource(id = R.string.ok),
-                    fontSize = FontSize.Normal,
-                    color = LocalColors.current.primary
-                )
-            }
-        }, dismissButton = {
-            TextButton(onClick = { viewModel.hideSortingOptions() }) {
-                Text(
-                    text = stringResource(id = R.string.cancel).toUpperCase(Locale.current),
-                    fontSize = FontSize.Normal,
-                    color = LocalColors.current.primary
-                )
-            }
-        })
+        }
+    }, confirmButton = {
+        TextButton(onClick = {
+            viewModel.sortBy(sortBySelectedOption.value)
+        }) {
+            Text(
+                text = stringResource(id = R.string.ok),
+                fontSize = FontSize.Normal,
+                color = LocalColors.current.primary
+            )
+        }
+    }, dismissButton = {
+        TextButton(onClick = { viewModel.hideSortingOptions() }) {
+            Text(
+                text = stringResource(id = R.string.cancel).toUpperCase(Locale.current),
+                fontSize = FontSize.Normal,
+                color = LocalColors.current.primary
+            )
+        }
+    })
 }

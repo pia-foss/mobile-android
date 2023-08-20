@@ -1,17 +1,17 @@
 import Dependencies.desugarJdkLibs
-import Dependencies.implementAccount
 import Dependencies.implementFeatureModule
+import Dependencies.implementSerialization
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
 android {
     namespace = "com.kape.connection"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
@@ -52,10 +52,10 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":capabilities:ui"))
-    implementAccount()
+    implementation(project(":capabilities:notifications"))
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
-    implementation(project(":core:vpn:vpnmanager"))
+    implementation(project(":core:vpnconnect"))
     implementation(project(":core:utils"))
     implementation(project(":features:appbar"))
     implementation(project(":features:settings"))
@@ -63,4 +63,6 @@ dependencies {
     implementation(project(":features:regionselection"))
 
     implementFeatureModule()
+    implementVpnManager()
+    implementSerialization()
 }

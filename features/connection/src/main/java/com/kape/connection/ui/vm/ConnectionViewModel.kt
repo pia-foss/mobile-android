@@ -1,7 +1,10 @@
 package com.kape.connection.ui.vm
 
+import android.app.Notification
+import android.app.PendingIntent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.connection.ui.tiles.MAX_SERVERS
 import com.kape.connection.utils.ConnectionPrefs
 import com.kape.connection.utils.ConnectionScreenState
@@ -17,6 +20,7 @@ import com.kape.router.Router
 import com.kape.utils.server.Server
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -27,6 +31,8 @@ import java.time.format.DateTimeFormatter
 class ConnectionViewModel(
     private val regionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
+    private val connectionUseCase: ConnectionUseCase,
+    private val router: Router,
     private val prefs: ConnectionPrefs
 ) : ViewModel(), KoinComponent {
 
@@ -41,8 +47,6 @@ class ConnectionViewModel(
 
     private val _state = MutableStateFlow(IDLE)
     val state: StateFlow<ConnectionScreenState> = _state
-
-    private val router: Router by inject()
 
     private var availableServers = mutableListOf<Server>()
     private var selectedServer: Server? = null
@@ -87,6 +91,7 @@ class ConnectionViewModel(
                     formatter.format(end)
                 )
             }
+
             SNOOZE_MEDIUM_MS -> {
                 val end = now.plusMinutes(fifteenMinuteLong)
                 snoozeState = SnoozeState(
@@ -94,6 +99,7 @@ class ConnectionViewModel(
                     formatter.format(end)
                 )
             }
+
             SNOOZE_LONG_MS -> {
                 val end = now.plusHours(oneHourLong)
                 snoozeState = SnoozeState(
@@ -101,6 +107,7 @@ class ConnectionViewModel(
                     formatter.format(end)
                 )
             }
+
             else -> {
                 snoozeState = SNOOZE_STATE_DEFAULT
             }
@@ -172,5 +179,29 @@ class ConnectionViewModel(
 
     fun showRegionSelection() {
         router.handleFlow(EnterFlow.RegionSelection)
+    }
+
+    fun onConnectionButtonClicked(notification: Notification, pendingIntent: PendingIntent) {
+        if (connectionUseCase.isConnected()) {
+            disconnect()
+        } else {
+            connect(notification, pendingIntent)
+        }
+    }
+
+    private fun connect(notification: Notification, pendingIntent: PendingIntent) {
+        viewModelScope.launch {
+            selectedServer?.let {
+                connectionUseCase.startConnection(
+                    it,
+                    pendingIntent,
+                    notification
+                ).collect()
+            }
+        }
+    }
+
+    private fun disconnect() = viewModelScope.launch {
+        connectionUseCase.stopConnection().collect()
     }
 }

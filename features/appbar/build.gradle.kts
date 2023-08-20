@@ -1,6 +1,7 @@
 import Dependencies.implementCompose
 import Dependencies.implementKoin
 import Dependencies.implementViewModel
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
@@ -10,10 +11,20 @@ plugins {
 
 android {
     namespace = "com.kape.appbar"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
+    }
+
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
     }
 
     compileOptions {
@@ -33,7 +44,9 @@ android {
 
 dependencies {
     implementation(project(":capabilities:ui"))
+    implementation(project(":core:vpnconnect"))
     implementCompose()
     implementViewModel()
     implementKoin()
+    implementVpnManager()
 }
