@@ -46,9 +46,9 @@ internal class SubscriptionDataSourceImplTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, paymentsModule)
+            modules(appModule, paymentsModule(appModule))
         }
-        source = SubscriptionDataSourceImpl(prefs)
+        source = SubscriptionDataSourceImpl(prefs, api)
     }
 
     @AfterEach
