@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class ConnectionDataSourceImpl : ConnectionDataSource, KoinComponent {
-
-    private val connectionApi: VPNManagerAPI by inject()
-    private val accountApi: AndroidAccountAPI by inject()
+class ConnectionDataSourceImpl(
+    private val connectionApi: VPNManagerAPI,
+    private val accountApi: AndroidAccountAPI
+) : ConnectionDataSource, KoinComponent {
 
     override fun startConnection(
         clientConfiguration: ClientConfiguration,

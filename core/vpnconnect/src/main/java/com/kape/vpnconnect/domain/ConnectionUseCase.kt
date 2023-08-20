@@ -15,22 +15,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : KoinComponent {
-
-    private val certificate: String by inject()
-    private val connectionManager: ConnectionManager by inject()
-
-    private val _serverName = MutableStateFlow("")
-    val serverName: StateFlow<String> = _serverName
+class ConnectionUseCase(
+    private val connectionSource: ConnectionDataSource,
+    private val certificate: String,
+    private val connectionManager: ConnectionManager
+) : KoinComponent {
 
     fun startConnection(
         server: Server,
         configureIntent: PendingIntent,
         notification: Notification,
     ): Flow<Boolean> = flow {
-        _serverName.value = server.name
+        connectionManager.setConnectedServerName(server.name)
         val index = connectionSource.getVpnToken().indexOf(":")
         var transport = "udp"
         val serverGroup = when (transport) {
@@ -107,7 +104,7 @@ class ConnectionUseCase(private val connectionSource: ConnectionDataSource) : Ko
 
     fun stopConnection(): Flow<Boolean> = flow {
         connectionSource.stopConnection().collect {
-            _serverName.value = ""
+            connectionManager.setConnectedServerName("")
             emit(it)
         }
     }

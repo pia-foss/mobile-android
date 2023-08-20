@@ -31,7 +31,7 @@ class App : Application() {
         modules(
             mutableListOf<Module>().apply {
                 add(appModule)
-                add(vpnConnectModule)
+                add(vpnConnectModule(appModule))
                 add(appBarModule)
                 add(notificationModule)
                 add(paymentsModule(appModule))
