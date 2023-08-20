@@ -15,7 +15,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class SignupDataSourceImplTest {
 
     private val api: AndroidAccountAPI = mockk(relaxed = true)
@@ -30,9 +29,9 @@ internal class SignupDataSourceImplTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, signupModule)
+            modules(appModule, signupModule(appModule))
         }
-        source = SignupDataSourceImpl()
+        source = SignupDataSourceImpl(api)
     }
 
     @Test

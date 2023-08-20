@@ -20,7 +20,6 @@ import org.koin.test.KoinTest
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class SignupUseCaseTest : KoinTest {
 
     private val signupDataSource: SignupDataSource = mockk()

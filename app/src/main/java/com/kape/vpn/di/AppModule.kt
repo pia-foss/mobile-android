@@ -39,7 +39,6 @@ val appModule = module {
     single { provideKpiApi(get()) }
     single { provideConfigurationIntent(get()) }
     single { provideVpnManagerApi(get(), get()) }
-    single {  }
     single { Router() }
 }
 

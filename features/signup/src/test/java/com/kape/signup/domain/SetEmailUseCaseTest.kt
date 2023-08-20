@@ -24,7 +24,6 @@ internal class SetEmailUseCaseTest {
         useCase = SetEmailUseCase(source)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("booleans")
     fun `test set email`(expected: Boolean) = runTest {
