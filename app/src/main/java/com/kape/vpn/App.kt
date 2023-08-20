@@ -39,7 +39,7 @@ class App : Application() {
                 add(permissionModule)
                 add(sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
                 add(profileModule)
-                add(regionModule)
+                add(regionModule(appModule))
                 add(splashModule)
                 add(signupModule)
                 add(kpiModule)

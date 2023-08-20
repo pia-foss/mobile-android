@@ -8,11 +8,16 @@ import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.regionselection.ui.vm.RegionSelectionViewModel
 import com.kape.regionselection.utils.RegionPrefs
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.Module
 import org.koin.dsl.module
 
-val regionModule = module {
+fun regionModule(appModule: Module) = module {
+    includes(appModule, localRegionModule)
+}
+
+val localRegionModule = module {
     single { RegionPrefs(get()) }
-    single<RegionDataSource> { RegionDataSourceImpl() }
+    single<RegionDataSource> { RegionDataSourceImpl(get()) }
     single { RegionRepository(get()) }
     single { GetRegionsUseCase(get(), get()) }
     single { UpdateLatencyUseCase(get()) }
