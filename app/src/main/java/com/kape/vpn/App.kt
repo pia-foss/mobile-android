@@ -35,7 +35,7 @@ class App : Application() {
                 add(appBarModule)
                 add(notificationModule)
                 add(paymentsModule)
-                add(loginModule)
+                add(loginModule(appModule))
                 add(permissionModule)
                 add(sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
                 add(profileModule)

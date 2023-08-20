@@ -12,9 +12,8 @@ import org.koin.core.component.inject
 
 private const val STORE = "google_play"
 
-class AuthenticationDataSourceImpl : AuthenticationDataSource, KoinComponent {
-
-    private val api: AndroidAccountAPI by inject()
+class AuthenticationDataSourceImpl(private val api: AndroidAccountAPI) : AuthenticationDataSource,
+    KoinComponent {
 
     override fun isUserLoggedIn(): Boolean {
         return !api.apiToken().isNullOrEmpty() && !api.vpnToken().isNullOrEmpty()
