@@ -3,9 +3,14 @@ package com.kape.shareevents.di
 import com.kape.shareevents.data.KpiDataSourceImpl
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.shareevents.utils.KpiPrefs
+import org.koin.core.module.Module
 import org.koin.dsl.module
 
-val kpiModule = module {
+fun kpiModule(appModule: Module) = module {
+    includes(appModule, localKpiModule)
+}
+
+private val localKpiModule = module {
     single { KpiPrefs(get()) }
-    single<KpiDataSource> { KpiDataSourceImpl(get(), get()) }
+    single<KpiDataSource> { KpiDataSourceImpl(get(), get(), get()) }
 }

@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class GetSubscriptionsUseCaseTest {
 
     private val source: SubscriptionDataSource = mockk(relaxed = true)

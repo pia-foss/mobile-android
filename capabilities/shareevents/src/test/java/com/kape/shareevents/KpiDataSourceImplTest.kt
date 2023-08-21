@@ -21,7 +21,6 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class KpiDataSourceImplTest {
 
     private val api: KPIAPI = mockk(relaxed = true)
@@ -38,9 +37,9 @@ internal class KpiDataSourceImplTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, kpiModule)
+            modules(appModule, kpiModule(appModule))
         }
-        source = KpiDataSourceImpl(prefs, userAgent)
+        source = KpiDataSourceImpl(prefs, userAgent, api)
     }
 
     @Test

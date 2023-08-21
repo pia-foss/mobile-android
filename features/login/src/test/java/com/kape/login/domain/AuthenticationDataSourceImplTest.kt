@@ -36,9 +36,9 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, loginModule)
+            modules(appModule, loginModule(appModule))
         }
-        source = AuthenticationDataSourceImpl()
+        source = AuthenticationDataSourceImpl(api)
     }
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")

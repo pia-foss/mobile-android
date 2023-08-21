@@ -11,11 +11,16 @@ import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.ConsentPrefs
 import com.kape.signup.utils.PriceFormatter
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.Module
 import org.koin.dsl.module
 
-val signupModule = module {
-    single<SignupDataSource> { SignupDataSourceImpl() }
-    single<EmailDataSource> { EmailDataSourceImpl() }
+fun signupModule(appModule: Module) = module {
+    includes(appModule, localSignupModule)
+}
+
+private val localSignupModule = module {
+    single<SignupDataSource> { SignupDataSourceImpl(get()) }
+    single<EmailDataSource> { EmailDataSourceImpl(get()) }
     single { SignupUseCase(get(), get(), get(), get()) }
     single { SetEmailUseCase(get()) }
     single { PriceFormatter(get()) }

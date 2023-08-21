@@ -10,9 +10,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class RegionDataSourceImpl : RegionDataSource, KoinComponent {
-
-    private val api: RegionsAPI by inject()
+class RegionDataSourceImpl(private val api: RegionsAPI) : RegionDataSource, KoinComponent {
 
     override fun fetchRegions(locale: String): Flow<RegionsResponse?> = callbackFlow {
         api.fetchRegions(locale) { response, error ->

@@ -16,7 +16,6 @@ import org.koin.dsl.module
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class EmailDataSourceImplTest {
 
     private val api: AndroidAccountAPI = mockk(relaxed = true)
@@ -31,9 +30,9 @@ internal class EmailDataSourceImplTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, signupModule)
+            modules(appModule, signupModule(appModule))
         }
-        source = EmailDataSourceImpl()
+        source = EmailDataSourceImpl(api)
     }
 
     @Test

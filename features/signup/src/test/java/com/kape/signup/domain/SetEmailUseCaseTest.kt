@@ -3,7 +3,6 @@ package com.kape.signup.domain
 import app.cash.turbine.test
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -24,7 +23,6 @@ internal class SetEmailUseCaseTest {
         useCase = SetEmailUseCase(source)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("booleans")
     fun `test set email`(expected: Boolean) = runTest {

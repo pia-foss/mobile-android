@@ -37,9 +37,9 @@ internal class ConnectionDataSourceImplTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, vpnConnectModule)
+            modules(appModule, vpnConnectModule(appModule))
         }
-        source = ConnectionDataSourceImpl()
+        source = ConnectionDataSourceImpl(connectionApi, authenticationApi)
     }
 
     @Test

@@ -40,9 +40,9 @@ internal class RegionDataSourceImplTest : KoinTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, regionModule)
+            modules(appModule, regionModule(appModule))
         }
-        source = RegionDataSourceImpl()
+        source = RegionDataSourceImpl(api)
     }
 
     @AfterEach

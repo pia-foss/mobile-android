@@ -4,11 +4,10 @@ import app.cash.turbine.test
 import com.kape.login.domain.LoginUseCase
 import com.kape.payments.data.models.PurchaseData
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
-import com.kape.signup.models.Credentials
+import com.kape.signup.data.models.Credentials
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -19,7 +18,6 @@ import org.koin.test.KoinTest
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class SignupUseCaseTest : KoinTest {
 
     private val signupDataSource: SignupDataSource = mockk()

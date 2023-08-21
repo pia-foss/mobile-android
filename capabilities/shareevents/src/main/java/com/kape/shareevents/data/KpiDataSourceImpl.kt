@@ -14,9 +14,11 @@ import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class KpiDataSourceImpl(private val prefs: KpiPrefs, private val userAgent: String) : KpiDataSource, KoinComponent {
-
-    private val api: KPIAPI by inject()
+class KpiDataSourceImpl(
+    private val prefs: KpiPrefs,
+    private val userAgent: String,
+    private val api: KPIAPI
+) : KpiDataSource, KoinComponent {
 
     private var connectionInitiatedTime: Long = 0
     private var connectionEstablishedTime: Long = 0
@@ -31,7 +33,10 @@ class KpiDataSourceImpl(private val prefs: KpiPrefs, private val userAgent: Stri
         }
     }
 
-    override fun submit(connectionEvent: KpiConnectionEvent, connectionSource: KpiConnectionSource) {
+    override fun submit(
+        connectionEvent: KpiConnectionEvent,
+        connectionSource: KpiConnectionSource
+    ) {
         val event =
             KPIClientEvent(
                 eventName = connectionEvent.value,

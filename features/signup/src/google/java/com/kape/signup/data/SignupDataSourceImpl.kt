@@ -12,9 +12,7 @@ import org.koin.core.component.inject
 
 private const val STORE = "google_play"
 
-class SignupDataSourceImpl : SignupDataSource, KoinComponent {
-
-    private val api: AndroidAccountAPI by inject()
+class SignupDataSourceImpl(private val api: AndroidAccountAPI) : SignupDataSource, KoinComponent {
 
     override fun signup(vararg data: String): Flow<Credentials?> = callbackFlow {
         val receipt = AndroidSignupInformation.Receipt(data[0], data[1], data[2])
