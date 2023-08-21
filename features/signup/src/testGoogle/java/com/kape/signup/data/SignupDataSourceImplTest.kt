@@ -7,7 +7,6 @@ import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.SignUpInformation
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
