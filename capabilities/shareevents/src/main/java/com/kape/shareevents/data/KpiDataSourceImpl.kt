@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class KpiDataSourceImpl(
     private val prefs: KpiPrefs,

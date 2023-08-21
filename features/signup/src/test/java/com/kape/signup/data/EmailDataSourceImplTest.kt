@@ -6,7 +6,6 @@ import com.kape.signup.domain.EmailDataSource
 import com.privateinternetaccess.account.AndroidAccountAPI
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

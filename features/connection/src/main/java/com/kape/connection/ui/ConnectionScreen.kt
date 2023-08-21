@@ -77,7 +77,8 @@ fun ConnectionScreen() {
             Spacer(modifier = Modifier.height(Space.NORMAL))
             ConnectionButton(connectionState) {
                 viewModel.onConnectionButtonClicked(
-                    getNotification(context), PendingIntent.getActivity(
+                    getNotification(context),
+                    PendingIntent.getActivity(
                         context,
                         123,
                         intent,

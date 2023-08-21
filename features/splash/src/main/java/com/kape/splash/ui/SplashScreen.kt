@@ -19,7 +19,6 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) {
-
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {

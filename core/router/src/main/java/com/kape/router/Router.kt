@@ -29,6 +29,7 @@ class Router {
             EnterFlow.TermsOfService -> _navigation.value = WebContent.Terms
             EnterFlow.Survey -> _navigation.value = WebContent.Survey
             EnterFlow.Settings -> _navigation.value = Settings.Main
+            EnterFlow.GeneralSettings -> _navigation.value = Settings.General
         }
     }
 
@@ -42,6 +43,7 @@ class Router {
             ExitFlow.Profile -> TODO()
             ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.VpnPermission)
             ExitFlow.Settings -> handleEnterFlow(EnterFlow.Connection)
+            ExitFlow.GeneralSettings -> handleEnterFlow(EnterFlow.Settings)
         }
     }
 

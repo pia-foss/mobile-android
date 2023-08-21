@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
-import androidx.annotation.RequiresApi
 import org.koin.core.component.KoinComponent
 
 class NotificationChannelManager(

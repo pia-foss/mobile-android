@@ -10,8 +10,6 @@ import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
@@ -25,7 +23,7 @@ class ConnectionUseCase(
     fun startConnection(
         server: Server,
         configureIntent: PendingIntent,
-        notification: Notification,
+        notification: Notification
     ): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name)
         val index = connectionSource.getVpnToken().indexOf(":")

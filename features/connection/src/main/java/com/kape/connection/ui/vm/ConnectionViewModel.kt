@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.PendingIntent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.connection.ui.tiles.MAX_SERVERS
 import com.kape.connection.utils.ConnectionPrefs
 import com.kape.connection.utils.ConnectionScreenState
@@ -18,12 +17,12 @@ import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Router
 import com.kape.utils.server.Server
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 

@@ -33,6 +33,7 @@ object Subscribe {
 
 object Settings {
     const val Main = "settings-screen"
+    const val General = "settings-general-screen"
 }
 
 object WebContent {

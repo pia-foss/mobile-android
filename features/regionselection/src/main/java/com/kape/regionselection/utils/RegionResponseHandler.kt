@@ -28,7 +28,7 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
             mappedEndpoints.add(
                 Server.ServerEndpointDetails(
                     "${wireguardEndpoint.ip}:${wireguardEndpoint.services.first().ports.first()}",
-                    wireguardEndpoint.cn,
+                    wireguardEndpoint.cn
                 )
             )
         }
@@ -39,7 +39,7 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
             mappedEndpoints.add(
                 Server.ServerEndpointDetails(
                     ovpnTcpEndpoint.ip,
-                    ovpnTcpEndpoint.cn,
+                    ovpnTcpEndpoint.cn
                 )
             )
         }
@@ -50,7 +50,7 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
             mappedEndpoints.add(
                 Server.ServerEndpointDetails(
                     ovpnUdpEndpoint.ip,
-                    ovpnUdpEndpoint.cn,
+                    ovpnUdpEndpoint.cn
                 )
             )
         }
@@ -61,7 +61,7 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
             mappedEndpoints.add(
                 Server.ServerEndpointDetails(
                     metaEndpoint.ip,
-                    metaEndpoint.cn,
+                    metaEndpoint.cn
                 )
             )
         }
