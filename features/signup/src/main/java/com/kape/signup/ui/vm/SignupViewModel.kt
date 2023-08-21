@@ -89,8 +89,8 @@ class SignupViewModel(
                                         formatter.formatYearlyPlan(formattedPrice)
                                         formatter.formatYearlyPerMonth(formattedPrice)
                                     } ?: run {
-                                        formatter.formatYearlyPlan(yearlyPlan.price.toString())
-                                        formatter.formatYearlyPerMonth(yearlyPlan.price.toString())
+                                        formatter.formatYearlyPlan(yearlyPlan.price)
+                                        formatter.formatYearlyPerMonth(yearlyPlan.price)
                                     }
 
                                 )
@@ -109,7 +109,7 @@ class SignupViewModel(
                                 mainPrice = monthlyPlan.formattedPrice?.let { formattedPrice ->
                                     formatter.formatMonthlyPlan(formattedPrice)
                                 } ?: run {
-                                    formatter.formatMonthlyPlan(monthlyPlan.price.toString())
+                                    formatter.formatMonthlyPlan(monthlyPlan.price)
                                 }
                             )
                             data = SubscriptionData(mutableStateOf(yearly), yearly, monthly)
