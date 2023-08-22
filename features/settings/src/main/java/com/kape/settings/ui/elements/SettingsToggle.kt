@@ -1,4 +1,4 @@
-package com.kape.settings.ui
+package com.kape.settings.ui.elements
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column

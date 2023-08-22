@@ -37,4 +37,8 @@ class RegionRepository(private val source: RegionDataSource) {
             }
         }
     }
+
+    fun getUdpPorts() = serverInfo.udpPorts ?: emptyList()
+
+    fun getTcpPorts() = serverInfo.tcpPorts ?: emptyList()
 }

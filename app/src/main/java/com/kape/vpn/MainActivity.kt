@@ -21,8 +21,9 @@ import com.kape.payments.ui.PaymentProvider
 import com.kape.profile.ui.ProfileScreen
 import com.kape.regionselection.ui.RegionSelectionScreen
 import com.kape.router.*
-import com.kape.settings.ui.GeneralSettingsScreen
-import com.kape.settings.ui.SettingsScreen
+import com.kape.settings.ui.screens.GeneralSettingsScreen
+import com.kape.settings.ui.screens.ProtocolSettingsScreen
+import com.kape.settings.ui.screens.SettingsScreen
 import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
 import com.kape.ui.elements.WebViewScreen
@@ -109,6 +110,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Settings.General) {
                                 GeneralSettingsScreen()
+                            }
+                            composable(Settings.Protocols) {
+                                ProtocolSettingsScreen()
                             }
                         }
                     }

@@ -1,4 +1,4 @@
-package com.kape.settings.ui
+package com.kape.settings.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -12,6 +12,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kape.appbar.view.NavigationAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
+import com.kape.settings.ui.elements.SettingsItem
+import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -48,9 +50,10 @@ fun SettingsScreen() {
             SettingsItem(
                 iconId = R.drawable.ic_setting_protocols,
                 titleId = R.string.protocols,
-                // TODO: remove hardcoded protocol
-                subtitleId = R.string.open_vpn,
-                onClick = {},
+                subtitle = viewModel.getSelectedProtocol().name,
+                onClick = {
+                    viewModel.navigateToProtocolSettings()
+                },
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
@@ -68,8 +71,7 @@ fun SettingsScreen() {
             SettingsItem(
                 iconId = R.drawable.ic_setting_automation,
                 titleId = R.string.automation,
-                // TODO: set subtitle id
-//                subtitleId = R.string.settings_pia_settings_item_automation_disabled,
+                subtitle = stringResource(id = R.string.disabled),
                 onClick = {},
             )
             Divider(color = LocalColors.current.outline)

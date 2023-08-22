@@ -1,4 +1,4 @@
-package com.kape.settings.ui
+package com.kape.settings.ui.elements
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -24,26 +24,28 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun SettingsItem(
-    @DrawableRes iconId: Int,
+    @DrawableRes iconId: Int? = null,
     @StringRes titleId: Int,
-    @StringRes subtitleId: Int? = null,
-    onClick: () -> Unit,
+    subtitle: String? = null,
+    onClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier
             .height(56.dp)
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick ?: {})
             .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(
-            painter = painterResource(iconId),
-            contentDescription = stringResource(
-                id = R.string.icon,
-            ),
-            tint = Color.Unspecified,
-            modifier = Modifier.size(Square.ICON),
-        )
+        iconId?.let {
+            Icon(
+                painter = painterResource(iconId),
+                contentDescription = stringResource(
+                    id = R.string.icon,
+                ),
+                tint = Color.Unspecified,
+                modifier = Modifier.size(Square.ICON),
+            )
+        }
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -55,19 +57,21 @@ fun SettingsItem(
                 color = LocalColors.current.onSurface,
             )
 
-            subtitleId?.let {
+            subtitle?.let {
                 Text(
-                    text = stringResource(id = it),
+                    text = it,
                     fontSize = FontSize.Normal,
                     color = LocalColors.current.onSurfaceVariant,
                 )
             }
         }
-        Icon(
-            painter = painterResource(id = R.drawable.ic_arrow),
-            contentDescription = null,
-            tint = LocalColors.current.onSurface,
-            modifier = Modifier.size(8.dp),
-        )
+        onClick?.let {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow),
+                contentDescription = null,
+                tint = LocalColors.current.onSurface,
+                modifier = Modifier.size(8.dp),
+            )
+        }
     }
 }

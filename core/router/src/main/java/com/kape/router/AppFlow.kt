@@ -15,6 +15,7 @@ sealed class EnterFlow : AppFlow {
     data object Survey : EnterFlow()
     data object Settings : EnterFlow()
     data object GeneralSettings : EnterFlow()
+    data object ProtocolSettings : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -27,6 +28,7 @@ sealed class ExitFlow : AppFlow {
     data object Subscribe : ExitFlow()
     data object Settings : ExitFlow()
     data object GeneralSettings : ExitFlow()
+    data object ProtocolSettings : ExitFlow()
 }
 
 object Back : AppFlow

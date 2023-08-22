@@ -27,4 +27,16 @@
     <string name="connect_on_update_title">Connect on app update</string>
     <string name="connect_on_update_description">After the app is updated, the app will autoconnect to keep you protected.</string>
 
+    <string name="protocol_selection_title">Protocol Selection</string>
+    <string name="protocol_transport_title">Transport</string>
+    <string name="protocol_data_encryption_title">Data Encryption</string>
+    <string name="protocol_port_title">Port</string>
+    <string name="protocol_use_small_packets_title">Use Small Packets</string>
+    <string name="protocol_use_small_packets_description">Will slightly lower the IP packet size to improve compatibility with some routers and mobile networks.</string>
+    <string name="protocol_handshake_title">Handshake</string>
+    <string name="protocol_handshake_description">RSA4096</string>
+
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
 </resources>

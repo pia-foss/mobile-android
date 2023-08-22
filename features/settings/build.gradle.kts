@@ -1,10 +1,12 @@
 import Dependencies.desugarJdkLibs
 import Dependencies.implementFeatureModule
+import Dependencies.implementSerialization
 
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint")
+    id("kotlinx-serialization")
     id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
@@ -52,6 +54,8 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
+    implementation(project(":features:regionselection"))
 
     implementFeatureModule()
+    implementSerialization()
 }

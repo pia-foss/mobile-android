@@ -1,4 +1,4 @@
-package com.kape.settings.ui
+package com.kape.settings.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -11,6 +11,8 @@ import androidx.compose.ui.res.stringResource
 import com.kape.appbar.view.NavigationAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
+import com.kape.settings.ui.elements.SettingsToggle
+import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
