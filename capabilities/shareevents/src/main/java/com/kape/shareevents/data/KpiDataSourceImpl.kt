@@ -16,7 +16,7 @@ import org.koin.core.component.KoinComponent
 class KpiDataSourceImpl(
     private val prefs: KpiPrefs,
     private val userAgent: String,
-    private val api: KPIAPI
+    private val api: KPIAPI,
 ) : KpiDataSource, KoinComponent {
 
     private var connectionInitiatedTime: Long = 0
@@ -34,13 +34,13 @@ class KpiDataSourceImpl(
 
     override fun submit(
         connectionEvent: KpiConnectionEvent,
-        connectionSource: KpiConnectionSource
+        connectionSource: KpiConnectionSource,
     ) {
         val event =
             KPIClientEvent(
                 eventName = connectionEvent.value,
                 eventProperties = getEventProperties(connectionEvent, connectionSource),
-                eventInstant = Clock.System.now()
+                eventInstant = Clock.System.now(),
             )
         api.submit(event) {
             // TODO: handle error?
@@ -62,7 +62,7 @@ class KpiDataSourceImpl(
 
     private fun getEventProperties(
         connectionEvent: KpiConnectionEvent,
-        connectionSource: KpiConnectionSource
+        connectionSource: KpiConnectionSource,
     ): Map<String, String> {
         val timeToConnect =
             (connectionEstablishedTime - connectionInitiatedTime).toFloat() / 1000

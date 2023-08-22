@@ -33,7 +33,7 @@ fun ServerListItem(
     server: Server,
     isFavorite: MutableState<Boolean>,
     onClick: ((server: Server) -> Unit),
-    onFavoriteClick: ((serverName: String) -> Unit)
+    onFavoriteClick: ((serverName: String) -> Unit),
 ) {
     Row(
         modifier = Modifier
@@ -43,19 +43,19 @@ fun ServerListItem(
                 onClick(server)
             }
             .padding(horizontal = Space.NORMAL),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
             painter = painterResource(id = getFlagResource(LocalContext.current, server.iso)),
             contentDescription = stringResource(id = R.string.flag),
             modifier = Modifier
                 .width(Width.FLAG)
-                .height(Height.FLAG)
+                .height(Height.FLAG),
         )
         Text(
             text = server.name,
             fontSize = FontSize.Normal,
-            modifier = Modifier.padding(horizontal = Space.SMALL)
+            modifier = Modifier.padding(horizontal = Space.SMALL),
         )
 
         if (server.isGeo) {
@@ -65,7 +65,7 @@ fun ServerListItem(
                 modifier = Modifier
                     .padding(end = Space.SMALL)
                     .width(Width.SERVER_ICON)
-                    .height(Height.SERVER_ICON)
+                    .height(Height.SERVER_ICON),
             )
         }
 
@@ -76,7 +76,7 @@ fun ServerListItem(
                 modifier = Modifier
                     .padding(end = Space.SMALL)
                     .width(Width.SERVER_ICON)
-                    .height(Height.SERVER_ICON)
+                    .height(Height.SERVER_ICON),
             )
         }
 
@@ -89,7 +89,7 @@ fun ServerListItem(
                 modifier = Modifier
                     .padding(end = Space.SMALL)
                     .width(Width.SERVER_ICON)
-                    .height(Height.SERVER_ICON)
+                    .height(Height.SERVER_ICON),
             )
         }
 
@@ -103,19 +103,19 @@ fun ServerListItem(
             },
             fontSize = FontSize.Small,
             color = getLatencyTextColor(server.latency),
-            modifier = Modifier.padding(horizontal = Space.SMALL)
+            modifier = Modifier.padding(horizontal = Space.SMALL),
         )
 
         IconButton(onClick = {
             isFavorite.value = !isFavorite.value
             onFavoriteClick(server.name)
-        }) {
+        },) {
             Image(
                 painter = painterResource(id = if (isFavorite.value) R.drawable.ic_favorite_selected else R.drawable.ic_favorite_default),
                 contentDescription = stringResource(id = R.string.favorite),
                 modifier = Modifier
                     .width(Width.FAVOURITE)
-                    .height(Height.FAVOURITE)
+                    .height(Height.FAVOURITE),
             )
         }
     }

@@ -79,10 +79,10 @@ internal class GetRegionsUseCaseTest : KoinTest {
                         dedicatedIp = null,
                         dipToken = null,
                         latitude = null,
-                        longitude = null
-                    )
-                )
-            )
+                        longitude = null,
+                    ),
+                ),
+            ),
         )
     }
 }

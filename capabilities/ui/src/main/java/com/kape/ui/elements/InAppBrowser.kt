@@ -42,7 +42,7 @@ import kotlin.math.min
 private enum class WebViewLoadingState {
     UNINITIALIZED,
     LOADING,
-    IDLE
+    IDLE,
 }
 
 @Composable
@@ -76,7 +76,7 @@ fun WebViewComponent(properties: WebViewComponentProperties) {
                 if (restartWebView >= 0) {
                     --restartWebView
                 }
-            }
+            },
         )
     }
 
@@ -87,7 +87,7 @@ fun WebViewComponent(properties: WebViewComponentProperties) {
                 val webView = WebView(context)
                 webView.layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
+                    ViewGroup.LayoutParams.MATCH_PARENT,
                 )
 
                 val refreshLayout = SwipeRefreshLayout(context)
@@ -95,7 +95,7 @@ fun WebViewComponent(properties: WebViewComponentProperties) {
 
                 refreshLayout.layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
+                    ViewGroup.LayoutParams.MATCH_PARENT,
                 )
                 refreshLayout.addView(webView)
                 refreshLayout.setOnRefreshListener {
@@ -133,13 +133,13 @@ fun WebViewComponent(properties: WebViewComponentProperties) {
                 }
 
                 updateRefresh(refreshLayout = refreshLayout)
-            }
+            },
         )
     } else {
         Box(
             modifier = Modifier
                 .fillMaxSize(),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Text(
                 modifier = Modifier.padding(start = 24.dp, end = 24.dp),
@@ -147,15 +147,15 @@ fun WebViewComponent(properties: WebViewComponentProperties) {
                 max(
                     a = min(
                         a = properties.maxWebViewRestart - restartWebView,
-                        b = properties.maxWebViewRestart
+                        b = properties.maxWebViewRestart,
                     ),
-                    b = 0
+                    b = 0,
                 )
                 } times.",
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp,
-                color = Color.Black
+                color = Color.Black,
             )
         }
     }
@@ -167,7 +167,7 @@ fun WebViewComponent(properties: WebViewComponentProperties) {
 
 @Composable
 fun WebViewScreen(
-    initialUrl: Uri
+    initialUrl: Uri,
 ) {
     var screenTitle: String by remember { mutableStateOf("") }
 
@@ -181,8 +181,8 @@ fun WebViewScreen(
                         screenTitle = title
                     }
                 },
-                javaScriptEnabled = true
-            )
+                javaScriptEnabled = true,
+            ),
         )
     }
 }
@@ -195,7 +195,7 @@ fun WebViewScreenPrivacyPolicy() {
             scheme("https")
             authority("www.privateinternetaccess.com")
             path("privacy-policy")
-        }.build()
+        }.build(),
     )
 }
 
@@ -206,7 +206,7 @@ fun WebViewScreenHomePage() {
         initialUrl = Uri.Builder().apply {
             scheme("https")
             authority("www.privateinternetaccess.com")
-        }.build()
+        }.build(),
     )
 }
 
@@ -217,20 +217,20 @@ fun WebViewScreenSupport() {
         initialUrl = Uri.Builder().apply {
             scheme("https")
             authority("helpdesk.privateinternetaccess.com")
-        }.build()
+        }.build(),
     )
 }
 
 fun userAgentString(
     versionName: String,
-    versionCode: String
+    versionCode: String,
 ): String = "privateinternetaccess.com Android Client/$versionName($versionCode)"
 
 private class MyWebViewClient(
     private val properties: WebViewComponentProperties,
     private val backEnabled: (Boolean) -> Unit,
     private val onPageTitle: (String) -> Unit,
-    private val onRenderProcessGone: (Boolean) -> Unit
+    private val onRenderProcessGone: (Boolean) -> Unit,
 ) : WebViewClient() {
     var goBack: () -> Unit = {}
     var onPageStarted: () -> Unit = {}
@@ -254,10 +254,10 @@ private class MyWebViewClient(
 
     override fun shouldInterceptRequest(
         view: WebView,
-        request: WebResourceRequest
+        request: WebResourceRequest,
     ): WebResourceResponse? = when {
         properties.headers.isNotEmpty() && request.url == properties.url -> doRequestWithHeaders(
-            request.url
+            request.url,
         )
 
         else -> doRequestNormally()
@@ -286,7 +286,7 @@ private class MyWebViewClient(
                     .matches(pageTitle).not() -> pageTitle.trim()
 
                 else -> ""
-            }
+            },
         )
     }
 
@@ -320,7 +320,7 @@ private class MyWebViewClient(
                 connection.responseCode,
                 connection.responseMessage,
                 responseHeaders,
-                connection.inputStream
+                connection.inputStream,
             )
         } catch (t: Throwable) {
             return WebResourceResponse(null, null, 503, "unavailable", null, null)

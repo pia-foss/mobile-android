@@ -13,11 +13,11 @@ data class Server(
     val isAllowsPF: Boolean,
     val dipToken: String?,
     val dedicatedIp: String?,
-    val isDedicatedIp: Boolean = !dedicatedIp.isNullOrEmpty()
+    val isDedicatedIp: Boolean = !dedicatedIp.isNullOrEmpty(),
 ) {
     data class ServerEndpointDetails(
         val ip: String,
-        val cn: String
+        val cn: String,
     )
 
     enum class ServerGroup {
@@ -40,6 +40,6 @@ data class Server(
             override fun toString(): String {
                 return "meta"
             }
-        }
+        },
     }
 }

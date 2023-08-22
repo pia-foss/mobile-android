@@ -11,7 +11,7 @@ import org.koin.core.component.KoinComponent
 
 class SubscriptionDataSourceImpl(
     private val prefs: SubscriptionPrefs,
-    private val api: AndroidAccountAPI
+    private val api: AndroidAccountAPI,
 ) : SubscriptionDataSource, KoinComponent {
 
     override fun getAvailableSubscriptions(): Flow<List<Subscription>> = callbackFlow {

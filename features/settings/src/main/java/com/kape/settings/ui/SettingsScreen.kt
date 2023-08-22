@@ -29,20 +29,20 @@ fun SettingsScreen() {
                 viewModel = appBarViewModel,
                 onLeftButtonClick = {
                     viewModel.navigateToConnection()
-                }
+                },
             )
-        }
+        },
     ) {
         Column(
             modifier = Modifier
-                .padding(it)
+                .padding(it),
         ) {
             SettingsItem(
                 iconId = R.drawable.ic_setting_general,
                 titleId = R.string.general,
                 onClick = {
                     viewModel.navigateToGeneralSettings()
-                }
+                },
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
@@ -50,19 +50,19 @@ fun SettingsScreen() {
                 titleId = R.string.protocols,
                 // TODO: remove hardcoded protocol
                 subtitleId = R.string.open_vpn,
-                onClick = {}
+                onClick = {},
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
                 iconId = R.drawable.ic_setting_network,
                 titleId = R.string.networks,
-                onClick = {}
+                onClick = {},
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
                 iconId = R.drawable.ic_setting_privacy,
                 titleId = R.string.privacy,
-                onClick = {}
+                onClick = {},
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
@@ -70,19 +70,19 @@ fun SettingsScreen() {
                 titleId = R.string.automation,
                 // TODO: set subtitle id
 //                subtitleId = R.string.settings_pia_settings_item_automation_disabled,
-                onClick = {}
+                onClick = {},
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
                 iconId = R.drawable.ic_setting_obfuscation,
                 titleId = R.string.obfuscation,
-                onClick = {}
+                onClick = {},
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
                 iconId = R.drawable.ic_setting_help,
                 titleId = R.string.help,
-                onClick = {}
+                onClick = {},
             )
         }
     }

@@ -27,17 +27,17 @@ fun IpInformationTile(ip: String, vpnIp: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Space.NORMAL, vertical = Space.MEDIUM)
+            .padding(horizontal = Space.NORMAL, vertical = Space.MEDIUM),
     ) {
         Column(
             modifier = Modifier
                 .weight(0.5f)
-                .align(CenterVertically)
+                .align(CenterVertically),
         ) {
             Text(
                 text = stringResource(id = R.string.public_ip),
                 color = LocalColors.current.outlineVariant,
-                fontSize = FontSize.Small
+                fontSize = FontSize.Small,
             )
             Spacer(modifier = Modifier.height(Space.MINI))
             Text(text = ip, color = LocalColors.current.onSurface, fontSize = FontSize.Normal)
@@ -50,20 +50,20 @@ fun IpInformationTile(ip: String, vpnIp: String) {
                 modifier = Modifier
                     .width(Width.IP_ARROW)
                     .height(Height.IP_ARROW)
-                    .align(CenterVertically)
+                    .align(CenterVertically),
             )
             Spacer(modifier = Modifier.width(Space.MEDIUM))
             Column(modifier = Modifier.align(CenterVertically)) {
                 Text(
                     text = stringResource(id = R.string.vpn_ip),
                     color = LocalColors.current.outlineVariant,
-                    fontSize = FontSize.Small
+                    fontSize = FontSize.Small,
                 )
                 Spacer(modifier = Modifier.height(Space.MINI))
                 Text(
                     text = vpnIp,
                     color = LocalColors.current.onSurface,
-                    fontSize = FontSize.Normal
+                    fontSize = FontSize.Normal,
                 )
             }
         }

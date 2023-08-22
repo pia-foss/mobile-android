@@ -20,32 +20,32 @@ import com.kape.ui.utils.LocalColors
 fun UsageTile(state: UsageState) {
     ConnectionTile(labelId = R.string.usage) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(id = R.string.download),
                     fontSize = FontSize.Tiny,
-                    color = LocalColors.current.onSurface
+                    color = LocalColors.current.onSurface,
                 )
                 Spacer(modifier = Modifier.height(Space.MINI))
                 Text(
                     text = stringResource(id = R.string.usage_kb_to_format).format(state.download),
                     fontSize = FontSize.Normal,
-                    color = LocalColors.current.onSurface
+                    color = LocalColors.current.onSurface,
                 )
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(id = R.string.upload),
                     fontSize = FontSize.Tiny,
-                    color = LocalColors.current.onSurface
+                    color = LocalColors.current.onSurface,
                 )
                 Spacer(modifier = Modifier.height(Space.MINI))
                 Text(
                     text = stringResource(id = R.string.usage_kb_to_format).format(state.upload),
                     fontSize = FontSize.Normal,
-                    color = LocalColors.current.onSurface
+                    color = LocalColors.current.onSurface,
                 )
             }
         }

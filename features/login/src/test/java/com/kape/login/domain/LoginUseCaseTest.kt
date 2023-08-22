@@ -75,7 +75,7 @@ internal class LoginUseCaseTest : BaseTest() {
             Arguments.of(ApiResult.Error(ApiError.AuthFailed), LoginState.Failed),
             Arguments.of(ApiResult.Error(ApiError.AccountExpired), LoginState.Expired),
             Arguments.of(ApiResult.Error(ApiError.Throttled), LoginState.Throttled),
-            Arguments.of(ApiResult.Error(ApiError.Unknown), LoginState.Failed)
+            Arguments.of(ApiResult.Error(ApiError.Unknown), LoginState.Failed),
         )
     }
 }

@@ -45,7 +45,7 @@ internal class LogoutUseCaseTest : BaseTest() {
             Arguments.of(ApiResult.Error(ApiError.AuthFailed), false),
             Arguments.of(ApiResult.Error(ApiError.AccountExpired), false),
             Arguments.of(ApiResult.Error(ApiError.Throttled), false),
-            Arguments.of(ApiResult.Error(ApiError.Unknown), false)
+            Arguments.of(ApiResult.Error(ApiError.Unknown), false),
         )
     }
 }

@@ -27,14 +27,14 @@ class SettingsViewModel(private val prefs: SettingsPrefs, private val router: Ro
     }
 
     fun toggleLaunchOnBoot(enable: Boolean) {
-        prefs.enableLaunchOnStartup(enable)
+        prefs.setEnableLaunchOnStartup(enable)
     }
 
     fun toggleConnectOnStart(enable: Boolean) {
-        prefs.enableConnectOnLaunch(enable)
+        prefs.setEnableConnectOnLaunch(enable)
     }
 
     fun toggleConnectOnUpdate(enable: Boolean) {
-        prefs.enableConnectOnAppUpdate(enable)
+        prefs.setEnableConnectOnAppUpdate(enable)
     }
 }

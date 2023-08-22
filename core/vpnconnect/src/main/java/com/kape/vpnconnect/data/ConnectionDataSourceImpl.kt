@@ -12,12 +12,12 @@ import org.koin.core.component.KoinComponent
 
 class ConnectionDataSourceImpl(
     private val connectionApi: VPNManagerAPI,
-    private val accountApi: AndroidAccountAPI
+    private val accountApi: AndroidAccountAPI,
 ) : ConnectionDataSource, KoinComponent {
 
     override fun startConnection(
         clientConfiguration: ClientConfiguration,
-        listener: VPNManagerConnectionListener
+        listener: VPNManagerConnectionListener,
     ): Flow<Boolean> =
         callbackFlow {
             connectionApi.addConnectionListener(listener) {}

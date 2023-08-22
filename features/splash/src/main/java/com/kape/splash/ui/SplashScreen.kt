@@ -23,7 +23,7 @@ fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) {
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {
             viewModel.load()
-        }
+        },
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -32,7 +32,7 @@ fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) {
             contentDescription = "logo",
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(Space.HUGE)
+                .padding(Space.HUGE),
         )
     }
 

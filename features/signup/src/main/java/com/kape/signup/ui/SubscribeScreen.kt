@@ -55,7 +55,7 @@ fun SubscriptionScreen(viewModel: SignupViewModel, subscriptionData: Subscriptio
             enabled = true,
             onClick = {
                 viewModel.purchase(subscriptionData.selected.value.id)
-            }
+            },
         )
 
     val loginProperties =
@@ -64,14 +64,14 @@ fun SubscriptionScreen(viewModel: SignupViewModel, subscriptionData: Subscriptio
             enabled = true,
             onClick = {
                 viewModel.navigateToLogin()
-            }
+            },
         )
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             Image(
                 painter = painterResource(id = UiResources.bigAppLogo),
@@ -79,7 +79,7 @@ fun SubscriptionScreen(viewModel: SignupViewModel, subscriptionData: Subscriptio
                 modifier = Modifier
                     .height(Height.BIG_LOGO)
                     .fillMaxWidth()
-                    .padding(Space.NORMAL)
+                    .padding(Space.NORMAL),
             )
             Image(
                 painter = painterResource(id = R.drawable.ic_globe),
@@ -87,52 +87,52 @@ fun SubscriptionScreen(viewModel: SignupViewModel, subscriptionData: Subscriptio
                 modifier = Modifier
                     .padding(Space.NORMAL)
                     .fillMaxWidth()
-                    .size(Square.GLOBE)
+                    .size(Square.GLOBE),
             )
             Text(
                 text = stringResource(id = R.string.subscribe_screen_title),
                 fontSize = FontSize.Title,
                 modifier = Modifier
-                    .align(CenterHorizontally)
+                    .align(CenterHorizontally),
             )
             Text(
                 text = stringResource(id = R.string.subscribe_screen_description).format(
-                    subscriptionData.yearly.mainPrice
+                    subscriptionData.yearly.mainPrice,
                 ),
                 fontSize = FontSize.Normal,
                 modifier = Modifier
                     .align(CenterHorizontally)
                     .padding(horizontal = Space.BIG, vertical = Space.SMALL),
                 textAlign = TextAlign.Center,
-                color = LocalColors.current.outline
+                color = LocalColors.current.outline,
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             PriceRow(
                 state = subscriptionData.yearly,
                 subscriptionData.selected.value == subscriptionData.yearly,
-                subscriptionData.selected
+                subscriptionData.selected,
             )
             Spacer(modifier = Modifier.height(Space.SMALL))
             PriceRow(
                 state = subscriptionData.monthly,
                 subscriptionData.selected.value == subscriptionData.monthly,
-                subscriptionData.selected
+                subscriptionData.selected,
             )
             Spacer(modifier = Modifier.height(Space.MEDIUM))
             PrimaryButton(
                 modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
-                properties = subscribeProperties
+                properties = subscribeProperties,
             )
             SecondaryButton(
                 modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
-                properties = loginProperties
+                properties = loginProperties,
             )
             Spacer(modifier = Modifier.weight(1f))
             HtmlText(
                 textId = R.string.footer,
                 modifier = Modifier
                     .padding(Space.NORMAL)
-                    .align(CenterHorizontally)
+                    .align(CenterHorizontally),
             )
         }
     }
@@ -151,53 +151,53 @@ fun PriceRow(state: Plan, selected: Boolean, selectedState: MutableState<Plan>) 
         border = if (selected) {
             BorderStroke(
                 1.dp,
-                LocalColors.current.primary
+                LocalColors.current.primary,
             )
         } else {
             BorderStroke(1.dp, LocalColors.current.outlineVariant)
         },
         colors = CardDefaults.cardColors(
-            containerColor = if (selected) LocalColors.current.surface else Color.Transparent
-        )
+            containerColor = if (selected) LocalColors.current.surface else Color.Transparent,
+        ),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Space.NORMAL)
+                .padding(Space.NORMAL),
         ) {
             Icon(
                 painter = if (selected) {
                     painterResource(id = R.drawable.ic_selection_checked)
                 } else {
                     painterResource(
-                        id = R.drawable.ic_selection_default
+                        id = R.drawable.ic_selection_default,
                     )
                 },
                 contentDescription = stringResource(id = R.string.checkbox),
                 tint = Color.Unspecified,
                 modifier = Modifier
                     .size(Square.PLAN)
-                    .align(CenterVertically)
+                    .align(CenterVertically),
             )
             Spacer(modifier = Modifier.width(Space.NORMAL))
             Column(modifier = Modifier.align(CenterVertically)) {
                 Text(
                     text = state.period,
                     fontSize = FontSize.Normal,
-                    color = LocalColors.current.outlineVariant
+                    color = LocalColors.current.outlineVariant,
                 )
                 Spacer(modifier = Modifier.height(Space.MINI))
                 Text(
                     text = state.mainPrice,
                     fontSize = FontSize.Title,
-                    color = LocalColors.current.onSurface
+                    color = LocalColors.current.onSurface,
                 )
                 if (state.bestValue) {
                     Spacer(modifier = Modifier.height(Space.SMALL))
                     Card(
                         colors = CardDefaults.cardColors(
-                            containerColor = ConnectingOrange
-                        )
+                            containerColor = ConnectingOrange,
+                        ),
                     ) {
                         Text(
                             text = stringResource(id = R.string.best_value),
@@ -205,8 +205,8 @@ fun PriceRow(state: Plan, selected: Boolean, selectedState: MutableState<Plan>) 
                             color = Color.Black,
                             modifier = Modifier.padding(
                                 horizontal = Space.MINI,
-                                vertical = Space.SMALL_VERTICAL
-                            )
+                                vertical = Space.SMALL_VERTICAL,
+                            ),
                         )
                     }
                 }
@@ -218,7 +218,7 @@ fun PriceRow(state: Plan, selected: Boolean, selectedState: MutableState<Plan>) 
                     fontSize = FontSize.Normal,
                     color = LocalColors.current.outlineVariant,
                     modifier = Modifier
-                        .align(CenterVertically)
+                        .align(CenterVertically),
                 )
             }
         }

@@ -22,37 +22,37 @@ fun SettingsToggle(
     @StringRes titleId: Int,
     @StringRes subtitleId: Int? = null,
     enabled: Boolean,
-    toggle: (checked: Boolean) -> Unit
+    toggle: (checked: Boolean) -> Unit,
 ) {
     val isChecked = remember { mutableStateOf(enabled) }
     Row(
         modifier = Modifier
             .height(56.dp)
             .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
         ) {
             Text(
                 text = stringResource(id = titleId),
                 fontSize = FontSize.Normal,
-                color = LocalColors.current.onSurface
+                color = LocalColors.current.onSurface,
             )
 
             subtitleId?.let {
                 Text(
                     text = stringResource(id = it),
                     fontSize = FontSize.Normal,
-                    color = LocalColors.current.onSurfaceVariant
+                    color = LocalColors.current.onSurfaceVariant,
                 )
             }
         }
         Switch(checked = isChecked.value, onCheckedChange = {
             isChecked.value = it
             toggle(it)
-        })
+        },)
     }
 }

@@ -25,7 +25,7 @@ internal class GetSubscriptionsUseCaseTest {
     fun `getSubscriptions() - success`() = runTest {
         val expected = listOf(
             Subscription("id", false, "monthly", 3.99),
-            Subscription("id", false, "yearly", 49.99)
+            Subscription("id", false, "yearly", 49.99),
         )
         every { source.getAvailableSubscriptions() } returns flow {
             emit(expected)

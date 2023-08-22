@@ -67,7 +67,7 @@ val AppLightColorScheme = lightColorScheme(
     errorContainer = error50,
     onErrorContainer = error10,
     outline = grey70,
-    outlineVariant = grey40
+    outlineVariant = grey40,
 )
 
 val AppDarkColorScheme = darkColorScheme(
@@ -97,7 +97,7 @@ val AppDarkColorScheme = darkColorScheme(
     errorContainer = error50,
     onErrorContainer = error10,
     outline = grey40,
-    outlineVariant = grey70
+    outlineVariant = grey70,
 )
 
 object Latency {

@@ -38,11 +38,12 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                             PurchaseData(
                                 purchase.purchaseToken,
                                 purchase.products.first(),
-                                purchase.orderId
-                            )
+                                purchase.orderId,
+                            ),
                         )
                         purchaseState.value = PurchaseState.PurchaseSuccess
                     }
+
                     else -> purchaseState.value = PurchaseState.PurchaseFailed
                 }
             }
@@ -59,19 +60,21 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
             .enablePendingPurchases()
             .build()
 
-        billingClient.startConnection(object : BillingClientStateListener {
-            override fun onBillingSetupFinished(billingResult: BillingResult) {
-                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    purchaseState.value = PurchaseState.InitSuccess
-                } else {
+        billingClient.startConnection(
+            object : BillingClientStateListener {
+                override fun onBillingSetupFinished(billingResult: BillingResult) {
+                    if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                        purchaseState.value = PurchaseState.InitSuccess
+                    } else {
+                        purchaseState.value = PurchaseState.InitFailed
+                    }
+                }
+
+                override fun onBillingServiceDisconnected() {
                     purchaseState.value = PurchaseState.InitFailed
                 }
-            }
-
-            override fun onBillingServiceDisconnected() {
-                purchaseState.value = PurchaseState.InitFailed
-            }
-        })
+            },
+        )
     }
 
     override fun getMonthlySubscription(): Subscription = prefs.getSubscriptions().first {
@@ -88,15 +91,17 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                 .setProductList(createProductsListForQuery())
                 .build()
 
-        billingClient.queryProductDetailsAsync(queryProductDetailsParams) { billingResult,
-            productDetailsList ->
+        billingClient.queryProductDetailsAsync(queryProductDetailsParams) {
+                billingResult,
+                productDetailsList,
+            ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 val data = prefs.getSubscriptions()
                 for (item in productDetailsList) {
                     if (data.any { it.id == item.productId }) {
                         data.first { it.id == item.productId }.formattedPrice =
                             item.subscriptionOfferDetails?.getOrNull(0)?.pricingPhases?.pricingPhaseList?.get(
-                                0
+                                0,
                             )?.formattedPrice
                     }
                 }
@@ -135,7 +140,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
         val purchaseHistoryListener = object : PurchaseHistoryResponseListener {
             override fun onPurchaseHistoryResponse(
                 billingResponse: BillingResult,
-                purchases: MutableList<PurchaseHistoryRecord>?
+                purchases: MutableList<PurchaseHistoryRecord>?,
             ) {
                 if (billingResponse.responseCode != BillingClient.BillingResponseCode.OK) {
                     purchaseHistoryState.value = PurchaseHistoryState.PurchaseHistoryFailed
@@ -151,7 +156,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                         purchaseHistoryState.value =
                             PurchaseHistoryState.PurchaseHistorySuccess(
                                 p.purchaseToken,
-                                p.products[0]
+                                p.products[0],
                             )
                         break
                     }
@@ -168,7 +173,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                 QueryProductDetailsParams.Product.newBuilder()
                     .setProductId(product.id)
                     .setProductType(BillingClient.ProductType.SUBS)
-                    .build()
+                    .build(),
             )
         }
         return result
@@ -181,7 +186,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
             BillingFlowParams.ProductDetailsParams.newBuilder()
                 .setProductDetails(product)
                 .setOfferToken(offerToken)
-                .build()
+                .build(),
         )
         return result
     }

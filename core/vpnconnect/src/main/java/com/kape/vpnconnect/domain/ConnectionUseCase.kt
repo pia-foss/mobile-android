@@ -17,13 +17,13 @@ import org.koin.core.component.KoinComponent
 class ConnectionUseCase(
     private val connectionSource: ConnectionDataSource,
     private val certificate: String,
-    private val connectionManager: ConnectionManager
+    private val connectionManager: ConnectionManager,
 ) : KoinComponent {
 
     fun startConnection(
         server: Server,
         configureIntent: PendingIntent,
-        notification: Notification
+        notification: Notification,
     ): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name)
         val index = connectionSource.getVpnToken().indexOf(":")
@@ -78,21 +78,21 @@ class ConnectionUseCase(
                     ServerList.Server(
                         ip = ip,
                         commonName = cn,
-                        latency = server.latency?.toLong()
-                    )
-                )
+                        latency = server.latency?.toLong(),
+                    ),
+                ),
             ),
             openVpnClientConfiguration = OpenVpnClientConfiguration(
                 caCertificate = certificate,
                 cipher = "AES-128-GCM",
                 transport = transport,
                 username = connectionSource.getVpnToken().substring(0, index),
-                password = connectionSource.getVpnToken().substring(index + 1)
+                password = connectionSource.getVpnToken().substring(index + 1),
             ),
             wireguardClientConfiguration = WireguardClientConfiguration(
                 token = connectionSource.getVpnToken(),
-                pinningCertificate = certificate
-            )
+                pinningCertificate = certificate,
+            ),
         )
 
         connectionSource.startConnection(clientConfiguration, connectionManager).collect {

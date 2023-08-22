@@ -24,7 +24,7 @@ import com.kape.ui.utils.LocalColors
 fun ConnectionInfoTile() {
     ConnectionTile(labelId = R.string.connection) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             // TODO: use real data; dummy data provided for display purposes only
             Column(modifier = Modifier.weight(1f)) {
@@ -48,7 +48,7 @@ fun InfoRow(iconId: Int, label: String) {
             painter = painterResource(id = iconId),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier.size(Square.CONNECTION_INFO)
+            modifier = Modifier.size(Square.CONNECTION_INFO),
         )
         Spacer(modifier = Modifier.width(Space.MINI))
         Text(text = label, fontSize = FontSize.Normal, color = LocalColors.current.onSurface)

@@ -8,7 +8,7 @@ private const val CONNECT_ON_LAUNCH = "connect-on-launch"
 private const val CONNECT_ON_APP_UPDATE = "connect-on-app-update"
 class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
-    fun enableLaunchOnStartup(enable: Boolean) {
+    fun setEnableLaunchOnStartup(enable: Boolean) {
         prefs.edit().putBoolean(LAUNCH_ON_STARTUP, enable).apply()
     }
 
@@ -16,7 +16,7 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         return prefs.getBoolean(LAUNCH_ON_STARTUP, false)
     }
 
-    fun enableConnectOnLaunch(enable: Boolean) {
+    fun setEnableConnectOnLaunch(enable: Boolean) {
         prefs.edit().putBoolean(CONNECT_ON_LAUNCH, enable).apply()
     }
 
@@ -24,7 +24,7 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         return prefs.getBoolean(CONNECT_ON_LAUNCH, false)
     }
 
-    fun enableConnectOnAppUpdate(enable: Boolean) {
+    fun setEnableConnectOnAppUpdate(enable: Boolean) {
         prefs.edit().putBoolean(CONNECT_ON_APP_UPDATE, enable).apply()
     }
 

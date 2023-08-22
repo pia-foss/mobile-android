@@ -6,7 +6,7 @@ import com.kape.signup.data.models.Credentials
 data class SignupScreenState(
     val loading: Boolean,
     val step: SignupStep,
-    val error: SignupError? = null
+    val error: SignupError? = null,
 )
 
 val DEFAULT = SignupScreenState(loading = false, SignupStep.Default)
@@ -17,12 +17,12 @@ val IN_PROCESS = SignupScreenState(loading = false, SignupStep.InProcess)
 val ERROR_EMAIL_INVALID = SignupScreenState(
     loading = false,
     SignupStep.Default,
-    error = SignupError.EmailInvalid
+    error = SignupError.EmailInvalid,
 )
 val ERROR_REGISTRATION = SignupScreenState(
     loading = false,
     SignupStep.Default,
-    error = SignupError.RegistrationFailed
+    error = SignupError.RegistrationFailed,
 )
 
 fun subscriptions(data: SubscriptionData) =
@@ -52,5 +52,5 @@ data class Plan(
     val period: String,
     val bestValue: Boolean,
     val mainPrice: String,
-    val secondaryPrice: String? = null
+    val secondaryPrice: String? = null,
 )

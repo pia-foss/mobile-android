@@ -8,7 +8,7 @@ fun getFlagResource(context: Context, serverIso: String): Int {
     val resName = String.format(
         Locale.US,
         "flag_%s",
-        serverIso.replace(" ", "_").replace(",", "").lowercase()
+        serverIso.replace(" ", "_").replace(",", "").lowercase(),
     )
     var flagResource: Int =
         context.resources.getIdentifier(resName, "drawable", context.packageName)

@@ -68,7 +68,7 @@ interface SideMenuUiDrawerScope {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SideMenuUiDrawer(
-    screenContent: @Composable SideMenuUiDrawerScope.() -> Unit
+    screenContent: @Composable SideMenuUiDrawerScope.() -> Unit,
 ) {
     val scope: CoroutineScope = rememberCoroutineScope()
     val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
@@ -76,7 +76,7 @@ fun SideMenuUiDrawer(
     val drawerScope: SideMenuUiDrawerScope = remember(drawerState) {
         SideMenuUiDrawerScopeImpl(
             scope = scope,
-            drawerState = drawerState
+            drawerState = drawerState,
         )
     }
 
@@ -88,7 +88,7 @@ fun SideMenuUiDrawer(
         },
         content = {
             drawerScope.screenContent()
-        }
+        },
     )
 }
 
@@ -107,8 +107,8 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
             start = 0.dp,
             end = 0.dp,
             top = Space.BIGGER,
-            bottom = Space.HUGE
-        )
+            bottom = Space.HUGE,
+        ),
     ) {
         item {
             IconAppVersionWithUsernameView(state)
@@ -116,7 +116,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
             SeparatorView(
                 isSeparatorVisible = false,
                 topPadding = Space.BIG,
-                bottomPadding = 0.dp
+                bottomPadding = 0.dp,
             )
 
             if (state.showExpirationNotice) {
@@ -124,7 +124,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                     onClick = {
                         // TODO:  "action: open 'purchase' dialog & trigger toast, if account is not renewable"
                     },
-                    state.daysRemaining
+                    state.daysRemaining,
                 )
             }
 
@@ -136,7 +136,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                     scope.launch {
                         drawerState.close()
                     }
-                }
+                },
             )
 
             IconTitleView(
@@ -147,7 +147,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                     scope.launch {
                         drawerState.close()
                     }
-                }
+                },
             )
 
             IconTitleView(
@@ -155,7 +155,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_dedicated_ip,
                 onClick = {
                     // TODO: "action: open 'dedicated ip' screen"
-                }
+                },
             )
 
             IconTitleView(
@@ -163,7 +163,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_per_app_settings,
                 onClick = {
                     // TODO: "action: open 'per app settings' screen"
-                }
+                },
             )
 
             IconTitleView(
@@ -171,7 +171,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_settings,
                 onClick = {
                     viewModel.navigateToSettings()
-                }
+                },
             )
 
             IconTitleView(
@@ -179,13 +179,13 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_logout,
                 onClick = {
                     viewModel.logout()
-                }
+                },
             )
 
             SeparatorView(
                 isSeparatorVisible = true,
                 topPadding = Space.MEDIUM,
-                bottomPadding = Space.MEDIUM
+                bottomPadding = Space.MEDIUM,
             )
 
             IconTitleView(
@@ -193,7 +193,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_about,
                 onClick = {
                     // TODO: "action: open 'about' screen"
-                }
+                },
             )
 
             IconTitleView(
@@ -201,7 +201,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_privacy_policy,
                 onClick = {
                     // TODO: "action: open 'privacy policy' in 'web view' screen"
-                }
+                },
             )
 
             IconTitleView(
@@ -209,7 +209,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_homepage,
                 onClick = {
                     // TODO: "action: open 'home page' in 'web view' screen"
-                }
+                },
             )
 
             IconTitleView(
@@ -217,7 +217,7 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_contact_support,
                 onClick = {
                     // TODO: "action: open 'help desk' in 'web view' screen"
-                }
+                },
             )
         }
     }
@@ -238,19 +238,19 @@ private fun IconAppVersionWithUsernameView(state: SideMenuState) {
                 .align(CenterVertically)
                 .padding(start = Space.MEDIUM, top = Space.SMALL, bottom = Space.SMALL)
                 .size(Square.DEFAULT),
-            contentDescription = stringResource(id = R.string.icon)
+            contentDescription = stringResource(id = R.string.icon),
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(CenterVertically)
-                .padding(start = Space.NORMAL, top = Space.SMALL, bottom = Space.SMALL)
+                .padding(start = Space.NORMAL, top = Space.SMALL, bottom = Space.SMALL),
         ) {
             // TODO: FIX!
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = title
+                text = title,
 //                fontSize = SideMenuUiTheme.PiaTextTitle.textSize,
 //                fontFamily = SideMenuUiTheme.PiaTextTitle.fontFamily,
 //                style = SideMenuUiTheme.PiaTextTitle.textStyle.copy(
@@ -264,7 +264,7 @@ private fun IconAppVersionWithUsernameView(state: SideMenuState) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = description,
-                fontSize = FontSize.Normal
+                fontSize = FontSize.Normal,
 //                fontFamily = SideMenuUiTheme.PiaTextTitle.fontFamily,
 //                style = SideMenuUiTheme.PiaTextTitle.textStyle.copy(
 //                    color = SideMenuUiTheme.colors.grey20_white,
@@ -278,7 +278,7 @@ private fun IconAppVersionWithUsernameView(state: SideMenuState) {
 private fun IconTitleView(
     @DrawableRes resIcon: Int,
     @StringRes resTitle: Int,
-    onClick: (() -> Unit)?
+    onClick: (() -> Unit)?,
 ) {
     Row(
         modifier = Modifier
@@ -286,8 +286,8 @@ private fun IconTitleView(
             .height(Height.DEFAULT)
             .makeClickable(
                 onClick = onClick,
-                hasRipple = true
-            )
+                hasRipple = true,
+            ),
     ) {
         Spacer(modifier = Modifier.width(Space.MEDIUM))
 
@@ -298,7 +298,7 @@ private fun IconTitleView(
                 .height(Square.ICON),
             painter = painterResource(id = resIcon),
             contentScale = ContentScale.Inside,
-            contentDescription = stringResource(id = R.string.icon)
+            contentDescription = stringResource(id = R.string.icon),
         )
 
         Spacer(modifier = Modifier.width(Space.SMALL))
@@ -313,7 +313,7 @@ private fun IconTitleView(
 //                style = SideMenuUiTheme.PiaTextBody2.textStyle.copy(
 //                    color = SideMenuUiTheme.PiaTextBody2.textColor,
 //                ),
-            maxLines = 1
+            maxLines = 1,
         )
     }
 }
@@ -322,21 +322,21 @@ private fun IconTitleView(
 private fun SeparatorView(
     isSeparatorVisible: Boolean,
     topPadding: Dp,
-    bottomPadding: Dp
+    bottomPadding: Dp,
 ) {
     if (isSeparatorVisible) {
         // TODO: FIX!
         Divider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = topPadding, bottom = bottomPadding)
+                .padding(top = topPadding, bottom = bottomPadding),
 //                .background(SideMenuUiTheme.colors.pia_sidemenu_divider),
         )
     } else {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height = topPadding + bottomPadding)
+                .height(height = topPadding + bottomPadding),
         )
     }
 }
@@ -344,18 +344,18 @@ private fun SeparatorView(
 @Composable
 private fun SubscriptionExpiryView(
     onClick: (() -> Unit)?,
-    daysRemaining: Int
+    daysRemaining: Int,
 ) {
     val title: String = when (daysRemaining) {
         1 -> stringResource(R.string.drawer_item_title_subscription_expires_format).format(
-            stringResource(R.string.duration_one_day)
+            stringResource(R.string.duration_one_day),
         )
 
         in 2..30 -> stringResource(R.string.drawer_item_title_subscription_expires_format).format(
             stringResource(R.string.duration_x_days).format(
                 Locale.ENGLISH,
-                daysRemaining
-            )
+                daysRemaining,
+            ),
         )
 
         else -> ""
@@ -367,8 +367,8 @@ private fun SubscriptionExpiryView(
             .background(color = ConnectingOrange)
             .makeClickable(
                 onClick = onClick,
-                hasRipple = false
-            )
+                hasRipple = false,
+            ),
     ) {
         Spacer(modifier = Modifier.width(Space.NORMAL))
 
@@ -378,7 +378,7 @@ private fun SubscriptionExpiryView(
                 .padding(vertical = Space.MINI)
                 .size(Square.EXPIRY_NOTICE),
             painter = painterResource(id = R.drawable.ic_orange_arrow_circle),
-            contentDescription = stringResource(id = R.string.icon)
+            contentDescription = stringResource(id = R.string.icon),
         )
 
         Spacer(modifier = Modifier.width(Space.MINI))
@@ -386,7 +386,7 @@ private fun SubscriptionExpiryView(
         Column(
             modifier = Modifier
                 .align(CenterVertically)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             // TODO: FIX!
             Text(
@@ -397,7 +397,7 @@ private fun SubscriptionExpiryView(
 //                style = SideMenuUiTheme.PiaExpirationTitle.textStyle.copy(
 //                    color = SideMenuUiTheme.PiaExpirationTitle.textColor,
 //                ),
-                maxLines = 1
+                maxLines = 1,
             )
             // TODO: FIX!
             Text(
@@ -408,7 +408,7 @@ private fun SubscriptionExpiryView(
 //                style = SideMenuUiTheme.PiaExpirationDescription.textStyle.copy(
 //                    color = SideMenuUiTheme.PiaExpirationDescription.textColor,
 //                ),
-                maxLines = 1
+                maxLines = 1,
             )
         }
     }
@@ -417,7 +417,7 @@ private fun SubscriptionExpiryView(
 // TODO: Iva! Rewrite the whole thing in subsequent pr
 private fun Modifier.makeClickable(
     onClick: (() -> Unit)?,
-    hasRipple: Boolean
+    hasRipple: Boolean,
 ): Modifier = composed {
     return@composed when {
         onClick != null -> clickable(
@@ -426,7 +426,7 @@ private fun Modifier.makeClickable(
             onClick =
             onClick@{
                 onClick()
-            }
+            },
         )
 
         else -> this
@@ -437,7 +437,7 @@ private class SideMenuUiDrawerScopeImpl
 @OptIn(ExperimentalMaterial3Api::class)
 constructor(
     private val scope: CoroutineScope,
-    private val drawerState: DrawerState
+    private val drawerState: DrawerState,
 ) : SideMenuUiDrawerScope {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun openDrawer() {
@@ -455,20 +455,20 @@ constructor(
 }
 
 private class DrawerShape(
-    private val maxSizePx: Float
+    private val maxSizePx: Float,
 ) : Shape {
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
-        density: Density
+        density: Density,
     ): Outline {
         return Outline.Rectangle(
             Rect(
                 left = 0f,
                 top = 0f,
                 right = min(maxSizePx, size.width),
-                bottom = size.height
-            )
+                bottom = size.height,
+            ),
         )
     }
 }

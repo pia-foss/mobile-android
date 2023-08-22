@@ -55,7 +55,7 @@ class AuthenticationDataSourceImpl(private val api: AndroidAccountAPI) :
     override fun loginWithReceipt(
         receiptToken: String,
         productId: String,
-        packageName: String
+        packageName: String,
     ): Flow<ApiResult> = callbackFlow {
         api.loginWithReceipt(STORE, receiptToken, productId, packageName) {
             if (it.isNotEmpty()) {

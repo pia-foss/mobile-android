@@ -30,12 +30,12 @@ fun SignupErrorScreen(toLogin: () -> Unit) {
     val buttonProperties =
         ButtonProperties(
             label = stringResource(id = R.string.error_account_creation_action).toUpperCase(
-                Locale.current
+                Locale.current,
             ),
             enabled = true,
             onClick = {
                 toLogin.invoke()
-            }
+            },
         )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -45,13 +45,13 @@ fun SignupErrorScreen(toLogin: () -> Unit) {
             contentDescription = stringResource(id = R.string.logo),
             modifier = Modifier
                 .padding(Space.HUGE)
-                .align(Alignment.TopCenter)
+                .align(Alignment.TopCenter),
         )
         Column(modifier = Modifier.align(Alignment.Center)) {
             Image(
                 painter = painterResource(id = R.drawable.ic_red_warning),
                 contentDescription = stringResource(id = R.string.logo),
-                modifier = Modifier.align(CenterHorizontally)
+                modifier = Modifier.align(CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             Text(
@@ -60,7 +60,7 @@ fun SignupErrorScreen(toLogin: () -> Unit) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(CenterHorizontally)
-                    .padding(horizontal = Space.MEDIUM)
+                    .padding(horizontal = Space.MEDIUM),
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             Text(
@@ -69,12 +69,12 @@ fun SignupErrorScreen(toLogin: () -> Unit) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(CenterHorizontally)
-                    .padding(horizontal = Space.MEDIUM)
+                    .padding(horizontal = Space.MEDIUM),
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             PrimaryButton(
                 modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
-                properties = buttonProperties
+                properties = buttonProperties,
             )
         }
     }

@@ -8,7 +8,7 @@ import java.time.Duration
 data class Subscription(
     val isExpired: Boolean,
     val daysRemaining: Int,
-    val showExpire: Boolean
+    val showExpire: Boolean,
 ) {
     val expirationDate: String = getExpirationDate(daysRemaining)
 

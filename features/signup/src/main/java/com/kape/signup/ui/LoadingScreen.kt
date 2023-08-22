@@ -33,19 +33,19 @@ fun LoadingScreen() {
             contentDescription = "logo",
             modifier = Modifier
                 .padding(Space.HUGE)
-                .align(Alignment.TopCenter)
+                .align(Alignment.TopCenter),
         )
         Column(modifier = Modifier.align(Alignment.Center)) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .align(CenterHorizontally)
                     .size(Square.DEFAULT),
-                color = LocalColors.current.primary
+                color = LocalColors.current.primary,
             )
             Spacer(modifier = Modifier.height(Height.DEFAULT))
             Text(
                 text = stringResource(id = R.string.loading_text),
-                fontSize = FontSize.Big
+                fontSize = FontSize.Big,
             )
         }
     }

@@ -49,7 +49,7 @@ fun ConnectionAppBar(
     viewModel: AppBarViewModel,
     onHeaderClick: () -> Unit,
     onLeftButtonClick: () -> Unit,
-    onRightButtonClick: () -> Unit = {}
+    onRightButtonClick: () -> Unit = {},
 ) {
     AppBar(
         state = AppBarState(
@@ -64,11 +64,11 @@ fun ConnectionAppBar(
             } else {
                 ContentType.Text
             },
-            darkIcons = shouldShowDarkIcons(viewModel.appBarConnectionState)
+            darkIcons = shouldShowDarkIcons(viewModel.appBarConnectionState),
         ),
         onHeaderClick = onHeaderClick,
         onLeftButtonClick = onLeftButtonClick,
-        onRightButtonClick = onRightButtonClick
+        onRightButtonClick = onRightButtonClick,
     )
 }
 
@@ -76,7 +76,7 @@ fun ConnectionAppBar(
 fun NavigationAppBar(
     viewModel: AppBarViewModel,
     onLeftButtonClick: () -> Unit,
-    onRightButtonClick: () -> Unit = {}
+    onRightButtonClick: () -> Unit = {},
 ) {
     AppBar(
         state = AppBarState(
@@ -86,10 +86,10 @@ fun NavigationAppBar(
             navigationState = NavigationState.Back,
             contentAlignment = ContentAlignment.LeftAligned,
             contentType = ContentType.Text,
-            darkIcons = shouldShowDarkIcons(viewModel.appBarConnectionState)
+            darkIcons = shouldShowDarkIcons(viewModel.appBarConnectionState),
         ),
         onLeftButtonClick = onLeftButtonClick,
-        onRightButtonClick = onRightButtonClick
+        onRightButtonClick = onRightButtonClick,
     )
 }
 
@@ -97,7 +97,7 @@ fun NavigationAppBar(
 fun InAppBrowserAppBar(
     viewModel: AppBarViewModel,
     onLeftButtonClick: () -> Unit,
-    onRightButtonClick: () -> Unit = {}
+    onRightButtonClick: () -> Unit = {},
 ) {
     AppBar(
         state = AppBarState(
@@ -107,10 +107,10 @@ fun InAppBrowserAppBar(
             navigationState = NavigationState.Back,
             contentAlignment = ContentAlignment.Centered,
             contentType = ContentType.Image,
-            darkIcons = shouldShowDarkIcons(viewModel.appBarConnectionState)
+            darkIcons = shouldShowDarkIcons(viewModel.appBarConnectionState),
         ),
         onLeftButtonClick = onLeftButtonClick,
-        onRightButtonClick = onRightButtonClick
+        onRightButtonClick = onRightButtonClick,
     )
 }
 
@@ -119,7 +119,7 @@ private fun AppBar(
     state: AppBarState,
     onHeaderClick: (() -> Unit)? = null,
     onLeftButtonClick: () -> Unit,
-    onRightButtonClick: () -> Unit
+    onRightButtonClick: () -> Unit,
 ) {
     val systemUiController = rememberSystemUiController()
     SideEffect {
@@ -130,7 +130,7 @@ private fun AppBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(state.colors.background)
+            .background(state.colors.background),
     ) {
         val navigationIcon: ImageVector
         val accessibilityText: String
@@ -153,12 +153,12 @@ private fun AppBar(
             onClick = onLeftButtonClick,
             modifier = Modifier
                 .align(CenterStart)
-                .semantics(mergeDescendants = true) { contentDescription = accessibilityText }
+                .semantics(mergeDescendants = true) { contentDescription = accessibilityText },
         ) {
             Icon(
                 navigationIcon,
                 contentDescription = null,
-                tint = state.colors.foreground
+                tint = state.colors.foreground,
             )
         }
 
@@ -174,7 +174,7 @@ private fun AppBar(
                 .align(contentAlignment)
                 .clickable(
                     interactionSource = MutableInteractionSource(),
-                    indication = null
+                    indication = null,
                 ) { it() }
         } ?: Modifier.align(contentAlignment)
 
@@ -183,7 +183,7 @@ private fun AppBar(
                 ContentType.Image -> {
                     ImageContent(
                         connectionState = state.connectionState,
-                        color = state.colors.foreground
+                        color = state.colors.foreground,
                     )
                 }
 
@@ -191,7 +191,7 @@ private fun AppBar(
                     ImageTextContent(
                         prefix = state.accessibilityPrefix ?: "",
                         title = state.title,
-                        color = state.colors.foreground
+                        color = state.colors.foreground,
                     )
                 }
 
@@ -200,7 +200,7 @@ private fun AppBar(
                         needsSpacing = state.navigationState is NavigationState.Back,
                         prefix = state.accessibilityPrefix ?: "",
                         title = state.title,
-                        color = state.colors.foreground
+                        color = state.colors.foreground,
                     )
                 }
             }
@@ -228,13 +228,13 @@ fun ImageContent(connectionState: ConnectionStatus, color: Color) {
             painter = painterResource(id = R.drawable.ic_pia_logo),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier.height(48.dp)
+            modifier = Modifier.height(48.dp),
         )
     } else {
         Icon(
             painter = painterResource(id = R.drawable.ic_pia_logo),
             contentDescription = null,
-            tint = Color.Unspecified
+            tint = Color.Unspecified,
         )
     }
 }
@@ -244,19 +244,19 @@ fun ImageTextContent(prefix: String, title: String, color: Color) {
     Row(
         modifier = Modifier.semantics(mergeDescendants = true) {
             contentDescription = prefix
-        }
+        },
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_pia_logo),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier.width(80.dp)
+            modifier = Modifier.width(80.dp),
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = title,
             style = MaterialTheme.typography.titleMedium,
-            color = color
+            color = color,
         )
     }
 }
@@ -272,7 +272,7 @@ fun TextContent(needsSpacing: Boolean, prefix: String, title: String, color: Col
         color = color,
         modifier = Modifier.semantics(mergeDescendants = true) {
             contentDescription = "$prefix $title"
-        }
+        },
     )
 }
 
@@ -285,7 +285,7 @@ private data class AppBarState(
     val colors: AppBarColors = getAppBarColors(colorScheme, connectionState, darkIcons),
     val navigationState: NavigationState,
     val contentType: ContentType,
-    val contentAlignment: ContentAlignment
+    val contentAlignment: ContentAlignment,
 )
 
 private sealed class NavigationState {
@@ -308,7 +308,7 @@ private data class AppBarColors(
     val background: Brush,
     val foreground: Color,
     val statusBar: Color,
-    val darkIcons: Boolean
+    val darkIcons: Boolean,
 )
 
 @Composable
@@ -317,40 +317,41 @@ private fun shouldShowDarkIcons(connectionState: ConnectionStatus): Boolean {
         ConnectionStatus.DISCONNECTED -> !isSystemInDarkTheme()
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTED,
-        ConnectionStatus.CONNECTING -> true
+        ConnectionStatus.CONNECTING,
+        -> true
     }
 }
 
 private fun getAppBarColors(
     scheme: ColorScheme,
     connectionState: ConnectionStatus,
-    darkIcons: Boolean
+    darkIcons: Boolean,
 ): AppBarColors {
     return when (connectionState) {
         ConnectionStatus.CONNECTED -> AppBarColors(
             background = Brush.verticalGradient(appbarConnectedGradient),
             foreground = Color.Black,
             statusBar = appbarConnectedStatus,
-            darkIcons = darkIcons
+            darkIcons = darkIcons,
         )
 
         ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> AppBarColors(
             background = Brush.verticalGradient(appbarConnectingGradient),
             foreground = Color.Black,
             statusBar = appbarConnectingStatus,
-            darkIcons = darkIcons
+            darkIcons = darkIcons,
         )
 
         ConnectionStatus.DISCONNECTED -> AppBarColors(
             background = Brush.verticalGradient(
                 listOf(
                     scheme.surface,
-                    scheme.surface
-                )
+                    scheme.surface,
+                ),
             ),
             foreground = scheme.onSurface,
             statusBar = scheme.surface,
-            darkIcons = darkIcons
+            darkIcons = darkIcons,
         )
     }
 }
@@ -368,10 +369,10 @@ fun PreviewDefaultState() {
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.ImageText,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }
@@ -389,10 +390,10 @@ fun PreviewConnectingState() {
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTING)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTING),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }
@@ -410,10 +411,10 @@ fun PreviewConnectedState() {
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTED)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTED),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }
@@ -421,7 +422,7 @@ fun PreviewConnectedState() {
 @Preview(name = "PreviewAppBar - Disconnected - Light Theme")
 @Preview(
     name = "PreviewAppBar - Disconnected - Dark Theme",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 fun PreviewDisconnectedState() {
@@ -434,10 +435,10 @@ fun PreviewDisconnectedState() {
                 navigationState = NavigationState.Menu,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }
@@ -445,7 +446,7 @@ fun PreviewDisconnectedState() {
 @Preview(name = "PreviewNavigationAppBar - Default - Light Theme")
 @Preview(
     name = "PreviewNavigationAppBar - Default - Dark Theme",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 fun PreviewNavigationDefaultState() {
@@ -458,10 +459,10 @@ fun PreviewNavigationDefaultState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }
@@ -469,7 +470,7 @@ fun PreviewNavigationDefaultState() {
 @Preview(name = "PreviewNavigationAppBar - Connecting - Light Theme")
 @Preview(
     name = "PreviewNavigationAppBar - Connecting - Dark Theme",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 fun PreviewNavigationConnectingState() {
@@ -482,10 +483,10 @@ fun PreviewNavigationConnectingState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTING)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTING),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }
@@ -493,7 +494,7 @@ fun PreviewNavigationConnectingState() {
 @Preview(name = "PreviewNavigationAppBar - Connected - Light Theme")
 @Preview(
     name = "PreviewNavigationAppBar - Connected - Dark Theme",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 fun PreviewNavigationConnectedState() {
@@ -506,10 +507,10 @@ fun PreviewNavigationConnectedState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTED)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTED),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }
@@ -517,7 +518,7 @@ fun PreviewNavigationConnectedState() {
 @Preview(name = "PreviewNavigationAppBar - Disconnected - Light Theme")
 @Preview(
     name = "PreviewNavigationAppBar - Disconnected - Dark Theme",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 fun PreviewNavigationDisconnectedState() {
@@ -530,10 +531,10 @@ fun PreviewNavigationDisconnectedState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.LeftAligned,
                 contentType = ContentType.Text,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }
@@ -541,7 +542,7 @@ fun PreviewNavigationDisconnectedState() {
 @Preview(name = "PreviewInAppBrowser - Default - Light Theme")
 @Preview(
     name = "PreviewInAppBrowser - Default - Dark Theme",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 fun PreviewInAppBrowserDefaultState() {
@@ -554,10 +555,10 @@ fun PreviewInAppBrowserDefaultState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Image,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }
@@ -565,7 +566,7 @@ fun PreviewInAppBrowserDefaultState() {
 @Preview(name = "PreviewInAppBrowser - Connecting - Light Theme")
 @Preview(
     name = "PreviewInAppBrowser - Connecting - Dark Theme",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 fun PreviewInAppBrowserConnectingState() {
@@ -578,10 +579,10 @@ fun PreviewInAppBrowserConnectingState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Image,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTING)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.CONNECTING),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }
@@ -589,7 +590,7 @@ fun PreviewInAppBrowserConnectingState() {
 @Preview(name = "PreviewInAppBrowser - Disconnected - Light Theme")
 @Preview(
     name = "PreviewInAppBrowser - Disconnected - Dark Theme",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
 @Composable
 fun PreviewInAppBrowserDisconnectedState() {
@@ -602,10 +603,10 @@ fun PreviewInAppBrowserDisconnectedState() {
                 navigationState = NavigationState.Back,
                 contentAlignment = ContentAlignment.Centered,
                 contentType = ContentType.Image,
-                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED)
+                darkIcons = shouldShowDarkIcons(ConnectionStatus.DISCONNECTED),
             ),
             onLeftButtonClick = {},
-            onRightButtonClick = {}
+            onRightButtonClick = {},
         )
     }
 }

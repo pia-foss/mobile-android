@@ -65,7 +65,7 @@ fun RegionSelectionScreen() {
     Column {
         NavigationAppBar(
             viewModel = appBarViewModel,
-            onLeftButtonClick = { viewModel.navigateBack() }
+            onLeftButtonClick = { viewModel.navigateBack() },
         )
 
         when (state) {
@@ -83,7 +83,7 @@ fun RegionSelectionScreen() {
                 SearchBar(searchTextState = searchTextState)
                 viewModel.initAutoRegion(
                     stringResource(id = R.string.automatic),
-                    stringResource(id = R.string.automatic_iso)
+                    stringResource(id = R.string.automatic_iso),
                 )
                 SwipeRefresh(
                     state = rememberSwipeRefreshState(isRefreshing = state.loading),
@@ -91,7 +91,7 @@ fun RegionSelectionScreen() {
                         locale?.let {
                             viewModel.loadRegions(locale)
                         }
-                    }
+                    },
                 ) {
                     viewModel.filterByName(searchTextState.value.text)
                     LazyColumn {
@@ -106,7 +106,7 @@ fun RegionSelectionScreen() {
                                 },
                                 onFavoriteClick = {
                                     viewModel.onFavoriteClicked(it)
-                                }
+                                },
                             )
                             Divider(color = LocalColors.current.outline)
                         }
@@ -144,9 +144,9 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
                                     sortBySelectedOption.value =
                                         viewModel.getSortingOption(options.indexOf(it))
                                 },
-                                role = Role.RadioButton
+                                role = Role.RadioButton,
                             )
-                            .padding(vertical = Space.MINI)
+                            .padding(vertical = Space.MINI),
                     ) {
                         RadioButton(
                             selected = (options.indexOf(it) == sortBySelectedOption.value.index),
@@ -154,12 +154,12 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
                             colors = RadioButtonDefaults.colors(selectedColor = LocalColors.current.primary),
                             modifier = Modifier
                                 .padding(end = Space.SMALL)
-                                .align(CenterVertically)
+                                .align(CenterVertically),
                         )
                         Text(
                             text = it,
                             modifier = Modifier
-                                .align(CenterVertically)
+                                .align(CenterVertically),
                         )
                     }
                 }
@@ -167,11 +167,11 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
         }, confirmButton = {
             TextButton(onClick = {
                 viewModel.sortBy(sortBySelectedOption.value)
-            }) {
+            },) {
                 Text(
                     text = stringResource(id = R.string.ok),
                     fontSize = FontSize.Normal,
-                    color = LocalColors.current.primary
+                    color = LocalColors.current.primary,
                 )
             }
         }, dismissButton = {
@@ -179,8 +179,8 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
                 Text(
                     text = stringResource(id = R.string.cancel).toUpperCase(Locale.current),
                     fontSize = FontSize.Normal,
-                    color = LocalColors.current.primary
+                    color = LocalColors.current.primary,
                 )
             }
-        })
+        },)
 }

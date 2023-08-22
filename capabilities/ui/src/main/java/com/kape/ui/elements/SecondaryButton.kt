@@ -26,7 +26,7 @@ fun SecondaryButton(modifier: Modifier, properties: ButtonProperties) {
             .testTag(properties.label)
             .height(Height.DEFAULT)
             .fillMaxWidth(),
-        enabled = properties.enabled
+        enabled = properties.enabled,
     ) {
         Text(text = properties.label, color = LocalColors.current.primary)
     }

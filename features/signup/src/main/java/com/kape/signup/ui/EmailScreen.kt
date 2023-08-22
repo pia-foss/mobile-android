@@ -37,7 +37,7 @@ fun EmailScreen(viewModel: SignupViewModel) {
             enabled = true,
             onClick = {
                 viewModel.register(emailProperties.content)
-            }
+            },
         )
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -47,13 +47,13 @@ fun EmailScreen(viewModel: SignupViewModel) {
             contentDescription = stringResource(id = R.string.logo),
             modifier = Modifier
                 .padding(Space.HUGE)
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally),
         )
         Spacer(modifier = Modifier.height(Space.VERY_HUGE))
         Text(
             text = stringResource(id = R.string.email_title),
             fontSize = FontSize.Big,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally),
         )
         Spacer(modifier = Modifier.height(Space.NORMAL))
         Text(
@@ -63,17 +63,17 @@ fun EmailScreen(viewModel: SignupViewModel) {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(horizontal = Space.MEDIUM)
+                .padding(horizontal = Space.MEDIUM),
         )
         Spacer(modifier = Modifier.height(Space.MEDIUM))
         InputField(
             modifier = Modifier.padding(horizontal = Space.MEDIUM),
-            properties = emailProperties
+            properties = emailProperties,
         )
         Spacer(modifier = Modifier.height(Space.NORMAL))
         PrimaryButton(
             modifier = Modifier.padding(horizontal = Space.MEDIUM),
-            properties = buttonProperties
+            properties = buttonProperties,
         )
     }
 }

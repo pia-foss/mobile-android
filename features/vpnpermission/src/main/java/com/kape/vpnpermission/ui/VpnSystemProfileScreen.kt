@@ -47,7 +47,7 @@ fun VpnSystemProfileScreen() {
             enabled = true,
             onClick = {
                 viewModel.onOkButtonClicked()
-            }
+            },
         )
 
     LaunchedEffect(key1 = state) {
@@ -65,7 +65,7 @@ fun VpnSystemProfileScreen() {
         NOT_GRANTED -> Toast.makeText(
             LocalContext.current,
             getVpnProfileToastText(granted = false),
-            Toast.LENGTH_LONG
+            Toast.LENGTH_LONG,
         ).show()
     }
 
@@ -77,8 +77,8 @@ fun VpnSystemProfileScreen() {
                 start = Space.CENT,
                 top = Space.BIGGER,
                 bottom = Space.HUGE,
-                end = Space.CENT
-            )
+                end = Space.CENT,
+            ),
         )
         Text(
             text = stringResource(id = com.kape.vpnpermission.R.string.setup_vpn_profile_description),
@@ -86,11 +86,11 @@ fun VpnSystemProfileScreen() {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(CenterHorizontally)
-                .padding(Space.HUGE)
+                .padding(Space.HUGE),
         )
         PrimaryButton(
             modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
-            properties = okButtonProperties
+            properties = okButtonProperties,
         )
         Text(
             text = stringResource(id = com.kape.vpnpermission.R.string.setup_vpn_profile_privacy_statement),
@@ -98,7 +98,7 @@ fun VpnSystemProfileScreen() {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(CenterHorizontally)
-                .padding(Space.HUGE)
+                .padding(Space.HUGE),
         )
     }
 }

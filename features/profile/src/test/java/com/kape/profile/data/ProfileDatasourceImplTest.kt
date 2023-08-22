@@ -71,12 +71,12 @@ internal class ProfileDatasourceImplTest {
             renewable = false,
             expired = false,
             username = "username",
-            productId = null
+            productId = null,
         )
         coEvery { api.accountDetails(any()) } answers {
             lastArg<(AccountInformation?, List<AccountRequestError>) -> Unit>().invoke(
                 accountInformation,
-                emptyList()
+                emptyList(),
             )
         }
         dataSource.accountDetails().test {
@@ -91,7 +91,7 @@ internal class ProfileDatasourceImplTest {
         coEvery { api.accountDetails(any()) } answers {
             lastArg<(AccountInformation?, List<AccountRequestError>) -> Unit>().invoke(
                 null,
-                emptyList()
+                emptyList(),
             )
         }
         dataSource.accountDetails().test {

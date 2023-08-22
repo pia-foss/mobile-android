@@ -67,12 +67,12 @@ fun ConnectionScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             ConnectionAppBar(
                 viewModel = appBarViewModel,
                 onHeaderClick = { /*TODO*/ },
-                onLeftButtonClick = { openDrawer() }
+                onLeftButtonClick = { openDrawer() },
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             ConnectionButton(connectionState) {
@@ -82,8 +82,8 @@ fun ConnectionScreen() {
                         context,
                         123,
                         intent,
-                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                    )
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+                    ),
                 )
             }
 

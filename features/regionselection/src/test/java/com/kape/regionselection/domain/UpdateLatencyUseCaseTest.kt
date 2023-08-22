@@ -58,10 +58,10 @@ internal class UpdateLatencyUseCaseTest : KoinTest {
                         dedicatedIp = null,
                         dipToken = null,
                         latitude = null,
-                        longitude = null
-                    )
-                )
-            )
+                        longitude = null,
+                    ),
+                ),
+            ),
         )
     }
 }

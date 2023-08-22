@@ -62,7 +62,7 @@ fun LoginScreen(navController: NavController) {
             } else {
                 Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
             }
-        })
+        },)
 
     LaunchedEffect(key1 = state) {
         viewModel.checkUserLoggedIn()
@@ -76,14 +76,14 @@ fun LoginScreen(navController: NavController) {
             painter = painterResource(id = UiResources.bigAppLogo),
             contentDescription = "logo",
             modifier = Modifier
-                .padding(start = Space.CENT_FIFTY, top = Space.BIGGER, bottom = Space.MEDIUM, end = Space.CENT_FIFTY)
+                .padding(start = Space.CENT_FIFTY, top = Space.BIGGER, bottom = Space.MEDIUM, end = Space.CENT_FIFTY),
         )
         Text(
             text = stringResource(id = R.string.sign_in),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
                 .align(CenterHorizontally)
-                .padding(bottom = Space.MEDIUM)
+                .padding(bottom = Space.MEDIUM),
         )
         InputField(modifier = Modifier.padding(Space.MEDIUM, Space.SMALL), properties = userProperties)
         InputField(modifier = Modifier.padding(Space.MEDIUM, Space.SMALL), properties = passProperties)
@@ -96,7 +96,7 @@ fun LoginScreen(navController: NavController) {
                 .padding(Space.NORMAL, Space.NORMAL, Space.NORMAL, Space.SMALL)
                 .clickable {
                     viewModel.loginWithReceipt(currentContext.packageName)
-                }
+                },
         )
         Text(
             text = stringResource(id = R.string.login_with_magic_link).toUpperCase(Locale.current),
@@ -106,7 +106,7 @@ fun LoginScreen(navController: NavController) {
                 .padding(Space.NORMAL, Space.SMALL, Space.NORMAL, Space.NORMAL)
                 .clickable {
                     navController.navigate(Login.WithEmail)
-                }
+                },
         )
     }
 }

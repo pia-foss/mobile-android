@@ -24,14 +24,14 @@ fun InAppMessageTile(content: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(Space.NORMAL)
+            .padding(Space.NORMAL),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_alert_green),
                 contentDescription = null,
                 tint = Color.Unspecified,
-                modifier = Modifier.align(Alignment.TopStart)
+                modifier = Modifier.align(Alignment.TopStart),
             )
             Icon(
                 painter = painterResource(id = com.kape.ui.R.drawable.ic_close),
@@ -40,7 +40,7 @@ fun InAppMessageTile(content: String) {
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .clickable {
-                    }
+                    },
             )
         }
         Spacer(modifier = Modifier.height(Space.SMALL))
@@ -48,7 +48,7 @@ fun InAppMessageTile(content: String) {
             text = content,
             fontSize = FontSize.Normal,
             color = LocalColors.current.onSurface,
-            modifier = Modifier.padding(horizontal = Space.MEDIUM)
+            modifier = Modifier.padding(horizontal = Space.MEDIUM),
         )
     }
 }

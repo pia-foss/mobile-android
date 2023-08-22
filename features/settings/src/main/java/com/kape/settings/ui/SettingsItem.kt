@@ -27,39 +27,39 @@ fun SettingsItem(
     @DrawableRes iconId: Int,
     @StringRes titleId: Int,
     @StringRes subtitleId: Int? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .height(56.dp)
             .clickable(onClick = onClick)
             .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             painter = painterResource(iconId),
             contentDescription = stringResource(
-                id = R.string.icon
+                id = R.string.icon,
             ),
             tint = Color.Unspecified,
-            modifier = Modifier.size(Square.ICON)
+            modifier = Modifier.size(Square.ICON),
         )
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
         ) {
             Text(
                 text = stringResource(id = titleId),
                 fontSize = FontSize.Normal,
-                color = LocalColors.current.onSurface
+                color = LocalColors.current.onSurface,
             )
 
             subtitleId?.let {
                 Text(
                     text = stringResource(id = it),
                     fontSize = FontSize.Normal,
-                    color = LocalColors.current.onSurfaceVariant
+                    color = LocalColors.current.onSurfaceVariant,
                 )
             }
         }
@@ -67,7 +67,7 @@ fun SettingsItem(
             painter = painterResource(id = R.drawable.ic_arrow),
             contentDescription = null,
             tint = LocalColors.current.onSurface,
-            modifier = Modifier.size(8.dp)
+            modifier = Modifier.size(8.dp),
         )
     }
 }

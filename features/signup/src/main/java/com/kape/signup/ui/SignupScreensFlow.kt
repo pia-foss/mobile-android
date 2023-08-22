@@ -27,7 +27,7 @@ fun SignupScreensFlow() {
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
-                        color = LocalColors.current.primary
+                        color = LocalColors.current.primary,
                     )
                 }
             } else {
@@ -50,7 +50,7 @@ fun SignupScreensFlow() {
         is SignupStep.SignedUp -> {
             CredentialsScreen(
                 viewModel = viewModel,
-                credentials = (state.step as SignupStep.SignedUp).credentials
+                credentials = (state.step as SignupStep.SignedUp).credentials,
             )
         }
 

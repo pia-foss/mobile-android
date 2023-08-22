@@ -95,7 +95,7 @@ internal class SubscriptionDataSourceImplTest {
             Arguments.of(listOf(AccountRequestError(code = 600, message = null))),
             Arguments.of(listOf(AccountRequestError(code = 429, message = null))),
             Arguments.of(listOf(AccountRequestError(code = 401, message = null))),
-            Arguments.of(listOf(AccountRequestError(code = 402, message = null)))
+            Arguments.of(listOf(AccountRequestError(code = 402, message = null))),
         )
     }
 }

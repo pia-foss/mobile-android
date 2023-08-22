@@ -11,7 +11,7 @@ class NotificationPermissionManager(private val context: Context) {
         Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 ||
             ContextCompat.checkSelfPermission(
             context,
-            Manifest.permission.POST_NOTIFICATIONS
+            Manifest.permission.POST_NOTIFICATIONS,
         ) ==
             PackageManager.PERMISSION_GRANTED
 }

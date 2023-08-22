@@ -28,13 +28,13 @@ fun GeneralSettingsScreen() {
                 viewModel = appBarViewModel,
                 onLeftButtonClick = {
                     viewModel.navigateUp()
-                }
+                },
             )
-        }
+        },
     ) {
         Column(
             modifier = Modifier
-                .padding(it)
+                .padding(it),
         ) {
             SettingsToggle(
                 titleId = R.string.connect_on_boot_title,
@@ -42,7 +42,7 @@ fun GeneralSettingsScreen() {
                 enabled = viewModel.launchOnBootEnabled,
                 toggle = {
                     viewModel.toggleLaunchOnBoot(it)
-                }
+                },
             )
             Divider(color = LocalColors.current.outline)
             SettingsToggle(
@@ -51,7 +51,7 @@ fun GeneralSettingsScreen() {
                 enabled = viewModel.connectOnStart,
                 toggle = {
                     viewModel.toggleConnectOnStart(it)
-                }
+                },
             )
             Divider(color = LocalColors.current.outline)
             SettingsToggle(
@@ -60,9 +60,8 @@ fun GeneralSettingsScreen() {
                 enabled = viewModel.connectOnUpdate,
                 toggle = {
                     viewModel.toggleConnectOnUpdate(it)
-                }
+                },
             )
-            Divider(color = LocalColors.current.outline)
         }
     }
 }

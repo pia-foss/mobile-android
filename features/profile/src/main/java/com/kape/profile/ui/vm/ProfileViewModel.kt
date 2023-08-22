@@ -44,7 +44,7 @@ class ProfileViewModel(private val useCase: GetProfileUseCase, private val route
         return createSuccessState(
             profile.username,
             profile.subscription.expirationDate,
-            profile.subscription.isExpired
+            profile.subscription.isExpired,
         )
     }
 }

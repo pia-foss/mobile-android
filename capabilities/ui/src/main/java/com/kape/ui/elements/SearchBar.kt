@@ -34,7 +34,7 @@ fun SearchBar(searchTextState: MutableState<TextFieldValue>) {
                 contentDescription = stringResource(id = R.string.search),
                 modifier = Modifier
                     .padding(Space.NORMAL)
-                    .size(Square.ICON)
+                    .size(Square.ICON),
             )
         },
         trailingIcon = {
@@ -43,19 +43,19 @@ fun SearchBar(searchTextState: MutableState<TextFieldValue>) {
                     onClick = {
                         searchTextState.value =
                             TextFieldValue("") // Remove text from TextField when you press the 'X' icon
-                    }
+                    },
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_close),
                         contentDescription = stringResource(id = R.string.close),
                         modifier = Modifier
                             .padding(Space.NORMAL)
-                            .size(Square.ICON)
+                            .size(Square.ICON),
                     )
                 }
             }
         },
         singleLine = true,
-        shape = RectangleShape // The TextFiled has rounded corners top left and right by default
+        shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
     )
 }

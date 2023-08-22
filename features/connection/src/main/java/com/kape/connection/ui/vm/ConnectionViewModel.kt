@@ -32,7 +32,7 @@ class ConnectionViewModel(
     private val updateLatencyUseCase: UpdateLatencyUseCase,
     private val connectionUseCase: ConnectionUseCase,
     private val router: Router,
-    private val prefs: ConnectionPrefs
+    private val prefs: ConnectionPrefs,
 ) : ViewModel(), KoinComponent {
 
     private val oneHourLong = 1L
@@ -71,8 +71,8 @@ class ConnectionViewModel(
                         snoozeState,
                         usageState,
                         favoriteServers,
-                        quickConnectServers
-                    )
+                        quickConnectServers,
+                    ),
                 )
             }
         }
@@ -87,7 +87,7 @@ class ConnectionViewModel(
                 val end = now.plusMinutes(fiveMinuteLong)
                 snoozeState = SnoozeState(
                     active = true,
-                    formatter.format(end)
+                    formatter.format(end),
                 )
             }
 
@@ -95,7 +95,7 @@ class ConnectionViewModel(
                 val end = now.plusMinutes(fifteenMinuteLong)
                 snoozeState = SnoozeState(
                     active = true,
-                    formatter.format(end)
+                    formatter.format(end),
                 )
             }
 
@@ -103,7 +103,7 @@ class ConnectionViewModel(
                 val end = now.plusHours(oneHourLong)
                 snoozeState = SnoozeState(
                     active = true,
-                    formatter.format(end)
+                    formatter.format(end),
                 )
             }
 
@@ -118,8 +118,8 @@ class ConnectionViewModel(
                     snoozeState,
                     usageState,
                     favoriteServers,
-                    quickConnectServers
-                )
+                    quickConnectServers,
+                ),
             )
         }
     }
@@ -138,8 +138,8 @@ class ConnectionViewModel(
                     snoozeState,
                     usageState,
                     favoriteServers,
-                    quickConnectServers
-                )
+                    quickConnectServers,
+                ),
             )
         }
     }
@@ -194,7 +194,7 @@ class ConnectionViewModel(
                 connectionUseCase.startConnection(
                     it,
                     pendingIntent,
-                    notification
+                    notification,
                 ).collect()
             }
         }

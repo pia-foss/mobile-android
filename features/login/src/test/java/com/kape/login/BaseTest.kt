@@ -35,17 +35,17 @@ open class BaseTest : KoinTest {
             Arguments.of(
                 listOf(AccountRequestError(code = 402, message = null)),
                 ApiResult.Error(
-                    ApiError.AccountExpired
-                )
+                    ApiError.AccountExpired,
+                ),
             ),
-            Arguments.of(emptyList<AccountRequestError>(), ApiResult.Success)
+            Arguments.of(emptyList<AccountRequestError>(), ApiResult.Success),
         )
 
         @JvmStatic
         fun booleans() =
             Stream.of(
                 Arguments.of(true),
-                Arguments.of(false)
+                Arguments.of(false),
             )
     }
 }

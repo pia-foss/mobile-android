@@ -4,7 +4,7 @@ data class LoginScreenState(
     val idle: Boolean,
     val loading: Boolean,
     val error: LoginError?,
-    val flowCompleted: Boolean
+    val flowCompleted: Boolean,
 )
 
 val IDLE = LoginScreenState(idle = true, loading = false, error = null, flowCompleted = false)
