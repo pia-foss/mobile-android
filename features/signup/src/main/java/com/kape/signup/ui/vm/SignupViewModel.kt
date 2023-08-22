@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.util.*
 
 class SignupViewModel(
@@ -37,7 +36,7 @@ class SignupViewModel(
     private val consentUseCase: ConsentUseCase,
     private val useCase: SignupUseCase,
     private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
-    private val router: Router
+    private val router: Router,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(DEFAULT)
@@ -77,7 +76,7 @@ class SignupViewModel(
                                     yearlyPlan.plan.replaceFirstChar { first ->
                                         if (first.isLowerCase()) {
                                             first.titlecase(
-                                                Locale.getDefault()
+                                                Locale.getDefault(),
                                             )
                                         } else {
                                             first.toString()
@@ -91,7 +90,7 @@ class SignupViewModel(
                                     } ?: run {
                                         formatter.formatYearlyPlan(yearlyPlan.price)
                                         formatter.formatYearlyPerMonth(yearlyPlan.price)
-                                    }
+                                    },
 
                                 )
                             val monthly = Plan(
@@ -99,7 +98,7 @@ class SignupViewModel(
                                 monthlyPlan.plan.replaceFirstChar { first ->
                                     if (first.isLowerCase()) {
                                         first.titlecase(
-                                            Locale.getDefault()
+                                            Locale.getDefault(),
                                         )
                                     } else {
                                         first.toString()
@@ -110,7 +109,7 @@ class SignupViewModel(
                                     formatter.formatMonthlyPlan(formattedPrice)
                                 } ?: run {
                                     formatter.formatMonthlyPlan(monthlyPlan.price)
-                                }
+                                },
                             )
                             data = SubscriptionData(mutableStateOf(yearly), yearly, monthly)
                             data?.let { subscriptionData ->

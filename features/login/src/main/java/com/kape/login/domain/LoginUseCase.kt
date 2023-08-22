@@ -43,7 +43,7 @@ class LoginUseCase(private val source: AuthenticationDataSource) {
     suspend fun loginWithReceipt(
         receiptToken: String,
         productId: String,
-        packageName: String
+        packageName: String,
     ): Flow<LoginState> = flow {
         source.loginWithReceipt(receiptToken, productId, packageName).collect {
             when (it) {

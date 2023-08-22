@@ -6,11 +6,10 @@ import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
-import androidx.annotation.RequiresApi
 import org.koin.core.component.KoinComponent
 
 class NotificationChannelManager(
-    private val context: Context
+    private val context: Context,
 ) : KoinComponent {
 
     fun createVpnChannel() {
@@ -21,7 +20,7 @@ class NotificationChannelManager(
                 NotificationChannel(
                     NOTIFICATION_ID,
                     CHANNEL_ID,
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_DEFAULT,
                 )
             notificationChannel.lightColor = Color.BLUE
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE

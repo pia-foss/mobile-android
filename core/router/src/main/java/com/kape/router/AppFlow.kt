@@ -3,28 +3,30 @@ package com.kape.router
 interface AppFlow
 
 sealed class EnterFlow : AppFlow {
-    object Login : EnterFlow()
-    object VpnPermission : EnterFlow()
-    object Splash : EnterFlow()
-    object Connection : EnterFlow()
-    object RegionSelection : EnterFlow()
-    object Profile : EnterFlow()
-    object Subscribe : EnterFlow()
-    object TermsOfService : EnterFlow()
-    object PrivacyPolicy : EnterFlow()
-    object Survey : EnterFlow()
-    object Settings : EnterFlow()
+    data object Login : EnterFlow()
+    data object VpnPermission : EnterFlow()
+    data object Splash : EnterFlow()
+    data object Connection : EnterFlow()
+    data object RegionSelection : EnterFlow()
+    data object Profile : EnterFlow()
+    data object Subscribe : EnterFlow()
+    data object TermsOfService : EnterFlow()
+    data object PrivacyPolicy : EnterFlow()
+    data object Survey : EnterFlow()
+    data object Settings : EnterFlow()
+    data object GeneralSettings : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
-    object Login : ExitFlow()
-    object VpnPermission : ExitFlow()
-    object Splash : ExitFlow()
-    object Connection : ExitFlow()
-    object RegionSelection : ExitFlow()
-    object Profile : ExitFlow()
-    object Subscribe : ExitFlow()
-    object Settings : ExitFlow()
+    data object Login : ExitFlow()
+    data object VpnPermission : ExitFlow()
+    data object Splash : ExitFlow()
+    data object Connection : ExitFlow()
+    data object RegionSelection : ExitFlow()
+    data object Profile : ExitFlow()
+    data object Subscribe : ExitFlow()
+    data object Settings : ExitFlow()
+    data object GeneralSettings : ExitFlow()
 }
 
 object Back : AppFlow

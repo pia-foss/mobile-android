@@ -16,6 +16,6 @@ interface AuthenticationDataSource {
     fun loginWithReceipt(
         receiptToken: String,
         productId: String,
-        packageName: String
+        packageName: String,
     ): Flow<ApiResult>
 }

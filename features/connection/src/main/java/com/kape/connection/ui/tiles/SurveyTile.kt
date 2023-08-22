@@ -24,14 +24,14 @@ fun SurveyTile(onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(Space.NORMAL)
+            .padding(Space.NORMAL),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_alert_green),
                 contentDescription = null,
                 tint = Color.Unspecified,
-                modifier = Modifier.weight(0.1f)
+                modifier = Modifier.weight(0.1f),
             )
             Text(
                 text = stringResource(id = R.string.survey_message),
@@ -39,7 +39,7 @@ fun SurveyTile(onClick: () -> Unit) {
                 color = LocalColors.current.onSurface,
                 modifier = Modifier
                     .padding(horizontal = Space.SMALL)
-                    .weight(0.8f)
+                    .weight(0.8f),
             )
             Icon(
                 painter = painterResource(id = com.kape.ui.R.drawable.ic_close),
@@ -48,7 +48,7 @@ fun SurveyTile(onClick: () -> Unit) {
                 modifier = Modifier
                     .weight(0.1f)
                     .clickable {
-                    }
+                    },
             )
         }
         Spacer(modifier = Modifier.height(Space.SMALL))
@@ -60,7 +60,7 @@ fun SurveyTile(onClick: () -> Unit) {
                 .padding(horizontal = Space.VERY_BIG + Space.MINI)
                 .clickable {
                     onClick.invoke()
-                }
+                },
         )
     }
 }

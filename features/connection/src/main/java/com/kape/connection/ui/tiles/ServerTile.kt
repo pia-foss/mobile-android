@@ -32,14 +32,14 @@ fun ServerTile(server: Server? = null, modifier: Modifier) {
             Icon(
                 painter = painterResource(
                     id = server?.let { getFlagResource(LocalContext.current, it.iso) }
-                        ?: R.drawable.ic_map_empty
+                        ?: R.drawable.ic_map_empty,
                 ),
                 contentDescription = null,
                 tint = Color.Unspecified,
                 modifier = Modifier
                     .padding(top = Space.MINI, end = Space.MINI)
                     .width(Width.FLAG)
-                    .height(Height.FLAG)
+                    .height(Height.FLAG),
             )
             server?.let {
                 if (it.isDedicatedIp) {
@@ -49,7 +49,7 @@ fun ServerTile(server: Server? = null, modifier: Modifier) {
                         tint = Color.Unspecified,
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .size(Square.DIP_BADGE)
+                            .size(Square.DIP_BADGE),
                     )
                 }
             }
@@ -59,7 +59,7 @@ fun ServerTile(server: Server? = null, modifier: Modifier) {
         Text(
             text = server?.iso ?: "",
             fontSize = FontSize.Tiny,
-            color = LocalColors.current.onSurface
+            color = LocalColors.current.onSurface,
         )
     }
 }

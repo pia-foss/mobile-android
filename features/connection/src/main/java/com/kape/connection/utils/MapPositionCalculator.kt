@@ -86,7 +86,7 @@ class MapPositionCalculator {
         "US Silicon Valley" to Pair(37.593392, -122.04383),
         "US Texas" to Pair(33.623962, -109.654814),
         "US Washington DC" to Pair(38.907192, -77.036871),
-        "South Africa" to Pair(-30.559482, 22.937506)
+        "South Africa" to Pair(-30.559482, 22.937506),
     )
 
     private val defaultCoordinate = Pair(40.463667, -3.74922)
@@ -99,18 +99,18 @@ class MapPositionCalculator {
         server: Server,
         widthInPx: Float,
         heightInPx: Float,
-        diameterInPx: Float
+        diameterInPx: Float,
     ): PointPadding {
         val current = locations[server.name]
         val coordinates = Coordinates(
             current?.first ?: defaultCoordinate.first,
-            current?.second ?: defaultCoordinate.second
+            current?.second ?: defaultCoordinate.second,
         )
         return PointPadding(
             (getLocationX(coordinates.longitude, widthInPx) - diameterInPx / 2).toFloat(),
             (getLocationY(coordinates.latitude, heightInPx) - diameterInPx / 2).toFloat(),
             (getLocationX(coordinates.longitude, widthInPx) + diameterInPx / 2).toFloat(),
-            (getLocationY(coordinates.latitude, heightInPx) + diameterInPx / 2).toFloat()
+            (getLocationY(coordinates.latitude, heightInPx) + diameterInPx / 2).toFloat(),
         )
     }
 

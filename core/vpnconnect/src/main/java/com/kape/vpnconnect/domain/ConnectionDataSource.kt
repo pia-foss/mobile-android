@@ -8,7 +8,7 @@ interface ConnectionDataSource {
 
     fun startConnection(
         clientConfiguration: ClientConfiguration,
-        listener: VPNManagerConnectionListener
+        listener: VPNManagerConnectionListener,
     ): Flow<Boolean>
 
     fun stopConnection(): Flow<Boolean>

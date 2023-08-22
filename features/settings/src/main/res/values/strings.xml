@@ -15,17 +15,16 @@
     <string name="open_vpn">OpenVPN</string>
     <string name="wire_guard">Wireguard</string>
 
-    <string-array name="protocols">
-        <item>@string/open_vpn</item>
-        <item>@string/wire_guard</item>
-    </string-array>
-
     <!--    Automation     -->
     <string name="enabled">Enabled</string>
     <string name="disabled">Disabled</string>
 
-    <string-array name="automation">
-        <item>@string/enabled</item>
-        <item>@string/disabled</item>
-    </string-array>
+    <!--    General Settings    -->
+    <string name="connect_on_boot_title">Launch on System Startup</string>
+    <string name="connect_on_boot_description">Connect on system start</string>
+    <string name="connect_on_launch_title">Connect on Launch</string>
+    <string name="connect_on_launch_description">Connect when app is started</string>
+    <string name="connect_on_update_title">Connect on app update</string>
+    <string name="connect_on_update_description">After the app is updated, the app will autoconnect to keep you protected.</string>
+
 </resources>

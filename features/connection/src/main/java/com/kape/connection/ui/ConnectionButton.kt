@@ -27,7 +27,7 @@ fun ConnectionButton(state: ConnectionState, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
+            .wrapContentHeight(),
     ) {
         if (state.showProgress) {
             CircularProgressIndicator(
@@ -35,20 +35,20 @@ fun ConnectionButton(state: ConnectionState, onClick: () -> Unit) {
                     .size(Square.CONNECTION_PROGRESS)
                     .align(Alignment.Center),
                 color = state.color,
-                strokeWidth = Space.SMALL
+                strokeWidth = Space.SMALL,
             )
         }
         IconButton(
             modifier = Modifier
                 .align(Alignment.Center)
                 .size(Square.CONNECTION_PROGRESS),
-            onClick = onClick
+            onClick = onClick,
         ) {
             Icon(
                 painter = painterResource(id = state.resId),
                 contentDescription = stringResource(com.kape.ui.R.string.button),
                 tint = Color.Unspecified,
-                modifier = Modifier.size(Square.CONNECTION_IMAGE)
+                modifier = Modifier.size(Square.CONNECTION_IMAGE),
             )
         }
     }

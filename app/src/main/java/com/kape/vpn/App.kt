@@ -9,6 +9,7 @@ import com.kape.payments.di.paymentsModule
 import com.kape.vpn.di.appModule
 import com.kape.profile.di.profileModule
 import com.kape.regionselection.di.regionModule
+import com.kape.settings.di.settingsModule
 import com.kape.shareevents.di.kpiModule
 import com.kape.sidemenu.di.sideMenuModule
 import com.kape.signup.di.signupModule
@@ -44,6 +45,7 @@ class App : Application() {
                 add(signupModule(appModule))
                 add(kpiModule(appModule))
                 add(connectionModule)
+                add(settingsModule(appBarModule))
             },
         )
     }

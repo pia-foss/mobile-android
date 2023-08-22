@@ -37,29 +37,29 @@ fun ConsentScreen(viewModel: SignupViewModel) {
     val acceptProperties =
         ButtonProperties(label = stringResource(id = R.string.accept).toUpperCase(Locale.current), enabled = true, onClick = {
             viewModel.allowEventSharing(true)
-        })
+        },)
     val declineProperties =
         ButtonProperties(label = stringResource(id = R.string.no_thanks).toUpperCase(Locale.current), enabled = true, onClick = {
             viewModel.allowEventSharing(false)
-        })
+        },)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .fillMaxSize()
+                .fillMaxSize(),
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_consent),
                 contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(Space.MEDIUM)
+                    .padding(Space.MEDIUM),
             )
             Text(
                 text = stringResource(id = R.string.consent_title),
                 fontSize = FontSize.Big,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier.align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             Text(
@@ -67,7 +67,7 @@ fun ConsentScreen(viewModel: SignupViewModel) {
                 fontSize = FontSize.Normal,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(Space.MEDIUM)
+                    .padding(Space.MEDIUM),
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             Text(
@@ -78,7 +78,7 @@ fun ConsentScreen(viewModel: SignupViewModel) {
                     .align(Alignment.CenterHorizontally)
                     .clickable {
                         showMoreInfo.value = true
-                    }
+                    },
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = acceptProperties)

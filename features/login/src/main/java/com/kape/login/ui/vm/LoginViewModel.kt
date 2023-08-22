@@ -19,13 +19,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
     private val userLoggedInUseCase: GetUserLoggedInUseCase,
     private val paymentProvider: PaymentProvider,
-    private val router: Router
+    private val router: Router,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(IDLE)
@@ -41,7 +40,7 @@ class LoginViewModel(
                     is PurchaseHistoryState.PurchaseHistorySuccess -> loginUseCase.loginWithReceipt(
                         it.purchaseToken,
                         it.productId,
-                        packageName
+                        packageName,
                     ).collect { state ->
                         if (state == LoginState.Successful) {
                             router.handleFlow(ExitFlow.Login)

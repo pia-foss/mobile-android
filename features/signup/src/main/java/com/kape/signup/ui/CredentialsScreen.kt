@@ -38,7 +38,7 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) {
             enabled = true,
             onClick = {
                 viewModel.completeSubscription()
-            }
+            },
         )
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -48,7 +48,7 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) {
             modifier = Modifier
                 .padding(Space.NORMAL)
                 .height(Height.SMALL_LOGO)
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally),
         )
         Image(
             painter = painterResource(id = R.drawable.ic_complete_redeem),
@@ -56,12 +56,12 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) {
             modifier = Modifier
                 .padding(Space.NORMAL)
                 .height(Height.BIG_LOGO)
-                .align(Alignment.CenterHorizontally)
+                .align(Alignment.CenterHorizontally),
         )
         Text(
             text = stringResource(id = R.string.credentials_title),
             fontSize = FontSize.Title,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally),
         )
         Spacer(modifier = Modifier.height(Space.NORMAL))
         Text(
@@ -71,7 +71,7 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(horizontal = Space.MEDIUM)
+                .padding(horizontal = Space.MEDIUM),
         )
         Spacer(modifier = Modifier.height(Space.NORMAL))
         Text(
@@ -81,19 +81,19 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(horizontal = Space.MEDIUM)
+                .padding(horizontal = Space.MEDIUM),
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = Space.MEDIUM, end = Space.MEDIUM, top = Space.NORMAL)
                 .border(1.dp, shape = OutlineBackground, color = LocalColors.current.outline)
-                .padding(Space.NORMAL)
+                .padding(Space.NORMAL),
         ) {
             Text(
                 text = stringResource(id = R.string.username),
                 color = LocalColors.current.outlineVariant,
-                fontSize = FontSize.Normal
+                fontSize = FontSize.Normal,
             )
             Text(text = credentials.username, fontSize = FontSize.Title)
         }
@@ -103,19 +103,19 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) {
                 .fillMaxWidth()
                 .padding(start = Space.MEDIUM, end = Space.MEDIUM, bottom = Space.NORMAL)
                 .border(1.dp, shape = OutlineBackground, color = LocalColors.current.outline)
-                .padding(Space.NORMAL)
+                .padding(Space.NORMAL),
         ) {
             Text(
                 text = stringResource(id = R.string.password),
                 color = LocalColors.current.outlineVariant,
-                fontSize = FontSize.Normal
+                fontSize = FontSize.Normal,
             )
             Text(text = credentials.password, fontSize = FontSize.Title)
         }
         Spacer(modifier = Modifier.height(Space.MINI))
         PrimaryButton(
             modifier = Modifier.padding(horizontal = Space.MEDIUM),
-            properties = buttonProperties
+            properties = buttonProperties,
         )
     }
 }

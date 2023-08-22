@@ -39,7 +39,8 @@ fun ProfileScreen() {
     Column {
         NavigationAppBar(
             viewModel = appBarViewModel,
-            onLeftButtonClick = { viewModel.navigateBack() })
+            onLeftButtonClick = { viewModel.navigateBack() },
+        )
         if (state.loading) {
             Box(modifier = Modifier.fillMaxSize()) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -49,36 +50,36 @@ fun ProfileScreen() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(LocalColors.current.surfaceVariant)
-                    .padding(horizontal = Space.NORMAL)
+                    .padding(horizontal = Space.NORMAL),
             ) {
                 Spacer(modifier = Modifier.height(Space.MEDIUM))
                 Text(
                     color = LocalColors.current.outlineVariant,
                     text = stringResource(id = R.string.username),
-                    fontSize = FontSize.Small
+                    fontSize = FontSize.Small,
                 )
                 Text(
                     color = LocalColors.current.onSurfaceVariant,
-                    text = state.username
+                    text = state.username,
                 )
                 Spacer(modifier = Modifier.height(Space.MEDIUM))
                 Text(
                     color = LocalColors.current.outlineVariant,
                     text = stringResource(id = R.string.message_other_devices),
-                    fontSize = FontSize.Small
+                    fontSize = FontSize.Small,
                 )
                 Spacer(modifier = Modifier.height(Space.NORMAL))
                 Row {
                     Text(
                         color = LocalColors.current.outlineVariant,
                         text = stringResource(id = if (state.expired) R.string.message_expired else R.string.message_expiration),
-                        fontSize = FontSize.Small
+                        fontSize = FontSize.Small,
                     )
                     Spacer(modifier = Modifier.width(Space.MINI))
                     Text(
                         color = LocalColors.current.onSurface,
                         text = if (state.expired) stringResource(id = R.string.subscription_status_expired) else state.expirationDate,
-                        fontSize = FontSize.Small
+                        fontSize = FontSize.Small,
                     )
                 }
                 Spacer(modifier = Modifier.height(Space.NORMAL))

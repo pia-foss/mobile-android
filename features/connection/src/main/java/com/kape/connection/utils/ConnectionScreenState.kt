@@ -16,7 +16,7 @@ data class ConnectionScreenState(
     val snoozeState: SnoozeState,
     val usageState: UsageState,
     val favoriteServers: List<Server> = emptyList(),
-    val quickConnectServers: List<Server> = emptyList()
+    val quickConnectServers: List<Server> = emptyList(),
 )
 
 val IDLE =

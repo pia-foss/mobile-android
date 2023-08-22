@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class ConnectionManager(
-    private val connectionValues: Map<ConnectionStatus, String>
+    private val connectionValues: Map<ConnectionStatus, String>,
 ) : VPNManagerConnectionListener {
     private val _connectionStatus =
         MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)

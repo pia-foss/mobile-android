@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.kape.payments.data.models.Subscription
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -26,7 +25,7 @@ internal class GetSubscriptionsUseCaseTest {
     fun `getSubscriptions() - success`() = runTest {
         val expected = listOf(
             Subscription("id", false, "monthly", 3.99),
-            Subscription("id", false, "yearly", 49.99)
+            Subscription("id", false, "yearly", 49.99),
         )
         every { source.getAvailableSubscriptions() } returns flow {
             emit(expected)

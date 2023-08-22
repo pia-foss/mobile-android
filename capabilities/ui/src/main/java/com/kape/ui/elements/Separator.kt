@@ -15,6 +15,6 @@ fun Separator() {
         modifier = Modifier
             .fillMaxWidth()
             .height(Height.SEPARATOR)
-            .background(LocalColors.current.outline)
+            .background(LocalColors.current.outline),
     )
 }

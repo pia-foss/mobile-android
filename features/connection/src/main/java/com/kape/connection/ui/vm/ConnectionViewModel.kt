@@ -4,7 +4,6 @@ import android.app.Notification
 import android.app.PendingIntent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.connection.ui.tiles.MAX_SERVERS
 import com.kape.connection.utils.ConnectionPrefs
 import com.kape.connection.utils.ConnectionScreenState
@@ -18,12 +17,12 @@ import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Router
 import com.kape.utils.server.Server
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -33,7 +32,7 @@ class ConnectionViewModel(
     private val updateLatencyUseCase: UpdateLatencyUseCase,
     private val connectionUseCase: ConnectionUseCase,
     private val router: Router,
-    private val prefs: ConnectionPrefs
+    private val prefs: ConnectionPrefs,
 ) : ViewModel(), KoinComponent {
 
     private val oneHourLong = 1L
@@ -72,8 +71,8 @@ class ConnectionViewModel(
                         snoozeState,
                         usageState,
                         favoriteServers,
-                        quickConnectServers
-                    )
+                        quickConnectServers,
+                    ),
                 )
             }
         }
@@ -88,7 +87,7 @@ class ConnectionViewModel(
                 val end = now.plusMinutes(fiveMinuteLong)
                 snoozeState = SnoozeState(
                     active = true,
-                    formatter.format(end)
+                    formatter.format(end),
                 )
             }
 
@@ -96,7 +95,7 @@ class ConnectionViewModel(
                 val end = now.plusMinutes(fifteenMinuteLong)
                 snoozeState = SnoozeState(
                     active = true,
-                    formatter.format(end)
+                    formatter.format(end),
                 )
             }
 
@@ -104,7 +103,7 @@ class ConnectionViewModel(
                 val end = now.plusHours(oneHourLong)
                 snoozeState = SnoozeState(
                     active = true,
-                    formatter.format(end)
+                    formatter.format(end),
                 )
             }
 
@@ -119,8 +118,8 @@ class ConnectionViewModel(
                     snoozeState,
                     usageState,
                     favoriteServers,
-                    quickConnectServers
-                )
+                    quickConnectServers,
+                ),
             )
         }
     }
@@ -139,8 +138,8 @@ class ConnectionViewModel(
                     snoozeState,
                     usageState,
                     favoriteServers,
-                    quickConnectServers
-                )
+                    quickConnectServers,
+                ),
             )
         }
     }
@@ -195,7 +194,7 @@ class ConnectionViewModel(
                 connectionUseCase.startConnection(
                     it,
                     pendingIntent,
-                    notification
+                    notification,
                 ).collect()
             }
         }

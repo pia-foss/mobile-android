@@ -40,31 +40,31 @@ fun SnoozeTile(state: SnoozeState, viewModel: ConnectionViewModel) {
 @Composable
 private fun SnoozeTileDefault(viewModel: ConnectionViewModel) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         SnoozeTileButton(
             labelId = R.string.snooze_5_minutes,
             onClick = { viewModel.snooze(viewModel.SNOOZE_SHORT_MS) },
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
         Spacer(modifier = Modifier.weight(0.1f))
         SnoozeTileButton(
             labelId = R.string.snooze_15_minutes,
             onClick = { viewModel.snooze(viewModel.SNOOZE_MEDIUM_MS) },
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
         Spacer(modifier = Modifier.weight(0.1f))
         SnoozeTileButton(
             labelId = R.string.snooze_1_hour,
             onClick = { viewModel.snooze(viewModel.SNOOZE_LONG_MS) },
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
     }
     Spacer(modifier = Modifier.height(Space.SMALL))
     Text(
         text = stringResource(id = R.string.snooze_description),
         color = LocalColors.current.onSurface,
-        fontSize = FontSize.Tiny
+        fontSize = FontSize.Tiny,
     )
 }
 
@@ -76,7 +76,7 @@ private fun SnoozeTileActive(activeUntil: String?, onResumeClick: () -> Unit) {
         Text(
             text = stringResource(id = R.string.paused_until).format(activeUntil),
             color = LocalColors.current.onSurface,
-            fontSize = FontSize.Tiny
+            fontSize = FontSize.Tiny,
         )
     }
 }
@@ -90,12 +90,12 @@ private fun SnoozeTileButton(labelId: Int, onClick: () -> Unit, modifier: Modifi
             .clickable {
                 onClick.invoke()
             },
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = stringResource(id = labelId),
             fontSize = FontSize.Tiny,
-            color = LocalColors.current.onSurfaceVariant
+            color = LocalColors.current.onSurfaceVariant,
         )
     }
 }

@@ -11,7 +11,7 @@ class SignupUseCase(
     private val signupDataSource: SignupDataSource,
     private val loginUseCase: LoginUseCase,
     private val emailDataSource: EmailDataSource,
-    private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase
+    private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
 ) {
 
     suspend fun signup(email: String): Flow<Credentials?> = flow {

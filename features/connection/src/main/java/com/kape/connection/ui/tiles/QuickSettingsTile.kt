@@ -34,7 +34,7 @@ fun QuickSettingsTile() {
     Box(modifier = Modifier.fillMaxWidth()) {
         ConnectionTile(labelId = R.string.quick_settings) {
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 QuickSetting(
                     iconId = R.drawable.ic_killswitch,
@@ -42,7 +42,7 @@ fun QuickSettingsTile() {
                     modifier = Modifier.weight(1f),
                     onClick = {
                         // TODO: implement click
-                    }
+                    },
                 )
                 QuickSetting(
                     iconId = R.drawable.ic_network_management_inactive,
@@ -50,7 +50,7 @@ fun QuickSettingsTile() {
                     modifier = Modifier.weight(1f),
                     onClick = {
                         // TODO: implement click
-                    }
+                    },
                 )
                 QuickSetting(
                     iconId = R.drawable.ic_private_browser,
@@ -58,7 +58,7 @@ fun QuickSettingsTile() {
                     modifier = Modifier.weight(1f),
                     onClick = {
                         // TODO: implement click
-                    }
+                    },
                 )
             }
         }
@@ -69,12 +69,12 @@ fun QuickSettingsTile() {
                 .align(CenterEnd)
                 .padding(end = Space.NORMAL)
                 .width(Width.QUICK_SETTINGS_ARROW)
-                .height(Height.QUICK_SETTINGS_ARROW)
+                .height(Height.QUICK_SETTINGS_ARROW),
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow),
                 contentDescription = null,
-                tint = Color.Unspecified
+                tint = Color.Unspecified,
             )
         }
     }
@@ -86,7 +86,7 @@ fun QuickSetting(iconId: Int, labelId: Int, modifier: Modifier, onClick: () -> U
         modifier = modifier.clickable {
             onClick.invoke()
         },
-        horizontalAlignment = CenterHorizontally
+        horizontalAlignment = CenterHorizontally,
     ) {
         Icon(
             painter = painterResource(id = iconId),
@@ -94,13 +94,13 @@ fun QuickSetting(iconId: Int, labelId: Int, modifier: Modifier, onClick: () -> U
             tint = Color.Unspecified,
             modifier = Modifier
                 .size(Square.QUICK_SETTING_ICON)
-                .align(CenterHorizontally)
+                .align(CenterHorizontally),
         )
         Spacer(modifier = Modifier.height(Space.SMALL))
         Text(
             text = stringResource(id = labelId),
             color = LocalColors.current.onSurface,
-            fontSize = FontSize.Small
+            fontSize = FontSize.Small,
         )
     }
 }

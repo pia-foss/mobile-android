@@ -3,7 +3,7 @@ package com.kape.utils.server
 data class ServerInfo(
     var autoRegions: List<String>? = null,
     var udpPorts: List<Int>? = null,
-    var tcpPorts: List<Int>? = null
+    var tcpPorts: List<Int>? = null,
 ) {
 
     fun isValid(): Boolean {

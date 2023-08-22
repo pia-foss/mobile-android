@@ -16,7 +16,7 @@ fun NoNetworkBanner(noNetworkMessage: String) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(LocalColors.current.error)
+            .background(LocalColors.current.error),
     ) {
         Text(
             text = noNetworkMessage,
@@ -24,7 +24,7 @@ fun NoNetworkBanner(noNetworkMessage: String) {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Space.NORMAL)
+                .padding(Space.NORMAL),
         )
     }
 }

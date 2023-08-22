@@ -78,13 +78,13 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                         prefs.storePurchaseData(
                             PurchaseData(
                                 it.userData.userId,
-                                it.receipts.first().receiptId
-                            )
+                                it.receipts.first().receiptId,
+                            ),
                         )
                         purchaseState.value = PurchaseState.PurchaseSuccess
                     }
                 }
-            }
+            },
         )
     }
 
@@ -127,8 +127,8 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                     prefs.storePurchaseData(
                         PurchaseData(
                             purchase.userData.userId,
-                            purchase.receipt.receiptId
-                        )
+                            purchase.receipt.receiptId,
+                        ),
                     )
                     purchaseState.value = PurchaseState.PurchaseSuccess
                 }

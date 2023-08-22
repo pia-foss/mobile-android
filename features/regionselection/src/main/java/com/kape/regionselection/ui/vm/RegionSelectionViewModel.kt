@@ -23,13 +23,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class RegionSelectionViewModel(
     private val getRegionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
     private val router: Router,
-    private val prefs: RegionPrefs
+    private val prefs: RegionPrefs,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(IDLE)
@@ -64,8 +63,8 @@ class RegionSelectionViewModel(
                     isAllowsPF = false,
                     isOffline = false,
                     dipToken = null,
-                    dedicatedIp = null
-                )
+                    dedicatedIp = null,
+                ),
             )
         }
     }
@@ -111,8 +110,8 @@ class RegionSelectionViewModel(
             _state.emit(
                 loaded(
                     sorted.ifEmpty { regions }
-                        .filter { it.name.toLowerCase(Locale.current).contains(value.toLowerCase(Locale.current)) }
-                )
+                        .filter { it.name.toLowerCase(Locale.current).contains(value.toLowerCase(Locale.current)) },
+                ),
             )
         }
     }

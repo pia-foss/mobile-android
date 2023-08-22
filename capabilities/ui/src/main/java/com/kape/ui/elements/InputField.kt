@@ -37,7 +37,7 @@ fun InputField(modifier: Modifier, properties: InputFieldProperties) {
             modifier = Modifier
                 .fillMaxWidth()
                 .semantics { contentDescription = properties.label },
-            label = { Text(properties.label) }
+            label = { Text(properties.label) },
         )
         properties.error?.let {
             Text(
@@ -46,7 +46,7 @@ fun InputField(modifier: Modifier, properties: InputFieldProperties) {
                 modifier = Modifier
                     .padding(vertical = Space.SMALL_VERTICAL)
                     .semantics { contentDescription = it }
-                    .testTag("errorMessage")
+                    .testTag("errorMessage"),
             )
         }
     }

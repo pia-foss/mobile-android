@@ -12,14 +12,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class SideMenuViewModel(
     private val profileUseCase: GetProfileUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val versionCode: Int,
     private val versionName: String,
-    private val router: Router
+    private val router: Router,
 ) :
     ViewModel(), KoinComponent {
 
@@ -36,8 +35,8 @@ class SideMenuViewModel(
                             versionCode,
                             versionName,
                             it.subscription.showExpire,
-                            it.subscription.daysRemaining
-                        )
+                            it.subscription.daysRemaining,
+                        ),
                     )
                 }
             }

@@ -20,7 +20,7 @@ import com.kape.ui.utils.LocalColors
 fun PIATheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -43,7 +43,7 @@ fun PIATheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }
 
@@ -51,7 +51,7 @@ fun PIATheme(
 fun PiaScreen(
     darkTheme: Boolean = isSystemInDarkTheme(),
     vararg compositionLocalValues: ProvidedValue<*>,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val materialColorScheme = if (darkTheme) AppDarkColorScheme else AppLightColorScheme
     val piaColorScheme = if (darkTheme) AppDarkColorScheme else AppLightColorScheme
@@ -64,7 +64,7 @@ fun PiaScreen(
         MaterialTheme(
             typography = Typography,
             colorScheme = materialColorScheme,
-            content = content
+            content = content,
         )
     }
 }

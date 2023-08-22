@@ -1,6 +1,5 @@
 package com.kape.appbar.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,7 +10,8 @@ import com.kape.vpnconnect.utils.ConnectionStatus
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-class AppBarViewModel(private val connectionManager: ConnectionManager) : ViewModel(),
+class AppBarViewModel(private val connectionManager: ConnectionManager) :
+    ViewModel(),
     KoinComponent {
 
     var appBarText by mutableStateOf("")

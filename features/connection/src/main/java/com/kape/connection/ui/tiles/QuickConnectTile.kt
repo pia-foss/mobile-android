@@ -12,7 +12,7 @@ import com.kape.utils.server.Server
 fun QuickConnectTile(servers: List<Server>) {
     ConnectionTile(labelId = R.string.quick_connect) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             if (servers.isEmpty()) {
                 for (index in 1..MAX_SERVERS) {
@@ -23,7 +23,7 @@ fun QuickConnectTile(servers: List<Server>) {
                     if (servers.getOrNull(index) != null) {
                         ServerTile(
                             server = servers[index],
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                     } else {
                         ServerTile(modifier = Modifier.weight(1f))

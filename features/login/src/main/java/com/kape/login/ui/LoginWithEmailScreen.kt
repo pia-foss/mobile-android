@@ -57,7 +57,7 @@ fun LoginWithEmailScreen(navController: NavController) {
             } else {
                 Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
             }
-        })
+        },)
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (!isConnected) {
@@ -67,14 +67,14 @@ fun LoginWithEmailScreen(navController: NavController) {
             painter = painterResource(id = com.kape.ui.R.drawable.ic_pia_logo),
             contentDescription = "logo",
             modifier = Modifier
-                .padding(start = 150.dp, top = 36.dp, bottom = Space.MEDIUM, end = 150.dp)
+                .padding(start = 150.dp, top = 36.dp, bottom = Space.MEDIUM, end = 150.dp),
         )
         Text(
             text = stringResource(id = R.string.sign_in),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(bottom = Space.MEDIUM)
+                .padding(bottom = Space.MEDIUM),
         )
         InputField(modifier = Modifier.padding(Space.MEDIUM, Space.SMALL), properties = emailProperties)
         PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = buttonProperties)
@@ -85,7 +85,7 @@ fun LoginWithEmailScreen(navController: NavController) {
         LaunchedEffect(key1 = state, block = {
             Toast.makeText(currentContext, message, Toast.LENGTH_SHORT).show()
             navController.navigate(Login.Main)
-        })
+        },)
     }
 }
 
@@ -95,7 +95,7 @@ private fun getErrorMessage(state: LoginScreenState): String? {
         LoginError.Expired -> "account expired flow" // TODO: handle when signup module is built
         LoginError.Failed,
         LoginError.Invalid,
-        LoginError.Throttled
+        LoginError.Throttled,
         -> stringResource(id = R.string.error_missing_email)
         LoginError.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
         null -> null

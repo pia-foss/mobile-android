@@ -4,7 +4,7 @@ data class ProfileScreenState(
     val loading: Boolean,
     val username: String,
     val expirationDate: String,
-    val expired: Boolean
+    val expired: Boolean,
 )
 
 val IDLE = ProfileScreenState(loading = false, username = "", expirationDate = "", expired = false)
@@ -14,5 +14,5 @@ fun createSuccessState(username: String, expirationDate: String, expired: Boolea
     loading = false,
     username = username,
     expirationDate = expirationDate,
-    expired = expired
+    expired = expired,
 )

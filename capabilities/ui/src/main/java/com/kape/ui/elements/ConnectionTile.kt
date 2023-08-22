@@ -18,12 +18,12 @@ fun ConnectionTile(labelId: Int, content: @Composable () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(Space.NORMAL)
+            .padding(Space.NORMAL),
     ) {
         Text(
             text = stringResource(id = labelId),
             color = LocalColors.current.outlineVariant,
-            fontSize = FontSize.Small
+            fontSize = FontSize.Small,
         )
         Spacer(modifier = Modifier.height(Space.SMALL))
         content()

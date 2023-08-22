@@ -58,7 +58,7 @@ internal class SignupUseCaseTest : KoinTest {
         @JvmStatic
         fun arguments() = Stream.of(
             Arguments.of(credentials, purchaseData),
-            Arguments.of(nullCredentials, missingPurchaseData)
+            Arguments.of(nullCredentials, missingPurchaseData),
         )
     }
 }

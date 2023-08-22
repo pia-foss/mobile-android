@@ -40,7 +40,7 @@ internal class SetEmailUseCaseTest {
         fun booleans() =
             Stream.of(
                 Arguments.of(true),
-                Arguments.of(false)
+                Arguments.of(false),
             )
     }
 }

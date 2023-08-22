@@ -10,8 +10,6 @@ import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
@@ -19,7 +17,7 @@ import org.koin.core.component.KoinComponent
 class ConnectionUseCase(
     private val connectionSource: ConnectionDataSource,
     private val certificate: String,
-    private val connectionManager: ConnectionManager
+    private val connectionManager: ConnectionManager,
 ) : KoinComponent {
 
     fun startConnection(
@@ -80,21 +78,21 @@ class ConnectionUseCase(
                     ServerList.Server(
                         ip = ip,
                         commonName = cn,
-                        latency = server.latency?.toLong()
-                    )
-                )
+                        latency = server.latency?.toLong(),
+                    ),
+                ),
             ),
             openVpnClientConfiguration = OpenVpnClientConfiguration(
                 caCertificate = certificate,
                 cipher = "AES-128-GCM",
                 transport = transport,
                 username = connectionSource.getVpnToken().substring(0, index),
-                password = connectionSource.getVpnToken().substring(index + 1)
+                password = connectionSource.getVpnToken().substring(index + 1),
             ),
             wireguardClientConfiguration = WireguardClientConfiguration(
                 token = connectionSource.getVpnToken(),
-                pinningCertificate = certificate
-            )
+                pinningCertificate = certificate,
+            ),
         )
 
         connectionSource.startConnection(clientConfiguration, connectionManager).collect {

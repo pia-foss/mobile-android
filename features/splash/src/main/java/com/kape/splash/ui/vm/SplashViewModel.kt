@@ -8,12 +8,11 @@ import com.kape.router.ExitFlow
 import com.kape.router.Router
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class SplashViewModel(
     private val useCase: GetSubscriptionsUseCase,
     private val notificationPermissionManager: NotificationPermissionManager,
-    private val router: Router
+    private val router: Router,
 ) : ViewModel(), KoinComponent {
 
     fun load() = viewModelScope.launch {
@@ -24,5 +23,4 @@ class SplashViewModel(
 
     fun isNotificationPermissionGranted(): Boolean =
         notificationPermissionManager.isNotificationsPermissionGranted()
-
 }

@@ -14,7 +14,7 @@ const val MAX_SERVERS = 6
 fun FavoritesTile(favoriteServers: List<Server>) {
     ConnectionTile(labelId = R.string.favorite_servers) {
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             if (favoriteServers.isEmpty()) {
                 for (index in 1..MAX_SERVERS) {
@@ -25,7 +25,7 @@ fun FavoritesTile(favoriteServers: List<Server>) {
                     if (favoriteServers.getOrNull(index) != null) {
                         ServerTile(
                             server = favoriteServers[index],
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                     } else {
                         ServerTile(modifier = Modifier.weight(1f))

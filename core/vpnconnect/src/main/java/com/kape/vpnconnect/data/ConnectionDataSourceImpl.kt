@@ -9,16 +9,15 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 class ConnectionDataSourceImpl(
     private val connectionApi: VPNManagerAPI,
-    private val accountApi: AndroidAccountAPI
+    private val accountApi: AndroidAccountAPI,
 ) : ConnectionDataSource, KoinComponent {
 
     override fun startConnection(
         clientConfiguration: ClientConfiguration,
-        listener: VPNManagerConnectionListener
+        listener: VPNManagerConnectionListener,
     ): Flow<Boolean> =
         callbackFlow {
             connectionApi.addConnectionListener(listener) {}

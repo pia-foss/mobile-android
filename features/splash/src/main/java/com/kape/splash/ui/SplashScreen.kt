@@ -19,12 +19,11 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) {
-
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {
             viewModel.load()
-        }
+        },
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -33,7 +32,7 @@ fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) {
             contentDescription = "logo",
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(Space.HUGE)
+                .padding(Space.HUGE),
         )
     }
 

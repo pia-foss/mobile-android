@@ -40,7 +40,7 @@ fun RegionInformationTile(server: Server, onClick: () -> Unit) {
             .padding(vertical = Space.NORMAL)
             .clickable {
                 onClick.invoke()
-            }
+            },
     ) {
         Image(
             modifier = Modifier
@@ -50,9 +50,9 @@ fun RegionInformationTile(server: Server, onClick: () -> Unit) {
                 .align(Alignment.CenterEnd),
             painter = painterResource(id = R.drawable.map_full),
             contentDescription = stringResource(
-                id = R.string.map
+                id = R.string.map,
             ),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.FillBounds,
         )
 
         MapLocation(
@@ -61,25 +61,25 @@ fun RegionInformationTile(server: Server, onClick: () -> Unit) {
                 .padding(Space.NORMAL)
                 .width(Width.REGION_INFO_MAP)
                 .height(Height.REGION_INFO_MAP)
-                .align(Alignment.CenterEnd)
+                .align(Alignment.CenterEnd),
         )
 
         Column(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(Space.NORMAL)
+                .padding(Space.NORMAL),
 
         ) {
             Text(
                 text = stringResource(id = R.string.current_region),
                 color = LocalColors.current.outlineVariant,
-                fontSize = FontSize.Small
+                fontSize = FontSize.Small,
             )
             Spacer(modifier = Modifier.height(Space.MINI))
             Text(
                 text = server.name,
                 color = LocalColors.current.onSurface,
-                fontSize = FontSize.Normal
+                fontSize = FontSize.Normal,
             )
         }
     }
@@ -95,18 +95,18 @@ fun MapLocation(server: Server, modifier: Modifier) {
             server,
             widthInPx,
             heightInPx,
-            diameterInPx
+            diameterInPx,
         )
 
     Column(
         modifier = modifier
-            .padding(start = getDp(pixels = padding.start), top = getDp(pixels = padding.top))
+            .padding(start = getDp(pixels = padding.start), top = getDp(pixels = padding.top)),
     ) {
         Box(
             modifier = Modifier
                 .size(Square.REGION_PIN)
                 .background(color = LocalColors.current.primary, shape = CircleShape)
-                .border(width = 1.dp, color = LocalColors.current.primary, shape = CircleShape)
+                .border(width = 1.dp, color = LocalColors.current.primary, shape = CircleShape),
         )
     }
 }
