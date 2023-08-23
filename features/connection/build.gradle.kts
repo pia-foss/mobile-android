@@ -56,6 +56,7 @@ dependencies {
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))
+    implementation(project(":core:localprefs:connection"))
     implementation(project(":core:utils"))
     implementation(project(":features:appbar"))
     implementation(project(":features:settings"))

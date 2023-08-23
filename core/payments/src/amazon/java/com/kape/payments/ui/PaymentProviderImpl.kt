@@ -9,11 +9,11 @@ import com.amazon.device.iap.model.ProductDataResponse
 import com.amazon.device.iap.model.PurchaseResponse
 import com.amazon.device.iap.model.PurchaseUpdatesResponse
 import com.amazon.device.iap.model.UserDataResponse
-import com.kape.payments.data.models.PurchaseData
-import com.kape.payments.data.models.Subscription
+import com.kape.payments.SubscriptionPrefs
+import com.kape.payments.data.PurchaseData
+import com.kape.payments.data.Subscription
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
-import com.kape.payments.utils.SubscriptionPrefs
 import com.kape.payments.utils.monthlySubscription
 import com.kape.payments.utils.yearlySubscription
 import kotlinx.coroutines.flow.MutableStateFlow

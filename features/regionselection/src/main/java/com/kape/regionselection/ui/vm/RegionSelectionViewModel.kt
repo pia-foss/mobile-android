@@ -6,11 +6,11 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.regions.RegionPrefs
 import com.kape.regionselection.domain.GetRegionsUseCase
 import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.regionselection.utils.IDLE
 import com.kape.regionselection.utils.LOADING
-import com.kape.regionselection.utils.RegionPrefs
 import com.kape.regionselection.utils.RegionSelectionScreenState
 import com.kape.regionselection.utils.loaded
 import com.kape.regionselection.utils.showFilteringOptions

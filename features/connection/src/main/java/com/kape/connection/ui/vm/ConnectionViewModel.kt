@@ -4,8 +4,8 @@ import android.app.Notification
 import android.app.PendingIntent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.connection.ConnectionPrefs
 import com.kape.connection.ui.tiles.MAX_SERVERS
-import com.kape.connection.utils.ConnectionPrefs
 import com.kape.connection.utils.ConnectionScreenState
 import com.kape.connection.utils.IDLE
 import com.kape.connection.utils.SNOOZE_STATE_DEFAULT

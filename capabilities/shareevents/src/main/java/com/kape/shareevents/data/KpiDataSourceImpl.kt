@@ -1,10 +1,10 @@
 package com.kape.shareevents.data
 
+import com.kape.shareevents.KpiPrefs
 import com.kape.shareevents.data.models.KpiConnectionEvent
 import com.kape.shareevents.data.models.KpiConnectionSource
 import com.kape.shareevents.data.models.KpiEventPropertyKey
 import com.kape.shareevents.domain.KpiDataSource
-import com.kape.shareevents.utils.KpiPrefs
 import com.privateinternetaccess.kpi.KPIAPI
 import com.privateinternetaccess.kpi.KPIClientEvent
 import kotlinx.coroutines.channels.awaitClose

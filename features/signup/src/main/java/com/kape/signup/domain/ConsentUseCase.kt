@@ -1,6 +1,7 @@
 package com.kape.signup.domain
 
-import com.kape.signup.utils.ConsentPrefs
+import com.kape.signup.ConsentPrefs
+
 
 class ConsentUseCase(private val prefs: ConsentPrefs) {
 

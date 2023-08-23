@@ -50,6 +50,7 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":core:utils"))
+    implementation(project(":core:localprefs:regions"))
     implementation(project(":core:router"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))

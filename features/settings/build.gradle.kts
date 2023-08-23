@@ -52,6 +52,8 @@ dependencies {
 
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
+    implementation(project(":core:localprefs:settings"))
+    implementation(project(":core:localprefs:settings:data"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
     implementation(project(":features:regionselection"))

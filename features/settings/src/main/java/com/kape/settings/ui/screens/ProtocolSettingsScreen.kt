@@ -15,13 +15,13 @@ import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.NavigationAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
+import com.kape.settings.data.DataEncryption
+import com.kape.settings.data.Transport
+import com.kape.settings.data.VpnProtocols
 import com.kape.settings.ui.elements.OptionsDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
-import com.kape.settings.utils.VpnProtocols
-import com.kape.settings.utils.DataEncryption
-import com.kape.settings.utils.Transport
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 

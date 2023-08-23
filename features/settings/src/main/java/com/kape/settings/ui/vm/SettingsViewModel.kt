@@ -6,12 +6,12 @@ import com.kape.router.Back
 import com.kape.router.EnterFlow
 import com.kape.router.ExitFlow
 import com.kape.router.Router
-import com.kape.settings.utils.VpnProtocols
-import com.kape.settings.utils.DataEncryption
-import com.kape.settings.utils.OpenVpnSettings
-import com.kape.settings.utils.SettingsPrefs
-import com.kape.settings.utils.Transport
-import com.kape.settings.utils.WireGuardSettings
+import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.DataEncryption
+import com.kape.settings.data.OpenVpnSettings
+import com.kape.settings.data.Transport
+import com.kape.settings.data.VpnProtocols
+import com.kape.settings.data.WireGuardSettings
 import org.koin.core.component.KoinComponent
 
 class SettingsViewModel(

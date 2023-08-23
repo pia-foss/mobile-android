@@ -7,6 +7,7 @@ import com.kape.vpn.provider.KPI_PREFS_NAME
 import com.kape.vpn.provider.KpiModuleStateProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.router.Router
+import com.kape.settings.SettingsPrefs
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
 import com.kape.vpn.provider.PlatformProvider
@@ -40,6 +41,7 @@ val appModule = module {
     single { provideConfigurationIntent(get()) }
     single { provideVpnManagerApi(get(), get()) }
     single { Router() }
+    single { SettingsPrefs(get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -53,7 +55,7 @@ private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): Andr
 
 private fun provideRegionsApi(
     provider: RegionsModuleStateProvider,
-    platformProvider: PlatformProvider
+    platformProvider: PlatformProvider,
 ): RegionsAPI {
     return RegionsBuilder().setEndpointProvider(provider)
         .setCertificate(provider.certificate)
@@ -78,7 +80,7 @@ private fun provideKpiApi(provider: KpiModuleStateProvider): KPIAPI {
 
 private fun provideVpnManagerApi(
     context: Context,
-    vpnManagerProvider: VpnManagerProvider
+    vpnManagerProvider: VpnManagerProvider,
 ): VPNManagerAPI {
     return VPNManagerBuilder().setContext(context).setClientCoroutineContext(Dispatchers.Main)
         .setProtocolByteCountDependency(vpnManagerProvider)

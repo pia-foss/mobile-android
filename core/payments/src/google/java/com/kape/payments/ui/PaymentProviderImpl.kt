@@ -11,11 +11,11 @@ import com.android.billingclient.api.PurchaseHistoryResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
-import com.kape.payments.data.models.PurchaseData
-import com.kape.payments.data.models.Subscription
+import com.kape.payments.SubscriptionPrefs
+import com.kape.payments.data.PurchaseData
+import com.kape.payments.data.Subscription
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
-import com.kape.payments.utils.SubscriptionPrefs
 import com.kape.payments.utils.monthlySubscription
 import com.kape.payments.utils.yearlySubscription
 import kotlinx.coroutines.flow.MutableStateFlow

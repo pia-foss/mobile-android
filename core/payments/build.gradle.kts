@@ -58,6 +58,8 @@ dependencies {
 
     implementAccount()
     implementation(project(":core:utils"))
+    implementation(project(":core:localprefs:payments"))
+    implementation(project(":core:localprefs:payments:data"))
 
     implementCrypto()
     implementKoin()

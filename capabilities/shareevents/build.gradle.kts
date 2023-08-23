@@ -34,6 +34,7 @@ dependencies {
 
     implementKpi()
     implementation(project(":core:utils"))
+    implementation(project(":core:localprefs:shareevents"))
 
     implementSerialization()
     implementFeatureModule()

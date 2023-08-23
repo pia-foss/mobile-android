@@ -90,6 +90,7 @@ dependencies {
 
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
+    implementation(project(":core:localprefs:settings"))
     implementAccount()
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))

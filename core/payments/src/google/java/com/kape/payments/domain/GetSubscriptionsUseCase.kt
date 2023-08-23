@@ -1,6 +1,6 @@
 package com.kape.payments.domain
 
-import com.kape.payments.data.models.Subscription
+import com.kape.payments.data.Subscription
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

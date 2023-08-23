@@ -1,10 +1,8 @@
 package com.kape.payments.data
 
 import app.cash.turbine.test
-import com.kape.payments.data.models.Subscription
 import com.kape.payments.di.paymentsModule
 import com.kape.payments.domain.SubscriptionDataSource
-import com.kape.payments.utils.SubscriptionPrefs
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.AmazonSubscriptionsInformation

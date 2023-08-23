@@ -6,7 +6,6 @@ import com.kape.shareevents.data.models.KpiConnectionEvent
 import com.kape.shareevents.data.models.KpiConnectionSource
 import com.kape.shareevents.di.kpiModule
 import com.kape.shareevents.domain.KpiDataSource
-import com.kape.shareevents.utils.KpiPrefs
 import com.privateinternetaccess.kpi.KPIAPI
 import io.mockk.coEvery
 import io.mockk.every
