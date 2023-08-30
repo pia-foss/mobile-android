@@ -10,8 +10,15 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
-        mavenCentral()
         mavenLocal()
+        mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/xvpn/kp_android_vpn_manager")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
 

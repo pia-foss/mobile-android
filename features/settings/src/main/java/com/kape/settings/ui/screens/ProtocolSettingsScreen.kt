@@ -56,6 +56,7 @@ fun ProtocolSettingsScreen() {
                         protocolDialogVisible = protocolDialogVisible,
                     )
                 }
+
                 VpnProtocols.WireGuard -> {
                     WireGuardProtocolSettingsScreen(
                         viewModel = viewModel,
@@ -94,10 +95,10 @@ fun OpenVpnProtocolSettingsScreen(
 ) {
     val transportDialogVisible = remember { mutableStateOf(false) }
     val transportSelection =
-        remember { mutableStateOf(viewModel.getOpenVpnSettings().transport.name) }
+        remember { mutableStateOf(viewModel.getOpenVpnSettings().transport.value) }
     val encryptionDialogVisible = remember { mutableStateOf(false) }
     val encryptionSelection =
-        remember { mutableStateOf(viewModel.getOpenVpnSettings().dataEncryption.name) }
+        remember { mutableStateOf(viewModel.getOpenVpnSettings().dataEncryption.value) }
     val portDialogVisible = remember { mutableStateOf(false) }
     val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
     ProtocolSelectionLine(
@@ -110,7 +111,7 @@ fun OpenVpnProtocolSettingsScreen(
     )
     SettingsItem(
         titleId = R.string.protocol_transport_title,
-        subtitle = viewModel.getOpenVpnSettings().transport.name,
+        subtitle = viewModel.getOpenVpnSettings().transport.value,
     ) {
         transportDialogVisible.value = !transportDialogVisible.value
     }
@@ -120,7 +121,7 @@ fun OpenVpnProtocolSettingsScreen(
     )
     SettingsItem(
         titleId = R.string.protocol_data_encryption_title,
-        subtitle = viewModel.getOpenVpnSettings().dataEncryption.name,
+        subtitle = viewModel.getOpenVpnSettings().dataEncryption.value,
     ) {
         encryptionDialogVisible.value = !encryptionDialogVisible.value
     }
@@ -238,8 +239,8 @@ fun TransportSelectionDialog(
     OptionsDialog(
         R.string.protocol_transport_title,
         options = listOf(
-            Transport.UDP.name,
-            Transport.TCP.name,
+            Transport.UDP.value,
+            Transport.TCP.value,
         ),
         onDismiss = {
             transportDialogVisible.value = false
@@ -264,8 +265,8 @@ fun EncryptionSelectionDialog(
     OptionsDialog(
         R.string.protocol_data_encryption_title,
         options = listOf(
-            DataEncryption.AES_128_GCM.name,
-            DataEncryption.AES_256_GCM.name,
+            DataEncryption.AES_128_GCM.value,
+            DataEncryption.AES_256_GCM.value,
         ),
         onDismiss = {
             encryptionDialogVisible.value = false

@@ -2,6 +2,9 @@ package com.kape.vpnconnect.domain
 
 import android.app.Notification
 import android.app.PendingIntent
+import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.Transport
+import com.kape.settings.data.VpnProtocols
 import com.kape.utils.server.Server
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnmanager.data.models.ClientConfiguration
@@ -18,6 +21,7 @@ class ConnectionUseCase(
     private val connectionSource: ConnectionDataSource,
     private val certificate: String,
     private val connectionManager: ConnectionManager,
+    private val settingsPrefs: SettingsPrefs,
 ) : KoinComponent {
 
     fun startConnection(
@@ -27,21 +31,18 @@ class ConnectionUseCase(
     ): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name)
         val index = connectionSource.getVpnToken().indexOf(":")
-        var transport = "udp"
-        val serverGroup = when (transport) {
-            "udp" -> {
-                Server.ServerGroup.OPENVPN_UDP
-            }
-
-            "tcp" -> {
-                Server.ServerGroup.OPENVPN_TCP
-            }
-
-            else -> {
-                Server.ServerGroup.WIREGUARD
+        val serverGroup = when (settingsPrefs.getSelectedProtocol()) {
+            VpnProtocols.WireGuard -> Server.ServerGroup.WIREGUARD
+            VpnProtocols.OpenVPN -> {
+                if (settingsPrefs.getOpenVpnSettings().transport == Transport.UDP) {
+                    Server.ServerGroup.OPENVPN_UDP
+                } else {
+                    Server.ServerGroup.OPENVPN_TCP
+                }
             }
         }
         val details = server.endpoints[serverGroup]
+
         val ip: String
         val cn: String
         val port: Int
@@ -52,7 +53,7 @@ class ConnectionUseCase(
                 port = details[0].ip.substring(details[0].ip.indexOf(":") + 1).toInt()
             } else {
                 ip = details[0].ip
-                port = 8080
+                port = settingsPrefs.getOpenVpnSettings().port.toInt()
             }
             cn = details[0].cn
         } else {
@@ -61,10 +62,15 @@ class ConnectionUseCase(
             port = 8080
         }
 
+        val protocolTarget = when (settingsPrefs.getSelectedProtocol()) {
+            VpnProtocols.WireGuard -> VPNManagerProtocolTarget.WIREGUARD
+            VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
+        }
+
         val clientConfiguration = ClientConfiguration(
             sessionName = Clock.System.now().toString(),
             configureIntent = configureIntent,
-            protocolTarget = VPNManagerProtocolTarget.OPENVPN,
+            protocolTarget = protocolTarget,
             mtu = 1280,
             port = port,
             dnsList = emptyList(),
@@ -84,8 +90,8 @@ class ConnectionUseCase(
             ),
             openVpnClientConfiguration = OpenVpnClientConfiguration(
                 caCertificate = certificate,
-                cipher = "AES-128-GCM",
-                transport = transport,
+                cipher = settingsPrefs.getOpenVpnSettings().dataEncryption.value,
+                transport = settingsPrefs.getOpenVpnSettings().transport.value.lowercase(),
                 username = connectionSource.getVpnToken().substring(0, index),
                 password = connectionSource.getVpnToken().substring(index + 1),
             ),

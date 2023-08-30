@@ -32,6 +32,8 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":core:localprefs:settings"))
+    implementation(project(":core:localprefs:settings:data"))
     implementVpnManager()
     implementKoin()
     implementAccount()
