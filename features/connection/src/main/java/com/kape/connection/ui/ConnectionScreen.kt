@@ -93,8 +93,10 @@ fun ConnectionScreen() {
                 }
             }
             Separator()
-            // TODO: hardcoded data for display purposes, will be updated when VPN manager is integrated
-            IpInformationTile(ip = "91.155.24.17", vpnIp = "---")
+            IpInformationTile(
+                ip = viewModel.ip,
+                vpnIp = viewModel.vpnIp,
+            )
             Separator()
             QuickSettingsTile()
             Separator()
