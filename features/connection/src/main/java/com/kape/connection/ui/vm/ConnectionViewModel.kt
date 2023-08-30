@@ -2,9 +2,15 @@ package com.kape.connection.ui.vm
 
 import android.app.Notification
 import android.app.PendingIntent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
+import com.kape.connection.NO_IP
+import com.kape.connection.domain.ClientStateDataSource
 import com.kape.connection.ui.tiles.MAX_SERVERS
 import com.kape.connection.utils.ConnectionScreenState
 import com.kape.connection.utils.IDLE
@@ -18,6 +24,7 @@ import com.kape.router.EnterFlow
 import com.kape.router.Router
 import com.kape.utils.server.Server
 import com.kape.vpnconnect.domain.ConnectionUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -31,6 +38,7 @@ class ConnectionViewModel(
     private val regionsUseCase: GetRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
     private val connectionUseCase: ConnectionUseCase,
+    private val clientStateDataSource: ClientStateDataSource,
     private val router: Router,
     private val prefs: ConnectionPrefs,
 ) : ViewModel(), KoinComponent {
@@ -53,6 +61,15 @@ class ConnectionViewModel(
     private var snoozeState: SnoozeState = SNOOZE_STATE_DEFAULT
     private var favoriteServers: List<Server> = emptyList()
     private var quickConnectServers: List<Server> = emptyList()
+
+    var ip by mutableStateOf(prefs.getClientIp())
+    var vpnIp by mutableStateOf(prefs.getClientVpnIp())
+
+    init {
+        viewModelScope.launch {
+            clientStateDataSource.getClientStatus().collect()
+        }
+    }
 
     fun loadServers(locale: String) = viewModelScope.launch {
         regionsUseCase.loadRegions(locale).collect {
@@ -124,8 +141,6 @@ class ConnectionViewModel(
         }
     }
 
-    fun showSurvey() = router.handleFlow(EnterFlow.Survey)
-
     private fun connectToServer(server: Server) {
         selectedServer = server
         regionsUseCase.selectRegion(server.key)
@@ -195,12 +210,28 @@ class ConnectionViewModel(
                     it,
                     pendingIntent,
                     notification,
-                ).collect()
+                ).collect {
+                    launch {
+                        delay(3000)
+                        clientStateDataSource.getClientStatus().collect { connected ->
+                            if (connected) {
+                                vpnIp = prefs.getClientVpnIp()
+                            } else {
+                                ip = prefs.getClientIp()
+                                clientStateDataSource.resetVpnIp()
+                                vpnIp = prefs.getClientVpnIp()
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
     private fun disconnect() = viewModelScope.launch {
-        connectionUseCase.stopConnection().collect()
+        connectionUseCase.stopConnection().collect {
+            clientStateDataSource.resetVpnIp()
+            vpnIp = prefs.getClientVpnIp()
+        }
     }
 }
