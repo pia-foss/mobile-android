@@ -15,7 +15,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
     }
     flavorDimensions.add("provider")
     productFlavors {
