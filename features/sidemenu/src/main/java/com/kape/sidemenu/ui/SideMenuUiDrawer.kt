@@ -171,6 +171,9 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resTitle = R.string.drawer_item_title_settings,
                 onClick = {
                     viewModel.navigateToSettings()
+                    scope.launch {
+                        drawerState.close()
+                    }
                 },
             )
 

@@ -9,8 +9,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.kape.appbar.view.ConnectionAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -36,7 +34,6 @@ import java.util.Locale
 fun ConnectionScreen() {
     val viewModel: ConnectionViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
-    val state by remember(viewModel) { viewModel.state }.collectAsState()
     val locale = Locale.getDefault().language
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
@@ -67,8 +64,7 @@ fun ConnectionScreen() {
             ConnectionButton(connectionState) {
                 viewModel.onConnectionButtonClicked()
             }
-
-            state.selectedServer?.let {
+            viewModel.selectedServer.value?.let {
                 RegionInformationTile(server = it) {
                     viewModel.showRegionSelection()
                 }
@@ -81,11 +77,18 @@ fun ConnectionScreen() {
             Separator()
             QuickSettingsTile()
             Separator()
-            QuickConnectTile(servers = state.quickConnectServers)
+            QuickConnectTile(
+                servers = viewModel.quickConnectServers.value,
+            )
             Separator()
-            FavoritesTile(state.favoriteServers)
+            FavoritesTile(viewModel.favoriteServers.value)
             Separator()
-            SnoozeTile(state.snoozeState, viewModel)
+            SnoozeTile(
+                viewModel.snoozeState,
+                onClick = {
+                    viewModel.snooze(it)
+                },
+            )
             Separator()
             UsageTile(viewModel.download.value, viewModel.upload.value)
             Separator()

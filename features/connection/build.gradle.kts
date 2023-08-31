@@ -2,7 +2,6 @@ import Dependencies.desugarJdkLibs
 import Dependencies.implementAccount
 import Dependencies.implementFeatureModule
 import Dependencies.implementSerialization
-import Dependencies.implementTest
 import Dependencies.implementVpnManager
 
 plugins {

@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.kape.connection.R
 import com.kape.connection.ui.vm.ConnectionViewModel
+import com.kape.connection.utils.SnoozeInterval
 import com.kape.connection.utils.SnoozeState
 import com.kape.ui.elements.ConnectionTile
 import com.kape.ui.theme.FontSize
@@ -27,36 +28,36 @@ import com.kape.ui.utils.LocalColors
 // TODO: update state as needed; currently used for display purposes only
 
 @Composable
-fun SnoozeTile(state: SnoozeState, viewModel: ConnectionViewModel) {
+fun SnoozeTile(state: SnoozeState, onClick: (interval: SnoozeInterval) -> Unit) {
     ConnectionTile(labelId = R.string.vpn_snooze) {
         if (state.active) {
-            SnoozeTileActive(state.activeUntil) { viewModel.snooze(viewModel.SNOOZE_DEFAULT_MS) }
+            SnoozeTileActive(state.activeUntil) { onClick(SnoozeInterval.SNOOZE_DEFAULT_MS) }
         } else {
-            SnoozeTileDefault(viewModel)
+            SnoozeTileDefault(onClick)
         }
     }
 }
 
 @Composable
-private fun SnoozeTileDefault(viewModel: ConnectionViewModel) {
+private fun SnoozeTileDefault(onClick: (interval: SnoozeInterval) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
     ) {
         SnoozeTileButton(
             labelId = R.string.snooze_5_minutes,
-            onClick = { viewModel.snooze(viewModel.SNOOZE_SHORT_MS) },
+            onClick = { onClick(SnoozeInterval.SNOOZE_SHORT_MS) },
             modifier = Modifier.weight(1f),
         )
         Spacer(modifier = Modifier.weight(0.1f))
         SnoozeTileButton(
             labelId = R.string.snooze_15_minutes,
-            onClick = { viewModel.snooze(viewModel.SNOOZE_MEDIUM_MS) },
+            onClick = { onClick(SnoozeInterval.SNOOZE_MEDIUM_MS) },
             modifier = Modifier.weight(1f),
         )
         Spacer(modifier = Modifier.weight(0.1f))
         SnoozeTileButton(
             labelId = R.string.snooze_1_hour,
-            onClick = { viewModel.snooze(viewModel.SNOOZE_LONG_MS) },
+            onClick = { onClick(SnoozeInterval.SNOOZE_LONG_MS) },
             modifier = Modifier.weight(1f),
         )
     }
