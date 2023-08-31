@@ -22,6 +22,7 @@ import com.kape.vpn.provider.PlatformProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.vpn.provider.VpnManagerProvider
 import com.kape.vpn.utils.VpnLauncher
+import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
 import com.privateinternetaccess.account.AccountBuilder
@@ -51,11 +52,12 @@ val appModule = module {
     single { provideConfigurationIntent(get()) }
     single { providePendingIntent(get(), get()) }
     single { provideNotification(get()) }
-    single { provideVpnManagerApi(get(), get()) }
+    single { UsageProvider() }
+    single { provideVpnManagerApi(get(), get(), get()) }
     single { Router() }
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
-    single { VpnLauncher(get(), get(), get())}
+    single { VpnLauncher(get(), get(), get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -94,10 +96,11 @@ private fun provideKpiApi(provider: KpiModuleStateProvider): KPIAPI {
 
 private fun provideVpnManagerApi(
     context: Context,
+    usageProvider: UsageProvider,
     vpnManagerProvider: VpnManagerProvider,
 ): VPNManagerAPI {
     return VPNManagerBuilder().setContext(context).setClientCoroutineContext(Dispatchers.Main)
-        .setProtocolByteCountDependency(vpnManagerProvider)
+        .setProtocolByteCountDependency(usageProvider)
         .setPermissionsDependency(vpnManagerProvider)
         .setDebugLoggingDependency(vpnManagerProvider)
         .build()

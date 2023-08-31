@@ -10,14 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.kape.connection.R
-import com.kape.connection.utils.UsageState
 import com.kape.ui.elements.ConnectionTile
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun UsageTile(state: UsageState) {
+fun UsageTile(download: String, upload: String) {
     ConnectionTile(labelId = R.string.usage) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -30,7 +29,7 @@ fun UsageTile(state: UsageState) {
                 )
                 Spacer(modifier = Modifier.height(Space.MINI))
                 Text(
-                    text = stringResource(id = R.string.usage_kb_to_format).format(state.download),
+                    text = download,
                     fontSize = FontSize.Normal,
                     color = LocalColors.current.onSurface,
                 )
@@ -43,7 +42,7 @@ fun UsageTile(state: UsageState) {
                 )
                 Spacer(modifier = Modifier.height(Space.MINI))
                 Text(
-                    text = stringResource(id = R.string.usage_kb_to_format).format(state.upload),
+                    text = upload,
                     fontSize = FontSize.Normal,
                     color = LocalColors.current.onSurface,
                 )

@@ -87,7 +87,7 @@ fun ConnectionScreen() {
             Separator()
             SnoozeTile(state.snoozeState, viewModel)
             Separator()
-            UsageTile(state.usageState)
+            UsageTile(viewModel.download.value, viewModel.upload.value)
             Separator()
             ConnectionInfoTile(viewModel.getConnectionSettings())
         }
