@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.kape.connection.R
+import com.kape.router.EnterFlow
+import com.kape.settings.data.ProtocolSettings
 import com.kape.ui.elements.ConnectionTile
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Space
@@ -21,21 +23,21 @@ import com.kape.ui.theme.Square
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun ConnectionInfoTile() {
+fun ConnectionInfoTile(settings: ProtocolSettings) {
     ConnectionTile(labelId = R.string.connection) {
         Row(
             modifier = Modifier.fillMaxWidth(),
         ) {
             // TODO: use real data; dummy data provided for display purposes only
             Column(modifier = Modifier.weight(1f)) {
-                InfoRow(iconId = R.drawable.ic_connection, label = "OpenVPN")
-                InfoRow(iconId = R.drawable.ic_port, label = "-")
-                InfoRow(iconId = R.drawable.ic_authentication, label = "SHA256")
+                InfoRow(iconId = R.drawable.ic_connection, label = settings.name)
+                InfoRow(iconId = R.drawable.ic_port, label = settings.port)
+                InfoRow(iconId = R.drawable.ic_authentication, label = settings.auth)
             }
             Column(modifier = Modifier.weight(1f)) {
-                InfoRow(iconId = R.drawable.ic_socket, label = "UDP")
-                InfoRow(iconId = R.drawable.ic_encryption, label = "AES-128-GCM")
-                InfoRow(iconId = R.drawable.ic_handshake, label = "rsa4096")
+                InfoRow(iconId = R.drawable.ic_socket, label = settings.transport.value)
+                InfoRow(iconId = R.drawable.ic_encryption, label = settings.dataEncryption.value)
+                InfoRow(iconId = R.drawable.ic_handshake, label = settings.handshake)
             }
         }
     }

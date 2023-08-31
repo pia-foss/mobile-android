@@ -19,6 +19,7 @@ import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.VpnProtocols
 import com.kape.utils.server.Server
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import kotlinx.coroutines.delay
@@ -209,6 +210,11 @@ class ConnectionViewModel(
         } else {
             connect()
         }
+    }
+
+    fun getConnectionSettings() = when (settingsPrefs.getSelectedProtocol()) {
+        VpnProtocols.WireGuard -> settingsPrefs.getWireGuardSettings()
+        VpnProtocols.OpenVPN -> settingsPrefs.getOpenVpnSettings()
     }
 
     private fun connect() {

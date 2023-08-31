@@ -89,7 +89,7 @@ fun ConnectionScreen() {
             Separator()
             UsageTile(state.usageState)
             Separator()
-            ConnectionInfoTile()
+            ConnectionInfoTile(viewModel.getConnectionSettings())
         }
     }
 }
