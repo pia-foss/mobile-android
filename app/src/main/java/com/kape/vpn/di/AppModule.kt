@@ -110,16 +110,11 @@ private fun provideConfigurationIntent(context: Context): Intent {
 }
 
 private fun providePendingIntent(context: Context, intent: Intent): PendingIntent {
-    val flags = if (Build.VERSION.SDK_INT > +Build.VERSION_CODES.M) {
-        PendingIntent.FLAG_IMMUTABLE
-    } else {
-        0
-    }
     return PendingIntent.getActivity(
         context,
         123,
         intent,
-        flags,
+        PendingIntent.FLAG_IMMUTABLE
     )
 }
 

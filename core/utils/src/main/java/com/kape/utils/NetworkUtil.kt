@@ -5,8 +5,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.os.Build
-import androidx.annotation.RequiresApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -17,14 +15,12 @@ sealed class InternetConnectionState {
 }
 
 val Context.currentConnectivityState: InternetConnectionState
-    @RequiresApi(Build.VERSION_CODES.M)
     get() {
         val connectivityManager =
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return getCurrentConnectivityState(connectivityManager)
     }
 
-@RequiresApi(Build.VERSION_CODES.M)
 private fun getCurrentConnectivityState(
     connectivityManager: ConnectivityManager,
 ): InternetConnectionState {
@@ -33,7 +29,6 @@ private fun getCurrentConnectivityState(
     return if (connected) InternetConnectionState.Connected else InternetConnectionState.Disconnected
 }
 
-@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalCoroutinesApi
 fun Context.observeConnectivityAsFlow() = callbackFlow {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
