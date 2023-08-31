@@ -16,7 +16,7 @@ fun vpnConnectModule(appModule: Module) = module {
 
 private val localVpnConnectModule = module {
     single<ConnectionDataSource> { ConnectionDataSourceImpl(get(), get()) }
-    single { ConnectionUseCase(get(), get(), get(), get()) }
+    single { ConnectionUseCase(get(), get(), get(), get(), get(), get(), get()) }
     single { provideConnectionStatusValues(get()) }
     single { ConnectionManager(get()) }
 }

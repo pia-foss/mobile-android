@@ -2,6 +2,7 @@ package com.kape.vpnconnect.domain
 
 import android.app.Notification
 import android.app.PendingIntent
+import com.kape.connection.ConnectionPrefs
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
@@ -22,14 +23,14 @@ class ConnectionUseCase(
     private val certificate: String,
     private val connectionManager: ConnectionManager,
     private val settingsPrefs: SettingsPrefs,
+    private val connectionPrefs: ConnectionPrefs,
+    private val configureIntent: PendingIntent,
+    private val notificationBuilder: Notification.Builder,
 ) : KoinComponent {
 
-    fun startConnection(
-        server: Server,
-        configureIntent: PendingIntent,
-        notification: Notification,
-    ): Flow<Boolean> = flow {
+    fun startConnection(server: Server): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name)
+        connectionPrefs.setSelectedServer(server)
         val index = connectionSource.getVpnToken().indexOf(":")
         val serverGroup = when (settingsPrefs.getSelectedProtocol()) {
             VpnProtocols.WireGuard -> Server.ServerGroup.WIREGUARD
@@ -67,6 +68,10 @@ class ConnectionUseCase(
             VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
         }
 
+        notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
+        notificationBuilder.setContentText("Connected")
+        notificationBuilder.setContentIntent(configureIntent)
+
         val clientConfiguration = ClientConfiguration(
             sessionName = Clock.System.now().toString(),
             configureIntent = configureIntent,
@@ -75,7 +80,7 @@ class ConnectionUseCase(
             port = port,
             dnsList = emptyList(),
             notificationId = 123,
-            notification = notification,
+            notification = notificationBuilder.build(),
             allowedApplicationPackages = emptyList(),
             disallowedApplicationPackages = emptyList(),
             allowLocalNetworkAccess = false,

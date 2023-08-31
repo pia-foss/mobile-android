@@ -34,6 +34,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))
+    implementation(project(":core:localprefs:connection"))
     implementVpnManager()
     implementKoin()
     implementAccount()

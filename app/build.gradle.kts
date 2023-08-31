@@ -3,6 +3,7 @@ import Dependencies.implementAccount
 import Dependencies.implementAndroidBase
 import Dependencies.implementCompose
 import Dependencies.implementComposeNavigation
+import Dependencies.implementCoroutines
 import Dependencies.implementKoin
 import Dependencies.implementKpi
 import Dependencies.implementMultiplatformSettings
@@ -91,6 +92,7 @@ dependencies {
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:settings"))
+    implementation(project(":core:localprefs:connection"))
     implementAccount()
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))
@@ -119,4 +121,5 @@ dependencies {
     implementKoin()
     implementMultiplatformSettings()
     implementVpnManager()
+    implementCoroutines()
 }

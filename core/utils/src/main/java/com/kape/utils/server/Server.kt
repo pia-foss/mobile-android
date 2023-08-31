@@ -1,5 +1,8 @@
 package com.kape.utils.server
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Server(
     val name: String,
     val iso: String,
@@ -15,11 +18,13 @@ data class Server(
     val dedicatedIp: String?,
     val isDedicatedIp: Boolean = !dedicatedIp.isNullOrEmpty(),
 ) {
+    @Serializable
     data class ServerEndpointDetails(
         val ip: String,
         val cn: String,
     )
 
+    @Serializable
     enum class ServerGroup {
         OPENVPN_TCP {
             override fun toString(): String {

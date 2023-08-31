@@ -1,7 +1,15 @@
 package com.kape.vpn.di
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.kape.connection.ConnectionPrefs
+import com.kape.notifications.data.NotificationChannelManager
 import com.kape.vpn.provider.AccountModuleStateProvider
 import com.kape.vpn.provider.KPI_PREFS_NAME
 import com.kape.vpn.provider.KpiModuleStateProvider
@@ -10,8 +18,10 @@ import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
+import com.kape.vpn.R
 import com.kape.vpn.provider.PlatformProvider
 import com.kape.vpn.provider.VpnManagerProvider
+import com.kape.vpn.utils.VpnLauncher
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
 import com.privateinternetaccess.account.AccountBuilder
@@ -39,9 +49,13 @@ val appModule = module {
     single { provideRegionsApi(get(), get()) }
     single { provideKpiApi(get()) }
     single { provideConfigurationIntent(get()) }
+    single { providePendingIntent(get(), get()) }
+    single { provideNotification(get()) }
     single { provideVpnManagerApi(get(), get()) }
     single { Router() }
     single { SettingsPrefs(get()) }
+    single { ConnectionPrefs(get()) }
+    single { VpnLauncher(get(), get(), get())}
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -93,6 +107,52 @@ private fun provideConfigurationIntent(context: Context): Intent {
     return Intent(context, MainActivity::class.java).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }
+}
+
+private fun providePendingIntent(context: Context, intent: Intent): PendingIntent {
+    val flags = if (Build.VERSION.SDK_INT > +Build.VERSION_CODES.M) {
+        PendingIntent.FLAG_IMMUTABLE
+    } else {
+        0
+    }
+    return PendingIntent.getActivity(
+        context,
+        123,
+        intent,
+        flags,
+    )
+}
+
+private fun provideNotification(context: Context): Notification.Builder {
+    val notificationBuilder: Notification.Builder =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationBuilder(context)
+        } else {
+            Notification.Builder(context)
+        }
+
+    notificationBuilder.setSmallIcon(R.drawable.ic_stat_pia_robot_white)
+    notificationBuilder.setCategory(Notification.CATEGORY_SERVICE)
+    notificationBuilder.setOngoing(true)
+    return notificationBuilder
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun createNotificationBuilder(context: Context): Notification.Builder {
+    val notificationChannel =
+        NotificationChannel(
+            NotificationChannelManager.CHANNEL_ID,
+            NotificationChannelManager.CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_DEFAULT,
+        )
+    notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+    val service =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    service.createNotificationChannel(notificationChannel)
+    return Notification.Builder(
+        context,
+        NotificationChannelManager.CHANNEL_ID,
+    )
 }
 
 private fun provideCertificate(context: Context) =

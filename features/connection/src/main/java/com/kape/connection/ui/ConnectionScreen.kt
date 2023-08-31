@@ -1,12 +1,5 @@
 package com.kape.connection.ui
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
-import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +12,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.kape.appbar.view.ConnectionAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.tiles.ConnectionInfoTile
@@ -31,8 +23,6 @@ import com.kape.connection.ui.tiles.RegionInformationTile
 import com.kape.connection.ui.tiles.SnoozeTile
 import com.kape.connection.ui.tiles.UsageTile
 import com.kape.connection.ui.vm.ConnectionViewModel
-import com.kape.notifications.data.NotificationChannelManager.Companion.CHANNEL_ID
-import com.kape.notifications.data.NotificationChannelManager.Companion.CHANNEL_NAME
 import com.kape.sidemenu.ui.SideMenuUiDrawer
 import com.kape.ui.elements.Separator
 import com.kape.ui.theme.Space
@@ -48,8 +38,6 @@ fun ConnectionScreen() {
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.state }.collectAsState()
     val locale = Locale.getDefault().language
-    val context = LocalContext.current
-    val intent: Intent = koinInject()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val connectionState = when (connectionStatus.value) {
@@ -61,6 +49,7 @@ fun ConnectionScreen() {
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadServers(locale)
+        viewModel.autoConnect()
     }
 
     SideMenuUiDrawer {
@@ -76,15 +65,7 @@ fun ConnectionScreen() {
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             ConnectionButton(connectionState) {
-                viewModel.onConnectionButtonClicked(
-                    getNotification(context),
-                    PendingIntent.getActivity(
-                        context,
-                        123,
-                        intent,
-                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-                    ),
-                )
+                viewModel.onConnectionButtonClicked()
             }
 
             state.selectedServer?.let {
@@ -110,21 +91,5 @@ fun ConnectionScreen() {
             Separator()
             ConnectionInfoTile()
         }
-    }
-}
-
-private fun getNotification(context: Context): Notification {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val notificationChannel =
-            NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT)
-        notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-        val service = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        service.createNotificationChannel(notificationChannel)
-        val notificationBuilder = Notification.Builder(context, CHANNEL_ID)
-        notificationBuilder.setOngoing(true)
-            .setCategory(Notification.CATEGORY_SERVICE)
-            .build()
-    } else {
-        Notification.Builder(context).setCategory(Notification.CATEGORY_SERVICE).build()
     }
 }

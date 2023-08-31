@@ -1,15 +1,11 @@
 package com.kape.connection.ui.vm
 
-import android.app.Notification
-import android.app.PendingIntent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
-import com.kape.connection.NO_IP
 import com.kape.connection.domain.ClientStateDataSource
 import com.kape.connection.ui.tiles.MAX_SERVERS
 import com.kape.connection.utils.ConnectionScreenState
@@ -22,6 +18,7 @@ import com.kape.regionselection.domain.GetRegionsUseCase
 import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Router
+import com.kape.settings.SettingsPrefs
 import com.kape.utils.server.Server
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import kotlinx.coroutines.delay
@@ -41,6 +38,7 @@ class ConnectionViewModel(
     private val clientStateDataSource: ClientStateDataSource,
     private val router: Router,
     private val prefs: ConnectionPrefs,
+    private val settingsPrefs: SettingsPrefs,
 ) : ViewModel(), KoinComponent {
 
     private val oneHourLong = 1L
@@ -68,6 +66,16 @@ class ConnectionViewModel(
     init {
         viewModelScope.launch {
             clientStateDataSource.getClientStatus().collect()
+        }
+    }
+
+    fun autoConnect() {
+        viewModelScope.launch {
+            if (settingsPrefs.isConnectOnLaunchEnabled()) {
+                prefs.getSelectedServer()?.let {
+                    connectionUseCase.startConnection(it).collect()
+                }
+            }
         }
     }
 
@@ -195,21 +203,19 @@ class ConnectionViewModel(
         router.handleFlow(EnterFlow.RegionSelection)
     }
 
-    fun onConnectionButtonClicked(notification: Notification, pendingIntent: PendingIntent) {
+    fun onConnectionButtonClicked() {
         if (connectionUseCase.isConnected()) {
             disconnect()
         } else {
-            connect(notification, pendingIntent)
+            connect()
         }
     }
 
-    private fun connect(notification: Notification, pendingIntent: PendingIntent) {
+    private fun connect() {
         viewModelScope.launch {
             selectedServer?.let {
                 connectionUseCase.startConnection(
                     it,
-                    pendingIntent,
-                    notification,
                 ).collect {
                     launch {
                         delay(3000)
