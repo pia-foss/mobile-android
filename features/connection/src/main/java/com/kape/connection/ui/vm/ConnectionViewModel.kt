@@ -12,8 +12,6 @@ import com.kape.connection.utils.ConnectionScreenState
 import com.kape.connection.utils.IDLE
 import com.kape.connection.utils.SNOOZE_STATE_DEFAULT
 import com.kape.connection.utils.SnoozeState
-import com.kape.connection.utils.USAGE_STATE_DEFAULT
-import com.kape.connection.utils.UsageState
 import com.kape.regionselection.domain.GetRegionsUseCase
 import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.router.EnterFlow
@@ -22,6 +20,7 @@ import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.server.Server
 import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.provider.UsageProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,6 +39,7 @@ class ConnectionViewModel(
     private val router: Router,
     private val prefs: ConnectionPrefs,
     private val settingsPrefs: SettingsPrefs,
+    private val usageProvider: UsageProvider,
 ) : ViewModel(), KoinComponent {
 
     private val oneHourLong = 1L
@@ -56,13 +56,15 @@ class ConnectionViewModel(
 
     private var availableServers = mutableListOf<Server>()
     private var selectedServer: Server? = null
-    private var usageState: UsageState = USAGE_STATE_DEFAULT
     private var snoozeState: SnoozeState = SNOOZE_STATE_DEFAULT
     private var favoriteServers: List<Server> = emptyList()
     private var quickConnectServers: List<Server> = emptyList()
 
     var ip by mutableStateOf(prefs.getClientIp())
     var vpnIp by mutableStateOf(prefs.getClientVpnIp())
+
+    val download = usageProvider.download
+    val upload = usageProvider.upload
 
     init {
         viewModelScope.launch {
@@ -95,7 +97,6 @@ class ConnectionViewModel(
                     ConnectionScreenState(
                         selectedServer,
                         snoozeState,
-                        usageState,
                         favoriteServers,
                         quickConnectServers,
                     ),
@@ -142,7 +143,6 @@ class ConnectionViewModel(
                 ConnectionScreenState(
                     selectedServer,
                     snoozeState,
-                    usageState,
                     favoriteServers,
                     quickConnectServers,
                 ),
@@ -160,7 +160,6 @@ class ConnectionViewModel(
                 ConnectionScreenState(
                     selectedServer,
                     snoozeState,
-                    usageState,
                     favoriteServers,
                     quickConnectServers,
                 ),

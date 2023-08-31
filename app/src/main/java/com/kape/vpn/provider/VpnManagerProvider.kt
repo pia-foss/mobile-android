@@ -2,10 +2,9 @@ package com.kape.vpn.provider
 
 import com.kape.vpnmanager.presenters.VPNManagerDebugLoggingDependency
 import com.kape.vpnmanager.presenters.VPNManagerPermissionsDependency
-import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import com.kape.vpnmanager.presenters.VPNManagerResultCallback
 
-class VpnManagerProvider : VPNManagerPermissionsDependency, VPNManagerProtocolByteCountDependency,
+class VpnManagerProvider : VPNManagerPermissionsDependency,
     VPNManagerDebugLoggingDependency {
     override fun debugLog(log: String) {
         // TODO: implement?
@@ -13,9 +12,5 @@ class VpnManagerProvider : VPNManagerPermissionsDependency, VPNManagerProtocolBy
 
     override fun requestNecessaryPermissions(callback: VPNManagerResultCallback<Boolean>) {
         callback.invoke(Result.success(false))
-    }
-
-    override fun byteCount(tx: Long, rx: Long) {
-        // TODO: implement
     }
 }
