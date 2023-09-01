@@ -49,4 +49,7 @@
     <string name="privacy_kill_switch_title">VPN Kill Switch</string>
     <string name="privacy_kill_switch_message">Android includes a better alternative to Kill Switch functionality, click for more information</string>
 
+    <string name="automation_title">Automation</string>
+    <string name="automation_description">Setup rules to handle auto-connect rules for trusted and untrusted networks.\n\nThis feature is experimental.</string>
+
 </resources>

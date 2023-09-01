@@ -76,7 +76,9 @@ fun SettingsScreen() {
                 iconId = R.drawable.ic_setting_automation,
                 titleId = R.string.automation,
                 subtitle = stringResource(id = R.string.disabled),
-                onClick = {},
+                onClick = {
+                    viewModel.navigateToAutomation()
+                },
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
