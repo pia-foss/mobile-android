@@ -39,4 +39,11 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
 
+    <string name="network_dns_title">DNS</string>
+    <string name="network_dns_description">PIA DNS</string>
+    <string name="network_port_forwarding_title">Request Port Forwarding</string>
+    <string name="network_port_forwarding_description">Will allow incoming connections to your mobile device over an external port</string>
+    <string name="network_allow_lan_traffic_title">Allow LAN Traffic</string>
+    <string name="network_allow_lan_traffic_description">Always permits traffic between devices on your local network</string>
+
 </resources>

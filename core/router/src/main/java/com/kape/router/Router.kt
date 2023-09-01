@@ -31,6 +31,7 @@ class Router {
             EnterFlow.Settings -> _navigation.value = Settings.Main
             EnterFlow.GeneralSettings -> _navigation.value = Settings.General
             EnterFlow.ProtocolSettings -> _navigation.value = Settings.Protocols
+            EnterFlow.NetworkSettings -> _navigation.value = Settings.Networks
         }
     }
 
@@ -46,6 +47,7 @@ class Router {
             ExitFlow.Settings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.GeneralSettings -> handleEnterFlow(EnterFlow.Settings)
             ExitFlow.ProtocolSettings -> handleEnterFlow(EnterFlow.GeneralSettings)
+            ExitFlow.NetworkSettings -> handleEnterFlow(EnterFlow.Settings)
         }
     }
 

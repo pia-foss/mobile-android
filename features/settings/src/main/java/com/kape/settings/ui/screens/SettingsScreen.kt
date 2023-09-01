@@ -59,7 +59,9 @@ fun SettingsScreen() {
             SettingsItem(
                 iconId = R.drawable.ic_setting_network,
                 titleId = R.string.networks,
-                onClick = {},
+                onClick = {
+                    viewModel.navigateToNetworkSettings()
+                },
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(

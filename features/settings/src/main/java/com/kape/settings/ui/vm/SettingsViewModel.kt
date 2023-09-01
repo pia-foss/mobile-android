@@ -40,6 +40,10 @@ class SettingsViewModel(
         router.handleFlow(EnterFlow.ProtocolSettings)
     }
 
+    fun navigateToNetworkSettings() {
+        router.handleFlow(EnterFlow.NetworkSettings)
+    }
+
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
     }
