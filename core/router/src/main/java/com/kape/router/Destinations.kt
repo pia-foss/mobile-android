@@ -36,6 +36,7 @@ object Settings {
     const val General = "settings-general-screen"
     const val Protocols = "settings-protocols-screen"
     const val Networks = "settings-networks-screen"
+    const val Privacy = "settings-privacy-screen"
 }
 
 object WebContent {

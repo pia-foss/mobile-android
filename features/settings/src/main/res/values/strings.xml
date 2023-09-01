@@ -46,4 +46,7 @@
     <string name="network_allow_lan_traffic_title">Allow LAN Traffic</string>
     <string name="network_allow_lan_traffic_description">Always permits traffic between devices on your local network</string>
 
+    <string name="privacy_kill_switch_title">VPN Kill Switch</string>
+    <string name="privacy_kill_switch_message">Android includes a better alternative to Kill Switch functionality, click for more information</string>
+
 </resources>

@@ -67,7 +67,9 @@ fun SettingsScreen() {
             SettingsItem(
                 iconId = R.drawable.ic_setting_privacy,
                 titleId = R.string.privacy,
-                onClick = {},
+                onClick = {
+                    viewModel.navigateToPrivacySettings()
+                },
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
