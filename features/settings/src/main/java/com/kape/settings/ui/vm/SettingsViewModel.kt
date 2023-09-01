@@ -44,6 +44,14 @@ class SettingsViewModel(
         router.handleFlow(EnterFlow.NetworkSettings)
     }
 
+    fun navigateToPrivacySettings() {
+        router.handleFlow(EnterFlow.PrivacySettings)
+    }
+
+    fun navigateToAutomation() {
+        router.handleFlow(EnterFlow.AutomationSettings)
+    }
+
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
     }

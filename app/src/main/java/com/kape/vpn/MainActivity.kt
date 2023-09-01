@@ -31,8 +31,10 @@ import com.kape.router.Splash
 import com.kape.router.Subscribe
 import com.kape.router.VpnPermission
 import com.kape.router.WebContent
+import com.kape.settings.ui.screens.AutomationSettingsScreen
 import com.kape.settings.ui.screens.GeneralSettingsScreen
 import com.kape.settings.ui.screens.NetworkSettingsScreen
+import com.kape.settings.ui.screens.PrivacySettingsScreen
 import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.SettingsScreen
 import com.kape.signup.ui.SignupScreensFlow
@@ -127,6 +129,12 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Settings.Networks) {
                                 NetworkSettingsScreen()
+                            }
+                            composable(Settings.Privacy) {
+                                PrivacySettingsScreen()
+                            }
+                            composable(Settings.Automation) {
+                                AutomationSettingsScreen()
                             }
                         }
                     }
