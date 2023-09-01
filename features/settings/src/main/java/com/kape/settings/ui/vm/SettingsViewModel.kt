@@ -1,5 +1,6 @@
 package com.kape.settings.ui.vm
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.kape.regionselection.data.RegionRepository
 import com.kape.router.Back
@@ -18,11 +19,13 @@ class SettingsViewModel(
     private val prefs: SettingsPrefs,
     private val router: Router,
     private val regionsRepository: RegionRepository,
+    val version: String,
 ) : ViewModel(), KoinComponent {
 
     val launchOnBootEnabled = prefs.isLaunchOnStartupEnabled()
     val connectOnStart = prefs.isConnectOnLaunchEnabled()
     val connectOnUpdate = prefs.isConnectOnAppUpdateEnabled()
+    val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
 
     fun navigateUp() {
         router.handleFlow(Back)
@@ -48,6 +51,10 @@ class SettingsViewModel(
         router.handleFlow(EnterFlow.PrivacySettings)
     }
 
+    fun navigateToHelpSettings() {
+        router.handleFlow(EnterFlow.HelpSettings)
+    }
+
     fun navigateToAutomation() {
         router.handleFlow(EnterFlow.AutomationSettings)
     }
@@ -62,6 +69,11 @@ class SettingsViewModel(
 
     fun toggleConnectOnUpdate(enable: Boolean) {
         prefs.setEnableConnectOnAppUpdate(enable)
+    }
+
+    fun toggleImprovePia(enable: Boolean) {
+        prefs.setHelpImprovePiaEnabled(enable)
+        improvePiaEnabled.value = enable
     }
 
     fun getSelectedProtocol(): VpnProtocols = prefs.getSelectedProtocol()

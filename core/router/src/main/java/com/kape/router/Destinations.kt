@@ -38,6 +38,7 @@ object Settings {
     const val Networks = "settings-networks-screen"
     const val Privacy = "settings-privacy-screen"
     const val Automation = "settings-automation-screen"
+    const val Help = "settings-help-screen"
 }
 
 object WebContent {

@@ -1,4 +1,3 @@
-import Dependencies.implementCoroutines
 import Dependencies.implementSerialization
 
 plugins {
@@ -8,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.settings"
+    namespace = "com.kape.settings.prefs"
     compileSdk = 34
 
     defaultConfig {

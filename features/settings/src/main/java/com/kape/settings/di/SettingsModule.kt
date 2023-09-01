@@ -5,10 +5,10 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-fun settingsModule(appModule: Module) = module {
-    includes(appModule, localSettingsModule)
+fun settingsModule(appModule: Module, versionCode: Int, versionName: String) = module {
+    includes(appModule, localSettingsModule("$versionName ($versionCode)"))
 }
 
-private val localSettingsModule = module {
-    viewModel { SettingsViewModel(get(), get(), get()) }
+private fun localSettingsModule(version: String) = module {
+    viewModel { SettingsViewModel(get(), get(), get(), version) }
 }

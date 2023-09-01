@@ -8,7 +8,6 @@
     <string name="networks">Networks</string>
     <string name="privacy">Privacy</string>
     <string name="automation">Automation</string>
-    <string name="obfuscation">Obfuscation</string>
     <string name="help">Help</string>
 
     <!--    Protocols      -->
@@ -51,5 +50,14 @@
 
     <string name="automation_title">Automation</string>
     <string name="automation_description">Setup rules to handle auto-connect rules for trusted and untrusted networks.\n\nThis feature is experimental.</string>
+
+    <string name="help_version_title">Version</string>
+    <string name="help_view_debug_log_title">Version</string>
+    <string name="help_view_debug_log_description">Advanced user view to see VPN log</string>
+    <string name="help_send_log_title">Send Debug Log to Support</string>
+    <string name="help_improve_pia_title">Help improve PIA</string>
+    <string name="help_improve_pia_description">Help us improve by sharing VPN connection statistics. These reports never contain personally identifiable information.</string>
+    <string name="help_latest_news_title">Latest News</string>
+    <string name="help_view_shared_data_title">View Shared Data</string>
 
 </resources>

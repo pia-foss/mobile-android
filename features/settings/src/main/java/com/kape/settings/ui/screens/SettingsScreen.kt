@@ -82,15 +82,11 @@ fun SettingsScreen() {
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
-                iconId = R.drawable.ic_setting_obfuscation,
-                titleId = R.string.obfuscation,
-                onClick = {},
-            )
-            Divider(color = LocalColors.current.outline)
-            SettingsItem(
                 iconId = R.drawable.ic_setting_help,
                 titleId = R.string.help,
-                onClick = {},
+                onClick = {
+                    viewModel.navigateToHelpSettings()
+                },
             )
         }
     }
