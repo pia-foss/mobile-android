@@ -59,20 +59,26 @@ fun SettingsScreen() {
             SettingsItem(
                 iconId = R.drawable.ic_setting_network,
                 titleId = R.string.networks,
-                onClick = {},
+                onClick = {
+                    viewModel.navigateToNetworkSettings()
+                },
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
                 iconId = R.drawable.ic_setting_privacy,
                 titleId = R.string.privacy,
-                onClick = {},
+                onClick = {
+                    viewModel.navigateToPrivacySettings()
+                },
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(
                 iconId = R.drawable.ic_setting_automation,
                 titleId = R.string.automation,
                 subtitle = stringResource(id = R.string.disabled),
-                onClick = {},
+                onClick = {
+                    viewModel.navigateToAutomation()
+                },
             )
             Divider(color = LocalColors.current.outline)
             SettingsItem(

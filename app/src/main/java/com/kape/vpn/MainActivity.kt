@@ -31,7 +31,10 @@ import com.kape.router.Splash
 import com.kape.router.Subscribe
 import com.kape.router.VpnPermission
 import com.kape.router.WebContent
+import com.kape.settings.ui.screens.AutomationSettingsScreen
 import com.kape.settings.ui.screens.GeneralSettingsScreen
+import com.kape.settings.ui.screens.NetworkSettingsScreen
+import com.kape.settings.ui.screens.PrivacySettingsScreen
 import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.SettingsScreen
 import com.kape.signup.ui.SignupScreensFlow
@@ -83,7 +86,7 @@ class MainActivity : ComponentActivity() {
                 PiaScreen {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
+                        color = MaterialTheme.colorScheme.background,
                     ) {
                         NavHost(navController = navController, startDestination = Splash.Main) {
                             composable(Login.Main) { LoginScreen(navController = navController) }
@@ -97,22 +100,22 @@ class MainActivity : ComponentActivity() {
                             composable(WebContent.Terms) {
                                 WebViewScreen(
                                     initialUrl = Uri.parse(
-                                        getString(R.string.url_terms_of_service)
-                                    )
+                                        getString(R.string.url_terms_of_service),
+                                    ),
                                 )
                             }
                             composable(WebContent.Privacy) {
                                 WebViewScreen(
                                     initialUrl = Uri.parse(
-                                        getString(R.string.url_privacy_policy)
-                                    )
+                                        getString(R.string.url_privacy_policy),
+                                    ),
                                 )
                             }
                             composable(WebContent.Survey) {
                                 WebViewScreen(
                                     initialUrl = Uri.parse(
-                                        getString(R.string.url_survey)
-                                    )
+                                        getString(R.string.url_survey),
+                                    ),
                                 )
                             }
                             composable(Settings.Main) {
@@ -123,6 +126,15 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Settings.Protocols) {
                                 ProtocolSettingsScreen()
+                            }
+                            composable(Settings.Networks) {
+                                NetworkSettingsScreen()
+                            }
+                            composable(Settings.Privacy) {
+                                PrivacySettingsScreen()
+                            }
+                            composable(Settings.Automation) {
+                                AutomationSettingsScreen()
                             }
                         }
                     }

@@ -16,6 +16,9 @@ sealed class EnterFlow : AppFlow {
     data object Settings : EnterFlow()
     data object GeneralSettings : EnterFlow()
     data object ProtocolSettings : EnterFlow()
+    data object NetworkSettings : EnterFlow()
+    data object PrivacySettings : EnterFlow()
+    data object AutomationSettings : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -29,6 +32,9 @@ sealed class ExitFlow : AppFlow {
     data object Settings : ExitFlow()
     data object GeneralSettings : ExitFlow()
     data object ProtocolSettings : ExitFlow()
+    data object NetworkSettings : ExitFlow()
+    data object PrivacySettings : ExitFlow()
+    data object AutomationSettings : ExitFlow()
 }
 
 object Back : AppFlow

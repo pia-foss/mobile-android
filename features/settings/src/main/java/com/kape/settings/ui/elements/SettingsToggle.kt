@@ -3,6 +3,7 @@ package com.kape.settings.ui.elements
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
@@ -27,7 +28,7 @@ fun SettingsToggle(
     val isChecked = remember { mutableStateOf(enabled) }
     Row(
         modifier = Modifier
-            .height(56.dp)
+            .defaultMinSize(minHeight = 56.dp)
             .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -50,9 +51,12 @@ fun SettingsToggle(
                 )
             }
         }
-        Switch(checked = isChecked.value, onCheckedChange = {
-            isChecked.value = it
-            toggle(it)
-        },)
+        Switch(
+            checked = isChecked.value,
+            onCheckedChange = {
+                isChecked.value = it
+                toggle(it)
+            },
+        )
     }
 }
