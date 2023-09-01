@@ -45,7 +45,7 @@ class App : Application() {
                 add(signupModule(appModule))
                 add(kpiModule(appModule))
                 add(connectionModule(appModule))
-                add(settingsModule(appBarModule))
+                add(settingsModule(appBarModule, BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
             },
         )
     }

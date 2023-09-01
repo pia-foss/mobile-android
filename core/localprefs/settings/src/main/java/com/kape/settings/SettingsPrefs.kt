@@ -14,6 +14,7 @@ private const val CONNECT_ON_APP_UPDATE = "connect-on-app-update"
 private const val SELECTED_PROTOCOL = "selected-protocol"
 private const val WIRE_GUARD_SETTINGS = "wireguard-settings"
 private const val OPEN_VPN_SETTINGS = "openvpn-settings"
+private const val HELP_IMPROVE_PIA = "help-improve-pia"
 
 class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
@@ -79,4 +80,9 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
             return OpenVpnSettings()
         }
     }
+
+    fun setHelpImprovePiaEnabled(enable: Boolean) =
+        prefs.edit().putBoolean(HELP_IMPROVE_PIA, enable).apply()
+
+    fun isHelpImprovePiaEnabled() = prefs.getBoolean(HELP_IMPROVE_PIA, false)
 }
