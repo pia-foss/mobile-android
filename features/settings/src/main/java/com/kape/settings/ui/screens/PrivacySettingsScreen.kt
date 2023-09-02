@@ -37,7 +37,7 @@ fun PrivacySettingsScreen() {
         ) {
             SettingsItem(
                 titleId = R.string.network_dns_title,
-                subtitle = stringResource(id = R.string.network_dns_title),
+                subtitle = stringResource(id = R.string.network_dns_description),
                 onClick = {},
             )
         }

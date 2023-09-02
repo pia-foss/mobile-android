@@ -41,6 +41,10 @@ object Settings {
     const val Help = "settings-help-screen"
 }
 
+object PerAppSettings {
+    const val Main = "per-app-settings-screen"
+}
+
 object WebContent {
     // Please note these values are links within the signup module's strings file.
     const val Terms = "web-screen-terms"

@@ -162,7 +162,10 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resIcon = R.drawable.ic_drawer_per_app,
                 resTitle = R.string.drawer_item_title_per_app_settings,
                 onClick = {
-                    // TODO: "action: open 'per app settings' screen"
+                    viewModel.navigateToPerAppSettings()
+                    scope.launch {
+                        drawerState.close()
+                    }
                 },
             )
 

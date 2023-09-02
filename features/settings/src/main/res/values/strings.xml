@@ -60,4 +60,7 @@
     <string name="help_latest_news_title">Latest News</string>
     <string name="help_view_shared_data_title">View Shared Data</string>
 
+    <string name="per_app_settings">Per App Settings</string>
+    <string name="search_apps">Search Apps</string>
+
 </resources>

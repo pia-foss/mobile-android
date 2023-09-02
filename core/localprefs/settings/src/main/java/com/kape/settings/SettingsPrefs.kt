@@ -15,6 +15,7 @@ private const val SELECTED_PROTOCOL = "selected-protocol"
 private const val WIRE_GUARD_SETTINGS = "wireguard-settings"
 private const val OPEN_VPN_SETTINGS = "openvpn-settings"
 private const val HELP_IMPROVE_PIA = "help-improve-pia"
+private const val VPN_EXCLUDED_APPS = "vpn-excluded-apps"
 
 class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
@@ -85,4 +86,10 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         prefs.edit().putBoolean(HELP_IMPROVE_PIA, enable).apply()
 
     fun isHelpImprovePiaEnabled() = prefs.getBoolean(HELP_IMPROVE_PIA, false)
+
+    fun setVpnExcludedApps(apps: List<String>) =
+        prefs.edit().putStringSet(VPN_EXCLUDED_APPS, apps.toSet()).apply()
+
+    fun getVpnExcludedApps() =
+        prefs.getStringSet(VPN_EXCLUDED_APPS, emptySet())?.toList() ?: emptyList()
 }
