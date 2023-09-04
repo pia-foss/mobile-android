@@ -1,4 +1,5 @@
 import Dependencies.desugarJdkLibs
+import Dependencies.implementDrawablePainter
 import Dependencies.implementFeatureModule
 import Dependencies.implementSerialization
 
@@ -60,4 +61,5 @@ dependencies {
 
     implementFeatureModule()
     implementSerialization()
+    implementDrawablePainter()
 }

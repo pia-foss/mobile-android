@@ -26,6 +26,7 @@ class SettingsViewModel(
     val connectOnStart = prefs.isConnectOnLaunchEnabled()
     val connectOnUpdate = prefs.isConnectOnAppUpdateEnabled()
     val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
+    val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
 
     fun navigateUp() {
         router.handleFlow(Back)
@@ -136,5 +137,21 @@ class SettingsViewModel(
             }
         }
         return listOfPorts
+    }
+
+    fun addToVpnExcludedApps(app: String) {
+        val newList = mutableListOf<String>()
+        newList.addAll(prefs.getVpnExcludedApps())
+        newList.add(app)
+        prefs.setVpnExcludedApps(newList)
+        vpnExcludedApps.value = prefs.getVpnExcludedApps()
+    }
+
+    fun removeFromVpnExcludedApps(app: String) {
+        val newList = mutableListOf<String>()
+        newList.addAll(prefs.getVpnExcludedApps())
+        newList.remove(app)
+        prefs.setVpnExcludedApps(newList)
+        vpnExcludedApps.value = prefs.getVpnExcludedApps()
     }
 }

@@ -23,6 +23,7 @@ import com.kape.regionselection.ui.RegionSelectionScreen
 import com.kape.router.Connection
 import com.kape.router.Login
 import com.kape.router.NavigateBack
+import com.kape.router.PerAppSettings
 import com.kape.router.Profile
 import com.kape.router.RegionSelection
 import com.kape.router.Router
@@ -35,6 +36,7 @@ import com.kape.settings.ui.screens.AutomationSettingsScreen
 import com.kape.settings.ui.screens.GeneralSettingsScreen
 import com.kape.settings.ui.screens.HelpScreen
 import com.kape.settings.ui.screens.NetworkSettingsScreen
+import com.kape.settings.ui.screens.PerAppSettingsScreen
 import com.kape.settings.ui.screens.PrivacySettingsScreen
 import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.SettingsScreen
@@ -139,6 +141,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Settings.Help) {
                                 HelpScreen()
+                            }
+                            composable(PerAppSettings.Main) {
+                                PerAppSettingsScreen()
                             }
                         }
                     }

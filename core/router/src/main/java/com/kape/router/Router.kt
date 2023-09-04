@@ -35,6 +35,7 @@ class Router {
             EnterFlow.PrivacySettings -> _navigation.value = Settings.Privacy
             EnterFlow.AutomationSettings -> _navigation.value = Settings.Automation
             EnterFlow.HelpSettings -> _navigation.value = Settings.Help
+            EnterFlow.PerAppSettings -> _navigation.value = PerAppSettings.Main
         }
     }
 
@@ -54,6 +55,7 @@ class Router {
             ExitFlow.PrivacySettings -> handleEnterFlow(EnterFlow.Settings)
             ExitFlow.AutomationSettings -> handleEnterFlow(EnterFlow.Settings)
             ExitFlow.HelpSettings -> handleEnterFlow(EnterFlow.Settings)
+            ExitFlow.PerAppSettings -> handleEnterFlow(EnterFlow.Connection)
         }
     }
 

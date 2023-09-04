@@ -60,4 +60,8 @@ class SideMenuViewModel(
     fun navigateToSettings() {
         router.handleFlow(EnterFlow.Settings)
     }
+
+    fun navigateToPerAppSettings() {
+        router.handleFlow(EnterFlow.PerAppSettings)
+    }
 }
