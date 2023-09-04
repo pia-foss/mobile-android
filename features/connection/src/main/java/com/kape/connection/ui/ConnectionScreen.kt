@@ -79,6 +79,9 @@ fun ConnectionScreen() {
             Separator()
             QuickConnectTile(
                 servers = viewModel.quickConnectServers.value,
+                onClick = {
+                    viewModel.quickConnect(it)
+                },
             )
             Separator()
             FavoritesTile(viewModel.favoriteServers.value)

@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.connection"
+    namespace = "com.kape.connection.prefs"
     compileSdk = 34
 
     defaultConfig {

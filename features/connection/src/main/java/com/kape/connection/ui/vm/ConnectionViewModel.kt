@@ -166,6 +166,11 @@ class ConnectionViewModel(
         VpnProtocols.OpenVPN -> settingsPrefs.getOpenVpnSettings()
     }
 
+    fun quickConnect(key: String) {
+        selectedServer.value = availableServers.firstOrNull { it.key == key }
+        connect()
+    }
+
     private fun connect() {
         viewModelScope.launch {
             selectedServer.value?.let {

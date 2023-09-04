@@ -1,5 +1,6 @@
 package com.kape.connection.ui.tiles
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -9,7 +10,7 @@ import com.kape.ui.elements.ConnectionTile
 import com.kape.utils.server.Server
 
 @Composable
-fun QuickConnectTile(servers: List<Server>) {
+fun QuickConnectTile(servers: List<Server>, onClick: (serverKey: String) -> Unit) {
     ConnectionTile(labelId = R.string.quick_connect) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -23,7 +24,11 @@ fun QuickConnectTile(servers: List<Server>) {
                     if (servers.getOrNull(index) != null) {
                         ServerTile(
                             server = servers[index],
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {
+                                    onClick(servers[index].key)
+                                },
                         )
                     } else {
                         ServerTile(modifier = Modifier.weight(1f))
