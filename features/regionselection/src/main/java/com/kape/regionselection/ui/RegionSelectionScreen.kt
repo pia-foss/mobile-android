@@ -29,7 +29,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.core.os.ConfigurationCompat
@@ -55,7 +54,6 @@ fun RegionSelectionScreen() {
     }
     val state by remember(viewModel) { viewModel.state }.collectAsState()
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
-    val searchTextState = remember { mutableStateOf(TextFieldValue("")) }
 
     LaunchedEffect(Unit) {
         locale?.let {
@@ -80,7 +78,9 @@ fun RegionSelectionScreen() {
 
             else -> {
                 // state loaded
-                SearchBar(searchTextState = searchTextState)
+                SearchBar {
+                    viewModel.filterByName(it)
+                }
                 viewModel.initAutoRegion(
                     stringResource(id = R.string.automatic),
                     stringResource(id = R.string.automatic_iso),
@@ -93,7 +93,6 @@ fun RegionSelectionScreen() {
                         }
                     },
                 ) {
-                    viewModel.filterByName(searchTextState.value.text)
                     LazyColumn {
                         items(state.regions.size) { index ->
                             ServerListItem(
@@ -126,11 +125,14 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
     val sortBySelectedOption: MutableState<RegionSelectionViewModel.SortByOption> = remember {
         viewModel.sortBySelectedOption
     }
-    AlertDialog(onDismissRequest = {
-        viewModel.hideSortingOptions()
-    }, title = {
+    AlertDialog(
+        onDismissRequest = {
+            viewModel.hideSortingOptions()
+        },
+        title = {
             Text(text = stringResource(id = R.string.sort_regions_title), fontSize = FontSize.Title)
-        }, text = {
+        },
+        text = {
             Column(modifier = Modifier.fillMaxWidth()) {
                 val options = stringArrayResource(id = R.array.sorting_options)
                 options.forEach {
@@ -164,17 +166,21 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
                     }
                 }
             }
-        }, confirmButton = {
-            TextButton(onClick = {
-                viewModel.sortBy(sortBySelectedOption.value)
-            },) {
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    viewModel.sortBy(sortBySelectedOption.value)
+                },
+            ) {
                 Text(
                     text = stringResource(id = R.string.ok),
                     fontSize = FontSize.Normal,
                     color = LocalColors.current.primary,
                 )
             }
-        }, dismissButton = {
+        },
+        dismissButton = {
             TextButton(onClick = { viewModel.hideSortingOptions() }) {
                 Text(
                     text = stringResource(id = R.string.cancel).toUpperCase(Locale.current),
@@ -182,5 +188,6 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
                     color = LocalColors.current.primary,
                 )
             }
-        },)
+        },
+    )
 }

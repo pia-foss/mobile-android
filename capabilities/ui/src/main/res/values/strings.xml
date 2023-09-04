@@ -6,5 +6,6 @@
     <string name="sort">Sort</string>
     <string name="search">Search</string>
     <string name="close">Close</string>
+    <string name="clear">Clear</string>
     <string name="button">Button</string>
 </resources>

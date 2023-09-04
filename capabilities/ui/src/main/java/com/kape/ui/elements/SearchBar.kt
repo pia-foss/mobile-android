@@ -1,59 +1,59 @@
 package com.kape.ui.elements
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 import com.kape.ui.R
-import com.kape.ui.theme.Space
-import com.kape.ui.theme.Square
+import com.kape.ui.utils.LocalColors
 
 // TODO: Implement colors properly
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(searchTextState: MutableState<TextFieldValue>) {
+fun SearchBar(onSearchTextChanged: (text: String) -> Unit) {
+    var searchText by remember { mutableStateOf("") }
+
     TextField(
-        value = searchTextState.value,
+        value = searchText,
         onValueChange = { value ->
-            searchTextState.value = value
+            searchText = value
+            onSearchTextChanged(value)
         },
         modifier = Modifier.fillMaxWidth(),
         leadingIcon = {
             Icon(
-                painter = painterResource(id = R.drawable.ic_search),
+                modifier = Modifier.padding(horizontal = 8.dp),
+                imageVector = Icons.Default.Search,
+                tint = LocalColors.current.onSurfaceVariant,
                 contentDescription = stringResource(id = R.string.search),
-                modifier = Modifier
-                    .padding(Space.NORMAL)
-                    .size(Square.ICON),
             )
         },
         trailingIcon = {
-            if (searchTextState.value != TextFieldValue("")) {
-                IconButton(
-                    onClick = {
-                        searchTextState.value =
-                            TextFieldValue("") // Remove text from TextField when you press the 'X' icon
+            Icon(
+                imageVector = Icons.Default.Clear,
+                contentDescription = stringResource(id = R.string.clear),
+                tint = LocalColors.current.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .clickable {
+                        searchText = ""
+                        onSearchTextChanged("")
                     },
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_close),
-                        contentDescription = stringResource(id = R.string.close),
-                        modifier = Modifier
-                            .padding(Space.NORMAL)
-                            .size(Square.ICON),
-                    )
-                }
-            }
+            )
         },
         singleLine = true,
         shape = RectangleShape, // The TextFiled has rounded corners top left and right by default

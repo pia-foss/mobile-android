@@ -1,10 +1,13 @@
 package com.kape.settings.ui.screens
 
 import android.graphics.drawable.Drawable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -28,18 +31,21 @@ import com.kape.appbar.view.NavigationAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.vm.SettingsViewModel
-import com.kape.settings.utils.PerAppSettingsUtils
+import com.kape.ui.elements.SearchBar
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PerAppSettingsScreen() {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.privacy))
-    }
     val packageManager = LocalContext.current.packageManager
+    val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
+        getInstalledApplications(packageManager)
+    }
+    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
+        appBarText(stringResource(id = R.string.per_app_settings))
+    }
+
     Scaffold(
         topBar = {
             NavigationAppBar(
@@ -50,28 +56,35 @@ fun PerAppSettingsScreen() {
             )
         },
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(it),
+        Column(
+            Modifier
+                .padding(it)
+                .fillMaxHeight()
+                .background(LocalColors.current.background),
         ) {
-            val items = PerAppSettingsUtils.getInstalledApps(packageManager)
-            items(items.size) { index ->
-                val item = items[index]
-                val isExcluded =
-                    viewModel.vpnExcludedApps.value.contains(item.loadLabel(packageManager))
-                AppRow(
-                    icon = item.loadIcon(packageManager),
-                    name = item.loadLabel(packageManager).toString(),
-                    isExcluded = isExcluded,
-                    onClick = { name, isChecked ->
-                        if (isChecked) {
-                            viewModel.addToVpnExcludedApps(name)
-                        } else {
-                            viewModel.removeFromVpnExcludedApps(name)
-
-                        }
-                    },
-                )
-                Divider(color = LocalColors.current.outline)
+            SearchBar {
+                viewModel.filterAppsByName(it, packageManager)
+            }
+            LazyColumn {
+                val items = viewModel.appList.value
+                items(items.size) { index ->
+                    val item = items[index]
+                    val isExcluded =
+                        viewModel.vpnExcludedApps.value.contains(item.loadLabel(packageManager))
+                    AppRow(
+                        icon = item.loadIcon(packageManager),
+                        name = item.loadLabel(packageManager).toString(),
+                        isExcluded = isExcluded,
+                        onClick = { name, isChecked ->
+                            if (isChecked) {
+                                viewModel.addToVpnExcludedApps(name)
+                            } else {
+                                viewModel.removeFromVpnExcludedApps(name)
+                            }
+                        },
+                    )
+                    Divider(color = LocalColors.current.outline)
+                }
             }
         }
     }
