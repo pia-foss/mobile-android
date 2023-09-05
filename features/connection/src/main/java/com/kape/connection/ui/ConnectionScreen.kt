@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.kape.appbar.view.ConnectionAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.tiles.ConnectionInfoTile
@@ -21,6 +22,7 @@ import com.kape.connection.ui.tiles.RegionInformationTile
 import com.kape.connection.ui.tiles.SnoozeTile
 import com.kape.connection.ui.tiles.UsageTile
 import com.kape.connection.ui.vm.ConnectionViewModel
+import com.kape.connection.utils.SnoozeInterval
 import com.kape.sidemenu.ui.SideMenuUiDrawer
 import com.kape.ui.elements.Separator
 import com.kape.ui.theme.Space
@@ -35,6 +37,7 @@ fun ConnectionScreen() {
     val viewModel: ConnectionViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val locale = Locale.getDefault().language
+    val context = LocalContext.current
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val connectionState = when (connectionStatus.value) {
@@ -86,10 +89,18 @@ fun ConnectionScreen() {
             Separator()
             FavoritesTile(viewModel.favoriteServers.value)
             Separator()
+            if (viewModel.snoozeTime.longValue != 0L && viewModel.snoozeTime.longValue < System.currentTimeMillis()) {
+                viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
+            }
             SnoozeTile(
-                viewModel.snoozeState,
+                viewModel.snoozeState.value,
                 onClick = {
-                    viewModel.snooze(it)
+                    if (viewModel.isConnectionActive()) {
+                        viewModel.snooze(context, it)
+                    }
+                },
+                onResumeClick = {
+                    viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
                 },
             )
             Separator()

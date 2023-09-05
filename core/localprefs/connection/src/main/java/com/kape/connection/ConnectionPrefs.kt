@@ -10,6 +10,7 @@ private const val QUICK_CONNECT = "quick-connect-list"
 private const val CLIENT_IP = "client-ip"
 private const val CLIENT_VPN_IP = "client-vpn-ip"
 private const val SELECTED_SERVER = "selected-server"
+private const val LAST_SNOOZE_END_TIME = "last-snooze-end-time"
 const val NO_IP = "---"
 
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
@@ -39,4 +40,9 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
     fun getSelectedServer(): Server? = prefs.getString(SELECTED_SERVER, null)?.let {
         Json.decodeFromString(it)
     }
+
+    fun setLastSnoozeEndTime(endTime: Long) =
+        prefs.edit().putLong(LAST_SNOOZE_END_TIME, endTime).apply()
+
+    fun getLastSnoozeEndTime() = prefs.getLong(LAST_SNOOZE_END_TIME, 0)
 }

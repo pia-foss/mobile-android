@@ -1,6 +1,13 @@
 package com.kape.connection.ui.vm
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -26,6 +33,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 
 class ConnectionViewModel(
     private val regionsUseCase: GetRegionsUseCase,
@@ -35,6 +43,7 @@ class ConnectionViewModel(
     private val router: Router,
     private val prefs: ConnectionPrefs,
     private val settingsPrefs: SettingsPrefs,
+    private val setSnoozePendingIntent: PendingIntent,
     usageProvider: UsageProvider,
 ) : ViewModel(), KoinComponent {
 
@@ -44,9 +53,10 @@ class ConnectionViewModel(
 
     private var availableServers = mutableListOf<Server>()
     var selectedServer = mutableStateOf(prefs.getSelectedServer())
-    var snoozeState: SnoozeState = SNOOZE_STATE_DEFAULT
+    val snoozeState = mutableStateOf(SNOOZE_STATE_DEFAULT)
     val favoriteServers = mutableStateOf(emptyList<Server>())
     val quickConnectServers = mutableStateOf(emptyList<Server>())
+    val snoozeTime = mutableLongStateOf(prefs.getLastSnoozeEndTime())
 
     var ip by mutableStateOf(prefs.getClientIp())
     var vpnIp by mutableStateOf(prefs.getClientVpnIp())
@@ -70,6 +80,8 @@ class ConnectionViewModel(
         }
     }
 
+    fun isConnectionActive() = connectionUseCase.isConnected()
+
     fun loadServers(locale: String) = viewModelScope.launch {
         regionsUseCase.loadRegions(locale).collect {
             availableServers.clear()
@@ -82,38 +94,44 @@ class ConnectionViewModel(
         }
     }
 
-    fun snooze(interval: SnoozeInterval) {
+    fun snooze(context: Context, interval: SnoozeInterval) {
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
-        val now = LocalTime.now()
-        // TODO: implement missing logic
+        val nowInMillis = Calendar.getInstance().timeInMillis
+        val nowTime = LocalTime.now()
+        val end: Long
         when (interval) {
             SnoozeInterval.SNOOZE_SHORT_MS -> {
-                val end = now.plusMinutes(fiveMinuteLong)
-                snoozeState = SnoozeState(
+                end = nowInMillis + SnoozeInterval.SNOOZE_SHORT_MS.value
+                snoozeState.value = SnoozeState(
                     active = true,
-                    formatter.format(end),
+                    formatter.format(nowTime.plusMinutes(fiveMinuteLong)),
                 )
             }
 
             SnoozeInterval.SNOOZE_MEDIUM_MS -> {
-                val end = now.plusMinutes(fifteenMinuteLong)
-                snoozeState = SnoozeState(
+                end = nowInMillis + SnoozeInterval.SNOOZE_MEDIUM_MS.value
+                snoozeState.value = SnoozeState(
                     active = true,
-                    formatter.format(end),
+                    formatter.format(nowTime.plusMinutes(fifteenMinuteLong)),
                 )
             }
 
             SnoozeInterval.SNOOZE_LONG_MS -> {
-                val end = now.plusHours(oneHourLong)
-                snoozeState = SnoozeState(
+                end = nowInMillis + SnoozeInterval.SNOOZE_LONG_MS.value
+                snoozeState.value = SnoozeState(
                     active = true,
-                    formatter.format(end),
+                    formatter.format(nowTime.plusHours(oneHourLong)),
                 )
             }
 
             else -> {
-                snoozeState = SNOOZE_STATE_DEFAULT
+                end = 0
+                snoozeState.value = SNOOZE_STATE_DEFAULT
             }
+        }
+        if (snoozeState.value.active) {
+            disconnect()
+            setSnoozeAlarm(context, end)
         }
     }
 
@@ -201,5 +219,25 @@ class ConnectionViewModel(
             clientStateDataSource.resetVpnIp()
             vpnIp = prefs.getClientVpnIp()
         }
+    }
+
+    private fun setSnoozeAlarm(context: Context, time: Long) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!alarmManager.canScheduleExactAlarms()) {
+                val intent = Intent()
+                intent.action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+                context.startActivity(intent)
+            } else {
+                setSnooze(alarmManager, time)
+            }
+        } else {
+            setSnooze(alarmManager, time)
+        }
+    }
+
+    private fun setSnooze(alarmManager: AlarmManager, time: Long) {
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, time, setSnoozePendingIntent)
+        prefs.setLastSnoozeEndTime(time)
     }
 }

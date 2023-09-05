@@ -1,5 +1,6 @@
 package com.kape.vpn.di
 
+import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -21,6 +22,9 @@ import com.kape.vpn.provider.KpiModuleStateProvider
 import com.kape.vpn.provider.PlatformProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.vpn.provider.VpnManagerProvider
+import com.kape.vpn.receiver.OnSnoozeReceiver
+import com.kape.vpn.utils.SNOOZE_REQUEST_CODE
+import com.kape.vpn.utils.SnoozeHandler
 import com.kape.vpn.utils.VpnLauncher
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -58,6 +62,10 @@ val appModule = module {
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
     single { VpnLauncher(get(), get(), get()) }
+    single { provideCancelSnoozePendingIntent(get()) }
+    single { provideSetSnoozePendingIntent(get()) }
+    single { provideAlarmManager(get()) }
+    single { SnoozeHandler(get(), get(), get(), get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -117,7 +125,7 @@ private fun providePendingIntent(context: Context, intent: Intent): PendingInten
         context,
         123,
         intent,
-        PendingIntent.FLAG_IMMUTABLE
+        PendingIntent.FLAG_IMMUTABLE,
     )
 }
 
@@ -152,6 +160,26 @@ private fun createNotificationBuilder(context: Context): Notification.Builder {
         NotificationChannelManager.CHANNEL_ID,
     )
 }
+
+private fun provideSetSnoozePendingIntent(context: Context): PendingIntent {
+    return PendingIntent.getBroadcast(
+        context,
+        SNOOZE_REQUEST_CODE,
+        Intent(context, OnSnoozeReceiver::class.java),
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT,
+    )
+}
+
+private fun provideCancelSnoozePendingIntent(context: Context): PendingIntent? {
+    return PendingIntent.getBroadcast(
+        context,
+        SNOOZE_REQUEST_CODE,
+        Intent(context, OnSnoozeReceiver::class.java),
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE,
+    )
+}
+
+private fun provideAlarmManager(context: Context) = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
 private fun provideCertificate(context: Context) =
     context.assets.open("rsa4096.pem").bufferedReader().use(BufferedReader::readText)

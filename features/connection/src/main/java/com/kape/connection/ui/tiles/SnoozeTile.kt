@@ -25,13 +25,15 @@ import com.kape.ui.theme.Space
 import com.kape.ui.theme.Width
 import com.kape.ui.utils.LocalColors
 
-// TODO: update state as needed; currently used for display purposes only
-
 @Composable
-fun SnoozeTile(state: SnoozeState, onClick: (interval: SnoozeInterval) -> Unit) {
+fun SnoozeTile(
+    state: SnoozeState,
+    onClick: (interval: SnoozeInterval) -> Unit,
+    onResumeClick: () -> Unit,
+) {
     ConnectionTile(labelId = R.string.vpn_snooze) {
         if (state.active) {
-            SnoozeTileActive(state.activeUntil) { onClick(SnoozeInterval.SNOOZE_DEFAULT_MS) }
+            SnoozeTileActive(state.activeUntil) { onResumeClick() }
         } else {
             SnoozeTileDefault(onClick)
         }
