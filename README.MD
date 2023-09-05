@@ -60,6 +60,7 @@ Code structure via packages:
 
 ### Authors
 
+ * Iva Nedeleva - kp-iva-nedeleva
 
 ### License
 
