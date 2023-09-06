@@ -76,7 +76,7 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementPayments() {
-        add(GOOGLE_IMPLEMENTATION, "com.android.billingclient:billing-ktx:5.0.0")
+        add(GOOGLE_IMPLEMENTATION, "com.android.billingclient:billing-ktx:5.2.1")
         add(AMAZON_IMPLEMENTATION, "com.amazon.device:amazon-appstore-sdk:3.0.2")
     }
 
