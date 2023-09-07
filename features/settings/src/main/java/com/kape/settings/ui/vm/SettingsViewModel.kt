@@ -65,6 +65,18 @@ class SettingsViewModel(
         router.handleFlow(EnterFlow.AutomationSettings)
     }
 
+    fun navigateToKillSwitch() {
+        router.handleFlow(EnterFlow.KillSwitchSettings)
+    }
+
+    fun exitKillSwitch() {
+        router.handleFlow(ExitFlow.KillSwitchSettings)
+    }
+
+    fun exitPrivacySettings() {
+        router.handleFlow(ExitFlow.PrivacySettings)
+    }
+
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
     }

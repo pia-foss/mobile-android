@@ -4,7 +4,7 @@ import android.net.Uri
 
 data class InputFieldProperties(val label: String, var error: String? = null, val maskInput: Boolean, var content: String = "")
 
-data class ButtonProperties(val label: String, val enabled: Boolean, val onClick: () -> Unit)
+data class ButtonProperties(val label: String, val enabled: Boolean = true, val onClick: () -> Unit)
 
 data class WebViewComponentProperties(
     val url: Uri,

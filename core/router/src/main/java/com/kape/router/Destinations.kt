@@ -39,6 +39,7 @@ object Settings {
     const val Privacy = "settings-privacy-screen"
     const val Automation = "settings-automation-screen"
     const val Help = "settings-help-screen"
+    const val KillSwitch = "settings-kill-switch"
 }
 
 object PerAppSettings {

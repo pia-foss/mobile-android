@@ -26,7 +26,7 @@ fun PrivacySettingsScreen() {
             NavigationAppBar(
                 viewModel = appBarViewModel,
                 onLeftButtonClick = {
-                    viewModel.navigateUp()
+                    viewModel.exitPrivacySettings()
                 },
             )
         },
@@ -36,9 +36,11 @@ fun PrivacySettingsScreen() {
                 .padding(it),
         ) {
             SettingsItem(
-                titleId = R.string.network_dns_title,
-                subtitle = stringResource(id = R.string.network_dns_description),
-                onClick = {},
+                titleId = R.string.privacy_kill_switch_title,
+                subtitle = stringResource(id = R.string.privacy_kill_switch_description),
+                onClick = {
+                    viewModel.navigateToKillSwitch()
+                },
             )
         }
     }

@@ -35,6 +35,7 @@ import com.kape.router.WebContent
 import com.kape.settings.ui.screens.AutomationSettingsScreen
 import com.kape.settings.ui.screens.GeneralSettingsScreen
 import com.kape.settings.ui.screens.HelpScreen
+import com.kape.settings.ui.screens.KillSwitchSettingScreen
 import com.kape.settings.ui.screens.NetworkSettingsScreen
 import com.kape.settings.ui.screens.PerAppSettingsScreen
 import com.kape.settings.ui.screens.PrivacySettingsScreen
@@ -141,6 +142,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Settings.Help) {
                                 HelpScreen()
+                            }
+                            composable(Settings.KillSwitch) {
+                                KillSwitchSettingScreen()
                             }
                             composable(PerAppSettings.Main) {
                                 PerAppSettingsScreen()
