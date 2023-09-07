@@ -44,7 +44,7 @@ fun KillSwitchSettingScreen() {
             NavigationAppBar(
                 viewModel = appBarViewModel,
                 onLeftButtonClick = {
-                    viewModel.exitKillSwitch()
+                    viewModel.navigateUp()
                 },
             )
         },

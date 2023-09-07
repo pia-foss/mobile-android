@@ -30,7 +30,12 @@ import com.kape.ui.theme.Width
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun QuickSettingsTile() {
+fun QuickSettingsTile(
+    onKillSwitchClick: () -> Unit,
+    onAutomationClick: () -> Unit,
+    onPrivateBrowserClick: () -> Unit,
+    onMoreClick: () -> Unit,
+) {
     Box(modifier = Modifier.fillMaxWidth()) {
         ConnectionTile(labelId = R.string.quick_settings) {
             Row(
@@ -40,31 +45,25 @@ fun QuickSettingsTile() {
                     iconId = R.drawable.ic_killswitch,
                     labelId = R.string.vpn_kill_switch,
                     modifier = Modifier.weight(1f),
-                    onClick = {
-                        // TODO: implement click
-                    },
+                    onClick = onKillSwitchClick,
                 )
                 QuickSetting(
                     iconId = R.drawable.ic_network_management_inactive,
                     labelId = R.string.automation,
                     modifier = Modifier.weight(1f),
-                    onClick = {
-                        // TODO: implement click
-                    },
+                    onClick = onAutomationClick,
                 )
                 QuickSetting(
                     iconId = R.drawable.ic_private_browser,
                     labelId = R.string.private_browser,
                     modifier = Modifier.weight(1f),
-                    onClick = {
-                        // TODO: implement click
-                    },
+                    onClick = onPrivateBrowserClick,
                 )
             }
         }
 
         IconButton(
-            onClick = { /*TODO implement arrow onClick*/ },
+            onClick = onMoreClick,
             modifier = Modifier
                 .align(CenterEnd)
                 .padding(end = Space.NORMAL)
@@ -84,7 +83,7 @@ fun QuickSettingsTile() {
 fun QuickSetting(iconId: Int, labelId: Int, modifier: Modifier, onClick: () -> Unit) {
     Column(
         modifier = modifier.clickable {
-            onClick.invoke()
+            onClick()
         },
         horizontalAlignment = CenterHorizontally,
     ) {

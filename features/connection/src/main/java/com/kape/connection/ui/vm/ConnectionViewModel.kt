@@ -70,6 +70,14 @@ class ConnectionViewModel(
         }
     }
 
+    fun navigateToKillSwitch() {
+        router.handleFlow(EnterFlow.KillSwitchSettings)
+    }
+
+    fun navigateToAutomation() {
+        router.handleFlow(EnterFlow.AutomationSettings)
+    }
+
     fun autoConnect() {
         viewModelScope.launch {
             if (settingsPrefs.isConnectOnLaunchEnabled()) {

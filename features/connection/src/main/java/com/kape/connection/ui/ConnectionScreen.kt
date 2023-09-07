@@ -1,5 +1,8 @@
 package com.kape.connection.ui
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -78,7 +81,20 @@ fun ConnectionScreen() {
                 vpnIp = viewModel.vpnIp,
             )
             Separator()
-            QuickSettingsTile()
+            QuickSettingsTile(
+                onKillSwitchClick = {
+                    viewModel.navigateToKillSwitch()
+                },
+                onAutomationClick = {
+                    viewModel.navigateToAutomation()
+                },
+                onPrivateBrowserClick = {
+                    onPrivateBrowserClick(context)
+                },
+                onMoreClick = {
+                    // TODO: https://polymoon.atlassian.net/browse/PIA-465
+                },
+            )
             Separator()
             QuickConnectTile(
                 servers = viewModel.quickConnectServers.value,
@@ -107,6 +123,26 @@ fun ConnectionScreen() {
             UsageTile(viewModel.download.value, viewModel.upload.value)
             Separator()
             ConnectionInfoTile(viewModel.getConnectionSettings())
+        }
+    }
+}
+
+private fun onPrivateBrowserClick(context: Context) {
+    var launchIntent: Intent? =
+        context.packageManager.getLaunchIntentForPackage("nu.tommie.inbrowser")
+    if (launchIntent != null) {
+        val url = "https://play.google.com/store/apps/details?id=nu.tommie.inbrowser"
+        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        launchIntent.data = Uri.parse(url)
+        context.startActivity(launchIntent)
+    } else {
+        launchIntent = Intent(Intent.ACTION_VIEW)
+        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        launchIntent.data = Uri.parse("market://details?id=" + "nu.tommie.inbrowser")
+
+        //silently fail if Google Play Store isn't installed.
+        if (launchIntent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(launchIntent)
         }
     }
 }

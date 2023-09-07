@@ -69,10 +69,6 @@ class SettingsViewModel(
         router.handleFlow(EnterFlow.KillSwitchSettings)
     }
 
-    fun exitKillSwitch() {
-        router.handleFlow(ExitFlow.KillSwitchSettings)
-    }
-
     fun exitPrivacySettings() {
         router.handleFlow(ExitFlow.PrivacySettings)
     }
