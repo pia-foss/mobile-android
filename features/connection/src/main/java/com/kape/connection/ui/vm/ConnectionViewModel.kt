@@ -44,7 +44,7 @@ class ConnectionViewModel(
     private val prefs: ConnectionPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val setSnoozePendingIntent: PendingIntent,
-    usageProvider: UsageProvider,
+    private val usageProvider: UsageProvider,
 ) : ViewModel(), KoinComponent {
 
     private val oneHourLong = 1L
@@ -226,6 +226,7 @@ class ConnectionViewModel(
         connectionUseCase.stopConnection().collect {
             clientStateDataSource.resetVpnIp()
             vpnIp = prefs.getClientVpnIp()
+            usageProvider.reset()
         }
     }
 

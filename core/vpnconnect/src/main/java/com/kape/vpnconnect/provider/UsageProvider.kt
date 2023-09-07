@@ -13,6 +13,11 @@ class UsageProvider : VPNManagerProtocolByteCountDependency {
         upload.value = humanReadableByteCountSI(tx)
     }
 
+    fun reset() {
+        download.value = humanReadableByteCountSI(0)
+        upload.value = humanReadableByteCountSI(0)
+    }
+
     private fun humanReadableByteCountSI(bytes: Long): String {
         val s = if (bytes < 0) "-" else ""
         var b = if (bytes == Long.MIN_VALUE) Long.MAX_VALUE else Math.abs(bytes)
