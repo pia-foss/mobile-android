@@ -50,7 +50,10 @@ fun NetworkSettingsScreen() {
             SettingsToggle(
                 titleId = R.string.network_port_forwarding_title,
                 subtitleId = R.string.network_port_forwarding_description,
-                enabled = false, toggle = {},
+                enabled = false,
+                toggle = {
+                    viewModel.toggleEnablePortForwarding(it)
+                },
             )
             Divider(
                 color = LocalColors.current.outline,

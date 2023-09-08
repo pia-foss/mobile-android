@@ -90,6 +90,10 @@ class SettingsViewModel(
         improvePiaEnabled.value = enable
     }
 
+    fun toggleEnablePortForwarding(enable: Boolean) {
+        prefs.setEnablePortForwarding(enable)
+    }
+
     fun getSelectedProtocol(): VpnProtocols = prefs.getSelectedProtocol()
 
     fun selectProtocol(protocol: VpnProtocols) = prefs.setSelectedProtocol(protocol)

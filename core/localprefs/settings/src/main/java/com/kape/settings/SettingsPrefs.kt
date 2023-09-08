@@ -16,6 +16,7 @@ private const val WIRE_GUARD_SETTINGS = "wireguard-settings"
 private const val OPEN_VPN_SETTINGS = "openvpn-settings"
 private const val HELP_IMPROVE_PIA = "help-improve-pia"
 private const val VPN_EXCLUDED_APPS = "vpn-excluded-apps"
+private const val PORT_FORWARDING = "port-forwarding"
 
 class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
@@ -92,4 +93,9 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
     fun getVpnExcludedApps() =
         prefs.getStringSet(VPN_EXCLUDED_APPS, emptySet())?.toList() ?: emptyList()
+
+    fun setEnablePortForwarding(enable: Boolean) =
+        prefs.edit().putBoolean(PORT_FORWARDING, enable).apply()
+
+    fun isPortForwardingEnabled() = prefs.getBoolean(PORT_FORWARDING, false)
 }
