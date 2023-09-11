@@ -26,15 +26,47 @@ Using the terminal:
 
 `git clone https://github.com/xvpn/kp_vpn_android *folder-name*`
 
-type in what folder you want to put in without the ** or use a graphical interface like Android Studio's to clone the repo.
+Type in what folder you want to put in without the ** or use a graphical interface like Android Studio's to clone the repo.
 
 This will pull the main repository as well as the required dependencies.
 
+
 #### Building
 
-Once the project is cloned, the project will build once opened in Android Studio. This will require building the binaries for the underlying modules and configurations. This can take a while for certain computers and is only done on complete clean and rebuilds. You can see progress in the gradle console. Once completed, the app will be able to be run on a device connected to the computer or an emulator running on your computer.
+>Once the project is cloned, the project will build once opened in Android Studio. This will require building the binaries for the underlying modules and configurations. This can take a while for certain computers and is only done on complete clean and rebuilds. You can see progress in the gradle console. Once completed, the app will be able to be run on a device connected to the computer or an emulator running on your computer.
 
 *Please note that Android 4.x emulators are broken with VPNs and will not connect.*
+
+While waiting for the application to build, set up a personal token in github.
+1. In Github, click on your profile and click on `Settings`
+2. Then, Click on `Developer settings`
+3. In the side menu click on `Personal access tokens` > `Tokens (classic)`
+4. Then, `Generate new token` > `Generate new token (classic)`
+5. You will be ask to enter two-factor authentication code from Okta 
+6. Name the token, select the expiration date to 90 days and 
+   - delete: packages
+   - write: packages
+7. Finally, click on `Generate token`
+8. Copy the generated token
+
+On your computer, go to your root folder,
+1. Press this command on your keyboard, `cmd` + `shift` + `.`, this will show the hidden files on your root folder
+2. Open `.zshenv` file, if it doesn't exist create one.
+3. Paste the code 
+   - export **GITHUB_USERNAME** = *your git hub username*
+   - export **GITHUB_TOKEN** = *your generated token*
+
+By this time, the build should had been completed,
+1. Go to Android Studio, click on `local.properties`
+2. In the file, add the following:
+   - **GITHUB_USERNAME** = *your git hub username*
+   - **GITHUB_TOKEN** = *your generated token*
+3. Save
+4. Sync the project with Gradle files
+5. Build the application
+6. You should be able to run the application with no issue
+
+Note: We are doing this because the repository is not in public yet. Once it goes to public, these steps are not necessary.
 
 ## Documentation
 
@@ -56,11 +88,12 @@ Code structure via packages:
 
 #### Significant Classes and files
 
-### Contributing
+### Contributing 
 
 ### Authors
 
  * Iva Nedeleva - kp-iva-nedeleva
+ * Ruth Ondrada - kp-ruth-o
 
 ### License
 
