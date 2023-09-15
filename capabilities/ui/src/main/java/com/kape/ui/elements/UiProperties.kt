@@ -1,8 +1,17 @@
 package com.kape.ui.elements
 
 import android.net.Uri
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.input.KeyboardType
 
-data class InputFieldProperties(val label: String, var error: String? = null, val maskInput: Boolean, var content: String = "")
+data class InputFieldProperties(
+    val label: String,
+    var error: String? = null,
+    val maskInput: Boolean,
+    val keyboardType: KeyboardType = KeyboardType.Text,
+    var content: MutableState<String> = mutableStateOf("")
+)
 
 data class ButtonProperties(val label: String, val enabled: Boolean = true, val onClick: () -> Unit)
 

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="pia">PIA</string>
     <string name="settings">Settings</string>
     <string name="icon">Icon</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="clear">Clear</string>
     <!--    General     -->
     <string name="general">General</string>
     <string name="protocols">Protocols</string>
@@ -35,11 +39,12 @@
     <string name="protocol_handshake_title">Handshake</string>
     <string name="protocol_handshake_description">RSA4096</string>
 
-    <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
-
+    <!--    Networks Settings    -->
     <string name="network_dns_title">DNS</string>
-    <string name="network_dns_description">PIA DNS</string>
+    <string name="network_dns_selection_title">DNS Selection</string>
+    <string name="network_dns_selection_custom">Custom</string>
+    <string name="network_dns_selection_custom_primary">Primary DNS</string>
+    <string name="network_dns_selection_custom_secondary">Secondary DNS</string>
     <string name="network_port_forwarding_title">Request Port Forwarding</string>
     <string name="network_port_forwarding_description">Will allow incoming connections to your mobile device over an external port</string>
     <string name="network_allow_lan_traffic_title">Allow LAN Traffic</string>

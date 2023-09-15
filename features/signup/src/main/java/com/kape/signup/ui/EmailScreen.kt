@@ -36,7 +36,7 @@ fun EmailScreen(viewModel: SignupViewModel) {
             label = stringResource(id = R.string.submit).toUpperCase(Locale.current),
             enabled = true,
             onClick = {
-                viewModel.register(emailProperties.content)
+                viewModel.register(emailProperties.content.value)
             },
         )
 

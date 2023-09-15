@@ -3,12 +3,12 @@ package com.kape.ui.elements
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -24,13 +24,13 @@ import com.kape.ui.utils.LocalColors
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputField(modifier: Modifier, properties: InputFieldProperties) {
-    var content by remember { mutableStateOf("") }
+    var content by remember { properties.content }
     Column(modifier) {
         TextField(
             value = content,
             onValueChange = {
                 content = it
-                properties.content = it
+                properties.content.value = it
             },
             visualTransformation = if (properties.maskInput) PasswordVisualTransformation() else VisualTransformation.None,
             shape = InputFieldBackground,
@@ -38,6 +38,10 @@ fun InputField(modifier: Modifier, properties: InputFieldProperties) {
                 .fillMaxWidth()
                 .semantics { contentDescription = properties.label },
             label = { Text(properties.label) },
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                keyboardType = properties.keyboardType
+            )
         )
         properties.error?.let {
             Text(

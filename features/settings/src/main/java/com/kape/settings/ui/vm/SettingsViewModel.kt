@@ -10,7 +10,9 @@ import com.kape.router.EnterFlow
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.CustomDns
 import com.kape.settings.data.DataEncryption
+import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
@@ -102,6 +104,14 @@ class SettingsViewModel(
 
     fun getOpenVpnSettings(): OpenVpnSettings = prefs.getOpenVpnSettings()
 
+    fun getCustomDns(): CustomDns = prefs.getCustomDns()
+
+    fun setCustomDns(customDns: CustomDns) = prefs.setCustomDns(customDns = customDns)
+
+    fun setSelectedDnsOption(dnsOptions: DnsOptions) = prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
+
+    fun getSelectedDnsOption(): DnsOptions = prefs.getSelectedDnsOption()
+
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()
         currentSettings.transport = transport
@@ -120,12 +130,6 @@ class SettingsViewModel(
         prefs.setOpenVpnSettings(currentSettings)
     }
 
-    fun setPort(port: String) {
-        val currentSettings = getOpenVpnSettings()
-        currentSettings.port = port
-        prefs.setOpenVpnSettings(currentSettings)
-    }
-
     fun setOpenVpnEnableSmallPackets(enable: Boolean) {
         val currentSettings = getOpenVpnSettings()
         currentSettings.useSmallPackets = enable
@@ -136,6 +140,12 @@ class SettingsViewModel(
         val currentSettings = getWireGuardSettings()
         currentSettings.useSmallPackets = enable
         prefs.setWireGuardSettings(currentSettings)
+    }
+
+    fun setPort(port: String) {
+        val currentSettings = getOpenVpnSettings()
+        currentSettings.port = port
+        prefs.setOpenVpnSettings(currentSettings)
     }
 
     fun getPorts(): List<String> {

@@ -1,6 +1,8 @@
 package com.kape.settings
 
 import android.content.Context
+import com.kape.settings.data.CustomDns
+import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
@@ -14,6 +16,8 @@ private const val CONNECT_ON_APP_UPDATE = "connect-on-app-update"
 private const val SELECTED_PROTOCOL = "selected-protocol"
 private const val WIRE_GUARD_SETTINGS = "wireguard-settings"
 private const val OPEN_VPN_SETTINGS = "openvpn-settings"
+private const val SELECTED_DNS_OPTION_SETTINGS = "selected=dns-option-settings"
+private const val CUSTOM_DNS_SETTINGS = "custom-dns-settings"
 private const val HELP_IMPROVE_PIA = "help-improve-pia"
 private const val VPN_EXCLUDED_APPS = "vpn-excluded-apps"
 private const val PORT_FORWARDING = "port-forwarding"
@@ -80,6 +84,30 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
             return Json.decodeFromString(it)
         } ?: run {
             return OpenVpnSettings()
+        }
+    }
+
+    fun setSelectedDnsOption(dnsOptions: DnsOptions) {
+        prefs.edit().putString(SELECTED_DNS_OPTION_SETTINGS, Json.encodeToString(dnsOptions)).apply()
+    }
+
+    fun getSelectedDnsOption(): DnsOptions {
+        prefs.getString(SELECTED_DNS_OPTION_SETTINGS, null)?.let {
+            return Json.decodeFromString(it)
+        } ?: run {
+            return DnsOptions.PIA
+        }
+    }
+
+    fun setCustomDns(customDns: CustomDns) {
+        prefs.edit().putString(CUSTOM_DNS_SETTINGS, Json.encodeToString(customDns)).apply()
+    }
+
+    fun getCustomDns(): CustomDns {
+        prefs.getString(CUSTOM_DNS_SETTINGS, null)?.let {
+            return Json.decodeFromString(it)
+        } ?: run {
+            return CustomDns()
         }
     }
 

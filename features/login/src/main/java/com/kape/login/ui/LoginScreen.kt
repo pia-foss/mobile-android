@@ -58,7 +58,7 @@ fun LoginScreen(navController: NavController) {
     val buttonProperties =
         ButtonProperties(label = stringResource(id = R.string.login).toUpperCase(Locale.current), enabled = true, onClick = {
             if (isConnected) {
-                viewModel.login(userProperties.content, passProperties.content)
+                viewModel.login(userProperties.content.value, passProperties.content.value)
             } else {
                 Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
             }

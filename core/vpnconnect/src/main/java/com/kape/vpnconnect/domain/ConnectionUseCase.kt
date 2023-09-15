@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import com.kape.connection.ConnectionPrefs
 import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.server.Server
@@ -68,6 +69,22 @@ class ConnectionUseCase(
             VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
         }
 
+        val dnsList = when(settingsPrefs.getSelectedDnsOption()) {
+            DnsOptions.PIA ->
+                emptyList()
+            DnsOptions.CUSTOM -> {
+                val result = mutableListOf<String>()
+                val customDns = settingsPrefs.getCustomDns()
+                if (customDns.primaryDns.isNotEmpty()) {
+                    result.add(customDns.primaryDns)
+                }
+                if (customDns.secondaryDns.isNotEmpty()) {
+                    result.add(customDns.secondaryDns)
+                }
+                result
+            }
+        }
+
         notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
         notificationBuilder.setContentText("Connected")
         notificationBuilder.setContentIntent(configureIntent)
@@ -78,7 +95,7 @@ class ConnectionUseCase(
             protocolTarget = protocolTarget,
             mtu = 1280,
             port = port,
-            dnsList = emptyList(),
+            dnsList = dnsList,
             notificationId = 123,
             notification = notificationBuilder.build(),
             allowedApplicationPackages = emptyList(),

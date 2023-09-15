@@ -53,7 +53,7 @@ fun LoginWithEmailScreen(navController: NavController) {
     val buttonProperties =
         ButtonProperties(label = stringResource(id = R.string.send_link).toUpperCase(Locale.current), enabled = true, onClick = {
             if (isConnected) {
-                viewModel.loginWithEmail(emailProperties.content)
+                viewModel.loginWithEmail(emailProperties.content.value)
             } else {
                 Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
             }
