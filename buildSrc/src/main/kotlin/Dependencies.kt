@@ -75,9 +75,18 @@ object Dependencies {
         add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
     }
 
+    fun DependencyHandler.implementKtor() {
+        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:2.3.3")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-core:2.3.3")
+    }
+
     fun DependencyHandler.implementPayments() {
         add(GOOGLE_IMPLEMENTATION, "com.android.billingclient:billing-ktx:5.2.1")
         add(AMAZON_IMPLEMENTATION, "com.amazon.device:amazon-appstore-sdk:3.0.2")
+    }
+
+    fun DependencyHandler.implementSpongyCastle() {
+        add(IMPLEMENTATION, "com.madgag.spongycastle:core:1.58.0.0")
     }
 
     fun DependencyHandler.implementFeatureModule() {

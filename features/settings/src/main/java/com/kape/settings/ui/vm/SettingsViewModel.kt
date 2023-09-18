@@ -96,6 +96,8 @@ class SettingsViewModel(
         prefs.setEnablePortForwarding(enable)
     }
 
+    fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled()
+
     fun getSelectedProtocol(): VpnProtocols = prefs.getSelectedProtocol()
 
     fun selectProtocol(protocol: VpnProtocols) = prefs.setSelectedProtocol(protocol)

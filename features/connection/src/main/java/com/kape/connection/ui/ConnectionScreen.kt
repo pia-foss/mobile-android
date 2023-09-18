@@ -79,6 +79,9 @@ fun ConnectionScreen() {
             IpInformationTile(
                 ip = viewModel.ip,
                 vpnIp = viewModel.vpnIp,
+                isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
+                portForwardingStatus = viewModel.portForwardingStatus,
+                port = viewModel.port.value.toString(),
             )
             Separator()
             QuickSettingsTile(

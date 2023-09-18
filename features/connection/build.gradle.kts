@@ -58,6 +58,7 @@ dependencies {
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))
+    implementation(project(":core:portforwarding"))
     implementation(project(":core:localprefs:connection"))
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))

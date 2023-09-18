@@ -14,4 +14,8 @@ interface ConnectionDataSource {
     fun stopConnection(): Flow<Boolean>
 
     fun getVpnToken(): String
+
+    fun startPortForwarding()
+
+    fun stopPortForwarding()
 }

@@ -23,6 +23,7 @@ import com.kape.vpn.provider.PlatformProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.vpn.provider.VpnManagerProvider
 import com.kape.vpn.receiver.OnSnoozeReceiver
+import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.utils.SNOOZE_REQUEST_CODE
 import com.kape.vpn.utils.SnoozeHandler
 import com.kape.vpn.utils.VpnLauncher
@@ -40,11 +41,13 @@ import com.privateinternetaccess.kpi.internals.utils.KTimeUnit
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.RegionsBuilder
 import kotlinx.coroutines.Dispatchers
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.BufferedReader
 
 val appModule = module {
     single { provideCertificate(get()) }
+    single(named("user-agent")) { USER_AGENT }
     single { AccountModuleStateProvider(get()) }
     single { PlatformProvider(get()) }
     single { VpnManagerProvider() }
@@ -66,6 +69,7 @@ val appModule = module {
     single { provideSetSnoozePendingIntent(get()) }
     single { provideAlarmManager(get()) }
     single { SnoozeHandler(get(), get(), get(), get()) }
+    single { providePortForwardingPendingIntent(get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -73,7 +77,7 @@ private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): Andr
         .setEndpointProvider(provider)
         .setCertificate(provider.certificate)
         .setPlatform(Platform.ANDROID)
-        .setUserAgentValue(provideUserAgent())
+        .setUserAgentValue(USER_AGENT)
         .build()
 }
 
@@ -83,7 +87,7 @@ private fun provideRegionsApi(
 ): RegionsAPI {
     return RegionsBuilder().setEndpointProvider(provider)
         .setCertificate(provider.certificate)
-        .setUserAgent(provideUserAgent())
+        .setUserAgent(USER_AGENT)
         .setMetadataRequestPath("/vpninfo/regions/v2")
         .setRegionsListRequestPath("/vpninfo/servers/v5")
         .setPlatformInstancesProvider(platformProvider)
@@ -97,7 +101,7 @@ private fun provideKpiApi(provider: KpiModuleStateProvider): KPIAPI {
         .setEventTimeSendGranularity(KTimeUnit.MILLISECONDS)
         .setRequestFormat(KPIRequestFormat.KAPE)
         .setPreferenceName(KPI_PREFS_NAME)
-        .setUserAgent(provideUserAgent())
+        .setUserAgent(USER_AGENT)
         .setCertificate(provider.certificate)
         .build()
 }
@@ -179,10 +183,19 @@ private fun provideCancelSnoozePendingIntent(context: Context): PendingIntent? {
     )
 }
 
-private fun provideAlarmManager(context: Context) = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+private fun providePortForwardingPendingIntent(context: Context): PendingIntent {
+    val intent = Intent(context, PortForwardingReceiver::class.java)
+    val flags: Int = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+    return PendingIntent.getBroadcast(
+        context, 0, intent, flags,
+    )
+}
+
+private fun provideAlarmManager(context: Context) =
+    context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
 private fun provideCertificate(context: Context) =
     context.assets.open("rsa4096.pem").bufferedReader().use(BufferedReader::readText)
 
-private fun provideUserAgent() =
+private const val USER_AGENT =
     "privateinternetaccess.com Android Client/${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE}))"

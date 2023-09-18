@@ -18,6 +18,7 @@ import com.kape.connection.ui.tiles.MAX_SERVERS
 import com.kape.connection.utils.SNOOZE_STATE_DEFAULT
 import com.kape.connection.utils.SnoozeInterval
 import com.kape.connection.utils.SnoozeState
+import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.regionselection.domain.GetRegionsUseCase
 import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.router.EnterFlow
@@ -45,6 +46,7 @@ class ConnectionViewModel(
     private val settingsPrefs: SettingsPrefs,
     private val setSnoozePendingIntent: PendingIntent,
     private val usageProvider: UsageProvider,
+    private val portForwardingUseCase: PortForwardingUseCase,
 ) : ViewModel(), KoinComponent {
 
     private val oneHourLong = 1L
@@ -63,6 +65,9 @@ class ConnectionViewModel(
 
     val download = usageProvider.download
     val upload = usageProvider.upload
+
+    val portForwardingStatus = portForwardingUseCase.portForwardingStatus
+    val port = mutableStateOf(prefs.getPortBindingInfo()?.decodedPayload?.port)
 
     init {
         viewModelScope.launch {
@@ -196,6 +201,8 @@ class ConnectionViewModel(
         selectedServer.value = availableServers.firstOrNull { it.key == key }
         connect()
     }
+
+    fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
 
     private fun connect() {
         viewModelScope.launch {

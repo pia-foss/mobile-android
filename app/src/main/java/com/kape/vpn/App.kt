@@ -6,6 +6,7 @@ import com.kape.connection.di.connectionModule
 import com.kape.login.di.loginModule
 import com.kape.notifications.di.notificationModule
 import com.kape.payments.di.paymentsModule
+import com.kape.portforwarding.di.portForwardingModule
 import com.kape.vpn.di.appModule
 import com.kape.profile.di.profileModule
 import com.kape.regionselection.di.regionModule
@@ -45,7 +46,14 @@ class App : Application() {
                 add(signupModule(appModule))
                 add(kpiModule(appModule))
                 add(connectionModule(appModule))
-                add(settingsModule(appBarModule, BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
+                add(
+                    settingsModule(
+                        appBarModule,
+                        BuildConfig.VERSION_CODE,
+                        BuildConfig.VERSION_NAME,
+                    ),
+                )
+                add(portForwardingModule(appModule))
             },
         )
     }

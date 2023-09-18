@@ -69,7 +69,7 @@ fun NetworkSettingsScreen() {
             SettingsToggle(
                 titleId = R.string.network_port_forwarding_title,
                 subtitleId = R.string.network_port_forwarding_description,
-                enabled = false,
+                enabled = viewModel.isPortForwardingEnabled(),
                 toggle = {
                     viewModel.toggleEnablePortForwarding(it)
                 },

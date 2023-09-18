@@ -84,6 +84,7 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".receiver.OnSnoozeReceiver" />
+        <receiver android:name=".receiver.PortForwardingReceiver" />
 
         <service
             android:name=".service.VpnAlwaysOnService"

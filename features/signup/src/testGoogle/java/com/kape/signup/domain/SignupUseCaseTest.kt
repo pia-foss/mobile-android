@@ -3,7 +3,7 @@ package com.kape.signup.domain
 import app.cash.turbine.test
 import com.kape.login.domain.LoginUseCase
 import com.kape.login.utils.LoginState
-import com.kape.payments.data.models.PurchaseData
+import com.kape.payments.data.PurchaseData
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.signup.data.models.Credentials
 import io.mockk.coEvery

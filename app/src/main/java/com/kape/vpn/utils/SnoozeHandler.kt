@@ -2,7 +2,6 @@ package com.kape.vpn.utils
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.Context
 import com.kape.connection.ConnectionPrefs
 import org.koin.core.component.KoinComponent
 

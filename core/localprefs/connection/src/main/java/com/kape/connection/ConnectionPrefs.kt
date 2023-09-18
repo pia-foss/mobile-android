@@ -1,8 +1,10 @@
 package com.kape.connection
 
 import android.content.Context
+import com.kape.connection.model.PortBindInformation
 import com.kape.utils.Prefs
 import com.kape.utils.server.Server
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -11,6 +13,8 @@ private const val CLIENT_IP = "client-ip"
 private const val CLIENT_VPN_IP = "client-vpn-ip"
 private const val SELECTED_SERVER = "selected-server"
 private const val LAST_SNOOZE_END_TIME = "last-snooze-end-time"
+private const val GATEWAY = "gateway"
+private const val PORT_BINDING_INFO = "port-binding-info"
 const val NO_IP = "---"
 
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
@@ -45,4 +49,20 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
         prefs.edit().putLong(LAST_SNOOZE_END_TIME, endTime).apply()
 
     fun getLastSnoozeEndTime() = prefs.getLong(LAST_SNOOZE_END_TIME, 0)
+
+    fun setGateway(gateway: String) = prefs.edit().putString(GATEWAY, gateway).apply()
+
+    fun getGateway() = prefs.getString(GATEWAY, "") ?: ""
+
+    fun clearGateway() = setGateway("")
+
+    fun setPortBindingInformation(info: PortBindInformation?) {
+        prefs.edit().putString(PORT_BINDING_INFO, Json.encodeToString(info)).apply()
+    }
+
+    fun getPortBindingInfo(): PortBindInformation? = prefs.getString(PORT_BINDING_INFO, null)?.let {
+        Json.decodeFromString(it)
+    }
+
+    fun clearPortBindingInfo() = setPortBindingInformation(null)
 }

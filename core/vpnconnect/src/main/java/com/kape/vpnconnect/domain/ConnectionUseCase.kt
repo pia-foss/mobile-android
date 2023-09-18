@@ -33,17 +33,7 @@ class ConnectionUseCase(
         connectionManager.setConnectedServerName(server.name)
         connectionPrefs.setSelectedServer(server)
         val index = connectionSource.getVpnToken().indexOf(":")
-        val serverGroup = when (settingsPrefs.getSelectedProtocol()) {
-            VpnProtocols.WireGuard -> Server.ServerGroup.WIREGUARD
-            VpnProtocols.OpenVPN -> {
-                if (settingsPrefs.getOpenVpnSettings().transport == Transport.UDP) {
-                    Server.ServerGroup.OPENVPN_UDP
-                } else {
-                    Server.ServerGroup.OPENVPN_TCP
-                }
-            }
-        }
-        val details = server.endpoints[serverGroup]
+        val details = server.endpoints[getServerGroup()]
 
         val ip: String
         val cn: String
@@ -136,4 +126,17 @@ class ConnectionUseCase(
     }
 
     fun isConnected(): Boolean = connectionManager.isConnected()
+
+    fun getServerGroup(): Server.ServerGroup = when (settingsPrefs.getSelectedProtocol()) {
+        VpnProtocols.WireGuard -> Server.ServerGroup.WIREGUARD
+        VpnProtocols.OpenVPN -> {
+            if (settingsPrefs.getOpenVpnSettings().transport == Transport.UDP) {
+                Server.ServerGroup.OPENVPN_UDP
+            } else {
+                Server.ServerGroup.OPENVPN_TCP
+            }
+        }
+    }
+
+    fun getVpnToken() = connectionSource.getVpnToken()
 }
