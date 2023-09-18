@@ -40,6 +40,7 @@ object Settings {
     const val Automation = "settings-automation-screen"
     const val Help = "settings-help-screen"
     const val KillSwitch = "settings-kill-switch"
+    const val QuickSettings = "settings-quick-settings"
 }
 
 object PerAppSettings {

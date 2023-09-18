@@ -21,6 +21,9 @@ private const val CUSTOM_DNS_SETTINGS = "custom-dns-settings"
 private const val HELP_IMPROVE_PIA = "help-improve-pia"
 private const val VPN_EXCLUDED_APPS = "vpn-excluded-apps"
 private const val PORT_FORWARDING = "port-forwarding"
+private const val QUICK_KILL_SWITCH = "quick-setting-kill-switch"
+private const val QUICK_AUTOMATION = "quick-setting-automation"
+private const val QUICK_BROWSER = "quick-setting-browser"
 
 class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
@@ -88,7 +91,8 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
     }
 
     fun setSelectedDnsOption(dnsOptions: DnsOptions) {
-        prefs.edit().putString(SELECTED_DNS_OPTION_SETTINGS, Json.encodeToString(dnsOptions)).apply()
+        prefs.edit().putString(SELECTED_DNS_OPTION_SETTINGS, Json.encodeToString(dnsOptions))
+            .apply()
     }
 
     fun getSelectedDnsOption(): DnsOptions {
@@ -126,4 +130,19 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         prefs.edit().putBoolean(PORT_FORWARDING, enable).apply()
 
     fun isPortForwardingEnabled() = prefs.getBoolean(PORT_FORWARDING, false)
+
+    fun setQuickSettingKillSwitch(enabled: Boolean) =
+        prefs.edit().putBoolean(QUICK_KILL_SWITCH, enabled).apply()
+
+    fun isQuickSettingKillSwitchEnabled() = prefs.getBoolean(QUICK_KILL_SWITCH, true)
+
+    fun setQuickSettingAutomation(enabled: Boolean) =
+        prefs.edit().putBoolean(QUICK_AUTOMATION, enabled).apply()
+
+    fun isQuickSettingAutomationEnabled() = prefs.getBoolean(QUICK_AUTOMATION, true)
+
+    fun setQuickSettingPrivateBrowser(enabled: Boolean) =
+        prefs.edit().putBoolean(QUICK_BROWSER, enabled).apply()
+
+    fun isQuickSettingPrivateBrowserEnabled() = prefs.getBoolean(QUICK_BROWSER, true)
 }

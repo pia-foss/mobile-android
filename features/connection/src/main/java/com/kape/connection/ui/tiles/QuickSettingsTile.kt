@@ -31,6 +31,9 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun QuickSettingsTile(
+    isKillSwitchEnabled: Boolean,
+    isAutomationEnabled: Boolean,
+    isPrivateBrowserEnabled: Boolean,
     onKillSwitchClick: () -> Unit,
     onAutomationClick: () -> Unit,
     onPrivateBrowserClick: () -> Unit,
@@ -41,24 +44,32 @@ fun QuickSettingsTile(
             Row(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                QuickSetting(
-                    iconId = R.drawable.ic_killswitch,
-                    labelId = R.string.vpn_kill_switch,
-                    modifier = Modifier.weight(1f),
-                    onClick = onKillSwitchClick,
-                )
-                QuickSetting(
-                    iconId = R.drawable.ic_network_management_inactive,
-                    labelId = R.string.automation,
-                    modifier = Modifier.weight(1f),
-                    onClick = onAutomationClick,
-                )
-                QuickSetting(
-                    iconId = R.drawable.ic_private_browser,
-                    labelId = R.string.private_browser,
-                    modifier = Modifier.weight(1f),
-                    onClick = onPrivateBrowserClick,
-                )
+                if (isKillSwitchEnabled) {
+                    QuickSetting(
+                        iconId = com.kape.ui.R.drawable.ic_killswitch,
+                        labelId = R.string.vpn_kill_switch,
+                        modifier = Modifier.weight(1f),
+                        onClick = onKillSwitchClick,
+                    )
+                }
+
+                if (isAutomationEnabled) {
+                    QuickSetting(
+                        iconId = com.kape.ui.R.drawable.ic_network_management_inactive,
+                        labelId = R.string.automation,
+                        modifier = Modifier.weight(1f),
+                        onClick = onAutomationClick,
+                    )
+                }
+
+                if (isPrivateBrowserEnabled) {
+                    QuickSetting(
+                        iconId = com.kape.ui.R.drawable.ic_private_browser,
+                        labelId = R.string.private_browser,
+                        modifier = Modifier.weight(1f),
+                        onClick = onPrivateBrowserClick,
+                    )
+                }
             }
         }
 

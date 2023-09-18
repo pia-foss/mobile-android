@@ -75,6 +75,10 @@ class SettingsViewModel(
         router.handleFlow(ExitFlow.PrivacySettings)
     }
 
+    fun exitQuickSettings() {
+        router.handleFlow(ExitFlow.QuickSettings)
+    }
+
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
     }
@@ -110,9 +114,23 @@ class SettingsViewModel(
 
     fun setCustomDns(customDns: CustomDns) = prefs.setCustomDns(customDns = customDns)
 
-    fun setSelectedDnsOption(dnsOptions: DnsOptions) = prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
+    fun setSelectedDnsOption(dnsOptions: DnsOptions) =
+        prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
 
     fun getSelectedDnsOption(): DnsOptions = prefs.getSelectedDnsOption()
+
+    fun toggleQuickSettingKillSwitch(enable: Boolean) = prefs.setQuickSettingKillSwitch(enable)
+
+    fun isQuickSettingKillSwitchEnabled() = prefs.isQuickSettingKillSwitchEnabled()
+
+    fun toggleQuickSettingAutomation(enable: Boolean) = prefs.setQuickSettingAutomation(enable)
+
+    fun isQuickSettingAutomationEnabled() = prefs.isQuickSettingAutomationEnabled()
+
+    fun toggleQuickSettingPrivateBrowser(enable: Boolean) =
+        prefs.setQuickSettingPrivateBrowser(enable)
+
+    fun isQuickSettingPrivateBrowserEnabled() = prefs.isQuickSettingPrivateBrowserEnabled()
 
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()

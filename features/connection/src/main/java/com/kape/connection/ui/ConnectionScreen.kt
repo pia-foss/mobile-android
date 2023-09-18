@@ -85,6 +85,9 @@ fun ConnectionScreen() {
             )
             Separator()
             QuickSettingsTile(
+                isKillSwitchEnabled = viewModel.isKillSwitchEnabled(),
+                isAutomationEnabled = viewModel.isAutomationEnabled(),
+                isPrivateBrowserEnabled = viewModel.isPrivateBrowserEnabled(),
                 onKillSwitchClick = {
                     viewModel.navigateToKillSwitch()
                 },
@@ -95,7 +98,7 @@ fun ConnectionScreen() {
                     onPrivateBrowserClick(context)
                 },
                 onMoreClick = {
-                    // TODO: https://polymoon.atlassian.net/browse/PIA-465
+                    viewModel.navigateToQuickSettings()
                 },
             )
             Separator()
