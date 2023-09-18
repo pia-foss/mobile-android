@@ -83,6 +83,10 @@ class ConnectionViewModel(
         router.handleFlow(EnterFlow.AutomationSettings)
     }
 
+    fun navigateToQuickSettings() {
+        router.handleFlow(EnterFlow.QuickSettings)
+    }
+
     fun autoConnect() {
         viewModelScope.launch {
             if (settingsPrefs.isConnectOnLaunchEnabled()) {
@@ -203,6 +207,12 @@ class ConnectionViewModel(
     }
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
+
+    fun isKillSwitchEnabled() = settingsPrefs.isQuickSettingKillSwitchEnabled()
+
+    fun isAutomationEnabled() = settingsPrefs.isQuickSettingAutomationEnabled()
+    
+    fun isPrivateBrowserEnabled() = settingsPrefs.isQuickSettingPrivateBrowserEnabled()
 
     private fun connect() {
         viewModelScope.launch {

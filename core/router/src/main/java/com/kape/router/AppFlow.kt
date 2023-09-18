@@ -22,6 +22,7 @@ sealed class EnterFlow : AppFlow {
     data object HelpSettings : EnterFlow()
     data object PerAppSettings : EnterFlow()
     data object KillSwitchSettings : EnterFlow()
+    data object QuickSettings : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -41,6 +42,7 @@ sealed class ExitFlow : AppFlow {
     data object HelpSettings : ExitFlow()
     data object PerAppSettings : ExitFlow()
     data object KillSwitchSettings : ExitFlow()
+    data object QuickSettings : ExitFlow()
 }
 
 object Back : AppFlow

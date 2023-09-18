@@ -40,6 +40,7 @@ import com.kape.settings.ui.screens.NetworkSettingsScreen
 import com.kape.settings.ui.screens.PerAppSettingsScreen
 import com.kape.settings.ui.screens.PrivacySettingsScreen
 import com.kape.settings.ui.screens.ProtocolSettingsScreen
+import com.kape.settings.ui.screens.QuickSettingsScreen
 import com.kape.settings.ui.screens.SettingsScreen
 import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
@@ -148,6 +149,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(PerAppSettings.Main) {
                                 PerAppSettingsScreen()
+                            }
+                            composable(Settings.QuickSettings) {
+                                QuickSettingsScreen()
                             }
                         }
                     }

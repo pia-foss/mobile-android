@@ -72,4 +72,8 @@
     <string name="kill_switch_description">To proceed, go to Settings - Network &amp; Internet - Advanced - VPN - tap on the Settings icon - <b>activate Always-on VPN.</b></string>
     <string name="kill_switch_action">Go to Network &amp; Internet Settings</string>
 
+    <string name="quick_setting_kill_switch">VPN Kill Switch</string>
+    <string name="quick_setting_automation">Automation</string>
+    <string name="quick_setting_private_browser">Private Browser</string>
+
 </resources>
