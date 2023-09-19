@@ -1,9 +1,13 @@
+import Dependencies.implementAccount
+import Dependencies.implementAndroidBase
 import Dependencies.implementCoroutines
+import Dependencies.implementFeatureModule
 
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint")
+    id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
 android {
@@ -25,5 +29,7 @@ android {
 }
 
 dependencies {
-    implementCoroutines()
+    implementation(project(":core:utils"))
+    implementAccount()
+    implementFeatureModule()
 }

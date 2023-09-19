@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.kape.appbar.di.appBarModule
 import com.kape.connection.di.connectionModule
+import com.kape.dedicatedip.di.dedicatedIpModule
 import com.kape.login.di.loginModule
 import com.kape.notifications.di.notificationModule
 import com.kape.payments.di.paymentsModule
@@ -73,6 +74,7 @@ class App : Application() {
                     ),
                 )
                 add(portForwardingModule(appModule))
+                add(dedicatedIpModule(appModule))
             },
         )
     }
