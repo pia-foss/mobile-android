@@ -1,5 +1,7 @@
 package com.kape.shareevents.data
 
+import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.KpiPrefs
 import com.kape.shareevents.data.models.KpiConnectionEvent
 import com.kape.shareevents.data.models.KpiConnectionSource
@@ -14,9 +16,9 @@ import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
 
 class KpiDataSourceImpl(
-    private val prefs: KpiPrefs,
     private val userAgent: String,
     private val api: KPIAPI,
+    private val settingsPrefs: SettingsPrefs,
 ) : KpiDataSource, KoinComponent {
 
     private var connectionInitiatedTime: Long = 0
@@ -69,7 +71,11 @@ class KpiDataSourceImpl(
         val eventProperties = mutableMapOf<String, String>()
         eventProperties[KpiEventPropertyKey.ConnectionSource.value] = connectionSource.value
         eventProperties[KpiEventPropertyKey.UserAgent.value] = userAgent
-        eventProperties[KpiEventPropertyKey.VpnProtocol.value] = prefs.getActiveProtocol()
+        eventProperties[KpiEventPropertyKey.VpnProtocol.value] =
+            when (settingsPrefs.getSelectedProtocol()) {
+                VpnProtocols.WireGuard -> VpnProtocols.WireGuard.name
+                VpnProtocols.OpenVPN -> VpnProtocols.OpenVPN.name
+            }
         if (connectionEvent == KpiConnectionEvent.ConnectionEstablished) {
             eventProperties[KpiEventPropertyKey.TimeToConnect.value] = timeToConnect.toString()
         }

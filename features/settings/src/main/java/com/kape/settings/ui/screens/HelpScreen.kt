@@ -80,7 +80,9 @@ fun HelpScreen() {
                 )
                 SettingsItem(
                     titleId = R.string.help_view_shared_data_title,
-                    onClick = {},
+                    onClick = {
+                        viewModel.navigateToConnectionStats()
+                    },
                 )
             }
             Divider(

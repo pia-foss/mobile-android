@@ -10,7 +10,10 @@ interface KpiDataSource {
 
     fun stop()
 
-    fun submit(connectionEvent: KpiConnectionEvent, connectionSource: KpiConnectionSource)
+    fun submit(
+        connectionEvent: KpiConnectionEvent,
+        connectionSource: KpiConnectionSource = KpiConnectionSource.Automatic,
+    )
 
     fun flush()
 

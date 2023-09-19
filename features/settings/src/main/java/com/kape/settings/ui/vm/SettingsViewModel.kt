@@ -4,6 +4,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kape.regionselection.data.RegionRepository
 import com.kape.router.Back
 import com.kape.router.EnterFlow
@@ -18,6 +19,9 @@ import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.utils.PerAppSettingsUtils
+import com.kape.shareevents.domain.KpiDataSource
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class SettingsViewModel(
@@ -25,6 +29,7 @@ class SettingsViewModel(
     private val router: Router,
     private val regionsRepository: RegionRepository,
     val version: String,
+    private val kpiDataSource: KpiDataSource,
 ) : ViewModel(), KoinComponent {
 
     val launchOnBootEnabled = prefs.isLaunchOnStartupEnabled()
@@ -33,6 +38,7 @@ class SettingsViewModel(
     val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
     val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
+    val eventList = mutableStateOf<List<String>>(emptyList())
     private var installedApps = listOf<ApplicationInfo>()
 
     fun navigateUp() {
@@ -77,6 +83,14 @@ class SettingsViewModel(
 
     fun exitQuickSettings() {
         router.handleFlow(ExitFlow.QuickSettings)
+    }
+
+    fun navigateToConnectionStats() {
+        router.handleFlow(EnterFlow.ConnectionStats)
+    }
+
+    fun exitConnectionStats() {
+        router.handleFlow(ExitFlow.ConnectionStats)
     }
 
     fun toggleLaunchOnBoot(enable: Boolean) {
@@ -214,6 +228,12 @@ class SettingsViewModel(
             appList.value = installedApps.filter {
                 it.loadLabel(packageManager).toString().lowercase().contains(value.lowercase())
             }
+        }
+    }
+
+    fun getRecentEvents() = viewModelScope.launch {
+        kpiDataSource.recentEvents().collect {
+            eventList.value = it
         }
     }
 }

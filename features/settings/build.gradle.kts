@@ -56,6 +56,7 @@ dependencies {
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":capabilities:shareevents"))
     implementation(project(":features:appbar"))
     implementation(project(":features:regionselection"))
 

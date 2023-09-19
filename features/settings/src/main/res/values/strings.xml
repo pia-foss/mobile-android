@@ -76,4 +76,7 @@
     <string name="quick_setting_automation">Automation</string>
     <string name="quick_setting_private_browser">Private Browser</string>
 
+    <string name="connection_stats_title">Connection Stats</string>
+    <string name="connection_stats_no_events">There are no recent events</string>
+
 </resources>

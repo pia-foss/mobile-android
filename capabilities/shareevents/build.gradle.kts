@@ -18,6 +18,16 @@ android {
         minSdk = 24
     }
 
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
+    }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
@@ -35,6 +45,8 @@ dependencies {
     implementKpi()
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:shareevents"))
+    implementation(project(":core:localprefs:settings"))
+    implementation(project(":core:localprefs:settings:data"))
 
     implementSerialization()
     implementFeatureModule()

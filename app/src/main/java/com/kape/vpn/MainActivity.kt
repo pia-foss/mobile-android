@@ -33,6 +33,7 @@ import com.kape.router.Subscribe
 import com.kape.router.VpnPermission
 import com.kape.router.WebContent
 import com.kape.settings.ui.screens.AutomationSettingsScreen
+import com.kape.settings.ui.screens.ConnectionStatsScreen
 import com.kape.settings.ui.screens.GeneralSettingsScreen
 import com.kape.settings.ui.screens.HelpScreen
 import com.kape.settings.ui.screens.KillSwitchSettingScreen
@@ -152,6 +153,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Settings.QuickSettings) {
                                 QuickSettingsScreen()
+                            }
+                            composable(Settings.ConnectionStats) {
+                                ConnectionStatsScreen()
                             }
                         }
                     }

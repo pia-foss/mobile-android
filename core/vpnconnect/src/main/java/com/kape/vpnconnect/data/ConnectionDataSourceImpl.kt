@@ -3,6 +3,8 @@ package com.kape.vpnconnect.data
 import android.app.AlarmManager
 import android.app.PendingIntent
 import com.kape.connection.ConnectionPrefs
+import com.kape.settings.SettingsPrefs
+import com.kape.shareevents.domain.KpiDataSource
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -19,6 +21,8 @@ class ConnectionDataSourceImpl(
     private val connectionPrefs: ConnectionPrefs,
     private val alarmManager: AlarmManager,
     private val portForwardingIntent: PendingIntent,
+    private val settingsPrefs: SettingsPrefs,
+    private val kpiDataSource: KpiDataSource,
 ) : ConnectionDataSource, KoinComponent {
 
     override fun startConnection(
@@ -27,6 +31,11 @@ class ConnectionDataSourceImpl(
     ): Flow<Boolean> =
         callbackFlow {
             connectionApi.addConnectionListener(listener) {}
+            if (settingsPrefs.isHelpImprovePiaEnabled()) {
+                kpiDataSource.start()
+            } else {
+                kpiDataSource.stop()
+            }
             connectionApi.startConnection(clientConfiguration) {
                 it.getOrNull()?.let { serverPeerInfo ->
                     connectionPrefs.setGateway(serverPeerInfo.gateway)

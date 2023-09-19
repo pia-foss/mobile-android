@@ -91,7 +91,7 @@ class ConnectionViewModel(
         viewModelScope.launch {
             if (settingsPrefs.isConnectOnLaunchEnabled()) {
                 prefs.getSelectedServer()?.let {
-                    connectionUseCase.startConnection(it).collect()
+                    connectionUseCase.startConnection(it, false).collect()
                 }
             }
         }
@@ -211,7 +211,7 @@ class ConnectionViewModel(
     fun isKillSwitchEnabled() = settingsPrefs.isQuickSettingKillSwitchEnabled()
 
     fun isAutomationEnabled() = settingsPrefs.isQuickSettingAutomationEnabled()
-    
+
     fun isPrivateBrowserEnabled() = settingsPrefs.isQuickSettingPrivateBrowserEnabled()
 
     private fun connect() {
@@ -220,7 +220,8 @@ class ConnectionViewModel(
                 regionsUseCase.selectRegion(it.key)
                 prefs.addToQuickConnect(it.key)
                 connectionUseCase.startConnection(
-                    it,
+                    server = it,
+                    isManualConnection = true,
                 ).collect {
                     launch {
                         delay(3000)

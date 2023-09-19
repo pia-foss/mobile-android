@@ -45,8 +45,9 @@ object Dependencies {
 
     fun DependencyHandler.implementAndroidBase() {
         add(IMPLEMENTATION, "androidx.core:core-ktx:1.10.1")
-        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-process:2.6.2")
         add(IMPLEMENTATION, "androidx.activity:activity-compose:1.7.2")
     }
 

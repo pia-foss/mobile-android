@@ -29,8 +29,9 @@ class ConnectionUseCase(
     private val notificationBuilder: Notification.Builder,
 ) : KoinComponent {
 
-    fun startConnection(server: Server): Flow<Boolean> = flow {
+    fun startConnection(server: Server, isManualConnection: Boolean): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name)
+        connectionManager.isManualConnection = isManualConnection
         connectionPrefs.setSelectedServer(server)
         val index = connectionSource.getVpnToken().indexOf(":")
         val details = server.endpoints[getServerGroup()]
@@ -59,9 +60,10 @@ class ConnectionUseCase(
             VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
         }
 
-        val dnsList = when(settingsPrefs.getSelectedDnsOption()) {
+        val dnsList = when (settingsPrefs.getSelectedDnsOption()) {
             DnsOptions.PIA ->
                 emptyList()
+
             DnsOptions.CUSTOM -> {
                 val result = mutableListOf<String>()
                 val customDns = settingsPrefs.getCustomDns()

@@ -15,10 +15,20 @@ fun vpnConnectModule(appModule: Module) = module {
 }
 
 private val localVpnConnectModule = module {
-    single<ConnectionDataSource> { ConnectionDataSourceImpl(get(), get(), get(), get(), get()) }
+    single<ConnectionDataSource> {
+        ConnectionDataSourceImpl(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+        )
+    }
     single { ConnectionUseCase(get(), get(), get(), get(), get(), get(), get()) }
     single { provideConnectionStatusValues(get()) }
-    single { ConnectionManager(get()) }
+    single { ConnectionManager(get(), get()) }
 }
 
 private fun provideConnectionStatusValues(context: Context): Map<ConnectionStatus, String> {

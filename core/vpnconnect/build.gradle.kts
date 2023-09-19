@@ -20,6 +20,16 @@ android {
         minSdk = 24
     }
 
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -35,6 +45,7 @@ dependencies {
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))
     implementation(project(":core:localprefs:connection"))
+    implementation(project(":capabilities:shareevents"))
     implementVpnManager()
     implementKoin()
     implementAccount()

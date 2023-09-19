@@ -41,6 +41,7 @@ object Settings {
     const val Help = "settings-help-screen"
     const val KillSwitch = "settings-kill-switch"
     const val QuickSettings = "settings-quick-settings"
+    const val ConnectionStats = "settings-connection-stats"
 }
 
 object PerAppSettings {

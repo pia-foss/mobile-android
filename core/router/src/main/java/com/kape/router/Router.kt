@@ -38,6 +38,7 @@ class Router {
             EnterFlow.PerAppSettings -> _navigation.value = PerAppSettings.Main
             EnterFlow.KillSwitchSettings -> _navigation.value = Settings.KillSwitch
             EnterFlow.QuickSettings -> _navigation.value = Settings.QuickSettings
+            EnterFlow.ConnectionStats -> _navigation.value = Settings.ConnectionStats
         }
     }
 
@@ -60,6 +61,7 @@ class Router {
             ExitFlow.PerAppSettings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.KillSwitchSettings -> handleEnterFlow(EnterFlow.PrivacySettings)
             ExitFlow.QuickSettings -> handleEnterFlow(EnterFlow.Connection)
+            ExitFlow.ConnectionStats -> handleEnterFlow(EnterFlow.HelpSettings)
         }
     }
 
