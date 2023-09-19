@@ -152,6 +152,12 @@ class SettingsViewModel(
 
     fun isQuickSettingPrivateBrowserEnabled() = prefs.isQuickSettingPrivateBrowserEnabled()
 
+    fun toggleAutomationEnabled(enable: Boolean) {
+        prefs.setAutomationEnabled(enable)
+    }
+
+    fun isAutomationEnabled() = prefs.isAutomationEnabled()
+
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()
         currentSettings.transport = transport

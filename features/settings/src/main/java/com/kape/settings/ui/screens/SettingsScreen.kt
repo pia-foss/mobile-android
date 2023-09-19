@@ -75,7 +75,7 @@ fun SettingsScreen() {
             SettingsItem(
                 iconId = R.drawable.ic_setting_automation,
                 titleId = R.string.automation,
-                subtitle = stringResource(id = R.string.disabled),
+                subtitle = stringResource(id = if (viewModel.isAutomationEnabled()) R.string.enabled else R.string.disabled),
                 onClick = {
                     viewModel.navigateToAutomation()
                 },

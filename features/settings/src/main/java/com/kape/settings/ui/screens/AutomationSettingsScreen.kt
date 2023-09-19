@@ -38,7 +38,10 @@ fun AutomationSettingsScreen() {
             SettingsToggle(
                 titleId = R.string.automation_title,
                 subtitleId = R.string.automation_description,
-                enabled = false, toggle = {},
+                enabled = viewModel.isAutomationEnabled(),
+                toggle = {
+                    viewModel.toggleAutomationEnabled(it)
+                },
             )
         }
     }

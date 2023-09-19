@@ -25,6 +25,7 @@ private const val QUICK_KILL_SWITCH = "quick-setting-kill-switch"
 private const val QUICK_AUTOMATION = "quick-setting-automation"
 private const val QUICK_BROWSER = "quick-setting-browser"
 private const val ALLOW_LOCAL_TRAFFIC = "allow-local-traffic"
+private const val AUTOMATION = "setting-automation"
 
 class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
@@ -151,4 +152,8 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         prefs.edit().putBoolean(ALLOW_LOCAL_TRAFFIC, enable).apply()
 
     fun isAllowLocalTrafficEnabled() = prefs.getBoolean(ALLOW_LOCAL_TRAFFIC, false)
+
+    fun setAutomationEnabled(enable: Boolean) = prefs.edit().putBoolean(AUTOMATION, enable).apply()
+
+    fun isAutomationEnabled() = prefs.getBoolean(AUTOMATION, false)
 }
