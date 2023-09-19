@@ -36,9 +36,10 @@ fun NetworkSettingsScreen() {
     }
     val dnsOptions = mapOf(
         DnsOptions.PIA to stringResource(id = R.string.pia),
-        DnsOptions.CUSTOM to stringResource(id = R.string.network_dns_selection_custom)
+        DnsOptions.CUSTOM to stringResource(id = R.string.network_dns_selection_custom),
     )
-    val dnsSelection = remember { mutableStateOf(dnsOptions.getValue(viewModel.getSelectedDnsOption())) }
+    val dnsSelection =
+        remember { mutableStateOf(dnsOptions.getValue(viewModel.getSelectedDnsOption())) }
     val dnsDialogVisible = remember { mutableStateOf(false) }
     val customDnsDialogVisible = remember { mutableStateOf(false) }
 
@@ -81,7 +82,10 @@ fun NetworkSettingsScreen() {
             SettingsToggle(
                 titleId = R.string.network_allow_lan_traffic_title,
                 subtitleId = R.string.network_allow_lan_traffic_description,
-                enabled = false, toggle = {},
+                enabled = viewModel.isAllowLocalTrafficEnabled(),
+                toggle = {
+                    viewModel.toggleAllowLocalNetwork(it)
+                },
             )
         }
     }
@@ -111,7 +115,7 @@ fun DnsSelectionDialog(
     dnsOptions: Map<DnsOptions, String>,
     dnsDialogVisible: MutableState<Boolean>,
     customDnsDialogVisible: MutableState<Boolean>,
-    ) {
+) {
     OptionsDialog(
         R.string.network_dns_selection_title,
         options = listOf(
@@ -129,6 +133,7 @@ fun DnsSelectionDialog(
                 dnsOptions[DnsOptions.PIA] -> {
                     viewModel.setSelectedDnsOption(DnsOptions.PIA)
                 }
+
                 dnsOptions[DnsOptions.CUSTOM] -> {
                     viewModel.setSelectedDnsOption(DnsOptions.CUSTOM)
                     customDnsDialogVisible.value = true
@@ -154,13 +159,13 @@ fun CustomDnsDialog(
                 stringResource(id = R.string.network_dns_selection_custom_primary),
                 maskInput = false,
                 keyboardType = KeyboardType.Decimal,
-                content = customDnsPrimary
+                content = customDnsPrimary,
             ),
             InputFieldProperties(
                 stringResource(id = R.string.network_dns_selection_custom_secondary),
                 maskInput = false,
                 keyboardType = KeyboardType.Decimal,
-                content = customDnsSecondary
+                content = customDnsSecondary,
             ),
         ),
         onClear = {
@@ -172,8 +177,8 @@ fun CustomDnsDialog(
             viewModel.setCustomDns(
                 customDns = CustomDns(
                     primaryDns = customDnsPrimary.value,
-                    secondaryDns = customDnsSecondary.value
-                )
+                    secondaryDns = customDnsSecondary.value,
+                ),
             )
         },
     )

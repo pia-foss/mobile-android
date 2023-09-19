@@ -114,7 +114,13 @@ class SettingsViewModel(
         prefs.setEnablePortForwarding(enable)
     }
 
+    fun toggleAllowLocalNetwork(enable: Boolean) {
+        prefs.setAllowLocalTrafficEnabled(enable)
+    }
+
     fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled()
+
+    fun isAllowLocalTrafficEnabled() = prefs.isAllowLocalTrafficEnabled()
 
     fun getSelectedProtocol(): VpnProtocols = prefs.getSelectedProtocol()
 
