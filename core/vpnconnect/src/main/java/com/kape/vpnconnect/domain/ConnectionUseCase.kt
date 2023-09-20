@@ -92,7 +92,7 @@ class ConnectionUseCase(
             notification = notificationBuilder.build(),
             allowedApplicationPackages = settingsPrefs.getVpnExcludedApps(),
             disallowedApplicationPackages = emptyList(),
-            allowLocalNetworkAccess = false,
+            allowLocalNetworkAccess = settingsPrefs.isAllowLocalTrafficEnabled(),
             serverList = ServerList(
                 servers = listOf(
                     ServerList.Server(

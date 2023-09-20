@@ -24,6 +24,7 @@ private const val PORT_FORWARDING = "port-forwarding"
 private const val QUICK_KILL_SWITCH = "quick-setting-kill-switch"
 private const val QUICK_AUTOMATION = "quick-setting-automation"
 private const val QUICK_BROWSER = "quick-setting-browser"
+private const val ALLOW_LOCAL_TRAFFIC = "allow-local-traffic"
 
 class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
@@ -145,4 +146,9 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         prefs.edit().putBoolean(QUICK_BROWSER, enabled).apply()
 
     fun isQuickSettingPrivateBrowserEnabled() = prefs.getBoolean(QUICK_BROWSER, true)
+
+    fun setAllowLocalTrafficEnabled(enable: Boolean) =
+        prefs.edit().putBoolean(ALLOW_LOCAL_TRAFFIC, enable).apply()
+
+    fun isAllowLocalTrafficEnabled() = prefs.getBoolean(ALLOW_LOCAL_TRAFFIC, false)
 }
