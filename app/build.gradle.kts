@@ -114,6 +114,7 @@ dependencies {
     implementation(project(":features:sidemenu"))
     implementation(project(":features:connection"))
     implementation(project(":features:appbar"))
+    implementation(project(":features:dedicatedip"))
 
     implementAndroidBase()
     implementViewModel()
