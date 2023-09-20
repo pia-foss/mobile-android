@@ -90,7 +90,7 @@ class ConnectionUseCase(
             dnsList = dnsList,
             notificationId = 123,
             notification = notificationBuilder.build(),
-            allowedApplicationPackages = emptyList(),
+            allowedApplicationPackages = settingsPrefs.getVpnExcludedApps(),
             disallowedApplicationPackages = emptyList(),
             allowLocalNetworkAccess = false,
             serverList = ServerList(
