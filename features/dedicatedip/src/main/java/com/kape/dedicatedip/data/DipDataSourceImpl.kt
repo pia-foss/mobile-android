@@ -1,14 +1,19 @@
 package com.kape.dedicatedip.data
 
 import com.kape.dedicatedip.domain.DipDataSource
+import com.kape.dip.DipPrefs
 import com.kape.utils.ApiResult
 import com.kape.utils.getApiError
 import com.privateinternetaccess.account.AndroidAccountAPI
+import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-class DipDataSourceImpl(private val accountApi: AndroidAccountAPI) : DipDataSource {
+class DipDataSourceImpl(
+    private val accountApi: AndroidAccountAPI,
+    private val dipPrefs: DipPrefs,
+) : DipDataSource {
 
     override fun activate(ipToken: String): Flow<ApiResult> = callbackFlow {
         accountApi.dedicatedIPs(listOf(ipToken)) { details, errors ->
@@ -16,7 +21,11 @@ class DipDataSourceImpl(private val accountApi: AndroidAccountAPI) : DipDataSour
                 trySend(ApiResult.Error(getApiError(errors.last().code)))
                 return@dedicatedIPs
             }
-            // TODO: utilize dedicated IP utils https://polymoon.atlassian.net/browse/PIA-535
+            for (dip in details) {
+                if (dip.status == DedicatedIPInformationResponse.Status.active) {
+                    dipPrefs.addDedicatedIp(dip)
+                }
+            }
             trySend(ApiResult.Success)
         }
         awaitClose { channel.close() }
