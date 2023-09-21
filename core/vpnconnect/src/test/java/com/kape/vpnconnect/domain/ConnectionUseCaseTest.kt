@@ -3,6 +3,11 @@ package com.kape.vpnconnect.domain
 import android.app.Notification
 import android.app.PendingIntent
 import app.cash.turbine.test
+import com.kape.connection.ConnectionPrefs
+import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.DnsOptions
+import com.kape.settings.data.OpenVpnSettings
+import com.kape.settings.data.VpnProtocols
 import com.kape.utils.server.Server
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.utils.ConnectionManager
@@ -12,6 +17,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.runner.manipulation.Ordering.Context
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -26,9 +32,28 @@ internal class ConnectionUseCaseTest {
         every { name } returns "name"
     }
     private val certificate: String = "mockCertificate"
-    private val connectionManager: ConnectionManager = mockk()
+    private val connectionManager: ConnectionManager = mockk<ConnectionManager>().apply {
+        every { isManualConnection } returns true
+        every { isManualConnection = any() } returns Unit
+    }
+    private val settingsPrefs: SettingsPrefs = mockk<SettingsPrefs>().apply {
+        every { getSelectedProtocol() } returns VpnProtocols.WireGuard
+        every { getSelectedDnsOption() } returns DnsOptions.PIA
+        every { getVpnExcludedApps() } returns emptyList()
+        every { isAllowLocalTrafficEnabled() } returns false
+        every { getOpenVpnSettings() } returns OpenVpnSettings()
+    }
+    private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
+        every { setSelectedServer(any()) } returns Unit
+    }
     private val intent: PendingIntent = mockk()
-    private val notification: Notification = mockk()
+    private val context: android.content.Context = mockk()
+    private val notificationBuilder: Notification.Builder = mockk<Notification.Builder>().apply {
+        every { setContentTitle(any()) } returns Notification.Builder(context, "")
+        every { setContentText(any()) } returns Notification.Builder(context, "")
+        every { setContentIntent(any()) } returns Notification.Builder(context, "")
+        every { build() } returns Notification()
+    }
     private lateinit var useCase: ConnectionUseCase
 
     private val appModule = module {
@@ -41,7 +66,15 @@ internal class ConnectionUseCaseTest {
         startKoin {
             modules(appModule, vpnConnectModule(appModule))
         }
-        useCase = ConnectionUseCase(source, certificate, connectionManager)
+        useCase = ConnectionUseCase(
+            source,
+            certificate,
+            connectionManager,
+            settingsPrefs,
+            connectionPrefs,
+            intent,
+            notificationBuilder,
+        )
         every { connectionManager.setConnectedServerName(any()) } returns Unit
     }
 
@@ -53,7 +86,7 @@ internal class ConnectionUseCaseTest {
         }
         every { source.getVpnToken() } returns "username:password"
 
-        useCase.startConnection(server, intent, notification).test {
+        useCase.startConnection(server, true).test {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)
@@ -68,7 +101,7 @@ internal class ConnectionUseCaseTest {
         }
         every { source.getVpnToken() } returns "username:password"
 
-        useCase.startConnection(server, intent, notification).test {
+        useCase.startConnection(server, true).test {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)

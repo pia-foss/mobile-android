@@ -24,6 +24,7 @@ sealed class EnterFlow : AppFlow {
     data object KillSwitchSettings : EnterFlow()
     data object QuickSettings : EnterFlow()
     data object ConnectionStats : EnterFlow()
+    data object DebugLogs : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -45,6 +46,7 @@ sealed class ExitFlow : AppFlow {
     data object KillSwitchSettings : ExitFlow()
     data object QuickSettings : ExitFlow()
     data object ConnectionStats : ExitFlow()
+    data object DebugLogs : ExitFlow()
 }
 
 object Back : AppFlow

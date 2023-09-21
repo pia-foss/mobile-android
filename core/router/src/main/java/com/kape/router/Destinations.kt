@@ -42,6 +42,7 @@ object Settings {
     const val KillSwitch = "settings-kill-switch"
     const val QuickSettings = "settings-quick-settings"
     const val ConnectionStats = "settings-connection-stats"
+    const val DebugLogs = "settings-debug-logs"
 }
 
 object PerAppSettings {

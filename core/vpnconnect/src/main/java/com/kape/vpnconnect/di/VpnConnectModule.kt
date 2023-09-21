@@ -5,6 +5,7 @@ import com.kape.vpnconnect.R
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.core.module.Module
@@ -29,6 +30,7 @@ private val localVpnConnectModule = module {
     single { ConnectionUseCase(get(), get(), get(), get(), get(), get(), get()) }
     single { provideConnectionStatusValues(get()) }
     single { ConnectionManager(get(), get()) }
+    single { GetLogsUseCase(get()) }
 }
 
 private fun provideConnectionStatusValues(context: Context): Map<ConnectionStatus, String> {

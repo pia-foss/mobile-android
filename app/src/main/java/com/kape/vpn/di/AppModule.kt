@@ -50,9 +50,11 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.BufferedReader
 
+const val PARAM_USER_AGENT = "user-agent"
+
 val appModule = module {
     single { provideCertificate(get()) }
-    single(named("user-agent")) { USER_AGENT }
+    single(named(PARAM_USER_AGENT)) { USER_AGENT }
     single { AccountModuleStateProvider(get()) }
     single { PlatformProvider(get()) }
     single { VpnManagerProvider() }
@@ -76,8 +78,8 @@ val appModule = module {
     single { SnoozeHandler(get(), get(), get(), get()) }
     single { providePortForwardingPendingIntent(get()) }
     single { CsiEndpointProvider() }
-    single { CsiDataProvider(get(), get(), get(named("user-agent"))) }
-    single { provideCsiApi(get(), get(named("user-agent")), get(), get()) }
+    single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
+    single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {

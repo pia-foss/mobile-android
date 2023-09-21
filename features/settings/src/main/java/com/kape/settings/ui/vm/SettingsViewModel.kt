@@ -20,6 +20,7 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.shareevents.domain.KpiDataSource
+import com.kape.vpnconnect.domain.GetLogsUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -30,6 +31,7 @@ class SettingsViewModel(
     private val regionsRepository: RegionRepository,
     val version: String,
     private val kpiDataSource: KpiDataSource,
+    private val getDebugLogsUseCase: GetLogsUseCase,
 ) : ViewModel(), KoinComponent {
 
     val launchOnBootEnabled = prefs.isLaunchOnStartupEnabled()
@@ -39,6 +41,7 @@ class SettingsViewModel(
     val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
     val eventList = mutableStateOf<List<String>>(emptyList())
+    val debugLogs = mutableStateOf<List<String>>(emptyList())
     private var installedApps = listOf<ApplicationInfo>()
 
     fun navigateUp() {
@@ -91,6 +94,14 @@ class SettingsViewModel(
 
     fun exitConnectionStats() {
         router.handleFlow(ExitFlow.ConnectionStats)
+    }
+
+    fun navigateToDebugLogs() {
+        router.handleFlow(EnterFlow.DebugLogs)
+    }
+
+    fun exitDebugLogs() {
+        router.handleFlow(ExitFlow.DebugLogs)
     }
 
     fun toggleLaunchOnBoot(enable: Boolean) {
@@ -246,6 +257,12 @@ class SettingsViewModel(
     fun getRecentEvents() = viewModelScope.launch {
         kpiDataSource.recentEvents().collect {
             eventList.value = it
+        }
+    }
+
+    fun getDebugLogs() = viewModelScope.launch {
+        getDebugLogsUseCase.getDebugLogs().collect {
+            debugLogs.value = it
         }
     }
 }

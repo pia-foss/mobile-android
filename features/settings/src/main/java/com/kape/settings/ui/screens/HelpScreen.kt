@@ -1,5 +1,7 @@
 package com.kape.settings.ui.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
@@ -7,6 +9,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.NavigationAppBar
@@ -25,6 +28,7 @@ fun HelpScreen() {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.help))
     }
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             NavigationAppBar(
@@ -39,10 +43,17 @@ fun HelpScreen() {
             modifier = Modifier
                 .padding(it),
         ) {
+            val appUrl = stringResource(id = R.string.app_url)
             SettingsItem(
                 titleId = R.string.help_version_title,
                 subtitle = viewModel.version,
-                onClick = {},
+                onClick = {
+                    context.startActivity(
+                        Intent(Intent.ACTION_VIEW).apply {
+                            data = Uri.parse(appUrl)
+                        },
+                    )
+                },
             )
             Divider(
                 color = LocalColors.current.outline,
@@ -51,7 +62,9 @@ fun HelpScreen() {
             SettingsItem(
                 titleId = R.string.help_view_debug_log_title,
                 subtitle = stringResource(id = R.string.help_view_debug_log_description),
-                onClick = {},
+                onClick = {
+                    viewModel.navigateToDebugLogs()
+                },
             )
             Divider(
                 color = LocalColors.current.outline,

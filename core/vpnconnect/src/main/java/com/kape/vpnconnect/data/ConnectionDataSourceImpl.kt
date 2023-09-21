@@ -4,11 +4,13 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import com.kape.connection.ConnectionPrefs
 import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -73,5 +75,20 @@ class ConnectionDataSourceImpl(
         connectionPrefs.clearGateway()
         connectionPrefs.clearPortBindingInfo()
         alarmManager.cancel(portForwardingIntent)
+    }
+
+    override fun getDebugLogs(): Flow<List<String>> = callbackFlow {
+        val target = when (settingsPrefs.getSelectedProtocol()) {
+            VpnProtocols.WireGuard -> VPNManagerProtocolTarget.WIREGUARD
+            VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
+        }
+        connectionApi.getVpnProtocolLogs(target) {
+            if (it.isSuccess) {
+                trySend(it.getOrDefault(emptyList()))
+            } else {
+                trySend(emptyList())
+            }
+        }
+        awaitClose { channel.close() }
     }
 }
