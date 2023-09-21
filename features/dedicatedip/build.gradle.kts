@@ -17,7 +17,15 @@ android {
     defaultConfig {
         minSdk = 24
     }
-
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -30,6 +38,8 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":core:localprefs:dip"))
+    implementation(project(":features:regionselection"))
     implementAccount()
     implementFeatureModule()
 }

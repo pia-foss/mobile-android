@@ -3,6 +3,7 @@ package com.kape.dedicatedip.data
 import app.cash.turbine.test
 import com.kape.dedicatedip.di.dedicatedIpModule
 import com.kape.dedicatedip.domain.DipDataSource
+import com.kape.dip.DipPrefs
 import com.kape.utils.ApiError
 import com.kape.utils.ApiResult
 import com.privateinternetaccess.account.AccountRequestError
@@ -25,6 +26,7 @@ import java.util.stream.Stream
 class DipDataSourceImplTest {
 
     private val api: AndroidAccountAPI = mockk(relaxed = true)
+    private val prefs: DipPrefs = mockk()
 
     private lateinit var source: DipDataSource
 
@@ -38,7 +40,7 @@ class DipDataSourceImplTest {
         startKoin {
             modules(appModule, dedicatedIpModule(appModule))
         }
-        source = DipDataSourceImpl(api)
+        source = DipDataSourceImpl(api, prefs)
     }
 
     @Test
