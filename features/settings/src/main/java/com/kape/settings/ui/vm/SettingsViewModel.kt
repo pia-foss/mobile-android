@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.csi.domain.SendLogUseCase
 import com.kape.regionselection.data.RegionRepository
 import com.kape.router.Back
 import com.kape.router.EnterFlow
@@ -21,7 +22,6 @@ import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -32,6 +32,7 @@ class SettingsViewModel(
     val version: String,
     private val kpiDataSource: KpiDataSource,
     private val getDebugLogsUseCase: GetLogsUseCase,
+    private val sendLogUseCase: SendLogUseCase,
 ) : ViewModel(), KoinComponent {
 
     val launchOnBootEnabled = prefs.isLaunchOnStartupEnabled()
@@ -42,6 +43,7 @@ class SettingsViewModel(
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
     val eventList = mutableStateOf<List<String>>(emptyList())
     val debugLogs = mutableStateOf<List<String>>(emptyList())
+    val requestId = mutableStateOf<String?>(null)
     private var installedApps = listOf<ApplicationInfo>()
 
     fun navigateUp() {
@@ -264,6 +266,16 @@ class SettingsViewModel(
         getDebugLogsUseCase.getDebugLogs().collect {
             debugLogs.value = it
         }
+    }
+
+    fun sendLogs() = viewModelScope.launch {
+        sendLogUseCase.sendLog().collect {
+            requestId.value = it
+        }
+    }
+
+    fun resetRequestId() {
+        requestId.value = null
     }
 }
 

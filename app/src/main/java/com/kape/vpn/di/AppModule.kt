@@ -10,6 +10,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.kape.connection.ConnectionPrefs
+import com.kape.csi.CsiPrefs
 import com.kape.notifications.data.NotificationChannelManager
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
@@ -78,6 +79,7 @@ val appModule = module {
     single { SnoozeHandler(get(), get(), get(), get()) }
     single { providePortForwardingPendingIntent(get()) }
     single { CsiEndpointProvider() }
+    single { CsiPrefs(get()) }
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
     single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
 }
