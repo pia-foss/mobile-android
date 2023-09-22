@@ -4,6 +4,7 @@ import Dependencies.implementAndroidBase
 import Dependencies.implementCompose
 import Dependencies.implementComposeNavigation
 import Dependencies.implementCoroutines
+import Dependencies.implementCsi
 import Dependencies.implementKoin
 import Dependencies.implementKpi
 import Dependencies.implementMultiplatformSettings
@@ -92,17 +93,21 @@ dependencies {
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:settings"))
+    implementation(project(":core:localprefs:settings:data"))
     implementation(project(":core:localprefs:connection"))
+    implementation(project(":core:localprefs:csi"))
     implementAccount()
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:portforwarding"))
     implementKpi()
     implementRegions()
+    implementCsi()
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:notifications"))
+    implementation(project(":capabilities:csi"))
 
     implementation(project(":features:splash"))
     implementation(project(":features:signup"))

@@ -17,6 +17,9 @@ import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
 import com.kape.vpn.R
 import com.kape.vpn.provider.AccountModuleStateProvider
+import com.kape.vpn.provider.CSI_TEAM_IDENTIFIER
+import com.kape.vpn.provider.CsiDataProvider
+import com.kape.vpn.provider.CsiEndpointProvider
 import com.kape.vpn.provider.KPI_PREFS_NAME
 import com.kape.vpn.provider.KpiModuleStateProvider
 import com.kape.vpn.provider.PlatformProvider
@@ -33,6 +36,8 @@ import com.kape.vpnmanager.presenters.VPNManagerBuilder
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
+import com.privateinternetaccess.csi.CSIAPI
+import com.privateinternetaccess.csi.CSIBuilder
 import com.privateinternetaccess.kpi.KPIAPI
 import com.privateinternetaccess.kpi.KPIBuilder
 import com.privateinternetaccess.kpi.KPIRequestFormat
@@ -70,6 +75,9 @@ val appModule = module {
     single { provideAlarmManager(get()) }
     single { SnoozeHandler(get(), get(), get(), get()) }
     single { providePortForwardingPendingIntent(get()) }
+    single { CsiEndpointProvider() }
+    single { CsiDataProvider(get(), get(), get(named("user-agent"))) }
+    single { provideCsiApi(get(), get(named("user-agent")), get(), get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -115,6 +123,29 @@ private fun provideVpnManagerApi(
         .setProtocolByteCountDependency(usageProvider)
         .setPermissionsDependency(vpnManagerProvider)
         .setDebugLoggingDependency(vpnManagerProvider)
+        .build()
+}
+
+private fun provideCsiApi(
+    certificate: String,
+    userAgent: String,
+    endpointProvider: CsiEndpointProvider,
+    csiDataProvider: CsiDataProvider,
+): CSIAPI {
+    return CSIBuilder()
+        .setTeamIdentifier(CSI_TEAM_IDENTIFIER)
+        .setAppVersion(BuildConfig.VERSION_NAME)
+        .setCertificate(certificate)
+        .setUserAgent(userAgent)
+        .setEndPointProvider(endpointProvider)
+        .addLogProviders(
+            csiDataProvider.applicationInformationProvider,
+            csiDataProvider.deviceInformationProvider,
+            csiDataProvider.lastKnownExceptionProvider,
+            csiDataProvider.protocolInformationProvider,
+            csiDataProvider.regionInformationProvider,
+            csiDataProvider.userSettingsProvider,
+        )
         .build()
 }
 
