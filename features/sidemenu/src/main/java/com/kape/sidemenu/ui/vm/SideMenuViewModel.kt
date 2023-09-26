@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.kape.login.domain.LogoutUseCase
 import com.kape.profile.domain.GetProfileUseCase
 import com.kape.router.EnterFlow
+import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.sidemenu.utils.IDLE
 import com.kape.sidemenu.utils.SideMenuState
@@ -63,5 +64,13 @@ class SideMenuViewModel(
 
     fun navigateToPerAppSettings() {
         router.handleFlow(EnterFlow.PerAppSettings)
+    }
+
+    fun navigateToDedicatedIp() {
+        router.handleFlow(EnterFlow.DedicatedIp)
+    }
+
+    fun exitDedicatedIp() {
+        router.handleFlow(ExitFlow.DedicatedIp)
     }
 }

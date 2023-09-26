@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dedicated_ip_title">Dedicated IP</string>
+    <string name="dedicated_ip_description">Activate your Dedicated IP by pasting your token in the form below. If you\'ve recently purchased a dedicated IP, you can generate the token by going to the PIA website.</string>
+    <string name="activate">ACTIVATE</string>
+    <string name="dedicated_ip_hint">Paste your token here</string>
+</resources>
