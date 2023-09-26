@@ -3,6 +3,7 @@ package com.kape.dedicatedip.data
 import app.cash.turbine.test
 import com.kape.dedicatedip.di.dedicatedIpModule
 import com.kape.dedicatedip.domain.DipDataSource
+import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
 import com.kape.utils.ApiError
 import com.kape.utils.ApiResult
@@ -10,6 +11,7 @@ import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
@@ -46,22 +48,32 @@ class DipDataSourceImplTest {
     @Test
     fun activateSuccess() {
         runTest {
+            val dipInfo = DedicatedIPInformationResponse.DedicatedIPInformation(
+                id = "id",
+                ip = "ip",
+                cn = "cn",
+                groups = null,
+                dip_expire = null,
+                dipToken = "ipToken",
+                status = DedicatedIPInformationResponse.Status.active,
+            )
+            every { prefs.addDedicatedIp(any()) } returns Unit
             coEvery { api.dedicatedIPs(any(), any()) } answers {
                 lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
-                    emptyList(), emptyList(),
+                    listOf(dipInfo), emptyList(),
                 )
             }
 
             source.activate("ipToken").test {
                 val actual = awaitItem()
-                assertEquals(ApiResult.Success, actual)
+                assertEquals(DipApiResult.Active, actual)
             }
         }
     }
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun activateFail(errorList: List<AccountRequestError>, expected: ApiResult) =
+    fun activateFail(errorList: List<AccountRequestError>, expected: DipApiResult) =
         runTest {
             coEvery { api.dedicatedIPs(any(), any()) } answers {
                 lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
@@ -77,7 +89,7 @@ class DipDataSourceImplTest {
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun renew(errorList: List<AccountRequestError>, expected: ApiResult) =
+    fun renew(errorList: List<AccountRequestError>, expected: DipApiResult) =
         runTest {
             coEvery { api.renewDedicatedIP(any(), any()) } answers {
                 lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
@@ -95,36 +107,20 @@ class DipDataSourceImplTest {
         fun accountApiResults() = Stream.of(
             Arguments.of(
                 listOf(AccountRequestError(code = 600, message = null)),
-                ApiResult.Error(
-                    ApiError.Unknown,
-                ),
+                DipApiResult.Error,
             ),
             Arguments.of(
                 listOf(AccountRequestError(code = 429, message = null)),
-                ApiResult.Error(
-                    ApiError.Throttled,
-                ),
+                DipApiResult.Error,
             ),
             Arguments.of(
                 listOf(AccountRequestError(code = 401, message = null)),
-                ApiResult.Error(
-                    ApiError.AuthFailed,
-                ),
+                DipApiResult.Error,
             ),
             Arguments.of(
                 listOf(AccountRequestError(code = 402, message = null)),
-                ApiResult.Error(
-                    ApiError.AccountExpired,
-                ),
+                DipApiResult.Error,
             ),
-            Arguments.of(emptyList<AccountRequestError>(), ApiResult.Success),
         )
-
-        @JvmStatic
-        fun booleans() =
-            Stream.of(
-                Arguments.of(true),
-                Arguments.of(false),
-            )
     }
 }

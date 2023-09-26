@@ -30,7 +30,7 @@ class ServerForDipUseCaseTest {
     private val getRegionsUseCase: GetRegionsUseCase = mockk()
     private val dip: DedicatedIPInformationResponse.DedicatedIPInformation =
         DedicatedIPInformationResponse.DedicatedIPInformation(
-            id = "name",
+            id = "frankfurt",
             cn = "cn",
             ip = "key",
             dipToken = "dipToken",
@@ -66,10 +66,10 @@ class ServerForDipUseCaseTest {
         }
 
         val server = Server(
-            name = "name",
+            name = "sk1",
             iso = "",
             endpoints = endpoints(),
-            key = "key",
+            key = "frankfurt",
             isGeo = false,
             isOffline = false,
             isAllowsPF = false,
@@ -80,15 +80,15 @@ class ServerForDipUseCaseTest {
             longitude = null,
         )
         val server2 = Server(
-            name = "name2",
+            name = "sk2",
             iso = "",
             endpoints = endpoints(),
-            key = "key2",
+            key = "sk2",
             isGeo = false,
             isOffline = false,
             isAllowsPF = false,
             latency = null,
-            dedicatedIp = "key2",
+            dedicatedIp = "key",
             dipToken = "dipToken",
             latitude = null,
             longitude = null,
