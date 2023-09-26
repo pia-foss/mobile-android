@@ -25,6 +25,7 @@ sealed class EnterFlow : AppFlow {
     data object QuickSettings : EnterFlow()
     data object ConnectionStats : EnterFlow()
     data object DebugLogs : EnterFlow()
+    data object DedicatedIp : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -47,6 +48,7 @@ sealed class ExitFlow : AppFlow {
     data object QuickSettings : ExitFlow()
     data object ConnectionStats : ExitFlow()
     data object DebugLogs : ExitFlow()
+    data object DedicatedIp : ExitFlow()
 }
 
 object Back : AppFlow

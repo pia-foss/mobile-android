@@ -154,7 +154,10 @@ private fun DrawerContent(scope: CoroutineScope, drawerState: DrawerState) {
                 resIcon = R.drawable.ic_drawer_dip_settings,
                 resTitle = R.string.drawer_item_title_dedicated_ip,
                 onClick = {
-                    // TODO: "action: open 'dedicated ip' screen"
+                    viewModel.navigateToDedicatedIp()
+                    scope.launch {
+                        drawerState.close()
+                    }
                 },
             )
 

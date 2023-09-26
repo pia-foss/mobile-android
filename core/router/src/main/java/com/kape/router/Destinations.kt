@@ -49,6 +49,10 @@ object PerAppSettings {
     const val Main = "per-app-settings-screen"
 }
 
+object DedicatedIp {
+    const val Main = "dedicated-ip"
+}
+
 object WebContent {
     // Please note these values are links within the signup module's strings file.
     const val Terms = "web-screen-terms"

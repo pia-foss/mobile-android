@@ -15,12 +15,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kape.connection.ui.ConnectionScreen
+import com.kape.dedicatedip.ui.DedicatedIpScreen
 import com.kape.login.ui.LoginScreen
 import com.kape.login.ui.LoginWithEmailScreen
 import com.kape.payments.ui.PaymentProvider
 import com.kape.profile.ui.ProfileScreen
 import com.kape.regionselection.ui.RegionSelectionScreen
 import com.kape.router.Connection
+import com.kape.router.DedicatedIp
 import com.kape.router.Login
 import com.kape.router.NavigateBack
 import com.kape.router.PerAppSettings
@@ -160,6 +162,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Settings.DebugLogs) {
                                 VpnLogScreen()
+                            }
+                            composable(DedicatedIp.Main) {
+                                DedicatedIpScreen()
                             }
                         }
                     }

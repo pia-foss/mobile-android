@@ -1,7 +1,10 @@
+import Dependencies.desugarJdkLibs
 import Dependencies.implementAccount
 import Dependencies.implementAndroidBase
 import Dependencies.implementCoroutines
 import Dependencies.implementFeatureModule
+import Dependencies.implementRegions
+import Dependencies.implementSerialization
 
 plugins {
     id("com.android.library")
@@ -34,12 +37,21 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
+    }
 }
 
 dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:dip"))
     implementation(project(":features:regionselection"))
+    implementation(project(":features:appbar"))
+    implementation(project(":capabilities:ui"))
     implementAccount()
+    implementRegions()
     implementFeatureModule()
 }
