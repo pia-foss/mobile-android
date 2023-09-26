@@ -43,6 +43,7 @@ import com.kape.settings.ui.screens.PrivacySettingsScreen
 import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.QuickSettingsScreen
 import com.kape.settings.ui.screens.SettingsScreen
+import com.kape.settings.ui.screens.VpnLogScreen
 import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
 import com.kape.ui.elements.WebViewScreen
@@ -156,6 +157,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(Settings.ConnectionStats) {
                                 ConnectionStatsScreen()
+                            }
+                            composable(Settings.DebugLogs) {
+                                VpnLogScreen()
                             }
                         }
                     }

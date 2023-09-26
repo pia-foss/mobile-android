@@ -57,7 +57,7 @@
     <string name="automation_description">Setup rules to handle auto-connect rules for trusted and untrusted networks.\n\nThis feature is experimental.</string>
 
     <string name="help_version_title">Version</string>
-    <string name="help_view_debug_log_title">Version</string>
+    <string name="help_view_debug_log_title">See Debug VPN Logs</string>
     <string name="help_view_debug_log_description">Advanced user view to see VPN log</string>
     <string name="help_send_log_title">Send Debug Log to Support</string>
     <string name="help_improve_pia_title">Help improve PIA</string>
@@ -79,4 +79,11 @@
     <string name="connection_stats_title">Connection Stats</string>
     <string name="connection_stats_no_events">There are no recent events</string>
 
+    <string name="app_url">market://details?id=com.privateinternetaccess.android</string>
+    <string name="debug_logs_title">VPN Debug Logs</string>
+
+    <string name="failure_sending_log">Failed to send debug logs: %s</string>
+    <string name="log_send_done_title">Debug information submitted.</string>
+    <string name="log_send_done_msg">Debug information successfully submitted. \nID: %s\nPlease note this ID, as our support team will require this to locate your submission.</string>
+    <string name="ok">OK</string>
 </resources>

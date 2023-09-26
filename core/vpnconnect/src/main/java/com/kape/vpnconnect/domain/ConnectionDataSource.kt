@@ -18,4 +18,6 @@ interface ConnectionDataSource {
     fun startPortForwarding()
 
     fun stopPortForwarding()
+
+    fun getDebugLogs(): Flow<List<String>>
 }

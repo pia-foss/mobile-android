@@ -39,6 +39,7 @@ class Router {
             EnterFlow.KillSwitchSettings -> _navigation.value = Settings.KillSwitch
             EnterFlow.QuickSettings -> _navigation.value = Settings.QuickSettings
             EnterFlow.ConnectionStats -> _navigation.value = Settings.ConnectionStats
+            EnterFlow.DebugLogs -> _navigation.value = Settings.DebugLogs
         }
     }
 
@@ -62,6 +63,7 @@ class Router {
             ExitFlow.KillSwitchSettings -> handleEnterFlow(EnterFlow.PrivacySettings)
             ExitFlow.QuickSettings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.ConnectionStats -> handleEnterFlow(EnterFlow.HelpSettings)
+            ExitFlow.DebugLogs -> handleEnterFlow(EnterFlow.HelpSettings)
         }
     }
 

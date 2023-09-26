@@ -53,10 +53,12 @@ dependencies {
 
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
+    implementation(project(":core:vpnconnect"))
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))
+    implementation(project(":capabilities:csi"))
     implementation(project(":features:appbar"))
     implementation(project(":features:regionselection"))
 
