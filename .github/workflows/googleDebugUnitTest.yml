@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v2.6.0
         with:
           repo-token: ${{ secrets.TOKEN }}
-          username: ${{ secrets.USERNAME }}
+          repo-username: ${{ secrets.USERNAME }}
       #5
       - name: Setup JAVA 17
         uses: actions/setup-java@v3
