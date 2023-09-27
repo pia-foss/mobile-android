@@ -13,7 +13,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2.6.0
         with:
-          repo-token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.TOKEN }}
           repo-username: ${{ secrets.USERNAME }}
       #5
       - name: Setup JAVA 17
