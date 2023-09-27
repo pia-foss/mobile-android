@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":core:router"))
     implementation(project(":core:localprefs:dip"))
     implementation(project(":features:regionselection"))
     implementation(project(":features:appbar"))

@@ -1,9 +1,8 @@
 package com.kape.dedicatedip.data
 
 import com.kape.dedicatedip.domain.DipDataSource
+import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
-import com.kape.utils.ApiResult
-import com.kape.utils.getApiError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import kotlinx.coroutines.channels.awaitClose
@@ -15,29 +14,47 @@ class DipDataSourceImpl(
     private val dipPrefs: DipPrefs,
 ) : DipDataSource {
 
-    override fun activate(ipToken: String): Flow<ApiResult> = callbackFlow {
+    override fun activate(ipToken: String): Flow<DipApiResult> = callbackFlow {
         accountApi.dedicatedIPs(listOf(ipToken)) { details, errors ->
             if (errors.isNotEmpty()) {
-                trySend(ApiResult.Error(getApiError(errors.last().code)))
+                trySend(DipApiResult.Error)
                 return@dedicatedIPs
             }
-            for (dip in details) {
-                if (dip.status == DedicatedIPInformationResponse.Status.active) {
-                    dipPrefs.addDedicatedIp(dip)
+            val activated = details.firstOrNull { it.dipToken == ipToken }
+            activated?.let {
+                when (it.status) {
+                    DedicatedIPInformationResponse.Status.active -> {
+                        dipPrefs.addDedicatedIp(it)
+                        trySend(DipApiResult.Active)
+                    }
+
+                    DedicatedIPInformationResponse.Status.expired -> {
+                        trySend(DipApiResult.Expired)
+                    }
+
+                    DedicatedIPInformationResponse.Status.invalid -> {
+                        trySend(DipApiResult.Invalid)
+                    }
+
+                    DedicatedIPInformationResponse.Status.error -> {
+                        trySend(DipApiResult.Error)
+                    }
                 }
+            } ?: run {
+                trySend(DipApiResult.Error)
             }
-            trySend(ApiResult.Success)
         }
         awaitClose { channel.close() }
     }
 
-    override fun renew(ipToken: String): Flow<ApiResult> = callbackFlow {
+    override fun renew(ipToken: String): Flow<DipApiResult> = callbackFlow {
         accountApi.renewDedicatedIP(ipToken) {
             if (it.isNotEmpty()) {
-                trySend(ApiResult.Error(getApiError(it.last().code)))
+                trySend(DipApiResult.Error)
                 return@renewDedicatedIP
             }
-            trySend(ApiResult.Success)
+            // todo: update if needed once implemented
+            trySend(DipApiResult.Active)
         }
         awaitClose { channel.close() }
     }

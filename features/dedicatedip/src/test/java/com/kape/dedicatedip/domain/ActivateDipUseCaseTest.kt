@@ -2,7 +2,7 @@ package com.kape.dedicatedip.domain
 
 import app.cash.turbine.test
 import com.kape.dedicatedip.DataForTest
-import com.kape.utils.ApiResult
+import com.kape.dedicatedip.utils.DipApiResult
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
@@ -22,16 +22,16 @@ class ActivateDipUseCaseTest: DataForTest() {
         useCase = ActivateDipUseCase(dataSource)
     }
 
-    @ParameterizedTest(name = "result: {0}, expected: {1}")
+    @ParameterizedTest(name = "result: {0}")
     @MethodSource("data")
-    fun activate(result: ApiResult, expected: Boolean) = runTest {
+    fun activate(result: DipApiResult) = runTest {
         coEvery { dataSource.activate(any()) } returns flow {
             emit(result)
         }
         useCase.activate("ipToken").test {
             val actual = awaitItem()
             awaitComplete()
-            Assertions.assertEquals(expected, actual)
+            Assertions.assertEquals(result, actual)
         }
     }
 }
