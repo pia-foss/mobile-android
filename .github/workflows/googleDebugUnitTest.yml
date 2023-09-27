@@ -1,5 +1,5 @@
 name: Run Google Tests
-on: [workflow_call]
+on: [push]
 jobs:
   unit-tests:
     runs-on: ubuntu-22.04
