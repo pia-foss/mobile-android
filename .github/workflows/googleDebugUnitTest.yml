@@ -13,8 +13,8 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2.6.0
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GUTHUB_USERNAME: ${{ github.username }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GUTHUB_USERNAME: ${{ secrets.USERNAME }}
       #5
       - name: Setup JAVA 17
         uses: actions/setup-java@v3
