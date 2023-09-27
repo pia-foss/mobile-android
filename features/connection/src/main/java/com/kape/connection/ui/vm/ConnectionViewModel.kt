@@ -18,6 +18,8 @@ import com.kape.connection.ui.tiles.MAX_SERVERS
 import com.kape.connection.utils.SNOOZE_STATE_DEFAULT
 import com.kape.connection.utils.SnoozeInterval
 import com.kape.connection.utils.SnoozeState
+import com.kape.dedicatedip.domain.RenewDipUseCase
+import com.kape.dip.DipPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.regionselection.domain.GetRegionsUseCase
 import com.kape.regionselection.domain.UpdateLatencyUseCase
@@ -47,6 +49,8 @@ class ConnectionViewModel(
     private val setSnoozePendingIntent: PendingIntent,
     private val usageProvider: UsageProvider,
     private val portForwardingUseCase: PortForwardingUseCase,
+    private val dipPrefs: DipPrefs,
+    private val renewDipUseCase: RenewDipUseCase,
 ) : ViewModel(), KoinComponent {
 
     private val oneHourLong = 1L
@@ -73,6 +77,7 @@ class ConnectionViewModel(
         viewModelScope.launch {
             clientStateDataSource.getClientStatus().collect()
         }
+        renewDedicatedIps()
     }
 
     fun navigateToKillSwitch() {
@@ -149,6 +154,14 @@ class ConnectionViewModel(
         if (snoozeState.value.active) {
             disconnect()
             setSnoozeAlarm(context, end)
+        }
+    }
+
+    private fun renewDedicatedIps() = viewModelScope.launch {
+        if (dipPrefs.getDedicatedIps().isNotEmpty()) {
+            for (dip in dipPrefs.getDedicatedIps()) {
+                renewDipUseCase.renew(dip.dipToken).collect()
+            }
         }
     }
 
