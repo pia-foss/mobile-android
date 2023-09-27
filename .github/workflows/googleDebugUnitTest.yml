@@ -1,0 +1,13 @@
+name: Run Google Tests
+on: [workflow_call]
+jobs:
+  unit-tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 11
+          cache: gradle
+      - name: unit-tests
+        run: ./gradlew testGoogleDebugUnitTest
