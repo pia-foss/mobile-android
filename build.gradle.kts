@@ -7,3 +7,11 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.5.1" apply false
     id("org.jetbrains.kotlin.jvm") version "1.8.0" apply false
 }
+
+allprojects {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
+    }
+}

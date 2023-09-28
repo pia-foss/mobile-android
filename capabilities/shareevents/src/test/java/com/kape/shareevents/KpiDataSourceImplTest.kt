@@ -1,6 +1,8 @@
 package com.kape.shareevents
 
 import app.cash.turbine.test
+import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.data.KpiDataSourceImpl
 import com.kape.shareevents.data.models.KpiConnectionEvent
 import com.kape.shareevents.data.models.KpiConnectionSource
@@ -22,7 +24,7 @@ import kotlin.test.assertTrue
 internal class KpiDataSourceImplTest {
 
     private val api: KPIAPI = mockk(relaxed = true)
-    private val prefs: KpiPrefs = mockk()
+    private val prefs: SettingsPrefs = mockk()
     private val userAgent: String = "user agent"
 
     private lateinit var source: KpiDataSource
@@ -37,7 +39,7 @@ internal class KpiDataSourceImplTest {
         startKoin {
             modules(appModule, kpiModule(appModule))
         }
-        source = KpiDataSourceImpl(prefs, userAgent, api)
+        source = KpiDataSourceImpl(userAgent, api, prefs)
     }
 
     @Test
@@ -54,7 +56,7 @@ internal class KpiDataSourceImplTest {
 
     @Test
     fun `verify submit calls api`() = runTest {
-        every { prefs.getActiveProtocol() } returns ""
+        every { prefs.getSelectedProtocol() } returns VpnProtocols.OpenVPN
         source.submit(KpiConnectionEvent.ConnectionEstablished, KpiConnectionSource.Automatic)
         verify(exactly = 1) { api.submit(any(), any()) }
     }
