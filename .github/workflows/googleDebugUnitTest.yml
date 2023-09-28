@@ -12,7 +12,7 @@ jobs:
     steps:
       #4
       - name: Checkout the code
-        uses: actions/checkout@v2.6.0
+        uses: actions/checkout@v4.1.0
         env:
           GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
@@ -24,7 +24,7 @@ jobs:
           java-version: 17
       #6
       - name: Cache Gradle and wrapper
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches

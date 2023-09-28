@@ -1,7 +1,7 @@
 package com.kape.payments.domain
 
 import app.cash.turbine.test
-import com.kape.payments.data.models.Subscription
+import com.kape.payments.data.Subscription
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
