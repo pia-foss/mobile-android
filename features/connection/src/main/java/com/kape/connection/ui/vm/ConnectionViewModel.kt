@@ -21,10 +21,9 @@ import com.kape.connection.utils.SnoozeState
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
-import com.kape.regionselection.domain.GetRegionsUseCase
-import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Router
+import com.kape.regions.domain.GetRegionsUseCase
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.server.Server
@@ -40,7 +39,6 @@ import java.util.Calendar
 
 class ConnectionViewModel(
     private val regionsUseCase: GetRegionsUseCase,
-    private val updateLatencyUseCase: UpdateLatencyUseCase,
     private val connectionUseCase: ConnectionUseCase,
     private val clientStateDataSource: ClientStateDataSource,
     private val router: Router,
@@ -107,12 +105,10 @@ class ConnectionViewModel(
     fun loadServers(locale: String) = viewModelScope.launch {
         regionsUseCase.loadRegions(locale).collect {
             availableServers.clear()
-            updateLatencyUseCase.updateLatencies().collect {
-                availableServers.addAll(it)
-                filterFavoriteServers()
-                getQuickConnectServers()
-                getSelectedServer()
-            }
+            availableServers.addAll(it)
+            filterFavoriteServers()
+            getQuickConnectServers()
+            getSelectedServer()
         }
     }
 

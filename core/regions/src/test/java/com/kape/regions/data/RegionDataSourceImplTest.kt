@@ -1,8 +1,8 @@
-package com.kape.regionselection.data
+package com.kape.regions.data
 
 import app.cash.turbine.test
-import com.kape.regionselection.di.regionModule
-import com.kape.regionselection.domain.RegionDataSource
+import com.kape.regions.domain.RegionDataSource
+import com.kape.regions.di.regionsModule
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.model.RegionsResponse
@@ -40,7 +40,7 @@ internal class RegionDataSourceImplTest : KoinTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, regionModule(appModule))
+            modules(appModule, regionsModule(appModule))
         }
         source = RegionDataSourceImpl(api)
     }

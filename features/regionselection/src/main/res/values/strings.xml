@@ -10,7 +10,6 @@
     <string name="cancel">Cancel</string>
     <string name="automatic">Automatic</string>
     <string name="automatic_iso">world</string>
-    <string name="latency_to_format">%s ms</string>
     <string name="favorite">favorite</string>
 
     <string name="flag">flag</string>

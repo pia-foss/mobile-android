@@ -13,7 +13,8 @@ import com.kape.notifications.di.notificationModule
 import com.kape.payments.di.paymentsModule
 import com.kape.portforwarding.di.portForwardingModule
 import com.kape.profile.di.profileModule
-import com.kape.regionselection.di.regionModule
+import com.kape.regionselection.di.regionSelectionModule
+import com.kape.regions.di.regionsModule
 import com.kape.settings.di.settingsModule
 import com.kape.shareevents.di.kpiModule
 import com.kape.shareevents.domain.KpiDataSource
@@ -62,7 +63,7 @@ class App : Application() {
                 add(permissionModule)
                 add(sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
                 add(profileModule(appModule))
-                add(regionModule(appModule))
+                add(regionSelectionModule(appModule))
                 add(splashModule)
                 add(signupModule(appModule))
                 add(kpiModule(appModule))
@@ -77,6 +78,7 @@ class App : Application() {
                 add(portForwardingModule(appModule))
                 add(dedicatedIpModule(appModule))
                 add(csiModule(appModule))
+                add(regionsModule(appModule))
             },
         )
     }

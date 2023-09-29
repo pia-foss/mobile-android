@@ -1,13 +1,15 @@
-package com.kape.regionselection.utils
+package com.kape.regions.utils
 
+import com.kape.dip.DipPrefs
 import com.kape.utils.server.Server
 import com.kape.utils.server.ServerInfo
+import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import com.privateinternetaccess.regions.model.RegionsResponse
 
 private var openVpnTcpEndpoints = mutableListOf<RegionsResponse.Region.Server>()
 private var openVpnUdpEndpoints = mutableListOf<RegionsResponse.Region.Server>()
 
-fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
+fun adaptServers(regionsResponse: RegionsResponse, dipPrefs: DipPrefs): Map<String, Server> {
     val servers = mutableMapOf<String, Server>()
     for (region in regionsResponse.regions) {
         val wireguardEndpoints =
@@ -67,7 +69,7 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
         }
         regionEndpoints[Server.ServerGroup.META] = mappedEndpoints
 
-        servers[region.id] = Server(
+        val server = Server(
             region.name,
             region.country,
             null,
@@ -81,6 +83,10 @@ fun adaptServers(regionsResponse: RegionsResponse): Map<String, Server> {
             null,
             null,
         )
+
+        servers[region.id] = dipPrefs.getDedicatedIps().firstOrNull { it.id == region.id }?.let {
+            getServerForDip(server, it)
+        } ?: server
     }
     return servers
 }
@@ -103,4 +109,62 @@ fun adaptServersInfo(regionsResponse: RegionsResponse): ServerInfo {
         }
     }
     return ServerInfo(autoRegions, openVpnUdp, openVpnTcp)
+}
+
+private fun getServerForDip(
+    server: Server,
+    dip: DedicatedIPInformationResponse.DedicatedIPInformation,
+): Server {
+    val updatedEndpointsPerProtocol =
+        mutableMapOf<Server.ServerGroup, List<Server.ServerEndpointDetails>>()
+    server.endpoints.forEach { (serverGroup, serverEndpointDetails) ->
+        val updatedEndpointDetails =
+            mutableListOf<Server.ServerEndpointDetails>()
+        when (serverGroup) {
+            Server.ServerGroup.OPENVPN_TCP,
+            Server.ServerGroup.OPENVPN_UDP,
+            Server.ServerGroup.META,
+            -> {
+                dip.ip?.let { ip ->
+                    dip.cn?.let { cn ->
+                        updatedEndpointDetails.add(
+                            Server.ServerEndpointDetails(
+                                ip,
+                                cn,
+                            ),
+                        )
+                    }
+                }
+            }
+
+            Server.ServerGroup.WIREGUARD -> {
+                val port: String =
+                    serverEndpointDetails[0].ip.split(":")[1]
+                dip.cn?.let { cn ->
+                    updatedEndpointDetails.add(
+                        Server.ServerEndpointDetails(
+                            dip.ip + ":" + port,
+                            cn,
+                        ),
+                    )
+                }
+            }
+        }
+        updatedEndpointsPerProtocol[serverGroup] = updatedEndpointDetails
+    }
+
+    return Server(
+        server.name,
+        server.iso,
+        server.latency,
+        updatedEndpointsPerProtocol,
+        server.key,
+        server.latitude,
+        server.longitude,
+        server.isGeo,
+        server.isOffline,
+        server.isAllowsPF,
+        dip.dipToken,
+        dip.ip,
+    )
 }

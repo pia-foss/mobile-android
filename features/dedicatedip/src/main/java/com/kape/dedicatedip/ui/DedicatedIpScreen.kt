@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.TopEnd
@@ -46,13 +47,13 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.R
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
-import com.kape.regionselection.ui.getLatencyTextColor
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
 import com.kape.ui.theme.Space
 import com.kape.ui.theme.Width
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
+import com.kape.ui.utils.getLatencyTextColor
 import com.kape.utils.server.Server
 import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import org.koin.androidx.compose.koinViewModel
@@ -219,7 +220,7 @@ fun DipItem(
                 .height(56.dp)
                 .padding(horizontal = 16.dp),
         ) {
-            Box {
+            Box(modifier = Modifier.align(CenterVertically)) {
                 Icon(
                     painter = painterResource(
                         id = getFlagResource(
@@ -254,7 +255,7 @@ fun DipItem(
             Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = if (server.latency != null && server.latency!!.toInt() < REGIONS_PING_TIMEOUT) {
-                    stringResource(id = com.kape.regionselection.R.string.latency_to_format).format(
+                    stringResource(id = com.kape.ui.R.string.latency_to_format).format(
                         server.latency,
                     )
                 } else {

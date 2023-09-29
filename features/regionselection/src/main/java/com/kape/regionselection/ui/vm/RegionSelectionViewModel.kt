@@ -7,8 +7,6 @@ import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.regions.RegionPrefs
-import com.kape.regionselection.domain.GetRegionsUseCase
-import com.kape.regionselection.domain.UpdateLatencyUseCase
 import com.kape.regionselection.utils.IDLE
 import com.kape.regionselection.utils.LOADING
 import com.kape.regionselection.utils.RegionSelectionScreenState
@@ -17,8 +15,10 @@ import com.kape.regionselection.utils.showFilteringOptions
 import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
+import com.kape.regions.domain.GetRegionsUseCase
+import com.kape.regions.domain.UpdateLatencyUseCase
+import com.kape.regions.utils.REGIONS_PING_TIMEOUT
 import com.kape.utils.server.Server
-import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -42,8 +42,13 @@ class RegionSelectionViewModel(
         getRegionsUseCase.loadRegions(locale).collect {
             regions.clear()
             regions.addAll(it)
-            updateLatencies()
-            _state.emit(loaded(sorted.ifEmpty { regions }))
+            updateLatencyUseCase.updateLatencies().collect { updatedServers ->
+                for (server in updatedServers) {
+                    sorted.ifEmpty { regions }.filter { it.name == server.name }[0].latency =
+                        server.latency ?: REGIONS_PING_TIMEOUT.toString()
+                }
+                _state.emit(loaded(sorted.ifEmpty { regions }, state.value.showSortingOptions))
+            }
         }
     }
 
@@ -66,15 +71,6 @@ class RegionSelectionViewModel(
                     dedicatedIp = null,
                 ),
             )
-        }
-    }
-
-    private fun updateLatencies() = viewModelScope.launch {
-        updateLatencyUseCase.updateLatencies().collect { updatedServers ->
-            for (server in updatedServers) {
-                sorted.ifEmpty { regions }.filter { it.name == server.name }[0].latency = server.latency ?: REGIONS_PING_TIMEOUT.toString()
-            }
-            _state.emit(loaded(sorted.ifEmpty { regions }, state.value.showSortingOptions))
         }
     }
 
@@ -110,7 +106,10 @@ class RegionSelectionViewModel(
             _state.emit(
                 loaded(
                     sorted.ifEmpty { regions }
-                        .filter { it.name.toLowerCase(Locale.current).contains(value.toLowerCase(Locale.current)) },
+                        .filter {
+                            it.name.toLowerCase(Locale.current)
+                                .contains(value.toLowerCase(Locale.current))
+                        },
                 ),
             )
         }

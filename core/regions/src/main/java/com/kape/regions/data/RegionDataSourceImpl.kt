@@ -1,6 +1,6 @@
-package com.kape.regionselection.data
+package com.kape.regions.data
 
-import com.kape.regionselection.domain.RegionDataSource
+import com.kape.regions.domain.RegionDataSource
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.model.RegionsResponse

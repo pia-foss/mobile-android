@@ -6,11 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.csi.domain.SendLogUseCase
-import com.kape.regionselection.data.RegionRepository
 import com.kape.router.Back
 import com.kape.router.EnterFlow
 import com.kape.router.ExitFlow
 import com.kape.router.Router
+import com.kape.regions.data.RegionRepository
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.DataEncryption

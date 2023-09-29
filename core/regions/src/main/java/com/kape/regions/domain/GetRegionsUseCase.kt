@@ -1,7 +1,7 @@
-package com.kape.regionselection.domain
+package com.kape.regions.domain
 
 import com.kape.regions.RegionPrefs
-import com.kape.regionselection.data.RegionRepository
+import com.kape.regions.data.RegionRepository
 import com.kape.utils.server.Server
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

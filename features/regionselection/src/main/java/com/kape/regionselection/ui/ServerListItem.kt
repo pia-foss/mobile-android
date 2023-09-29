@@ -14,19 +14,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.kape.regionselection.R
+import com.kape.regions.utils.REGIONS_PING_TIMEOUT
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
-import com.kape.ui.theme.Latency
 import com.kape.ui.theme.Space
 import com.kape.ui.theme.Width
 import com.kape.ui.utils.getFlagResource
+import com.kape.ui.utils.getLatencyTextColor
 import com.kape.utils.server.Server
-import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 
 @Composable
 fun ServerListItem(
@@ -97,7 +96,7 @@ fun ServerListItem(
 
         Text(
             text = if (server.latency != null && server.latency!!.toInt() < REGIONS_PING_TIMEOUT) {
-                stringResource(id = R.string.latency_to_format).format(server.latency)
+                stringResource(id = com.kape.ui.R.string.latency_to_format).format(server.latency)
             } else {
                 ""
             },
@@ -118,16 +117,5 @@ fun ServerListItem(
                     .height(Height.FAVOURITE),
             )
         }
-    }
-}
-
-fun getLatencyTextColor(latency: String?): Color {
-    if (latency == null) {
-        return Color.White
-    }
-    return when (latency.toLong()) {
-        in 0..200 -> Latency.Green
-        in 200..500 -> Latency.Yellow
-        else -> Latency.Red
     }
 }

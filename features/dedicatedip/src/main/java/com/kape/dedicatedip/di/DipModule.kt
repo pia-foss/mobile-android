@@ -4,7 +4,6 @@ import com.kape.dedicatedip.data.DipDataSourceImpl
 import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.domain.RenewDipUseCase
-import com.kape.dedicatedip.domain.ServerForDipUseCase
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dip.DipPrefs
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -18,7 +17,6 @@ fun dedicatedIpModule(appModule: Module) = module {
 val localDipModule = module {
     single { DipPrefs(get()) }
     single<DipDataSource> { DipDataSourceImpl(get(), get()) }
-    single { ServerForDipUseCase(get()) }
     single { ActivateDipUseCase(get()) }
     single { RenewDipUseCase(get()) }
     viewModel { DipViewModel(get(), get(), get(), get()) }

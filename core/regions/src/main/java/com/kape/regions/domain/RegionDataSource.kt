@@ -1,4 +1,4 @@
-package com.kape.regionselection.domain
+package com.kape.regions.domain
 
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.model.RegionsResponse
