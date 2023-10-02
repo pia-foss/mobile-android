@@ -26,6 +26,7 @@ private const val QUICK_AUTOMATION = "quick-setting-automation"
 private const val QUICK_BROWSER = "quick-setting-browser"
 private const val ALLOW_LOCAL_TRAFFIC = "allow-local-traffic"
 private const val AUTOMATION = "setting-automation"
+private const val MACE = "setting-mace"
 
 class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
@@ -156,4 +157,8 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
     fun setAutomationEnabled(enable: Boolean) = prefs.edit().putBoolean(AUTOMATION, enable).apply()
 
     fun isAutomationEnabled() = prefs.getBoolean(AUTOMATION, false)
+
+    fun setMaceEnabled(enable: Boolean) = prefs.edit().putBoolean(MACE, enable).apply()
+
+    fun isMaceEnabled() = prefs.getBoolean(MACE, false)
 }

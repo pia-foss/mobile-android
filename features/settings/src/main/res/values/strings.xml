@@ -86,4 +86,7 @@
     <string name="log_send_done_title">Debug information submitted.</string>
     <string name="log_send_done_msg">Debug information successfully submitted. \nID: %s\nPlease note this ID, as our support team will require this to locate your submission.</string>
     <string name="ok">OK</string>
+
+    <string name="mace_title">PIA MACE™</string>
+    <string name="mace_description">Will block ads, trackers and malware while you\'re connected to the VPN</string>
 </resources>
