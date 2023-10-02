@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import com.kape.connection.ConnectionPrefs
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.DnsOptions
+import com.kape.settings.data.ProtocolSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.server.Server
@@ -55,9 +56,18 @@ class ConnectionUseCase(
             port = 8080
         }
 
-        val protocolTarget = when (settingsPrefs.getSelectedProtocol()) {
-            VpnProtocols.WireGuard -> VPNManagerProtocolTarget.WIREGUARD
-            VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
+        val protocolTarget: VPNManagerProtocolTarget
+        val settings: ProtocolSettings
+        when (settingsPrefs.getSelectedProtocol()) {
+            VpnProtocols.WireGuard -> {
+                protocolTarget = VPNManagerProtocolTarget.WIREGUARD
+                settings = settingsPrefs.getWireGuardSettings()
+            }
+
+            VpnProtocols.OpenVPN -> {
+                protocolTarget = VPNManagerProtocolTarget.OPENVPN
+                settings = settingsPrefs.getOpenVpnSettings()
+            }
         }
 
         val dnsList = when (settingsPrefs.getSelectedDnsOption()) {
@@ -77,6 +87,7 @@ class ConnectionUseCase(
             }
         }
 
+
         notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
         notificationBuilder.setContentText("Connected")
         notificationBuilder.setContentIntent(configureIntent)
@@ -85,7 +96,7 @@ class ConnectionUseCase(
             sessionName = Clock.System.now().toString(),
             configureIntent = configureIntent,
             protocolTarget = protocolTarget,
-            mtu = 1280,
+            mtu = settings.mtu,
             port = port,
             dnsList = dnsList,
             notificationId = 123,

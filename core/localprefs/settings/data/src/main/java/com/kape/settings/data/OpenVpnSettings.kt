@@ -11,4 +11,5 @@ data class OpenVpnSettings(
     override var port: String = "8080",
     override var useSmallPackets: Boolean = false,
     override var handshake: String = "RSA4096",
-): ProtocolSettings
+    override var mtu: Int = if (useSmallPackets) 1350 else 1420,
+) : ProtocolSettings

@@ -8,6 +8,7 @@ import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
+import com.kape.settings.data.WireGuardSettings
 import com.kape.utils.server.Server
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.utils.ConnectionManager
@@ -42,6 +43,7 @@ internal class ConnectionUseCaseTest {
         every { getVpnExcludedApps() } returns emptyList()
         every { isAllowLocalTrafficEnabled() } returns false
         every { getOpenVpnSettings() } returns OpenVpnSettings()
+        every { getWireGuardSettings() } returns WireGuardSettings()
     }
     private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
         every { setSelectedServer(any()) } returns Unit
