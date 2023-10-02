@@ -8,4 +8,5 @@ interface ProtocolSettings {
     var port: String
     var useSmallPackets: Boolean
     var handshake: String
+    var mtu: Int
 }
