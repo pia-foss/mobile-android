@@ -38,6 +38,7 @@ class SettingsViewModel(
     val launchOnBootEnabled = prefs.isLaunchOnStartupEnabled()
     val connectOnStart = prefs.isConnectOnLaunchEnabled()
     val connectOnUpdate = prefs.isConnectOnAppUpdateEnabled()
+    val maceEnabled = prefs.isMaceEnabled()
     val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
     val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
@@ -121,6 +122,10 @@ class SettingsViewModel(
     fun toggleImprovePia(enable: Boolean) {
         prefs.setHelpImprovePiaEnabled(enable)
         improvePiaEnabled.value = enable
+    }
+
+    fun toggleMace(enable: Boolean) {
+        prefs.setMaceEnabled(enable)
     }
 
     fun toggleEnablePortForwarding(enable: Boolean) {
