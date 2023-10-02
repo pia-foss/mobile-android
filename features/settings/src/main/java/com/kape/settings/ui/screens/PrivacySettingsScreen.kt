@@ -2,10 +2,16 @@ package com.kape.settings.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.kape.appbar.view.NavigationAppBar
@@ -24,6 +30,7 @@ fun PrivacySettingsScreen() {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.privacy))
     }
+    val showWarning = remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             NavigationAppBar(
@@ -49,11 +56,43 @@ fun PrivacySettingsScreen() {
             SettingsToggle(
                 titleId = R.string.mace_title,
                 subtitleId = R.string.mace_description,
-                enabled = viewModel.maceEnabled,
+                enabled = viewModel.maceEnabled.value,
                 toggle = {
-                    viewModel.toggleMace(it)
+                    if (viewModel.getCustomDns().isInUse() && !viewModel.maceEnabled.value) {
+                        showWarning.value = true
+                    } else {
+                        viewModel.toggleMace(it)
+                    }
                 },
             )
+            if (showWarning.value) {
+                WarningDialog {
+                    viewModel.toggleMace(true)
+                    showWarning.value = false
+                }
+            }
+
         }
     }
+}
+
+@Composable
+fun WarningDialog(onConfirm: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onConfirm,
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = stringResource(id = R.string.ok))
+            }
+        },
+        title = {
+            Text(
+                text = stringResource(id = R.string.custom_dns),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        },
+        text = {
+            Text(text = stringResource(id = R.string.custom_dns_mace_warning))
+        },
+    )
 }

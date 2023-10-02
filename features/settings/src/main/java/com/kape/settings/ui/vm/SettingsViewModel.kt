@@ -6,11 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.csi.domain.SendLogUseCase
+import com.kape.regions.data.RegionRepository
 import com.kape.router.Back
 import com.kape.router.EnterFlow
 import com.kape.router.ExitFlow
 import com.kape.router.Router
-import com.kape.regions.data.RegionRepository
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.DataEncryption
@@ -38,13 +38,13 @@ class SettingsViewModel(
     val launchOnBootEnabled = prefs.isLaunchOnStartupEnabled()
     val connectOnStart = prefs.isConnectOnLaunchEnabled()
     val connectOnUpdate = prefs.isConnectOnAppUpdateEnabled()
-    val maceEnabled = prefs.isMaceEnabled()
     val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
     val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
     val eventList = mutableStateOf<List<String>>(emptyList())
     val debugLogs = mutableStateOf<List<String>>(emptyList())
     val requestId = mutableStateOf<String?>(null)
+    val maceEnabled = mutableStateOf(prefs.isMaceEnabled())
     private var installedApps = listOf<ApplicationInfo>()
 
     fun navigateUp() {
@@ -126,6 +126,7 @@ class SettingsViewModel(
 
     fun toggleMace(enable: Boolean) {
         prefs.setMaceEnabled(enable)
+        maceEnabled.value = enable
     }
 
     fun toggleEnablePortForwarding(enable: Boolean) {

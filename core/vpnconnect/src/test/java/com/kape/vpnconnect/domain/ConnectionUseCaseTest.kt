@@ -44,6 +44,7 @@ internal class ConnectionUseCaseTest {
         every { isAllowLocalTrafficEnabled() } returns false
         every { getOpenVpnSettings() } returns OpenVpnSettings()
         every { getWireGuardSettings() } returns WireGuardSettings()
+        every { isMaceEnabled() } returns true
     }
     private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
         every { setSelectedServer(any()) } returns Unit

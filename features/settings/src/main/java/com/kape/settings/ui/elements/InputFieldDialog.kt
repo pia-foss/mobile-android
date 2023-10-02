@@ -18,6 +18,7 @@ import com.kape.settings.R
 import com.kape.ui.elements.InputField
 import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.theme.Space
+import com.kape.ui.utils.LocalColors
 
 @Composable
 fun InputFieldDialog(
@@ -25,6 +26,7 @@ fun InputFieldDialog(
     inputFieldProperties: List<InputFieldProperties>,
     onClear: () -> Unit,
     onConfirm: () -> Unit,
+    footnote: String? = null,
 ) {
     AlertDialog(
         onDismissRequest = onConfirm,
@@ -54,9 +56,15 @@ fun InputFieldDialog(
                     ) {
                         InputField(
                             modifier = Modifier.padding(Space.MEDIUM, Space.SMALL),
-                            properties = inputFieldProperty
+                            properties = inputFieldProperty,
                         )
                     }
+                }
+                footnote?.let {
+                    Text(
+                        text = it,
+                        color = LocalColors.current.onSurface,
+                    )
                 }
             }
         },

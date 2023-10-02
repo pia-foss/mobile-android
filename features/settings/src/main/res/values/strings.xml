@@ -89,4 +89,7 @@
 
     <string name="mace_title">PIA MACE™</string>
     <string name="mace_description">Will block ads, trackers and malware while you\'re connected to the VPN</string>
+    <string name="custom_dns_mace_warning">In order to enable MACE, the default DNS must be used. Would you like to reset your DNS to default?</string>
+    <string name="custom_dns_disabling_mace">MACE will be disabled while using a custom DNS.</string>
+    <string name="custom_dns">Custom DNS</string>
 </resources>

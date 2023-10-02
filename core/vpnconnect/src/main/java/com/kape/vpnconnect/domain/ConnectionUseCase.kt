@@ -20,6 +20,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
 
+private const val MACE_DNS = "10.0.0.241"
+
 class ConnectionUseCase(
     private val connectionSource: ConnectionDataSource,
     private val certificate: String,
@@ -70,23 +72,26 @@ class ConnectionUseCase(
             }
         }
 
-        val dnsList = when (settingsPrefs.getSelectedDnsOption()) {
-            DnsOptions.PIA ->
-                emptyList()
+        val dnsList = if (settingsPrefs.isMaceEnabled()) {
+            listOf(MACE_DNS)
+        } else {
+            when (settingsPrefs.getSelectedDnsOption()) {
+                DnsOptions.PIA ->
+                    emptyList()
 
-            DnsOptions.CUSTOM -> {
-                val result = mutableListOf<String>()
-                val customDns = settingsPrefs.getCustomDns()
-                if (customDns.primaryDns.isNotEmpty()) {
-                    result.add(customDns.primaryDns)
+                DnsOptions.CUSTOM -> {
+                    val result = mutableListOf<String>()
+                    val customDns = settingsPrefs.getCustomDns()
+                    if (customDns.primaryDns.isNotEmpty()) {
+                        result.add(customDns.primaryDns)
+                    }
+                    if (customDns.secondaryDns.isNotEmpty()) {
+                        result.add(customDns.secondaryDns)
+                    }
+                    result
                 }
-                if (customDns.secondaryDns.isNotEmpty()) {
-                    result.add(customDns.secondaryDns)
-                }
-                result
             }
         }
-
 
         notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
         notificationBuilder.setContentText("Connected")

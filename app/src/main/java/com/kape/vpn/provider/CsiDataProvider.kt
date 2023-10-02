@@ -126,7 +126,8 @@ class CsiDataProvider(
         )
         sb.append("Protocol: ${activeProtocol.name}\n")
         // TODO: implement as part of https://polymoon.atlassian.net/browse/PIA-606,
-        //  once https://polymoon.atlassian.net/browse/PIA-220 is done
+        sb.append("\n~~ Blocking Settings ~~\n\n")
+        sb.append("MACE: ${settingsPrefs.isMaceEnabled()}\n")
         sb.append("Allow Local Network: ${settingsPrefs.isAllowLocalTrafficEnabled()}\n")
         sb.append("\n~~ Encryption Settings ~~\n\n")
 

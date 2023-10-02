@@ -152,6 +152,8 @@ fun CustomDnsDialog(
 ) {
     val customDnsPrimary = remember { mutableStateOf(viewModel.getCustomDns().primaryDns) }
     val customDnsSecondary = remember { mutableStateOf(viewModel.getCustomDns().secondaryDns) }
+    val footnote =
+        if (viewModel.maceEnabled.value) stringResource(id = R.string.custom_dns_disabling_mace) else null
     InputFieldDialog(
         R.string.network_dns_selection_title,
         inputFieldProperties = listOf(
@@ -181,5 +183,6 @@ fun CustomDnsDialog(
                 ),
             )
         },
+        footnote,
     )
 }
