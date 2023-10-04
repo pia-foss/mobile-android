@@ -92,4 +92,13 @@
     <string name="custom_dns_mace_warning">In order to enable MACE, the default DNS must be used. Would you like to reset your DNS to default?</string>
     <string name="custom_dns_disabling_mace">MACE will be disabled while using a custom DNS.</string>
     <string name="custom_dns">Custom DNS</string>
+
+    <string name="settings_widget_title">Widget Settings</string>
+    <string name="settings_widget_description">Make our widgets work with your home screen</string>
+    <string name="settings_widget_configuration">Widget Configuration</string>
+    <string name="widget_background">Background color</string>
+    <string name="widget_text">Text color</string>
+    <string name="widget_icon_upload">Upload icon color</string>
+    <string name="widget_icon_download">Download icon color</string>
+    <string name="widget_radius">Widget Radius</string>
 </resources>

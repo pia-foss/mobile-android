@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import com.kape.appbar.view.NavigationAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
+import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.utils.LocalColors
@@ -64,6 +65,13 @@ fun GeneralSettingsScreen() {
                     viewModel.toggleConnectOnUpdate(it)
                 },
             )
+            Divider(color = LocalColors.current.outline)
+            SettingsItem(
+                titleId = R.string.settings_widget_title,
+                subtitle = stringResource(id = R.string.settings_widget_description),
+            ) {
+                viewModel.navigateToWidgetSettings()
+            }
         }
     }
 }

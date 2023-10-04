@@ -41,6 +41,7 @@ class Router {
             EnterFlow.ConnectionStats -> _navigation.value = Settings.ConnectionStats
             EnterFlow.DebugLogs -> _navigation.value = Settings.DebugLogs
             EnterFlow.DedicatedIp -> _navigation.value = DedicatedIp.Main
+            EnterFlow.WidgetSettings -> _navigation.value = Settings.Widget
         }
     }
 
@@ -66,6 +67,7 @@ class Router {
             ExitFlow.ConnectionStats -> handleEnterFlow(EnterFlow.HelpSettings)
             ExitFlow.DebugLogs -> handleEnterFlow(EnterFlow.HelpSettings)
             ExitFlow.DedicatedIp -> handleEnterFlow(EnterFlow.Connection)
+            ExitFlow.WidgetSettings -> handleEnterFlow(EnterFlow.GeneralSettings)
         }
     }
 

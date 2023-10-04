@@ -18,9 +18,15 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
+import com.kape.settings.data.WidgetSettings
 import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.shareevents.domain.KpiDataSource
+import com.kape.ui.utils.defaultWidgetBackgroundColor
+import com.kape.ui.utils.defaultWidgetDownloadColor
+import com.kape.ui.utils.defaultWidgetTextColor
+import com.kape.ui.utils.defaultWidgetUploadColor
+import com.kape.ui.utils.toColorString
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -105,6 +111,14 @@ class SettingsViewModel(
 
     fun exitDebugLogs() {
         router.handleFlow(ExitFlow.DebugLogs)
+    }
+
+    fun navigateToWidgetSettings() {
+        router.handleFlow(EnterFlow.WidgetSettings)
+    }
+
+    fun exitWidgetSettings() {
+        router.handleFlow(ExitFlow.WidgetSettings)
     }
 
     fun toggleLaunchOnBoot(enable: Boolean) {
@@ -282,6 +296,22 @@ class SettingsViewModel(
 
     fun resetRequestId() {
         requestId.value = null
+    }
+
+    fun getWidgetSettings(): WidgetSettings {
+        return prefs.getWidgetSettings() ?: run {
+            WidgetSettings(
+                defaultWidgetBackgroundColor().toColorString(),
+                defaultWidgetTextColor().toColorString(),
+                defaultWidgetUploadColor().toColorString(),
+                defaultWidgetDownloadColor().toColorString(),
+                8,
+            )
+        }
+    }
+
+    fun updateWidgetSettings(settings: WidgetSettings) {
+        prefs.setWidgetSettings(settings)
     }
 }
 

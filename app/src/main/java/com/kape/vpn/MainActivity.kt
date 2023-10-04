@@ -46,6 +46,7 @@ import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.QuickSettingsScreen
 import com.kape.settings.ui.screens.SettingsScreen
 import com.kape.settings.ui.screens.VpnLogScreen
+import com.kape.settings.ui.screens.WidgetSettingsScreen
 import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
 import com.kape.ui.elements.WebViewScreen
@@ -165,6 +166,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(DedicatedIp.Main) {
                                 DedicatedIpScreen()
+                            }
+                            composable(Settings.Widget) {
+                                WidgetSettingsScreen()
                             }
                         }
                     }

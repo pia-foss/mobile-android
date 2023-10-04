@@ -43,6 +43,7 @@ object Settings {
     const val QuickSettings = "settings-quick-settings"
     const val ConnectionStats = "settings-connection-stats"
     const val DebugLogs = "settings-debug-logs"
+    const val Widget = "settings-widget"
 }
 
 object PerAppSettings {
