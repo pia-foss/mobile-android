@@ -22,6 +22,7 @@ import com.kape.settings.ui.elements.InputFieldDialog
 import com.kape.settings.ui.elements.OptionsDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
+import com.kape.settings.ui.elements.TextDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.utils.LocalColors
@@ -36,12 +37,14 @@ fun NetworkSettingsScreen() {
     }
     val dnsOptions = mapOf(
         DnsOptions.PIA to stringResource(id = R.string.pia),
+        DnsOptions.SYSTEM to stringResource(id = R.string.network_dns_selection_system),
         DnsOptions.CUSTOM to stringResource(id = R.string.network_dns_selection_custom),
     )
     val dnsSelection =
         remember { mutableStateOf(dnsOptions.getValue(viewModel.getSelectedDnsOption())) }
     val dnsDialogVisible = remember { mutableStateOf(false) }
     val customDnsDialogVisible = remember { mutableStateOf(false) }
+    val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -82,9 +85,9 @@ fun NetworkSettingsScreen() {
             SettingsToggle(
                 titleId = R.string.network_allow_lan_traffic_title,
                 subtitleId = R.string.network_allow_lan_traffic_description,
-                enabled = viewModel.isAllowLocalTrafficEnabled(),
-                toggle = {
-                    viewModel.toggleAllowLocalNetwork(it)
+                stateEnabled = viewModel.isAllowLocalTrafficEnabled,
+                toggle = { checked ->
+                    viewModel.toggleAllowLocalNetwork(checked)
                 },
             )
         }
@@ -97,13 +100,23 @@ fun NetworkSettingsScreen() {
             dnsOptions = dnsOptions,
             dnsDialogVisible = dnsDialogVisible,
             customDnsDialogVisible = customDnsDialogVisible,
+            allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
         )
     }
 
     if (customDnsDialogVisible.value) {
         CustomDnsDialog(
             viewModel = viewModel,
+            dnsSelection = dnsSelection,
             customDnsDialogVisible = customDnsDialogVisible,
+        )
+    }
+
+    if (allowLocalTrafficDialogVisible.value) {
+        AllowLanDialog(
+            viewModel = viewModel,
+            dnsSelection = dnsSelection,
+            allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
         )
     }
 }
@@ -115,23 +128,31 @@ fun DnsSelectionDialog(
     dnsOptions: Map<DnsOptions, String>,
     dnsDialogVisible: MutableState<Boolean>,
     customDnsDialogVisible: MutableState<Boolean>,
+    allowLocalTrafficDialogVisible: MutableState<Boolean>,
 ) {
     OptionsDialog(
         R.string.network_dns_selection_title,
         options = listOf(
             dnsOptions.getValue(DnsOptions.PIA),
+            dnsOptions.getValue(DnsOptions.SYSTEM),
             dnsOptions.getValue(DnsOptions.CUSTOM),
         ),
-        onDismiss = {
-            dnsDialogVisible.value = false
-        },
+        onDismiss = { },
         onConfirm = {
             dnsDialogVisible.value = false
+            if (viewModel.getSelectedDnsOption() == DnsOptions.SYSTEM &&
+                viewModel.isAllowLocalTrafficEnabled.value.not()) {
+                allowLocalTrafficDialogVisible.value = true
+            }
         },
         onOptionSelected = {
             when (it) {
                 dnsOptions[DnsOptions.PIA] -> {
                     viewModel.setSelectedDnsOption(DnsOptions.PIA)
+                }
+
+                dnsOptions[DnsOptions.SYSTEM] -> {
+                    viewModel.setSelectedDnsOption(DnsOptions.SYSTEM)
                 }
 
                 dnsOptions[DnsOptions.CUSTOM] -> {
@@ -148,10 +169,11 @@ fun DnsSelectionDialog(
 @Composable
 fun CustomDnsDialog(
     viewModel: SettingsViewModel,
+    dnsSelection: MutableState<String>,
     customDnsDialogVisible: MutableState<Boolean>,
 ) {
-    val customDnsPrimary = remember { mutableStateOf(viewModel.getCustomDns().primaryDns) }
-    val customDnsSecondary = remember { mutableStateOf(viewModel.getCustomDns().secondaryDns) }
+    val customPrimaryDns = remember { mutableStateOf(viewModel.getCustomDns().primaryDns) }
+    val customSecondaryDns = remember { mutableStateOf(viewModel.getCustomDns().secondaryDns) }
     val footnote =
         if (viewModel.maceEnabled.value) stringResource(id = R.string.custom_dns_disabling_mace) else null
     InputFieldDialog(
@@ -161,28 +183,75 @@ fun CustomDnsDialog(
                 stringResource(id = R.string.network_dns_selection_custom_primary),
                 maskInput = false,
                 keyboardType = KeyboardType.Decimal,
-                content = customDnsPrimary,
+                content = customPrimaryDns,
+                error = if (
+                    customPrimaryDns.value.isEmpty() ||
+                    viewModel.isDnsNumeric(ipAddress = customPrimaryDns.value)
+                ) {
+                    null
+                } else {
+                    stringResource(id = R.string.network_dns_selection_custom_invalid)
+                }
             ),
             InputFieldProperties(
                 stringResource(id = R.string.network_dns_selection_custom_secondary),
                 maskInput = false,
                 keyboardType = KeyboardType.Decimal,
-                content = customDnsSecondary,
+                content = customSecondaryDns,
+                error = if (
+                    customSecondaryDns.value.isEmpty() ||
+                    viewModel.isDnsNumeric(ipAddress = customSecondaryDns.value)
+                ) {
+                    null
+                } else {
+                    stringResource(id = R.string.network_dns_selection_custom_invalid)
+                },
             ),
         ),
         onClear = {
-            customDnsPrimary.value = ""
-            customDnsSecondary.value = ""
+            customPrimaryDns.value = ""
+            customSecondaryDns.value = ""
         },
         onConfirm = {
+            val primaryDns = customPrimaryDns.value
+            val secondaryDns = customSecondaryDns.value
+            if (primaryDns.isEmpty() && secondaryDns.isEmpty()) {
+                dnsSelection.value = DnsOptions.PIA.value
+            } else if (
+                (primaryDns.isNotEmpty() && viewModel.isDnsNumeric(ipAddress = primaryDns).not()) ||
+                (secondaryDns.isNotEmpty() && viewModel.isDnsNumeric(ipAddress = secondaryDns).not())
+            ) {
+                return@InputFieldDialog
+            }
+
             customDnsDialogVisible.value = false
             viewModel.setCustomDns(
                 customDns = CustomDns(
-                    primaryDns = customDnsPrimary.value,
-                    secondaryDns = customDnsSecondary.value,
+                    primaryDns = primaryDns,
+                    secondaryDns = secondaryDns,
                 ),
             )
         },
         footnote,
+    )
+}
+
+@Composable
+fun AllowLanDialog(
+    viewModel: SettingsViewModel,
+    dnsSelection: MutableState<String>,
+    allowLocalTrafficDialogVisible: MutableState<Boolean>,
+) {
+    TextDialog(
+        titleId = R.string.network_dns_selection_system,
+        descriptionId = R.string.network_dns_selection_system_lan_requirement,
+        onDismiss = {
+            dnsSelection.value = DnsOptions.PIA.value
+            allowLocalTrafficDialogVisible.value = false
+        },
+        onConfirm = {
+            viewModel.toggleAllowLocalNetwork(true)
+            allowLocalTrafficDialogVisible.value = false
+        },
     )
 }

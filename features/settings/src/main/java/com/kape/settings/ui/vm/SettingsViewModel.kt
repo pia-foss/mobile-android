@@ -20,6 +20,7 @@ import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WidgetSettings
 import com.kape.settings.data.WireGuardSettings
+import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.ui.utils.defaultWidgetBackgroundColor
@@ -39,6 +40,7 @@ class SettingsViewModel(
     private val kpiDataSource: KpiDataSource,
     private val getDebugLogsUseCase: GetLogsUseCase,
     private val sendLogUseCase: SendLogUseCase,
+    private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
 ) : ViewModel(), KoinComponent {
 
     val launchOnBootEnabled = prefs.isLaunchOnStartupEnabled()
@@ -46,11 +48,13 @@ class SettingsViewModel(
     val connectOnUpdate = prefs.isConnectOnAppUpdateEnabled()
     val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
     val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
+    val isAllowLocalTrafficEnabled = mutableStateOf(prefs.isAllowLocalTrafficEnabled())
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
     val eventList = mutableStateOf<List<String>>(emptyList())
     val debugLogs = mutableStateOf<List<String>>(emptyList())
     val requestId = mutableStateOf<String?>(null)
     val maceEnabled = mutableStateOf(prefs.isMaceEnabled())
+    private val isDnsNumeric = mutableStateOf(true)
     private var installedApps = listOf<ApplicationInfo>()
 
     fun navigateUp() {
@@ -149,11 +153,10 @@ class SettingsViewModel(
 
     fun toggleAllowLocalNetwork(enable: Boolean) {
         prefs.setAllowLocalTrafficEnabled(enable)
+        isAllowLocalTrafficEnabled.value = enable
     }
 
     fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled()
-
-    fun isAllowLocalTrafficEnabled() = prefs.isAllowLocalTrafficEnabled()
 
     fun getSelectedProtocol(): VpnProtocols = prefs.getSelectedProtocol()
 
@@ -166,6 +169,11 @@ class SettingsViewModel(
     fun getCustomDns(): CustomDns = prefs.getCustomDns()
 
     fun setCustomDns(customDns: CustomDns) = prefs.setCustomDns(customDns = customDns)
+
+    fun isDnsNumeric(ipAddress: String): Boolean {
+        isDnsNumeric.value = isNumericIpAddressUseCase.invoke(ipAddress = ipAddress)
+        return isDnsNumeric.value
+    }
 
     fun setSelectedDnsOption(dnsOptions: DnsOptions) =
         prefs.setSelectedDnsOption(dnsOptions = dnsOptions)

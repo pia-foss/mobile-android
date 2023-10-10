@@ -11,6 +11,7 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.utils.server.Server
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnmanager.data.models.ClientConfiguration
+import com.kape.vpnmanager.data.models.DnsInformation
 import com.kape.vpnmanager.data.models.OpenVpnClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
@@ -30,7 +31,12 @@ class ConnectionUseCase(
     private val connectionPrefs: ConnectionPrefs,
     private val configureIntent: PendingIntent,
     private val notificationBuilder: Notification.Builder,
+    private val getActiveInterfaceDnsUseCase: GetActiveInterfaceDnsUseCase,
 ) : KoinComponent {
+
+    companion object {
+        private const val PIA_DNS = "10.0.0.242"
+    }
 
     fun startConnection(server: Server, isManualConnection: Boolean): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name)
@@ -76,8 +82,13 @@ class ConnectionUseCase(
             listOf(MACE_DNS)
         } else {
             when (settingsPrefs.getSelectedDnsOption()) {
-                DnsOptions.PIA ->
+                DnsOptions.PIA -> {
                     emptyList()
+                }
+
+                DnsOptions.SYSTEM -> {
+                    getActiveInterfaceDnsUseCase.invoke()
+                }
 
                 DnsOptions.CUSTOM -> {
                     val result = mutableListOf<String>()
@@ -103,7 +114,10 @@ class ConnectionUseCase(
             protocolTarget = protocolTarget,
             mtu = settings.mtu,
             port = port,
-            dnsList = dnsList,
+            dnsInformation = DnsInformation(
+                dnsList = dnsList,
+                systemDnsResolverEnabled = settingsPrefs.getSelectedDnsOption() == DnsOptions.SYSTEM
+            ),
             notificationId = 123,
             notification = notificationBuilder.build(),
             allowedApplicationPackages = settingsPrefs.getVpnExcludedApps(),

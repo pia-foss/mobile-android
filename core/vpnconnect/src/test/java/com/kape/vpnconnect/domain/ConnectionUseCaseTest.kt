@@ -58,6 +58,7 @@ internal class ConnectionUseCaseTest {
         every { build() } returns Notification()
     }
     private lateinit var useCase: ConnectionUseCase
+    private val getActiveInterfaceDnsUseCase = mockk<GetActiveInterfaceDnsUseCase>()
 
     private val appModule = module {
         single { "certificate" }
@@ -77,6 +78,7 @@ internal class ConnectionUseCaseTest {
             connectionPrefs,
             intent,
             notificationBuilder,
+            getActiveInterfaceDnsUseCase,
         )
         every { connectionManager.setConnectedServerName(any()) } returns Unit
     }

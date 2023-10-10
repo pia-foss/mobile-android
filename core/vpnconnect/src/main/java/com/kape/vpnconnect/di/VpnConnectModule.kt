@@ -5,6 +5,8 @@ import com.kape.vpnconnect.R
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
+import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
@@ -16,6 +18,7 @@ fun vpnConnectModule(appModule: Module) = module {
 }
 
 private val localVpnConnectModule = module {
+    single<GetActiveInterfaceDnsUseCase> { GetActiveInterfaceDnsUseCaseImpl(get()) }
     single<ConnectionDataSource> {
         ConnectionDataSourceImpl(
             get(),
@@ -27,7 +30,7 @@ private val localVpnConnectModule = module {
             get(),
         )
     }
-    single { ConnectionUseCase(get(), get(), get(), get(), get(), get(), get()) }
+    single { ConnectionUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }
     single { provideConnectionStatusValues(get()) }
     single { ConnectionManager(get(), get()) }
     single { GetLogsUseCase(get()) }

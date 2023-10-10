@@ -5,13 +5,13 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,10 +28,11 @@ fun SettingsToggle(
     @StringRes titleId: Int,
     @StringRes subtitleId: Int? = null,
     @DrawableRes iconId: Int? = null,
-    enabled: Boolean,
+    enabled: Boolean = false,
+    stateEnabled: MutableState<Boolean> = mutableStateOf(enabled),
     toggle: (checked: Boolean) -> Unit,
 ) {
-    val isChecked = remember { mutableStateOf(enabled) }
+    val isChecked = remember { stateEnabled }
     Row(
         modifier = Modifier
             .defaultMinSize(minHeight = 56.dp)

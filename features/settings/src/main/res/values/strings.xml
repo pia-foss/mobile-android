@@ -42,7 +42,10 @@
     <!--    Networks Settings    -->
     <string name="network_dns_title">DNS</string>
     <string name="network_dns_selection_title">DNS Selection</string>
+    <string name="network_dns_selection_system">System DNS Resolver</string>
+    <string name="network_dns_selection_system_lan_requirement">To access the System\'s DNS Resolver, we need to Allow LAN Traffic.</string>
     <string name="network_dns_selection_custom">Custom</string>
+    <string name="network_dns_selection_custom_invalid">Invalid Address</string>
     <string name="network_dns_selection_custom_primary">Primary DNS</string>
     <string name="network_dns_selection_custom_secondary">Secondary DNS</string>
     <string name="network_port_forwarding_title">Request Port Forwarding</string>
