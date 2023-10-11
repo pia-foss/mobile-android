@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
+@OptIn(DelicateCoroutinesApi::class)
 class VpnLauncher(
     private val context: Context,
     private val connectionPrefs: ConnectionPrefs,
     private val connectionUseCase: ConnectionUseCase,
 ) : KoinComponent {
 
-    @OptIn(DelicateCoroutinesApi::class)
     fun launchVpn() {
         val vpnIntent = VpnService.prepare(context)
 
@@ -33,4 +33,11 @@ class VpnLauncher(
             // TODO: define what happens here
         }
     }
+
+
+    fun stopVpn() = GlobalScope.launch {
+        connectionUseCase.stopConnection().collect()
+    }
+
+    fun isVpnConnected() = connectionUseCase.isConnected()
 }

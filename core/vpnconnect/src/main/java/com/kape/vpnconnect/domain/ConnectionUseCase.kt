@@ -39,7 +39,7 @@ class ConnectionUseCase(
     }
 
     fun startConnection(server: Server, isManualConnection: Boolean): Flow<Boolean> = flow {
-        connectionManager.setConnectedServerName(server.name)
+        connectionManager.setConnectedServerName(server.name, server.iso)
         connectionManager.isManualConnection = isManualConnection
         connectionPrefs.setSelectedServer(server)
         val index = connectionSource.getVpnToken().indexOf(":")
@@ -152,7 +152,7 @@ class ConnectionUseCase(
 
     fun stopConnection(): Flow<Boolean> = flow {
         connectionSource.stopConnection().collect {
-            connectionManager.setConnectedServerName("")
+            connectionManager.setConnectedServerName("", "")
             emit(it)
         }
     }

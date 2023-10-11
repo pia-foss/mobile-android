@@ -1,5 +1,7 @@
 package com.kape.vpnconnect.utils
 
+import android.content.Context
+import android.content.Intent
 import com.kape.shareevents.data.models.KpiConnectionStatus
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
@@ -8,6 +10,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class ConnectionManager(
+    private val context: Context,
+    private val updateWidgetIntent: Intent,
     private val connectionValues: Map<ConnectionStatus, String>,
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
 ) : VPNManagerConnectionListener {
@@ -18,6 +22,9 @@ class ConnectionManager(
     private val _serverName = MutableStateFlow("")
     val serverName: StateFlow<String> = _serverName
 
+    private val _serverIso = MutableStateFlow("")
+    val serverIso: StateFlow<String> = _serverIso
+
     private val _connectionStatusTitle = MutableStateFlow("")
     val connectionStatusTitle: StateFlow<String> = _connectionStatusTitle
 
@@ -25,8 +32,9 @@ class ConnectionManager(
 
     fun isConnected(): Boolean = connectionStatus.value == ConnectionStatus.CONNECTED
 
-    fun setConnectedServerName(serverName: String) {
+    fun setConnectedServerName(serverName: String, iso: String) {
         _serverName.value = serverName
+        _serverIso.value = iso
     }
 
     override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
@@ -45,6 +53,7 @@ class ConnectionManager(
         connectionValues[currentStatus]?.let {
             _connectionStatusTitle.value = String.format(it, serverName.value)
         }
+        context.sendBroadcast(updateWidgetIntent)
     }
 
     private fun getKpiConnectionStatus(status: VPNManagerConnectionStatus): KpiConnectionStatus {

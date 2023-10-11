@@ -168,6 +168,7 @@ class ConnectionViewModel(
                     ?: availableServers.sortedBy { it.latency?.toInt() }.firstOrNull()
             selectedServer.value?.let {
                 regionsUseCase.selectRegion(it.key)
+                prefs.setSelectedServer(it)
             }
         }
     }

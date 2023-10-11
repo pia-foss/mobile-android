@@ -11,6 +11,7 @@ import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 fun vpnConnectModule(appModule: Module) = module {
@@ -32,7 +33,7 @@ private val localVpnConnectModule = module {
     }
     single { ConnectionUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }
     single { provideConnectionStatusValues(get()) }
-    single { ConnectionManager(get(), get()) }
+    single { ConnectionManager(get(), get(named("widget-update-intent")), get(), get()) }
     single { GetLogsUseCase(get()) }
 }
 

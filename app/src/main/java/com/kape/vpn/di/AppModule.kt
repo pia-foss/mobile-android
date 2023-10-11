@@ -5,6 +5,8 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -31,6 +33,7 @@ import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.utils.SNOOZE_REQUEST_CODE
 import com.kape.vpn.utils.SnoozeHandler
 import com.kape.vpn.utils.VpnLauncher
+import com.kape.vpn.widget.WidgetProvider
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
@@ -82,6 +85,7 @@ val appModule = module {
     single { CsiPrefs(get()) }
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
     single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
+    single(named("widget-update-intent")) { provideWidgetUpdateIntent(get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -224,6 +228,19 @@ private fun providePortForwardingPendingIntent(context: Context): PendingIntent 
     return PendingIntent.getBroadcast(
         context, 0, intent, flags,
     )
+}
+
+private fun provideWidgetUpdateIntent(context: Context): Intent {
+    val intent =
+        Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, WidgetProvider::class.java)
+    val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(
+        ComponentName(
+            context,
+            WidgetProvider::class.java,
+        ),
+    )
+    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+    return intent
 }
 
 private fun provideAlarmManager(context: Context) =

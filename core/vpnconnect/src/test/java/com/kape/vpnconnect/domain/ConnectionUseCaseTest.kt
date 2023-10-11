@@ -80,7 +80,7 @@ internal class ConnectionUseCaseTest {
             notificationBuilder,
             getActiveInterfaceDnsUseCase,
         )
-        every { connectionManager.setConnectedServerName(any()) } returns Unit
+        every { connectionManager.setConnectedServerName(any(), any()) } returns Unit
     }
 
     @Test
