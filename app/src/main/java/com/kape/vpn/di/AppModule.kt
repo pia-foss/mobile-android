@@ -34,6 +34,7 @@ import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.SNOOZE_REQUEST_CODE
 import com.kape.vpn.utils.SnoozeHandler
 import com.kape.vpn.utils.VpnLauncher
+import com.kape.vpn.widget.RectangleWidgetProvider
 import com.kape.vpn.widget.SmallWidgetProvider
 import com.kape.vpn.widget.SquareWidgetProvider
 import com.kape.vpn.widget.TextWidgetProvider
@@ -240,6 +241,7 @@ private fun provideWidgetUpdateIntents(context: Context): List<Intent> {
         getSmallWidgetIntent(context),
         getTextWidgetIntent(context),
         getSquareWidgetIntent(context),
+        getRectangleWidgetIntent(context),
     )
 }
 
@@ -291,6 +293,24 @@ private fun getSquareWidgetIntent(context: Context): Intent {
         ComponentName(
             context,
             SquareWidgetProvider::class.java,
+        ),
+    )
+    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+    return intent
+}
+
+private fun getRectangleWidgetIntent(context: Context): Intent {
+    val intent =
+        Intent(
+            AppWidgetManager.ACTION_APPWIDGET_UPDATE,
+            null,
+            context,
+            RectangleWidgetProvider::class.java,
+        )
+    val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(
+        ComponentName(
+            context,
+            RectangleWidgetProvider::class.java,
         ),
     )
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
