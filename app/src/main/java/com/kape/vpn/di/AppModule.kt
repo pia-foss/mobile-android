@@ -30,10 +30,12 @@ import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.vpn.provider.VpnManagerProvider
 import com.kape.vpn.receiver.OnSnoozeReceiver
 import com.kape.vpn.receiver.PortForwardingReceiver
+import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.SNOOZE_REQUEST_CODE
 import com.kape.vpn.utils.SnoozeHandler
 import com.kape.vpn.utils.VpnLauncher
-import com.kape.vpn.widget.WidgetProvider
+import com.kape.vpn.widget.SmallWidgetProvider
+import com.kape.vpn.widget.TextWidgetProvider
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
@@ -55,6 +57,7 @@ import org.koin.dsl.module
 import java.io.BufferedReader
 
 const val PARAM_USER_AGENT = "user-agent"
+private const val UPDATE_WIDGET_INTENTS = "widget-update-intents"
 
 val appModule = module {
     single { provideCertificate(get()) }
@@ -70,7 +73,9 @@ val appModule = module {
     single { provideConfigurationIntent(get()) }
     single { providePendingIntent(get(), get()) }
     single { provideNotification(get()) }
-    single { UsageProvider() }
+    single(named(UPDATE_WIDGET_INTENTS)) { provideWidgetUpdateIntents(get()) }
+    single(named("service-intent")) { provideWidgetServiceIntent(get()) }
+    single { UsageProvider(get(), get(named(UPDATE_WIDGET_INTENTS))) }
     single { provideVpnManagerApi(get(), get(), get()) }
     single { Router() }
     single { SettingsPrefs(get()) }
@@ -85,7 +90,6 @@ val appModule = module {
     single { CsiPrefs(get()) }
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
     single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
-    single(named("widget-update-intent")) { provideWidgetUpdateIntent(get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -230,17 +234,53 @@ private fun providePortForwardingPendingIntent(context: Context): PendingIntent 
     )
 }
 
-private fun provideWidgetUpdateIntent(context: Context): Intent {
+private fun provideWidgetUpdateIntents(context: Context): List<Intent> {
+    return listOf(getSmallWidgetIntent(context), getTextWidgetIntent(context))
+}
+
+private fun getSmallWidgetIntent(context: Context): Intent {
     val intent =
-        Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE, null, context, WidgetProvider::class.java)
+        Intent(
+            AppWidgetManager.ACTION_APPWIDGET_UPDATE,
+            null,
+            context,
+            SmallWidgetProvider::class.java,
+        )
     val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(
         ComponentName(
             context,
-            WidgetProvider::class.java,
+            SmallWidgetProvider::class.java,
         ),
     )
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
     return intent
+}
+
+private fun getTextWidgetIntent(context: Context): Intent {
+    val intent =
+        Intent(
+            AppWidgetManager.ACTION_APPWIDGET_UPDATE,
+            null,
+            context,
+            TextWidgetProvider::class.java,
+        )
+    val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(
+        ComponentName(
+            context,
+            TextWidgetProvider::class.java,
+        ),
+    )
+    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+    return intent
+}
+
+fun provideWidgetServiceIntent(context: Context): PendingIntent {
+    return PendingIntent.getService(
+        context,
+        0,
+        Intent(context, WidgetProviderService::class.java),
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
 }
 
 private fun provideAlarmManager(context: Context) =

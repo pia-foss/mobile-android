@@ -3,4 +3,13 @@
     <string name="connected_to_format">Connected to %s</string>
     <string name="connecting">Connecting&#8230;</string>
     <string name="reconnecting">Reconnecting&#8230;</string>
+
+    <string name="bits_per_second" translatable="false">%.0f bit/s</string>
+    <string name="kbits_per_second" translatable="false">%.1f kbit/s</string>
+    <string name="mbits_per_second" translatable="false">%.1f Mbit/s</string>
+    <string name="gbits_per_second" translatable="false">%.1f Gbit/s</string>
+    <string name="volume_byte" translatable="false">%.0f B</string>
+    <string name="volume_kbyte" translatable="false">%.1f kB</string>
+    <string name="volume_mbyte" translatable="false">%.1f MB</string>
+    <string name="volume_gbyte" translatable="false">%.1f GB</string>
 </resources>

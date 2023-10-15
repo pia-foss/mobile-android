@@ -107,7 +107,7 @@
         </service>
 
         <receiver
-            android:name=".widget.WidgetProvider"
+            android:name=".widget.SmallWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -115,6 +115,17 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_small" />
+        </receiver>
+
+        <receiver
+            android:name=".widget.TextWidgetProvider"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_text" />
         </receiver>
     </application>
 

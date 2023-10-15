@@ -4,20 +4,20 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import com.kape.ui.utils.getFlagResource
 import com.kape.vpn.R
-import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
-class WidgetProvider : AppWidgetProvider(), KoinComponent {
+class SmallWidgetProvider : AppWidgetProvider(), KoinComponent {
 
     private val connectionManager: ConnectionManager by inject()
+    private val serviceIntent: PendingIntent by inject(named("service-intent"))
 
     override fun onUpdate(
         context: Context,
@@ -25,17 +25,10 @@ class WidgetProvider : AppWidgetProvider(), KoinComponent {
         appWidgetIds: IntArray,
     ) {
         appWidgetIds.forEach { appWidgetId ->
-            val pendingIntent: PendingIntent = PendingIntent.getService(
-                context,
-                0,
-                Intent(context, WidgetProviderService::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-            )
-
             appWidgetManager.getAppWidgetInfo(appWidgetId)?.let {
                 val views: RemoteViews = RemoteViews(
                     context.packageName,
-                    it.initialLayout,
+                    R.layout.widget_small,
                 ).apply {
                     when (connectionManager.connectionStatus.value) {
                         ConnectionStatus.CONNECTED -> {
@@ -66,7 +59,7 @@ class WidgetProvider : AppWidgetProvider(), KoinComponent {
                             setViewVisibility(R.id.small_image, View.VISIBLE)
                         }
                     }
-                    setOnClickPendingIntent(R.id.widget, pendingIntent)
+                    setOnClickPendingIntent(R.id.widget, serviceIntent)
                 }
                 appWidgetManager.updateAppWidget(appWidgetId, views)
             }

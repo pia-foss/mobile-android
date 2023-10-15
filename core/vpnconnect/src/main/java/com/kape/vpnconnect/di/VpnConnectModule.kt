@@ -33,7 +33,7 @@ private val localVpnConnectModule = module {
     }
     single { ConnectionUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }
     single { provideConnectionStatusValues(get()) }
-    single { ConnectionManager(get(), get(named("widget-update-intent")), get(), get()) }
+    single { ConnectionManager(get(), get(named("widget-update-intents")), get(), get()) }
     single { GetLogsUseCase(get()) }
 }
 

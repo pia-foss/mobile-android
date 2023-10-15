@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class ConnectionManager(
     private val context: Context,
-    private val updateWidgetIntent: Intent,
+    private val updateWidgetIntents: List<Intent>,
     private val connectionValues: Map<ConnectionStatus, String>,
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
 ) : VPNManagerConnectionListener {
@@ -53,7 +53,9 @@ class ConnectionManager(
         connectionValues[currentStatus]?.let {
             _connectionStatusTitle.value = String.format(it, serverName.value)
         }
-        context.sendBroadcast(updateWidgetIntent)
+        updateWidgetIntents.forEach {
+            context.sendBroadcast(it)
+        }
     }
 
     private fun getKpiConnectionStatus(status: VPNManagerConnectionStatus): KpiConnectionStatus {

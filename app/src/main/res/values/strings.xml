@@ -4,4 +4,7 @@
     <string name="url_privacy_policy" translatable="false">https://www.privateinternetaccess.com/pages/privacy-policy/</string>
     <string name="url_survey" translatable="false">https://privateinternetaccess.typeform.com/to/VnjpMDTk</string>
     <string name="n_a_port_forwarding">---</string>
+
+    <string name="tap_to_connect">Tap to connect</string>
+    <string name="connecting">Connecting…</string>
 </resources>
