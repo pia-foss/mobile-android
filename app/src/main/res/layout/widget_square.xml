@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:weightSum="1.0">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/widget_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:src="@drawable/flag_world" />
+
+            <ProgressBar
+                android:id="@+id/widget_progress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:visibility="gone" />
+
+            <FrameLayout
+                android:id="@+id/widget_pia_logo"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignEnd="@+id/image"
+                android:layout_alignBottom="@+id/image"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="-8dp"
+                android:background="@drawable/background_circle">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_robot" />
+            </FrameLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/widget_top_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:text="@string/tap_to_connect"
+            android:textColor="#ab001b31"
+            android:textSize="12sp" />
+    </LinearLayout>
+</RelativeLayout>

@@ -35,6 +35,7 @@ import com.kape.vpn.utils.SNOOZE_REQUEST_CODE
 import com.kape.vpn.utils.SnoozeHandler
 import com.kape.vpn.utils.VpnLauncher
 import com.kape.vpn.widget.SmallWidgetProvider
+import com.kape.vpn.widget.SquareWidgetProvider
 import com.kape.vpn.widget.TextWidgetProvider
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -235,7 +236,11 @@ private fun providePortForwardingPendingIntent(context: Context): PendingIntent 
 }
 
 private fun provideWidgetUpdateIntents(context: Context): List<Intent> {
-    return listOf(getSmallWidgetIntent(context), getTextWidgetIntent(context))
+    return listOf(
+        getSmallWidgetIntent(context),
+        getTextWidgetIntent(context),
+        getSquareWidgetIntent(context),
+    )
 }
 
 private fun getSmallWidgetIntent(context: Context): Intent {
@@ -268,6 +273,24 @@ private fun getTextWidgetIntent(context: Context): Intent {
         ComponentName(
             context,
             TextWidgetProvider::class.java,
+        ),
+    )
+    intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+    return intent
+}
+
+private fun getSquareWidgetIntent(context: Context): Intent {
+    val intent =
+        Intent(
+            AppWidgetManager.ACTION_APPWIDGET_UPDATE,
+            null,
+            context,
+            SquareWidgetProvider::class.java,
+        )
+    val ids = AppWidgetManager.getInstance(context).getAppWidgetIds(
+        ComponentName(
+            context,
+            SquareWidgetProvider::class.java,
         ),
     )
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
