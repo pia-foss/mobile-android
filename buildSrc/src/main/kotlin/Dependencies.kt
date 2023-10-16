@@ -137,7 +137,7 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementRegions() {
-        add(IMPLEMENTATION, "com.kape.android:regions-android:1.5.0")
+        add(IMPLEMENTATION, "com.kape.android:regions-android:1.6.0")
     }
 
     fun DependencyHandler.implementVpnManager() {
