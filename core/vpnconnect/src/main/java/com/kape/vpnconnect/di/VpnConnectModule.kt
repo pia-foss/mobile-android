@@ -29,6 +29,7 @@ private val localVpnConnectModule = module {
             get(),
             get(),
             get(),
+            get()
         )
     }
     single { ConnectionUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }

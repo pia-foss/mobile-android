@@ -7,6 +7,7 @@ import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.vpnconnect.domain.ConnectionDataSource
+import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
@@ -25,6 +26,7 @@ class ConnectionDataSourceImpl(
     private val portForwardingIntent: PendingIntent,
     private val settingsPrefs: SettingsPrefs,
     private val kpiDataSource: KpiDataSource,
+    private val usageProvider: UsageProvider,
 ) : ConnectionDataSource, KoinComponent {
 
     override fun startConnection(
@@ -50,6 +52,7 @@ class ConnectionDataSourceImpl(
 
     override fun stopConnection(): Flow<Boolean> = callbackFlow {
         connectionApi.stopConnection {
+            usageProvider.reset()
             stopPortForwarding()
             trySend(it.isSuccess)
         }
