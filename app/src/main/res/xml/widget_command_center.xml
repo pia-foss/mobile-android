@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:initialKeyguardLayout="@layout/widget_rectangle"
-    android:initialLayout="@layout/widget_rectangle"
-    android:previewImage="@drawable/preview_rectangle"
+    android:initialKeyguardLayout="@layout/widget_command_center"
+    android:initialLayout="@layout/widget_command_center"
+    android:previewImage="@drawable/preview_cc"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="3"
     android:targetCellHeight="1"
