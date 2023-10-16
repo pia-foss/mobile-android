@@ -4,20 +4,20 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import com.kape.ui.utils.getFlagResource
 import com.kape.vpn.R
-import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
-class WidgetProvider : AppWidgetProvider(), KoinComponent {
+class SquareWidgetProvider : AppWidgetProvider(), KoinComponent {
 
     private val connectionManager: ConnectionManager by inject()
+    private val serviceIntent: PendingIntent by inject(named("service-intent"))
 
     override fun onUpdate(
         context: Context,
@@ -25,48 +25,53 @@ class WidgetProvider : AppWidgetProvider(), KoinComponent {
         appWidgetIds: IntArray,
     ) {
         appWidgetIds.forEach { appWidgetId ->
-            val pendingIntent: PendingIntent = PendingIntent.getService(
-                context,
-                0,
-                Intent(context, WidgetProviderService::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-            )
-
             appWidgetManager.getAppWidgetInfo(appWidgetId)?.let {
                 val views: RemoteViews = RemoteViews(
                     context.packageName,
-                    it.initialLayout,
+                    R.layout.widget_square,
                 ).apply {
                     when (connectionManager.connectionStatus.value) {
                         ConnectionStatus.CONNECTED -> {
                             setImageViewResource(
-                                R.id.image,
+                                R.id.widget_image,
                                 getFlagResource(context, connectionManager.serverIso.value),
                             )
                             setViewVisibility(R.id.widget_progress, View.GONE)
-                            setViewVisibility(R.id.image, View.VISIBLE)
-                            setViewVisibility(R.id.small_image, View.VISIBLE)
+                            setViewVisibility(R.id.widget_image, View.VISIBLE)
+                            setViewVisibility(R.id.widget_pia_logo, View.VISIBLE)
+                            setTextViewText(
+                                R.id.widget_top_text,
+                                connectionManager.serverName.value,
+                            )
                         }
 
                         ConnectionStatus.RECONNECTING,
                         ConnectionStatus.CONNECTING,
                         -> {
                             setViewVisibility(R.id.widget_progress, View.VISIBLE)
-                            setViewVisibility(R.id.image, View.GONE)
-                            setViewVisibility(R.id.small_image, View.GONE)
+                            setViewVisibility(R.id.widget_image, View.GONE)
+                            setViewVisibility(R.id.widget_pia_logo, View.GONE)
+                            setTextViewText(
+                                R.id.widget_top_text,
+                                context.getText(R.string.connecting),
+                            )
                         }
 
                         ConnectionStatus.DISCONNECTED -> {
                             setImageViewResource(
-                                R.id.image,
+                                R.id.widget_image,
                                 com.kape.ui.R.drawable.flag_world,
                             )
                             setViewVisibility(R.id.widget_progress, View.GONE)
-                            setViewVisibility(R.id.image, View.VISIBLE)
-                            setViewVisibility(R.id.small_image, View.VISIBLE)
+                            setViewVisibility(R.id.widget_image, View.VISIBLE)
+                            setViewVisibility(R.id.widget_pia_logo, View.VISIBLE)
+                            setTextViewText(
+                                R.id.widget_top_text,
+                                context.getText(R.string.tap_to_connect),
+                            )
                         }
                     }
-                    setOnClickPendingIntent(R.id.widget, pendingIntent)
+                    setOnClickPendingIntent(R.id.widget, serviceIntent)
                 }
                 appWidgetManager.updateAppWidget(appWidgetId, views)
             }
