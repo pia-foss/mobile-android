@@ -67,7 +67,7 @@ class UsageProvider(private val context: Context, private val intents: List<Inte
         ) else String.format("%s%.1f EB", s, b / 1e6)
     }
 
-    fun humanReadableByteCount(bytes: Long, speed: Boolean, context: Context): String {
+    private fun humanReadableByteCount(bytes: Long, speed: Boolean, context: Context): String {
         var bytes = bytes / 2
         if (speed) bytes *= 8
         val unit = if (speed) 1000 else 1024

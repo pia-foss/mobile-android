@@ -64,7 +64,6 @@ class TextWidgetProvider : AppWidgetProvider(), KoinComponent {
                                 R.id.widget_top_text,
                                 context.getText(R.string.tap_to_connect),
                             )
-                            usageProvider.reset()
                             setTextViewText(
                                 R.id.widget_speed_down,
                                 "${

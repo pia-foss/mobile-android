@@ -254,7 +254,6 @@ class ConnectionViewModel(
         connectionUseCase.stopConnection().collect {
             clientStateDataSource.resetVpnIp()
             vpnIp = prefs.getClientVpnIp()
-            usageProvider.reset()
         }
     }
 

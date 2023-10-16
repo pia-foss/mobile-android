@@ -9,6 +9,7 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.domain.ConnectionDataSource
+import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerPeerInformation
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -47,6 +48,9 @@ internal class ConnectionDataSourceImplTest {
     }
     private val clientConfiguration: ClientConfiguration = mockk()
     private val connectionListener: VPNManagerConnectionListener = mockk()
+    private val usageProvider: UsageProvider = mockk<UsageProvider>().apply {
+        every { reset() } returns Unit
+    }
     private lateinit var source: ConnectionDataSource
 
     private val appModule = module {
@@ -68,6 +72,7 @@ internal class ConnectionDataSourceImplTest {
             portForwardingIntent,
             settingsPrefs,
             kpiDataSource,
+            usageProvider,
         )
     }
 
