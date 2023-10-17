@@ -13,4 +13,7 @@
     <string name="widget_small_connect">Small Connect</string>
     <string name="widget_command_center">PIA Command Center</string>
     <string name="widget_text">Text Widget</string>
+
+    <string name="qs_title">Connect to PIA</string>
+    <string name="change_server">Change Server</string>
 </resources>
