@@ -28,7 +28,7 @@ class Router {
             EnterFlow.PrivacyPolicy -> _navigation.value = WebContent.Privacy
             EnterFlow.TermsOfService -> _navigation.value = WebContent.Terms
             EnterFlow.Survey -> _navigation.value = WebContent.Survey
-            EnterFlow.Settings -> _navigation.value = Settings.Main
+            EnterFlow.Settings -> _navigation.value = Settings.Route
             EnterFlow.GeneralSettings -> _navigation.value = Settings.General
             EnterFlow.ProtocolSettings -> _navigation.value = Settings.Protocols
             EnterFlow.NetworkSettings -> _navigation.value = Settings.Networks

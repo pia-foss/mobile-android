@@ -27,24 +27,12 @@ import com.kape.router.PerAppSettings
 import com.kape.router.Profile
 import com.kape.router.RegionSelection
 import com.kape.router.Router
-import com.kape.router.Settings
 import com.kape.router.Splash
 import com.kape.router.Subscribe
 import com.kape.router.VpnPermission
 import com.kape.router.WebContent
-import com.kape.settings.ui.screens.AutomationSettingsScreen
-import com.kape.settings.ui.screens.ConnectionStatsScreen
-import com.kape.settings.ui.screens.GeneralSettingsScreen
-import com.kape.settings.ui.screens.HelpScreen
-import com.kape.settings.ui.screens.KillSwitchSettingScreen
-import com.kape.settings.ui.screens.NetworkSettingsScreen
 import com.kape.settings.ui.screens.PerAppSettingsScreen
-import com.kape.settings.ui.screens.PrivacySettingsScreen
-import com.kape.settings.ui.screens.ProtocolSettingsScreen
-import com.kape.settings.ui.screens.QuickSettingsScreen
-import com.kape.settings.ui.screens.SettingsScreen
-import com.kape.settings.ui.screens.VpnLogScreen
-import com.kape.settings.ui.screens.WidgetSettingsScreen
+import com.kape.settings.ui.settingsNavigation
 import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
 import com.kape.ui.elements.WebViewScreen
@@ -98,6 +86,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavHost(navController = navController, startDestination = Splash.Main) {
                             loginNavigation(navController)
+                            settingsNavigation(navController)
                             composable(VpnPermission.Main) { VpnSystemProfileScreen() }
                             composable(Splash.Main) { SplashScreen() }
                             composable(Connection.Main) { ConnectionScreen() }
@@ -125,47 +114,11 @@ class MainActivity : ComponentActivity() {
                                     ),
                                 )
                             }
-                            composable(Settings.Main) {
-                                SettingsScreen()
-                            }
-                            composable(Settings.General) {
-                                GeneralSettingsScreen()
-                            }
-                            composable(Settings.Protocols) {
-                                ProtocolSettingsScreen()
-                            }
-                            composable(Settings.Networks) {
-                                NetworkSettingsScreen()
-                            }
-                            composable(Settings.Privacy) {
-                                PrivacySettingsScreen()
-                            }
-                            composable(Settings.Automation) {
-                                AutomationSettingsScreen()
-                            }
-                            composable(Settings.Help) {
-                                HelpScreen()
-                            }
-                            composable(Settings.KillSwitch) {
-                                KillSwitchSettingScreen()
-                            }
                             composable(PerAppSettings.Main) {
                                 PerAppSettingsScreen()
                             }
-                            composable(Settings.QuickSettings) {
-                                QuickSettingsScreen()
-                            }
-                            composable(Settings.ConnectionStats) {
-                                ConnectionStatsScreen()
-                            }
-                            composable(Settings.DebugLogs) {
-                                VpnLogScreen()
-                            }
                             composable(DedicatedIp.Main) {
                                 DedicatedIpScreen()
-                            }
-                            composable(Settings.Widget) {
-                                WidgetSettingsScreen()
                             }
                         }
                     }
