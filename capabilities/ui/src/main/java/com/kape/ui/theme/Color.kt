@@ -4,6 +4,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
+@Deprecated("to be removed as part of UI Overhaul, content to be replaced with")
 private val darkGreen = Color(0xFF037900)
 private val lightGreen = Color(0xFF5DDF5A)
 private val white = Color(0xFFFFFFFF)

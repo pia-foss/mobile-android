@@ -3,6 +3,7 @@ package com.kape.ui.utils
 import androidx.compose.ui.graphics.Color
 import com.kape.ui.theme.Latency
 
+@Deprecated("to be removed. Already implemented in PiaColors.")
 fun getLatencyTextColor(latency: String?): Color {
     if (latency == null) {
         return Color.White
