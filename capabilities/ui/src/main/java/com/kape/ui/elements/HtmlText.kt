@@ -34,6 +34,7 @@ import androidx.core.text.getSpans
 import com.kape.router.EnterFlow
 import com.kape.router.Router
 import com.kape.router.WebContent
+import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
 import org.koin.compose.koinInject
 
@@ -59,7 +60,7 @@ fun HtmlText(
     maxLines: Int = Int.MAX_VALUE,
     inlineContent: Map<String, InlineTextContent> = mapOf(),
     onTextLayout: (TextLayoutResult) -> Unit = {},
-    style: TextStyle = LocalTextStyle.current,
+    style: TextStyle = PiaTypography.body3,
 ) {
     val context = LocalContext.current
     val annotatedString = context.resources.getText(textId).toAnnotatedString(urlSpanStyle)
