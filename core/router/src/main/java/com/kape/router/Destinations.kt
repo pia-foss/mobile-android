@@ -3,7 +3,8 @@ package com.kape.router
 const val NavigateBack = "back"
 
 object Login {
-    const val Main = "login-with-credentials"
+    const val Route = "login"
+    const val WithCredentials = "login-with-credentials"
     const val WithEmail = "login-with-email"
 }
 
@@ -32,6 +33,7 @@ object Subscribe {
 }
 
 object Settings {
+    const val Route = "settings"
     const val Main = "settings-screen"
     const val General = "settings-general-screen"
     const val Protocols = "settings-protocols-screen"

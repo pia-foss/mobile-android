@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class Router {
 
-    private val _navigation = MutableStateFlow("")
+    private val _navigation = MutableStateFlow(Splash.Main)
     val navigation: StateFlow<String> = _navigation
 
     fun handleFlow(flow: AppFlow) {
@@ -18,7 +18,7 @@ class Router {
 
     private fun handleEnterFlow(flow: EnterFlow) {
         when (flow) {
-            EnterFlow.Login -> _navigation.value = Login.Main
+            EnterFlow.Login -> _navigation.value = Login.Route
             EnterFlow.VpnPermission -> _navigation.value = VpnPermission.Main
             EnterFlow.Splash -> _navigation.value = Splash.Main
             EnterFlow.Connection -> _navigation.value = Connection.Main
@@ -28,7 +28,7 @@ class Router {
             EnterFlow.PrivacyPolicy -> _navigation.value = WebContent.Privacy
             EnterFlow.TermsOfService -> _navigation.value = WebContent.Terms
             EnterFlow.Survey -> _navigation.value = WebContent.Survey
-            EnterFlow.Settings -> _navigation.value = Settings.Main
+            EnterFlow.Settings -> _navigation.value = Settings.Route
             EnterFlow.GeneralSettings -> _navigation.value = Settings.General
             EnterFlow.ProtocolSettings -> _navigation.value = Settings.Protocols
             EnterFlow.NetworkSettings -> _navigation.value = Settings.Networks

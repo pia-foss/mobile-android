@@ -18,8 +18,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,8 +36,6 @@ import com.kape.appbar.view.NavigationAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.regionselection.R
 import com.kape.regionselection.ui.vm.RegionSelectionViewModel
-import com.kape.regionselection.utils.IDLE
-import com.kape.regionselection.utils.LOADING
 import com.kape.ui.elements.SearchBar
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Space
@@ -52,82 +48,84 @@ fun RegionSelectionScreen() {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.region_selection_title))
     }
-    val state by remember(viewModel) { viewModel.state }.collectAsState()
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
+    val isLoading = remember { mutableStateOf(false) }
+    val showSortingOptions = remember { mutableStateOf(false) }
+    val isSearchEnabled = remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        locale?.let {
-            viewModel.loadRegions(it)
+    if (viewModel.regions.value.isEmpty()) {
+        LaunchedEffect(Unit) {
+            locale?.let {
+                viewModel.loadRegions(it, isLoading)
+            }
         }
     }
+
     Column {
         NavigationAppBar(
             viewModel = appBarViewModel,
             onLeftButtonClick = { viewModel.navigateBack() },
         )
 
-        when (state) {
-            IDLE -> {
+        if (isLoading.value) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
+        }
 
-            LOADING -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        SearchBar {
+            viewModel.filterByName(it, isSearchEnabled)
+        }
+        viewModel.initAutoRegion(
+            stringResource(id = R.string.automatic),
+            stringResource(id = R.string.automatic_iso),
+        )
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isLoading.value),
+            onRefresh = {
+                locale?.let {
+                    viewModel.loadRegions(locale, isLoading)
                 }
-            }
-
-            else -> {
-                // state loaded
-                SearchBar {
-                    viewModel.filterByName(it)
+            },
+        ) {
+            LazyColumn {
+                val items = if (isSearchEnabled.value) {
+                    viewModel.sorted.value
+                } else {
+                    viewModel.regions.value
                 }
-                viewModel.initAutoRegion(
-                    stringResource(id = R.string.automatic),
-                    stringResource(id = R.string.automatic_iso),
-                )
-                SwipeRefresh(
-                    state = rememberSwipeRefreshState(isRefreshing = state.loading),
-                    onRefresh = {
-                        locale?.let {
-                            viewModel.loadRegions(locale)
-                        }
-                    },
-                ) {
-                    LazyColumn {
-                        items(state.regions.size) { index ->
-                            ServerListItem(
-                                server = state.regions[index],
-                                isFavorite = remember {
-                                    mutableStateOf(viewModel.isServerFavorite(state.regions[index].name))
-                                },
-                                onClick = {
-                                    viewModel.onRegionSelected(it)
-                                },
-                                onFavoriteClick = {
-                                    viewModel.onFavoriteClicked(it)
-                                },
-                            )
-                            Divider(color = LocalColors.current.outline)
-                        }
-                    }
-                }
-
-                if (state.showSortingOptions) {
-                    SortingOptions(viewModel = viewModel)
+                items(items.size) { index ->
+                    ServerListItem(
+                        server = items[index],
+                        isFavorite = remember {
+                            mutableStateOf(viewModel.isServerFavorite(items[index].name))
+                        },
+                        onClick = {
+                            viewModel.onRegionSelected(it)
+                        },
+                        onFavoriteClick = {
+                            viewModel.onFavoriteClicked(it)
+                        },
+                    )
+                    Divider(color = LocalColors.current.outline)
                 }
             }
+        }
+
+        if (showSortingOptions.value) {
+            SortingOptions(viewModel = viewModel, showSortingOptions)
         }
     }
 }
 
 @Composable
-fun SortingOptions(viewModel: RegionSelectionViewModel) {
+fun SortingOptions(viewModel: RegionSelectionViewModel, showSortingOptions: MutableState<Boolean>) {
     val sortBySelectedOption: MutableState<RegionSelectionViewModel.SortByOption> = remember {
         viewModel.sortBySelectedOption
     }
     AlertDialog(
         onDismissRequest = {
-            viewModel.hideSortingOptions()
+            showSortingOptions.value = false
         },
         title = {
             Text(text = stringResource(id = R.string.sort_regions_title), fontSize = FontSize.Title)
@@ -181,7 +179,7 @@ fun SortingOptions(viewModel: RegionSelectionViewModel) {
             }
         },
         dismissButton = {
-            TextButton(onClick = { viewModel.hideSortingOptions() }) {
+            TextButton(onClick = { showSortingOptions.value = false }) {
                 Text(
                     text = stringResource(id = R.string.cancel).toUpperCase(Locale.current),
                     fontSize = FontSize.Normal,
