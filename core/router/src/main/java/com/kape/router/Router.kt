@@ -18,7 +18,7 @@ class Router {
 
     private fun handleEnterFlow(flow: EnterFlow) {
         when (flow) {
-            EnterFlow.Login -> _navigation.value = Login.Main
+            EnterFlow.Login -> _navigation.value = Login.Route
             EnterFlow.VpnPermission -> _navigation.value = VpnPermission.Main
             EnterFlow.Splash -> _navigation.value = Splash.Main
             EnterFlow.Connection -> _navigation.value = Connection.Main

@@ -16,14 +16,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kape.connection.ui.ConnectionScreen
 import com.kape.dedicatedip.ui.DedicatedIpScreen
-import com.kape.login.ui.LoginScreen
-import com.kape.login.ui.LoginWithEmailScreen
+import com.kape.login.ui.loginNavigation
 import com.kape.payments.ui.PaymentProvider
 import com.kape.profile.ui.ProfileScreen
 import com.kape.regionselection.ui.RegionSelectionScreen
 import com.kape.router.Connection
 import com.kape.router.DedicatedIp
-import com.kape.router.Login
 import com.kape.router.NavigateBack
 import com.kape.router.PerAppSettings
 import com.kape.router.Profile
@@ -99,8 +97,7 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.background,
                     ) {
                         NavHost(navController = navController, startDestination = Splash.Main) {
-                            composable(Login.Main) { LoginScreen(navController = navController) }
-                            composable(Login.WithEmail) { LoginWithEmailScreen(navController = navController) }
+                            loginNavigation(navController)
                             composable(VpnPermission.Main) { VpnSystemProfileScreen() }
                             composable(Splash.Main) { SplashScreen() }
                             composable(Connection.Main) { ConnectionScreen() }

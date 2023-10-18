@@ -49,15 +49,23 @@ fun LoginWithEmailScreen(navController: NavController) {
     val currentContext = LocalContext.current
     val noNetworkMessage = stringResource(id = R.string.no_internet)
     val emailProperties =
-        InputFieldProperties(label = stringResource(id = R.string.enter_email), error = getErrorMessage(state = state), maskInput = false)
+        InputFieldProperties(
+            label = stringResource(id = R.string.enter_email),
+            error = getErrorMessage(state = state),
+            maskInput = false,
+        )
     val buttonProperties =
-        ButtonProperties(label = stringResource(id = R.string.send_link).toUpperCase(Locale.current), enabled = true, onClick = {
-            if (isConnected) {
-                viewModel.loginWithEmail(emailProperties.content.value)
-            } else {
-                Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
-            }
-        },)
+        ButtonProperties(
+            label = stringResource(id = R.string.send_link).toUpperCase(Locale.current),
+            enabled = true,
+            onClick = {
+                if (isConnected) {
+                    viewModel.loginWithEmail(emailProperties.content.value)
+                } else {
+                    Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
+                }
+            },
+        )
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (!isConnected) {
@@ -76,16 +84,25 @@ fun LoginWithEmailScreen(navController: NavController) {
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = Space.MEDIUM),
         )
-        InputField(modifier = Modifier.padding(Space.MEDIUM, Space.SMALL), properties = emailProperties)
-        PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = buttonProperties)
+        InputField(
+            modifier = Modifier.padding(Space.MEDIUM, Space.SMALL),
+            properties = emailProperties,
+        )
+        PrimaryButton(
+            modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
+            properties = buttonProperties,
+        )
     }
 
     if (state.flowCompleted) {
         val message = stringResource(id = R.string.login_with_magic_link_success)
-        LaunchedEffect(key1 = state, block = {
-            Toast.makeText(currentContext, message, Toast.LENGTH_SHORT).show()
-            navController.navigate(Login.Main)
-        },)
+        LaunchedEffect(
+            key1 = state,
+            block = {
+                Toast.makeText(currentContext, message, Toast.LENGTH_SHORT).show()
+                navController.navigate(Login.WithCredentials)
+            },
+        )
     }
 }
 
@@ -97,6 +114,7 @@ private fun getErrorMessage(state: LoginScreenState): String? {
         LoginError.Invalid,
         LoginError.Throttled,
         -> stringResource(id = R.string.error_missing_email)
+
         LoginError.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
         null -> null
     }
