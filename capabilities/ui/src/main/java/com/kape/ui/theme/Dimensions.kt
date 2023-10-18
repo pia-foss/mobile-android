@@ -3,6 +3,8 @@ package com.kape.ui.theme
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@Deprecated("to be removed as part of UI Overhaul.")
+
 object Space {
     val CENT_FIFTY = 150.dp
     val CENT = 100.dp

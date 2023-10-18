@@ -5,6 +5,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.KeyboardType
 
+@Deprecated("to be removed as part of UI Overhaul. To be replaced with something more suitable.")
+
 data class InputFieldProperties(
     val label: String,
     var error: String? = null,
