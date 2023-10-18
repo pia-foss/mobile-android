@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class Router {
 
-    private val _navigation = MutableStateFlow("")
+    private val _navigation = MutableStateFlow(Splash.Main)
     val navigation: StateFlow<String> = _navigation
 
     fun handleFlow(flow: AppFlow) {

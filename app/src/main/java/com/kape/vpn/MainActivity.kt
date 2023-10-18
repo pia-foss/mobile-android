@@ -71,16 +71,14 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(key1 = Unit) {
                 repeatOnLifecycle(Lifecycle.State.CREATED) {
                     router.navigation.collect {
-                        if (it.isNotBlank()) {
-                            if (it == NavigateBack) {
-                                navController.navigateUp()
-                            } else {
-                                currentDestination = it
-                                navController.navigate(it) {
-                                    launchSingleTop = true
-                                    if (it in destinationsForClearBackStack) {
-                                        navController.popBackStack()
-                                    }
+                        if (it == NavigateBack) {
+                            navController.navigateUp()
+                        } else {
+                            currentDestination = it
+                            navController.navigate(it) {
+                                launchSingleTop = true
+                                if (it in destinationsForClearBackStack) {
+                                    navController.popBackStack()
                                 }
                             }
                         }
