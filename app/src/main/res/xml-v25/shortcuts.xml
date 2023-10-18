@@ -9,7 +9,7 @@
         android:shortcutLongLabel="@string/qs_title"
         android:shortcutShortLabel="@string/qs_title">
         <intent
-            android:action="com.privateinternetaccess.android.START_VPN_SHORTCUT"
+            android:action="connection-screen"
             android:targetClass="com.kape.vpn.MainActivity"
             android:targetPackage="com.privateinternetaccess.android" />
     </shortcut>
@@ -22,7 +22,7 @@
         android:shortcutLongLabel="@string/change_server"
         android:shortcutShortLabel="@string/change_server">
         <intent
-            android:action="com.privateinternetaccess.android.CHANGE_VPN_SERVER"
+            android:action="region-selection-screen"
             android:targetClass="com.kape.vpn.MainActivity"
             android:targetPackage="com.privateinternetaccess.android" />
 
@@ -36,7 +36,7 @@
         android:shortcutLongLabel="@string/settings"
         android:shortcutShortLabel="@string/settings">
         <intent
-            android:action="com.privateinternetaccess.android.SETTINGS"
+            android:action="settings"
             android:targetClass="com.kape.vpn.MainActivity"
             android:targetPackage="com.privateinternetaccess.android" />
     </shortcut>

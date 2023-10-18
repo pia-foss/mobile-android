@@ -22,11 +22,13 @@ import com.kape.profile.ui.ProfileScreen
 import com.kape.regionselection.ui.RegionSelectionScreen
 import com.kape.router.Connection
 import com.kape.router.DedicatedIp
+import com.kape.router.EnterFlow
 import com.kape.router.NavigateBack
 import com.kape.router.PerAppSettings
 import com.kape.router.Profile
 import com.kape.router.RegionSelection
 import com.kape.router.Router
+import com.kape.router.Settings
 import com.kape.router.Splash
 import com.kape.router.Subscribe
 import com.kape.router.VpnPermission
@@ -54,6 +56,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         paymentProvider.register(this)
+
+        intent.action?.let {
+            when (it) {
+                Settings.Route -> router.handleFlow(EnterFlow.Settings)
+                RegionSelection.Main -> router.handleFlow(EnterFlow.RegionSelection)
+                Connection.Main -> router.handleFlow(EnterFlow.Connection)
+            }
+        }
 
         setContent {
             val navController = rememberNavController()
