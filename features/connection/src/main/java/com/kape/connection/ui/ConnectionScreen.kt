@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.kape.appbar.view.ConnectionAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.connection.ui.tiles.ConnectionInfoTile
+import com.kape.connection.ui.tiles.ConnectionInfo
 import com.kape.connection.ui.tiles.FavoritesTile
 import com.kape.connection.ui.tiles.IpInformationTile
 import com.kape.connection.ui.tiles.QuickConnectTile
@@ -128,7 +128,7 @@ fun ConnectionScreen() {
             Separator()
             UsageTile(viewModel.download.value, viewModel.upload.value)
             Separator()
-            ConnectionInfoTile(viewModel.getConnectionSettings())
+            ConnectionInfo(viewModel.getConnectionSettings())
         }
     }
 }

@@ -13,6 +13,7 @@ import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 
+@Deprecated("to be removed")
 @Composable
 fun ConnectionTile(labelId: Int, content: @Composable () -> Unit) {
     Column(
