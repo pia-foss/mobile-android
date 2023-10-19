@@ -52,15 +52,14 @@ import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
 import com.kape.ui.theme.Space
 import com.kape.ui.theme.Width
+import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.ui.utils.getLatencyTextColor
 import com.kape.utils.server.Server
 import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import org.koin.androidx.compose.koinViewModel
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DedicatedIpScreen() {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
@@ -265,7 +264,7 @@ fun DipItem(
                     ""
                 },
                 fontSize = FontSize.Small,
-                color = getLatencyTextColor(server.latency),
+                color = LocalColors.current.getLatencyColor(server.latency),
                 modifier = Modifier
                     .padding(horizontal = Space.SMALL)
                     .align(CenterVertically),

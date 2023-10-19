@@ -40,11 +40,11 @@ import com.kape.ui.elements.HtmlText
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.SecondaryButton
 import com.kape.ui.elements.UiResources
-import com.kape.ui.theme.ConnectingOrange
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
 import com.kape.ui.theme.Space
 import com.kape.ui.theme.Square
+import com.kape.ui.theme.warning30
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -196,7 +196,7 @@ fun PriceRow(state: Plan, selected: Boolean, selectedState: MutableState<Plan>) 
                     Spacer(modifier = Modifier.height(Space.SMALL))
                     Card(
                         colors = CardDefaults.cardColors(
-                            containerColor = ConnectingOrange,
+                            containerColor = LocalColors.current.warning30(),
                         ),
                     ) {
                         Text(

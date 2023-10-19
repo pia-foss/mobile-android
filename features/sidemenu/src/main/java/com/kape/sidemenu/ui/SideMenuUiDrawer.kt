@@ -47,12 +47,12 @@ import androidx.compose.ui.unit.dp
 import com.kape.sidemenu.R
 import com.kape.sidemenu.ui.vm.SideMenuViewModel
 import com.kape.sidemenu.utils.SideMenuState
-import com.kape.ui.theme.ConnectingOrange
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
 import com.kape.ui.theme.Space
 import com.kape.ui.theme.Square
 import com.kape.ui.theme.Width
+import com.kape.ui.theme.warning30
 import com.kape.ui.utils.LocalColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -373,7 +373,7 @@ private fun SubscriptionExpiryView(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = ConnectingOrange)
+            .background(color = LocalColors.current.warning30())
             .makeClickable(
                 onClick = onClick,
                 hasRipple = false,

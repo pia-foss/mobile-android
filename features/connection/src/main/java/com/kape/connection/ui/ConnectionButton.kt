@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -13,29 +14,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.kape.connection.R
-import com.kape.ui.theme.Grey92
-import com.kape.ui.theme.Space
 import com.kape.ui.theme.Square
-import com.kape.ui.theme.appbarConnectedStatus
-import com.kape.ui.theme.appbarConnectingStatus
-import com.kape.ui.theme.appbarDisconnectedStatus
+import com.kape.ui.theme.statusBarConnected
+import com.kape.ui.theme.statusBarConnecting
+import com.kape.ui.theme.statusBarDefault
+import com.kape.ui.utils.LocalColors
+import com.kape.vpnconnect.utils.ConnectionStatus
 
 @Composable
-fun ConnectionButton(state: ConnectionState, onClick: () -> Unit) {
+fun ConnectionButton(status: ConnectionStatus, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(),
     ) {
+        val state = getConnectionState(status, LocalColors.current)
         if (state.showProgress) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .size(Square.CONNECTION_PROGRESS)
                     .align(Alignment.Center),
                 color = state.color,
-                strokeWidth = Space.SMALL,
+                strokeWidth = 8.dp,
             )
         }
         IconButton(
@@ -54,18 +56,28 @@ fun ConnectionButton(state: ConnectionState, onClick: () -> Unit) {
     }
 }
 
-sealed class ConnectionState(val color: Color, val resId: Int, val showProgress: Boolean) {
-    data object Default : ConnectionState(Grey92, R.drawable.ic_connection_off, false)
-    data object Connecting : ConnectionState(appbarConnectingStatus, R.drawable.ic_connecting, true)
-    data object Connected :
-        ConnectionState(appbarConnectedStatus, R.drawable.ic_connection_on, false)
+private data class ConnectionState(val color: Color, val resId: Int, val showProgress: Boolean)
 
-    data object Disconnected :
-        ConnectionState(appbarDisconnectedStatus, R.drawable.ic_connection_error, false)
-}
+private fun getConnectionState(status: ConnectionStatus, scheme: ColorScheme): ConnectionState {
+    return when (status) {
+        ConnectionStatus.CONNECTED -> ConnectionState(
+            color = scheme.statusBarConnected(),
+            resId = R.drawable.ic_connection_on,
+            showProgress = false,
+        )
 
-@Preview
-@Composable
-fun DefaultConnectionButtonPreview() {
-    ConnectionButton(state = ConnectionState.Default) {}
+        ConnectionStatus.CONNECTING,
+        ConnectionStatus.RECONNECTING,
+        -> ConnectionState(
+            color = scheme.statusBarConnecting(),
+            resId = R.drawable.ic_connecting,
+            showProgress = true,
+        )
+
+        ConnectionStatus.DISCONNECTED -> ConnectionState(
+            color = scheme.statusBarDefault(),
+            resId = R.drawable.ic_connection_off,
+            showProgress = false,
+        )
+    }
 }
