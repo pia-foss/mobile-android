@@ -15,6 +15,7 @@ import com.kape.ui.theme.ButtonBackground
 import com.kape.ui.theme.Height
 import com.kape.ui.utils.LocalColors
 
+@Deprecated("to be removed.")
 @Composable
 fun SecondaryButton(modifier: Modifier, properties: ButtonProperties) {
     OutlinedButton(
