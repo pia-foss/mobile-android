@@ -21,7 +21,7 @@ import com.kape.ui.theme.InputFieldBackground
 import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Deprecated("to be replaced by Input")
 @Composable
 fun InputField(modifier: Modifier, properties: InputFieldProperties) {
     var content by remember { properties.content }
@@ -40,8 +40,8 @@ fun InputField(modifier: Modifier, properties: InputFieldProperties) {
             label = { Text(properties.label) },
             keyboardOptions = KeyboardOptions(
                 autoCorrect = false,
-                keyboardType = properties.keyboardType
-            )
+                keyboardType = properties.keyboardType,
+            ),
         )
         properties.error?.let {
             Text(

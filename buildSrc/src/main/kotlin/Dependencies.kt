@@ -8,7 +8,7 @@ object Dependencies {
     internal const val DEBUG_IMPLEMENTATION = "debugImplementation"
     internal const val GOOGLE_IMPLEMENTATION = "googleImplementation"
     internal const val AMAZON_IMPLEMENTATION = "amazonImplementation"
-    internal const val COMPOSE_BOM = "androidx.compose:compose-bom:2023.03.00"
+    internal const val COMPOSE_BOM = "androidx.compose:compose-bom:2023.10.00"
     internal const val COMPOSE_NAVIGATION = "2.6.0"
 
     const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.0.3"
