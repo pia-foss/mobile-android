@@ -12,6 +12,7 @@ import androidx.compose.ui.semantics.semantics
 import com.kape.ui.theme.ButtonBackground
 import com.kape.ui.theme.Height
 
+@Deprecated("to be removed.")
 @Composable
 fun PrimaryButton(modifier: Modifier, properties: ButtonProperties) {
     Button(

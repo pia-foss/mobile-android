@@ -22,7 +22,7 @@ import com.kape.ui.R
 import com.kape.ui.utils.LocalColors
 
 // TODO: Implement colors properly
-@OptIn(ExperimentalMaterial3Api::class)
+@Deprecated("to be removed")
 @Composable
 fun SearchBar(onSearchTextChanged: (text: String) -> Unit) {
     var searchText by remember { mutableStateOf("") }
