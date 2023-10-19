@@ -10,4 +10,9 @@
     <string name="button">Button</string>
 
     <string name="latency_to_format">%s ms</string>
+    <string name="yearly">Yearly</string>
+    <string name="monthly">Monthly</string>
+    <string name="best_value">BEST VALUE - FREE TRIAL</string>
+    <string name="price_per_year">$s per year</string>
+    <string name="price_per_month">$s/mo</string>
 </resources>

@@ -68,6 +68,6 @@ fun SecondaryButton(
 }
 
 @Composable
-fun OptionsButton(selected: Boolean) {
-    RadioButton(selected = selected, onClick = { })
+fun OptionButton(selected: Boolean, modifier: Modifier) {
+    RadioButton(selected = selected, onClick = { }, modifier = modifier)
 }
