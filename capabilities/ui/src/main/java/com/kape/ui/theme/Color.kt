@@ -1,14 +1,13 @@
 package com.kape.ui.theme
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-@Deprecated("to be removed as part of UI Overhaul, content to be replaced with")
 private val darkGreen = Color(0xFF037900)
 private val lightGreen = Color(0xFF5DDF5A)
 private val white = Color(0xFFFFFFFF)
-private val red = Color(0xFFF24458)
 private val grey20 = Color(0xFF323642)
 private val grey25 = Color(0xFF454557)
 private val grey30 = Color(0xFF5C6370)
@@ -31,22 +30,12 @@ private val info10 = Color(0xFF0171C4)
 private val info30 = Color(0xFF86D0FD)
 private val info50 = Color(0xFFEDF5FE)
 
-val appbarConnectingStatus = Color(0xFFE6B400)
-val appbarConnectingGradient = listOf(appbarConnectingStatus, Color(0xFFF9CF01))
-val appbarConnectedStatus = Color(0xFF4CB649)
-val appbarConnectedGradient = listOf(appbarConnectedStatus, lightGreen)
-val appbarDisconnectedStatus = Color(0xFFB2352D)
-val appbarDisconnectedGradient = listOf(appbarDisconnectedStatus, red)
-
-val ConnectingOrange = Color(0xFFFFA500)
-val Grey92 = Color(0xFFEEEEEE)
-
-val AppLightColorScheme = lightColorScheme(
+val LightColorScheme = lightColorScheme(
     primary = darkGreen,
     onPrimary = white,
     primaryContainer = Color.Unspecified,
     onPrimaryContainer = Color.Unspecified,
-    inversePrimary = lightGreen,
+    inversePrimary = Color.Unspecified,
     secondary = Color.Unspecified,
     onSecondary = Color.Unspecified,
     secondaryContainer = Color.Unspecified,
@@ -59,7 +48,7 @@ val AppLightColorScheme = lightColorScheme(
     onBackground = grey20,
     surface = grey90,
     onSurface = grey20,
-    surfaceVariant = white,
+    surfaceVariant = Color.Unspecified,
     onSurfaceVariant = grey30,
     inverseSurface = grey20,
     inverseOnSurface = grey90,
@@ -71,12 +60,12 @@ val AppLightColorScheme = lightColorScheme(
     outlineVariant = grey40,
 )
 
-val AppDarkColorScheme = darkColorScheme(
+val DarkColorScheme = darkColorScheme(
     primary = lightGreen,
     onPrimary = grey20,
     primaryContainer = Color.Unspecified,
     onPrimaryContainer = Color.Unspecified,
-    inversePrimary = darkGreen,
+    inversePrimary = Color.Unspecified,
     secondary = Color.Unspecified,
     onSecondary = Color.Unspecified,
     secondaryContainer = Color.Unspecified,
@@ -89,7 +78,7 @@ val AppDarkColorScheme = darkColorScheme(
     onBackground = grey90,
     surface = grey20,
     onSurface = grey90,
-    surfaceVariant = grey25,
+    surfaceVariant = Color.Unspecified,
     onSurfaceVariant = grey70,
     inverseSurface = grey90,
     inverseOnSurface = grey20,
@@ -101,8 +90,40 @@ val AppDarkColorScheme = darkColorScheme(
     outlineVariant = grey70,
 )
 
-object Latency {
-    val Green = appbarConnectedStatus
-    val Yellow = appbarConnectingStatus
-    val Red = appbarDisconnectedStatus
+fun ColorScheme.defaultGradient(): List<Color> {
+    return listOf(grey90, grey90)
+}
+
+fun ColorScheme.connectedGradient(): List<Color> {
+    return listOf(Color(0xff4cb649), Color(0xff5ddf5a))
+}
+
+fun ColorScheme.connectingGradient(): List<Color> {
+    return listOf(Color(0xffe6b400), Color(0xfff9cf01))
+}
+
+fun ColorScheme.errorGradient(): List<Color> {
+    return listOf(Color(0xffb2352d), Color(0xfff24458))
+}
+
+fun ColorScheme.warning30() = warning30
+
+fun ColorScheme.statusBarDefault() = grey90
+fun ColorScheme.statusBarConnected() = Color(0xff4cb649)
+fun ColorScheme.statusBarConnecting() = Color(0xffe6b400)
+fun ColorScheme.statusBarError() = Color(0xffb2352d)
+
+private fun latencyGreen(): Color = Color(0xff4cb649)
+private fun latencyYellow(): Color = Color(0xffe6b400)
+private fun latencyRed(): Color = Color(0xffb2352d)
+
+fun ColorScheme.getLatencyColor(latency: String?): Color {
+    if (latency == null) {
+        return Color.White
+    }
+    return when (latency.toLong()) {
+        in 0..200 -> latencyGreen()
+        in 200..500 -> latencyYellow()
+        else -> latencyRed()
+    }
 }

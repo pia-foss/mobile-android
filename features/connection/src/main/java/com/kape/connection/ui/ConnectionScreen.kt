@@ -43,12 +43,6 @@ fun ConnectionScreen() {
     val context = LocalContext.current
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val connectionState = when (connectionStatus.value) {
-        ConnectionStatus.CONNECTED -> ConnectionState.Connected
-        ConnectionStatus.CONNECTING -> ConnectionState.Connecting
-        ConnectionStatus.DISCONNECTED -> ConnectionState.Default
-        ConnectionStatus.RECONNECTING -> ConnectionState.Connecting
-    }
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadServers(locale)
@@ -67,7 +61,7 @@ fun ConnectionScreen() {
                 onLeftButtonClick = { openDrawer() },
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
-            ConnectionButton(connectionState) {
+            ConnectionButton(connectionStatus.value) {
                 viewModel.onConnectionButtonClicked()
             }
             viewModel.selectedServer.value?.let {

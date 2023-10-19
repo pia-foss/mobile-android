@@ -28,8 +28,8 @@ fun PIATheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> AppDarkColorScheme
-        else -> AppLightColorScheme
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -53,8 +53,8 @@ fun PiaScreen(
     vararg compositionLocalValues: ProvidedValue<*>,
     content: @Composable () -> Unit,
 ) {
-    val materialColorScheme = if (darkTheme) AppDarkColorScheme else AppLightColorScheme
-    val piaColorScheme = if (darkTheme) AppDarkColorScheme else AppLightColorScheme
+    val materialColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val piaColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val providedValues = buildList {
         addAll(compositionLocalValues)
         add(LocalColors provides piaColorScheme)

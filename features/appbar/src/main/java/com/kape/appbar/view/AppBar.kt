@@ -37,10 +37,12 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.ui.R
 import com.kape.ui.theme.PiaScreen
-import com.kape.ui.theme.appbarConnectedGradient
-import com.kape.ui.theme.appbarConnectedStatus
-import com.kape.ui.theme.appbarConnectingGradient
-import com.kape.ui.theme.appbarConnectingStatus
+import com.kape.ui.theme.connectedGradient
+import com.kape.ui.theme.connectingGradient
+import com.kape.ui.theme.defaultGradient
+import com.kape.ui.theme.statusBarConnected
+import com.kape.ui.theme.statusBarConnecting
+import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionStatus
 
@@ -329,28 +331,23 @@ private fun getAppBarColors(
 ): AppBarColors {
     return when (connectionState) {
         ConnectionStatus.CONNECTED -> AppBarColors(
-            background = Brush.verticalGradient(appbarConnectedGradient),
+            background = Brush.verticalGradient(scheme.connectedGradient()),
             foreground = Color.Black,
-            statusBar = appbarConnectedStatus,
+            statusBar = scheme.statusBarConnected(),
             darkIcons = darkIcons,
         )
 
         ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> AppBarColors(
-            background = Brush.verticalGradient(appbarConnectingGradient),
+            background = Brush.verticalGradient(scheme.connectingGradient()),
             foreground = Color.Black,
-            statusBar = appbarConnectingStatus,
+            statusBar = scheme.statusBarConnecting(),
             darkIcons = darkIcons,
         )
 
         ConnectionStatus.DISCONNECTED -> AppBarColors(
-            background = Brush.verticalGradient(
-                listOf(
-                    scheme.surface,
-                    scheme.surface,
-                ),
-            ),
+            background = Brush.verticalGradient(scheme.defaultGradient()),
             foreground = scheme.onSurface,
-            statusBar = scheme.surface,
+            statusBar = scheme.statusBarDefault(),
             darkIcons = darkIcons,
         )
     }
