@@ -1,6 +1,7 @@
 package com.kape.ui.elements
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -13,6 +14,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.kape.ui.text.PrimaryButtonText
+import com.kape.ui.text.SecondaryButtonText
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -38,7 +41,7 @@ fun PrimaryButton(
                 color = LocalColors.current.onPrimary,
             )
         } else {
-            Text(text = text.uppercase())
+            PrimaryButtonText(content = text.uppercase())
         }
     }
 }
@@ -64,7 +67,7 @@ fun SecondaryButton(
                 color = LocalColors.current.onPrimary,
             )
         } else {
-            Text(text = text.uppercase(), color = LocalColors.current.primary)
+            SecondaryButtonText(content = text.uppercase())
         }
     }
 }

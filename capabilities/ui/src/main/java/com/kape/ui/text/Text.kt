@@ -147,22 +147,20 @@ fun BestValueBannerText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun PrimaryButtonText(content: String, modifier: Modifier) {
+fun PrimaryButtonText(content: String) {
     Text(
         text = content,
         color = LocalColors.current.onPrimary,
         style = PiaTypography.button1,
-        modifier = modifier,
     )
 }
 
 @Composable
-fun SecondaryButtonText(content: String, modifier: Modifier) {
+fun SecondaryButtonText(content: String) {
     Text(
         text = content,
         color = LocalColors.current.primary,
         style = PiaTypography.button1,
-        modifier = modifier,
     )
 }
 
@@ -237,22 +235,20 @@ fun QuickConnectText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun TileTitleText(content: String, modifier: Modifier) {
+fun TileTitleText(content: String) {
     Text(
         text = content,
         color = LocalColors.current.onSurfaceVariant,
         style = PiaTypography.button2,
-        modifier = modifier,
     )
 }
 
 @Composable
-fun IPText(content: String, modifier: Modifier) {
+fun IPText(content: String) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
-        modifier = modifier,
     )
 }
 

@@ -26,6 +26,7 @@ import com.kape.ui.theme.Space
 import com.kape.ui.theme.Width
 import com.kape.ui.utils.LocalColors
 
+@Deprecated("to be removed")
 @Composable
 fun IpInformationTile(
     ip: String,

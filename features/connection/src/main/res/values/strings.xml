@@ -26,4 +26,9 @@
     <string name="survey_action">Take the Survey</string>
     <string name="favorite_servers">FAVORITE SERVERS</string>
     <string name="quick_connect">QUICK CONNECT</string>
+
+    <string name="pfwd_error">Error</string>
+    <string name="pfwd_disabled">---</string>
+    <string name="pfwd_requesting">Requesting</string>
+
 </resources>
