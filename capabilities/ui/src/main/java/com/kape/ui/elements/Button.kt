@@ -7,6 +7,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -70,4 +72,20 @@ fun SecondaryButton(
 @Composable
 fun OptionButton(selected: Boolean, modifier: Modifier) {
     RadioButton(selected = selected, onClick = { }, modifier = modifier)
+}
+
+@Composable
+fun Toggle(isOn: Boolean, onCheckedChange: (checked: Boolean) -> Unit, modifier: Modifier) {
+    Switch(
+        checked = isOn, onCheckedChange = onCheckedChange,
+        colors = SwitchDefaults.colors(
+            uncheckedBorderColor = LocalColors.current.onSurfaceVariant,
+            checkedBorderColor = LocalColors.current.onSurfaceVariant,
+            uncheckedTrackColor = LocalColors.current.onPrimary,
+            checkedTrackColor = LocalColors.current.primary,
+            uncheckedIconColor = LocalColors.current.onSurfaceVariant,
+            checkedIconColor = LocalColors.current.onPrimary,
+        ),
+        modifier = modifier,
+    )
 }
