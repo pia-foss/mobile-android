@@ -7,150 +7,273 @@ import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun SettingsL1Text(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.subtitle3)
-}
-
-@Composable
-fun SideMenuUsernameText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.subtitle2)
-}
-
-@Composable
-fun SideMenuVersionText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.caption1)
-}
-
-@Composable
-fun AppBarConnectionTextDefault(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.subtitle3)
-}
-
-@Composable
-fun AppBarConnectionTextError(content: String) {
-    Text(text = content, color = LocalColors.current.onPrimary, style = PiaTypography.subtitle3)
-}
-
-@Composable
-fun AppBarTitleText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.h2)
-}
-
-@Composable
-fun SettingsL2Text(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.subtitle3)
-}
-
-@Composable
-fun SettingsL2TextDescription(content: String) {
+fun SettingsL1Text(content: String, modifier: Modifier) {
     Text(
         text = content,
-        color = LocalColors.current.onSurfaceVariant,
-        style = PiaTypography.caption1,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
     )
 }
 
 @Composable
-fun SignInTitleText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.subtitle1)
-}
-
-@Composable
-fun SignInDescriptionText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.body3)
-}
-
-@Composable
-fun SignInDurationText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurfaceVariant, style = PiaTypography.body3)
-}
-
-@Composable
-fun SignUpPriceText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.subtitle1)
-}
-
-@Composable
-fun SignUpPricePerMonthText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurfaceVariant, style = PiaTypography.body3)
-}
-
-@Composable
-fun BestValueBannerText(content: String) {
-    Text(text = content, color = LocalColors.current.onPrimary, style = PiaTypography.caption1)
-}
-
-@Composable
-fun PrimaryButtonText(content: String) {
-    Text(text = content, color = LocalColors.current.onPrimary, style = PiaTypography.button1)
-}
-
-@Composable
-fun SecondaryButtonText(content: String) {
-    Text(text = content, color = LocalColors.current.primary, style = PiaTypography.button1)
-}
-
-@Composable
-fun ErrorText(content: String) {
-    Text(text = content, color = LocalColors.current.error, style = PiaTypography.body3)
-}
-
-@Composable
-fun OnboardingTitleText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.h2)
-}
-
-@Composable
-fun OnboardingDescriptionText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.body1)
-}
-
-@Composable
-fun OnboardingFooterText(content: String) {
+fun SideMenuUsernameText(content: String, modifier: Modifier) {
     Text(
         text = content,
-        color = LocalColors.current.onSurfaceVariant,
-        style = PiaTypography.caption1,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle2,
+        modifier = modifier,
     )
 }
 
 @Composable
-fun SelectedRegionTitleText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.caption2)
+fun SideMenuVersionText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.caption1,
+        modifier = modifier,
+    )
 }
 
 @Composable
-fun SelectedRegionServerText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.subtitle3)
+fun AppBarConnectionTextDefault(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
 }
 
 @Composable
-fun QuickConnectText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.caption1)
+fun AppBarConnectionTextError(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onPrimary,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
 }
 
 @Composable
-fun TileTitleText(content: String) {
+fun AppBarTitleText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.h2,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SettingsL2Text(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SettingsL2TextDescription(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurfaceVariant,
+        style = PiaTypography.caption1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SignInTitleText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SignInDescriptionText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.body3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SignUpDurationText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurfaceVariant,
+        style = PiaTypography.body3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SignUpPriceText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SignUpPricePerMonthText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurfaceVariant,
+        style = PiaTypography.body3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun BestValueBannerText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.surface,
+        style = PiaTypography.caption1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun PrimaryButtonText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onPrimary,
+        style = PiaTypography.button1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SecondaryButtonText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.primary,
+        style = PiaTypography.button1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun ErrorText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.error,
+        style = PiaTypography.body3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun OnboardingTitleText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.h2,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun OnboardingDescriptionText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.body1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun OnboardingFooterText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurfaceVariant,
+        style = PiaTypography.caption1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SelectedRegionTitleText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.caption2,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SelectedRegionServerText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun QuickConnectText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.caption1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun TileTitleText(content: String, modifier: Modifier) {
     Text(
         text = content,
         color = LocalColors.current.onSurfaceVariant,
         style = PiaTypography.button2,
+        modifier = modifier,
     )
 }
 
 @Composable
-fun IPText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.body3)
+fun IPText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.body3,
+        modifier = modifier,
+    )
 }
 
 @Composable
-fun ConnectionInfoText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.body3)
+fun ConnectionInfoText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.body3,
+        modifier = modifier,
+    )
 }
 
 @Composable
-fun RegionSelectionText(content: String) {
-    Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.body3)
+fun RegionSelectionText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.body3,
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -168,6 +291,6 @@ fun InputErrorText(content: String, modifier: Modifier) {
         text = content,
         color = LocalColors.current.error,
         style = PiaTypography.caption1,
-        modifier = modifier
+        modifier = modifier,
     )
 }
