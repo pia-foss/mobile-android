@@ -253,12 +253,11 @@ fun IPText(content: String) {
 }
 
 @Composable
-fun ConnectionInfoText(content: String, modifier: Modifier) {
+fun ConnectionInfoText(content: String) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
-        modifier = modifier,
     )
 }
 
