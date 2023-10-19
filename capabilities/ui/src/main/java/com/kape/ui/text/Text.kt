@@ -1,7 +1,8 @@
-package com.kape.ui.elements
+package com.kape.ui.text
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
 
@@ -150,4 +151,23 @@ fun ConnectionInfoText(content: String) {
 @Composable
 fun RegionSelectionText(content: String) {
     Text(text = content, color = LocalColors.current.onSurface, style = PiaTypography.body3)
+}
+
+@Composable
+fun InputLabelText(content: String) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurfaceVariant,
+        style = PiaTypography.caption1,
+    )
+}
+
+@Composable
+fun InputErrorText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.error,
+        style = PiaTypography.caption1,
+        modifier = modifier
+    )
 }
