@@ -113,6 +113,9 @@ fun ColorScheme.statusBarConnected() = Color(0xff4cb649)
 fun ColorScheme.statusBarConnecting() = Color(0xffe6b400)
 fun ColorScheme.statusBarError() = Color(0xffb2352d)
 
+fun ColorScheme.errorOutline() = error30
+fun ColorScheme.errorBackground() = error50
+
 private fun latencyGreen(): Color = Color(0xff4cb649)
 private fun latencyYellow(): Color = Color(0xffe6b400)
 private fun latencyRed(): Color = Color(0xffb2352d)

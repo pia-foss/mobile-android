@@ -88,21 +88,11 @@ fun SettingsL2TextDescription(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun SignInTitleText(content: String, modifier: Modifier) {
+fun SignInText(content: String, modifier: Modifier) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
-        style = PiaTypography.subtitle1,
-        modifier = modifier,
-    )
-}
-
-@Composable
-fun SignInDescriptionText(content: String, modifier: Modifier) {
-    Text(
-        text = content,
-        color = LocalColors.current.onSurface,
-        style = PiaTypography.body3,
+        style = PiaTypography.h2,
         modifier = modifier,
     )
 }
@@ -170,7 +160,7 @@ fun ErrorText(content: String, modifier: Modifier) {
         text = content,
         color = LocalColors.current.error,
         style = PiaTypography.body3,
-        modifier = modifier,
+        modifier = modifier
     )
 }
 

@@ -14,17 +14,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.text.BestValueBannerText
+import com.kape.ui.text.ErrorText
 import com.kape.ui.text.SignUpDurationText
 import com.kape.ui.text.SignUpPricePerMonthText
 import com.kape.ui.text.SignUpPriceText
+import com.kape.ui.theme.errorBackground
+import com.kape.ui.theme.errorOutline
 import com.kape.ui.theme.warning30
 import com.kape.ui.utils.LocalColors
 
@@ -132,6 +137,27 @@ fun MonthlySubscriptionCard(
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+fun ErrorCard(content: String, modifier: Modifier) {
+    Card(
+        modifier = modifier, shape = RoundedCornerShape(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = LocalColors.current.errorBackground(),
+        ),
+        border = BorderStroke(1.dp, LocalColors.current.errorOutline()),
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_error),
+                contentDescription = null,
+                tint = Color.Unspecified,
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            ErrorText(content = content, modifier = Modifier.align(CenterVertically))
         }
     }
 }
