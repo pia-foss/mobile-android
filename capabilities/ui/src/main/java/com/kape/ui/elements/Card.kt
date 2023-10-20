@@ -64,16 +64,12 @@ fun YearlySubscriptionCard(
                 )
                 Row {
                     SignUpPriceText(
-                        content = stringResource(id = R.string.price_per_year).format(
-                            price,
-                        ),
+                        content = price,
                         modifier = Modifier.align(CenterVertically),
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     SignUpPricePerMonthText(
-                        content = stringResource(id = R.string.price_per_month).format(
-                            perMonthPrice,
-                        ),
+                        content = perMonthPrice,
                         modifier = Modifier.align(CenterVertically),
                     )
                 }
@@ -131,10 +127,8 @@ fun MonthlySubscriptionCard(
                     modifier = Modifier.padding(vertical = 16.dp),
                 )
                 SignUpPriceText(
-                    content = stringResource(id = R.string.price_per_month).format(
-                        price,
-                    ),
-                    modifier = modifier,
+                    content = price,
+                    modifier = Modifier.wrapContentWidth(),
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))

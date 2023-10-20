@@ -53,7 +53,6 @@ fun ConnectionInfo(settings: ProtocolSettings) {
 
 @Composable
 fun InfoRow(iconId: Int, label: String) {
-    Log.e("aaa", "create info wor: $label")
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
             painter = painterResource(id = iconId),

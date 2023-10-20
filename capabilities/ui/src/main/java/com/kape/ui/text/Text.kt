@@ -3,6 +3,7 @@ package com.kape.ui.text
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
 
@@ -122,7 +123,6 @@ fun SignUpPriceText(content: String, modifier: Modifier) {
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.subtitle1,
-        modifier = modifier,
     )
 }
 
@@ -140,7 +140,7 @@ fun SignUpPricePerMonthText(content: String, modifier: Modifier) {
 fun BestValueBannerText(content: String, modifier: Modifier) {
     Text(
         text = content,
-        color = LocalColors.current.surface,
+        color = LocalColors.current.onBackground,
         style = PiaTypography.caption1,
         modifier = modifier,
     )
@@ -191,6 +191,7 @@ fun OnboardingDescriptionText(content: String, modifier: Modifier) {
         color = LocalColors.current.onSurface,
         style = PiaTypography.body1,
         modifier = modifier,
+        textAlign = TextAlign.Center,
     )
 }
 
