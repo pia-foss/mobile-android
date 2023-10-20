@@ -4,6 +4,10 @@
     <string name="vpn_permission_description">You\’ll see a prompt for PIA VPN and need to\nallow access to VPN configurations.\nTo proceed, tap on “OK”</string>
     <string name="vpn_permission_footer">We don\’t monitor, filter or log any network activity.</string>
 
+    <string name="notifications_title">Get Notified</string>
+    <string name="notifications_description">Allow PIA to send notifications about your account and VPN connection.</string>
+    <string name="notifications_action">I AGREE</string>
+
     <string name="toast_vpn_profile_granted">"Permission Granted"</string>
     <string name="toast_vpn_profile_not_granted">"Permission not Granted"</string>
 </resources>
