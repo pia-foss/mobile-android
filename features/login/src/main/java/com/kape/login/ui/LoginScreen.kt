@@ -2,25 +2,32 @@ package com.kape.login.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.kape.login.R
@@ -29,12 +36,11 @@ import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
 import com.kape.login.utils.connectivityState
 import com.kape.router.Login
-import com.kape.ui.elements.ButtonProperties
-import com.kape.ui.elements.InputField
-import com.kape.ui.elements.InputFieldProperties
+import com.kape.ui.elements.ErrorCard
 import com.kape.ui.elements.NoNetworkBanner
 import com.kape.ui.elements.PrimaryButton
-import com.kape.ui.elements.UiResources
+import com.kape.ui.text.Input
+import com.kape.ui.text.SignInText
 import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.InternetConnectionState
@@ -48,46 +54,75 @@ fun LoginScreen(navController: NavController) {
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val connection by connectivityState()
     val isConnected = connection === InternetConnectionState.Connected
-
     val currentContext = LocalContext.current
     val noNetworkMessage = stringResource(id = R.string.no_internet)
 
-    val userProperties = InputFieldProperties(label = stringResource(id = R.string.enter_username), maskInput = false)
-    val passProperties =
-        InputFieldProperties(label = stringResource(id = R.string.enter_password), error = getErrorMessage(state = state), maskInput = true)
-    val buttonProperties =
-        ButtonProperties(label = stringResource(id = R.string.login).toUpperCase(Locale.current), enabled = true, onClick = {
-            if (isConnected) {
-                viewModel.login(userProperties.content.value, passProperties.content.value)
-            } else {
-                Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
-            }
-        },)
+    val username = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
 
     LaunchedEffect(key1 = state) {
         viewModel.checkUserLoggedIn()
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .fillMaxSize()
+            .background(LocalColors.current.background),
+    ) {
         if (!isConnected) {
             NoNetworkBanner(noNetworkMessage = stringResource(id = R.string.no_internet))
         }
         Image(
-            painter = painterResource(id = UiResources.bigAppLogo),
-            contentDescription = "logo",
+            painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
+            contentDescription = null,
             modifier = Modifier
-                .padding(start = Space.CENT_FIFTY, top = Space.BIGGER, bottom = Space.MEDIUM, end = Space.CENT_FIFTY),
+                .padding(16.dp)
+                .height(40.dp)
+                .fillMaxWidth(),
         )
-        Text(
-            text = stringResource(id = R.string.sign_in),
-            style = MaterialTheme.typography.headlineSmall,
+        SignInText(
+            content = stringResource(id = R.string.sign_in),
             modifier = Modifier
                 .align(CenterHorizontally)
-                .padding(bottom = Space.MEDIUM),
+                .padding(16.dp),
         )
-        InputField(modifier = Modifier.padding(Space.MEDIUM, Space.SMALL), properties = userProperties)
-        InputField(modifier = Modifier.padding(Space.MEDIUM, Space.SMALL), properties = passProperties)
-        PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = buttonProperties)
+        Input(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            label = stringResource(id = R.string.enter_username),
+            maskInput = false,
+            keyboard = KeyboardType.Text,
+            content = username,
+        )
+        Input(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            label = stringResource(id = R.string.enter_password),
+            maskInput = true,
+            keyboard = KeyboardType.Text,
+            content = password,
+        )
+        PrimaryButton(
+            text = stringResource(id = R.string.login),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        ) {
+            if (isConnected) {
+                viewModel.login(username.value, password.value)
+            } else {
+                Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        if (state.error != null) {
+            ErrorCard(
+                content = getErrorMessage(state = state) ?: "",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            )
+        }
+
         Text(
             text = stringResource(id = R.string.login_with_receipt).toUpperCase(Locale.current),
             color = LocalColors.current.primary,
