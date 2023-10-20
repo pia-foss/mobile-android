@@ -12,6 +12,10 @@ object VpnPermission {
     const val Main = "request-vpn-permission"
 }
 
+object NotificationPermission {
+    const val Main = "request-notification-permission"
+}
+
 object Splash {
     const val Main = "splash-screen"
 }

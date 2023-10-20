@@ -11,6 +11,7 @@ import com.kape.dedicatedip.di.dedicatedIpModule
 import com.kape.login.di.loginModule
 import com.kape.notifications.di.notificationModule
 import com.kape.payments.di.paymentsModule
+import com.kape.permissions.di.permissionsModule
 import com.kape.portforwarding.di.portForwardingModule
 import com.kape.profile.di.profileModule
 import com.kape.regionselection.di.regionSelectionModule
@@ -23,7 +24,6 @@ import com.kape.signup.di.signupModule
 import com.kape.splash.di.splashModule
 import com.kape.vpn.di.appModule
 import com.kape.vpnconnect.di.vpnConnectModule
-import com.kape.vpnpermission.di.permissionModule
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -60,7 +60,7 @@ class App : Application() {
                 add(notificationModule)
                 add(paymentsModule(appModule))
                 add(loginModule(appModule))
-                add(permissionModule)
+                add(permissionsModule(appModule))
                 add(sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
                 add(profileModule(appModule))
                 add(regionSelectionModule(appModule))
