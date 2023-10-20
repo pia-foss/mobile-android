@@ -13,4 +13,6 @@
     <string name="yearly">Yearly</string>
     <string name="monthly">Monthly</string>
     <string name="best_value">BEST VALUE - FREE TRIAL</string>
+
+    <string name="ok">OK</string>
 </resources>
