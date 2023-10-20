@@ -55,7 +55,7 @@ fun SignupScreensFlow() {
         }
 
         is SignupStep.Subscriptions -> {
-            SubscriptionScreen(viewModel = viewModel, (state.step as SignupStep.Subscriptions).data)
+            SignUpScreen(viewModel = viewModel, (state.step as SignupStep.Subscriptions).data)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.kape.ui.elements
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -27,7 +28,7 @@ fun PrimaryButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.height(48.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.textButtonColors(
             containerColor = LocalColors.current.primary,
@@ -55,7 +56,7 @@ fun SecondaryButton(
 ) {
     OutlinedButton(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.height(48.dp),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, LocalColors.current.primary),
         colors = ButtonDefaults.outlinedButtonColors(
