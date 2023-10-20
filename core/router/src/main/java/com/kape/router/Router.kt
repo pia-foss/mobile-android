@@ -42,13 +42,14 @@ class Router {
             EnterFlow.DebugLogs -> _navigation.value = Settings.DebugLogs
             EnterFlow.DedicatedIp -> _navigation.value = DedicatedIp.Main
             EnterFlow.WidgetSettings -> _navigation.value = Settings.Widget
+            EnterFlow.NotificationPermission -> _navigation.value = NotificationPermission.Main
         }
     }
 
     private fun handleExitFlow(flow: ExitFlow) {
         when (flow) {
             ExitFlow.Login -> handleEnterFlow(EnterFlow.VpnPermission)
-            ExitFlow.VpnPermission -> handleEnterFlow(EnterFlow.Connection)
+            ExitFlow.VpnPermission -> handleEnterFlow(EnterFlow.NotificationPermission)
             ExitFlow.Splash -> handleEnterFlow(EnterFlow.Subscribe)
             ExitFlow.Connection -> TODO()
             ExitFlow.RegionSelection -> _navigation.value = NavigateBack
@@ -68,6 +69,7 @@ class Router {
             ExitFlow.DebugLogs -> handleEnterFlow(EnterFlow.HelpSettings)
             ExitFlow.DedicatedIp -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.WidgetSettings -> handleEnterFlow(EnterFlow.GeneralSettings)
+            ExitFlow.NotificationPermission -> handleEnterFlow(EnterFlow.Connection)
         }
     }
 

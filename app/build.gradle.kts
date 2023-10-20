@@ -117,7 +117,7 @@ dependencies {
     implementation(project(":features:signup"))
     implementation(project(":features:login"))
     implementation(project(":features:settings"))
-    implementation(project(":features:vpnpermission"))
+    implementation(project(":features:permissions"))
     implementation(project(":features:profile"))
     implementation(project(":features:regionselection"))
     implementation(project(":features:sidemenu"))

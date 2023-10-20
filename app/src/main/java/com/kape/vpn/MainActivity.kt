@@ -18,12 +18,15 @@ import com.kape.connection.ui.ConnectionScreen
 import com.kape.dedicatedip.ui.DedicatedIpScreen
 import com.kape.login.ui.loginNavigation
 import com.kape.payments.ui.PaymentProvider
+import com.kape.permissions.ui.NotificationPermissionScreen
+import com.kape.permissions.ui.VpnPermissionScreen
 import com.kape.profile.ui.ProfileScreen
 import com.kape.regionselection.ui.RegionSelectionScreen
 import com.kape.router.Connection
 import com.kape.router.DedicatedIp
 import com.kape.router.EnterFlow
 import com.kape.router.NavigateBack
+import com.kape.router.NotificationPermission
 import com.kape.router.PerAppSettings
 import com.kape.router.Profile
 import com.kape.router.RegionSelection
@@ -40,7 +43,6 @@ import com.kape.splash.ui.SplashScreen
 import com.kape.ui.elements.WebViewScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
-import com.kape.vpnpermission.ui.VpnSystemProfileScreen
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
@@ -95,7 +97,7 @@ class MainActivity : ComponentActivity() {
                         NavHost(navController = navController, startDestination = Splash.Main) {
                             loginNavigation(navController)
                             settingsNavigation(navController)
-                            composable(VpnPermission.Main) { VpnSystemProfileScreen() }
+                            composable(VpnPermission.Main) { VpnPermissionScreen() }
                             composable(Splash.Main) { SplashScreen() }
                             composable(Connection.Main) { ConnectionScreen() }
                             composable(RegionSelection.Main) { RegionSelectionScreen() }
@@ -127,6 +129,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(DedicatedIp.Main) {
                                 DedicatedIpScreen()
+                            }
+                            composable(NotificationPermission.Main) {
+                                NotificationPermissionScreen()
                             }
                         }
                     }
