@@ -160,7 +160,7 @@ fun ErrorText(content: String, modifier: Modifier) {
         text = content,
         color = LocalColors.current.error,
         style = PiaTypography.body3,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -170,6 +170,7 @@ fun OnboardingTitleText(content: String, modifier: Modifier) {
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.h2,
+        textAlign = TextAlign.Center,
         modifier = modifier,
     )
 }
@@ -180,8 +181,8 @@ fun OnboardingDescriptionText(content: String, modifier: Modifier) {
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body1,
-        modifier = modifier,
         textAlign = TextAlign.Center,
+        modifier = modifier,
     )
 }
 
@@ -191,6 +192,7 @@ fun OnboardingFooterText(content: String, modifier: Modifier) {
         text = content,
         color = LocalColors.current.onSurfaceVariant,
         style = PiaTypography.caption1,
+        textAlign = TextAlign.Center,
         modifier = modifier,
     )
 }

@@ -5,13 +5,19 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -20,12 +26,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import com.kape.ui.elements.ButtonProperties
+import androidx.compose.ui.unit.dp
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.ui.elements.PrimaryButton
-import com.kape.ui.elements.UiResources
-import com.kape.ui.theme.Space
+import com.kape.ui.text.OnboardingDescriptionText
+import com.kape.ui.text.OnboardingFooterText
+import com.kape.ui.text.OnboardingTitleText
+import com.kape.ui.theme.statusBarDefault
+import com.kape.ui.utils.LocalColors
+import com.kape.vpnpermission.R
 import com.kape.vpnpermission.ui.vm.PermissionsViewModel
 import com.kape.vpnpermission.utils.GRANTED
 import com.kape.vpnpermission.utils.IDLE
@@ -41,18 +50,17 @@ fun VpnSystemProfileScreen() {
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             viewModel.onVpnProfileStateChange()
         }
-    val okButtonProperties =
-        ButtonProperties(
-            label = stringResource(id = com.kape.vpnpermission.R.string.setup_vpn_profile_ok_button),
-            enabled = true,
-            onClick = {
-                viewModel.onOkButtonClicked()
-            },
-        )
+
+    val scheme = LocalColors.current
+    val systemUiController = rememberSystemUiController()
+    SideEffect {
+        systemUiController.setStatusBarColor(scheme.statusBarDefault())
+    }
 
     LaunchedEffect(key1 = state) {
         viewModel.checkFlowCompleted()
     }
+
 
     when (state) {
         IDLE -> {}
@@ -69,46 +77,64 @@ fun VpnSystemProfileScreen() {
         ).show()
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .background(LocalColors.current.background),
+        verticalArrangement = Arrangement.SpaceBetween,
+    ) {
         Image(
-            painter = painterResource(id = UiResources.bigAppLogo),
-            contentDescription = "logo",
-            modifier = Modifier.padding(
-                start = Space.CENT,
-                top = Space.BIGGER,
-                bottom = Space.HUGE,
-                end = Space.CENT,
-            ),
-        )
-        Text(
-            text = stringResource(id = com.kape.vpnpermission.R.string.setup_vpn_profile_description),
-            style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center,
+            painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
+            contentDescription = null,
             modifier = Modifier
-                .align(CenterHorizontally)
-                .padding(Space.HUGE),
+                .padding(16.dp)
+                .height(40.dp)
+                .fillMaxWidth(),
         )
+        Image(
+            painter = painterResource(id = R.drawable.image_lock),
+            contentDescription = null,
+            modifier = Modifier
+                .padding(40.dp)
+                .height(140.dp)
+                .fillMaxWidth(),
+        )
+        OnboardingTitleText(
+            content = stringResource(id = R.string.vpn_permission_title),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        )
+
+        OnboardingDescriptionText(
+            content = stringResource(id = R.string.vpn_permission_description),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        OnboardingFooterText(
+            content = stringResource(id = R.string.vpn_permission_footer),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        )
+
         PrimaryButton(
-            modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
-            properties = okButtonProperties,
-        )
-        Text(
-            text = stringResource(id = com.kape.vpnpermission.R.string.setup_vpn_profile_privacy_statement),
-            style = MaterialTheme.typography.headlineSmall,
-            textAlign = TextAlign.Center,
+            text = stringResource(id = com.kape.ui.R.string.ok),
             modifier = Modifier
-                .align(CenterHorizontally)
-                .padding(Space.HUGE),
-        )
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
+                .align(CenterHorizontally),
+        ) {
+            viewModel.onOkButtonClicked()
+        }
     }
 }
 
 fun getVpnProfileToastText(granted: Boolean): Int {
-    return if (granted) com.kape.vpnpermission.R.string.toast_vpn_profile_granted else com.kape.vpnpermission.R.string.toast_vpn_profile_not_granted
-}
-
-@Preview
-@Composable
-fun ShowVpnSystemProfileScreen() {
-    VpnSystemProfileScreen()
+    return if (granted) R.string.toast_vpn_profile_granted else R.string.toast_vpn_profile_not_granted
 }
