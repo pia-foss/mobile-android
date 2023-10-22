@@ -3,6 +3,7 @@
     <string name="connected_to_format">Connected to %s</string>
     <string name="connecting">Connecting&#8230;</string>
     <string name="reconnecting">Reconnecting&#8230;</string>
+    <string name="not_connected">Not connected</string>
 
     <string name="bits_per_second" translatable="false">%.0f bit/s</string>
     <string name="kbits_per_second" translatable="false">%.1f kbit/s</string>

@@ -5,5 +5,5 @@ import com.kape.ui.R
 
 @Deprecated("to be removed as part of UI Overhaul")
 object UiResources {
-    @DrawableRes val bigAppLogo: Int = R.drawable.ic_pia_logo
+    @DrawableRes val bigAppLogo: Int = R.drawable.ic_logo_large
 }

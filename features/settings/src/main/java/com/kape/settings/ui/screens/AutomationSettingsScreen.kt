@@ -7,14 +7,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.kape.appbar.view.NavigationAppBar
+import com.kape.appbar.view.AppBarType
+import com.kape.appbar.view.IAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AutomationSettingsScreen() {
     val viewModel: SettingsViewModel = koinViewModel()
@@ -23,12 +23,12 @@ fun AutomationSettingsScreen() {
     }
     Scaffold(
         topBar = {
-            NavigationAppBar(
+            IAppBar(
                 viewModel = appBarViewModel,
-                onLeftButtonClick = {
-                    viewModel.navigateUp()
-                },
-            )
+                type = AppBarType.Navigation,
+            ) {
+                viewModel.navigateUp()
+            }
         },
     ) {
         Column(

@@ -24,7 +24,7 @@ fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) {
             .background(LocalColors.current.background),
     ) {
         Image(
-            painter = painterResource(id = com.kape.ui.R.drawable.ic_pia_logo),
+            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
             contentDescription = null,
             modifier = Modifier
                 .align(Alignment.Center)

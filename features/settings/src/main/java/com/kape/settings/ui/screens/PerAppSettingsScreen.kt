@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -27,7 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import com.kape.appbar.view.NavigationAppBar
+import com.kape.appbar.view.IAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.vm.SettingsViewModel
@@ -35,7 +34,6 @@ import com.kape.ui.elements.SearchBar
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PerAppSettingsScreen() {
     val packageManager = LocalContext.current.packageManager
@@ -48,12 +46,11 @@ fun PerAppSettingsScreen() {
 
     Scaffold(
         topBar = {
-            NavigationAppBar(
+            IAppBar(
                 viewModel = appBarViewModel,
-                onLeftButtonClick = {
-                    viewModel.navigateUp()
-                },
-            )
+            ) {
+                viewModel.navigateUp()
+            }
         },
     ) {
         Column(

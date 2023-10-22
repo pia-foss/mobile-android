@@ -2,8 +2,11 @@ package com.kape.vpnconnect.utils
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
+import androidx.compose.ui.res.stringResource
 import com.kape.shareevents.data.models.KpiConnectionStatus
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
+import com.kape.vpnconnect.R
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerConnectionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +28,7 @@ class ConnectionManager(
     private val _serverIso = MutableStateFlow("")
     val serverIso: StateFlow<String> = _serverIso
 
-    private val _connectionStatusTitle = MutableStateFlow("")
+    private val _connectionStatusTitle = MutableStateFlow(context.getString(R.string.not_connected))
     val connectionStatusTitle: StateFlow<String> = _connectionStatusTitle
 
     var isManualConnection: Boolean = false
@@ -44,7 +47,6 @@ class ConnectionManager(
             VPNManagerConnectionStatus.RECONNECTING -> ConnectionStatus.RECONNECTING
             VPNManagerConnectionStatus.CONNECTED -> ConnectionStatus.CONNECTED
         }
-
         _connectionStatus.value = currentStatus
         submitKpiEventUseCase.submitConnectionEvent(
             getKpiConnectionStatus(status),

@@ -43,7 +43,7 @@ private fun provideConnectionStatusValues(context: Context): Map<ConnectionStatu
     values[ConnectionStatus.CONNECTING] = context.getString(R.string.connecting)
     values[ConnectionStatus.CONNECTED] =
         context.getString(R.string.connected_to_format)
-    values[ConnectionStatus.DISCONNECTED] = ""
+    values[ConnectionStatus.DISCONNECTED] = context.getString(R.string.not_connected)
     values[ConnectionStatus.RECONNECTING] =
         context.getString(R.string.reconnecting)
     return values
