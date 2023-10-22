@@ -4,7 +4,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Deprecated("to be removed as part of UI Overhaul.")
-
 object Space {
     val CENT_FIFTY = 150.dp
     val CENT = 100.dp
@@ -23,6 +22,7 @@ object Space {
     val SMALL_VERTICAL = 2.dp
 }
 
+@Deprecated("to be removed as part of UI Overhaul.")
 object Height {
     val DEFAULT = 48.dp
     val APP_BAR = 56.dp
@@ -39,6 +39,7 @@ object Height {
     val SETTINGS_ITEM = 56.dp
 }
 
+@Deprecated("to be removed as part of UI Overhaul.")
 object Width {
     val FLAG = 32.dp
     val SERVER_ICON = 18.dp
@@ -50,6 +51,7 @@ object Width {
     val OUTLINE = 1.dp
 }
 
+@Deprecated("to be removed as part of UI Overhaul.")
 object Square {
     val ICON = 24.dp
     val DEFAULT = 48.dp
@@ -64,11 +66,13 @@ object Square {
     val DIP_BADGE = 14.dp
 }
 
+@Deprecated("to be removed as part of UI Overhaul.")
 object Corner {
     val InputField = 6.dp
     val Button = 6.dp
 }
 
+@Deprecated("to be removed as part of UI Overhaul.")
 object FontSize {
     val Title = 18.sp
     val Big = 16.sp

@@ -1,83 +1,101 @@
 package com.kape.connection.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.connection.R
-import com.kape.ui.theme.Square
-import com.kape.ui.theme.statusBarConnected
-import com.kape.ui.theme.statusBarConnecting
-import com.kape.ui.theme.statusBarDefault
+import com.kape.ui.theme.connectionDefault
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionStatus
 
 @Composable
-fun ConnectionButton(status: ConnectionStatus, onClick: () -> Unit) {
+fun ConnectButton(status: ConnectionStatus, modifier: Modifier, onClick: () -> Unit) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
-    ) {
-        val state = getConnectionState(status, LocalColors.current)
-        if (state.showProgress) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(Square.CONNECTION_PROGRESS)
-                    .align(Alignment.Center),
-                color = state.color,
-                strokeWidth = 8.dp,
+        modifier = modifier
+            .size(160.dp)
+            .background(
+                Brush.radialGradient(
+                    listOf(
+                        getStatusColor(status),
+                        getStatusColor(status),
+                    ),
+                ),
+                CircleShape, 0.1f,
             )
-        }
-        IconButton(
+            .clip(CircleShape),
+    ) {
+        Box(
             modifier = Modifier
-                .align(Alignment.Center)
-                .size(Square.CONNECTION_PROGRESS),
-            onClick = onClick,
+                .size(144.dp)
+                .clip(CircleShape)
+                .background(LocalColors.current.surface)
+                .align(
+                    Alignment.Center,
+                )
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(color = getStatusColor(status = status)),
+                ) { onClick() },
         ) {
+            when (status) {
+                ConnectionStatus.CONNECTED,
+                ConnectionStatus.DISCONNECTED,
+                -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(144.dp)
+                            .align(Alignment.Center),
+                        color = getStatusColor(status),
+                        strokeWidth = 4.dp,
+                        progress = 100f,
+                    )
+                }
+
+                ConnectionStatus.CONNECTING,
+                ConnectionStatus.RECONNECTING,
+                -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(144.dp)
+                            .align(Alignment.Center),
+                        color = getStatusColor(status),
+                        strokeWidth = 4.dp,
+                    )
+                }
+            }
+
             Icon(
-                painter = painterResource(id = state.resId),
-                contentDescription = stringResource(com.kape.ui.R.string.button),
-                tint = Color.Unspecified,
-                modifier = Modifier.size(Square.CONNECTION_IMAGE),
+                painter = painterResource(id = R.drawable.ic_power),
+                contentDescription = null,
+                tint = getStatusColor(status),
+                modifier = Modifier.align(Alignment.Center),
             )
         }
     }
 }
 
-private data class ConnectionState(val color: Color, val resId: Int, val showProgress: Boolean)
-
-private fun getConnectionState(status: ConnectionStatus, scheme: ColorScheme): ConnectionState {
+@Composable
+private fun getStatusColor(status: ConnectionStatus): Color {
     return when (status) {
-        ConnectionStatus.CONNECTED -> ConnectionState(
-            color = scheme.statusBarConnected(),
-            resId = R.drawable.ic_connection_on,
-            showProgress = false,
-        )
-
+        ConnectionStatus.CONNECTED -> LocalColors.current.primary
+        ConnectionStatus.DISCONNECTED,
         ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
-        -> ConnectionState(
-            color = scheme.statusBarConnecting(),
-            resId = R.drawable.ic_connecting,
-            showProgress = true,
-        )
-
-        ConnectionStatus.DISCONNECTED -> ConnectionState(
-            color = scheme.statusBarDefault(),
-            resId = R.drawable.ic_connection_off,
-            showProgress = false,
-        )
+        -> LocalColors.current.connectionDefault()
     }
 }

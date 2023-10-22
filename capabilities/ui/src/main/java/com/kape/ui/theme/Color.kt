@@ -30,6 +30,9 @@ private val info10 = Color(0xFF0171C4)
 private val info30 = Color(0xFF86D0FD)
 private val info50 = Color(0xFFEDF5FE)
 
+private val clientRed = Color(0xfff24458)
+private val clientDarkYellow = Color(0xFFE6B400)
+
 val LightColorScheme = lightColorScheme(
     primary = darkGreen,
     onPrimary = white,
@@ -115,6 +118,9 @@ fun ColorScheme.statusBarError() = Color(0xffb2352d)
 
 fun ColorScheme.errorOutline() = error30
 fun ColorScheme.errorBackground() = error50
+
+fun ColorScheme.connectionDefault() = clientDarkYellow
+fun ColorScheme.connectionError() = clientRed
 
 private fun latencyGreen(): Color = Color(0xff4cb649)
 private fun latencyYellow(): Color = Color(0xffe6b400)

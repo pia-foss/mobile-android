@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.kape.appbar.view.AppBarType
@@ -72,7 +73,10 @@ fun ConnectionScreen() {
                 }
             }
             Spacer(modifier = Modifier.height(Space.NORMAL))
-            ConnectionButton(connectionStatus.value) {
+            ConnectButton(
+                connectionStatus.value,
+                Modifier.align(CenterHorizontally),
+            ) {
                 viewModel.onConnectionButtonClicked()
             }
             viewModel.selectedServer.value?.let {
