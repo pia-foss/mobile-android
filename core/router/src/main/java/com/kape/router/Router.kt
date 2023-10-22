@@ -43,6 +43,7 @@ class Router {
             EnterFlow.DedicatedIp -> _navigation.value = DedicatedIp.Main
             EnterFlow.WidgetSettings -> _navigation.value = Settings.Widget
             EnterFlow.NotificationPermission -> _navigation.value = NotificationPermission.Main
+            EnterFlow.Support -> _navigation.value = WebContent.Support
         }
     }
 

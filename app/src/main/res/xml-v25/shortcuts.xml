@@ -30,7 +30,7 @@
 
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_drawer_settings"
+        android:icon="@drawable/ic_settings"
         android:shortcutDisabledMessage="@string/login"
         android:shortcutId="settings"
         android:shortcutLongLabel="@string/settings"

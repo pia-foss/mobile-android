@@ -13,6 +13,7 @@ sealed class EnterFlow : AppFlow {
     data object Subscribe : EnterFlow()
     data object TermsOfService : EnterFlow()
     data object PrivacyPolicy : EnterFlow()
+    data object Support : EnterFlow()
     data object Survey : EnterFlow()
     data object Settings : EnterFlow()
     data object GeneralSettings : EnterFlow()

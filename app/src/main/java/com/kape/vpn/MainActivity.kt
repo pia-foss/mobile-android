@@ -124,6 +124,13 @@ class MainActivity : ComponentActivity() {
                                     ),
                                 )
                             }
+                            composable(WebContent.Support) {
+                                WebViewScreen(
+                                    initialUrl = Uri.parse(
+                                        getString(R.string.url_support),
+                                    ),
+                                )
+                            }
                             composable(PerAppSettings.Main) {
                                 PerAppSettingsScreen()
                             }
