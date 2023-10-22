@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="selected_region">SELECTED REGION</string>
     <string name="current_region">CURRENT REGION</string>
     <string name="map">map image</string>
     <string name="public_ip">Public IP</string>
