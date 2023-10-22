@@ -19,7 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.kape.appbar.view.NavigationAppBar
+import com.kape.appbar.view.AppBarType
+import com.kape.appbar.view.IAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.profile.R
 import com.kape.profile.ui.vm.ProfileViewModel
@@ -37,10 +38,11 @@ fun ProfileScreen() {
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
 
     Column {
-        NavigationAppBar(
+        IAppBar(
             viewModel = appBarViewModel,
-            onLeftButtonClick = { viewModel.navigateBack() },
-        )
+        ) {
+            viewModel.navigateBack()
+        }
         if (state.loading) {
             Box(modifier = Modifier.fillMaxSize()) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

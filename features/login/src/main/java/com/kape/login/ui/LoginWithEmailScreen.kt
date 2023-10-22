@@ -72,7 +72,7 @@ fun LoginWithEmailScreen(navController: NavController) {
             NoNetworkBanner(noNetworkMessage = stringResource(id = R.string.no_internet))
         }
         Image(
-            painter = painterResource(id = com.kape.ui.R.drawable.ic_pia_logo),
+            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
             contentDescription = "logo",
             modifier = Modifier
                 .padding(start = 150.dp, top = 36.dp, bottom = Space.MEDIUM, end = 150.dp),

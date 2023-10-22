@@ -18,7 +18,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.kape.appbar.view.ConnectionAppBar
+import com.kape.appbar.view.AppBarType
+import com.kape.appbar.view.IAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.tiles.ConnectionInfo
 import com.kape.connection.ui.tiles.FavoritesTile
@@ -62,15 +63,14 @@ fun ConnectionScreen() {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            ConnectionAppBar(
+            IAppBar(
                 viewModel = appBarViewModel,
-                onHeaderClick = { /*TODO*/ },
-                onLeftButtonClick = {
-                    scope.launch {
-                        drawerState.open()
-                    }
-                },
-            )
+                type = AppBarType.Connection,
+            ) {
+                scope.launch {
+                    drawerState.open()
+                }
+            }
             Spacer(modifier = Modifier.height(Space.NORMAL))
             ConnectionButton(connectionStatus.value) {
                 viewModel.onConnectionButtonClicked()

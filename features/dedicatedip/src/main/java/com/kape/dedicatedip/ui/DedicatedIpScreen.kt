@@ -43,7 +43,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.kape.appbar.view.NavigationAppBar
+import com.kape.appbar.view.AppBarType
+import com.kape.appbar.view.IAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.R
 import com.kape.dedicatedip.ui.vm.DipViewModel
@@ -75,12 +76,11 @@ fun DedicatedIpScreen() {
 
     Scaffold(
         topBar = {
-            NavigationAppBar(
+            IAppBar(
                 viewModel = appBarViewModel,
-                onLeftButtonClick = {
-                    viewModel.navigateBack()
-                },
-            )
+            ) {
+                viewModel.navigateBack()
+            }
         },
     ) {
         Column(

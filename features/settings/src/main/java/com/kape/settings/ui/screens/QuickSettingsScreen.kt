@@ -8,7 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.kape.appbar.view.NavigationAppBar
+import com.kape.appbar.view.IAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.elements.SettingsToggle
@@ -16,19 +16,17 @@ import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuickSettingsScreen() {
     val viewModel: SettingsViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
     Scaffold(
         topBar = {
-            NavigationAppBar(
+            IAppBar(
                 viewModel = appBarViewModel,
-                onLeftButtonClick = {
-                    viewModel.exitQuickSettings()
-                },
-            )
+            ) {
+                viewModel.exitQuickSettings()
+            }
         },
     ) {
         Column(
