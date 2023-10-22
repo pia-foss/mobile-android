@@ -65,4 +65,5 @@ object WebContent {
     const val Terms = "web-screen-terms"
     const val Privacy = "web-screen-privacy"
     const val Survey = "web-screen-survey"
+    const val Support = "web-screen-support"
 }

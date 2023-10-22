@@ -282,3 +282,13 @@ fun InputErrorText(content: String, modifier: Modifier) {
         modifier = modifier,
     )
 }
+
+@Composable
+fun MenuText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
+}

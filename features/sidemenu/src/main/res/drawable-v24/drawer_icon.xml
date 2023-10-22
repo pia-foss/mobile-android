@@ -24,7 +24,7 @@
     <path
         android:pathData="M128,0L128,0A128,128 0,0 1,256 128L256,128.549A128,128 0,0 1,128 256.549L128,256.549A128,128 0,0 1,0 128.549L0,128A128,128 0,0 1,128 0z"
         android:strokeWidth="1"
-        android:fillColor="#E8E8E8"
+        android:fillColor="#ffffff"
         android:fillType="nonZero"
         android:strokeColor="#00000000"/>
     <group>
