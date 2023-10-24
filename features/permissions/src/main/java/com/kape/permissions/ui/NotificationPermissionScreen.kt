@@ -51,7 +51,7 @@ fun NotificationPermissionScreen() {
     val scheme = LocalColors.current
     val systemUiController = rememberSystemUiController()
     SideEffect {
-        systemUiController.setStatusBarColor(scheme.statusBarDefault())
+        systemUiController.setStatusBarColor(scheme.statusBarDefault(scheme))
     }
 
     Column(

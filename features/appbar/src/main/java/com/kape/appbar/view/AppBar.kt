@@ -35,7 +35,7 @@ import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionStatus
 
 @Composable
-fun IAppBar(
+fun AppBar(
     viewModel: AppBarViewModel,
     type: AppBarType = AppBarType.Navigation,
     onLeftIconClick: () -> Unit,
@@ -142,7 +142,7 @@ private fun getAppBarLeftIcon(type: AppBarType): Int {
 private fun getAppBarBackgroundColor(status: ConnectionStatus, scheme: ColorScheme): Brush {
     return when (status) {
         ConnectionStatus.CONNECTED -> Brush.verticalGradient(scheme.connectedGradient())
-        ConnectionStatus.DISCONNECTED -> Brush.verticalGradient(scheme.defaultGradient())
+        ConnectionStatus.DISCONNECTED -> Brush.verticalGradient(scheme.defaultGradient(scheme))
         ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
         -> Brush.verticalGradient(scheme.connectingGradient())
@@ -152,7 +152,7 @@ private fun getAppBarBackgroundColor(status: ConnectionStatus, scheme: ColorSche
 private fun getStatusBarColor(status: ConnectionStatus, scheme: ColorScheme): Color {
     return when (status) {
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED -> scheme.statusBarDefault()
+        ConnectionStatus.DISCONNECTED -> scheme.statusBarDefault(scheme)
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTING,
         -> scheme.statusBarConnecting()

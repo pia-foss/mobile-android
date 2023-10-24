@@ -32,8 +32,7 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.core.os.ConfigurationCompat
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.kape.appbar.view.AppBarType
-import com.kape.appbar.view.IAppBar
+import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.regionselection.R
 import com.kape.regionselection.ui.vm.RegionSelectionViewModel
@@ -63,7 +62,7 @@ fun RegionSelectionScreen() {
     }
 
     Column {
-        IAppBar(appBarViewModel) {
+        AppBar(appBarViewModel) {
             viewModel.navigateBack()
         }
 

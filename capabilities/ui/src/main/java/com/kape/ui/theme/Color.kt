@@ -93,8 +93,8 @@ val DarkColorScheme = darkColorScheme(
     outlineVariant = grey70,
 )
 
-fun ColorScheme.defaultGradient(): List<Color> {
-    return listOf(grey90, grey90)
+fun ColorScheme.defaultGradient(scheme: ColorScheme): List<Color> {
+    return listOf(scheme.surface, scheme.surface)
 }
 
 fun ColorScheme.connectedGradient(): List<Color> {
@@ -111,7 +111,7 @@ fun ColorScheme.errorGradient(): List<Color> {
 
 fun ColorScheme.warning30() = warning30
 
-fun ColorScheme.statusBarDefault() = grey90
+fun ColorScheme.statusBarDefault(scheme: ColorScheme) = scheme.surface
 fun ColorScheme.statusBarConnected() = Color(0xff4cb649)
 fun ColorScheme.statusBarConnecting() = Color(0xffe6b400)
 fun ColorScheme.statusBarError() = Color(0xffb2352d)

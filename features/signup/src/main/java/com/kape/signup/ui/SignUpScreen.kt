@@ -38,7 +38,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData)
     val scheme = LocalColors.current
     val systemUiController = rememberSystemUiController()
     SideEffect {
-        systemUiController.setStatusBarColor(scheme.statusBarDefault())
+        systemUiController.setStatusBarColor(scheme.statusBarDefault(scheme))
     }
 
     Box(
