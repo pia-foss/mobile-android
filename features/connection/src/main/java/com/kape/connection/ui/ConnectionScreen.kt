@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.kape.appbar.view.AppBarType
-import com.kape.appbar.view.IAppBar
+import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.tiles.ConnectionInfo
 import com.kape.connection.ui.tiles.FavoritesTile
@@ -64,7 +64,7 @@ fun ConnectionScreen() {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            IAppBar(
+            AppBar(
                 viewModel = appBarViewModel,
                 type = AppBarType.Connection,
             ) {

@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.kape.appbar.view.IAppBar
+import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.vm.SettingsViewModel
@@ -29,7 +29,7 @@ fun VpnLogScreen() {
 
     Scaffold(
         topBar = {
-            IAppBar(
+            AppBar(
                 viewModel = appBarViewModel,
             ) {
                 viewModel.exitDebugLogs()

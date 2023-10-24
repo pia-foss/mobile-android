@@ -19,8 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.kape.appbar.view.AppBarType
-import com.kape.appbar.view.IAppBar
+import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.profile.R
 import com.kape.profile.ui.vm.ProfileViewModel
@@ -38,7 +37,7 @@ fun ProfileScreen() {
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
 
     Column {
-        IAppBar(
+        AppBar(
             viewModel = appBarViewModel,
         ) {
             viewModel.navigateBack()
