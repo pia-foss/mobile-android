@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,8 +17,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.settings.R
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Square
+import com.kape.ui.elements.MenuSeparator
+import com.kape.ui.text.SettingsL2Text
+import com.kape.ui.text.SettingsL2TextDescription
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -29,49 +29,51 @@ fun SettingsItem(
     subtitle: String? = null,
     onClick: (() -> Unit)? = null,
 ) {
-    Row(
+    Column(
         modifier = Modifier
-            .height(56.dp)
-            .clickable(onClick = onClick ?: {})
-            .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .padding(vertical = 1.dp)
+            .clickable(onClick = onClick ?: {}),
     ) {
-        iconId?.let {
-            Icon(
-                painter = painterResource(iconId),
-                contentDescription = stringResource(
-                    id = R.string.icon,
-                ),
-                tint = Color.Unspecified,
-                modifier = Modifier.size(Square.ICON),
-            )
-        }
-        Column(
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 16.dp),
+                .height(56.dp)
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = stringResource(id = titleId),
-                fontSize = FontSize.Normal,
-                color = LocalColors.current.onSurface,
-            )
+            iconId?.let {
+                Icon(
+                    painter = painterResource(iconId),
+                    contentDescription = stringResource(
+                        id = R.string.icon,
+                    ),
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(24.dp),
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 16.dp),
+            ) {
+                SettingsL2Text(
+                    content = stringResource(id = titleId),
+                )
 
-            subtitle?.let {
-                Text(
-                    text = it,
-                    fontSize = FontSize.Normal,
-                    color = LocalColors.current.onSurfaceVariant,
+                subtitle?.let {
+                    SettingsL2TextDescription(
+                        content = it,
+                    )
+                }
+            }
+            onClick?.let {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow),
+                    contentDescription = null,
+                    tint = LocalColors.current.onBackground,
+                    modifier = Modifier.size(16.dp),
                 )
             }
         }
-        onClick?.let {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow),
-                contentDescription = null,
-                tint = LocalColors.current.onSurface,
-                modifier = Modifier.size(8.dp),
-            )
-        }
+        MenuSeparator()
     }
 }

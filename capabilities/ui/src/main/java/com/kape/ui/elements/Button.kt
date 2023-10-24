@@ -79,7 +79,7 @@ fun OptionButton(selected: Boolean, modifier: Modifier) {
 }
 
 @Composable
-fun Toggle(isOn: Boolean, onCheckedChange: (checked: Boolean) -> Unit, modifier: Modifier) {
+fun Toggle(isOn: Boolean, onCheckedChange: (checked: Boolean) -> Unit) {
     Switch(
         checked = isOn, onCheckedChange = onCheckedChange,
         colors = SwitchDefaults.colors(
@@ -89,7 +89,7 @@ fun Toggle(isOn: Boolean, onCheckedChange: (checked: Boolean) -> Unit, modifier:
             checkedTrackColor = LocalColors.current.primary,
             uncheckedIconColor = LocalColors.current.onSurfaceVariant,
             checkedIconColor = LocalColors.current.onPrimary,
+            uncheckedThumbColor = LocalColors.current.onSurfaceVariant,
         ),
-        modifier = modifier,
     )
 }

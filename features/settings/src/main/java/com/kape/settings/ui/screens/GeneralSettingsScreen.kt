@@ -45,7 +45,7 @@ fun GeneralSettingsScreen() {
                     viewModel.toggleLaunchOnBoot(it)
                 },
             )
-            Divider(color = LocalColors.current.outline)
+            
             SettingsToggle(
                 titleId = R.string.connect_on_launch_title,
                 subtitleId = R.string.connect_on_launch_description,
@@ -54,7 +54,7 @@ fun GeneralSettingsScreen() {
                     viewModel.toggleConnectOnStart(it)
                 },
             )
-            Divider(color = LocalColors.current.outline)
+            
             SettingsToggle(
                 titleId = R.string.connect_on_update_title,
                 subtitleId = R.string.connect_on_update_title,
@@ -63,7 +63,7 @@ fun GeneralSettingsScreen() {
                     viewModel.toggleConnectOnUpdate(it)
                 },
             )
-            Divider(color = LocalColors.current.outline)
+            
             SettingsItem(
                 titleId = R.string.settings_widget_title,
                 subtitle = stringResource(id = R.string.settings_widget_description),
