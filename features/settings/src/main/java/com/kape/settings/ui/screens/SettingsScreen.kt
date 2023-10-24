@@ -14,6 +14,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.ui.elements.ItemSeparator
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -38,49 +39,44 @@ fun SettingsScreen() {
                 .padding(it),
         ) {
             SettingsItem(
-                iconId = R.drawable.ic_setting_general,
+                iconId = R.drawable.ic_settings_general,
                 titleId = R.string.general,
                 onClick = {
                     viewModel.navigateToGeneralSettings()
                 },
             )
-            Divider(color = LocalColors.current.outline)
             SettingsItem(
-                iconId = R.drawable.ic_setting_protocols,
+                iconId = R.drawable.ic_settings_protocols,
                 titleId = R.string.protocols,
                 subtitle = viewModel.getSelectedProtocol().name,
                 onClick = {
                     viewModel.navigateToProtocolSettings()
                 },
             )
-            Divider(color = LocalColors.current.outline)
             SettingsItem(
-                iconId = R.drawable.ic_setting_network,
+                iconId = R.drawable.ic_settings_network,
                 titleId = R.string.networks,
                 onClick = {
                     viewModel.navigateToNetworkSettings()
                 },
             )
-            Divider(color = LocalColors.current.outline)
             SettingsItem(
-                iconId = R.drawable.ic_setting_privacy,
+                iconId = R.drawable.ic_settings_privacy,
                 titleId = R.string.privacy,
                 onClick = {
                     viewModel.navigateToPrivacySettings()
                 },
             )
-            Divider(color = LocalColors.current.outline)
             SettingsItem(
-                iconId = R.drawable.ic_setting_automation,
+                iconId = R.drawable.ic_settings_automation,
                 titleId = R.string.automation,
                 subtitle = stringResource(id = if (viewModel.isAutomationEnabled()) R.string.enabled else R.string.disabled),
                 onClick = {
                     viewModel.navigateToAutomation()
                 },
             )
-            Divider(color = LocalColors.current.outline)
             SettingsItem(
-                iconId = R.drawable.ic_setting_help,
+                iconId = R.drawable.ic_settings_help,
                 titleId = R.string.help,
                 onClick = {
                     viewModel.navigateToHelpSettings()

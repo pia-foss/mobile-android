@@ -68,22 +68,20 @@ fun AppBarTitleText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun SettingsL2Text(content: String, modifier: Modifier) {
+fun SettingsL2Text(content: String) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.subtitle3,
-        modifier = modifier,
     )
 }
 
 @Composable
-fun SettingsL2TextDescription(content: String, modifier: Modifier) {
+fun SettingsL2TextDescription(content: String) {
     Text(
         text = content,
         color = LocalColors.current.onSurfaceVariant,
         style = PiaTypography.caption1,
-        modifier = modifier,
     )
 }
 

@@ -30,6 +30,7 @@ import com.kape.appbar.view.IAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.ui.elements.MenuSeparator
 import com.kape.ui.elements.SearchBar
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
@@ -80,7 +81,6 @@ fun PerAppSettingsScreen() {
                             }
                         },
                     )
-                    Divider(color = LocalColors.current.outline)
                 }
             }
         }
@@ -94,30 +94,33 @@ private fun AppRow(
     isExcluded: Boolean,
     onClick: (name: String, isExcluded: Boolean) -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 56.dp)
-            .padding(horizontal = 16.dp)
-            .clickable {
-                onClick(name, !isExcluded)
-            },
-    ) {
-        Icon(
-            painter = rememberDrawablePainter(drawable = icon),
-            contentDescription = null,
-            tint = Color.Unspecified,
+    Column {
+        Row(
             modifier = Modifier
-                .size(36.dp)
-                .align(CenterVertically),
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = name,
-            modifier = Modifier.align(CenterVertically),
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        LockCheckBox(checked = isExcluded, Modifier.align(CenterVertically))
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 56.dp)
+                .padding(horizontal = 16.dp)
+                .clickable {
+                    onClick(name, !isExcluded)
+                },
+        ) {
+            Icon(
+                painter = rememberDrawablePainter(drawable = icon),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .size(36.dp)
+                    .align(CenterVertically),
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = name,
+                modifier = Modifier.align(CenterVertically),
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            LockCheckBox(checked = isExcluded, Modifier.align(CenterVertically))
+        }
+        MenuSeparator()
     }
 }
 

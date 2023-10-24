@@ -103,49 +103,29 @@ fun OpenVpnProtocolSettingsScreen(
         name = viewModel.getOpenVpnSettings().name,
         protocolDialogVisible,
     )
-    Divider(
-        color = LocalColors.current.outline,
-        modifier = Modifier.padding(vertical = 8.dp),
-    )
     SettingsItem(
         titleId = R.string.protocol_transport_title,
         subtitle = viewModel.getOpenVpnSettings().transport.value,
     ) {
         transportDialogVisible.value = !transportDialogVisible.value
     }
-    Divider(
-        color = LocalColors.current.outline,
-        modifier = Modifier.padding(vertical = 8.dp),
-    )
     SettingsItem(
         titleId = R.string.protocol_data_encryption_title,
         subtitle = viewModel.getOpenVpnSettings().dataEncryption.value,
     ) {
         encryptionDialogVisible.value = !encryptionDialogVisible.value
     }
-    Divider(
-        color = LocalColors.current.outline,
-        modifier = Modifier.padding(vertical = 8.dp),
-    )
     SettingsItem(
         titleId = R.string.protocol_port_title,
         subtitle = viewModel.getOpenVpnSettings().port,
     ) {
         portDialogVisible.value = !portDialogVisible.value
     }
-    Divider(
-        color = LocalColors.current.outline,
-        modifier = Modifier.padding(vertical = 8.dp),
-    )
     UseSmallPacketsLine(
         enabled = viewModel.getOpenVpnSettings().useSmallPackets,
         onClick = {
             viewModel.setOpenVpnEnableSmallPackets(it)
         },
-    )
-    Divider(
-        color = LocalColors.current.outline,
-        modifier = Modifier.padding(vertical = 8.dp),
     )
     HandshakeLine(handshake = viewModel.getOpenVpnSettings().handshake)
 
@@ -182,19 +162,11 @@ fun WireGuardProtocolSettingsScreen(
 ) {
     val protocolSettings = viewModel.getWireGuardSettings()
     ProtocolSelectionLine(name = protocolSettings.name, protocolDialogVisible)
-    Divider(
-        color = LocalColors.current.outline,
-        modifier = Modifier.padding(vertical = 8.dp),
-    )
     UseSmallPacketsLine(
         enabled = protocolSettings.useSmallPackets,
         onClick = {
             viewModel.setWireGuardEnableSmallPackets(it)
         },
-    )
-    Divider(
-        color = LocalColors.current.outline,
-        modifier = Modifier.padding(vertical = 8.dp),
     )
     HandshakeLine(handshake = protocolSettings.handshake)
 }

@@ -41,10 +41,6 @@ fun QuickSettingsScreen() {
                     viewModel.toggleQuickSettingKillSwitch(it)
                 },
             )
-            Divider(
-                color = LocalColors.current.outline,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
             SettingsToggle(
                 titleId = R.string.quick_setting_automation,
                 enabled = viewModel.isQuickSettingAutomationEnabled(),
@@ -53,10 +49,6 @@ fun QuickSettingsScreen() {
                     viewModel.toggleQuickSettingAutomation(it)
                 },
             )
-            Divider(
-                color = LocalColors.current.outline,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
             SettingsToggle(
                 titleId = R.string.quick_setting_private_browser,
                 enabled = viewModel.isQuickSettingPrivateBrowserEnabled(),
@@ -64,10 +56,6 @@ fun QuickSettingsScreen() {
                 toggle = {
                     viewModel.toggleQuickSettingPrivateBrowser(it)
                 },
-            )
-            Divider(
-                color = LocalColors.current.outline,
-                modifier = Modifier.padding(vertical = 8.dp),
             )
         }
     }

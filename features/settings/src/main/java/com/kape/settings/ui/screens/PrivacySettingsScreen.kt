@@ -50,7 +50,6 @@ fun PrivacySettingsScreen() {
                     viewModel.navigateToKillSwitch()
                 },
             )
-            Divider(color = LocalColors.current.outline)
             SettingsToggle(
                 titleId = R.string.mace_title,
                 subtitleId = R.string.mace_description,

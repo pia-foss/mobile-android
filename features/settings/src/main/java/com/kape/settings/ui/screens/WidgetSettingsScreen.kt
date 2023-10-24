@@ -27,6 +27,7 @@ import com.kape.appbar.view.IAppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.ui.elements.MenuSeparator
 import com.kape.ui.theme.FontSize
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.toColor
@@ -85,7 +86,7 @@ fun WidgetSettingsScreen() {
                 selectedColorType.value = ColorSection.Download
                 showDialog.value = true
             }
-            Divider(color = LocalColors.current.outline)
+            MenuSeparator()
             Column(
                 modifier = Modifier
                     .defaultMinSize(56.dp)

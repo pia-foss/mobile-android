@@ -64,10 +64,6 @@ fun NetworkSettingsScreen() {
             ) {
                 dnsDialogVisible.value = !dnsDialogVisible.value
             }
-            Divider(
-                color = LocalColors.current.outline,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
             SettingsToggle(
                 titleId = R.string.network_port_forwarding_title,
                 subtitleId = R.string.network_port_forwarding_description,
@@ -75,10 +71,6 @@ fun NetworkSettingsScreen() {
                 toggle = {
                     viewModel.toggleEnablePortForwarding(it)
                 },
-            )
-            Divider(
-                color = LocalColors.current.outline,
-                modifier = Modifier.padding(vertical = 8.dp),
             )
             SettingsToggle(
                 titleId = R.string.network_allow_lan_traffic_title,

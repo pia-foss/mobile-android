@@ -20,6 +20,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kape.ui.elements.MenuSeparator
+import com.kape.ui.elements.Toggle
+import com.kape.ui.text.SettingsL2Text
+import com.kape.ui.text.SettingsL2TextDescription
 import com.kape.ui.theme.FontSize
 import com.kape.ui.utils.LocalColors
 
@@ -33,47 +37,42 @@ fun SettingsToggle(
     toggle: (checked: Boolean) -> Unit,
 ) {
     val isChecked = remember { stateEnabled }
-    Row(
+    Column(
         modifier = Modifier
-            .defaultMinSize(minHeight = 56.dp)
-            .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .defaultMinSize(minHeight = 56.dp),
     ) {
-
-        iconId?.let {
-            Icon(
-                painter = painterResource(id = it),
-                contentDescription = null,
-                tint = Color.Unspecified,
-                modifier = Modifier.size(24.dp),
-            )
-        }
-
-        Column(
+        Row(
             modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 16.dp),
+                .defaultMinSize(minHeight = 56.dp)
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = stringResource(id = titleId),
-                fontSize = FontSize.Normal,
-                color = LocalColors.current.onSurface,
-            )
 
-            subtitleId?.let {
-                Text(
-                    text = stringResource(id = it),
-                    fontSize = FontSize.Normal,
-                    color = LocalColors.current.onSurfaceVariant,
+            iconId?.let {
+                Icon(
+                    painter = painterResource(id = it),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(24.dp),
                 )
             }
-        }
-        Switch(
-            checked = isChecked.value,
-            onCheckedChange = {
+
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 16.dp),
+            ) {
+                SettingsL2Text(content = stringResource(id = titleId))
+
+                subtitleId?.let {
+                    SettingsL2TextDescription(content = stringResource(id = it))
+                }
+            }
+            Toggle(isOn = isChecked.value) {
                 isChecked.value = it
                 toggle(it)
-            },
-        )
+            }
+        }
+        MenuSeparator()
     }
 }
