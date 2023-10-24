@@ -198,22 +198,20 @@ fun OnboardingFooterText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun SelectedRegionTitleText(content: String, modifier: Modifier) {
+fun SelectedRegionTitleText(content: String) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.caption2,
-        modifier = modifier,
     )
 }
 
 @Composable
-fun SelectedRegionServerText(content: String, modifier: Modifier) {
+fun SelectedRegionServerText(content: String) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.subtitle3,
-        modifier = modifier,
     )
 }
 
@@ -255,12 +253,11 @@ fun ConnectionInfoText(content: String) {
 }
 
 @Composable
-fun RegionSelectionText(content: String, modifier: Modifier) {
+fun RegionSelectionText(content: String) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
-        modifier = modifier,
     )
 }
 

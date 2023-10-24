@@ -25,9 +25,9 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.tiles.ConnectionInfo
 import com.kape.connection.ui.tiles.FavoritesTile
 import com.kape.connection.ui.tiles.IpInformationTile
+import com.kape.connection.ui.tiles.LocationPicker
 import com.kape.connection.ui.tiles.QuickConnectTile
 import com.kape.connection.ui.tiles.QuickSettingsTile
-import com.kape.connection.ui.tiles.RegionInformationTile
 import com.kape.connection.ui.tiles.SnoozeTile
 import com.kape.connection.ui.tiles.UsageTile
 import com.kape.connection.ui.vm.ConnectionViewModel
@@ -80,7 +80,7 @@ fun ConnectionScreen() {
                 viewModel.onConnectionButtonClicked()
             }
             viewModel.selectedServer.value?.let {
-                RegionInformationTile(server = it) {
+                LocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {
                     viewModel.showRegionSelection()
                 }
             }
