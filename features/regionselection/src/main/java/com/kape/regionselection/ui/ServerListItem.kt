@@ -28,6 +28,7 @@ import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
 import com.kape.utils.server.Server
 
+@Deprecated("to be removed")
 @Composable
 fun ServerListItem(
     server: Server,

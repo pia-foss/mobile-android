@@ -251,11 +251,12 @@ fun ConnectionInfoText(content: String) {
 }
 
 @Composable
-fun RegionSelectionText(content: String) {
+fun RegionSelectionText(content: String, modifier: Modifier) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
+        modifier = modifier
     )
 }
 

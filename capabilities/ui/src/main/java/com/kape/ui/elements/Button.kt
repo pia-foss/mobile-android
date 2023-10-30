@@ -2,19 +2,23 @@ package com.kape.ui.elements
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.kape.ui.R
 import com.kape.ui.text.PrimaryButtonText
 import com.kape.ui.text.SecondaryButtonText
 import com.kape.ui.utils.LocalColors
@@ -91,5 +95,15 @@ fun Toggle(isOn: Boolean, onCheckedChange: (checked: Boolean) -> Unit) {
             checkedIconColor = LocalColors.current.onPrimary,
             uncheckedThumbColor = LocalColors.current.onSurfaceVariant,
         ),
+    )
+}
+
+@Composable
+fun FavoriteIcon(isChecked: Boolean, modifier: Modifier) {
+    Icon(
+        painter = painterResource(id = if (isChecked) R.drawable.ic_heart_selected else R.drawable.ic_heart_default),
+        contentDescription = null,
+        tint = Color.Unspecified,
+        modifier = modifier,
     )
 }
