@@ -38,7 +38,7 @@ fun LocationPicker(server: Server, isConnected: Boolean, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(LocalColors.current.onPrimary, RoundedCornerShape(12.dp))
+            .background(LocalColors.current.surfaceVariant, RoundedCornerShape(12.dp))
             .height(56.dp)
             .clickable {
                 onClick()

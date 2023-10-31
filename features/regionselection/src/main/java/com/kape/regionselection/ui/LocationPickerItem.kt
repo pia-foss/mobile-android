@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,12 +26,18 @@ import com.kape.utils.server.Server
 
 @Composable
 fun LocationPickerItem(
-    server: Server, isFavorite: MutableState<Boolean>, onClick: ((server: Server) -> Unit),
+    server: Server,
+    isFavorite: Boolean,
+    enableFavorite: Boolean,
+    onClick: ((server: Server) -> Unit),
     onFavoriteClick: ((serverName: String) -> Unit),
 ) {
     Column {
         Row(
             modifier = Modifier
+                .clickable {
+                    onClick(server)
+                }
                 .height(56.dp)
                 .padding(16.dp),
         ) {
@@ -49,15 +54,16 @@ fun LocationPickerItem(
             Spacer(modifier = Modifier.width(16.dp))
             RegionSelectionText(content = server.name, modifier = Modifier.align(CenterVertically))
             Spacer(modifier = Modifier.weight(1f))
-            FavoriteIcon(
-                isChecked = isFavorite.value,
-                modifier = Modifier
-                    .align(CenterVertically)
-                    .clickable {
-                        isFavorite.value = !isFavorite.value
-                        onFavoriteClick(server.name)
-                    },
-            )
+            if (enableFavorite) {
+                FavoriteIcon(
+                    isChecked = isFavorite,
+                    modifier = Modifier
+                        .align(CenterVertically)
+                        .clickable {
+                            onFavoriteClick(server.name)
+                        },
+                )
+            }
         }
         MenuSeparator()
     }

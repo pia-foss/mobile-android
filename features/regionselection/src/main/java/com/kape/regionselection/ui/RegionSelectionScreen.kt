@@ -1,5 +1,6 @@
 package com.kape.regionselection.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +11,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -36,7 +37,9 @@ import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.regionselection.R
 import com.kape.regionselection.ui.vm.RegionSelectionViewModel
-import com.kape.ui.elements.SearchBar
+import com.kape.regionselection.util.ItemType
+import com.kape.ui.elements.Search
+import com.kape.ui.text.MenuText
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
@@ -44,24 +47,24 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegionSelectionScreen() {
-    val viewModel: RegionSelectionViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.region_selection_title))
-    }
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
     val isLoading = remember { mutableStateOf(false) }
-    val showSortingOptions = remember { mutableStateOf(false) }
-    val isSearchEnabled = remember { mutableStateOf(false) }
-
-    if (viewModel.regions.value.isEmpty()) {
+    val viewModel: RegionSelectionViewModel = koinViewModel<RegionSelectionViewModel>().apply {
+        autoRegionIso = stringResource(id = R.string.automatic_iso)
+        autoRegionName = stringResource(id = R.string.automatic)
         LaunchedEffect(Unit) {
             locale?.let {
-                viewModel.loadRegions(it, isLoading)
+                loadRegions(it, isLoading)
             }
         }
     }
+    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
+        appBarText(stringResource(id = R.string.region_selection_title))
+    }
+    val showSortingOptions = remember { mutableStateOf(false) }
+    val isSearchEnabled = remember { mutableStateOf(false) }
 
-    Column {
+    Column(modifier = Modifier.background(LocalColors.current.surfaceVariant)) {
         AppBar(appBarViewModel) {
             viewModel.navigateBack()
         }
@@ -72,13 +75,15 @@ fun RegionSelectionScreen() {
             }
         }
 
-        SearchBar {
+        Search(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            hint = stringResource(id = com.kape.ui.R.string.search),
+        ) {
             viewModel.filterByName(it, isSearchEnabled)
         }
-        viewModel.initAutoRegion(
-            stringResource(id = R.string.automatic),
-            stringResource(id = R.string.automatic_iso),
-        )
+
         SwipeRefresh(
             state = rememberSwipeRefreshState(isLoading.value),
             onRefresh = {
@@ -91,22 +96,35 @@ fun RegionSelectionScreen() {
                 val items = if (isSearchEnabled.value) {
                     viewModel.sorted.value
                 } else {
-                    viewModel.regions.value
+                    viewModel.servers.value
                 }
                 items(items.size) { index ->
-                    ServerListItem(
-                        server = items[index],
-                        isFavorite = remember {
-                            mutableStateOf(viewModel.isServerFavorite(items[index].name))
-                        },
-                        onClick = {
-                            viewModel.onRegionSelected(it)
-                        },
-                        onFavoriteClick = {
-                            viewModel.onFavoriteClicked(it)
-                        },
-                    )
-                    Divider(color = LocalColors.current.outline)
+                    val item = items[index]
+                    when (item.type) {
+                        is ItemType.Content -> {
+                            LocationPickerItem(
+                                server = item.type.server,
+                                isFavorite = item.type.isFavorite,
+                                enableFavorite = item.type.enableFavorite,
+                                onClick = { viewModel.onRegionSelected(it) },
+                                onFavoriteClick = { viewModel.onFavoriteClicked(it) },
+                            )
+                        }
+
+                        ItemType.HeadingAll -> {
+                            MenuText(
+                                content = stringResource(id = R.string.all_regions),
+                                modifier = Modifier.padding(16.dp),
+                            )
+                        }
+
+                        ItemType.HeadingFavorites -> {
+                            MenuText(
+                                content = stringResource(id = R.string.favorites),
+                                modifier = Modifier.padding(16.dp),
+                            )
+                        }
+                    }
                 }
             }
         }
