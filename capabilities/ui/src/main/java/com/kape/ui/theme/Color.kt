@@ -119,6 +119,15 @@ fun ColorScheme.statusBarError() = Color(0xffb2352d)
 fun ColorScheme.errorOutline() = error30
 fun ColorScheme.errorBackground() = error50
 
+fun ColorScheme.warningOutline() = warning30
+fun ColorScheme.warningBackground() = warning50
+
+fun ColorScheme.infoOutline() = info30
+fun ColorScheme.infoBackground() = info50
+
+fun ColorScheme.successOutline() = success30
+fun ColorScheme.successBackground() = success50
+
 fun ColorScheme.connectionDefault() = clientDarkYellow
 fun ColorScheme.connectionError() = clientRed
 
