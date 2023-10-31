@@ -107,3 +107,13 @@ fun FavoriteIcon(isChecked: Boolean, modifier: Modifier) {
         modifier = modifier,
     )
 }
+
+@Composable
+fun Check(isChecked: Boolean, modifier: Modifier) {
+    Icon(
+        painter = painterResource(id = if (isChecked) R.drawable.ic_check_ticked else R.drawable.ic_check_default),
+        contentDescription = null,
+        tint = LocalColors.current.primary,
+        modifier = modifier,
+    )
+}
