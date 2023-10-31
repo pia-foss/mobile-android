@@ -30,7 +30,13 @@ import com.kape.ui.text.SignUpPricePerMonthText
 import com.kape.ui.text.SignUpPriceText
 import com.kape.ui.theme.errorBackground
 import com.kape.ui.theme.errorOutline
+import com.kape.ui.theme.infoBackground
+import com.kape.ui.theme.infoOutline
+import com.kape.ui.theme.successBackground
+import com.kape.ui.theme.successOutline
 import com.kape.ui.theme.warning30
+import com.kape.ui.theme.warningBackground
+import com.kape.ui.theme.warningOutline
 import com.kape.ui.utils.LocalColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -155,6 +161,69 @@ fun ErrorCard(content: String, modifier: Modifier) {
                 painter = painterResource(id = R.drawable.ic_error),
                 contentDescription = null,
                 tint = Color.Unspecified,
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            ErrorText(content = content, modifier = Modifier.align(CenterVertically))
+        }
+    }
+}
+
+@Composable
+fun WarningCard(content: String, modifier: Modifier) {
+    Card(
+        modifier = modifier, shape = RoundedCornerShape(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = LocalColors.current.warningBackground(),
+        ),
+        border = BorderStroke(1.dp, LocalColors.current.warningOutline()),
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_error),
+                contentDescription = null,
+                tint = LocalColors.current.warningOutline(),
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            ErrorText(content = content, modifier = Modifier.align(CenterVertically))
+        }
+    }
+}
+
+@Composable
+fun InfoCard(content: String, modifier: Modifier) {
+    Card(
+        modifier = modifier, shape = RoundedCornerShape(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = LocalColors.current.infoBackground(),
+        ),
+        border = BorderStroke(1.dp, LocalColors.current.infoOutline()),
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_error),
+                contentDescription = null,
+                tint = LocalColors.current.infoOutline(),
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            ErrorText(content = content, modifier = Modifier.align(CenterVertically))
+        }
+    }
+}
+
+@Composable
+fun SuccessCard(content: String, modifier: Modifier) {
+    Card(
+        modifier = modifier, shape = RoundedCornerShape(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = LocalColors.current.successBackground(),
+        ),
+        border = BorderStroke(1.dp, LocalColors.current.successBackground()),
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_error),
+                contentDescription = null,
+                tint = LocalColors.current.successOutline(),
             )
             Spacer(modifier = Modifier.width(16.dp))
             ErrorText(content = content, modifier = Modifier.align(CenterVertically))
