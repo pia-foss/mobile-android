@@ -6,6 +6,7 @@
     <string name="name">Name</string>
     <string name="latency">Latency</string>
     <string name="favorites">Favorites</string>
+    <string name="all_regions">All Regions</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="automatic">Automatic</string>

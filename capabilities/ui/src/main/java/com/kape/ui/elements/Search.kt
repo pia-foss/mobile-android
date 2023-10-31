@@ -1,6 +1,6 @@
 package com.kape.ui.elements
 
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -21,11 +21,11 @@ fun Search(modifier: Modifier, hint: String, onTextChanged: (text: String) -> Un
     val query = remember { mutableStateOf("") }
 
     OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         value = query.value,
         onValueChange = {
             query.value = it
+            onTextChanged(it)
         },
         placeholder = {
             InputLabelText(content = hint)
@@ -43,15 +43,20 @@ fun Search(modifier: Modifier, hint: String, onTextChanged: (text: String) -> Un
                 painter = painterResource(id = R.drawable.ic_close),
                 contentDescription = null,
                 tint = Color.Unspecified,
+                modifier = Modifier.clickable {
+                    query.value = ""
+                    onTextChanged("")
+                },
             )
         },
         colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = LocalColors.current.onPrimary,
-            unfocusedContainerColor = LocalColors.current.onPrimary,
-            disabledContainerColor = LocalColors.current.onPrimary,
-            focusedBorderColor = LocalColors.current.outlineVariant,
+            focusedContainerColor = LocalColors.current.surfaceVariant,
+            unfocusedContainerColor = LocalColors.current.surfaceVariant,
+            disabledContainerColor = LocalColors.current.surfaceVariant,
+            focusedBorderColor = LocalColors.current.surfaceVariant,
             errorBorderColor = LocalColors.current.error,
             cursorColor = LocalColors.current.onSurface,
         ),
+        singleLine = true,
     )
 }
