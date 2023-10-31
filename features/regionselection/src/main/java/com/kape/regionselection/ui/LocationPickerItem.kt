@@ -26,7 +26,10 @@ import com.kape.utils.server.Server
 
 @Composable
 fun LocationPickerItem(
-    server: Server, isFavorite: Boolean, onClick: ((server: Server) -> Unit),
+    server: Server,
+    isFavorite: Boolean,
+    enableFavorite: Boolean,
+    onClick: ((server: Server) -> Unit),
     onFavoriteClick: ((serverName: String) -> Unit),
 ) {
     Column {
@@ -51,14 +54,16 @@ fun LocationPickerItem(
             Spacer(modifier = Modifier.width(16.dp))
             RegionSelectionText(content = server.name, modifier = Modifier.align(CenterVertically))
             Spacer(modifier = Modifier.weight(1f))
-            FavoriteIcon(
-                isChecked = isFavorite,
-                modifier = Modifier
-                    .align(CenterVertically)
-                    .clickable {
-                        onFavoriteClick(server.name)
-                    },
-            )
+            if (enableFavorite) {
+                FavoriteIcon(
+                    isChecked = isFavorite,
+                    modifier = Modifier
+                        .align(CenterVertically)
+                        .clickable {
+                            onFavoriteClick(server.name)
+                        },
+                )
+            }
         }
         MenuSeparator()
     }

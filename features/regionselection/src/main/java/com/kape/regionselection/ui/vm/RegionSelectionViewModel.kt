@@ -16,6 +16,7 @@ import com.kape.router.Router
 import com.kape.utils.server.Server
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import java.util.Collections
 
 class RegionSelectionViewModel(
     private val getRegionsUseCase: GetRegionsUseCase,
@@ -26,48 +27,22 @@ class RegionSelectionViewModel(
 
     val servers = mutableStateOf(emptyList<ServerItem>())
     val sorted = mutableStateOf(emptyList<ServerItem>())
-
-    private val regions = mutableStateOf(emptyList<Server>())
+    lateinit var autoRegionName: String
+    lateinit var autoRegionIso: String
 
     val sortBySelectedOption: MutableState<SortByOption> = mutableStateOf(SortByOption.NONE)
 
     fun loadRegions(locale: String, isLoading: MutableState<Boolean>) = viewModelScope.launch {
         isLoading.value = true
-        getRegionsUseCase.loadRegions(locale).collect { it ->
-            regions.value = it
+        getRegionsUseCase.loadRegions(locale).collect {
             updateLatencyUseCase.updateLatencies().collect { updatedServers ->
                 for (server in updatedServers) {
-                    regions.value.filter { it.name == server.name }[0].latency =
+                    it.filter { it.name == server.name }[0].latency =
                         server.latency ?: REGIONS_PING_TIMEOUT.toString()
                 }
-                arrangeServers()
+                arrangeServers(it)
                 isLoading.value = false
             }
-        }
-    }
-
-    fun initAutoRegion(name: String, iso: String) {
-        if (regions.value.none { it.name == name }) {
-            val updatedList = mutableListOf<Server>()
-            updatedList.add(
-                0,
-                Server(
-                    name = name,
-                    iso = iso,
-                    latency = null,
-                    endpoints = emptyMap(),
-                    key = "",
-                    latitude = null,
-                    longitude = null,
-                    isGeo = false,
-                    isAllowsPF = false,
-                    isOffline = false,
-                    dipToken = null,
-                    dedicatedIp = null,
-                ),
-            )
-            updatedList.addAll(regions.value)
-            regions.value = updatedList
         }
     }
 
@@ -99,13 +74,18 @@ class RegionSelectionViewModel(
         }
 
     fun sortBy(option: SortByOption) = viewModelScope.launch {
-        regions.value = when (option) {
-            SortByOption.NONE -> regions.value
-            SortByOption.NAME -> regions.value.sortedBy { it.name }
-            SortByOption.LATENCY -> regions.value.sortedBy { it.latency?.toInt() }
+        servers.value = when (option) {
+            SortByOption.NONE -> servers.value
+            SortByOption.NAME -> servers.value.filter { it.type is ItemType.Content }
+                .sortedBy { (it.type as ItemType.Content).server.name }
+
+            SortByOption.LATENCY -> servers.value.filter { it.type is ItemType.Content }
+                .sortedBy { (it.type as ItemType.Content).server.latency?.toInt() }
+
             SortByOption.FAVORITE -> {
-                regions.value.sortedWith(compareBy<Server> { isServerFavorite(it.name) }.thenBy { it.name })
-                    .sortedByDescending { isServerFavorite(it.name) }
+                servers.value.filter { it.type is ItemType.Content }
+                    .sortedWith(compareBy<ServerItem> { (it.type as ItemType.Content).isFavorite }.thenBy { (it.type as ItemType.Content).server.name })
+                    .sortedByDescending { isServerFavorite((it.type as ItemType.Content).server.name) }
             }
         }.toList()
     }
@@ -128,26 +108,72 @@ class RegionSelectionViewModel(
         return prefs.isFavorite(serverName)
     }
 
-    private fun arrangeServers() {
+    private fun arrangeServers(items: List<Server>? = null) {
+        val autoRegion = getAutoRegion(autoRegionName, autoRegionIso)
         val list = mutableListOf<ServerItem>()
         val favorites = mutableListOf<ServerItem>()
         val all = mutableListOf<ServerItem>()
-        for (server in regions.value) {
-            if (isServerFavorite(server.name)) {
-                favorites.add(ServerItem(type = ItemType.Content(true, server = server)))
-            } else {
-                all.add(ServerItem(ItemType.Content(false, server = server)))
+        items?.let {
+            for (server in it) {
+                if (isServerFavorite(server.name)) {
+                    favorites.add(ServerItem(type = ItemType.Content(true, server = server)))
+                } else {
+                    all.add(ServerItem(ItemType.Content(false, server = server)))
+                }
+            }
+            all.add(0, autoRegion)
+        } ?: run {
+            for (item in servers.value.filter { it.type is ItemType.Content }) {
+                if (isServerFavorite((item.type as ItemType.Content).server.name)) {
+                    favorites.add(
+                        ServerItem(
+                            type = ItemType.Content(
+                                true,
+                                server = item.type.server,
+                            ),
+                        ),
+                    )
+                } else {
+                    all.add(ServerItem(ItemType.Content(false, server = item.type.server)))
+                }
             }
         }
+
         if (favorites.isNotEmpty()) {
             list.add(0, ServerItem(type = ItemType.HeadingFavorites))
             list.addAll(favorites)
             list.add(ServerItem(type = ItemType.HeadingAll))
-            list.addAll(all)
-        } else {
-            list.addAll(all)
         }
+        Collections.swap(
+            all,
+            0,
+            all.indexOf(all.filter { it.type is ItemType.Content && it.type.server.name == autoRegionName }[0]),
+        )
+        list.addAll(all)
         servers.value = list
+    }
+
+    private fun getAutoRegion(name: String, iso: String): ServerItem {
+        return ServerItem(
+            type = ItemType.Content(
+                isFavorite = false,
+                enableFavorite = false,
+                server = Server(
+                    name = name,
+                    iso = iso,
+                    latency = null,
+                    endpoints = emptyMap(),
+                    key = "",
+                    latitude = null,
+                    longitude = null,
+                    isGeo = false,
+                    isAllowsPF = false,
+                    isOffline = false,
+                    dipToken = null,
+                    dedicatedIp = null,
+                ),
+            ),
+        )
     }
 
     sealed class SortByOption(val index: Int) {

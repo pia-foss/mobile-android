@@ -47,22 +47,22 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegionSelectionScreen() {
-    val viewModel: RegionSelectionViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.region_selection_title))
-    }
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
     val isLoading = remember { mutableStateOf(false) }
-    val showSortingOptions = remember { mutableStateOf(false) }
-    val isSearchEnabled = remember { mutableStateOf(false) }
-
-    if (viewModel.servers.value.isEmpty()) {
+    val viewModel: RegionSelectionViewModel = koinViewModel<RegionSelectionViewModel>().apply {
+        autoRegionIso = stringResource(id = R.string.automatic_iso)
+        autoRegionName = stringResource(id = R.string.automatic)
         LaunchedEffect(Unit) {
             locale?.let {
-                viewModel.loadRegions(it, isLoading)
+                loadRegions(it, isLoading)
             }
         }
     }
+    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
+        appBarText(stringResource(id = R.string.region_selection_title))
+    }
+    val showSortingOptions = remember { mutableStateOf(false) }
+    val isSearchEnabled = remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.background(LocalColors.current.surfaceVariant)) {
         AppBar(appBarViewModel) {
@@ -84,10 +84,6 @@ fun RegionSelectionScreen() {
             viewModel.filterByName(it, isSearchEnabled)
         }
 
-        viewModel.initAutoRegion(
-            stringResource(id = R.string.automatic),
-            stringResource(id = R.string.automatic_iso),
-        )
         SwipeRefresh(
             state = rememberSwipeRefreshState(isLoading.value),
             onRefresh = {
@@ -109,6 +105,7 @@ fun RegionSelectionScreen() {
                             LocationPickerItem(
                                 server = item.type.server,
                                 isFavorite = item.type.isFavorite,
+                                enableFavorite = item.type.enableFavorite,
                                 onClick = { viewModel.onRegionSelected(it) },
                                 onFavoriteClick = { viewModel.onFavoriteClicked(it) },
                             )
