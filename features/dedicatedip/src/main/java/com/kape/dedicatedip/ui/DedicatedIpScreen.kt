@@ -45,6 +45,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.R
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
+import com.kape.ui.elements.Screen
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
 import com.kape.ui.theme.Space
@@ -58,7 +59,7 @@ import org.koin.androidx.compose.koinViewModel
 import java.util.Locale
 
 @Composable
-fun DedicatedIpScreen() {
+fun DedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
         loadDedicatedIps(Locale.getDefault().language)
     }

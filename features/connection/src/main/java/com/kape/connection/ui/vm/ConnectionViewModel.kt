@@ -24,6 +24,7 @@ import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Router
 import com.kape.regions.domain.GetRegionsUseCase
+import com.kape.router.Exit
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.server.Server
@@ -88,6 +89,10 @@ class ConnectionViewModel(
 
     fun navigateToQuickSettings() {
         router.handleFlow(EnterFlow.QuickSettings)
+    }
+
+    fun exitApp() {
+        router.handleFlow(Exit)
     }
 
     fun autoConnect() {

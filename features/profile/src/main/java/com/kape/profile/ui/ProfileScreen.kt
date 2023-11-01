@@ -23,13 +23,14 @@ import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.profile.R
 import com.kape.profile.ui.vm.ProfileViewModel
+import com.kape.ui.elements.Screen
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen() = Screen {
     val viewModel: ProfileViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.account))

@@ -18,10 +18,11 @@ import com.kape.settings.R
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.ui.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PrivacySettingsScreen() {
+fun PrivacySettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.privacy))

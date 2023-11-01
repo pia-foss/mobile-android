@@ -1,6 +1,7 @@
 package com.kape.router
 
 const val NavigateBack = "back"
+const val NavigateOut = "exit"
 
 object Login {
     const val Route = "login"
@@ -39,17 +40,9 @@ object Subscribe {
 object Settings {
     const val Route = "settings"
     const val Main = "settings-screen"
-    const val General = "settings-general-screen"
-    const val Protocols = "settings-protocols-screen"
-    const val Networks = "settings-networks-screen"
-    const val Privacy = "settings-privacy-screen"
     const val Automation = "settings-automation-screen"
-    const val Help = "settings-help-screen"
     const val KillSwitch = "settings-kill-switch"
     const val QuickSettings = "settings-quick-settings"
-    const val ConnectionStats = "settings-connection-stats"
-    const val DebugLogs = "settings-debug-logs"
-    const val Widget = "settings-widget"
 }
 
 object PerAppSettings {

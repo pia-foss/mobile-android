@@ -20,13 +20,14 @@ import androidx.compose.ui.text.toUpperCase
 import com.kape.signup.R
 import com.kape.ui.elements.ButtonProperties
 import com.kape.ui.elements.PrimaryButton
+import com.kape.ui.elements.Screen
 import com.kape.ui.elements.UiResources
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
 import com.kape.ui.theme.Space
 
 @Composable
-fun SignupErrorScreen(toLogin: () -> Unit) {
+fun SignupErrorScreen(toLogin: () -> Unit) = Screen {
     val buttonProperties =
         ButtonProperties(
             label = stringResource(id = R.string.error_account_creation_action).toUpperCase(

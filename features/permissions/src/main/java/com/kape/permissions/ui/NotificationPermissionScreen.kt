@@ -26,6 +26,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.permissions.ui.vm.PermissionsViewModel
 import com.kape.ui.R
 import com.kape.ui.elements.PrimaryButton
+import com.kape.ui.elements.Screen
 import com.kape.ui.text.OnboardingDescriptionText
 import com.kape.ui.text.OnboardingTitleText
 import com.kape.ui.theme.statusBarDefault
@@ -33,7 +34,7 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun NotificationPermissionScreen() {
+fun NotificationPermissionScreen() = Screen {
     val viewModel: PermissionsViewModel = getViewModel()
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),

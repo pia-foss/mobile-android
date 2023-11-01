@@ -26,12 +26,13 @@ import com.kape.signup.R
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.elements.ButtonProperties
 import com.kape.ui.elements.PrimaryButton
+import com.kape.ui.elements.Screen
 import com.kape.ui.elements.SecondaryButton
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Space
 
 @Composable
-fun ConsentScreen(viewModel: SignupViewModel) {
+fun ConsentScreen(viewModel: SignupViewModel) = Screen {
     val showMoreInfo = remember { mutableStateOf(false) }
 
     val acceptProperties =

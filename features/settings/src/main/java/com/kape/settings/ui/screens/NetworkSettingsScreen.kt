@@ -22,10 +22,11 @@ import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.elements.TextDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.InputFieldProperties
+import com.kape.ui.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun NetworkSettingsScreen() {
+fun NetworkSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.networks))

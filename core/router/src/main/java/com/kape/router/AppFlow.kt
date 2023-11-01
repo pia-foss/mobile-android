@@ -16,19 +16,11 @@ sealed class EnterFlow : AppFlow {
     data object Support : EnterFlow()
     data object Survey : EnterFlow()
     data object Settings : EnterFlow()
-    data object GeneralSettings : EnterFlow()
-    data object ProtocolSettings : EnterFlow()
-    data object NetworkSettings : EnterFlow()
-    data object PrivacySettings : EnterFlow()
     data object AutomationSettings : EnterFlow()
-    data object HelpSettings : EnterFlow()
     data object PerAppSettings : EnterFlow()
     data object KillSwitchSettings : EnterFlow()
     data object QuickSettings : EnterFlow()
-    data object ConnectionStats : EnterFlow()
-    data object DebugLogs : EnterFlow()
     data object DedicatedIp : EnterFlow()
-    data object WidgetSettings : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -41,19 +33,13 @@ sealed class ExitFlow : AppFlow {
     data object Profile : ExitFlow()
     data object Subscribe : ExitFlow()
     data object Settings : ExitFlow()
-    data object GeneralSettings : ExitFlow()
-    data object ProtocolSettings : ExitFlow()
-    data object NetworkSettings : ExitFlow()
-    data object PrivacySettings : ExitFlow()
     data object AutomationSettings : ExitFlow()
-    data object HelpSettings : ExitFlow()
     data object PerAppSettings : ExitFlow()
     data object KillSwitchSettings : ExitFlow()
     data object QuickSettings : ExitFlow()
-    data object ConnectionStats : ExitFlow()
-    data object DebugLogs : ExitFlow()
     data object DedicatedIp : ExitFlow()
-    data object WidgetSettings : ExitFlow()
 }
 
 object Back : AppFlow
+
+object Exit : AppFlow

@@ -26,6 +26,7 @@ import com.kape.router.Connection
 import com.kape.router.DedicatedIp
 import com.kape.router.EnterFlow
 import com.kape.router.NavigateBack
+import com.kape.router.NavigateOut
 import com.kape.router.NotificationPermission
 import com.kape.router.PerAppSettings
 import com.kape.router.Profile
@@ -36,8 +37,11 @@ import com.kape.router.Splash
 import com.kape.router.Subscribe
 import com.kape.router.VpnPermission
 import com.kape.router.WebContent
+import com.kape.settings.ui.screens.AutomationSettingsScreen
+import com.kape.settings.ui.screens.KillSwitchSettingScreen
 import com.kape.settings.ui.screens.PerAppSettingsScreen
-import com.kape.settings.ui.settingsNavigation
+import com.kape.settings.ui.screens.QuickSettingsScreen
+import com.kape.settings.utils.SettingsFlow
 import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
 import com.kape.ui.elements.WebViewScreen
@@ -52,7 +56,13 @@ class MainActivity : ComponentActivity() {
     private val paymentProvider: PaymentProvider by inject()
     private var currentDestination: String = ""
     private val destinationsForClearBackStack =
-        listOf(Splash.Main, Subscribe.Main, VpnPermission.Main, Connection.Main)
+        listOf(
+            Splash.Main,
+            Subscribe.Main,
+            VpnPermission.Main,
+            NotificationPermission.Main,
+            Connection.Main,
+        )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,14 +83,20 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(key1 = Unit) {
                 repeatOnLifecycle(Lifecycle.State.CREATED) {
                     router.navigation.collect {
-                        if (it == NavigateBack) {
-                            navController.navigateUp()
-                        } else {
-                            currentDestination = it
-                            navController.navigate(it) {
-                                launchSingleTop = true
-                                if (it in destinationsForClearBackStack) {
-                                    navController.popBackStack()
+                        when (it) {
+                            NavigateBack -> navController.navigateUp()
+                            NavigateOut -> {
+                                finishAndRemoveTask()
+                                router.resetNavigation()
+                            }
+
+                            else -> {
+                                currentDestination = it
+                                navController.navigate(it) {
+                                    launchSingleTop = true
+                                    if (it in destinationsForClearBackStack) {
+                                        navController.popBackStack()
+                                    }
                                 }
                             }
                         }
@@ -96,7 +112,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavHost(navController = navController, startDestination = Splash.Main) {
                             loginNavigation(navController)
-                            settingsNavigation(navController)
+                            composable(Settings.Route) { SettingsFlow() }
                             composable(VpnPermission.Main) { VpnPermissionScreen() }
                             composable(Splash.Main) { SplashScreen() }
                             composable(Connection.Main) { ConnectionScreen() }
@@ -139,6 +155,15 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(NotificationPermission.Main) {
                                 NotificationPermissionScreen()
+                            }
+                            composable(Settings.Automation) {
+                                AutomationSettingsScreen()
+                            }
+                            composable(Settings.KillSwitch) {
+                                KillSwitchSettingScreen()
+                            }
+                            composable(Settings.QuickSettings) {
+                                QuickSettingsScreen()
                             }
                         }
                     }

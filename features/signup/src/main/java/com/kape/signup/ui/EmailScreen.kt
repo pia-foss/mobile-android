@@ -21,6 +21,7 @@ import com.kape.ui.elements.ButtonProperties
 import com.kape.ui.elements.InputField
 import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.elements.PrimaryButton
+import com.kape.ui.elements.Screen
 import com.kape.ui.elements.UiResources
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
@@ -28,7 +29,7 @@ import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun EmailScreen(viewModel: SignupViewModel) {
+fun EmailScreen(viewModel: SignupViewModel) = Screen {
     val emailProperties =
         InputFieldProperties(label = stringResource(id = R.string.email_hint), maskInput = false)
     val buttonProperties =

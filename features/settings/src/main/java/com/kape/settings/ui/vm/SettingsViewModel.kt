@@ -22,6 +22,7 @@ import com.kape.settings.data.WidgetSettings
 import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
+import com.kape.settings.utils.SettingsStep
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.ui.utils.defaultWidgetBackgroundColor
 import com.kape.ui.utils.defaultWidgetDownloadColor
@@ -29,6 +30,8 @@ import com.kape.ui.utils.defaultWidgetTextColor
 import com.kape.ui.utils.defaultWidgetUploadColor
 import com.kape.ui.utils.toColorString
 import com.kape.vpnconnect.domain.GetLogsUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -42,6 +45,9 @@ class SettingsViewModel(
     private val sendLogUseCase: SendLogUseCase,
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
 ) : ViewModel(), KoinComponent {
+
+    private val _state = MutableStateFlow<SettingsStep>(SettingsStep.Main)
+    val state: StateFlow<SettingsStep> = _state
 
     val launchOnBootEnabled = prefs.isLaunchOnStartupEnabled()
     val connectOnStart = prefs.isConnectOnLaunchEnabled()
@@ -65,64 +71,64 @@ class SettingsViewModel(
         router.handleFlow(ExitFlow.Settings)
     }
 
-    fun navigateToGeneralSettings() {
-        router.handleFlow(EnterFlow.GeneralSettings)
+    fun navigateToGeneralSettings() = viewModelScope.launch {
+        _state.emit(SettingsStep.General)
     }
 
-    fun navigateToProtocolSettings() {
-        router.handleFlow(EnterFlow.ProtocolSettings)
+    fun navigateToProtocolSettings() = viewModelScope.launch {
+        _state.emit(SettingsStep.Protocol)
     }
 
-    fun navigateToNetworkSettings() {
-        router.handleFlow(EnterFlow.NetworkSettings)
+    fun navigateToNetworkSettings() = viewModelScope.launch {
+        _state.emit(SettingsStep.Network)
     }
 
-    fun navigateToPrivacySettings() {
-        router.handleFlow(EnterFlow.PrivacySettings)
+    fun navigateToPrivacySettings() = viewModelScope.launch {
+        _state.emit(SettingsStep.Privacy)
     }
 
-    fun navigateToHelpSettings() {
-        router.handleFlow(EnterFlow.HelpSettings)
+    fun navigateToHelpSettings() = viewModelScope.launch {
+        _state.emit(SettingsStep.Help)
     }
 
-    fun navigateToAutomation() {
-        router.handleFlow(EnterFlow.AutomationSettings)
+    fun navigateToAutomation() = viewModelScope.launch {
+        _state.emit(SettingsStep.Automation)
     }
 
-    fun navigateToKillSwitch() {
-        router.handleFlow(EnterFlow.KillSwitchSettings)
+    fun navigateToKillSwitch() = viewModelScope.launch {
+        _state.emit(SettingsStep.KillSwitch)
     }
 
-    fun exitPrivacySettings() {
-        router.handleFlow(ExitFlow.PrivacySettings)
+    fun exitPrivacySettings() = viewModelScope.launch {
+        _state.emit(SettingsStep.Privacy)
     }
 
     fun exitQuickSettings() {
         router.handleFlow(ExitFlow.QuickSettings)
     }
 
-    fun navigateToConnectionStats() {
-        router.handleFlow(EnterFlow.ConnectionStats)
+    fun navigateToConnectionStats() = viewModelScope.launch {
+        _state.emit(SettingsStep.ConnectionStats)
     }
 
-    fun exitConnectionStats() {
-        router.handleFlow(ExitFlow.ConnectionStats)
+    fun exitConnectionStats() = viewModelScope.launch {
+        _state.emit(SettingsStep.Help)
     }
 
-    fun navigateToDebugLogs() {
-        router.handleFlow(EnterFlow.DebugLogs)
+    fun navigateToDebugLogs() = viewModelScope.launch {
+        _state.emit(SettingsStep.DebugLogs)
     }
 
-    fun exitDebugLogs() {
-        router.handleFlow(ExitFlow.DebugLogs)
+    fun exitDebugLogs() = viewModelScope.launch {
+        _state.emit(SettingsStep.Help)
     }
 
-    fun navigateToWidgetSettings() {
-        router.handleFlow(EnterFlow.WidgetSettings)
+    fun navigateToWidgetSettings() = viewModelScope.launch {
+        _state.emit(SettingsStep.Widget)
     }
 
-    fun exitWidgetSettings() {
-        router.handleFlow(ExitFlow.WidgetSettings)
+    fun exitWidgetSettings() = viewModelScope.launch {
+        _state.emit(SettingsStep.General)
     }
 
     fun toggleLaunchOnBoot(enable: Boolean) {

@@ -38,6 +38,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.regionselection.R
 import com.kape.regionselection.ui.vm.RegionSelectionViewModel
 import com.kape.regionselection.util.ItemType
+import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Search
 import com.kape.ui.text.MenuText
 import com.kape.ui.theme.FontSize
@@ -46,7 +47,7 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun RegionSelectionScreen() {
+fun RegionSelectionScreen() = Screen {
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
     val isLoading = remember { mutableStateOf(false) }
     val viewModel: RegionSelectionViewModel = koinViewModel<RegionSelectionViewModel>().apply {

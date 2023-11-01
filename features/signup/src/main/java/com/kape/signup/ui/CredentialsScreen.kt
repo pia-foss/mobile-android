@@ -23,6 +23,7 @@ import com.kape.signup.data.models.Credentials
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.elements.ButtonProperties
 import com.kape.ui.elements.PrimaryButton
+import com.kape.ui.elements.Screen
 import com.kape.ui.elements.UiResources
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
@@ -31,7 +32,7 @@ import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) {
+fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Screen {
     val buttonProperties =
         ButtonProperties(
             label = stringResource(id = R.string.get_started).toUpperCase(Locale.current),
