@@ -288,3 +288,33 @@ fun MenuText(content: String, modifier: Modifier) {
         modifier = modifier,
     )
 }
+
+@Composable
+fun DialogTitleText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.h2,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun DialogMessageText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.body2,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun DialogActionText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.primary,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
+}
