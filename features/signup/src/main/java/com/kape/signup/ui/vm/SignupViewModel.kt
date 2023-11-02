@@ -7,6 +7,7 @@ import com.kape.login.domain.GetUserLoggedInUseCase
 import com.kape.payments.ui.PaymentProvider
 import com.kape.payments.utils.PurchaseState
 import com.kape.router.EnterFlow
+import com.kape.router.Exit
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.signup.domain.ConsentUseCase
@@ -177,5 +178,9 @@ class SignupViewModel(
     fun completeSubscription() {
         router.handleFlow(ExitFlow.Subscribe)
         paymentProvider.purchaseState.value = PurchaseState.Default
+    }
+
+    fun exitApp() {
+        router.handleFlow(Exit)
     }
 }

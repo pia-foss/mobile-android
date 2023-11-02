@@ -1,5 +1,6 @@
 package com.kape.signup.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,10 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData)
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setStatusBarColor(scheme.statusBarDefault(scheme))
+    }
+
+    BackHandler {
+        viewModel.exitApp()
     }
 
     Box(

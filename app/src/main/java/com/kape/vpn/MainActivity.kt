@@ -20,6 +20,7 @@ import com.kape.login.ui.loginNavigation
 import com.kape.payments.ui.PaymentProvider
 import com.kape.permissions.ui.NotificationPermissionScreen
 import com.kape.permissions.ui.VpnPermissionScreen
+import com.kape.permissions.utils.PermissionsFlow
 import com.kape.profile.ui.ProfileScreen
 import com.kape.regionselection.ui.RegionSelectionScreen
 import com.kape.router.Connection
@@ -27,15 +28,14 @@ import com.kape.router.DedicatedIp
 import com.kape.router.EnterFlow
 import com.kape.router.NavigateBack
 import com.kape.router.NavigateOut
-import com.kape.router.NotificationPermission
 import com.kape.router.PerAppSettings
+import com.kape.router.Permissions
 import com.kape.router.Profile
 import com.kape.router.RegionSelection
 import com.kape.router.Router
 import com.kape.router.Settings
 import com.kape.router.Splash
 import com.kape.router.Subscribe
-import com.kape.router.VpnPermission
 import com.kape.router.WebContent
 import com.kape.settings.ui.screens.AutomationSettingsScreen
 import com.kape.settings.ui.screens.KillSwitchSettingScreen
@@ -59,8 +59,7 @@ class MainActivity : ComponentActivity() {
         listOf(
             Splash.Main,
             Subscribe.Main,
-            VpnPermission.Main,
-            NotificationPermission.Main,
+            Permissions.Route,
             Connection.Main,
         )
 
@@ -113,7 +112,7 @@ class MainActivity : ComponentActivity() {
                         NavHost(navController = navController, startDestination = Splash.Main) {
                             loginNavigation(navController)
                             composable(Settings.Route) { SettingsFlow() }
-                            composable(VpnPermission.Main) { VpnPermissionScreen() }
+                            composable(Permissions.Route) { PermissionsFlow() }
                             composable(Splash.Main) { SplashScreen() }
                             composable(Connection.Main) { ConnectionScreen() }
                             composable(RegionSelection.Main) { RegionSelectionScreen() }
@@ -152,9 +151,6 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(DedicatedIp.Main) {
                                 DedicatedIpScreen()
-                            }
-                            composable(NotificationPermission.Main) {
-                                NotificationPermissionScreen()
                             }
                             composable(Settings.Automation) {
                                 AutomationSettingsScreen()

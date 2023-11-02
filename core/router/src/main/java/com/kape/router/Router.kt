@@ -24,7 +24,7 @@ class Router {
     private fun handleEnterFlow(flow: EnterFlow) {
         when (flow) {
             EnterFlow.Login -> _navigation.value = Login.Route
-            EnterFlow.VpnPermission -> _navigation.value = VpnPermission.Main
+            EnterFlow.Permissions -> _navigation.value = Permissions.Route
             EnterFlow.Splash -> _navigation.value = Splash.Main
             EnterFlow.Connection -> _navigation.value = Connection.Main
             EnterFlow.RegionSelection -> _navigation.value = RegionSelection.Main
@@ -39,27 +39,25 @@ class Router {
             EnterFlow.KillSwitchSettings -> _navigation.value = Settings.KillSwitch
             EnterFlow.QuickSettings -> _navigation.value = Settings.QuickSettings
             EnterFlow.DedicatedIp -> _navigation.value = DedicatedIp.Main
-            EnterFlow.NotificationPermission -> _navigation.value = NotificationPermission.Main
             EnterFlow.Support -> _navigation.value = WebContent.Support
         }
     }
 
     private fun handleExitFlow(flow: ExitFlow) {
         when (flow) {
-            ExitFlow.Login -> handleEnterFlow(EnterFlow.VpnPermission)
-            ExitFlow.VpnPermission -> handleEnterFlow(EnterFlow.NotificationPermission)
+            ExitFlow.Login -> handleEnterFlow(EnterFlow.Permissions)
             ExitFlow.Splash -> handleEnterFlow(EnterFlow.Subscribe)
             ExitFlow.Connection -> exitApp()
             ExitFlow.RegionSelection -> handleBack()
             ExitFlow.Profile -> handleBack()
-            ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.VpnPermission)
+            ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.Permissions)
             ExitFlow.Settings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.PerAppSettings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.QuickSettings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.DedicatedIp -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.NotificationPermission -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.AutomationSettings -> handleFlow(EnterFlow.Settings)
             ExitFlow.KillSwitchSettings -> handleFlow(EnterFlow.Settings)
+            ExitFlow.Permissions -> handleEnterFlow(EnterFlow.Connection)
         }
     }
 

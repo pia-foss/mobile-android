@@ -9,12 +9,8 @@ object Login {
     const val WithEmail = "login-with-email"
 }
 
-object VpnPermission {
-    const val Main = "request-vpn-permission"
-}
-
-object NotificationPermission {
-    const val Main = "request-notification-permission"
+object Permissions {
+    const val Route = "permissions"
 }
 
 object Splash {
