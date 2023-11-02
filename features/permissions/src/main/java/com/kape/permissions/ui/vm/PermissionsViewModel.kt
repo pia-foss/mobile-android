@@ -9,6 +9,7 @@ import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.permissions.utils.GRANTED
 import com.kape.permissions.utils.IDLE
 import com.kape.permissions.utils.NOT_GRANTED
+import com.kape.permissions.utils.PermissionsStep
 import com.kape.permissions.utils.REQUEST
 import com.kape.permissions.utils.VpnProfileState
 import com.kape.router.EnterFlow
@@ -23,44 +24,38 @@ class PermissionsViewModel(
     private val router: Router,
 ) : ViewModel(), KoinComponent {
 
+    private val _state = MutableStateFlow<PermissionsStep>(PermissionsStep.Vpn)
+    val state: StateFlow<PermissionsStep> = _state
+
     private val _vpnPermissionState = MutableStateFlow(IDLE)
     val vpnPermissionState: StateFlow<VpnProfileState> = _vpnPermissionState
 
-    fun checkFlowCompleted() {
+    fun checkFlowCompleted() = viewModelScope.launch {
         if (useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
-            router.handleFlow(ExitFlow.VpnPermission)
-        }
-    }
-
-    fun onOkButtonClicked() {
-        viewModelScope.launch {
-            if (useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
-                router.handleFlow(ExitFlow.VpnPermission)
-                return@launch
+            if (isNotificationPermissionGranted()) {
+                router.handleFlow(ExitFlow.Permissions)
+            } else {
+                _state.value = PermissionsStep.Notifications
             }
-            _vpnPermissionState.emit(REQUEST)
         }
     }
 
-    fun onVpnProfileStateChange() {
+    fun onOkButtonClicked() = viewModelScope.launch {
+        _vpnPermissionState.emit(REQUEST)
+    }
+
+    fun onVpnProfileStateChange() =
         viewModelScope.launch {
             if (useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
                 _vpnPermissionState.emit(GRANTED)
-                router.handleFlow(ExitFlow.VpnPermission)
+                _state.value = PermissionsStep.Notifications
                 return@launch
             }
             _vpnPermissionState.emit(NOT_GRANTED)
         }
-    }
 
     fun isNotificationPermissionGranted(): Boolean =
         notificationPermissionManager.isNotificationsPermissionGranted()
 
-    fun navigateToNotificationPermissionScreen() {
-        router.handleFlow(EnterFlow.NotificationPermission)
-    }
-
-    fun exitOnboarding() {
-        router.handleFlow(ExitFlow.NotificationPermission)
-    }
+    fun exitOnboarding() = router.handleFlow(ExitFlow.Permissions)
 }

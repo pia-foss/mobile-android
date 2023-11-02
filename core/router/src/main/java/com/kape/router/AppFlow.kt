@@ -4,8 +4,7 @@ interface AppFlow
 
 sealed class EnterFlow : AppFlow {
     data object Login : EnterFlow()
-    data object VpnPermission : EnterFlow()
-    data object NotificationPermission : EnterFlow()
+    data object Permissions : EnterFlow()
     data object Splash : EnterFlow()
     data object Connection : EnterFlow()
     data object RegionSelection : EnterFlow()
@@ -25,8 +24,7 @@ sealed class EnterFlow : AppFlow {
 
 sealed class ExitFlow : AppFlow {
     data object Login : ExitFlow()
-    data object VpnPermission : ExitFlow()
-    data object NotificationPermission : ExitFlow()
+    data object Permissions : ExitFlow()
     data object Splash : ExitFlow()
     data object Connection : ExitFlow()
     data object RegionSelection : ExitFlow()
