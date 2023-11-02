@@ -13,7 +13,12 @@ class Router {
             is EnterFlow -> handleEnterFlow(flow)
             is ExitFlow -> handleExitFlow(flow)
             is Back -> handleBack()
+            is Exit -> exitApp()
         }
+    }
+
+    fun resetNavigation() {
+        _navigation.value = Splash.Main
     }
 
     private fun handleEnterFlow(flow: EnterFlow) {
@@ -29,19 +34,11 @@ class Router {
             EnterFlow.TermsOfService -> _navigation.value = WebContent.Terms
             EnterFlow.Survey -> _navigation.value = WebContent.Survey
             EnterFlow.Settings -> _navigation.value = Settings.Route
-            EnterFlow.GeneralSettings -> _navigation.value = Settings.General
-            EnterFlow.ProtocolSettings -> _navigation.value = Settings.Protocols
-            EnterFlow.NetworkSettings -> _navigation.value = Settings.Networks
-            EnterFlow.PrivacySettings -> _navigation.value = Settings.Privacy
             EnterFlow.AutomationSettings -> _navigation.value = Settings.Automation
-            EnterFlow.HelpSettings -> _navigation.value = Settings.Help
             EnterFlow.PerAppSettings -> _navigation.value = PerAppSettings.Main
             EnterFlow.KillSwitchSettings -> _navigation.value = Settings.KillSwitch
             EnterFlow.QuickSettings -> _navigation.value = Settings.QuickSettings
-            EnterFlow.ConnectionStats -> _navigation.value = Settings.ConnectionStats
-            EnterFlow.DebugLogs -> _navigation.value = Settings.DebugLogs
             EnterFlow.DedicatedIp -> _navigation.value = DedicatedIp.Main
-            EnterFlow.WidgetSettings -> _navigation.value = Settings.Widget
             EnterFlow.NotificationPermission -> _navigation.value = NotificationPermission.Main
             EnterFlow.Support -> _navigation.value = WebContent.Support
         }
@@ -52,29 +49,25 @@ class Router {
             ExitFlow.Login -> handleEnterFlow(EnterFlow.VpnPermission)
             ExitFlow.VpnPermission -> handleEnterFlow(EnterFlow.NotificationPermission)
             ExitFlow.Splash -> handleEnterFlow(EnterFlow.Subscribe)
-            ExitFlow.Connection -> TODO()
-            ExitFlow.RegionSelection -> _navigation.value = NavigateBack
-            ExitFlow.Profile -> TODO()
+            ExitFlow.Connection -> exitApp()
+            ExitFlow.RegionSelection -> handleBack()
+            ExitFlow.Profile -> handleBack()
             ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.VpnPermission)
             ExitFlow.Settings -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.GeneralSettings -> handleEnterFlow(EnterFlow.Settings)
-            ExitFlow.ProtocolSettings -> handleEnterFlow(EnterFlow.GeneralSettings)
-            ExitFlow.NetworkSettings -> handleEnterFlow(EnterFlow.Settings)
-            ExitFlow.PrivacySettings -> handleEnterFlow(EnterFlow.Settings)
-            ExitFlow.AutomationSettings -> handleEnterFlow(EnterFlow.Settings)
-            ExitFlow.HelpSettings -> handleEnterFlow(EnterFlow.Settings)
             ExitFlow.PerAppSettings -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.KillSwitchSettings -> handleEnterFlow(EnterFlow.PrivacySettings)
             ExitFlow.QuickSettings -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.ConnectionStats -> handleEnterFlow(EnterFlow.HelpSettings)
-            ExitFlow.DebugLogs -> handleEnterFlow(EnterFlow.HelpSettings)
             ExitFlow.DedicatedIp -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.WidgetSettings -> handleEnterFlow(EnterFlow.GeneralSettings)
             ExitFlow.NotificationPermission -> handleEnterFlow(EnterFlow.Connection)
+            ExitFlow.AutomationSettings -> handleFlow(EnterFlow.Settings)
+            ExitFlow.KillSwitchSettings -> handleFlow(EnterFlow.Settings)
         }
     }
 
     private fun handleBack() {
         _navigation.value = NavigateBack
+    }
+
+    private fun exitApp() {
+        _navigation.value = NavigateOut
     }
 }

@@ -39,6 +39,7 @@ import com.kape.router.Login
 import com.kape.ui.elements.ErrorCard
 import com.kape.ui.elements.NoNetworkBanner
 import com.kape.ui.elements.PrimaryButton
+import com.kape.ui.elements.Screen
 import com.kape.ui.text.Input
 import com.kape.ui.text.SignInText
 import com.kape.ui.theme.Space
@@ -49,7 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController) = Screen {
     val viewModel: LoginViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val connection by connectivityState()

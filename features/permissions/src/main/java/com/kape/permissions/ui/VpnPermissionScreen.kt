@@ -29,21 +29,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.permissions.R
-import com.kape.ui.elements.PrimaryButton
-import com.kape.ui.text.OnboardingDescriptionText
-import com.kape.ui.text.OnboardingFooterText
-import com.kape.ui.text.OnboardingTitleText
-import com.kape.ui.theme.statusBarDefault
-import com.kape.ui.utils.LocalColors
 import com.kape.permissions.ui.vm.PermissionsViewModel
 import com.kape.permissions.utils.GRANTED
 import com.kape.permissions.utils.IDLE
 import com.kape.permissions.utils.NOT_GRANTED
 import com.kape.permissions.utils.REQUEST
+import com.kape.ui.elements.PrimaryButton
+import com.kape.ui.elements.Screen
+import com.kape.ui.text.OnboardingDescriptionText
+import com.kape.ui.text.OnboardingFooterText
+import com.kape.ui.text.OnboardingTitleText
+import com.kape.ui.theme.statusBarDefault
+import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun VpnPermissionScreen() {
+fun VpnPermissionScreen() = Screen {
     val viewModel: PermissionsViewModel = getViewModel()
     val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsState()
     val startForResult =
@@ -64,7 +65,7 @@ fun VpnPermissionScreen() {
     when (state) {
         IDLE -> {}
         REQUEST -> {
-            val intent = VpnService.prepare(LocalContext.current) ?: return
+            val intent = VpnService.prepare(LocalContext.current)
             startForResult.launch(intent)
         }
 

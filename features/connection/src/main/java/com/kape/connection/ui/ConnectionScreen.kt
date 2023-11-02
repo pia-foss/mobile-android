@@ -3,6 +3,7 @@ package com.kape.connection.ui
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,8 +20,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.kape.appbar.view.AppBarType
 import com.kape.appbar.view.AppBar
+import com.kape.appbar.view.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.tiles.ConnectionInfo
 import com.kape.connection.ui.tiles.FavoritesTile
@@ -33,6 +34,7 @@ import com.kape.connection.ui.tiles.UsageTile
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.SnoozeInterval
 import com.kape.sidemenu.ui.SideMenu
+import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Separator
 import com.kape.ui.theme.Space
 import com.kape.vpnconnect.utils.ConnectionManager
@@ -43,7 +45,7 @@ import org.koin.compose.koinInject
 import java.util.Locale
 
 @Composable
-fun ConnectionScreen() {
+fun ConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val locale = Locale.getDefault().language
@@ -52,6 +54,10 @@ fun ConnectionScreen() {
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val scope: CoroutineScope = rememberCoroutineScope()
     val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
+
+    BackHandler {
+        viewModel.exitApp()
+    }
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadServers(locale)

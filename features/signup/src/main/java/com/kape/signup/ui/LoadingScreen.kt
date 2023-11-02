@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.kape.signup.R
+import com.kape.ui.elements.Screen
 import com.kape.ui.elements.UiResources
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
@@ -25,7 +26,7 @@ import com.kape.ui.theme.Square
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun LoadingScreen() {
+fun LoadingScreen() = Screen {
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(Height.DEFAULT))
         Image(

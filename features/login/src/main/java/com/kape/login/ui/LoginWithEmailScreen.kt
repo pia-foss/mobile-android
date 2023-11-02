@@ -34,6 +34,7 @@ import com.kape.ui.elements.InputField
 import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.elements.NoNetworkBanner
 import com.kape.ui.elements.PrimaryButton
+import com.kape.ui.elements.Screen
 import com.kape.ui.theme.Space
 import com.kape.utils.InternetConnectionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,7 +42,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun LoginWithEmailScreen(navController: NavController) {
+fun LoginWithEmailScreen(navController: NavController) = Screen {
     val viewModel: LoginWithEmailViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val connection by connectivityState()

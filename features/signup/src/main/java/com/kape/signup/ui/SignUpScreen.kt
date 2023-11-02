@@ -26,6 +26,7 @@ import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.elements.HtmlText
 import com.kape.ui.elements.MonthlySubscriptionCard
 import com.kape.ui.elements.PrimaryButton
+import com.kape.ui.elements.Screen
 import com.kape.ui.elements.SecondaryButton
 import com.kape.ui.elements.YearlySubscriptionCard
 import com.kape.ui.text.OnboardingDescriptionText
@@ -34,7 +35,7 @@ import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData) {
+fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData) = Screen {
     val scheme = LocalColors.current
     val systemUiController = rememberSystemUiController()
     SideEffect {
