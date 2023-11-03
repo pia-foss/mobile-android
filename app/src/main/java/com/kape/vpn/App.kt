@@ -5,6 +5,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.kape.appbar.di.appBarModule
+import com.kape.automation.di.automationModule
 import com.kape.connection.di.connectionModule
 import com.kape.csi.di.csiModule
 import com.kape.dedicatedip.di.dedicatedIpModule
@@ -79,6 +80,7 @@ class App : Application() {
                 add(dedicatedIpModule(appModule))
                 add(csiModule(appModule))
                 add(regionsModule(appModule))
+                add(automationModule(appModule))
             },
         )
     }

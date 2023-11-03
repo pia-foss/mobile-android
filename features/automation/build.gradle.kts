@@ -43,6 +43,7 @@ dependencies {
 
     implementation(project(":core:router"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":features:appbar"))
 
     implementFeatureModule()
 }

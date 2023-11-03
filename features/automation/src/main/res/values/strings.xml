@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="trusted_network_singular">Trusted Network</string>
+    <string name="trusted_network_plural">Trusted Networks</string>
+    <string name="network_permissions_title">Allow PIA VPN to access your location. This will permit us to detect nearby Wi-Fi networks.</string>
+    <string name="network_permissions_message">You\'ll see a prompt asking for Location permission. To proceed, tap on \"While using the app\"</string>
+    <string name="network_permission_footer">We don\'t monitor, filter or log any network activity.</string>
+    <string name="network_permission_action">Allow</string>
+</resources>

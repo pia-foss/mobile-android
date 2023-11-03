@@ -124,6 +124,7 @@ dependencies {
     implementation(project(":features:connection"))
     implementation(project(":features:appbar"))
     implementation(project(":features:dedicatedip"))
+    implementation(project(":features:automation"))
 
     implementAndroidBase()
     implementViewModel()

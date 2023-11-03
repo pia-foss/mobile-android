@@ -49,6 +49,10 @@ object DedicatedIp {
     const val Main = "dedicated-ip"
 }
 
+object Automation {
+    const val Route = "automation"
+}
+
 object WebContent {
     // Please note these values are links within the signup module's strings file.
     const val Terms = "web-screen-terms"
