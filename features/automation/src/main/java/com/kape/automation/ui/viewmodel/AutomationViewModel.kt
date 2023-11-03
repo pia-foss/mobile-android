@@ -19,6 +19,10 @@ class AutomationViewModel(
     private val _state = MutableStateFlow<AutomationStep>(AutomationStep.LocationPermission)
     val state: StateFlow<AutomationStep> = _state
 
+    init {
+        navigateToNextScreen()
+    }
+
     fun exitAutomation() = router.handleFlow(ExitFlow.Automation)
 
     fun navigateToNextScreen() = viewModelScope.launch {
