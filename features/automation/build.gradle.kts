@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.splash"
+    namespace = "com.kape.automation"
     compileSdk = 34
 
     defaultConfig {
@@ -42,9 +42,7 @@ android {
 dependencies {
 
     implementation(project(":core:router"))
-    implementation(project(":core:payments"))
     implementation(project(":capabilities:ui"))
-    implementation(project(":capabilities:notifications"))
 
     implementFeatureModule()
 }

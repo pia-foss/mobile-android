@@ -63,4 +63,4 @@ include(":features:profile")
 include(":features:regionselection")
 include(":features:dedicatedip")
 include(":features:permissions")
-
+include(":features:automation")
