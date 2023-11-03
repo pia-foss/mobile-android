@@ -1,5 +1,8 @@
-package com.kape.automation.ui
+package com.kape.automation.ui.screens
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.R
+import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 import com.kape.ui.text.OnboardingDescriptionText
@@ -35,6 +39,14 @@ fun LocationPermissionScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.trusted_network_plural))
     }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {
+            if (it) {
+                viewModel.navigateToNextScreen()
+            }
+        },
+    )
 
     Scaffold(
         topBar = {
@@ -99,7 +111,7 @@ fun LocationPermissionScreen() = Screen {
                     .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
                     .align(Alignment.CenterHorizontally),
             ) {
-                // TODO: handle button click
+                launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
     }
