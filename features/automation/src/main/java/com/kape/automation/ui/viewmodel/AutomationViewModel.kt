@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.automation.data.LocationPermissionManager
 import com.kape.automation.utils.AutomationStep
+import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,8 @@ class AutomationViewModel(
     }
 
     fun exitAutomation() = router.handleFlow(ExitFlow.Automation)
+
+    fun navigateUp() = router.handleFlow(Back)
 
     fun navigateToNextScreen() = viewModelScope.launch {
         viewModelScope.launch {
