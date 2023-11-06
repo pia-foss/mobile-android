@@ -1,13 +1,16 @@
 package com.kape.ui.elements
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.text.BestValueBannerText
 import com.kape.ui.text.ErrorText
+import com.kape.ui.text.OnboardingFooterText
+import com.kape.ui.text.SettingsL1Text
+import com.kape.ui.text.SettingsL2Text
+import com.kape.ui.text.SettingsL2TextDescription
 import com.kape.ui.text.SignUpDurationText
 import com.kape.ui.text.SignUpPricePerMonthText
 import com.kape.ui.text.SignUpPriceText
@@ -227,6 +234,49 @@ fun SuccessCard(content: String, modifier: Modifier) {
             )
             Spacer(modifier = Modifier.width(16.dp))
             ErrorText(content = content, modifier = Modifier.align(CenterVertically))
+        }
+    }
+}
+
+@Composable
+fun NetworkCard(
+    @DrawableRes icon: Int,
+    title: String,
+    status: String,
+    modifier: Modifier,
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = LocalColors.current.surfaceVariant,
+        ),
+    ) {
+        Box(
+            modifier = Modifier
+                .height(4.dp)
+                .fillMaxWidth()
+                .background(LocalColors.current.primary),
+        )
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row {
+                Icon(
+                    painter = painterResource(id = icon),
+                    contentDescription = null,
+                    tint = LocalColors.current.primary,
+                    modifier = Modifier.size(24.dp),
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_more_horizontal),
+                    contentDescription = null,
+                    tint = LocalColors.current.onSurface,
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            SettingsL1Text(content = title, modifier = Modifier.wrapContentWidth())
+            Spacer(modifier = Modifier.height(16.dp))
+            SettingsL2TextDescription(content = status)
         }
     }
 }

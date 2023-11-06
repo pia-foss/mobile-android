@@ -256,7 +256,7 @@ fun RegionSelectionText(content: String, modifier: Modifier) {
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -284,6 +284,16 @@ fun MenuText(content: String, modifier: Modifier) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun Hyperlink(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.primary,
         style = PiaTypography.subtitle3,
         modifier = modifier,
     )
