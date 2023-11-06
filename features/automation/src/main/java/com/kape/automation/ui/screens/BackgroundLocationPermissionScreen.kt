@@ -1,8 +1,10 @@
 package com.kape.automation.ui.screens
 
 import android.Manifest
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +35,7 @@ import com.kape.ui.text.OnboardingTitleText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun BackgroundLocationPermissionScreen() = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
@@ -111,7 +114,7 @@ fun BackgroundLocationPermissionScreen() = Screen {
                     .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
                     .align(Alignment.CenterHorizontally),
             ) {
-                launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                launcher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
             }
         }
     }
