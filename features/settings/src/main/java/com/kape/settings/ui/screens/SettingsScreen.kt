@@ -69,7 +69,7 @@ fun SettingsScreen() = Screen {
                 titleId = R.string.automation,
                 subtitle = stringResource(id = if (viewModel.isAutomationEnabled()) R.string.enabled else R.string.disabled),
                 onClick = {
-                    viewModel.navigateToAutomation()
+                    viewModel.navigateToAutomationSettings()
                 },
             )
             SettingsItem(
