@@ -1,7 +1,6 @@
-package com.privateinternetaccess.android.screens.objects
-
-import com.privateinternetaccess.android.helpers.LocatorHelper
+package screens.objects
 
 object MainScreenPageObjects {
-    val connectButton = LocatorHelper.findByResourceId(":ConnectionScreen:connection_button")
+    val connectButton =
+        UiAutomatorObjectFinder.findByResourceId(":ConnectionScreen:connection_button")
 }

@@ -1,16 +1,21 @@
-package com.privateinternetaccess.android.core
+package tests
 
 import android.content.Context
 import android.content.Intent
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
-import com.kape.vpn.BuildConfig.APPLICATION_ID
+import com.kape.vpn.BuildConfig
 import org.junit.Before
+import screens.steps.UiAutomatorSignInSteps
+import tests.actions.UiAction
 
-open class BaseUiAutomatorClass {
+open class UiAutomatorTest : UiTest {
 
-    private val device: UiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+    private val device: UiDevice =
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     private lateinit var context: Context
+
+    override val uiAction: UiAction = UiAction(UiAutomatorSignInSteps())
 
     private fun startApp(packageName: String, activityName: String? = null) {
         context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -25,9 +30,9 @@ open class BaseUiAutomatorClass {
     }
 
     @Before
-    fun setUp() {
+    override fun setUp() {
         device.pressHome()
-        startApp(APPLICATION_ID)
+        startApp(BuildConfig.APPLICATION_ID)
     }
 
     companion object {
