@@ -91,7 +91,7 @@ class SettingsViewModel(
         _state.emit(SettingsStep.Help)
     }
 
-    fun navigateToAutomation() = viewModelScope.launch {
+    fun navigateToAutomationSettings() = viewModelScope.launch {
         _state.emit(SettingsStep.Automation)
     }
 
@@ -130,6 +130,8 @@ class SettingsViewModel(
     fun exitWidgetSettings() = viewModelScope.launch {
         _state.emit(SettingsStep.General)
     }
+
+    private fun navigateToAutomation() = router.handleFlow(EnterFlow.Automation)
 
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
@@ -201,6 +203,9 @@ class SettingsViewModel(
 
     fun toggleAutomationEnabled(enable: Boolean) {
         prefs.setAutomationEnabled(enable)
+        if (enable) {
+            navigateToAutomation()
+        }
     }
 
     fun isAutomationEnabled() = prefs.isAutomationEnabled()

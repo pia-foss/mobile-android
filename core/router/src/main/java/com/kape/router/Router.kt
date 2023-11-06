@@ -40,6 +40,7 @@ class Router {
             EnterFlow.QuickSettings -> _navigation.value = Settings.QuickSettings
             EnterFlow.DedicatedIp -> _navigation.value = DedicatedIp.Main
             EnterFlow.Support -> _navigation.value = WebContent.Support
+            EnterFlow.Automation -> _navigation.value = Automation.Route
         }
     }
 
@@ -58,6 +59,7 @@ class Router {
             ExitFlow.AutomationSettings -> handleFlow(EnterFlow.Settings)
             ExitFlow.KillSwitchSettings -> handleFlow(EnterFlow.Settings)
             ExitFlow.Permissions -> handleEnterFlow(EnterFlow.Connection)
+            ExitFlow.Automation -> handleEnterFlow(EnterFlow.Settings)
         }
     }
 
