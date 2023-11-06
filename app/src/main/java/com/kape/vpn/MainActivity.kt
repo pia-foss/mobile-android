@@ -14,13 +14,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kape.automation.AutomationFlow
+import com.kape.automation.ui.AutomationFlow
 import com.kape.connection.ui.ConnectionScreen
 import com.kape.dedicatedip.ui.DedicatedIpScreen
 import com.kape.login.ui.loginNavigation
 import com.kape.payments.ui.PaymentProvider
-import com.kape.permissions.ui.NotificationPermissionScreen
-import com.kape.permissions.ui.VpnPermissionScreen
 import com.kape.permissions.utils.PermissionsFlow
 import com.kape.profile.ui.ProfileScreen
 import com.kape.regionselection.ui.RegionSelectionScreen

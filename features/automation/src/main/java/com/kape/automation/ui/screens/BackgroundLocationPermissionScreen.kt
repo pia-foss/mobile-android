@@ -1,5 +1,10 @@
-package com.kape.automation.ui
+package com.kape.automation.ui.screens
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.R
+import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 import com.kape.ui.text.OnboardingDescriptionText
@@ -29,12 +35,21 @@ import com.kape.ui.text.OnboardingTitleText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
-fun LocationPermissionScreen() = Screen {
+fun BackgroundLocationPermissionScreen() = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.trusted_network_plural))
     }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {
+            if (it) {
+                viewModel.navigateToNextScreen()
+            }
+        },
+    )
 
     Scaffold(
         topBar = {
@@ -70,14 +85,14 @@ fun LocationPermissionScreen() = Screen {
                     .fillMaxWidth(),
             )
             OnboardingTitleText(
-                content = stringResource(id = R.string.network_permissions_title),
+                content = stringResource(id = R.string.background_location_permissions_title),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
             )
 
             OnboardingDescriptionText(
-                content = stringResource(id = R.string.network_permissions_message),
+                content = stringResource(id = R.string.background_location_permissions_message),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -86,20 +101,20 @@ fun LocationPermissionScreen() = Screen {
             Spacer(modifier = Modifier.weight(1f))
 
             OnboardingFooterText(
-                content = stringResource(id = R.string.network_permission_footer),
+                content = stringResource(id = R.string.location_permission_footer),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
             )
 
             PrimaryButton(
-                text = stringResource(id = R.string.network_permission_action),
+                text = stringResource(id = R.string.background_location_permissions_action),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
                     .align(Alignment.CenterHorizontally),
             ) {
-                // TODO: handle button click
+                launcher.launch(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
             }
         }
     }
