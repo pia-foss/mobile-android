@@ -16,9 +16,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.signup.R
@@ -35,6 +39,7 @@ import com.kape.ui.text.OnboardingTitleText
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData) = Screen {
     val scheme = LocalColors.current
@@ -50,7 +55,10 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData)
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(LocalColors.current.background),
+            .background(LocalColors.current.background)
+            .semantics {
+                testTagsAsResourceId = true
+            }
     ) {
         Image(
             painter = painterResource(id = R.drawable.map),
@@ -126,7 +134,8 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData)
                 text = stringResource(id = R.string.login),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .testTag(":SignUpScreen:Login"),
             ) {
                 viewModel.navigateToLogin()
             }

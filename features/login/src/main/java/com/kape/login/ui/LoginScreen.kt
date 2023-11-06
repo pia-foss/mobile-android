@@ -19,10 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
@@ -48,7 +52,7 @@ import com.kape.utils.InternetConnectionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen(navController: NavController) = Screen {
     val viewModel: LoginViewModel = koinViewModel()
@@ -69,7 +73,10 @@ fun LoginScreen(navController: NavController) = Screen {
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .fillMaxSize()
-            .background(LocalColors.current.background),
+            .background(LocalColors.current.background)
+            .semantics {
+                testTagsAsResourceId = true
+            },
     ) {
         if (!isConnected) {
             NoNetworkBanner(noNetworkMessage = stringResource(id = R.string.no_internet))
@@ -89,14 +96,18 @@ fun LoginScreen(navController: NavController) = Screen {
                 .padding(16.dp),
         )
         Input(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .testTag(":LoginScreen:enter_username"),
             label = stringResource(id = R.string.enter_username),
             maskInput = false,
             keyboard = KeyboardType.Text,
             content = username,
         )
         Input(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .testTag(":LoginScreen:enter_password"),
             label = stringResource(id = R.string.enter_password),
             maskInput = true,
             keyboard = KeyboardType.Text,
@@ -106,7 +117,8 @@ fun LoginScreen(navController: NavController) = Screen {
             text = stringResource(id = R.string.login),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp)
+                .testTag(":LoginScreen:login_button"),
         ) {
             if (isConnected) {
                 viewModel.login(username.value, password.value)

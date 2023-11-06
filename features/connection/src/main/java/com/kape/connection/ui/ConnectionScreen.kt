@@ -18,10 +18,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.kape.appbar.view.AppBar
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.kape.appbar.view.AppBarType
+import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.tiles.ConnectionInfo
 import com.kape.connection.ui.tiles.FavoritesTile
@@ -44,6 +48,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.util.Locale
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
@@ -68,7 +73,10 @@ fun ConnectionScreen() = Screen {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .semantics {
+                    testTagsAsResourceId = true
+                },
         ) {
             AppBar(
                 viewModel = appBarViewModel,
@@ -81,7 +89,9 @@ fun ConnectionScreen() = Screen {
             Spacer(modifier = Modifier.height(Space.NORMAL))
             ConnectButton(
                 connectionStatus.value,
-                Modifier.align(CenterHorizontally),
+                Modifier
+                    .align(CenterHorizontally)
+                    .testTag(":ConnectionScreen:connection_button"),
             ) {
                 viewModel.onConnectionButtonClicked()
             }

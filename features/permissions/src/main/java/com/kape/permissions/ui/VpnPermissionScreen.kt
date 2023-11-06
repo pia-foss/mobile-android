@@ -22,10 +22,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.permissions.R
@@ -43,6 +47,7 @@ import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.getViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VpnPermissionScreen() = Screen {
     val viewModel: PermissionsViewModel = getViewModel()
@@ -81,7 +86,10 @@ fun VpnPermissionScreen() = Screen {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(LocalColors.current.background),
+            .background(LocalColors.current.background)
+            .semantics {
+                testTagsAsResourceId = true
+            },
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Image(
@@ -128,7 +136,8 @@ fun VpnPermissionScreen() = Screen {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
-                .align(CenterHorizontally),
+                .align(CenterHorizontally)
+                .testTag(":VpnPermissionScreen:ok"),
         ) {
             viewModel.onOkButtonClicked()
         }

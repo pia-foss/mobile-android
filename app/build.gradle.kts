@@ -42,6 +42,11 @@ android {
                 "proguard-rules.pro",
             )
         }
+        debug {
+            buildConfigField("String", "PIA_VALID_USERNAME", "\"${System.getenv("PIA_VALID_USERNAME")}\"")
+            buildConfigField("String", "PIA_VALID_PASSWORD", "\"${System.getenv("PIA_VALID_PASSWORD")}\"")
+            buildConfigField("String", "PIA_VALID_DIP_TOKEN", "\"${System.getenv("PIA_VALID_DIP_TOKEN")}\"")
+        }
     }
 
     flavorDimensions.add("provider")
@@ -91,6 +96,7 @@ android {
 }
 
 dependencies {
+    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.2.0")
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":core:router"))
