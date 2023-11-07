@@ -61,6 +61,7 @@ dependencies {
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:csi"))
+    implementation(project(":capabilities:location"))
     implementation(project(":features:appbar"))
     implementation(project(":features:regionselection"))
 

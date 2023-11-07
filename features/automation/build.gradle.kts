@@ -42,7 +42,10 @@ android {
 dependencies {
 
     implementation(project(":core:router"))
+    implementation(project(":core:utils"))
+    implementation(project(":core:localprefs:settings"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":capabilities:location"))
     implementation(project(":features:appbar"))
 
     implementFeatureModule()
