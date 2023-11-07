@@ -7,4 +7,5 @@ interface SignInSteps {
     fun clickOnLoginButtonLoginScreen()
     fun allowVpnProfileCreation()
     fun allowNotifications()
+    fun navigateToSignUpScreen()
 }

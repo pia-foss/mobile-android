@@ -10,6 +10,7 @@ import screens.objects.LoginUiObjects
 import screens.objects.SignUpUiObjects
 import tests.UiAutomatorTest.Companion.defaultTimeOut
 
+
 class UiAutomatorSignInSteps : SignInSteps {
 
     private val device: UiDevice =
@@ -38,6 +39,15 @@ class UiAutomatorSignInSteps : SignInSteps {
         AppPermissionObjects.androidAllowNotifications.clickAndWaitForNewWindow(defaultTimeOut)
     }
 
+    override fun navigateToSignUpScreen() {
+        if (LoginUiObjects.loginButton.exists())
+            device.pressBack()
+        // TODO: Add logic to navigate from other screens
+
+        waitUntilExists(SignUpUiObjects.loginButton)
+        assert(SignUpUiObjects.loginButton.exists())
+    }
+
     private fun <T> inputTextInField(field: UiObject, data: T?) {
         field.click()
         field.legacySetText(data?.toString() ?: "")
@@ -48,5 +58,9 @@ class UiAutomatorSignInSteps : SignInSteps {
             device.wait((Until.findObject(By.res(primaryUiObject.text))), defaultTimeOut)
             (secondaryUiObj ?: primaryUiObject).clickAndWaitForNewWindow(defaultTimeOut)
         }
+    }
+
+    private fun waitUntilExists(uiObject: UiObject) {
+        device.wait((Until.findObject(By.res(uiObject.text))), defaultTimeOut)
     }
 }

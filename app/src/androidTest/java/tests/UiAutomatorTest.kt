@@ -17,13 +17,10 @@ open class UiAutomatorTest : UiTest {
 
     override val uiAction: UiAction = UiAction(UiAutomatorSignInSteps())
 
-    private fun startApp(packageName: String, activityName: String? = null) {
+    private fun startApp(packageName: String) {
         context = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = if (activityName == null) {
-            context.packageManager.getLaunchIntentForPackage(packageName)
-        } else {
-            Intent().setClassName(packageName, activityName)
-        }
+        val intent = context.packageManager.getLaunchIntentForPackage(packageName)
+
         intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) // Clear out any previous instances
         context.startActivity(intent)
@@ -31,7 +28,6 @@ open class UiAutomatorTest : UiTest {
 
     @Before
     override fun setUp() {
-        device.pressHome()
         startApp(BuildConfig.APPLICATION_ID)
     }
 
