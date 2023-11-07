@@ -1,6 +1,7 @@
 import Dependencies.desugarJdkLibs
 import Dependencies.implementAccount
 import Dependencies.implementAndroidBase
+import Dependencies.implementAndroidUiTest
 import Dependencies.implementCompose
 import Dependencies.implementComposeNavigation
 import Dependencies.implementCoroutines
@@ -43,9 +44,21 @@ android {
             )
         }
         debug {
-            buildConfigField("String", "PIA_VALID_USERNAME", "\"${System.getenv("PIA_VALID_USERNAME")}\"")
-            buildConfigField("String", "PIA_VALID_PASSWORD", "\"${System.getenv("PIA_VALID_PASSWORD")}\"")
-            buildConfigField("String", "PIA_VALID_DIP_TOKEN", "\"${System.getenv("PIA_VALID_DIP_TOKEN")}\"")
+            buildConfigField(
+                "String",
+                "PIA_VALID_USERNAME",
+                "\"${System.getenv("PIA_VALID_USERNAME")}\"",
+            )
+            buildConfigField(
+                "String",
+                "PIA_VALID_PASSWORD",
+                "\"${System.getenv("PIA_VALID_PASSWORD")}\"",
+            )
+            buildConfigField(
+                "String",
+                "PIA_VALID_DIP_TOKEN",
+                "\"${System.getenv("PIA_VALID_DIP_TOKEN")}\"",
+            )
         }
     }
 
@@ -96,7 +109,6 @@ android {
 }
 
 dependencies {
-    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.2.0")
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":core:router"))
@@ -140,4 +152,6 @@ dependencies {
     implementMultiplatformSettings()
     implementVpnManager()
     implementCoroutines()
+
+    implementAndroidUiTest()
 }
