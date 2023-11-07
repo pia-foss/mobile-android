@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.csi.domain.SendLogUseCase
+import com.kape.location.data.LocationPermissionManager
 import com.kape.regions.data.RegionRepository
 import com.kape.router.Back
 import com.kape.router.EnterFlow
@@ -44,6 +45,7 @@ class SettingsViewModel(
     private val getDebugLogsUseCase: GetLogsUseCase,
     private val sendLogUseCase: SendLogUseCase,
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
+    private val locationPermissionManager: LocationPermissionManager,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow<SettingsStep>(SettingsStep.Main)
@@ -131,7 +133,7 @@ class SettingsViewModel(
         _state.emit(SettingsStep.General)
     }
 
-    private fun navigateToAutomation() = router.handleFlow(EnterFlow.Automation)
+    fun navigateToAutomation() = router.handleFlow(EnterFlow.Automation)
 
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
@@ -201,14 +203,13 @@ class SettingsViewModel(
 
     fun isQuickSettingPrivateBrowserEnabled() = prefs.isQuickSettingPrivateBrowserEnabled()
 
-    fun toggleAutomationEnabled(enable: Boolean) {
-        prefs.setAutomationEnabled(enable)
-        if (enable) {
-            navigateToAutomation()
-        }
-    }
-
     fun isAutomationEnabled() = prefs.isAutomationEnabled()
+
+    fun disableAutomation() = prefs.setAutomationEnabled(false)
+
+    fun areLocationPermissionsGranted() =
+        locationPermissionManager.isFineLocationPermissionGranted()
+                && locationPermissionManager.isBackgroundLocationPermissionGranted()
 
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()

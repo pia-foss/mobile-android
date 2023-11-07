@@ -1,4 +1,4 @@
-package com.kape.automation.data
+package com.kape.location.data
 
 import android.Manifest
 import android.content.Context

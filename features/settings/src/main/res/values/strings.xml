@@ -21,6 +21,7 @@
     <!--    Automation     -->
     <string name="enabled">Enabled</string>
     <string name="disabled">Disabled</string>
+    <string name="manage_automation">Manage Automation</string>
 
     <!--    General Settings    -->
     <string name="connect_on_boot_title">Launch on System Startup</string>

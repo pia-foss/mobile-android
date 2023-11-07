@@ -13,5 +13,5 @@ fun settingsModule(appModule: Module, versionCode: Int, versionName: String) = m
 
 private fun localSettingsModule(version: String) = module {
     single<IsNumericIpAddressUseCase> { IsNumericIpAddressUseCaseImpl() }
-    viewModel { SettingsViewModel(get(), get(), get(), version, get(), get(), get(), get()) }
+    viewModel { SettingsViewModel(get(), get(), get(), version, get(), get(), get(), get(), get()) }
 }
