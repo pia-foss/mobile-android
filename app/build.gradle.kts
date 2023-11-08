@@ -112,6 +112,7 @@ dependencies {
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:notifications"))
     implementation(project(":capabilities:csi"))
+    implementation(project(":capabilities:networkmanagement"))
 
     implementation(project(":features:splash"))
     implementation(project(":features:signup"))
