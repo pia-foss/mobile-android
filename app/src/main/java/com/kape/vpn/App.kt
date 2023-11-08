@@ -10,6 +10,7 @@ import com.kape.connection.di.connectionModule
 import com.kape.csi.di.csiModule
 import com.kape.dedicatedip.di.dedicatedIpModule
 import com.kape.login.di.loginModule
+import com.kape.networkmanagement.di.networkManagementModule
 import com.kape.notifications.di.notificationModule
 import com.kape.payments.di.paymentsModule
 import com.kape.permissions.di.permissionsModule
@@ -81,6 +82,7 @@ class App : Application() {
                 add(csiModule(appModule))
                 add(regionsModule(appModule))
                 add(automationModule(appModule))
+                add(networkManagementModule)
             },
         )
     }
