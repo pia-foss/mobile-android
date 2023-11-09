@@ -4,4 +4,5 @@ sealed class AutomationStep {
     data object LocationPermission: AutomationStep()
     data object EnableBackgroundLocation: AutomationStep()
     data object Main: AutomationStep()
+    data object AddRule: AutomationStep()
 }

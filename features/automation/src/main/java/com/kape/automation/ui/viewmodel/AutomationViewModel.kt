@@ -51,6 +51,10 @@ class AutomationViewModel(
         }
     }
 
+    fun navigateToAddNewRule() = viewModelScope.launch {
+        _state.emit(AutomationStep.AddRule)
+    }
+
     fun getNetworkItems() = networkRulesManager.getRules()
 
     fun updateRule(rule: NetworkItem, behavior: NetworkBehavior) {

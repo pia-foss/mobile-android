@@ -123,7 +123,13 @@ fun AutomationScreen() = Screen {
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-            Row(modifier = Modifier.align(CenterHorizontally)) {
+            Row(
+                modifier = Modifier
+                    .align(CenterHorizontally)
+                    .clickable {
+                        viewModel.navigateToAddNewRule()
+                    },
+            ) {
                 Icon(
                     painter = painterResource(id = com.kape.ui.R.drawable.ic_add),
                     contentDescription = null,

@@ -19,4 +19,5 @@
     <string name="nmt_connect">Always connect VPN</string>
     <string name="nmt_retain">Retain VPN state</string>
     <string name="dialog_title">Rule for Network</string>
+    <string name="add_rule_title">Choose a WiFi network to add new rule.</string>
 </resources>
