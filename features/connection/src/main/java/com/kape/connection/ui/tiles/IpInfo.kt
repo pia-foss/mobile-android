@@ -24,9 +24,12 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun IPTile(
-    publicIp: String, vpnIp: String, isPortForwardingEnabled: Boolean,
+    publicIp: String,
+    vpnIp: String,
+    isPortForwardingEnabled: Boolean,
     portForwardingStatus: MutableState<PortForwardingStatus>,
-    port: String? = null, modifier: Modifier,
+    port: String? = null,
+    modifier: Modifier,
 ) {
     Row(modifier = modifier) {
         Column(modifier.weight(0.4f)) {

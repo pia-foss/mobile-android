@@ -207,8 +207,10 @@ fun CustomDnsDialog(
                 dnsSelection.value = DnsOptions.PIA.value
             } else if (
                 (primaryDns.isNotEmpty() && viewModel.isDnsNumeric(ipAddress = primaryDns).not()) ||
-                (secondaryDns.isNotEmpty() && viewModel.isDnsNumeric(ipAddress = secondaryDns)
-                    .not())
+                (
+                    secondaryDns.isNotEmpty() && viewModel.isDnsNumeric(ipAddress = secondaryDns)
+                        .not()
+                    )
             ) {
                 return@InputFieldDialog
             }

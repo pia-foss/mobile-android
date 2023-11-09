@@ -64,7 +64,7 @@ fun OptionsDialog(
                         )
                         Text(
                             text = text,
-                            Modifier.padding(horizontal = 8.dp)
+                            Modifier.padding(horizontal = 8.dp),
                         )
                     }
                 }

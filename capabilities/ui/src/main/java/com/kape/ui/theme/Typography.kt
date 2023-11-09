@@ -13,79 +13,79 @@ object PiaTypography {
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.0015.em,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
     )
     val h2 = TextStyle(
         fontSize = 20.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.0015.em,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
     )
     val h3 = TextStyle(
         fontSize = 20.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.0015.em,
-        fontWeight = FontWeight.Light
+        fontWeight = FontWeight.Light,
     )
     val subtitle1 = TextStyle(
         fontSize = 18.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.001.em,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
     )
     val subtitle2 = TextStyle(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.001.em,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
     )
     val subtitle3 = TextStyle(
         fontSize = 14.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.001.em,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
     )
     val body1 = TextStyle(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.005.em,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
     )
     val body2 = TextStyle(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.005.em,
-        fontWeight = FontWeight.Light
+        fontWeight = FontWeight.Light,
     )
     val body3 = TextStyle(
         fontSize = 14.sp,
         lineHeight = 22.sp,
         letterSpacing = 0.0025.em,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
     )
     val button1 = TextStyle(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.0125.em,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
     )
     val button2 = TextStyle(
         fontSize = 12.sp,
         lineHeight = 18.sp,
         letterSpacing = 0.0125.em,
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
     )
     val caption1 = TextStyle(
         fontSize = 12.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.004.em,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Normal,
     )
     val caption2 = TextStyle(
         fontSize = 12.sp,
         lineHeight = 18.sp,
         letterSpacing = 0.004.em,
-        fontWeight = FontWeight.Light
+        fontWeight = FontWeight.Light,
     )
 }
 
@@ -104,5 +104,5 @@ val AppTypography = Typography(
     bodySmall = PiaTypography.body3,
     labelLarge = PiaTypography.subtitle3,
     labelMedium = PiaTypography.caption1,
-    labelSmall = PiaTypography.caption2
+    labelSmall = PiaTypography.caption2,
 )

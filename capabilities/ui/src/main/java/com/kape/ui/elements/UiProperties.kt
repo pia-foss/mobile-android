@@ -12,7 +12,7 @@ data class InputFieldProperties(
     var error: String? = null,
     val maskInput: Boolean,
     val keyboardType: KeyboardType = KeyboardType.Text,
-    var content: MutableState<String> = mutableStateOf("")
+    var content: MutableState<String> = mutableStateOf(""),
 )
 
 data class ButtonProperties(val label: String, val enabled: Boolean = true, val onClick: () -> Unit)

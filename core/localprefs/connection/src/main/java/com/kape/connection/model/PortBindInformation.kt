@@ -10,5 +10,5 @@ data class PortBindInformation(
     @SerialName("signature")
     val signature: String,
     @SerialName("decodedPayload")
-    val decodedPayload: DecodedPayload
+    val decodedPayload: DecodedPayload,
 )

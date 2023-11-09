@@ -1,8 +1,5 @@
-import Dependencies.implementCompose
+
 import Dependencies.implementFeatureModule
-import Dependencies.implementKoin
-import Dependencies.implementViewModel
-import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")

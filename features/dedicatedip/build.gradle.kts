@@ -1,10 +1,7 @@
-import Dependencies.desugarJdkLibs
+
 import Dependencies.implementAccount
-import Dependencies.implementAndroidBase
-import Dependencies.implementCoroutines
 import Dependencies.implementFeatureModule
 import Dependencies.implementRegions
-import Dependencies.implementSerialization
 
 plugins {
     id("com.android.library")

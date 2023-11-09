@@ -29,7 +29,7 @@ fun adaptServers(regionsResponse: RegionsResponse, dipPrefs: DipPrefs): Map<Stri
                         Server.ServerEndpointDetails(
                             "${wireguardEndpoint.ip}:$port",
                             wireguardEndpoint.cn,
-                        )
+                        ),
                     )
                 }
                 regionEndpoints[Server.ServerGroup.WIREGUARD] = mappedEndpoints
@@ -43,7 +43,7 @@ fun adaptServers(regionsResponse: RegionsResponse, dipPrefs: DipPrefs): Map<Stri
                     Server.ServerEndpointDetails(
                         ovpnTcpEndpoint.ip,
                         ovpnTcpEndpoint.cn,
-                    )
+                    ),
                 )
             }
             regionEndpoints[Server.ServerGroup.OPENVPN_TCP] = mappedEndpoints
@@ -56,7 +56,7 @@ fun adaptServers(regionsResponse: RegionsResponse, dipPrefs: DipPrefs): Map<Stri
                     Server.ServerEndpointDetails(
                         ovpnUdpEndpoint.ip,
                         ovpnUdpEndpoint.cn,
-                    )
+                    ),
                 )
             }
             regionEndpoints[Server.ServerGroup.OPENVPN_UDP] = mappedEndpoints
@@ -69,7 +69,7 @@ fun adaptServers(regionsResponse: RegionsResponse, dipPrefs: DipPrefs): Map<Stri
                     Server.ServerEndpointDetails(
                         metaEndpoint.ip,
                         metaEndpoint.cn,
-                    )
+                    ),
                 )
             }
             regionEndpoints[Server.ServerGroup.META] = mappedEndpoints
@@ -87,7 +87,7 @@ fun adaptServers(regionsResponse: RegionsResponse, dipPrefs: DipPrefs): Map<Stri
             region.offline,
             region.portForward,
             null,
-            null
+            null,
         )
         servers[region.id] = dipPrefs.getDedicatedIps().firstOrNull { it.id == region.id }?.let {
             getServerForDip(server, it)

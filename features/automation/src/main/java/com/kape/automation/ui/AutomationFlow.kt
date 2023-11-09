@@ -8,9 +8,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.kape.automation.ui.screens.AddNewRuleScreen
 import com.kape.automation.ui.screens.AutomationScreen
-import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.automation.ui.screens.BackgroundLocationPermissionScreen
 import com.kape.automation.ui.screens.LocationPermissionScreen
+import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.automation.utils.AutomationStep
 import org.koin.androidx.compose.koinViewModel
 

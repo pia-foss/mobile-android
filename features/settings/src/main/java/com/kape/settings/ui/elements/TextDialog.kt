@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.settings.R
 
-
 @Composable
 fun TextDialog(
     @StringRes titleId: Int,
@@ -52,6 +51,6 @@ fun TextDialog(
                     Text(text = stringResource(id = descriptionId))
                 }
             }
-        }
+        },
     )
 }

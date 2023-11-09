@@ -27,7 +27,8 @@ class SubmitKpiEventUseCase(
             KpiConnectionStatus.Connecting -> {
                 connectionInitiatedTime = SystemClock.elapsedRealtime()
                 api.submit(
-                    KpiConnectionEvent.ConnectionAttempt, connectionSource,
+                    KpiConnectionEvent.ConnectionAttempt,
+                    connectionSource,
                 )
             }
 

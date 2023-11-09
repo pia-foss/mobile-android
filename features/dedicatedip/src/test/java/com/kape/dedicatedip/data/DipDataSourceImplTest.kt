@@ -5,8 +5,6 @@ import com.kape.dedicatedip.di.dedicatedIpModule
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
-import com.kape.utils.ApiError
-import com.kape.utils.ApiResult
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
@@ -14,7 +12,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -60,7 +58,8 @@ class DipDataSourceImplTest {
             every { prefs.addDedicatedIp(any()) } returns Unit
             coEvery { api.dedicatedIPs(any(), any()) } answers {
                 lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
-                    listOf(dipInfo), emptyList(),
+                    listOf(dipInfo),
+                    emptyList(),
                 )
             }
 
@@ -77,7 +76,8 @@ class DipDataSourceImplTest {
         runTest {
             coEvery { api.dedicatedIPs(any(), any()) } answers {
                 lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
-                    emptyList(), errorList,
+                    emptyList(),
+                    errorList,
                 )
             }
 

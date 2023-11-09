@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -24,8 +22,6 @@ import com.kape.ui.elements.MenuSeparator
 import com.kape.ui.elements.Toggle
 import com.kape.ui.text.SettingsL2Text
 import com.kape.ui.text.SettingsL2TextDescription
-import com.kape.ui.theme.FontSize
-import com.kape.ui.utils.LocalColors
 
 @Composable
 fun SettingsToggle(
@@ -47,7 +43,6 @@ fun SettingsToggle(
                 .padding(horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-
             iconId?.let {
                 Icon(
                     painter = painterResource(id = it),

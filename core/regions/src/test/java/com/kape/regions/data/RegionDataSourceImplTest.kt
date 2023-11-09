@@ -1,8 +1,8 @@
 package com.kape.regions.data
 
 import app.cash.turbine.test
-import com.kape.regions.domain.RegionDataSource
 import com.kape.regions.di.regionsModule
+import com.kape.regions.domain.RegionDataSource
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.model.RegionsResponse

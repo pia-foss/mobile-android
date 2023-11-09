@@ -43,7 +43,7 @@ fun GeneralSettingsScreen() = Screen {
                     viewModel.toggleLaunchOnBoot(it)
                 },
             )
-            
+
             SettingsToggle(
                 titleId = R.string.connect_on_launch_title,
                 subtitleId = R.string.connect_on_launch_description,
@@ -52,7 +52,7 @@ fun GeneralSettingsScreen() = Screen {
                     viewModel.toggleConnectOnStart(it)
                 },
             )
-            
+
             SettingsToggle(
                 titleId = R.string.connect_on_update_title,
                 subtitleId = R.string.connect_on_update_title,
@@ -61,7 +61,7 @@ fun GeneralSettingsScreen() = Screen {
                     viewModel.toggleConnectOnUpdate(it)
                 },
             )
-            
+
             SettingsItem(
                 titleId = R.string.settings_widget_title,
                 subtitle = stringResource(id = R.string.settings_widget_description),

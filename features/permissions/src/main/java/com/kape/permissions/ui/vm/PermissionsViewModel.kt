@@ -3,8 +3,6 @@ package com.kape.permissions.ui.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.notifications.data.NotificationPermissionManager
-import com.kape.router.ExitFlow
-import com.kape.router.Router
 import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.permissions.utils.GRANTED
 import com.kape.permissions.utils.IDLE
@@ -12,7 +10,8 @@ import com.kape.permissions.utils.NOT_GRANTED
 import com.kape.permissions.utils.PermissionsStep
 import com.kape.permissions.utils.REQUEST
 import com.kape.permissions.utils.VpnProfileState
-import com.kape.router.EnterFlow
+import com.kape.router.ExitFlow
+import com.kape.router.Router
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

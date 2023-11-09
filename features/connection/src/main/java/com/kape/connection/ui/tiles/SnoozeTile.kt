@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.kape.connection.R
-import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.SnoozeInterval
 import com.kape.connection.utils.SnoozeState
 import com.kape.ui.elements.ConnectionTile

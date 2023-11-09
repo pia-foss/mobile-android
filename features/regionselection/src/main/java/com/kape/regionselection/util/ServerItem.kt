@@ -2,7 +2,6 @@ package com.kape.regionselection.util
 
 import com.kape.utils.server.Server
 
-
 data class ServerItem(val type: ItemType)
 
 sealed class ItemType {

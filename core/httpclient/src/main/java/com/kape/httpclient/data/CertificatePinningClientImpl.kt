@@ -89,7 +89,9 @@ class CertificatePinningClientImpl(private val certificate: String) : Certificat
         val rdns = name.getRDNs(BCStyle.CN)
         return if (rdns.isEmpty()) {
             null
-        } else rdns.first().first.value.toString()
+        } else {
+            rdns.first().first.value.toString()
+        }
     }
 
     private fun isEqual(a: ByteArray, b: ByteArray): Boolean {

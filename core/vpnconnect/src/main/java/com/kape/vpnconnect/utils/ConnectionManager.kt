@@ -2,8 +2,6 @@ package com.kape.vpnconnect.utils
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import androidx.compose.ui.res.stringResource
 import com.kape.shareevents.data.models.KpiConnectionStatus
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.vpnconnect.R

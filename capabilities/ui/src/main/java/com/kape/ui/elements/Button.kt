@@ -2,8 +2,6 @@ package com.kape.ui.elements
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -85,7 +83,8 @@ fun OptionButton(selected: Boolean, modifier: Modifier) {
 @Composable
 fun Toggle(isOn: Boolean, onCheckedChange: (checked: Boolean) -> Unit) {
     Switch(
-        checked = isOn, onCheckedChange = onCheckedChange,
+        checked = isOn,
+        onCheckedChange = onCheckedChange,
         colors = SwitchDefaults.colors(
             uncheckedBorderColor = LocalColors.current.onSurfaceVariant,
             checkedBorderColor = LocalColors.current.onSurfaceVariant,

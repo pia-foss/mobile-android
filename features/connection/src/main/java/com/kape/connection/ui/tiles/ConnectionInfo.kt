@@ -1,10 +1,8 @@
 package com.kape.connection.ui.tiles
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,8 +20,6 @@ import com.kape.connection.R
 import com.kape.settings.data.ProtocolSettings
 import com.kape.ui.text.ConnectionInfoText
 import com.kape.ui.text.TileTitleText
-import com.kape.ui.theme.Space
-import com.kape.ui.theme.Square
 
 @Composable
 fun ConnectionInfo(settings: ProtocolSettings) {
@@ -35,7 +31,7 @@ fun ConnectionInfo(settings: ProtocolSettings) {
         TileTitleText(stringResource(id = R.string.connection))
         Spacer(modifier = Modifier.height(4.dp))
         Row(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 InfoRow(iconId = R.drawable.ic_connection, label = settings.name)
