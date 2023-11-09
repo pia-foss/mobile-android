@@ -8,7 +8,6 @@ import androidx.test.uiautomator.Until
 import screens.objects.AppPermissionObjects
 import screens.objects.LoginUiObjects
 import screens.objects.SignUpUiObjects
-import tests.UiAutomatorTest.Companion.defaultTimeOut
 
 
 class UiAutomatorSignInSteps : SignInSteps {
@@ -30,13 +29,23 @@ class UiAutomatorSignInSteps : SignInSteps {
     }
 
     override fun allowVpnProfileCreation() {
-        clickIfExists(AppPermissionObjects.vpnProfileOkButton)
-        AppPermissionObjects.androidOkButton.clickAndWaitForNewWindow(defaultTimeOut)
+        // The first time we successfully sign in we will be prompted to allow permissions to create
+        // the VPN profile. Once accepted, all the next tests will not be prompted to do this step
+        if (AppPermissionObjects.vpnProfileOkButton.exists()) {
+            waitUntilFound(AppPermissionObjects.vpnProfileOkButton)
+            AppPermissionObjects.vpnProfileOkButton.clickAndWaitForNewWindow()
+            AppPermissionObjects.androidOkButton.clickAndWaitForNewWindow(defaultTimeOut)
+        }
     }
 
     override fun allowNotifications() {
-        clickIfExists(AppPermissionObjects.appAllowNotifications)
-        AppPermissionObjects.androidAllowNotifications.clickAndWaitForNewWindow(defaultTimeOut)
+        // The first time we successfully sign in we will be prompted to allow app notifications
+        // Once accepted, all the next tests will not be prompted to do this step
+        if (AppPermissionObjects.appAllowNotifications.exists()) {
+            waitUntilFound(AppPermissionObjects.appAllowNotifications)
+            AppPermissionObjects.appAllowNotifications.clickAndWaitForNewWindow(defaultTimeOut)
+            AppPermissionObjects.androidAllowNotifications.clickAndWaitForNewWindow(defaultTimeOut)
+        }
     }
 
     override fun navigateToSignUpScreen() {
@@ -44,7 +53,7 @@ class UiAutomatorSignInSteps : SignInSteps {
             device.pressBack()
         // TODO: Add logic to navigate from other screens
 
-        waitUntilExists(SignUpUiObjects.loginButton)
+        waitUntilFound(SignUpUiObjects.loginButton)
         assert(SignUpUiObjects.loginButton.exists())
     }
 
@@ -53,14 +62,14 @@ class UiAutomatorSignInSteps : SignInSteps {
         field.legacySetText(data?.toString() ?: "")
     }
 
-    private fun clickIfExists(primaryUiObject: UiObject, secondaryUiObj: UiObject? = null) {
-        if (primaryUiObject.exists()) {
-            device.wait((Until.findObject(By.res(primaryUiObject.text))), defaultTimeOut)
-            (secondaryUiObj ?: primaryUiObject).clickAndWaitForNewWindow(defaultTimeOut)
-        }
+    private fun clickIfExists(uiObject: UiObject) {
+        waitUntilFound(uiObject)
+        uiObject.clickAndWaitForNewWindow(defaultTimeOut)
     }
 
-    private fun waitUntilExists(uiObject: UiObject) {
+    private fun waitUntilFound(uiObject: UiObject) {
         device.wait((Until.findObject(By.res(uiObject.text))), defaultTimeOut)
     }
+
+    private val defaultTimeOut = 5000L
 }

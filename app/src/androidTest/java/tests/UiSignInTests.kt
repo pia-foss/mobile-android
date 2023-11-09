@@ -5,7 +5,7 @@ import org.junit.Test
 import screens.objects.LoginUiObjects
 import screens.objects.MainScreenPageObjects
 
-class UiSignInTests : UiAutomatorTest() {
+class UiSignInTests : UiTest() {
 
     @Test
     fun sign_in_with_valid_credentials_reaches_connect_screen() {
