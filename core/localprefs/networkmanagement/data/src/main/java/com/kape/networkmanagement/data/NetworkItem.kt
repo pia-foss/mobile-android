@@ -15,15 +15,27 @@ data class NetworkItem(
 
 @Serializable
 sealed class NetworkBehavior {
+    @Serializable
     data object AlwaysConnect : NetworkBehavior()
+
+    @Serializable
     data object AlwaysDisconnect : NetworkBehavior()
+
+    @Serializable
     data object RetainState : NetworkBehavior()
 }
 
 @Serializable
 sealed class NetworkType {
+    @Serializable
     data object MobileData : NetworkType()
+
+    @Serializable
     data object WifiOpen : NetworkType()
+
+    @Serializable
     data object WifiSecure : NetworkType()
+
+    @Serializable
     data object WifiCustom : NetworkType()
 }

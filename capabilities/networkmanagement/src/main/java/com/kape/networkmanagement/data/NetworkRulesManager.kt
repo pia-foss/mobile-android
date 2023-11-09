@@ -9,9 +9,12 @@ class NetworkRulesManager(
 ) {
 
     fun getRules(): List<NetworkItem> {
-        return prefs.getAllRules().ifEmpty {
-            util.getDefaultList()
+        if (prefs.getAllRules().isEmpty()) {
+            for (item in util.getDefaultList()) {
+                prefs.addDefaultRule(item)
+            }
         }
+        return prefs.getAllRules()
     }
 
     fun updateRule(rule: NetworkItem, behavior: NetworkBehavior) {

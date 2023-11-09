@@ -322,7 +322,7 @@ fun DialogMessageText(content: String, modifier: Modifier) {
 @Composable
 fun DialogActionText(content: String, modifier: Modifier) {
     Text(
-        text = content,
+        text = content.uppercase(),
         color = LocalColors.current.primary,
         style = PiaTypography.subtitle3,
         modifier = modifier,

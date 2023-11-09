@@ -18,4 +18,5 @@
     <string name="nmt_disconnect">Always disconnect VPN</string>
     <string name="nmt_connect">Always connect VPN</string>
     <string name="nmt_retain">Retain VPN state</string>
+    <string name="dialog_title">Rule for Network</string>
 </resources>

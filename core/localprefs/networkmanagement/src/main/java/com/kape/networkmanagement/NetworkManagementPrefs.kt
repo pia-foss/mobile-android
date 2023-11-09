@@ -22,6 +22,10 @@ class NetworkManagementPrefs(context: Context) : Prefs(context, "network-managem
         addNetworkItem(rule)
     }
 
+    fun addDefaultRule(networkItem: NetworkItem) {
+        addNetworkItem(networkItem)
+    }
+
     fun removeRuleForNetwork(rule: NetworkItem) {
         val newRules = getRules().toMutableList()
         newRules.remove(Json.encodeToString(rule))

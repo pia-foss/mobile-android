@@ -3,6 +3,7 @@ package com.kape.ui.elements
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,9 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.text.BestValueBannerText
 import com.kape.ui.text.ErrorText
-import com.kape.ui.text.OnboardingFooterText
 import com.kape.ui.text.SettingsL1Text
-import com.kape.ui.text.SettingsL2Text
 import com.kape.ui.text.SettingsL2TextDescription
 import com.kape.ui.text.SignUpDurationText
 import com.kape.ui.text.SignUpPricePerMonthText
@@ -38,6 +37,7 @@ import com.kape.ui.text.SignUpPriceText
 import com.kape.ui.theme.errorBackground
 import com.kape.ui.theme.errorOutline
 import com.kape.ui.theme.infoBackground
+import com.kape.ui.theme.infoBlue
 import com.kape.ui.theme.infoOutline
 import com.kape.ui.theme.successBackground
 import com.kape.ui.theme.successOutline
@@ -243,27 +243,30 @@ fun NetworkCard(
     @DrawableRes icon: Int,
     title: String,
     status: String,
-    modifier: Modifier,
+    isDefault: Boolean,
+    onClick: () -> Unit
 ) {
     Card(
-        modifier = modifier,
+        modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = LocalColors.current.surfaceVariant,
         ),
     ) {
+        val currentColor =
+            if (isDefault) LocalColors.current.primary else LocalColors.current.infoBlue()
         Box(
             modifier = Modifier
                 .height(4.dp)
                 .fillMaxWidth()
-                .background(LocalColors.current.primary),
+                .background(currentColor),
         )
         Column(modifier = Modifier.padding(16.dp)) {
             Row {
                 Icon(
                     painter = painterResource(id = icon),
                     contentDescription = null,
-                    tint = LocalColors.current.primary,
+                    tint = currentColor,
                     modifier = Modifier.size(24.dp),
                 )
                 Spacer(modifier = Modifier.weight(1f))
@@ -271,6 +274,9 @@ fun NetworkCard(
                     painter = painterResource(id = R.drawable.ic_more_horizontal),
                     contentDescription = null,
                     tint = LocalColors.current.onSurface,
+                    modifier = Modifier.clickable {
+                        onClick()
+                    }
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))

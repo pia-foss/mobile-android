@@ -40,12 +40,13 @@ android {
 }
 
 dependencies {
-
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:settings"))
+    implementation(project(":core:localprefs:networkmanagement:data"))
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:location"))
+    implementation(project(":capabilities:networkmanagement"))
     implementation(project(":features:appbar"))
 
     implementFeatureModule()

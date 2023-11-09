@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.automation.utils.AutomationStep
 import com.kape.location.data.LocationPermissionManager
+import com.kape.networkmanagement.data.NetworkBehavior
+import com.kape.networkmanagement.data.NetworkItem
+import com.kape.networkmanagement.data.NetworkRulesManager
 import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
@@ -17,6 +20,7 @@ class AutomationViewModel(
     private val router: Router,
     private val locationPermissionManager: LocationPermissionManager,
     private val settingsPrefs: SettingsPrefs,
+    private val networkRulesManager: NetworkRulesManager,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow<AutomationStep>(AutomationStep.LocationPermission)
@@ -45,5 +49,11 @@ class AutomationViewModel(
                 }
             }
         }
+    }
+
+    fun getNetworkItems() = networkRulesManager.getRules()
+
+    fun updateRule(rule: NetworkItem, behavior: NetworkBehavior) {
+        networkRulesManager.updateRule(rule, behavior)
     }
 }
