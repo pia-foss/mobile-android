@@ -1,6 +1,7 @@
 package com.kape.automation.ui.screens
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.R
+import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
@@ -46,6 +49,7 @@ import com.kape.ui.text.DialogTitleText
 import com.kape.ui.text.Hyperlink
 import com.kape.ui.text.OnboardingDescriptionText
 import com.kape.ui.text.OnboardingTitleText
+import com.kape.ui.theme.infoBlue
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -56,7 +60,7 @@ fun AutomationScreen() = Screen {
         appBarText(stringResource(id = R.string.trusted_network_plural))
     }
     val showDialog = remember { mutableStateOf(false) }
-    var currentItem = remember { mutableStateOf<NetworkItem?>(null) }
+    val currentItem = remember { mutableStateOf<NetworkItem?>(null) }
 
     val context: Context = LocalContext.current
 
@@ -114,6 +118,11 @@ fun AutomationScreen() = Screen {
                         icon = icon,
                         title = title,
                         status = status,
+                        color = when (networkItem.networkBehavior) {
+                            NetworkBehavior.AlwaysConnect -> LocalColors.current.primary
+                            NetworkBehavior.AlwaysDisconnect -> LocalColors.current.error
+                            NetworkBehavior.RetainState -> LocalColors.current.infoBlue()
+                        },
                         isDefault = networkItem.isDefault,
                     ) {
                         currentItem.value = networkItem
@@ -145,97 +154,20 @@ fun AutomationScreen() = Screen {
     }
 
     if (showDialog.value) {
-        currentItem.value?.let {
-            BehaviorDialog(status = getStatus(behavior = it.networkBehavior), showDialog) {
-                currentItem.value?.let { item ->
-                    viewModel.updateRule(item, getRuleForStatus(context, status = it))
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun BehaviorDialog(
-    status: String,
-    showDialog: MutableState<Boolean>,
-    onItemSelected: (selected: String) -> Unit,
-) {
-    AlertDialog(
-        onDismissRequest = { showDialog.value = false },
-        modifier = Modifier.background(LocalColors.current.surfaceVariant),
-    ) {
-        val radioOptions = listOf(
-            stringResource(id = com.kape.networkmanagement.R.string.nmt_connect),
-            stringResource(id = com.kape.networkmanagement.R.string.nmt_disconnect),
-            stringResource(id = com.kape.networkmanagement.R.string.nmt_retain),
-        )
-        val selectedOption = remember {
-            mutableStateOf(
-                radioOptions[
-                    radioOptions.indexOf(
-                        status,
-                    ),
-                ],
-            )
-        }
-        Column(
-            Modifier.fillMaxWidth(),
-        ) {
-            DialogTitleText(
-                content = stringResource(id = R.string.dialog_title),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        LocalColors.current.surface,
-                    )
-                    .padding(16.dp),
-            )
-            radioOptions.forEach { text ->
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .selectable(
-                            selected = (text == selectedOption.value),
-                            onClick = {
-                                selectedOption.value = text
-                            },
-                        )
-                        .padding(vertical = 4.dp),
-                ) {
-                    RadioButton(
-                        selected = (text == selectedOption.value),
-                        onClick = {
-                            selectedOption.value = text
-                        },
-                    )
-                    Text(
-                        text = text,
-                        modifier = Modifier.align(CenterVertically),
-                    )
-                }
-            }
-
-            Row(
-                modifier = Modifier
-                    .align(End)
-                    .padding(16.dp),
+        val removeRule = stringResource(id = R.string.nmt_remove_rule)
+        currentItem.value?.let { rule ->
+            BehaviorDialog(
+                status = getStatus(behavior = rule.networkBehavior),
+                showRemoveOption = !rule.isDefault,
+                showDialog,
             ) {
-                DialogActionText(
-                    content = stringResource(id = android.R.string.cancel),
-                    modifier = Modifier.clickable {
-                        showDialog.value = false
-                    },
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                DialogActionText(
-                    content = stringResource(id = android.R.string.ok),
-                    modifier = Modifier.clickable {
-                        onItemSelected(selectedOption.value)
-                        showDialog.value = false
-                    },
-                )
+                if (it == removeRule) {
+                    viewModel.removeRule(rule)
+                } else {
+                    rule.let { item ->
+                        viewModel.updateRule(item, getRuleForStatus(context, status = it))
+                    }
+                }
             }
         }
     }
@@ -250,7 +182,7 @@ private fun getStatus(behavior: NetworkBehavior): String {
     }
 }
 
-private fun getRuleForStatus(context: Context, status: String): NetworkBehavior {
+fun getRuleForStatus(context: Context, status: String): NetworkBehavior {
     return when (status) {
         context.getString(com.kape.networkmanagement.R.string.nmt_retain) -> NetworkBehavior.RetainState
         context.getString(com.kape.networkmanagement.R.string.nmt_disconnect) -> NetworkBehavior.AlwaysDisconnect
