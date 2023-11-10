@@ -12,5 +12,5 @@ fun automationModule(appModule: Module) = module {
 
 private val localAutomationModule = module {
     single { LocationPermissionManager(get()) }
-    viewModel { AutomationViewModel(get(), get(), get(), get()) }
+    viewModel { AutomationViewModel(get(), get(), get(), get(), get()) }
 }

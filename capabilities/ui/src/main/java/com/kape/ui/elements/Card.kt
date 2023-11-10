@@ -243,8 +243,9 @@ fun NetworkCard(
     @DrawableRes icon: Int,
     title: String,
     status: String,
+    color: Color,
     isDefault: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Card(
         modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp),
@@ -253,20 +254,18 @@ fun NetworkCard(
             containerColor = LocalColors.current.surfaceVariant,
         ),
     ) {
-        val currentColor =
-            if (isDefault) LocalColors.current.primary else LocalColors.current.infoBlue()
         Box(
             modifier = Modifier
                 .height(4.dp)
                 .fillMaxWidth()
-                .background(currentColor),
+                .background(color),
         )
         Column(modifier = Modifier.padding(16.dp)) {
             Row {
                 Icon(
                     painter = painterResource(id = icon),
                     contentDescription = null,
-                    tint = currentColor,
+                    tint = color,
                     modifier = Modifier.size(24.dp),
                 )
                 Spacer(modifier = Modifier.weight(1f))
@@ -276,7 +275,7 @@ fun NetworkCard(
                     tint = LocalColors.current.onSurface,
                     modifier = Modifier.clickable {
                         onClick()
-                    }
+                    },
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
