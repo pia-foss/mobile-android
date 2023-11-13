@@ -1,19 +1,15 @@
 package screens.steps
 
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
-import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiObject
-import androidx.test.uiautomator.Until
 import screens.objects.AppPermissionObjects
 import screens.objects.LoginUiObjects
 import screens.objects.SignUpUiObjects
+import screens.steps.UiAutomatorStepsHelper.defaultTimeOut
+import screens.steps.UiAutomatorStepsHelper.device
+import screens.steps.UiAutomatorStepsHelper.inputTextInField
+import screens.steps.UiAutomatorStepsHelper.waitUntilFound
 
 
 class UiAutomatorSignInSteps : SignInSteps {
-
-    private val device: UiDevice =
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     override fun clickOnLoginButtonSignUpScreen() {
         SignUpUiObjects.loginButton.clickAndWaitForNewWindow(defaultTimeOut)
@@ -56,20 +52,4 @@ class UiAutomatorSignInSteps : SignInSteps {
         waitUntilFound(SignUpUiObjects.loginButton)
         assert(SignUpUiObjects.loginButton.exists())
     }
-
-    private fun <T> inputTextInField(field: UiObject, data: T?) {
-        field.click()
-        field.legacySetText(data?.toString() ?: "")
-    }
-
-    private fun clickIfExists(uiObject: UiObject) {
-        waitUntilFound(uiObject)
-        uiObject.clickAndWaitForNewWindow(defaultTimeOut)
-    }
-
-    private fun waitUntilFound(uiObject: UiObject) {
-        device.wait((Until.findObject(By.res(uiObject.text))), defaultTimeOut)
-    }
-
-    private val defaultTimeOut = 5000L
 }
