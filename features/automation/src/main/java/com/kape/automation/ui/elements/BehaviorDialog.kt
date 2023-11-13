@@ -1,6 +1,5 @@
 package com.kape.automation.ui.elements
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -50,14 +49,14 @@ fun BehaviorDialog(
         }
 
         val selectedOption = remember {
-                mutableStateOf(
-                    radioOptions[
-                        radioOptions.indexOf(
-                            status,
-                        ),
-                    ],
-                )
-            }
+            mutableStateOf(
+                radioOptions[
+                    radioOptions.indexOf(
+                        status,
+                    ),
+                ],
+            )
+        }
 
         Column(
             Modifier.fillMaxWidth(),

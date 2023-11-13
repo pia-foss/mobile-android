@@ -37,7 +37,6 @@ import com.kape.ui.text.SignUpPriceText
 import com.kape.ui.theme.errorBackground
 import com.kape.ui.theme.errorOutline
 import com.kape.ui.theme.infoBackground
-import com.kape.ui.theme.infoBlue
 import com.kape.ui.theme.infoOutline
 import com.kape.ui.theme.successBackground
 import com.kape.ui.theme.successOutline
