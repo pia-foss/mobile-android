@@ -2,7 +2,6 @@ package com.kape.automation.ui.screens
 
 import android.content.Context
 import android.net.wifi.ScanResult
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,9 +28,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.R
 import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
-import com.kape.networkmanagement.data.NetworkItem
 import com.kape.ui.elements.Screen
-import com.kape.ui.text.Hyperlink
 import com.kape.ui.text.MenuText
 import com.kape.ui.text.OnboardingFooterText
 import com.kape.ui.utils.LocalColors
