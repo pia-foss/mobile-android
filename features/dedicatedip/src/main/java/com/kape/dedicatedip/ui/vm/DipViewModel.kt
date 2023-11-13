@@ -9,9 +9,9 @@ import androidx.lifecycle.viewModelScope
 import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
+import com.kape.regions.data.RegionRepository
 import com.kape.router.ExitFlow
 import com.kape.router.Router
-import com.kape.regions.data.RegionRepository
 import com.kape.utils.server.Server
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent

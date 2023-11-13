@@ -127,9 +127,13 @@ private fun AppRow(
 @Composable
 private fun LockCheckBox(checked: Boolean, modifier: Modifier) {
     Icon(
-        painter = if (checked) painterResource(id = R.drawable.ic_locket_open) else painterResource(
-            id = R.drawable.ic_locket_closed,
-        ),
+        painter = if (checked) {
+            painterResource(id = R.drawable.ic_locket_open)
+        } else {
+            painterResource(
+                id = R.drawable.ic_locket_closed,
+            )
+        },
         contentDescription = null,
         tint = Color.Unspecified,
         modifier = modifier.size(24.dp),

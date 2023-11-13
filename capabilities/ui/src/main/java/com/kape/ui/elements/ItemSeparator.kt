@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kape.ui.utils.LocalColors
 
-// TODO: Rename to Separator once the deprecated file is removed. 
+// TODO: Rename to Separator once the deprecated file is removed.
 
 @Composable
 fun ItemSeparator() {

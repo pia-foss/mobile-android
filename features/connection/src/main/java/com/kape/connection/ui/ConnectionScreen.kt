@@ -161,7 +161,7 @@ private fun onPrivateBrowserClick(context: Context) {
         launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         launchIntent.data = Uri.parse("market://details?id=" + "nu.tommie.inbrowser")
 
-        //silently fail if Google Play Store isn't installed.
+        // silently fail if Google Play Store isn't installed.
         if (launchIntent.resolveActivity(context.packageManager) != null) {
             context.startActivity(launchIntent)
         }

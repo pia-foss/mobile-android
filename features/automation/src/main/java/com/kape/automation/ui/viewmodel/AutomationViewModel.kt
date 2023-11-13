@@ -41,8 +41,8 @@ class AutomationViewModel(
 
     fun navigateToNextScreen() = viewModelScope.launch {
         viewModelScope.launch {
-            if (locationPermissionManager.isFineLocationPermissionGranted()
-                && locationPermissionManager.isBackgroundLocationPermissionGranted()
+            if (locationPermissionManager.isFineLocationPermissionGranted() &&
+                locationPermissionManager.isBackgroundLocationPermissionGranted()
             ) {
                 settingsPrefs.setAutomationEnabled(true)
                 _state.emit(AutomationStep.Main)

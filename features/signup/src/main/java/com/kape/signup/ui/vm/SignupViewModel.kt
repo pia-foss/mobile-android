@@ -94,7 +94,7 @@ class SignupViewModel(
                                         formatter.formatYearlyPerMonth(formattedPrice)
                                     } ?: run {
                                         formatter.formatYearlyPerMonth(yearlyPlan.price.toString())
-                                    }
+                                    },
                                 )
                             val monthly = Plan(
                                 monthlyPlan.id,

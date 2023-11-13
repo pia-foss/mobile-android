@@ -138,7 +138,7 @@ fun MonthlySubscriptionCard(
                     .padding(16.dp)
                     .align(CenterVertically),
 
-                )
+            )
             Column {
                 SignUpDurationText(
                     content = stringResource(id = R.string.monthly),
@@ -157,7 +157,8 @@ fun MonthlySubscriptionCard(
 @Composable
 fun ErrorCard(content: String, modifier: Modifier) {
     Card(
-        modifier = modifier, shape = RoundedCornerShape(4.dp),
+        modifier = modifier,
+        shape = RoundedCornerShape(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = LocalColors.current.errorBackground(),
         ),
@@ -178,7 +179,8 @@ fun ErrorCard(content: String, modifier: Modifier) {
 @Composable
 fun WarningCard(content: String, modifier: Modifier) {
     Card(
-        modifier = modifier, shape = RoundedCornerShape(4.dp),
+        modifier = modifier,
+        shape = RoundedCornerShape(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = LocalColors.current.warningBackground(),
         ),
@@ -199,7 +201,8 @@ fun WarningCard(content: String, modifier: Modifier) {
 @Composable
 fun InfoCard(content: String, modifier: Modifier) {
     Card(
-        modifier = modifier, shape = RoundedCornerShape(4.dp),
+        modifier = modifier,
+        shape = RoundedCornerShape(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = LocalColors.current.infoBackground(),
         ),
@@ -220,7 +223,8 @@ fun InfoCard(content: String, modifier: Modifier) {
 @Composable
 fun SuccessCard(content: String, modifier: Modifier) {
     Card(
-        modifier = modifier, shape = RoundedCornerShape(4.dp),
+        modifier = modifier,
+        shape = RoundedCornerShape(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = LocalColors.current.successBackground(),
         ),

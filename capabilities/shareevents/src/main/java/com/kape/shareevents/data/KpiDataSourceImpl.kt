@@ -2,7 +2,6 @@ package com.kape.shareevents.data
 
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
-import com.kape.shareevents.KpiPrefs
 import com.kape.shareevents.data.models.KpiConnectionEvent
 import com.kape.shareevents.data.models.KpiConnectionSource
 import com.kape.shareevents.data.models.KpiEventPropertyKey

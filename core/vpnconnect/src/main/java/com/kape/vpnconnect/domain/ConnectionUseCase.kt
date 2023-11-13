@@ -116,7 +116,7 @@ class ConnectionUseCase(
             port = port,
             dnsInformation = DnsInformation(
                 dnsList = dnsList,
-                systemDnsResolverEnabled = settingsPrefs.getSelectedDnsOption() == DnsOptions.SYSTEM
+                systemDnsResolverEnabled = settingsPrefs.getSelectedDnsOption() == DnsOptions.SYSTEM,
             ),
             notificationId = 123,
             notification = notificationBuilder.build(),

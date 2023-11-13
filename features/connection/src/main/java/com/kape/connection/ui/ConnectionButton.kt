@@ -35,7 +35,8 @@ fun ConnectButton(status: ConnectionStatus, modifier: Modifier, onClick: () -> U
                         getStatusColor(status),
                     ),
                 ),
-                CircleShape, 0.1f,
+                CircleShape,
+                0.1f,
             )
             .clip(CircleShape),
     ) {

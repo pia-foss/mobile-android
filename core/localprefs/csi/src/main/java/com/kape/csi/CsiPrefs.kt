@@ -11,5 +11,4 @@ class CsiPrefs(context: Context) : Prefs(context, "csi") {
         prefs.edit().putString(LAST_KNOWN_EXCEPTION, value).apply()
 
     fun getLastKnownException() = prefs.getString(LAST_KNOWN_EXCEPTION, "") ?: ""
-
 }

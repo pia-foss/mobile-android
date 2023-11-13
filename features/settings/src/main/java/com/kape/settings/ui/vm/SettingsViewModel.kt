@@ -208,8 +208,8 @@ class SettingsViewModel(
     fun disableAutomation() = prefs.setAutomationEnabled(false)
 
     fun areLocationPermissionsGranted() =
-        locationPermissionManager.isFineLocationPermissionGranted()
-                && locationPermissionManager.isBackgroundLocationPermissionGranted()
+        locationPermissionManager.isFineLocationPermissionGranted() &&
+            locationPermissionManager.isBackgroundLocationPermissionGranted()
 
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()
@@ -334,6 +334,3 @@ class SettingsViewModel(
         prefs.setWidgetSettings(settings)
     }
 }
-
-
-

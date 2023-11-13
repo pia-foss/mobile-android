@@ -1,8 +1,6 @@
 package com.kape.dedicatedip
 
 import com.kape.dedicatedip.utils.DipApiResult
-import com.kape.utils.ApiError
-import com.kape.utils.ApiResult
 import org.junit.jupiter.params.provider.Arguments
 import java.util.stream.Stream
 

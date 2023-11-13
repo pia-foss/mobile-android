@@ -12,8 +12,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
-
-class ActivateDipUseCaseTest: DataForTest() {
+class ActivateDipUseCaseTest : DataForTest() {
     private val dataSource: DipDataSource = mockk()
     private lateinit var useCase: ActivateDipUseCase
 

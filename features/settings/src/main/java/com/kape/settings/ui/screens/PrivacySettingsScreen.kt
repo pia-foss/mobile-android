@@ -66,7 +66,6 @@ fun PrivacySettingsScreen() = Screen {
                     showWarning.value = false
                 }
             }
-
         }
     }
 }

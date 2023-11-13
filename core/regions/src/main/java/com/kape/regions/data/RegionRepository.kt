@@ -9,7 +9,7 @@ import com.kape.utils.server.ServerInfo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-private const val UPDATE_INTERVAL_MS = 30000 //(30 seconds)
+private const val UPDATE_INTERVAL_MS = 30000 // (30 seconds)
 
 class RegionRepository(private val source: RegionDataSource, private val dipPrefs: DipPrefs) {
 
