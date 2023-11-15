@@ -1,6 +1,7 @@
 import Dependencies.desugarJdkLibs
 import Dependencies.implementAccount
 import Dependencies.implementAndroidBase
+import Dependencies.implementAndroidUiTest
 import Dependencies.implementCompose
 import Dependencies.implementComposeNavigation
 import Dependencies.implementCoroutines
@@ -40,6 +41,23 @@ android {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
+            )
+        }
+        debug {
+            buildConfigField(
+                "String",
+                "PIA_VALID_USERNAME",
+                "\"${System.getenv("PIA_VALID_USERNAME")}\"",
+            )
+            buildConfigField(
+                "String",
+                "PIA_VALID_PASSWORD",
+                "\"${System.getenv("PIA_VALID_PASSWORD")}\"",
+            )
+            buildConfigField(
+                "String",
+                "PIA_VALID_DIP_TOKEN",
+                "\"${System.getenv("PIA_VALID_DIP_TOKEN")}\"",
             )
         }
     }
@@ -135,4 +153,6 @@ dependencies {
     implementMultiplatformSettings()
     implementVpnManager()
     implementCoroutines()
+
+    implementAndroidUiTest()
 }

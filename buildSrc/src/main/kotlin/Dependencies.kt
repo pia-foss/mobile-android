@@ -117,6 +117,10 @@ object Dependencies {
         add(ANDROID_TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.13.5")
     }
 
+    fun DependencyHandler.implementAndroidUiTest() {
+        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test.uiautomator:uiautomator:2.2.0")
+    }
+
     fun DependencyHandler.implementCoroutines() {
         add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
         add(TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
