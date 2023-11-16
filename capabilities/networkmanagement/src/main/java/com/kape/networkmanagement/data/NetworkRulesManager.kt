@@ -1,6 +1,5 @@
 package com.kape.networkmanagement.data
 
-import android.net.wifi.ScanResult
 import com.kape.networkmanagement.NetworkManagementPrefs
 import com.kape.networkmanagement.utils.NetworkUtil
 
@@ -22,8 +21,8 @@ class NetworkRulesManager(
         prefs.updateRuleForNetwork(rule, behavior)
     }
 
-    fun addRule(scanResult: ScanResult, behavior: NetworkBehavior) {
-        prefs.addRuleForNetwork(scanResult, behavior)
+    fun addRule(ssid: String, behavior: NetworkBehavior) {
+        prefs.addRuleForNetwork(ssid, behavior)
     }
 
     fun removeRule(rule: NetworkItem) {

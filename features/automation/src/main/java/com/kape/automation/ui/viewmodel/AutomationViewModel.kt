@@ -1,6 +1,6 @@
 package com.kape.automation.ui.viewmodel
 
-import android.net.wifi.ScanResult
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.automation.utils.AutomationStep
@@ -24,12 +24,13 @@ class AutomationViewModel(
     private val settingsPrefs: SettingsPrefs,
     private val networkRulesManager: NetworkRulesManager,
     private val networkScanner: NetworkScanner,
+    val broadcastIntent: Intent,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow<AutomationStep>(AutomationStep.LocationPermission)
     val state: StateFlow<AutomationStep> = _state
 
-    val availableNetworks = networkScanner.scanResults
+    val availableNetwork = networkScanner.currentSSID
 
     init {
         navigateToNextScreen()
@@ -60,7 +61,7 @@ class AutomationViewModel(
         _state.emit(AutomationStep.AddRule)
     }
 
-    fun scanNetworks() = networkScanner.scanNetworks()
+    fun scanNetworks() = networkScanner.scanNetwork()
 
     fun getNetworkItems() = networkRulesManager.getRules()
 
@@ -68,8 +69,8 @@ class AutomationViewModel(
         networkRulesManager.updateRule(rule, behavior)
     }
 
-    fun addRule(scanResult: ScanResult, behavior: NetworkBehavior) {
-        networkRulesManager.addRule(scanResult, behavior)
+    fun addRule(ssid: String, behavior: NetworkBehavior) {
+        networkRulesManager.addRule(ssid, behavior)
     }
 
     fun removeRule(rule: NetworkItem) {

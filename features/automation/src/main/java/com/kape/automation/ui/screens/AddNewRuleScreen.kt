@@ -1,15 +1,12 @@
 package com.kape.automation.ui.screens
 
 import android.content.Context
-import android.net.wifi.ScanResult
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -41,7 +38,7 @@ fun AddNewRuleScreen() = Screen {
         appBarText(stringResource(id = R.string.trusted_network_plural))
     }
     val showDialog = remember { mutableStateOf(false) }
-    val currentItem = remember { mutableStateOf<ScanResult?>(null) }
+    var currentItem: String? = null
     val context: Context = LocalContext.current
 
     LaunchedEffect(key1 = Unit) {
@@ -62,12 +59,10 @@ fun AddNewRuleScreen() = Screen {
                 content = stringResource(id = R.string.add_rule_title),
                 modifier = Modifier.padding(16.dp),
             )
-            LazyColumn {
-                items(viewModel.availableNetworks.value) {
-                    WifiNetworkItem(scanResult = it, showDialog) {
-                        currentItem.value = it
-                        showDialog.value = true
-                    }
+            viewModel.availableNetwork.value?.let {
+                WifiNetworkItem(ssid = it, showDialog) {
+                    currentItem = it
+                    showDialog.value = true
                 }
             }
         }
@@ -78,7 +73,7 @@ fun AddNewRuleScreen() = Screen {
                 showRemoveOption = false,
                 showDialog,
             ) {
-                currentItem.value?.let { item ->
+                currentItem?.let { item ->
                     viewModel.addRule(item, getRuleForStatus(context, it))
                 }
             }
@@ -88,16 +83,16 @@ fun AddNewRuleScreen() = Screen {
 
 @Composable
 fun WifiNetworkItem(
-    scanResult: ScanResult,
+    ssid: String,
     showDialog: MutableState<Boolean>,
-    onClick: (scanResult: ScanResult) -> Unit,
+    onClick: (ssid: String) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .padding(16.dp)
             .clickable {
                 showDialog.value = true
-                onClick(scanResult)
+                onClick(ssid)
             },
     ) {
         Icon(
@@ -107,7 +102,7 @@ fun WifiNetworkItem(
         )
         Spacer(modifier = Modifier.width(16.dp))
         MenuText(
-            content = scanResult.SSID,
+            content = ssid,
             modifier = Modifier.align(Alignment.CenterVertically),
         )
     }
