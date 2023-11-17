@@ -1,18 +1,27 @@
 package tests.actions
 
+import screens.steps.LogOutSteps
 import screens.steps.SignInSteps
 
-class UiAction(private val signInStep: SignInSteps) {
+class UiAction(
+    private val signInSteps: SignInSteps,
+    private val logOutSteps: LogOutSteps,
+) {
 
     fun signIn(username: String, password: String) {
-        signInStep.navigateToSignUpScreen()
-        signInStep.clickOnLoginButtonSignUpScreen()
-        signInStep.enterCredentials(username, password)
-        signInStep.clickOnLoginButtonLoginScreen()
+        signInSteps.navigateToSignUpScreen()
+        signInSteps.clickOnLoginButtonSignUpScreen()
+        signInSteps.enterCredentials(username, password)
+        signInSteps.clickOnLoginButtonLoginScreen()
     }
 
     fun giveAppPermissions() {
-        signInStep.allowVpnProfileCreation()
-        signInStep.allowNotifications()
+        signInSteps.allowVpnProfileCreation()
+        signInSteps.allowNotifications()
+    }
+
+    fun logout() {
+        logOutSteps.goToSettings()
+        logOutSteps.clickOnLogoutSettingsButton()
     }
 }

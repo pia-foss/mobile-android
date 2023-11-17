@@ -19,10 +19,14 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kape.sidemenu.R
@@ -49,6 +53,7 @@ fun SideMenu(scope: CoroutineScope, drawerState: DrawerState, content: @Composab
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
     val viewModel: SideMenuViewModel = getViewModel()
@@ -58,7 +63,10 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
             .background(color = LocalColors.current.surface)
             .padding(horizontal = 24.dp, vertical = 24.dp)
             .width(300.dp)
-            .fillMaxHeight(),
+            .fillMaxHeight()
+            .semantics {
+                testTagsAsResourceId = true
+            },
     ) {
         SideMenuHeaderItem(
             username = viewModel.username.value,
@@ -68,14 +76,22 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        SideMenuItem(iconId = R.drawable.ic_account, titleId = R.string.drawer_item_title_account) {
+        SideMenuItem(
+            iconId = R.drawable.ic_account,
+            titleId = R.string.drawer_item_title_account,
+            ":SideMenu:Account",
+        ) {
             scope.launch {
                 state.close()
             }
             viewModel.navigateToProfile()
         }
 
-        SideMenuItem(iconId = R.drawable.ic_ip, titleId = R.string.drawer_item_title_dedicated_ip) {
+        SideMenuItem(
+            iconId = R.drawable.ic_ip,
+            titleId = R.string.drawer_item_title_dedicated_ip,
+            ":SideMenu:DedicatedIp",
+        ) {
             scope.launch {
                 state.close()
             }
@@ -85,6 +101,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         SideMenuItem(
             iconId = R.drawable.ic_per_app,
             titleId = R.string.drawer_item_title_per_app_settings,
+            ":SideMenu:PerAppSettings",
         ) {
             scope.launch {
                 state.close()
@@ -95,6 +112,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         SideMenuItem(
             iconId = R.drawable.ic_settings,
             titleId = R.string.drawer_item_title_settings,
+            ":SideMenu:Settings",
         ) {
             scope.launch {
                 state.close()
@@ -102,7 +120,11 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
             viewModel.navigateToSettings()
         }
 
-        SideMenuItem(iconId = R.drawable.ic_log_out, titleId = R.string.drawer_item_title_logout) {
+        SideMenuItem(
+            iconId = R.drawable.ic_log_out,
+            titleId = R.string.drawer_item_title_logout,
+            ":SideMenu:LogOut",
+        ) {
             scope.launch {
                 state.close()
             }
@@ -111,7 +133,11 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 
         MenuSeparator()
 
-        SideMenuItem(iconId = R.drawable.ic_about, titleId = R.string.drawer_item_title_about) {
+        SideMenuItem(
+            iconId = R.drawable.ic_about,
+            titleId = R.string.drawer_item_title_about,
+            ":SideMenu:About",
+        ) {
             scope.launch {
                 state.close()
             }
@@ -120,6 +146,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         SideMenuItem(
             iconId = R.drawable.ic_privacy,
             titleId = R.string.drawer_item_title_privacy_policy,
+            ":SideMenu:PrivacyPolicy",
         ) {
             scope.launch {
                 state.close()
@@ -130,6 +157,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         SideMenuItem(
             iconId = R.drawable.ic_help,
             titleId = R.string.drawer_item_title_contact_support,
+            ":SideMenu:ContactSupport",
         ) {
             scope.launch {
                 state.close()
@@ -169,7 +197,12 @@ private fun SideMenuHeaderItem(username: String, versionCode: String, versionNam
 }
 
 @Composable
-private fun SideMenuItem(@DrawableRes iconId: Int, @StringRes titleId: Int, onClick: () -> Unit) {
+private fun SideMenuItem(
+    @DrawableRes iconId: Int,
+    @StringRes titleId: Int,
+    testTag: String,
+    onClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -181,7 +214,8 @@ private fun SideMenuItem(@DrawableRes iconId: Int, @StringRes titleId: Int, onCl
         Image(
             modifier = Modifier
                 .align(CenterVertically)
-                .size(24.dp),
+                .size(24.dp)
+                .testTag(testTag),
             painter = painterResource(id = iconId),
             contentScale = ContentScale.Inside,
             contentDescription = null,
