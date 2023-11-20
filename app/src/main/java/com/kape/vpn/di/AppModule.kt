@@ -95,7 +95,7 @@ val appModule = module {
     single { CsiPrefs(get()) }
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
     single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
-    single { NetworkListener(get(), get(), get()) }
+    single { NetworkListener(get(), get(), get(), get()) }
     single(named("rules-updated-intent")) { provideRulesUpdatedIntent(get()) }
 }
 

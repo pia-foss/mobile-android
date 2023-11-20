@@ -1,34 +1,25 @@
 package com.kape.vpn.utils
 
 import android.content.Context
-import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
-import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
 import android.net.NetworkCapabilities.TRANSPORT_WIFI
-import android.net.NetworkRequest
 import android.net.wifi.WifiInfo
-import android.net.wifi.WifiManager
 import android.os.Build
 import com.kape.networkmanagement.NetworkManagementPrefs
 import com.kape.networkmanagement.R
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
+import com.kape.networkmanagement.domain.NetworkInfoSource
 import com.kape.vpn.receiver.OnRulesChangedReceiver
 
 class NetworkListener(
     private val context: Context,
     private val networkPrefs: NetworkManagementPrefs,
     private val vpnLauncher: VpnLauncher,
+    private val networkInfoSource: NetworkInfoSource,
 ) {
-
-    private val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-
     private val callback: NetworkCallback =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             object : NetworkCallback(FLAG_INCLUDE_LOCATION_INFO) {
@@ -39,7 +30,7 @@ class NetworkListener(
                     super.onCapabilitiesChanged(network, networkCapabilities)
                     if (networkCapabilities.transportInfo is WifiInfo) {
                         handleCurrentNetwork(
-                            (networkCapabilities.transportInfo as WifiInfo).ssid,
+                            networkInfoSource.getSSID(networkCapabilities),
                             networkCapabilities.hasTransport(
                                 TRANSPORT_WIFI,
                             ),
@@ -55,7 +46,7 @@ class NetworkListener(
                 ) {
                     super.onCapabilitiesChanged(network, networkCapabilities)
                     handleCurrentNetwork(
-                        wifiManager.connectionInfo.ssid,
+                        networkInfoSource.getSSID(networkCapabilities),
                         networkCapabilities.hasTransport(
                             TRANSPORT_WIFI,
                         ),
@@ -65,17 +56,11 @@ class NetworkListener(
         }
 
     fun register() {
-        connectivityManager.registerDefaultNetworkCallback(callback)
-        context.registerReceiver(OnRulesChangedReceiver(), IntentFilter())
+        networkInfoSource.registerDefaultCallback(callback, context, OnRulesChangedReceiver())
     }
 
     fun triggerUpdate() {
-        val networkRequest = NetworkRequest.Builder()
-            .addCapability(NET_CAPABILITY_INTERNET)
-            .addTransportType(TRANSPORT_WIFI)
-            .addTransportType(TRANSPORT_CELLULAR)
-            .build()
-        connectivityManager.requestNetwork(networkRequest, callback)
+        networkInfoSource.triggerUpdate(callback)
     }
 
     private fun handleCurrentNetwork(ssid: String, isWifi: Boolean) {
