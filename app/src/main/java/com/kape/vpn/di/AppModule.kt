@@ -16,7 +16,6 @@ import com.kape.csi.CsiPrefs
 import com.kape.notifications.data.NotificationChannelManager
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
-import com.kape.utils.NetworkListener
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
 import com.kape.vpn.R
@@ -29,9 +28,11 @@ import com.kape.vpn.provider.KpiModuleStateProvider
 import com.kape.vpn.provider.PlatformProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.vpn.provider.VpnManagerProvider
+import com.kape.vpn.receiver.OnRulesChangedReceiver
 import com.kape.vpn.receiver.OnSnoozeReceiver
 import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.service.WidgetProviderService
+import com.kape.vpn.utils.NetworkListener
 import com.kape.vpn.utils.SNOOZE_REQUEST_CODE
 import com.kape.vpn.utils.SnoozeHandler
 import com.kape.vpn.utils.VpnLauncher
@@ -94,7 +95,8 @@ val appModule = module {
     single { CsiPrefs(get()) }
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
     single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
-    single { NetworkListener(get()) }
+    single { NetworkListener(get(), get(), get(), get()) }
+    single(named("rules-updated-intent")) { provideRulesUpdatedIntent(get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -346,6 +348,10 @@ fun provideWidgetServiceIntent(context: Context): PendingIntent {
         Intent(context, WidgetProviderService::class.java),
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
+}
+
+fun provideRulesUpdatedIntent(context: Context): Intent {
+    return Intent(context, OnRulesChangedReceiver::class.java)
 }
 
 private fun provideAlarmManager(context: Context) =

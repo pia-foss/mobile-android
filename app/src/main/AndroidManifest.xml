@@ -21,6 +21,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!--Android 13-->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
@@ -64,7 +65,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
+
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
 
@@ -86,6 +89,7 @@
         </receiver>
         <receiver android:name=".receiver.OnSnoozeReceiver" />
         <receiver android:name=".receiver.PortForwardingReceiver" />
+        <receiver android:name=".receiver.OnRulesChangedReceiver" />
 
         <service
             android:name=".service.VpnAlwaysOnService"

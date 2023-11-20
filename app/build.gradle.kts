@@ -117,6 +117,8 @@ dependencies {
     implementation(project(":core:localprefs:settings:data"))
     implementation(project(":core:localprefs:connection"))
     implementation(project(":core:localprefs:csi"))
+    implementation(project(":core:localprefs:networkmanagement"))
+    implementation(project(":core:localprefs:networkmanagement:data"))
     implementAccount()
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))

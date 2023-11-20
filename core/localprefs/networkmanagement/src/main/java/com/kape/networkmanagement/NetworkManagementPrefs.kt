@@ -1,7 +1,6 @@
 package com.kape.networkmanagement
 
 import android.content.Context
-import android.net.wifi.ScanResult
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
@@ -13,9 +12,9 @@ private const val NETWORK_RULES = "network-rules"
 
 class NetworkManagementPrefs(context: Context) : Prefs(context, "network-management") {
 
-    fun addRuleForNetwork(network: ScanResult, behavior: NetworkBehavior) {
+    fun addRuleForNetwork(ssid: String, behavior: NetworkBehavior) {
         val rule = NetworkItem(
-            networkName = network.BSSID,
+            networkName = ssid,
             networkType = NetworkType.WifiCustom,
             networkBehavior = behavior,
         )
@@ -51,6 +50,10 @@ class NetworkManagementPrefs(context: Context) : Prefs(context, "network-managem
             rules.add(Json.decodeFromString(it))
         }
         return rules
+    }
+
+    fun getRuleForNetwork(ssid: String): NetworkItem? {
+        return getAllRules().filter { it.networkName == ssid }.getOrNull(0)
     }
 
     private fun addNetworkItem(item: NetworkItem) {

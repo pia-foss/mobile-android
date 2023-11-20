@@ -1,6 +1,7 @@
 package com.kape.automation.ui.screens
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -51,12 +53,16 @@ fun AutomationScreen() = Screen {
 
     val context: Context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        context.sendBroadcast(viewModel.broadcastIntent)
+    }
+
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
             ) {
-                viewModel.navigateUp()
+                viewModel.exitAutomation()
             }
         },
     ) {
@@ -86,8 +92,7 @@ fun AutomationScreen() = Screen {
 
                         NetworkType.WifiCustom -> {
                             icon = com.kape.ui.R.drawable.ic_wifi_custom
-                            title =
-                                stringResource(id = com.kape.networkmanagement.R.string.nmt_open_wifi)
+                            title = networkItem.networkName
                         }
 
                         NetworkType.WifiOpen -> {
@@ -155,6 +160,7 @@ fun AutomationScreen() = Screen {
                         viewModel.updateRule(item, getRuleForStatus(context, status = it))
                     }
                 }
+                context.sendBroadcast(viewModel.broadcastIntent)
             }
         }
     }

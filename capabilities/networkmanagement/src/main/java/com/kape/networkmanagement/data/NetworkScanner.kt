@@ -1,30 +1,39 @@
 package com.kape.networkmanagement.data
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.net.wifi.ScanResult
-import android.net.wifi.WifiManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.os.Build
 import androidx.compose.runtime.mutableStateOf
+import com.kape.networkmanagement.domain.NetworkInfoSource
 
-class NetworkScanner(private val context: Context) {
+class NetworkScanner(private val networkInfoSource: NetworkInfoSource) {
+    val currentSSID = mutableStateOf<String?>(null)
 
-    var scanResults = mutableStateOf(emptyList<ScanResult>())
-
-    private val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
-    private val wifiReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val success = intent.getBooleanExtra(WifiManager.EXTRA_RESULTS_UPDATED, false)
-            scanResults.value = wifiManager.scanResults
+    private val callback: ConnectivityManager.NetworkCallback =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            object : ConnectivityManager.NetworkCallback(FLAG_INCLUDE_LOCATION_INFO) {
+                override fun onCapabilitiesChanged(
+                    network: Network,
+                    networkCapabilities: NetworkCapabilities,
+                ) {
+                    super.onCapabilitiesChanged(network, networkCapabilities)
+                    currentSSID.value = networkInfoSource.getSSID(networkCapabilities)
+                    networkInfoSource.unregisterCallback(this)
+                }
+            }
+        } else {
+            object : ConnectivityManager.NetworkCallback() {
+                override fun onCapabilitiesChanged(
+                    network: Network,
+                    networkCapabilities: NetworkCapabilities,
+                ) {
+                    super.onCapabilitiesChanged(network, networkCapabilities)
+                    currentSSID.value = networkInfoSource.getSSID(networkCapabilities)
+                    networkInfoSource.unregisterCallback(this)
+                }
+            }
         }
-    }
 
-    fun scanNetworks() {
-        val intentFilter = IntentFilter()
-        intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
-        context.registerReceiver(wifiReceiver, intentFilter)
-
-        val success = wifiManager.startScan()
-    }
+    fun scanNetwork() = networkInfoSource.registerCallback(callback)
 }
