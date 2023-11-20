@@ -12,6 +12,7 @@ import Dependencies.implementMultiplatformSettings
 import Dependencies.implementRegions
 import Dependencies.implementViewModel
 import Dependencies.implementVpnManager
+import java.net.URL
 
 plugins {
     id("com.android.application")
@@ -157,4 +158,19 @@ dependencies {
     implementCoroutines()
 
     implementAndroidUiTest()
+}
+
+task("fetchRegionsInformation"){
+    File("$rootDir/app/src/main/assets/metadata-regions.json")
+        .writeText(
+            URL("https://serverlist.piaservers.net/vpninfo/regions/v2").readText()
+        )
+    File("$rootDir/app/src/main/assets/vpn-regions.json")
+        .writeText(
+            URL("https://serverlist.piaservers.net/vpninfo/servers/v6").readText()
+        )
+    File("$rootDir/app/src/main/assets/shadowsocks-regions.json")
+        .writeText(
+            URL("https://serverlist.piaservers.net/shadow_socks").readText()
+        )
 }

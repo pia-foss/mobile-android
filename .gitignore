@@ -1,4 +1,5 @@
 *.iml
+*-regions.json
 .gradle
 /local.properties
 /.idea
