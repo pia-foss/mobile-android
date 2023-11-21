@@ -151,4 +151,9 @@ object Dependencies {
     fun DependencyHandler.implementDrawablePainter() {
         add(IMPLEMENTATION, "com.google.accompanist:accompanist-drawablepainter:0.33.1-alpha")
     }
+
+    fun DependencyHandler.implementGlance() {
+        add(IMPLEMENTATION, "androidx.glance:glance-appwidget:1.0.0")
+        add(IMPLEMENTATION, "androidx.glance:glance-material3:1.0.0")
+    }
 }

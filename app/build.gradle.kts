@@ -6,6 +6,7 @@ import Dependencies.implementCompose
 import Dependencies.implementComposeNavigation
 import Dependencies.implementCoroutines
 import Dependencies.implementCsi
+import Dependencies.implementGlance
 import Dependencies.implementKoin
 import Dependencies.implementKpi
 import Dependencies.implementMultiplatformSettings
@@ -156,6 +157,7 @@ dependencies {
     implementMultiplatformSettings()
     implementVpnManager()
     implementCoroutines()
+    implementGlance()
 
     implementAndroidUiTest()
 }
