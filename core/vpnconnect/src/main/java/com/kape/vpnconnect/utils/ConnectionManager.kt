@@ -1,7 +1,6 @@
 package com.kape.vpnconnect.utils
 
 import android.content.Context
-import android.content.Intent
 import com.kape.shareevents.data.models.KpiConnectionStatus
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.vpnconnect.R
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 class ConnectionManager(
     private val context: Context,
-    private val updateWidgetIntents: List<Intent>,
     private val connectionValues: Map<ConnectionStatus, String>,
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
 ) : VPNManagerConnectionListener {
@@ -52,9 +50,6 @@ class ConnectionManager(
         )
         connectionValues[currentStatus]?.let {
             _connectionStatusTitle.value = String.format(it, serverName.value)
-        }
-        updateWidgetIntents.forEach {
-            context.sendBroadcast(it)
         }
     }
 
