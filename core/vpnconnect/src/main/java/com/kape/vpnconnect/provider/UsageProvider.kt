@@ -8,7 +8,7 @@ import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import kotlin.math.ln
 import kotlin.math.pow
 
-class UsageProvider(private val context: Context, private val intents: List<Intent>) :
+class UsageProvider(private val context: Context) :
     VPNManagerProtocolByteCountDependency {
 
     val download = mutableStateOf(humanReadableByteCountSI(0))
@@ -26,9 +26,6 @@ class UsageProvider(private val context: Context, private val intents: List<Inte
         widgetDownloadSpeed.value = humanReadableByteCount(rx, true, context)
         widgetUpload.value = humanReadableByteCount(tx, false, context)
         widgetUploadSpeed.value = humanReadableByteCount(tx, true, context)
-        intents.forEach {
-            context.sendBroadcast(it)
-        }
     }
 
     fun reset() {
