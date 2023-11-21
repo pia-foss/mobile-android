@@ -7,8 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
@@ -22,6 +25,7 @@ import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProtocolSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
@@ -42,7 +46,10 @@ fun ProtocolSettingsScreen() = Screen {
     ) {
         Column(
             modifier = Modifier
-                .padding(it),
+                .padding(it)
+                .semantics {
+                    testTagsAsResourceId = true
+                },
         ) {
             when (viewModel.getSelectedProtocol()) {
                 VpnProtocols.OpenVPN -> {
@@ -173,6 +180,7 @@ fun ProtocolSelectionLine(name: String, visibility: MutableState<Boolean>) {
     SettingsItem(
         titleId = R.string.protocol_selection_title,
         subtitle = name,
+        testTag = ":ProtocolSettingsScreen:protocol_selection"
     ) {
         visibility.value = true
     }

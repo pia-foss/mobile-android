@@ -88,7 +88,7 @@ private fun AppBarContent(
             onClick = { onLeftIconClick() },
             modifier = Modifier
                 .align(CenterStart)
-                .testTag(":AppBar:HamburgerMenu")
+                .testTag(":AppBar:side_menu")
         ) {
             Icon(painter = painterResource(id = getAppBarLeftIcon(type)), contentDescription = null)
         }

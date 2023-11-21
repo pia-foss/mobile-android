@@ -1,5 +1,7 @@
 package screens.objects
 
+import screens.objects.helpers.UiAutomatorObjectFinder
+
 object AppPermissionObjects {
     val vpnProfileOkButton = UiAutomatorObjectFinder.findByResourceId(":VpnPermissionScreen:ok")
     val androidOkButton = UiAutomatorObjectFinder.findByResourceId("android:id/button1")

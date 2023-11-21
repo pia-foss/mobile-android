@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,7 @@ fun SettingsItem(
     @DrawableRes iconId: Int? = null,
     @StringRes titleId: Int,
     subtitle: String? = null,
+    testTag: String? = null,
     onClick: (() -> Unit)? = null,
 ) {
     Column(
@@ -53,7 +55,8 @@ fun SettingsItem(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .testTag(testTag.toString()),
             ) {
                 SettingsL2Text(
                     content = stringResource(id = titleId),
