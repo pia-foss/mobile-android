@@ -8,7 +8,7 @@ import com.privateinternetaccess.regions.RegionsUtils
 
 class ReadRegionsDetailsUseCase(
     private val regionInputStream: RegionInputStream,
-    private val dipPrefs: DipPrefs
+    private val dipPrefs: DipPrefs,
 ) {
 
     companion object {

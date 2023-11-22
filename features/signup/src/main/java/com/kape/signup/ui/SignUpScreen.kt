@@ -58,7 +58,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData)
             .background(LocalColors.current.background)
             .semantics {
                 testTagsAsResourceId = true
-            }
+            },
     ) {
         Image(
             painter = painterResource(id = R.drawable.map),
