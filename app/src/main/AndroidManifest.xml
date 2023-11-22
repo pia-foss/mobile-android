@@ -111,7 +111,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".widget.WidgetReceiver" android:exported="true">
+        <receiver android:name="com.kape.widget.WidgetReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

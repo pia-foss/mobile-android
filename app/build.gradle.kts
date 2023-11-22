@@ -148,6 +148,7 @@ dependencies {
     implementation(project(":features:appbar"))
     implementation(project(":features:dedicatedip"))
     implementation(project(":features:automation"))
+    implementation(project(":features:widget"))
 
     implementAndroidBase()
     implementViewModel()
@@ -157,7 +158,6 @@ dependencies {
     implementMultiplatformSettings()
     implementVpnManager()
     implementCoroutines()
-    implementGlance()
 
     implementAndroidUiTest()
 }

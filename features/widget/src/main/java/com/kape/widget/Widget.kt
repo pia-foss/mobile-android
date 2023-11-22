@@ -1,4 +1,4 @@
-package com.kape.vpn.widget
+package com.kape.widget
 
 import android.content.Context
 import androidx.compose.ui.unit.dp
