@@ -18,12 +18,12 @@ object Dependencies {
         add(IMPLEMENTATION, "androidx.compose.ui:ui")
         add(IMPLEMENTATION, "androidx.compose.ui:ui-graphics")
         add(IMPLEMENTATION, "androidx.compose.ui:ui-tooling-preview")
-        add(IMPLEMENTATION, "androidx.compose.material3:material3")
         add(IMPLEMENTATION, "com.google.accompanist:accompanist-systemuicontroller:0.30.1")
         add(ANDROID_TEST_IMPLEMENTATION, platform(COMPOSE_BOM))
         add(ANDROID_TEST_IMPLEMENTATION, "androidx.compose.ui:ui-test-junit4")
         add(DEBUG_IMPLEMENTATION, "androidx.compose.ui:ui-tooling")
         add(DEBUG_IMPLEMENTATION, "androidx.compose.ui:ui-test-manifest")
+        implementMaterial3()
     }
 
     fun DependencyHandler.implementComposeNavigation() {
@@ -155,5 +155,10 @@ object Dependencies {
     fun DependencyHandler.implementGlance() {
         add(IMPLEMENTATION, "androidx.glance:glance-appwidget:1.0.0")
         add(IMPLEMENTATION, "androidx.glance:glance-material3:1.0.0")
+        implementMaterial3()
+    }
+
+    private fun DependencyHandler.implementMaterial3() {
+        add(IMPLEMENTATION, "androidx.compose.material3:material3")
     }
 }
