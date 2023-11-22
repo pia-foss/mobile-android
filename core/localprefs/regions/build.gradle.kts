@@ -1,4 +1,4 @@
-
+import Dependencies.implementSerialization
 
 plugins {
     id("com.android.library")
@@ -26,4 +26,6 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
+
+    implementSerialization()
 }

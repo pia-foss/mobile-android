@@ -11,7 +11,10 @@ import kotlinx.coroutines.flow.flow
 
 private const val UPDATE_INTERVAL_MS = 30000 // (30 seconds)
 
-class RegionRepository(private val source: RegionDataSource, private val dipPrefs: DipPrefs) {
+class RegionRepository(
+    private val source: RegionDataSource,
+    private val dipPrefs: DipPrefs
+) {
 
     private var serverMap: Map<String, Server> = hashMapOf()
     private var serverInfo: ServerInfo = ServerInfo()

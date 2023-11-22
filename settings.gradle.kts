@@ -19,6 +19,13 @@ dependencyResolutionManagement {
                 password = System.getenv("GITHUB_TOKEN")
             }
         }
+        maven {
+            url = uri("https://maven.pkg.github.com/pia-foss/mobile-shared-regions")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
 

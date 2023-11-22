@@ -19,4 +19,6 @@ class GetRegionsUseCase(private val repo: RegionRepository, private val prefs: R
     fun getSelectedRegion() = prefs.getSelectedServerKey()
 
     fun selectRegion(key: String) = prefs.selectServer(key)
+
+    fun getServers() = prefs.getServers()
 }

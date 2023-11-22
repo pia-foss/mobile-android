@@ -109,7 +109,8 @@ private fun provideRegionsApi(
         .setCertificate(provider.certificate)
         .setUserAgent(USER_AGENT)
         .setMetadataRequestPath("/vpninfo/regions/v2")
-        .setRegionsListRequestPath("/vpninfo/servers/v6")
+        .setVpnRegionsRequestPath("/vpninfo/servers/v6")
+        .setShadowsocksRegionsRequestPath("/shadow_socks")
         .setPlatformInstancesProvider(platformProvider)
         .build()
 }
