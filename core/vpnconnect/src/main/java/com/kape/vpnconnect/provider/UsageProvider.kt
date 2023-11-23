@@ -1,7 +1,6 @@
 package com.kape.vpnconnect.provider
 
 import android.content.Context
-import android.content.Intent
 import androidx.compose.runtime.mutableStateOf
 import com.kape.vpnconnect.R
 import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency

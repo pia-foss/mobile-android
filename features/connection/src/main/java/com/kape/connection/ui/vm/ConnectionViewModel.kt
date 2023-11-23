@@ -112,7 +112,6 @@ class ConnectionViewModel(
     fun isConnectionActive() = connectionUseCase.isConnected()
 
     fun loadServers(locale: String) = viewModelScope.launch {
-
         // If there are no servers persisted. Let's use the initial set of servers we are
         // shipping the application with while we perform a request for an updated version.
         if (getRegionsUseCase.getServers().isEmpty()) {

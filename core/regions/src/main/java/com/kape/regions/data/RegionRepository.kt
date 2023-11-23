@@ -13,7 +13,7 @@ private const val UPDATE_INTERVAL_MS = 30000 // (30 seconds)
 
 class RegionRepository(
     private val source: RegionDataSource,
-    private val dipPrefs: DipPrefs
+    private val dipPrefs: DipPrefs,
 ) {
 
     private var serverMap: Map<String, Server> = hashMapOf()

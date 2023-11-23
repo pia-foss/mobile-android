@@ -11,7 +11,6 @@ import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.core.module.Module
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 fun vpnConnectModule(appModule: Module) = module {
