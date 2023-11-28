@@ -1,0 +1,17 @@
+name: Check working directory is clean
+runs:
+  using: "composite"
+  steps:
+    - if: always()
+      shell: bash
+      run: |
+        paths=.
+        diff=$(git status --porcelain --ignore-submodules=none -- $paths)
+        if [ -n "$diff" ] ; then
+          echo "ERROR: git tree is dirty!"
+          echo
+          echo "$diff"
+          echo
+          git --no-pager diff -- $paths
+          exit 1
+        fi
