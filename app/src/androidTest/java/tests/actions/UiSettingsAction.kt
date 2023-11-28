@@ -10,8 +10,8 @@ class UiSettingsAction(
     private val protocolsSteps: ProtocolsSteps,
 ) {
     fun openSideMenu() {
-        sideMenuSteps.goToSettings()
-        sideMenuSteps.clickOnSideMenuSettingsButton()
+        sideMenuSteps.clickOnSideMenu()
+        sideMenuSteps.clickOnSettingsButton()
     }
 
     fun selectOpenVpnProtocol() {

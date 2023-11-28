@@ -6,6 +6,6 @@ object SideMenuObjects {
     val settingsButton =
         UiAutomatorObjectFinder.findByResourceId(":SideMenu:Settings")
 
-    val logOutButton =
-        UiAutomatorObjectFinder.findByResourceId(":SideMenu:LogOut")
+    val logoutButton =
+        UiAutomatorObjectFinder.findByResourceId(":SideMenu:Logout")
 }

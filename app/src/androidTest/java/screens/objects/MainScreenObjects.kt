@@ -2,7 +2,7 @@ package screens.objects
 
 import screens.objects.helpers.UiAutomatorObjectFinder
 
-object MainScreenPageObjects {
+object MainScreenObjects {
     val connectButton =
         UiAutomatorObjectFinder.findByResourceId(":ConnectionScreen:connection_button")
 

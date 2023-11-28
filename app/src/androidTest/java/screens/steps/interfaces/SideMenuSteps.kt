@@ -1,7 +1,7 @@
 package screens.steps.interfaces
 
 interface SideMenuSteps {
-    fun goToSettings()
-    fun clickOnSideMenuSettingsButton()
-    fun clickOnSideMenuLogoutButton()
+    fun clickOnSideMenu()
+    fun clickOnSettingsButton()
+    fun clickOnLogoutButton()
 }

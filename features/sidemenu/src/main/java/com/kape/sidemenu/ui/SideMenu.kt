@@ -123,7 +123,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         SideMenuItem(
             iconId = R.drawable.ic_log_out,
             titleId = R.string.drawer_item_title_logout,
-            ":SideMenu:LogOut",
+            ":SideMenu:Logout",
         ) {
             scope.launch {
                 state.close()

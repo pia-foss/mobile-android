@@ -9,7 +9,7 @@ class UiLogoutAction(
 ) {
     fun logout() {
         commonSteps.navigateToMainScreen()
-        sideMenuSteps.goToSettings()
-        sideMenuSteps.clickOnSideMenuLogoutButton()
+        sideMenuSteps.clickOnSideMenu()
+        sideMenuSteps.clickOnLogoutButton()
     }
 }

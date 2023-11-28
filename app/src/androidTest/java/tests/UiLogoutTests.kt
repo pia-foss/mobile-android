@@ -11,8 +11,8 @@ class UiLogoutTests : UiTest() {
     @Test
     fun sign_out_from_connect_screen_reaches_signup_screen() {
         uiSignInAction.signIn(
-            "${BuildConfig.PIA_VALID_USERNAME}",
-            "${BuildConfig.PIA_VALID_PASSWORD}",
+            BuildConfig.PIA_VALID_USERNAME,
+            BuildConfig.PIA_VALID_PASSWORD,
         )
         uiLogoutAction.logout()
         assert(SignUpUiObjects.loginButton.exists())
@@ -21,16 +21,16 @@ class UiLogoutTests : UiTest() {
     @Test
     fun persistence_layer_wiped_after_sign_out() {
         uiSignInAction.signIn(
-            "${BuildConfig.PIA_VALID_USERNAME}",
-            "${BuildConfig.PIA_VALID_PASSWORD}",
+            BuildConfig.PIA_VALID_USERNAME,
+            BuildConfig.PIA_VALID_PASSWORD,
         )
         uiSettingsAction.openSideMenu()
         uiSettingsAction.selectOpenVpnProtocol()
         uiLogoutAction.logout()
 
         uiSignInAction.signIn(
-            "${BuildConfig.PIA_VALID_USERNAME}",
-            "${BuildConfig.PIA_VALID_PASSWORD}",
+            BuildConfig.PIA_VALID_USERNAME,
+            BuildConfig.PIA_VALID_PASSWORD,
         )
         uiSettingsAction.openSideMenu()
         // WireGuard is the default protocol. On logout we clear all settings

@@ -1,20 +1,20 @@
 package screens.steps
 
-import screens.objects.MainScreenPageObjects
+import screens.objects.MainScreenObjects
 import screens.objects.SideMenuObjects
 import screens.steps.helpers.UiAutomatorStepsHelper.defaultTimeout
 import screens.steps.interfaces.SideMenuSteps
 
 class UiAutomatorSideMenuSteps : SideMenuSteps {
-    override fun goToSettings() {
-        MainScreenPageObjects.sideMenu.clickAndWaitForNewWindow(defaultTimeout)
+    override fun clickOnSideMenu() {
+        MainScreenObjects.sideMenu.clickAndWaitForNewWindow(defaultTimeout)
     }
 
-    override fun clickOnSideMenuSettingsButton() {
+    override fun clickOnSettingsButton() {
         SideMenuObjects.settingsButton.clickAndWaitForNewWindow(defaultTimeout)
     }
 
-    override fun clickOnSideMenuLogoutButton() {
-        SideMenuObjects.logOutButton.clickAndWaitForNewWindow(defaultTimeout)
+    override fun clickOnLogoutButton() {
+        SideMenuObjects.logoutButton.clickAndWaitForNewWindow(defaultTimeout)
     }
 }

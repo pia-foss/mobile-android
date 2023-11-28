@@ -8,6 +8,7 @@ import androidx.test.uiautomator.UiSelector
 object UiAutomatorObjectFinder {
     private val device: UiDevice =
         UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
     fun findByResourceId(id: String, instance: Int = 0): UiObject {
         return device.findObject(UiSelector().resourceId(id).instance(instance))
     }
