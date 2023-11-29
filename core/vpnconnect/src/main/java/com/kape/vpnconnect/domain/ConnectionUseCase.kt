@@ -8,7 +8,7 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.ProtocolSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
-import com.kape.utils.server.Server
+import com.kape.utils.server.VpnServer
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.DnsInformation
@@ -38,7 +38,7 @@ class ConnectionUseCase(
         private const val PIA_DNS = "10.0.0.242"
     }
 
-    fun startConnection(server: Server, isManualConnection: Boolean): Flow<Boolean> = flow {
+    fun startConnection(server: VpnServer, isManualConnection: Boolean): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name, server.iso)
         connectionManager.isManualConnection = isManualConnection
         connectionPrefs.setSelectedServer(server)
@@ -159,13 +159,13 @@ class ConnectionUseCase(
 
     fun isConnected(): Boolean = connectionManager.isConnected()
 
-    fun getServerGroup(): Server.ServerGroup = when (settingsPrefs.getSelectedProtocol()) {
-        VpnProtocols.WireGuard -> Server.ServerGroup.WIREGUARD
+    fun getServerGroup(): VpnServer.ServerGroup = when (settingsPrefs.getSelectedProtocol()) {
+        VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
         VpnProtocols.OpenVPN -> {
             if (settingsPrefs.getOpenVpnSettings().transport == Transport.UDP) {
-                Server.ServerGroup.OPENVPN_UDP
+                VpnServer.ServerGroup.OPENVPN_UDP
             } else {
-                Server.ServerGroup.OPENVPN_TCP
+                VpnServer.ServerGroup.OPENVPN_TCP
             }
         }
     }

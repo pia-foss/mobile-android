@@ -9,21 +9,21 @@ import androidx.lifecycle.viewModelScope
 import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
-import com.kape.regions.data.RegionRepository
 import com.kape.router.ExitFlow
 import com.kape.router.Router
-import com.kape.utils.server.Server
+import com.kape.utils.server.VpnServer
+import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class DipViewModel(
-    private val regionRepository: RegionRepository,
+    private val regionRepository: VpnRegionRepository,
     private val activateDipUseCase: ActivateDipUseCase,
     private val dipPrefs: DipPrefs,
     private val router: Router,
 ) : ViewModel(), KoinComponent {
 
-    val dipList = mutableStateListOf<Server>()
+    val dipList = mutableStateListOf<VpnServer>()
     val activationState = mutableStateOf<DipApiResult?>(null)
     private lateinit var userLocale: String
 

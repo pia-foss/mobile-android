@@ -16,8 +16,8 @@ import com.kape.payments.di.paymentsModule
 import com.kape.permissions.di.permissionsModule
 import com.kape.portforwarding.di.portForwardingModule
 import com.kape.profile.di.profileModule
-import com.kape.regionselection.di.regionSelectionModule
-import com.kape.regions.di.regionsModule
+import com.kape.vpnregionselection.di.regionSelectionModule
+import com.kape.vpnregions.di.regionsModule
 import com.kape.settings.di.settingsModule
 import com.kape.shareevents.di.kpiModule
 import com.kape.shareevents.domain.KpiDataSource

@@ -9,7 +9,7 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
-import com.kape.utils.server.Server
+import com.kape.utils.server.VpnServer
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.utils.ConnectionManager
 import io.mockk.every
@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.runner.manipulation.Ordering.Context
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -27,7 +26,7 @@ import kotlin.test.assertEquals
 internal class ConnectionUseCaseTest {
 
     private val source: ConnectionDataSource = mockk()
-    private val server: Server = mockk<Server>(relaxed = true).apply {
+    private val server: VpnServer = mockk<VpnServer>(relaxed = true).apply {
         every { endpoints } returns emptyMap()
         every { latency } returns "0"
         every { name } returns "name"

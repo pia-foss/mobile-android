@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.regions"
+    namespace = "com.kape.vpnregions"
     compileSdk = 34
 
     defaultConfig {

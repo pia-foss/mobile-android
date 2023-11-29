@@ -53,7 +53,7 @@ import com.kape.ui.theme.Width
 import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.server.Server
+import com.kape.utils.server.VpnServer
 import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import org.koin.androidx.compose.koinViewModel
 import java.util.Locale
@@ -68,7 +68,7 @@ fun DedicatedIpScreen() = Screen {
     }
     val showToast = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
-    val serverForDeletion = remember { mutableStateOf<Server?>(null) }
+    val serverForDeletion = remember { mutableStateOf<VpnServer?>(null) }
     val context = LocalContext.current
 
     Scaffold(
@@ -207,9 +207,9 @@ fun DedicatedIpScreen() = Screen {
 
 @Composable
 fun DipItem(
-    server: Server,
+    server: VpnServer,
     showDialog: MutableState<Boolean>,
-    serverForDeletion: MutableState<Server?>,
+    serverForDeletion: MutableState<VpnServer?>,
 ) {
     Column {
         Row(
@@ -287,7 +287,7 @@ fun DipItem(
 @Composable
 fun DeleteDipDialog(
     showDialog: MutableState<Boolean>,
-    server: Server,
+    server: VpnServer,
     onRemoveClicked: (String) -> Unit,
     onCancelClicked: () -> Unit,
 ) {

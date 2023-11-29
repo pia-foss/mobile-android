@@ -6,12 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.kape.connection.R
 import com.kape.ui.elements.ConnectionTile
-import com.kape.utils.server.Server
+import com.kape.utils.server.VpnServer
 
 const val MAX_SERVERS = 6
 
 @Composable
-fun FavoritesTile(favoriteServers: List<Server>) {
+fun FavoritesTile(favoriteServers: List<VpnServer>) {
     ConnectionTile(labelId = R.string.favorite_servers) {
         Row(
             modifier = Modifier.fillMaxWidth(),

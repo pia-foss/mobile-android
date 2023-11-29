@@ -28,10 +28,10 @@ import com.kape.ui.text.QuickConnectText
 import com.kape.ui.text.TileTitleText
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.server.Server
+import com.kape.utils.server.VpnServer
 
 @Composable
-fun QuickConnect(servers: List<Server>, onClick: (serverKey: String) -> Unit, modifier: Modifier) {
+fun QuickConnect(servers: List<VpnServer>, onClick: (serverKey: String) -> Unit, modifier: Modifier) {
     Column(
         modifier = modifier,
     ) {
@@ -63,7 +63,7 @@ fun QuickConnect(servers: List<Server>, onClick: (serverKey: String) -> Unit, mo
 }
 
 @Composable
-private fun QuickConnectItem(server: Server?) {
+private fun QuickConnectItem(server: VpnServer?) {
     Column {
         Box {
             Box(

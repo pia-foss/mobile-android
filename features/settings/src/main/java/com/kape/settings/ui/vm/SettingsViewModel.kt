@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.csi.domain.SendLogUseCase
 import com.kape.location.data.LocationPermissionManager
-import com.kape.regions.data.RegionRepository
 import com.kape.router.Back
 import com.kape.router.EnterFlow
 import com.kape.router.ExitFlow
@@ -31,6 +30,7 @@ import com.kape.ui.utils.defaultWidgetTextColor
 import com.kape.ui.utils.defaultWidgetUploadColor
 import com.kape.ui.utils.toColorString
 import com.kape.vpnconnect.domain.GetLogsUseCase
+import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -39,7 +39,7 @@ import org.koin.core.component.KoinComponent
 class SettingsViewModel(
     private val prefs: SettingsPrefs,
     private val router: Router,
-    private val regionsRepository: RegionRepository,
+    private val regionsRepository: VpnRegionRepository,
     val version: String,
     private val kpiDataSource: KpiDataSource,
     private val getDebugLogsUseCase: GetLogsUseCase,

@@ -28,10 +28,10 @@ import com.kape.ui.text.SelectedRegionServerText
 import com.kape.ui.text.SelectedRegionTitleText
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.server.Server
+import com.kape.utils.server.VpnServer
 
 @Composable
-fun LocationPicker(server: Server, isConnected: Boolean, onClick: () -> Unit) {
+fun LocationPicker(server: VpnServer, isConnected: Boolean, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

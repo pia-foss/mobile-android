@@ -1,18 +1,18 @@
 import Dependencies.desugarJdkLibs
-import Dependencies.implementAccount
 import Dependencies.implementFeatureModule
 import Dependencies.implementSerialization
-import Dependencies.implementVpnManager
+import Dependencies.implementSwipeToRefresh
 
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("kotlinx-serialization")
     id("org.jlleitschuh.gradle.ktlint")
     id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
 android {
-    namespace = "com.kape.connection"
+    namespace = "com.kape.vpnregionselection"
     compileSdk = 34
 
     defaultConfig {
@@ -37,11 +37,6 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-    testOptions {
-        unitTests {
-            isReturnDefaultValues = true
-        }
-    }
     buildFeatures {
         compose = true
     }
@@ -53,27 +48,14 @@ android {
 dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
-    implementation(project(":capabilities:ui"))
-    implementation(project(":capabilities:notifications"))
-    implementation(project(":capabilities:shareevents"))
-    implementation(project(":core:router"))
-    implementation(project(":core:payments"))
-    implementation(project(":core:regions"))
-    implementation(project(":core:vpnconnect"))
-    implementation(project(":core:portforwarding"))
-    implementation(project(":core:localprefs:connection"))
-    implementation(project(":core:localprefs:settings"))
-    implementation(project(":core:localprefs:dip"))
-    implementation(project(":core:localprefs:settings:data"))
     implementation(project(":core:utils"))
+    implementation(project(":core:router"))
+    implementation(project(":core:regions"))
+    implementation(project(":core:localprefs:regions"))
+    implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
-    implementation(project(":features:settings"))
-    implementation(project(":features:sidemenu"))
-    implementation(project(":features:vpnregionselection"))
-    implementation(project(":features:dedicatedip"))
 
     implementFeatureModule()
-    implementVpnManager()
-    implementAccount()
     implementSerialization()
+    implementSwipeToRefresh()
 }

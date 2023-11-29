@@ -21,7 +21,7 @@ import com.kape.login.ui.loginNavigation
 import com.kape.payments.ui.PaymentProvider
 import com.kape.permissions.utils.PermissionsFlow
 import com.kape.profile.ui.ProfileScreen
-import com.kape.regionselection.ui.RegionSelectionScreen
+import com.kape.vpnregionselection.ui.RegionSelectionScreen
 import com.kape.router.Automation
 import com.kape.router.Connection
 import com.kape.router.DedicatedIp

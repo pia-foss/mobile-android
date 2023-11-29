@@ -7,10 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.kape.connection.R
 import com.kape.ui.elements.ConnectionTile
-import com.kape.utils.server.Server
+import com.kape.utils.server.VpnServer
 
 @Composable
-fun QuickConnectTile(servers: List<Server>, onClick: (serverKey: String) -> Unit) {
+fun QuickConnectTile(servers: List<VpnServer>, onClick: (serverKey: String) -> Unit) {
     ConnectionTile(labelId = R.string.quick_connect) {
         Row(
             modifier = Modifier.fillMaxWidth(),

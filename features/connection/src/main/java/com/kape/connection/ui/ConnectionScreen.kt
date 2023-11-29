@@ -65,7 +65,7 @@ fun ConnectionScreen() = Screen {
     }
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.loadServers(locale)
+        viewModel.loadVpnServers(locale)
         viewModel.autoConnect()
     }
 
@@ -95,7 +95,7 @@ fun ConnectionScreen() = Screen {
             ) {
                 viewModel.onConnectionButtonClicked()
             }
-            viewModel.selectedServer.value?.let {
+            viewModel.selectedVpnServer.value?.let {
                 LocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {
                     viewModel.showRegionSelection()
                 }
@@ -128,13 +128,13 @@ fun ConnectionScreen() = Screen {
             )
             Separator()
             QuickConnectTile(
-                servers = viewModel.quickConnectServers.value,
+                servers = viewModel.quickConnectVpnServers.value,
                 onClick = {
                     viewModel.quickConnect(it)
                 },
             )
             Separator()
-            FavoritesTile(viewModel.favoriteServers.value)
+            FavoritesTile(viewModel.favoriteVpnServers.value)
             Separator()
             if (viewModel.snoozeTime.longValue != 0L && viewModel.snoozeTime.longValue < System.currentTimeMillis()) {
                 viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)

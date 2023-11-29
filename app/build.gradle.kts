@@ -142,7 +142,7 @@ dependencies {
     implementation(project(":features:settings"))
     implementation(project(":features:permissions"))
     implementation(project(":features:profile"))
-    implementation(project(":features:regionselection"))
+    implementation(project(":features:vpnregionselection"))
     implementation(project(":features:sidemenu"))
     implementation(project(":features:connection"))
     implementation(project(":features:appbar"))

@@ -21,17 +21,17 @@ import com.kape.connection.utils.SnoozeState
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
-import com.kape.regions.domain.GetRegionsUseCase
-import com.kape.regions.domain.ReadRegionsDetailsUseCase
-import com.kape.regions.domain.SetRegionsUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
-import com.kape.utils.server.Server
+import com.kape.utils.server.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnregions.domain.GetVpnRegionsUseCase
+import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
+import com.kape.vpnregions.domain.SetVpnRegionsUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -41,9 +41,9 @@ import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 class ConnectionViewModel(
-    private val setRegionsUseCase: SetRegionsUseCase,
-    private val getRegionsUseCase: GetRegionsUseCase,
-    private val readRegionsDetailsUseCase: ReadRegionsDetailsUseCase,
+    private val setVpnRegionsUseCase: SetVpnRegionsUseCase,
+    private val getVpnRegionsUseCase: GetVpnRegionsUseCase,
+    private val readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
     private val connectionUseCase: ConnectionUseCase,
     private val clientStateDataSource: ClientStateDataSource,
     private val router: Router,
@@ -60,11 +60,11 @@ class ConnectionViewModel(
     private val fiveMinuteLong = 5L
     private val fifteenMinuteLong = 15L
 
-    private var availableServers = mutableListOf<Server>()
-    var selectedServer = mutableStateOf(prefs.getSelectedServer())
+    private var availableVpnServers = mutableListOf<VpnServer>()
+    var selectedVpnServer = mutableStateOf(prefs.getSelectedServer())
     val snoozeState = mutableStateOf(SNOOZE_STATE_DEFAULT)
-    val favoriteServers = mutableStateOf(emptyList<Server>())
-    val quickConnectServers = mutableStateOf(emptyList<Server>())
+    val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
+    val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
     val snoozeTime = mutableLongStateOf(prefs.getLastSnoozeEndTime())
 
     var ip by mutableStateOf(prefs.getClientIp())
@@ -111,26 +111,26 @@ class ConnectionViewModel(
 
     fun isConnectionActive() = connectionUseCase.isConnected()
 
-    fun loadServers(locale: String) = viewModelScope.launch {
+    fun loadVpnServers(locale: String) = viewModelScope.launch {
         // If there are no servers persisted. Let's use the initial set of servers we are
         // shipping the application with while we perform a request for an updated version.
-        if (getRegionsUseCase.getServers().isEmpty()) {
-            val servers = readRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
-            serversLoaded(servers = servers)
+        if (getVpnRegionsUseCase.getVpnServers().isEmpty()) {
+            val servers = readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
+            vpnServersLoaded(vpnServers = servers)
         }
 
-        getRegionsUseCase.loadRegions(locale).collect {
-            serversLoaded(servers = it)
+        getVpnRegionsUseCase.loadVpnServers(locale).collect {
+            vpnServersLoaded(vpnServers = it)
         }
     }
 
-    private fun serversLoaded(servers: List<Server>) {
-        availableServers.clear()
-        availableServers.addAll(servers)
+    private fun vpnServersLoaded(vpnServers: List<VpnServer>) {
+        availableVpnServers.clear()
+        availableVpnServers.addAll(vpnServers)
         filterFavoriteServers()
         getQuickConnectServers()
         getSelectedServer()
-        setRegionsUseCase.setVpnServers(servers = servers)
+        setVpnRegionsUseCase.setVpnServers(servers = vpnServers)
     }
 
     fun snooze(context: Context, interval: SnoozeInterval) {
@@ -183,36 +183,36 @@ class ConnectionViewModel(
     }
 
     private fun getSelectedServer() {
-        if (availableServers.isNotEmpty()) {
-            selectedServer.value =
-                availableServers.firstOrNull { it.key == getRegionsUseCase.getSelectedRegion() }
-                    ?: availableServers.sortedBy { it.latency?.toInt() }.firstOrNull()
-            selectedServer.value?.let {
-                getRegionsUseCase.selectRegion(it.key)
+        if (availableVpnServers.isNotEmpty()) {
+            selectedVpnServer.value =
+                availableVpnServers.firstOrNull { it.key == getVpnRegionsUseCase.getSelectedVpnServerKey() }
+                    ?: availableVpnServers.sortedBy { it.latency?.toInt() }.firstOrNull()
+            selectedVpnServer.value?.let {
+                getVpnRegionsUseCase.selectVpnServer(it.key)
                 prefs.setSelectedServer(it)
             }
         }
     }
 
     private fun filterFavoriteServers() {
-        favoriteServers.value =
-            availableServers.filter { it.name in getRegionsUseCase.getFavoriteServers() }
+        favoriteVpnServers.value =
+            availableVpnServers.filter { it.name in getVpnRegionsUseCase.getFavoriteVpnServers() }
     }
 
     private fun getQuickConnectServers() {
         val servers = mutableListOf<String>()
-        if (favoriteServers.value.size > MAX_SERVERS) {
-            for (index in MAX_SERVERS until favoriteServers.value.size) {
-                servers.add(favoriteServers.value[index].key)
+        if (favoriteVpnServers.value.size > MAX_SERVERS) {
+            for (index in MAX_SERVERS until favoriteVpnServers.value.size) {
+                servers.add(favoriteVpnServers.value[index].key)
             }
         }
         val previousConnections =
-            availableServers.filter { it.key in prefs.getQuickConnectServers() }
+            availableVpnServers.filter { it.key in prefs.getQuickConnectServers() }
 
         for (server in previousConnections) {
             servers.add(server.key)
         }
-        quickConnectServers.value = availableServers.filter { it.key in servers }
+        quickConnectVpnServers.value = availableVpnServers.filter { it.key in servers }
     }
 
     fun showRegionSelection() {
@@ -233,7 +233,7 @@ class ConnectionViewModel(
     }
 
     fun quickConnect(key: String) {
-        selectedServer.value = availableServers.firstOrNull { it.key == key }
+        selectedVpnServer.value = availableVpnServers.firstOrNull { it.key == key }
         connect()
     }
 
@@ -247,8 +247,8 @@ class ConnectionViewModel(
 
     private fun connect() {
         viewModelScope.launch {
-            selectedServer.value?.let {
-                getRegionsUseCase.selectRegion(it.key)
+            selectedVpnServer.value?.let {
+                getVpnRegionsUseCase.selectVpnServer(it.key)
                 prefs.addToQuickConnect(it.key)
                 connectionUseCase.startConnection(
                     server = it,

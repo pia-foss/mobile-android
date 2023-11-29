@@ -63,7 +63,7 @@ dependencies {
     implementation(project(":capabilities:csi"))
     implementation(project(":capabilities:location"))
     implementation(project(":features:appbar"))
-    implementation(project(":features:regionselection"))
+    implementation(project(":features:vpnregionselection"))
 
     implementFeatureModule()
     implementSerialization()

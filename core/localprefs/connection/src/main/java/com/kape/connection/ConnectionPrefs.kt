@@ -3,8 +3,7 @@ package com.kape.connection
 import android.content.Context
 import com.kape.connection.model.PortBindInformation
 import com.kape.utils.Prefs
-import com.kape.utils.server.Server
-import kotlinx.serialization.decodeFromString
+import com.kape.utils.server.VpnServer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -38,10 +37,10 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
     fun getClientVpnIp() = prefs.getString(CLIENT_VPN_IP, NO_IP) ?: NO_IP
 
-    fun setSelectedServer(server: Server) =
+    fun setSelectedServer(server: VpnServer) =
         prefs.edit().putString(SELECTED_SERVER, Json.encodeToString(server)).apply()
 
-    fun getSelectedServer(): Server? = prefs.getString(SELECTED_SERVER, null)?.let {
+    fun getSelectedServer(): VpnServer? = prefs.getString(SELECTED_SERVER, null)?.let {
         Json.decodeFromString(it)
     }
 

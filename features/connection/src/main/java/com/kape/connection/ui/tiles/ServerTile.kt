@@ -23,10 +23,10 @@ import com.kape.ui.theme.Square
 import com.kape.ui.theme.Width
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.server.Server
+import com.kape.utils.server.VpnServer
 
 @Composable
-fun ServerTile(server: Server? = null, modifier: Modifier) {
+fun ServerTile(server: VpnServer? = null, modifier: Modifier) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Box {
             Icon(
