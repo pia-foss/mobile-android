@@ -28,7 +28,7 @@ import com.kape.ui.text.SelectedRegionServerText
 import com.kape.ui.text.SelectedRegionTitleText
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 
 @Composable
 fun LocationPicker(server: VpnServer, isConnected: Boolean, onClick: () -> Unit) {

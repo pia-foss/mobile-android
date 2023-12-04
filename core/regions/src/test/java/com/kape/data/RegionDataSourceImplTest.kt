@@ -1,10 +1,12 @@
-package com.kape.vpnregions.data
+package com.kape.data
 
 import app.cash.turbine.test
-import com.kape.vpnregions.di.regionsModule
+import com.kape.shadowsocksregions.domain.ShadowsocksRegionDataSource
+import com.kape.vpnregions.di.vpnRegionsModule
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.RegionsAPI
+import com.privateinternetaccess.regions.model.ShadowsocksRegionsResponse
 import com.privateinternetaccess.regions.model.VpnRegionsResponse
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -24,10 +26,11 @@ import org.koin.test.KoinTest
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class VpnRegionDataSourceImplTest : KoinTest {
+internal class RegionDataSourceImplTest : KoinTest {
 
     private val api: RegionsAPI = mockk(relaxed = true)
-    private lateinit var source: VpnRegionDataSource
+    private lateinit var vpnRegionDataSource: VpnRegionDataSource
+    private lateinit var shadowsocksRegionDataSource: ShadowsocksRegionDataSource
 
     private val appModule = module {
         single { api }
@@ -40,9 +43,10 @@ internal class VpnRegionDataSourceImplTest : KoinTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, regionsModule(appModule))
+            modules(appModule, vpnRegionsModule(appModule))
         }
-        source = VpnRegionDataSourceImpl(api)
+        vpnRegionDataSource = RegionDataSourceImpl(api)
+        shadowsocksRegionDataSource = RegionDataSourceImpl(api)
     }
 
     @AfterEach
@@ -52,24 +56,48 @@ internal class VpnRegionDataSourceImplTest : KoinTest {
     }
 
     @Test
-    fun `fetch regions success`() = runTest {
+    fun `fetch vpn regions success`() = runTest {
         val expected = VpnRegionsResponse()
         coEvery { api.fetchVpnRegions(any(), any()) } answers {
-            lastArg<(VpnRegionsResponse?, List<Error>) -> Unit>().invoke(expected, emptyList())
+            lastArg<(VpnRegionsResponse?, Error?) -> Unit>().invoke(expected, null)
         }
-        source.fetchRegions("").test {
+        vpnRegionDataSource.fetchVpnRegions("").test {
             val actual = awaitItem()
             assertEquals(expected, actual)
         }
     }
 
     @Test
-    fun `fetch regions error`() = runTest {
+    fun `fetch vpn regions error`() = runTest {
         val expected = null
         coEvery { api.fetchVpnRegions(any(), any()) } answers {
-            lastArg<(VpnRegionsResponse?, List<Error>) -> Unit>().invoke(null, listOf(Error()))
+            lastArg<(VpnRegionsResponse?, Error?) -> Unit>().invoke(null, Error())
         }
-        source.fetchRegions("").test {
+        vpnRegionDataSource.fetchVpnRegions("").test {
+            val actual = awaitItem()
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `fetch shadowsocks regions success`() = runTest {
+        val expected: List<ShadowsocksRegionsResponse> = mockk()
+        coEvery { api.fetchShadowsocksRegions(any(), any()) } answers {
+            lastArg<(List<ShadowsocksRegionsResponse>, Error?) -> Unit>().invoke(expected, null)
+        }
+        shadowsocksRegionDataSource.fetchShadowsocksRegions("").test {
+            val actual = awaitItem()
+            assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `fetch shadowsocks regions error`() = runTest {
+        val expected: List<ShadowsocksRegionsResponse> = emptyList()
+        coEvery { api.fetchShadowsocksRegions(any(), any()) } answers {
+            lastArg<(List<ShadowsocksRegionsResponse>, Error?) -> Unit>().invoke(emptyList(), Error())
+        }
+        shadowsocksRegionDataSource.fetchShadowsocksRegions("").test {
             val actual = awaitItem()
             assertEquals(expected, actual)
         }
@@ -79,9 +107,9 @@ internal class VpnRegionDataSourceImplTest : KoinTest {
     fun `ping requests success`() = runTest {
         val expected = listOf<RegionLowerLatencyInformation>()
         coEvery { api.pingRequests(any()) } answers {
-            lastArg<(List<RegionLowerLatencyInformation>, List<Error>) -> Unit>().invoke(expected, emptyList())
+            lastArg<(List<RegionLowerLatencyInformation>, Error?) -> Unit>().invoke(expected, null)
         }
-        source.pingRequests().test {
+        vpnRegionDataSource.pingRequests().test {
             val actual = awaitItem()
             assertEquals(expected, actual)
         }
@@ -91,9 +119,9 @@ internal class VpnRegionDataSourceImplTest : KoinTest {
     fun `ping requests error`() = runTest {
         val expected = emptyList<RegionLowerLatencyInformation>()
         coEvery { api.pingRequests(any()) } answers {
-            lastArg<(List<RegionLowerLatencyInformation>, List<Error>) -> Unit>().invoke(expected, listOf(Error()))
+            lastArg<(List<RegionLowerLatencyInformation>, Error?) -> Unit>().invoke(expected, Error())
         }
-        source.pingRequests().test {
+        vpnRegionDataSource.pingRequests().test {
             val actual = awaitItem()
             assertEquals(expected, actual)
         }

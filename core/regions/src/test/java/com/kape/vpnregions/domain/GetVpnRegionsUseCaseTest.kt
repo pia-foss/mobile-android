@@ -1,7 +1,7 @@
 package com.kape.vpnregions.domain
 
 import app.cash.turbine.test
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.VpnRegionPrefs
 import com.kape.vpnregions.data.VpnRegionRepository
 import io.mockk.coEvery
@@ -32,8 +32,8 @@ internal class GetVpnRegionsUseCaseTest : KoinTest {
 
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("data")
-    fun `fetch regions`(expected: List<VpnServer>) = runTest {
-        coEvery { repo.fetchRegions(any()) } returns flow {
+    fun `fetch vpn regions`(expected: List<VpnServer>) = runTest {
+        coEvery { repo.fetchVpnRegions(any()) } returns flow {
             emit(expected)
         }
         useCase.loadVpnServers("").test {
@@ -44,7 +44,7 @@ internal class GetVpnRegionsUseCaseTest : KoinTest {
     }
 
     @Test
-    fun `select server`() = runTest {
+    fun `select vpn server`() = runTest {
         val expected = "selectedServer"
         every { prefs.selectVpnServer(any()) } returns Unit
         every { prefs.getSelectedVpnServerKey() } returns expected
@@ -54,7 +54,7 @@ internal class GetVpnRegionsUseCaseTest : KoinTest {
     }
 
     @Test
-    fun `get favorite servers if any`() = runTest {
+    fun `get favorite vpn servers if any`() = runTest {
         val expected = listOf("Germany", "UK")
         every { prefs.getFavoriteVpnServers() } returns expected
         val actual = useCase.getFavoriteVpnServers()

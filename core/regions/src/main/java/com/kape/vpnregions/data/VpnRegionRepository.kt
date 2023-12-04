@@ -1,15 +1,13 @@
 package com.kape.vpnregions.data
 
 import com.kape.dip.DipPrefs
-import com.kape.utils.server.VpnServer
-import com.kape.utils.server.VpnServerInfo
+import com.kape.utils.vpnserver.VpnServer
+import com.kape.utils.vpnserver.VpnServerInfo
 import com.kape.vpnregions.domain.VpnRegionDataSource
-import com.kape.vpnregions.utils.adaptServers
 import com.kape.vpnregions.utils.adaptServersInfo
+import com.kape.vpnregions.utils.adaptVpnServers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-
-private const val UPDATE_INTERVAL_MS = 30000 // (30 seconds)
 
 class VpnRegionRepository(
     private val source: VpnRegionDataSource,
@@ -20,14 +18,18 @@ class VpnRegionRepository(
     private var serverInfo: VpnServerInfo = VpnServerInfo()
     private var lastUpdate: Long = 0
 
-    fun fetchRegions(locale: String): Flow<List<VpnServer>> = flow {
+    companion object {
+        private const val UPDATE_INTERVAL_MS = 30000 // (30 seconds)
+    }
+
+    fun fetchVpnRegions(locale: String): Flow<List<VpnServer>> = flow {
         if (serverMap.isEmpty() or (System.currentTimeMillis() - lastUpdate >= UPDATE_INTERVAL_MS)) {
-            source.fetchRegions(locale).collect {
+            source.fetchVpnRegions(locale).collect {
                 lastUpdate = System.currentTimeMillis()
                 if (it == null) {
                     emit(emptyList())
                 } else {
-                    serverMap = adaptServers(it, dipPrefs)
+                    serverMap = adaptVpnServers(it, dipPrefs)
                     serverInfo = adaptServersInfo(it)
                     emit(serverMap.values.toList())
                 }

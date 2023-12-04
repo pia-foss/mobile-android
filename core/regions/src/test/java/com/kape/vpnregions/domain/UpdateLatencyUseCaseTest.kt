@@ -1,7 +1,7 @@
 package com.kape.vpnregions.domain
 
 import app.cash.turbine.test
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.data.VpnRegionRepository
 import io.mockk.coEvery
 import io.mockk.mockk

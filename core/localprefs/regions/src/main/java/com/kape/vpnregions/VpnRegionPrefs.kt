@@ -2,7 +2,7 @@ package com.kape.vpnregions
 
 import android.content.Context
 import com.kape.utils.Prefs
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

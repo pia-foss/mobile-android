@@ -2,6 +2,7 @@ import Dependencies.implementAccount
 import Dependencies.implementCoroutines
 import Dependencies.implementKoin
 import Dependencies.implementRegions
+import Dependencies.implementSerialization
 import Dependencies.implementTest
 
 plugins {
@@ -35,6 +36,7 @@ dependencies {
     implementation(project(":core:localprefs:regions"))
     implementation(project(":core:localprefs:dip"))
 
+    implementSerialization()
     implementRegions()
     implementAccount()
 

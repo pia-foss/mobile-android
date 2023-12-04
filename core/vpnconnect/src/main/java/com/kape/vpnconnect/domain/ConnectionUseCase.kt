@@ -8,7 +8,7 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.ProtocolSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.DnsInformation

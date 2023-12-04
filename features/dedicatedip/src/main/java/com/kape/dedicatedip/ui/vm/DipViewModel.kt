@@ -11,7 +11,7 @@ import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
 import com.kape.router.ExitFlow
 import com.kape.router.Router
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -35,7 +35,7 @@ class DipViewModel(
         userLocale = locale
         dipList.clear()
         for (dip in dipPrefs.getDedicatedIps()) {
-            regionRepository.fetchRegions(userLocale).collect {
+            regionRepository.fetchVpnRegions(userLocale).collect {
                 dipList.addAll(it.filter { it.isDedicatedIp })
             }
         }

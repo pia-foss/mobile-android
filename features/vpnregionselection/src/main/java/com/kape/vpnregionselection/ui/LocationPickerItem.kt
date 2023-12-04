@@ -22,7 +22,7 @@ import com.kape.ui.elements.FavoriteIcon
 import com.kape.ui.elements.MenuSeparator
 import com.kape.ui.text.RegionSelectionText
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 
 @Composable
 fun LocationPickerItem(

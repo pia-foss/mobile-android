@@ -1,8 +1,9 @@
 package com.kape.vpnregions.di
 
+import com.kape.data.RegionDataSourceImpl
+import com.kape.data.RegionInputStream
+import com.kape.data.RegionSerialization
 import com.kape.vpnregions.VpnRegionPrefs
-import com.kape.vpnregions.data.VpnRegionDataSourceImpl
-import com.kape.vpnregions.data.VpnRegionInputStream
 import com.kape.vpnregions.data.VpnRegionRepository
 import com.kape.vpnregions.domain.GetVpnRegionsUseCase
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
@@ -12,17 +13,18 @@ import com.kape.vpnregions.domain.VpnRegionDataSource
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-fun regionsModule(appModule: Module) = module {
-    includes(appModule, localRegionsModule)
+fun vpnRegionsModule(appModule: Module) = module {
+    includes(appModule, localVpnRegionsModule)
 }
 
-val localRegionsModule = module {
+val localVpnRegionsModule = module {
     single { VpnRegionPrefs(get()) }
-    single<VpnRegionDataSource> { VpnRegionDataSourceImpl(get()) }
+    single<VpnRegionDataSource> { RegionDataSourceImpl(get()) }
     single { VpnRegionRepository(get(), get()) }
-    single { VpnRegionInputStream(get()) }
+    single { RegionInputStream(get()) }
+    single { RegionSerialization() }
     single { GetVpnRegionsUseCase(get(), get()) }
-    single { ReadVpnRegionsDetailsUseCase(get(), get()) }
+    single { ReadVpnRegionsDetailsUseCase(get(), get(), get()) }
     single { SetVpnRegionsUseCase(get()) }
     single { UpdateLatencyUseCase(get()) }
 }

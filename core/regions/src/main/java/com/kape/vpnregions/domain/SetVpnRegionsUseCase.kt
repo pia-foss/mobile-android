@@ -1,6 +1,6 @@
 package com.kape.vpnregions.domain
 
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.VpnRegionPrefs
 
 class SetVpnRegionsUseCase(private val prefs: VpnRegionPrefs) {

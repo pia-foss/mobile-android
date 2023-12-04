@@ -1,6 +1,6 @@
 package com.kape.vpnregionselection.util
 
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 
 data class ServerItem(val type: ItemType)
 

@@ -24,7 +24,7 @@ import com.kape.router.Exit
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnregions.domain.GetVpnRegionsUseCase

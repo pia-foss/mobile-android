@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.VpnRegionPrefs
 import com.kape.vpnregions.domain.GetVpnRegionsUseCase
 import com.kape.vpnregions.domain.UpdateLatencyUseCase

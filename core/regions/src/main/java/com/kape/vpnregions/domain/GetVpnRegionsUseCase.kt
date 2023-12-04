@@ -1,6 +1,6 @@
 package com.kape.vpnregions.domain
 
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.VpnRegionPrefs
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.flow.Flow
@@ -12,7 +12,7 @@ class GetVpnRegionsUseCase(
 ) {
 
     fun loadVpnServers(locale: String): Flow<List<VpnServer>> = flow {
-        repo.fetchRegions(locale).collect {
+        repo.fetchVpnRegions(locale).collect {
             emit(it)
         }
     }

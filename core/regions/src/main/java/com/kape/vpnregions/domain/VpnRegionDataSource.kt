@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface VpnRegionDataSource {
 
-    fun fetchRegions(locale: String): Flow<VpnRegionsResponse?>
+    fun fetchVpnRegions(locale: String): Flow<VpnRegionsResponse?>
 
     fun pingRequests(): Flow<List<RegionLowerLatencyInformation>?>
 }

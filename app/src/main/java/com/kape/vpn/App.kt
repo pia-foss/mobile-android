@@ -17,8 +17,8 @@ import com.kape.permissions.di.permissionsModule
 import com.kape.portforwarding.di.portForwardingModule
 import com.kape.profile.di.profileModule
 import com.kape.vpnregionselection.di.regionSelectionModule
-import com.kape.vpnregions.di.regionsModule
 import com.kape.settings.di.settingsModule
+import com.kape.shadowsocksregions.di.shadowsocksRegionsModule
 import com.kape.shareevents.di.kpiModule
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.sidemenu.di.sideMenuModule
@@ -27,6 +27,7 @@ import com.kape.splash.di.splashModule
 import com.kape.vpn.di.appModule
 import com.kape.vpn.utils.NetworkListener
 import com.kape.vpnconnect.di.vpnConnectModule
+import com.kape.vpnregions.di.vpnRegionsModule
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -83,7 +84,8 @@ class App : Application() {
                 add(portForwardingModule(appModule))
                 add(dedicatedIpModule(appModule))
                 add(csiModule(appModule))
-                add(regionsModule(appModule))
+                add(vpnRegionsModule(appModule))
+                add(shadowsocksRegionsModule(appModule))
                 add(automationModule(appModule))
                 add(networkManagementModule)
             },

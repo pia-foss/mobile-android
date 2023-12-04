@@ -29,7 +29,7 @@ import com.kape.ui.text.QuickConnectText
 import com.kape.ui.text.TileTitleText
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 
 const val MAX_SERVERS = 5
 

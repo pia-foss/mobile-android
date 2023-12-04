@@ -9,7 +9,7 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
-import com.kape.utils.server.VpnServer
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.utils.ConnectionManager
 import io.mockk.every

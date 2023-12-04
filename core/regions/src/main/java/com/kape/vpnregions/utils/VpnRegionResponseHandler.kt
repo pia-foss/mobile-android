@@ -1,13 +1,13 @@
 package com.kape.vpnregions.utils
 
 import com.kape.dip.DipPrefs
-import com.kape.utils.server.VpnServer
-import com.kape.utils.server.VpnServerInfo
+import com.kape.utils.vpnserver.VpnServer
+import com.kape.utils.vpnserver.VpnServerInfo
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import com.privateinternetaccess.regions.RegionsProtocol
 import com.privateinternetaccess.regions.model.VpnRegionsResponse
 
-fun adaptServers(vpnRegionsResponse: VpnRegionsResponse, dipPrefs: DipPrefs): Map<String, VpnServer> {
+fun adaptVpnServers(vpnRegionsResponse: VpnRegionsResponse, dipPrefs: DipPrefs): Map<String, VpnServer> {
     val servers = mutableMapOf<String, VpnServer>()
     for (region in vpnRegionsResponse.regions) {
         val wireguardEndpoints = region.servers[RegionsProtocol.WIREGUARD.protocol]
