@@ -12,7 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -20,13 +19,14 @@ import com.kape.connection.R
 import com.kape.settings.data.ProtocolSettings
 import com.kape.ui.text.ConnectionInfoText
 import com.kape.ui.text.TileTitleText
+import com.kape.ui.utils.LocalColors
 
 @Composable
 fun ConnectionInfo(settings: ProtocolSettings) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
         TileTitleText(stringResource(id = R.string.connection))
         Spacer(modifier = Modifier.height(4.dp))
@@ -49,11 +49,14 @@ fun ConnectionInfo(settings: ProtocolSettings) {
 
 @Composable
 fun InfoRow(iconId: Int, label: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 8.dp),
+    ) {
         Icon(
             painter = painterResource(id = iconId),
             contentDescription = null,
-            tint = Color.Unspecified,
+            tint = LocalColors.current.onSurface,
             modifier = Modifier.size(24.dp),
         )
         Spacer(modifier = Modifier.width(4.dp))

@@ -17,7 +17,8 @@ fun ItemSeparator() {
     Divider(
         modifier = Modifier
             .fillMaxWidth()
-            .height(1.dp)
+            .padding(horizontal = 16.dp)
+            .height(0.5.dp)
             .background(
                 LocalColors.current.outline,
             ),

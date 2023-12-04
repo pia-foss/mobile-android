@@ -40,7 +40,7 @@ import com.kape.router.WebContent
 import com.kape.settings.ui.screens.AutomationSettingsScreen
 import com.kape.settings.ui.screens.KillSwitchSettingScreen
 import com.kape.settings.ui.screens.PerAppSettingsScreen
-import com.kape.settings.ui.screens.QuickSettingsScreen
+import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.utils.SettingsFlow
 import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
@@ -159,10 +159,9 @@ class MainActivity : ComponentActivity() {
                             composable(Settings.KillSwitch) {
                                 KillSwitchSettingScreen()
                             }
-                            composable(Settings.QuickSettings) {
-                                QuickSettingsScreen()
+                            composable(Settings.Protocols) {
+                                ProtocolSettingsScreen()
                             }
-                            composable(Automation.Route) { AutomationFlow() }
                         }
                     }
                 }

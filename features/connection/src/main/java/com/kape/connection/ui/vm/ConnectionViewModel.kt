@@ -15,9 +15,7 @@ import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
 import com.kape.connection.domain.ClientStateDataSource
 import com.kape.connection.ui.tiles.MAX_SERVERS
-import com.kape.connection.utils.SNOOZE_STATE_DEFAULT
 import com.kape.connection.utils.SnoozeInterval
-import com.kape.connection.utils.SnoozeState
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
@@ -62,7 +60,7 @@ class ConnectionViewModel(
 
     private var availableVpnServers = mutableListOf<VpnServer>()
     var selectedVpnServer = mutableStateOf(prefs.getSelectedServer())
-    val snoozeState = mutableStateOf(SNOOZE_STATE_DEFAULT)
+    val snoozeActive = mutableStateOf(false)
     val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
     val snoozeTime = mutableLongStateOf(prefs.getLastSnoozeEndTime())
@@ -91,8 +89,8 @@ class ConnectionViewModel(
         router.handleFlow(EnterFlow.AutomationSettings)
     }
 
-    fun navigateToQuickSettings() {
-        router.handleFlow(EnterFlow.QuickSettings)
+    fun navigateToProtocols() {
+        router.handleFlow(EnterFlow.ProtocolSettings)
     }
 
     fun exitApp() {
@@ -141,34 +139,25 @@ class ConnectionViewModel(
         when (interval) {
             SnoozeInterval.SNOOZE_SHORT_MS -> {
                 end = nowInMillis + SnoozeInterval.SNOOZE_SHORT_MS.value
-                snoozeState.value = SnoozeState(
-                    active = true,
-                    formatter.format(nowTime.plusMinutes(fiveMinuteLong)),
-                )
+                snoozeActive.value = true
             }
 
             SnoozeInterval.SNOOZE_MEDIUM_MS -> {
                 end = nowInMillis + SnoozeInterval.SNOOZE_MEDIUM_MS.value
-                snoozeState.value = SnoozeState(
-                    active = true,
-                    formatter.format(nowTime.plusMinutes(fifteenMinuteLong)),
-                )
+                snoozeActive.value = true
             }
 
             SnoozeInterval.SNOOZE_LONG_MS -> {
                 end = nowInMillis + SnoozeInterval.SNOOZE_LONG_MS.value
-                snoozeState.value = SnoozeState(
-                    active = true,
-                    formatter.format(nowTime.plusHours(oneHourLong)),
-                )
+                snoozeActive.value = true
             }
 
             else -> {
                 end = 0
-                snoozeState.value = SNOOZE_STATE_DEFAULT
+                snoozeActive.value = false
             }
         }
-        if (snoozeState.value.active) {
+        if (snoozeActive.value) {
             disconnect()
             setSnoozeAlarm(context, end)
         }
@@ -238,12 +227,6 @@ class ConnectionViewModel(
     }
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
-
-    fun isKillSwitchEnabled() = settingsPrefs.isQuickSettingKillSwitchEnabled()
-
-    fun isAutomationEnabled() = settingsPrefs.isQuickSettingAutomationEnabled()
-
-    fun isPrivateBrowserEnabled() = settingsPrefs.isQuickSettingPrivateBrowserEnabled()
 
     private fun connect() {
         viewModelScope.launch {

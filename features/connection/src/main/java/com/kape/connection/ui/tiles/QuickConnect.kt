@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -30,22 +31,26 @@ import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
 import com.kape.utils.server.VpnServer
 
+const val MAX_SERVERS = 5
+
 @Composable
-fun QuickConnect(servers: List<VpnServer>, onClick: (serverKey: String) -> Unit, modifier: Modifier) {
+fun QuickConnect(servers: List<VpnServer>, onClick: (serverKey: String) -> Unit) {
     Column(
-        modifier = modifier,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
         TileTitleText(content = stringResource(id = R.string.quick_connect))
         Spacer(modifier = Modifier.height(8.dp))
         Row {
             if (servers.isEmpty()) {
                 for (index in 1..MAX_SERVERS) {
-                    ServerTile(modifier = Modifier.weight(1f))
+                    QuickConnectItem(modifier = Modifier.weight(1f))
                 }
             } else {
                 for (index in 0 until MAX_SERVERS) {
                     if (servers.getOrNull(index) != null) {
-                        ServerTile(
+                        QuickConnectItem(
                             server = servers[index],
                             modifier = Modifier
                                 .weight(1f)
@@ -54,7 +59,7 @@ fun QuickConnect(servers: List<VpnServer>, onClick: (serverKey: String) -> Unit,
                                 },
                         )
                     } else {
-                        ServerTile(modifier = Modifier.weight(1f))
+                        QuickConnectItem(modifier = Modifier.weight(1f))
                     }
                 }
             }
@@ -63,14 +68,14 @@ fun QuickConnect(servers: List<VpnServer>, onClick: (serverKey: String) -> Unit,
 }
 
 @Composable
-private fun QuickConnectItem(server: VpnServer?) {
-    Column {
+private fun QuickConnectItem(server: VpnServer? = null, modifier: Modifier) {
+    Column(modifier = modifier, horizontalAlignment = CenterHorizontally) {
         Box {
             Box(
                 modifier = Modifier
                     .size(40.dp)
                     .background(LocalColors.current.onPrimary, CircleShape)
-                    .padding(4.dp),
+                    .padding(8.dp),
             ) {
                 Image(
                     painter = painterResource(
@@ -98,7 +103,6 @@ private fun QuickConnectItem(server: VpnServer?) {
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(4.dp))
         QuickConnectText(
             content = server?.iso ?: "",

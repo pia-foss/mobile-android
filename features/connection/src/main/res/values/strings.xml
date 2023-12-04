@@ -11,13 +11,13 @@
     <string name="automation">Automation</string>
     <string name="private_browser">Private Browser</string>
     <string name="vpn_snooze">VPN SNOOZE</string>
-    <string name="snooze_5_minutes">SNOOZE 5 MINUTES</string>
-    <string name="snooze_15_minutes">SNOOZE 15 MINUTES</string>
-    <string name="snooze_1_hour">SNOOZE 1 HOUR</string>
+    <string name="snooze_5_minutes">5 mins</string>
+    <string name="snooze_15_minutes">15 mins</string>
+    <string name="snooze_1_hour">1 hour</string>
     <string name="snooze_description">Disconnects the VPN and automatically reconnects when the timer elapses.</string>
     <string name="resume">RESUME</string>
     <string name="paused_until">Paused until %s</string>
-    <string name="usage">USAGE</string>
+    <string name="traffic">TRAFFIC</string>
     <string name="download">Download</string>
     <string name="upload">Upload</string>
     <string name="usage_kb_to_format">%s kB</string>

@@ -1,8 +1,5 @@
 package com.kape.connection.ui
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,18 +25,17 @@ import com.kape.appbar.view.AppBar
 import com.kape.appbar.view.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.tiles.ConnectionInfo
-import com.kape.connection.ui.tiles.FavoritesTile
-import com.kape.connection.ui.tiles.IpInformationTile
+import com.kape.connection.ui.tiles.IPTile
 import com.kape.connection.ui.tiles.LocationPicker
-import com.kape.connection.ui.tiles.QuickConnectTile
-import com.kape.connection.ui.tiles.QuickSettingsTile
-import com.kape.connection.ui.tiles.SnoozeTile
-import com.kape.connection.ui.tiles.UsageTile
+import com.kape.connection.ui.tiles.QuickConnect
+import com.kape.connection.ui.tiles.QuickSettings
+import com.kape.connection.ui.tiles.Snooze
+import com.kape.connection.ui.tiles.Traffic
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.SnoozeInterval
 import com.kape.sidemenu.ui.SideMenu
+import com.kape.ui.elements.ItemSeparator
 import com.kape.ui.elements.Screen
-import com.kape.ui.elements.Separator
 import com.kape.ui.theme.Space
 import com.kape.vpnconnect.utils.ConnectionManager
 import kotlinx.coroutines.CoroutineScope
@@ -100,47 +96,38 @@ fun ConnectionScreen() = Screen {
                     viewModel.showRegionSelection()
                 }
             }
-            Separator()
-            IpInformationTile(
-                ip = viewModel.ip,
-                vpnIp = viewModel.vpnIp,
+            IPTile(
                 isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
+                publicIp = viewModel.ip,
+                vpnIp = viewModel.vpnIp,
                 portForwardingStatus = viewModel.portForwardingStatus,
                 port = viewModel.port.value.toString(),
             )
-            Separator()
-            QuickSettingsTile(
-                isKillSwitchEnabled = viewModel.isKillSwitchEnabled(),
-                isAutomationEnabled = viewModel.isAutomationEnabled(),
-                isPrivateBrowserEnabled = viewModel.isPrivateBrowserEnabled(),
+            ItemSeparator()
+            QuickConnect(
+                servers = viewModel.quickConnectVpnServers.value,
+                onClick = {
+                    viewModel.quickConnect(it)
+                },
+            )
+            ItemSeparator()
+            QuickSettings(
                 onKillSwitchClick = {
                     viewModel.navigateToKillSwitch()
                 },
                 onAutomationClick = {
                     viewModel.navigateToAutomation()
                 },
-                onPrivateBrowserClick = {
-                    onPrivateBrowserClick(context)
-                },
-                onMoreClick = {
-                    viewModel.navigateToQuickSettings()
+                onProtocolsClick = {
+                    viewModel.navigateToProtocols()
                 },
             )
-            Separator()
-            QuickConnectTile(
-                servers = viewModel.quickConnectVpnServers.value,
-                onClick = {
-                    viewModel.quickConnect(it)
-                },
-            )
-            Separator()
-            FavoritesTile(viewModel.favoriteVpnServers.value)
-            Separator()
+            ItemSeparator()
             if (viewModel.snoozeTime.longValue != 0L && viewModel.snoozeTime.longValue < System.currentTimeMillis()) {
                 viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
             }
-            SnoozeTile(
-                viewModel.snoozeState.value,
+            Snooze(
+                viewModel.snoozeActive,
                 onClick = {
                     if (viewModel.isConnectionActive()) {
                         viewModel.snooze(context, it)
@@ -150,30 +137,13 @@ fun ConnectionScreen() = Screen {
                     viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
                 },
             )
-            Separator()
-            UsageTile(viewModel.download.value, viewModel.upload.value)
-            Separator()
+            ItemSeparator()
+            Traffic(
+                viewModel.download.value,
+                viewModel.upload.value,
+            )
+            ItemSeparator()
             ConnectionInfo(viewModel.getConnectionSettings())
-        }
-    }
-}
-
-private fun onPrivateBrowserClick(context: Context) {
-    var launchIntent: Intent? =
-        context.packageManager.getLaunchIntentForPackage("nu.tommie.inbrowser")
-    if (launchIntent != null) {
-        val url = "https://play.google.com/store/apps/details?id=nu.tommie.inbrowser"
-        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        launchIntent.data = Uri.parse(url)
-        context.startActivity(launchIntent)
-    } else {
-        launchIntent = Intent(Intent.ACTION_VIEW)
-        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        launchIntent.data = Uri.parse("market://details?id=" + "nu.tommie.inbrowser")
-
-        // silently fail if Google Play Store isn't installed.
-        if (launchIntent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(launchIntent)
         }
     }
 }

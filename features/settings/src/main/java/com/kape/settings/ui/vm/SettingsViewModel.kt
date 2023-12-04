@@ -105,10 +105,6 @@ class SettingsViewModel(
         _state.emit(SettingsStep.Privacy)
     }
 
-    fun exitQuickSettings() {
-        router.handleFlow(ExitFlow.QuickSettings)
-    }
-
     fun navigateToConnectionStats() = viewModelScope.launch {
         _state.emit(SettingsStep.ConnectionStats)
     }
@@ -189,19 +185,6 @@ class SettingsViewModel(
         prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
 
     fun getSelectedDnsOption(): DnsOptions = prefs.getSelectedDnsOption()
-
-    fun toggleQuickSettingKillSwitch(enable: Boolean) = prefs.setQuickSettingKillSwitch(enable)
-
-    fun isQuickSettingKillSwitchEnabled() = prefs.isQuickSettingKillSwitchEnabled()
-
-    fun toggleQuickSettingAutomation(enable: Boolean) = prefs.setQuickSettingAutomation(enable)
-
-    fun isQuickSettingAutomationEnabled() = prefs.isQuickSettingAutomationEnabled()
-
-    fun toggleQuickSettingPrivateBrowser(enable: Boolean) =
-        prefs.setQuickSettingPrivateBrowser(enable)
-
-    fun isQuickSettingPrivateBrowserEnabled() = prefs.isQuickSettingPrivateBrowserEnabled()
 
     fun isAutomationEnabled() = prefs.isAutomationEnabled()
 

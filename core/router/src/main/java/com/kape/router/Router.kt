@@ -37,10 +37,10 @@ class Router {
             EnterFlow.AutomationSettings -> _navigation.value = Settings.Automation
             EnterFlow.PerAppSettings -> _navigation.value = PerAppSettings.Main
             EnterFlow.KillSwitchSettings -> _navigation.value = Settings.KillSwitch
-            EnterFlow.QuickSettings -> _navigation.value = Settings.QuickSettings
             EnterFlow.DedicatedIp -> _navigation.value = DedicatedIp.Main
             EnterFlow.Support -> _navigation.value = WebContent.Support
             EnterFlow.Automation -> _navigation.value = Automation.Route
+            EnterFlow.ProtocolSettings -> _navigation.value = Settings.Protocols
         }
     }
 
@@ -54,12 +54,12 @@ class Router {
             ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.Permissions)
             ExitFlow.Settings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.PerAppSettings -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.QuickSettings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.DedicatedIp -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.AutomationSettings -> handleFlow(EnterFlow.Settings)
             ExitFlow.KillSwitchSettings -> handleFlow(EnterFlow.Settings)
             ExitFlow.Permissions -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.Automation -> handleEnterFlow(EnterFlow.Settings)
+            ExitFlow.ProtocolSettings -> handleEnterFlow(EnterFlow.Connection)
         }
     }
 

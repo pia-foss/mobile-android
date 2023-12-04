@@ -136,21 +136,6 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
     fun isPortForwardingEnabled() = prefs.getBoolean(PORT_FORWARDING, false)
 
-    fun setQuickSettingKillSwitch(enabled: Boolean) =
-        prefs.edit().putBoolean(QUICK_KILL_SWITCH, enabled).apply()
-
-    fun isQuickSettingKillSwitchEnabled() = prefs.getBoolean(QUICK_KILL_SWITCH, true)
-
-    fun setQuickSettingAutomation(enabled: Boolean) =
-        prefs.edit().putBoolean(QUICK_AUTOMATION, enabled).apply()
-
-    fun isQuickSettingAutomationEnabled() = prefs.getBoolean(QUICK_AUTOMATION, true)
-
-    fun setQuickSettingPrivateBrowser(enabled: Boolean) =
-        prefs.edit().putBoolean(QUICK_BROWSER, enabled).apply()
-
-    fun isQuickSettingPrivateBrowserEnabled() = prefs.getBoolean(QUICK_BROWSER, true)
-
     fun setAllowLocalTrafficEnabled(enable: Boolean) =
         prefs.edit().putBoolean(ALLOW_LOCAL_TRAFFIC, enable).apply()
 

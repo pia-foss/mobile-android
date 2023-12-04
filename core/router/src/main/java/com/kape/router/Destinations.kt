@@ -38,7 +38,7 @@ object Settings {
     const val Main = "settings-screen"
     const val Automation = "settings-automation-screen"
     const val KillSwitch = "settings-kill-switch"
-    const val QuickSettings = "settings-quick-settings"
+    const val Protocols = "settings-protocol"
 }
 
 object PerAppSettings {

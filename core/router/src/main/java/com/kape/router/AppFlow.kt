@@ -15,10 +15,10 @@ sealed class EnterFlow : AppFlow {
     data object Support : EnterFlow()
     data object Survey : EnterFlow()
     data object Settings : EnterFlow()
+    data object ProtocolSettings : EnterFlow()
     data object AutomationSettings : EnterFlow()
     data object PerAppSettings : EnterFlow()
     data object KillSwitchSettings : EnterFlow()
-    data object QuickSettings : EnterFlow()
     data object DedicatedIp : EnterFlow()
     data object Automation : EnterFlow()
 }
@@ -32,10 +32,10 @@ sealed class ExitFlow : AppFlow {
     data object Profile : ExitFlow()
     data object Subscribe : ExitFlow()
     data object Settings : ExitFlow()
+    data object ProtocolSettings : ExitFlow()
     data object AutomationSettings : ExitFlow()
     data object PerAppSettings : ExitFlow()
     data object KillSwitchSettings : ExitFlow()
-    data object QuickSettings : ExitFlow()
     data object DedicatedIp : ExitFlow()
     data object Automation : ExitFlow()
 }

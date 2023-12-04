@@ -1,30 +1,10 @@
-<!--
-  ~  Copyright (c) 2020 Private Internet Access, Inc.
-  ~
-  ~  This file is part of the Private Internet Access Android Client.
-  ~
-  ~  The Private Internet Access Android Client is free software: you can redistribute it and/or
-  ~  modify it under the terms of the GNU General Public License as published by the Free
-  ~  Software Foundation, either version 3 of the License, or (at your option) any later version.
-  ~
-  ~  The Private Internet Access Android Client is distributed in the hope that it will be useful,
-  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-  ~  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  ~  details.
-  ~
-  ~  You should have received a copy of the GNU General Public License along with the Private
-  ~  Internet Access Android Client.  If not, see <https://www.gnu.org/licenses/>.
-  -->
-
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="36dp"
-    android:height="36dp"
-    android:viewportWidth="36"
-    android:viewportHeight="36">
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
   <path
-      android:pathData="M26.5438,8L23.3196,8.0214C23.2055,8.0214 23.0729,8.0847 22.9974,8.1685L16.1882,15.7025C14.2916,15.1131 12.1483,15.6187 10.6503,17.2808C8.4499,19.7223 8.4499,23.6992 10.6503,26.1612C12.8508,28.6231 16.4349,28.6027 18.6538,26.1612C20.1518,24.499 20.6075,22.1414 20.0762,20.0165L21.8587,18.0387C21.9535,17.9335 21.9913,17.8069 21.9913,17.6811L21.9913,15.114L24.0398,15.114C24.3051,15.114 24.4947,14.8822 24.4947,14.5879L24.4755,12.3364L26.5439,12.3142C26.7906,12.3142 26.9988,12.0824 26.9988,11.8095L26.9988,8.5262C27.018,8.2319 26.8091,8 26.5439,8L26.5438,8ZM14.3863,24.4981C13.7602,25.1927 12.7549,25.1927 12.1481,24.4981C11.5221,23.8035 11.5221,22.688 12.1481,22.0147C12.7741,21.3201 13.7602,21.3201 14.3863,22.0147C15.0123,22.6888 15.0123,23.8043 14.3863,24.4981Z"
-      android:strokeWidth="1"
-      android:fillColor="#889099"
-      android:fillType="evenOdd"
-      android:strokeColor="#00000000"/>
+      android:pathData="M17.543,4.293C17.934,3.902 18.567,3.902 18.957,4.293C19.318,4.653 19.346,5.221 19.041,5.613L18.957,5.707L18.165,6.5L19.707,8.043C20.068,8.403 20.096,8.971 19.791,9.363L19.707,9.457L17.082,12.082C16.722,12.443 16.155,12.47 15.762,12.165L15.668,12.082L14.124,10.539L12.391,12.273C13.12,13.351 13.415,14.673 13.204,15.969L13.155,16.227L13.099,16.459C12.627,18.237 11.238,19.625 9.461,20.097C7.683,20.569 5.789,20.052 4.49,18.736C2.548,16.725 2.575,13.528 4.552,11.551C6.291,9.813 8.974,9.582 10.963,10.873L13.418,8.418L17.543,4.293ZM10.347,12.927C9.121,11.743 7.172,11.76 5.967,12.966C4.761,14.171 4.744,16.12 5.921,17.339C6.709,18.137 7.864,18.452 8.948,18.164C10.031,17.876 10.878,17.03 11.166,15.946C11.454,14.862 11.139,13.707 10.34,12.919L10.347,12.927ZM16.749,7.915L15.539,9.125L16.375,9.96L17.585,8.75L16.749,7.915Z"
+      android:fillColor="#323642"
+      android:fillType="evenOdd"/>
 </vector>
