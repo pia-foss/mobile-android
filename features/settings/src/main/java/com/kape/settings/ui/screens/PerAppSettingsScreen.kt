@@ -30,7 +30,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.Screen
-import com.kape.ui.elements.SearchBar
+import com.kape.ui.elements.Search
 import com.kape.ui.elements.Separator
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
@@ -60,7 +60,7 @@ fun PerAppSettingsScreen() = Screen {
                 .fillMaxHeight()
                 .background(LocalColors.current.background),
         ) {
-            SearchBar {
+            Search(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), hint = "") {
                 viewModel.filterAppsByName(it, packageManager)
             }
             LazyColumn {
