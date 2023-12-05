@@ -24,7 +24,6 @@ import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.vm.SettingsViewModel
-import com.kape.ui.elements.ButtonProperties
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 import com.kape.ui.utils.LocalColors
@@ -77,16 +76,13 @@ fun KillSwitchSettingScreen() = Screen {
             )
             Spacer(modifier = Modifier.weight(1f))
             PrimaryButton(
+                text = stringResource(id = R.string.kill_switch_action),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                properties = ButtonProperties(
-                    label = stringResource(id = R.string.kill_switch_action),
-                    onClick = {
-                        context.startActivity(Intent(Settings.ACTION_VPN_SETTINGS))
-                    },
-                ),
-            )
+            ) {
+                context.startActivity(Intent(Settings.ACTION_VPN_SETTINGS))
+            }
         }
     }
 }

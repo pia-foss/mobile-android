@@ -17,32 +17,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.signup.R
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.ui.elements.ButtonProperties
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 import com.kape.ui.elements.SecondaryButton
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Space
 
 @Composable
 fun ConsentScreen(viewModel: SignupViewModel) = Screen {
     val showMoreInfo = remember { mutableStateOf(false) }
-
-    val acceptProperties =
-        ButtonProperties(label = stringResource(id = R.string.accept).toUpperCase(Locale.current), enabled = true, onClick = {
-            viewModel.allowEventSharing(true)
-        },)
-    val declineProperties =
-        ButtonProperties(label = stringResource(id = R.string.no_thanks).toUpperCase(Locale.current), enabled = true, onClick = {
-            viewModel.allowEventSharing(false)
-        },)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -55,25 +44,25 @@ fun ConsentScreen(viewModel: SignupViewModel) = Screen {
                 contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(Space.MEDIUM),
+                    .padding(24.dp),
             )
             Text(
                 text = stringResource(id = R.string.consent_title),
-                fontSize = FontSize.Big,
+                fontSize = 16.sp,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             )
-            Spacer(modifier = Modifier.height(Space.NORMAL))
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(id = R.string.consent_message),
-                fontSize = FontSize.Normal,
+                fontSize = 14.sp,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(Space.MEDIUM),
+                    .padding(24.dp),
             )
-            Spacer(modifier = Modifier.height(Space.NORMAL))
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(id = R.string.find_out_more).uppercase(),
-                fontSize = FontSize.Small,
+                fontSize = 12.sp,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -81,18 +70,24 @@ fun ConsentScreen(viewModel: SignupViewModel) = Screen {
                         showMoreInfo.value = true
                     },
             )
-            Spacer(modifier = Modifier.height(Space.NORMAL))
-            PrimaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = acceptProperties)
-            SecondaryButton(modifier = Modifier.padding(Space.MEDIUM, Space.MINI), properties = declineProperties)
+            Spacer(modifier = Modifier.height(16.dp))
+            PrimaryButton(
+                text = stringResource(id = R.string.accept),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            ) {
+                viewModel.allowEventSharing(true)
+            }
+            SecondaryButton(
+                text = stringResource(id = R.string.no_thanks),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .testTag(":SignUpScreen:Login"),
+            ) {
+                viewModel.allowEventSharing(false)
+            }
         }
-
-        // TODO: re-do alert dialog
-//        if (showMoreInfo.value) {
-//            AlertDialog(
-//                onDismissRequest = { showMoreInfo.value = false },
-//                text = { Text(text = stringResource(id = R.string.consent_more_info)) },
-//                buttons = {}, modifier = Modifier.fillMaxWidth()
-//            )
-//        }
     }
 }

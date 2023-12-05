@@ -62,7 +62,7 @@ fun PiaScreen(
 
     CompositionLocalProvider(*providedValues.toTypedArray()) {
         MaterialTheme(
-            typography = Typography,
+            typography = AppTypography,
             colorScheme = materialColorScheme,
             content = content,
         )

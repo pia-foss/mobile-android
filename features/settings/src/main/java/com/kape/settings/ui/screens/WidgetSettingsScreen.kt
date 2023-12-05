@@ -22,13 +22,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.vm.SettingsViewModel
-import com.kape.ui.elements.MenuSeparator
 import com.kape.ui.elements.Screen
-import com.kape.ui.theme.FontSize
+import com.kape.ui.elements.Separator
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.toColor
 import com.kape.ui.utils.toColorString
@@ -86,7 +86,7 @@ fun WidgetSettingsScreen() = Screen {
                 selectedColorType.value = ColorSection.Download
                 showDialog.value = true
             }
-            MenuSeparator()
+            Separator()
             Column(
                 modifier = Modifier
                     .defaultMinSize(56.dp)
@@ -97,12 +97,12 @@ fun WidgetSettingsScreen() = Screen {
             ) {
                 Text(
                     text = stringResource(id = R.string.widget_radius),
-                    fontSize = FontSize.Normal,
+                    fontSize = 14.sp,
                     color = LocalColors.current.onSurface,
                 )
                 Text(
                     text = viewModel.getWidgetSettings().radius.toString(),
-                    fontSize = FontSize.Normal,
+                    fontSize = 14.sp,
                     color = LocalColors.current.onSurfaceVariant,
                 )
             }

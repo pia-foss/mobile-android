@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.connection.R
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -24,7 +24,7 @@ fun SurveyTile(onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(Space.NORMAL),
+            .padding(16.dp),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Icon(
@@ -35,10 +35,10 @@ fun SurveyTile(onClick: () -> Unit) {
             )
             Text(
                 text = stringResource(id = R.string.survey_message),
-                fontSize = FontSize.Normal,
+                fontSize = 14.sp,
                 color = LocalColors.current.onSurface,
                 modifier = Modifier
-                    .padding(horizontal = Space.SMALL)
+                    .padding(horizontal = 8.dp)
                     .weight(0.8f),
             )
             Icon(
@@ -51,13 +51,13 @@ fun SurveyTile(onClick: () -> Unit) {
                     },
             )
         }
-        Spacer(modifier = Modifier.height(Space.SMALL))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(id = R.string.survey_action),
-            fontSize = FontSize.Normal,
+            fontSize = 14.sp,
             color = LocalColors.current.primary,
             modifier = Modifier
-                .padding(horizontal = Space.VERY_BIG + Space.MINI)
+                .padding(horizontal = 44.dp)
                 .clickable {
                     onClick.invoke()
                 },

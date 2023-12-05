@@ -16,37 +16,34 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.signup.R
 import com.kape.ui.elements.Screen
-import com.kape.ui.elements.UiResources
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Height
-import com.kape.ui.theme.Space
-import com.kape.ui.theme.Square
 import com.kape.ui.utils.LocalColors
 
 @Composable
 fun LoadingScreen() = Screen {
     Box(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(Height.DEFAULT))
+        Spacer(modifier = Modifier.height(48.dp))
         Image(
-            painter = painterResource(id = UiResources.bigAppLogo),
+            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
             contentDescription = "logo",
             modifier = Modifier
-                .padding(Space.HUGE)
+                .padding(48.dp)
                 .align(Alignment.TopCenter),
         )
         Column(modifier = Modifier.align(Alignment.Center)) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .align(CenterHorizontally)
-                    .size(Square.DEFAULT),
+                    .size(48.dp),
                 color = LocalColors.current.primary,
             )
-            Spacer(modifier = Modifier.height(Height.DEFAULT))
+            Spacer(modifier = Modifier.height(48.dp))
             Text(
                 text = stringResource(id = R.string.loading_text),
-                fontSize = FontSize.Big,
+                fontSize = 16.sp,
             )
         }
     }

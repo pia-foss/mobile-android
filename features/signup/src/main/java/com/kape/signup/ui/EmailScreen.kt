@@ -4,77 +4,73 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.signup.R
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.ui.elements.ButtonProperties
-import com.kape.ui.elements.InputField
-import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
-import com.kape.ui.elements.UiResources
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Height
-import com.kape.ui.theme.Space
+import com.kape.ui.text.Input
 import com.kape.ui.utils.LocalColors
 
 @Composable
 fun EmailScreen(viewModel: SignupViewModel) = Screen {
-    val emailProperties =
-        InputFieldProperties(label = stringResource(id = R.string.email_hint), maskInput = false)
-    val buttonProperties =
-        ButtonProperties(
-            label = stringResource(id = R.string.submit).toUpperCase(Locale.current),
-            enabled = true,
-            onClick = {
-                viewModel.register(emailProperties.content.value)
-            },
-        )
+    val email = remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(Height.DEFAULT))
+        Spacer(modifier = Modifier.height(48.dp))
         Image(
-            painter = painterResource(id = UiResources.bigAppLogo),
+            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
             contentDescription = stringResource(id = R.string.logo),
             modifier = Modifier
-                .padding(Space.HUGE)
+                .padding(48.dp)
                 .align(Alignment.CenterHorizontally),
         )
-        Spacer(modifier = Modifier.height(Space.VERY_HUGE))
+        Spacer(modifier = Modifier.height(64.dp))
         Text(
             text = stringResource(id = R.string.email_title),
-            fontSize = FontSize.Big,
+            fontSize = 16.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally),
         )
-        Spacer(modifier = Modifier.height(Space.NORMAL))
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(id = R.string.email_text),
             color = LocalColors.current.outlineVariant,
-            fontSize = FontSize.Normal,
+            fontSize = 14.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(horizontal = Space.MEDIUM),
+                .padding(horizontal = 24.dp),
         )
-        Spacer(modifier = Modifier.height(Space.MEDIUM))
-        InputField(
-            modifier = Modifier.padding(horizontal = Space.MEDIUM),
-            properties = emailProperties,
+        Spacer(modifier = Modifier.height(24.dp))
+        Input(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            label = stringResource(id = R.string.email_hint),
+            maskInput = false,
+            keyboard = KeyboardType.Email,
+            content = email,
         )
-        Spacer(modifier = Modifier.height(Space.NORMAL))
+        Spacer(modifier = Modifier.height(16.dp))
         PrimaryButton(
-            modifier = Modifier.padding(horizontal = Space.MEDIUM),
-            properties = buttonProperties,
-        )
+            text = stringResource(id = R.string.submit),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        ) {
+            viewModel.register(email.value)
+        }
     }
 }

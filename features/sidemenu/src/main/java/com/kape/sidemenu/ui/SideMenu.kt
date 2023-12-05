@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kape.sidemenu.R
 import com.kape.sidemenu.ui.vm.SideMenuViewModel
-import com.kape.ui.elements.MenuSeparator
+import com.kape.ui.elements.Separator
 import com.kape.ui.text.MenuText
 import com.kape.ui.text.SideMenuUsernameText
 import com.kape.ui.text.SideMenuVersionText
@@ -109,7 +109,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
             viewModel.logout()
         }
 
-        MenuSeparator()
+        Separator()
 
         SideMenuItem(iconId = R.drawable.ic_about, titleId = R.string.drawer_item_title_about) {
             scope.launch {

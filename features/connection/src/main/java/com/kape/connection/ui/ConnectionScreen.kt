@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.view.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -34,9 +35,8 @@ import com.kape.connection.ui.tiles.Traffic
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.SnoozeInterval
 import com.kape.sidemenu.ui.SideMenu
-import com.kape.ui.elements.ItemSeparator
 import com.kape.ui.elements.Screen
-import com.kape.ui.theme.Space
+import com.kape.ui.elements.Separator
 import com.kape.vpnconnect.utils.ConnectionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -82,7 +82,7 @@ fun ConnectionScreen() = Screen {
                     drawerState.open()
                 }
             }
-            Spacer(modifier = Modifier.height(Space.NORMAL))
+            Spacer(modifier = Modifier.height(16.dp))
             ConnectButton(
                 connectionStatus.value,
                 Modifier
@@ -103,14 +103,14 @@ fun ConnectionScreen() = Screen {
                 portForwardingStatus = viewModel.portForwardingStatus,
                 port = viewModel.port.value.toString(),
             )
-            ItemSeparator()
+            Separator()
             QuickConnect(
                 servers = viewModel.quickConnectVpnServers.value,
                 onClick = {
                     viewModel.quickConnect(it)
                 },
             )
-            ItemSeparator()
+            Separator()
             QuickSettings(
                 onKillSwitchClick = {
                     viewModel.navigateToKillSwitch()
@@ -122,7 +122,7 @@ fun ConnectionScreen() = Screen {
                     viewModel.navigateToProtocols()
                 },
             )
-            ItemSeparator()
+            Separator()
             if (viewModel.snoozeTime.longValue != 0L && viewModel.snoozeTime.longValue < System.currentTimeMillis()) {
                 viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
             }
@@ -137,12 +137,12 @@ fun ConnectionScreen() = Screen {
                     viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
                 },
             )
-            ItemSeparator()
+            Separator()
             Traffic(
                 viewModel.download.value,
                 viewModel.upload.value,
             )
-            ItemSeparator()
+            Separator()
             ConnectionInfo(viewModel.getConnectionSettings())
         }
     }

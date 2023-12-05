@@ -46,7 +46,6 @@ import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 import com.kape.ui.text.Input
 import com.kape.ui.text.SignInText
-import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.InternetConnectionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -141,7 +140,7 @@ fun LoginScreen(navController: NavController) = Screen {
             color = LocalColors.current.primary,
             modifier = Modifier
                 .align(CenterHorizontally)
-                .padding(Space.NORMAL, Space.NORMAL, Space.NORMAL, Space.SMALL)
+                .padding(16.dp, 16.dp, 16.dp, 8.dp)
                 .clickable {
                     viewModel.loginWithReceipt(currentContext.packageName)
                 },
@@ -151,7 +150,7 @@ fun LoginScreen(navController: NavController) = Screen {
             color = LocalColors.current.primary,
             modifier = Modifier
                 .align(CenterHorizontally)
-                .padding(Space.NORMAL, Space.SMALL, Space.NORMAL, Space.NORMAL)
+                .padding(16.dp, 8.dp, 16.dp, 16.dp)
                 .clickable {
                     navController.navigate(Login.WithEmail)
                 },
