@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -12,13 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.unit.dp
 import com.kape.signup.R
-import com.kape.ui.elements.ButtonProperties
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 import com.kape.ui.elements.UiResources
@@ -28,16 +28,6 @@ import com.kape.ui.theme.Space
 
 @Composable
 fun SignupErrorScreen(toLogin: () -> Unit) = Screen {
-    val buttonProperties =
-        ButtonProperties(
-            label = stringResource(id = R.string.error_account_creation_action).toUpperCase(
-                Locale.current,
-            ),
-            enabled = true,
-            onClick = {
-                toLogin.invoke()
-            },
-        )
 
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(Height.DEFAULT))
@@ -74,9 +64,14 @@ fun SignupErrorScreen(toLogin: () -> Unit) = Screen {
             )
             Spacer(modifier = Modifier.height(Space.NORMAL))
             PrimaryButton(
-                modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
-                properties = buttonProperties,
-            )
+                text = stringResource(id = R.string.error_account_creation_action),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .testTag(":LoginScreen:login_button"),
+            ) {
+                toLogin()
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
@@ -55,18 +57,6 @@ fun LoginWithEmailScreen(navController: NavController) = Screen {
             error = getErrorMessage(state = state),
             maskInput = false,
         )
-    val buttonProperties =
-        ButtonProperties(
-            label = stringResource(id = R.string.send_link).toUpperCase(Locale.current),
-            enabled = true,
-            onClick = {
-                if (isConnected) {
-                    viewModel.loginWithEmail(emailProperties.content.value)
-                } else {
-                    Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
-                }
-            },
-        )
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (!isConnected) {
@@ -89,10 +79,19 @@ fun LoginWithEmailScreen(navController: NavController) = Screen {
             modifier = Modifier.padding(Space.MEDIUM, Space.SMALL),
             properties = emailProperties,
         )
+
         PrimaryButton(
-            modifier = Modifier.padding(Space.MEDIUM, Space.MINI),
-            properties = buttonProperties,
-        )
+            text = stringResource(id = R.string.send_link),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        ) {
+            if (isConnected) {
+                viewModel.loginWithEmail(emailProperties.content.value)
+            } else {
+                Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     if (state.flowCompleted) {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -12,12 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.unit.dp
 import com.kape.signup.R
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.ui.elements.ButtonProperties
 import com.kape.ui.elements.InputField
 import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.elements.PrimaryButton
@@ -32,14 +31,6 @@ import com.kape.ui.utils.LocalColors
 fun EmailScreen(viewModel: SignupViewModel) = Screen {
     val emailProperties =
         InputFieldProperties(label = stringResource(id = R.string.email_hint), maskInput = false)
-    val buttonProperties =
-        ButtonProperties(
-            label = stringResource(id = R.string.submit).toUpperCase(Locale.current),
-            enabled = true,
-            onClick = {
-                viewModel.register(emailProperties.content.value)
-            },
-        )
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(Height.DEFAULT))
@@ -73,8 +64,12 @@ fun EmailScreen(viewModel: SignupViewModel) = Screen {
         )
         Spacer(modifier = Modifier.height(Space.NORMAL))
         PrimaryButton(
-            modifier = Modifier.padding(horizontal = Space.MEDIUM),
-            properties = buttonProperties,
-        )
+            text = stringResource(id = R.string.submit),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            viewModel.register(emailProperties.content.value)
+        }
     }
 }
