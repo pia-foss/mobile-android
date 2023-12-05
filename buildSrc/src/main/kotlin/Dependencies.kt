@@ -2,16 +2,16 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 
 object Dependencies {
 
-    internal const val IMPLEMENTATION = "implementation"
-    internal const val TEST_IMPLEMENTATION = "testImplementation"
-    internal const val ANDROID_TEST_IMPLEMENTATION = "androidTestImplementation"
-    internal const val DEBUG_IMPLEMENTATION = "debugImplementation"
-    internal const val GOOGLE_IMPLEMENTATION = "googleImplementation"
-    internal const val AMAZON_IMPLEMENTATION = "amazonImplementation"
-    internal const val COMPOSE_BOM = "androidx.compose:compose-bom:2023.10.00"
-    internal const val COMPOSE_NAVIGATION = "2.6.0"
+    private const val IMPLEMENTATION = "implementation"
+    private const val TEST_IMPLEMENTATION = "testImplementation"
+    private const val ANDROID_TEST_IMPLEMENTATION = "androidTestImplementation"
+    private const val DEBUG_IMPLEMENTATION = "debugImplementation"
+    private const val GOOGLE_IMPLEMENTATION = "googleImplementation"
+    private const val AMAZON_IMPLEMENTATION = "amazonImplementation"
+    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2023.10.00"
+    private const val COMPOSE_NAVIGATION = "2.6.0"
 
-    const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.0.3"
+    const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.0.4"
 
     fun DependencyHandler.implementCompose() {
         add(IMPLEMENTATION, platform(COMPOSE_BOM))
