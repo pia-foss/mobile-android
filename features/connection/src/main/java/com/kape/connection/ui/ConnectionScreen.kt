@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.view.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -36,7 +37,6 @@ import com.kape.connection.utils.SnoozeInterval
 import com.kape.sidemenu.ui.SideMenu
 import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Separator
-import com.kape.ui.theme.Space
 import com.kape.vpnconnect.utils.ConnectionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -82,7 +82,7 @@ fun ConnectionScreen() = Screen {
                     drawerState.open()
                 }
             }
-            Spacer(modifier = Modifier.height(Space.NORMAL))
+            Spacer(modifier = Modifier.height(16.dp))
             ConnectButton(
                 connectionStatus.value,
                 Modifier

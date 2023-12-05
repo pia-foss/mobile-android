@@ -19,13 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.profile.R
 import com.kape.profile.ui.vm.ProfileViewModel
 import com.kape.ui.elements.Screen
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -52,39 +52,39 @@ fun ProfileScreen() = Screen {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(LocalColors.current.surfaceVariant)
-                    .padding(horizontal = Space.NORMAL),
+                    .padding(horizontal = 16.dp),
             ) {
-                Spacer(modifier = Modifier.height(Space.MEDIUM))
+                Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     color = LocalColors.current.outlineVariant,
                     text = stringResource(id = R.string.username),
-                    fontSize = FontSize.Small,
+                    fontSize = 12.sp,
                 )
                 Text(
                     color = LocalColors.current.onSurfaceVariant,
                     text = state.username,
                 )
-                Spacer(modifier = Modifier.height(Space.MEDIUM))
+                Spacer(modifier = Modifier.height(24.dp))
                 Text(
                     color = LocalColors.current.outlineVariant,
                     text = stringResource(id = R.string.message_other_devices),
-                    fontSize = FontSize.Small,
+                    fontSize = 12.sp,
                 )
-                Spacer(modifier = Modifier.height(Space.NORMAL))
+                Spacer(modifier = Modifier.height(16.dp))
                 Row {
                     Text(
                         color = LocalColors.current.outlineVariant,
                         text = stringResource(id = if (state.expired) R.string.message_expired else R.string.message_expiration),
-                        fontSize = FontSize.Small,
+                        fontSize = 12.sp,
                     )
-                    Spacer(modifier = Modifier.width(Space.MINI))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         color = LocalColors.current.onSurface,
                         text = if (state.expired) stringResource(id = R.string.subscription_status_expired) else state.expirationDate,
-                        fontSize = FontSize.Small,
+                        fontSize = 12.sp,
                     )
                 }
-                Spacer(modifier = Modifier.height(Space.NORMAL))
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

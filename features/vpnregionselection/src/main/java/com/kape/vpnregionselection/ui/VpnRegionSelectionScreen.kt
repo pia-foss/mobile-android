@@ -30,6 +30,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.os.ConfigurationCompat
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -38,8 +39,6 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Search
 import com.kape.ui.text.MenuText
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnregionselection.R
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
@@ -146,7 +145,7 @@ fun SortingOptions(viewModel: VpnRegionSelectionViewModel, showSortingOptions: M
             showSortingOptions.value = false
         },
         title = {
-            Text(text = stringResource(id = R.string.sort_regions_title), fontSize = FontSize.Title)
+            Text(text = stringResource(id = R.string.sort_regions_title), fontSize = 18.sp)
         },
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -164,14 +163,14 @@ fun SortingOptions(viewModel: VpnRegionSelectionViewModel, showSortingOptions: M
                                 },
                                 role = Role.RadioButton,
                             )
-                            .padding(vertical = Space.MINI),
+                            .padding(vertical = 4.dp),
                     ) {
                         RadioButton(
                             selected = (options.indexOf(it) == sortBySelectedOption.value.index),
                             onClick = null,
                             colors = RadioButtonDefaults.colors(selectedColor = LocalColors.current.primary),
                             modifier = Modifier
-                                .padding(end = Space.SMALL)
+                                .padding(end = 8.dp)
                                 .align(CenterVertically),
                         )
                         Text(
@@ -191,7 +190,7 @@ fun SortingOptions(viewModel: VpnRegionSelectionViewModel, showSortingOptions: M
             ) {
                 Text(
                     text = stringResource(id = R.string.ok),
-                    fontSize = FontSize.Normal,
+                    fontSize = 14.sp,
                     color = LocalColors.current.primary,
                 )
             }
@@ -200,7 +199,7 @@ fun SortingOptions(viewModel: VpnRegionSelectionViewModel, showSortingOptions: M
             TextButton(onClick = { showSortingOptions.value = false }) {
                 Text(
                     text = stringResource(id = R.string.cancel).toUpperCase(Locale.current),
-                    fontSize = FontSize.Normal,
+                    fontSize = 14.sp,
                     color = LocalColors.current.primary,
                 )
             }

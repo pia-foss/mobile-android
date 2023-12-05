@@ -40,16 +40,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.R
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.ui.elements.Screen
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Height
-import com.kape.ui.theme.Space
-import com.kape.ui.theme.Width
 import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
@@ -92,13 +89,13 @@ fun DedicatedIpScreen() = Screen {
             ) {
                 Text(
                     text = stringResource(id = R.string.dedicated_ip_title),
-                    fontSize = FontSize.Title,
+                    fontSize = 18.sp,
                     color = LocalColors.current.onSurface,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = stringResource(id = R.string.dedicated_ip_description),
-                    fontSize = FontSize.Small,
+                    fontSize = 12.sp,
                     color = LocalColors.current.onSurface,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -155,7 +152,7 @@ fun DedicatedIpScreen() = Screen {
             if (viewModel.dipList.isNotEmpty()) {
                 Text(
                     text = stringResource(id = R.string.owned_dedicated_ips),
-                    fontSize = FontSize.Title,
+                    fontSize = 18.sp,
                     color = LocalColors.current.primary,
                     modifier = Modifier.padding(horizontal = 16.dp),
                 )
@@ -231,8 +228,8 @@ fun DipItem(
                     modifier = Modifier
                         .align(Center)
                         .padding(4.dp)
-                        .width(Width.FLAG)
-                        .height(Height.FLAG),
+                        .width(32.dp)
+                        .height(22.dp),
                 )
                 Icon(
                     painter = painterResource(id = R.drawable.ic_dip_badge),
@@ -245,9 +242,9 @@ fun DipItem(
             }
             Text(
                 text = server.name,
-                fontSize = FontSize.Normal,
+                fontSize = 14.sp,
                 modifier = Modifier
-                    .padding(horizontal = Space.SMALL)
+                    .padding(horizontal = 8.dp)
                     .align(CenterVertically),
             )
             Spacer(modifier = Modifier.weight(1f))
@@ -259,10 +256,10 @@ fun DipItem(
                 } else {
                     ""
                 },
-                fontSize = FontSize.Small,
+                fontSize = 12.sp,
                 color = LocalColors.current.getLatencyColor(server.latency),
                 modifier = Modifier
-                    .padding(horizontal = Space.SMALL)
+                    .padding(horizontal = 8.dp)
                     .align(CenterVertically),
             )
             IconButton(
@@ -275,8 +272,8 @@ fun DipItem(
                     painter = painterResource(R.drawable.ic_close),
                     contentDescription = null,
                     modifier = Modifier
-                        .width(Width.FAVOURITE)
-                        .height(Height.FAVOURITE)
+                        .width(24.dp)
+                        .height(20.dp)
                         .align(CenterVertically),
                 )
             }
@@ -298,7 +295,7 @@ fun DeleteDipDialog(
         title = {
             Text(
                 text = stringResource(id = R.string.dip_remove_title),
-                fontSize = FontSize.Title,
+                fontSize = 18.sp,
             )
         },
         text = {
@@ -308,7 +305,7 @@ fun DeleteDipDialog(
                     server.name,
                     server.dedicatedIp,
                 ),
-                fontSize = FontSize.Normal,
+                fontSize = 14.sp,
             )
         },
         confirmButton = {
@@ -320,7 +317,7 @@ fun DeleteDipDialog(
             ) {
                 Text(
                     text = stringResource(id = android.R.string.ok),
-                    fontSize = FontSize.Normal,
+                    fontSize = 14.sp,
                     color = LocalColors.current.primary,
                 )
             }
@@ -333,7 +330,7 @@ fun DeleteDipDialog(
             ) {
                 Text(
                     text = stringResource(id = android.R.string.cancel),
-                    fontSize = FontSize.Normal,
+                    fontSize = 14.sp,
                     color = LocalColors.current.primary,
                 )
             }

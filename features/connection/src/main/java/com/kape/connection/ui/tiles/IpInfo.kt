@@ -16,11 +16,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.connection.R
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.ui.text.IPText
 import com.kape.ui.text.TileTitleText
-import com.kape.ui.theme.FontSize
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -67,7 +67,7 @@ fun IPTile(
                             PortForwardingStatus.Success -> port ?: ""
                         },
                         color = LocalColors.current.onSurface,
-                        fontSize = FontSize.Normal,
+                        fontSize = 14.sp,
                     )
                 }
             }

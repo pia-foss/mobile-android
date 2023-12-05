@@ -16,8 +16,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import com.kape.ui.theme.InputFieldBackground
-import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 
 @Deprecated("to be replaced by Input")
@@ -47,7 +47,7 @@ fun InputField(modifier: Modifier, properties: InputFieldProperties) {
                 text = it,
                 color = LocalColors.current.error,
                 modifier = Modifier
-                    .padding(vertical = Space.SMALL_VERTICAL)
+                    .padding(vertical = 2.dp)
                     .semantics { contentDescription = it }
                     .testTag("errorMessage"),
             )

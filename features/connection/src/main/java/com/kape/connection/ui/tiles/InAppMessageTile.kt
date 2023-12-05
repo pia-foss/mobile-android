@@ -14,9 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.connection.R
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -24,7 +24,7 @@ fun InAppMessageTile(content: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(Space.NORMAL),
+            .padding(16.dp),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Icon(
@@ -43,12 +43,12 @@ fun InAppMessageTile(content: String) {
                     },
             )
         }
-        Spacer(modifier = Modifier.height(Space.SMALL))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = content,
-            fontSize = FontSize.Normal,
+            fontSize = 14.sp,
             color = LocalColors.current.onSurface,
-            modifier = Modifier.padding(horizontal = Space.MEDIUM),
+            modifier = Modifier.padding(horizontal = 24.dp),
         )
     }
 }

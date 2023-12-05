@@ -33,7 +33,6 @@ import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.elements.NoNetworkBanner
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
-import com.kape.ui.theme.Space
 import com.kape.utils.InternetConnectionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel
@@ -62,17 +61,17 @@ fun LoginWithEmailScreen(navController: NavController) = Screen {
             painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
             contentDescription = "logo",
             modifier = Modifier
-                .padding(start = 150.dp, top = 36.dp, bottom = Space.MEDIUM, end = 150.dp),
+                .padding(start = 150.dp, top = 36.dp, bottom = 24.dp, end = 150.dp),
         )
         Text(
             text = stringResource(id = R.string.sign_in),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(bottom = Space.MEDIUM),
+                .padding(bottom = 24.dp),
         )
         InputField(
-            modifier = Modifier.padding(Space.MEDIUM, Space.SMALL),
+            modifier = Modifier.padding(24.dp, 8.dp),
             properties = emailProperties,
         )
 

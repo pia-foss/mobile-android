@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.kape.settings.R
 import com.kape.ui.elements.InputField
 import com.kape.ui.elements.InputFieldProperties
-import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -55,7 +54,7 @@ fun InputFieldDialog(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         InputField(
-                            modifier = Modifier.padding(Space.MEDIUM, Space.SMALL),
+                            modifier = Modifier.padding(24.dp, 8.dp),
                             properties = inputFieldProperty,
                         )
                     }

@@ -16,15 +16,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.signup.R
 import com.kape.signup.data.models.Credentials
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Height
 import com.kape.ui.theme.OutlineBackground
-import com.kape.ui.theme.Space
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -34,73 +32,73 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Sc
             painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
             contentDescription = stringResource(id = R.string.logo),
             modifier = Modifier
-                .padding(Space.NORMAL)
-                .height(Height.SMALL_LOGO)
+                .padding(16.dp)
+                .height(24.dp)
                 .align(Alignment.CenterHorizontally),
         )
         Image(
             painter = painterResource(id = R.drawable.ic_complete_redeem),
             contentDescription = stringResource(id = R.string.logo),
             modifier = Modifier
-                .padding(Space.NORMAL)
-                .height(Height.BIG_LOGO)
+                .padding(16.dp)
+                .height(80.dp)
                 .align(Alignment.CenterHorizontally),
         )
         Text(
             text = stringResource(id = R.string.credentials_title),
-            fontSize = FontSize.Title,
+            fontSize = 18.sp,
             modifier = Modifier.align(Alignment.CenterHorizontally),
         )
-        Spacer(modifier = Modifier.height(Space.NORMAL))
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(id = R.string.credentials_text),
             color = LocalColors.current.outlineVariant,
-            fontSize = FontSize.Normal,
+            fontSize = 14.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(horizontal = Space.MEDIUM),
+                .padding(horizontal = 24.dp),
         )
-        Spacer(modifier = Modifier.height(Space.NORMAL))
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(id = R.string.credentials_hint),
             color = LocalColors.current.outlineVariant,
-            fontSize = FontSize.Normal,
+            fontSize = 14.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(horizontal = Space.MEDIUM),
+                .padding(horizontal = 24.dp),
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Space.MEDIUM, end = Space.MEDIUM, top = Space.NORMAL)
+                .padding(start = 24.dp, end = 24.dp, top = 16.dp)
                 .border(1.dp, shape = OutlineBackground, color = LocalColors.current.outline)
-                .padding(Space.NORMAL),
+                .padding(16.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.username),
                 color = LocalColors.current.outlineVariant,
-                fontSize = FontSize.Normal,
+                fontSize = 14.sp,
             )
-            Text(text = credentials.username, fontSize = FontSize.Title)
+            Text(text = credentials.username, fontSize = 18.sp)
         }
-        Spacer(modifier = Modifier.height(Space.SMALL))
+        Spacer(modifier = Modifier.height(8.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Space.MEDIUM, end = Space.MEDIUM, bottom = Space.NORMAL)
+                .padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
                 .border(1.dp, shape = OutlineBackground, color = LocalColors.current.outline)
-                .padding(Space.NORMAL),
+                .padding(16.dp),
         ) {
             Text(
                 text = stringResource(id = R.string.password),
                 color = LocalColors.current.outlineVariant,
-                fontSize = FontSize.Normal,
+                fontSize = 14.sp,
             )
-            Text(text = credentials.password, fontSize = FontSize.Title)
+            Text(text = credentials.password, fontSize = 18.sp)
         }
-        Spacer(modifier = Modifier.height(Space.MINI))
+        Spacer(modifier = Modifier.height(4.dp))
         PrimaryButton(
             text = stringResource(id = R.string.get_started),
             modifier = Modifier

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
@@ -25,7 +26,6 @@ import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.Screen
-import com.kape.ui.theme.FontSize
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -157,7 +157,7 @@ fun SuccessDialog(requestId: String, showDialog: MutableState<Boolean>, reset: (
         title = {
             Text(
                 text = stringResource(id = R.string.log_send_done_title),
-                fontSize = FontSize.Title,
+                fontSize = 18.sp,
             )
         },
         text = {
@@ -166,7 +166,7 @@ fun SuccessDialog(requestId: String, showDialog: MutableState<Boolean>, reset: (
                     stringResource(id = R.string.log_send_done_msg),
                     requestId,
                 ),
-                fontSize = FontSize.Normal,
+                fontSize = 14.sp,
             )
         },
         confirmButton = {
@@ -178,7 +178,7 @@ fun SuccessDialog(requestId: String, showDialog: MutableState<Boolean>, reset: (
             ) {
                 Text(
                     text = stringResource(id = R.string.ok),
-                    fontSize = FontSize.Normal,
+                    fontSize = 14.sp,
                     color = LocalColors.current.primary,
                 )
             }

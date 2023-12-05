@@ -22,13 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kape.signup.R
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 import com.kape.ui.elements.SecondaryButton
-import com.kape.ui.theme.FontSize
-import com.kape.ui.theme.Space
 
 @Composable
 fun ConsentScreen(viewModel: SignupViewModel) = Screen {
@@ -45,25 +44,25 @@ fun ConsentScreen(viewModel: SignupViewModel) = Screen {
                 contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(Space.MEDIUM),
+                    .padding(24.dp),
             )
             Text(
                 text = stringResource(id = R.string.consent_title),
-                fontSize = FontSize.Big,
+                fontSize = 16.sp,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             )
-            Spacer(modifier = Modifier.height(Space.NORMAL))
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(id = R.string.consent_message),
-                fontSize = FontSize.Normal,
+                fontSize = 14.sp,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(Space.MEDIUM),
+                    .padding(24.dp),
             )
-            Spacer(modifier = Modifier.height(Space.NORMAL))
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(id = R.string.find_out_more).uppercase(),
-                fontSize = FontSize.Small,
+                fontSize = 12.sp,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -71,7 +70,7 @@ fun ConsentScreen(viewModel: SignupViewModel) = Screen {
                         showMoreInfo.value = true
                     },
             )
-            Spacer(modifier = Modifier.height(Space.NORMAL))
+            Spacer(modifier = Modifier.height(16.dp))
             PrimaryButton(
                 text = stringResource(id = R.string.accept),
                 modifier = Modifier
