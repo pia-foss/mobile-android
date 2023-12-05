@@ -15,8 +15,6 @@ data class InputFieldProperties(
     var content: MutableState<String> = mutableStateOf(""),
 )
 
-data class ButtonProperties(val label: String, val enabled: Boolean = true, val onClick: () -> Unit)
-
 data class WebViewComponentProperties(
     val url: Uri,
     val userAgentString: String = "",

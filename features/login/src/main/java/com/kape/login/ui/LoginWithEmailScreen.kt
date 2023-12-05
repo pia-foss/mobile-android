@@ -31,7 +31,6 @@ import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
 import com.kape.login.utils.connectivityState
 import com.kape.router.Login
-import com.kape.ui.elements.ButtonProperties
 import com.kape.ui.elements.InputField
 import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.elements.NoNetworkBanner
