@@ -10,23 +10,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kape.settings.R
-import com.kape.ui.elements.InputField
-import com.kape.ui.elements.InputFieldProperties
+import com.kape.ui.text.Input
 import com.kape.ui.utils.LocalColors
 
 @Composable
 fun InputFieldDialog(
     @StringRes titleId: Int,
-    inputFieldProperties: List<InputFieldProperties>,
     onClear: () -> Unit,
     onConfirm: () -> Unit,
     footnote: String? = null,
+    isDnsNumeric: (ipAddress: String) -> Boolean,
 ) {
+    val primaryDns = remember { mutableStateOf("") }
+    val secondaryDns = remember { mutableStateOf("") }
+
     AlertDialog(
         onDismissRequest = onConfirm,
         confirmButton = {
@@ -46,16 +51,49 @@ fun InputFieldDialog(
             Column(
                 Modifier.fillMaxWidth(),
             ) {
-                inputFieldProperties.forEach { inputFieldProperty ->
+                Column {
                     Row(
                         Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        InputField(
+                        Input(
                             modifier = Modifier.padding(24.dp, 8.dp),
-                            properties = inputFieldProperty,
+                            label = stringResource(id = R.string.network_dns_selection_custom_primary),
+                            maskInput = false,
+                            keyboard = KeyboardType.Decimal,
+                            content = primaryDns,
+                            errorMessage = if (
+                                secondaryDns.value.isEmpty() ||
+                                isDnsNumeric(secondaryDns.value)
+                            ) {
+                                null
+                            } else {
+                                stringResource(id = R.string.network_dns_selection_custom_invalid)
+                            },
+                        )
+                    }
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Input(
+                            modifier = Modifier.padding(24.dp, 8.dp),
+                            label = stringResource(id = R.string.network_dns_selection_custom_secondary),
+                            maskInput = false,
+                            keyboard = KeyboardType.Decimal,
+                            content = secondaryDns,
+                            errorMessage = if (
+                                secondaryDns.value.isEmpty() ||
+                                isDnsNumeric(secondaryDns.value)
+                            ) {
+                                null
+                            } else {
+                                stringResource(id = R.string.network_dns_selection_custom_invalid)
+                            },
                         )
                     }
                 }

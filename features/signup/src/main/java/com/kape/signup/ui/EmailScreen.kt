@@ -9,25 +9,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.signup.R
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.ui.elements.InputField
-import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
+import com.kape.ui.text.Input
 import com.kape.ui.utils.LocalColors
 
 @Composable
 fun EmailScreen(viewModel: SignupViewModel) = Screen {
-    val emailProperties =
-        InputFieldProperties(label = stringResource(id = R.string.email_hint), maskInput = false)
+    val email = remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(48.dp))
@@ -55,9 +56,12 @@ fun EmailScreen(viewModel: SignupViewModel) = Screen {
                 .padding(horizontal = 24.dp),
         )
         Spacer(modifier = Modifier.height(24.dp))
-        InputField(
+        Input(
             modifier = Modifier.padding(horizontal = 24.dp),
-            properties = emailProperties,
+            label = stringResource(id = R.string.email_hint),
+            maskInput = false,
+            keyboard = KeyboardType.Email,
+            content = email,
         )
         Spacer(modifier = Modifier.height(16.dp))
         PrimaryButton(
@@ -66,7 +70,7 @@ fun EmailScreen(viewModel: SignupViewModel) = Screen {
                 .fillMaxWidth()
                 .padding(16.dp),
         ) {
-            viewModel.register(emailProperties.content.value)
+            viewModel.register(email.value)
         }
     }
 }

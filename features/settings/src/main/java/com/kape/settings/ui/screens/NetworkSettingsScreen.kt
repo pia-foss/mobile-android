@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
@@ -21,7 +20,6 @@ import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.elements.TextDialog
 import com.kape.settings.ui.vm.SettingsViewModel
-import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
@@ -166,36 +164,6 @@ fun CustomDnsDialog(
         if (viewModel.maceEnabled.value) stringResource(id = R.string.custom_dns_disabling_mace) else null
     InputFieldDialog(
         R.string.network_dns_selection_title,
-        inputFieldProperties = listOf(
-            InputFieldProperties(
-                stringResource(id = R.string.network_dns_selection_custom_primary),
-                maskInput = false,
-                keyboardType = KeyboardType.Decimal,
-                content = customPrimaryDns,
-                error = if (
-                    customPrimaryDns.value.isEmpty() ||
-                    viewModel.isDnsNumeric(ipAddress = customPrimaryDns.value)
-                ) {
-                    null
-                } else {
-                    stringResource(id = R.string.network_dns_selection_custom_invalid)
-                },
-            ),
-            InputFieldProperties(
-                stringResource(id = R.string.network_dns_selection_custom_secondary),
-                maskInput = false,
-                keyboardType = KeyboardType.Decimal,
-                content = customSecondaryDns,
-                error = if (
-                    customSecondaryDns.value.isEmpty() ||
-                    viewModel.isDnsNumeric(ipAddress = customSecondaryDns.value)
-                ) {
-                    null
-                } else {
-                    stringResource(id = R.string.network_dns_selection_custom_invalid)
-                },
-            ),
-        ),
         onClear = {
             customPrimaryDns.value = ""
             customSecondaryDns.value = ""
@@ -224,7 +192,9 @@ fun CustomDnsDialog(
             )
         },
         footnote,
-    )
+    ) {
+        viewModel.isDnsNumeric(it)
+    }
 }
 
 @Composable
