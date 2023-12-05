@@ -34,8 +34,8 @@ import com.kape.connection.ui.tiles.Traffic
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.SnoozeInterval
 import com.kape.sidemenu.ui.SideMenu
-import com.kape.ui.elements.Separator
 import com.kape.ui.elements.Screen
+import com.kape.ui.elements.Separator
 import com.kape.ui.theme.Space
 import com.kape.vpnconnect.utils.ConnectionManager
 import kotlinx.coroutines.CoroutineScope

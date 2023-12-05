@@ -27,7 +27,6 @@ import com.kape.ui.theme.Space
 
 @Composable
 fun SignupErrorScreen(toLogin: () -> Unit) = Screen {
-
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(Height.DEFAULT))
         Image(

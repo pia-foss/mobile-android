@@ -76,7 +76,7 @@ fun ConsentScreen(viewModel: SignupViewModel) = Screen {
                 text = stringResource(id = R.string.accept),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(16.dp),
             ) {
                 viewModel.allowEventSharing(true)
             }

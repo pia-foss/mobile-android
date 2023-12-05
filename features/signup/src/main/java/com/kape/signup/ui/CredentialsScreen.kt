@@ -29,7 +29,6 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Screen {
-
     Column(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
@@ -106,7 +105,7 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Sc
             text = stringResource(id = R.string.get_started),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             viewModel.completeSubscription()
         }

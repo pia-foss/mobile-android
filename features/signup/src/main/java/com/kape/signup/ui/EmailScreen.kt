@@ -66,7 +66,7 @@ fun EmailScreen(viewModel: SignupViewModel) = Screen {
             text = stringResource(id = R.string.submit),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             viewModel.register(emailProperties.content.value)
         }
