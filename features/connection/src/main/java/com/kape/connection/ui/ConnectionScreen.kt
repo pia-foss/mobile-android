@@ -34,7 +34,7 @@ import com.kape.connection.ui.tiles.Traffic
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.SnoozeInterval
 import com.kape.sidemenu.ui.SideMenu
-import com.kape.ui.elements.ItemSeparator
+import com.kape.ui.elements.Separator
 import com.kape.ui.elements.Screen
 import com.kape.ui.theme.Space
 import com.kape.vpnconnect.utils.ConnectionManager
@@ -103,14 +103,14 @@ fun ConnectionScreen() = Screen {
                 portForwardingStatus = viewModel.portForwardingStatus,
                 port = viewModel.port.value.toString(),
             )
-            ItemSeparator()
+            Separator()
             QuickConnect(
                 servers = viewModel.quickConnectVpnServers.value,
                 onClick = {
                     viewModel.quickConnect(it)
                 },
             )
-            ItemSeparator()
+            Separator()
             QuickSettings(
                 onKillSwitchClick = {
                     viewModel.navigateToKillSwitch()
@@ -122,7 +122,7 @@ fun ConnectionScreen() = Screen {
                     viewModel.navigateToProtocols()
                 },
             )
-            ItemSeparator()
+            Separator()
             if (viewModel.snoozeTime.longValue != 0L && viewModel.snoozeTime.longValue < System.currentTimeMillis()) {
                 viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
             }
@@ -137,12 +137,12 @@ fun ConnectionScreen() = Screen {
                     viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
                 },
             )
-            ItemSeparator()
+            Separator()
             Traffic(
                 viewModel.download.value,
                 viewModel.upload.value,
             )
-            ItemSeparator()
+            Separator()
             ConnectionInfo(viewModel.getConnectionSettings())
         }
     }

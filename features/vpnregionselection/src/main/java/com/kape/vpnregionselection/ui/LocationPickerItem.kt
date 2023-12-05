@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kape.ui.elements.FavoriteIcon
-import com.kape.ui.elements.MenuSeparator
+import com.kape.ui.elements.Separator
 import com.kape.ui.text.RegionSelectionText
 import com.kape.ui.utils.getFlagResource
 import com.kape.utils.vpnserver.VpnServer
@@ -65,6 +65,6 @@ fun LocationPickerItem(
                 )
             }
         }
-        MenuSeparator()
+        Separator()
     }
 }

@@ -1,21 +1,24 @@
 package com.kape.ui.elements
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.kape.ui.theme.Height
+import androidx.compose.ui.unit.dp
 import com.kape.ui.utils.LocalColors
 
-@Deprecated("to be replaced by ItemSeparator")
 @Composable
 fun Separator() {
-    Box(
+    Divider(
         modifier = Modifier
             .fillMaxWidth()
-            .height(Height.SEPARATOR)
-            .background(LocalColors.current.outline),
+            .padding(horizontal = 16.dp)
+            .height(0.5.dp)
+            .background(
+                LocalColors.current.outline,
+            ),
     )
 }

@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.ui.elements.MenuSeparator
+import com.kape.ui.elements.Separator
 import com.kape.ui.elements.Toggle
 import com.kape.ui.text.SettingsL2Text
 import com.kape.ui.text.SettingsL2TextDescription
@@ -68,6 +68,6 @@ fun SettingsToggle(
                 toggle(it)
             }
         }
-        MenuSeparator()
+        Separator()
     }
 }
