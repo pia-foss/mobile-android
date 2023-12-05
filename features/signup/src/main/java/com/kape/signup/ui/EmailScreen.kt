@@ -21,7 +21,6 @@ import com.kape.ui.elements.InputField
 import com.kape.ui.elements.InputFieldProperties
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
-import com.kape.ui.elements.UiResources
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
 import com.kape.ui.theme.Space
@@ -35,7 +34,7 @@ fun EmailScreen(viewModel: SignupViewModel) = Screen {
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(Height.DEFAULT))
         Image(
-            painter = painterResource(id = UiResources.bigAppLogo),
+            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
             contentDescription = stringResource(id = R.string.logo),
             modifier = Modifier
                 .padding(Space.HUGE)

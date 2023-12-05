@@ -18,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.kape.signup.R
 import com.kape.ui.elements.Screen
-import com.kape.ui.elements.UiResources
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
 import com.kape.ui.theme.Space
@@ -30,7 +29,7 @@ fun LoadingScreen() = Screen {
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(Height.DEFAULT))
         Image(
-            painter = painterResource(id = UiResources.bigAppLogo),
+            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
             contentDescription = "logo",
             modifier = Modifier
                 .padding(Space.HUGE)

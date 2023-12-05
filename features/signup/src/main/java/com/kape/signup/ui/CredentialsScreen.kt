@@ -1,6 +1,5 @@
 package com.kape.signup.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.intl.Locale
@@ -26,7 +24,6 @@ import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.elements.ButtonProperties
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
-import com.kape.ui.elements.UiResources
 import com.kape.ui.theme.FontSize
 import com.kape.ui.theme.Height
 import com.kape.ui.theme.OutlineBackground
@@ -46,7 +43,7 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Sc
 
     Column(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = UiResources.bigAppLogo),
+            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
             contentDescription = stringResource(id = R.string.logo),
             modifier = Modifier
                 .padding(Space.NORMAL)
