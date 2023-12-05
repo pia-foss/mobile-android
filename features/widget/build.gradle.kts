@@ -1,3 +1,4 @@
+import Dependencies.desugarJdkLibs
 import Dependencies.implementGlance
 
 plugins {
@@ -37,6 +38,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(desugarJdkLibs)
     implementGlance()
     implementation(project(":capabilities:ui"))
 }
