@@ -16,6 +16,16 @@ android {
         minSdk = 24
     }
 
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
+    }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
@@ -40,5 +50,6 @@ android {
 dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
     implementGlance()
+    implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))
 }
