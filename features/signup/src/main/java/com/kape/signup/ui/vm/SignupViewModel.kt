@@ -22,6 +22,7 @@ import com.kape.signup.utils.LOADING
 import com.kape.signup.utils.Plan
 import com.kape.signup.utils.PriceFormatter
 import com.kape.signup.utils.SignupScreenState
+import com.kape.signup.utils.SignupStep
 import com.kape.signup.utils.SubscriptionData
 import com.kape.signup.utils.signedUp
 import com.kape.signup.utils.subscriptions
@@ -57,7 +58,7 @@ class SignupViewModel(
                         }
 
                         PurchaseState.InitFailed -> {
-                            // TODO: handle error?
+                            _state.emit(SignupScreenState(false, SignupStep.Subscriptions(null)))
                         }
 
                         PurchaseState.InitSuccess -> {
@@ -65,7 +66,7 @@ class SignupViewModel(
                         }
 
                         PurchaseState.ProductsLoadedFailed -> {
-                            // TODO: handle error
+                            _state.emit(SignupScreenState(false, SignupStep.Subscriptions(null)))
                         }
 
                         PurchaseState.ProductsLoadedSuccess -> {
