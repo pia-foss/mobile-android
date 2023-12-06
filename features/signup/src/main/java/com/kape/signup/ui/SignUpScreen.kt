@@ -41,7 +41,7 @@ import com.kape.ui.utils.LocalColors
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData) = Screen {
+fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?) = Screen {
     val scheme = LocalColors.current
     val systemUiController = rememberSystemUiController()
     SideEffect {
@@ -93,7 +93,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData)
             )
             OnboardingDescriptionText(
                 content = stringResource(id = R.string.subscribe_screen_description).format(
-                    subscriptionData.yearly.mainPrice,
+                    subscriptionData?.yearly?.mainPrice,
                 ),
                 modifier = Modifier
                     .align(CenterHorizontally)
@@ -101,24 +101,28 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData)
             )
             Spacer(modifier = Modifier.height(16.dp))
             YearlySubscriptionCard(
-                selected = subscriptionData.selected.value == subscriptionData.yearly,
-                price = subscriptionData.yearly.mainPrice,
-                perMonthPrice = subscriptionData.yearly.secondaryPrice ?: "",
+                selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
+                price = subscriptionData?.yearly?.mainPrice ?: "",
+                perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
             ) {
-                subscriptionData.selected.value = subscriptionData.yearly
+                subscriptionData?.let {
+                    subscriptionData.selected.value = subscriptionData.yearly
+                }
             }
             Spacer(modifier = Modifier.height(16.dp))
             MonthlySubscriptionCard(
-                selected = subscriptionData.selected.value == subscriptionData.monthly,
-                price = subscriptionData.monthly.mainPrice,
+                selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
+                price = subscriptionData?.monthly?.mainPrice ?: "",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
             ) {
-                subscriptionData.selected.value = subscriptionData.monthly
+                subscriptionData?.let {
+                    subscriptionData.selected.value = subscriptionData.monthly
+                }
             }
             Spacer(modifier = Modifier.height(24.dp))
             PrimaryButton(
@@ -127,7 +131,9 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData)
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
             ) {
-                viewModel.purchase(subscriptionData.selected.value.id)
+                subscriptionData?.let {
+                    viewModel.purchase(subscriptionData.selected.value.id)
+                }
             }
             Spacer(modifier = Modifier.height(8.dp))
             SecondaryButton(
