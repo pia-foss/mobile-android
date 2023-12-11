@@ -52,7 +52,7 @@ class LicensePlugin : Plugin<Project> {
 
         return getPoms(dependencyIds)
             .flatMap { readLicenseFromPom(it) }
-            .sortedBy { it.moduleName }
+            .sortedWith(compareBy({ it.moduleName }, { it.moduleVersion }))
     }
 
     private fun Project.getPoms(ids: List<ComponentIdentifier>) =
