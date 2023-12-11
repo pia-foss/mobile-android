@@ -3,6 +3,7 @@ package com.kape.widget
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -16,17 +17,19 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
+import androidx.glance.text.TextStyle
 import com.kape.vpnconnect.utils.ConnectionStatus
 
 class Widget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         // TODO: to be implemented by https://polymoon.atlassian.net/browse/PIA-930
         provideContent {
-            Size1WidgetContent()
+            Size3WidgetContent()
         }
     }
 
@@ -71,6 +74,76 @@ class Widget : GlanceAppWidget() {
                 ) {
                     Text(text = "Automatic Region", modifier = GlanceModifier.width(80.dp))
                     WidgetConnectButton(ConnectionStatus.CONNECTED)
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun Size3WidgetContent() {
+        GlanceTheme(colors = WidgetColors.colors) {
+            Column(
+                modifier = GlanceModifier.background(GlanceTheme.colors.background).width(160.dp)
+                    .height(186.dp)
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Image(
+                    provider = ImageProvider(com.kape.ui.R.drawable.pia_medium),
+                    contentDescription = null,
+                    modifier = GlanceModifier.width(40.dp),
+                )
+                Spacer(modifier = GlanceModifier.height(4.dp))
+                // TODO: proper implementation to follow: https://polymoon.atlassian.net/browse/PIA-1014
+                Row(
+                    modifier = GlanceModifier.width(128.dp),
+                    verticalAlignment = Alignment.Vertical.CenterVertically,
+                ) {
+                    Text(text = "Automatic Region", modifier = GlanceModifier.width(80.dp))
+                    WidgetConnectButton(ConnectionStatus.CONNECTED)
+                }
+                Spacer(modifier = GlanceModifier.height(16.dp))
+                Box(
+                    modifier = GlanceModifier.height(0.5.dp).fillMaxWidth()
+                        .padding(horizontal = 24.dp).background(GlanceTheme.colors.outline),
+                ) {}
+                Spacer(modifier = GlanceModifier.height(16.dp))
+                Row(
+                    modifier = GlanceModifier.width(128.dp),
+                    verticalAlignment = Alignment.Vertical.CenterVertically,
+                ) {
+                    Column(
+                        modifier = GlanceModifier.width(64.dp),
+                        horizontalAlignment = Alignment.Horizontal.Start,
+                    ) {
+                        Image(
+                            provider = ImageProvider(com.kape.ui.R.drawable.ic_download),
+                            contentDescription = null,
+                        )
+                        Text(
+                            text = "354 MB/s",
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                                fontSize = 12.sp,
+                            ),
+                        )
+                    }
+                    Column(
+                        modifier = GlanceModifier.width(64.dp),
+                        horizontalAlignment = Alignment.Horizontal.End,
+                    ) {
+                        Image(
+                            provider = ImageProvider(com.kape.ui.R.drawable.ic_upload),
+                            contentDescription = null,
+                        )
+                        Text(
+                            text = "12 KB/s",
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                                fontSize = 12.sp,
+                            ),
+                        )
+                    }
                 }
             }
         }
