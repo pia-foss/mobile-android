@@ -180,7 +180,7 @@ fun ProtocolSelectionLine(name: String, visibility: MutableState<Boolean>) {
     SettingsItem(
         titleId = R.string.protocol_selection_title,
         subtitle = name,
-        testTag = ":ProtocolSettingsScreen:protocol_selection"
+        testTag = ":ProtocolSettingsScreen:protocol_selection",
     ) {
         visibility.value = true
     }
