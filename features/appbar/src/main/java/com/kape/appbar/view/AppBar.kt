@@ -16,10 +16,14 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -62,6 +66,7 @@ fun AppBar(
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun AppBarContent(
     type: AppBarType,
@@ -73,12 +78,17 @@ private fun AppBarContent(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(getAppBarBackgroundColor(status, LocalColors.current)),
+            .background(getAppBarBackgroundColor(status, LocalColors.current))
+            .semantics {
+                testTagsAsResourceId = true
+            },
+
     ) {
         IconButton(
             onClick = { onLeftIconClick() },
             modifier = Modifier
-                .align(CenterStart),
+                .align(CenterStart)
+                .testTag(":AppBar:side_menu")
         ) {
             Icon(painter = painterResource(id = getAppBarLeftIcon(type)), contentDescription = null)
         }

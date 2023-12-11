@@ -14,11 +14,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.settings.R
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OptionsDialog(
     @StringRes titleId: Int,
@@ -31,10 +36,17 @@ fun OptionsDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = onConfirm) {
+            TextButton(
+                onClick = onConfirm,
+                modifier = Modifier.testTag(":OptionsDialog:Ok"),
+            ) {
                 Text(text = stringResource(id = R.string.ok))
             }
         },
+        modifier = Modifier
+            .semantics {
+                testTagsAsResourceId = true
+            },
         title = {
             Text(text = stringResource(id = titleId), style = MaterialTheme.typography.titleMedium)
         },
@@ -55,7 +67,10 @@ fun OptionsDialog(
                                     }
                                 },
                             )
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 8.dp)
+                            .semantics {
+                                testTagsAsResourceId = true
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
@@ -64,7 +79,9 @@ fun OptionsDialog(
                         )
                         Text(
                             text = text,
-                            Modifier.padding(horizontal = 8.dp),
+                            Modifier
+                                .padding(horizontal = 8.dp)
+                                .testTag(":OptionsDialog:$text"),
                         )
                     }
                 }

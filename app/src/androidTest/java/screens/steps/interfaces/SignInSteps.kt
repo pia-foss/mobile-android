@@ -1,4 +1,4 @@
-package screens.steps
+package screens.steps.interfaces
 
 interface SignInSteps {
 

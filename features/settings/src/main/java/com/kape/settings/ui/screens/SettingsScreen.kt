@@ -4,8 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -15,6 +18,7 @@ import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
@@ -33,7 +37,10 @@ fun SettingsScreen() = Screen {
     ) {
         Column(
             modifier = Modifier
-                .padding(it),
+                .padding(it)
+                .semantics {
+                    testTagsAsResourceId = true
+                },
         ) {
             SettingsItem(
                 iconId = R.drawable.ic_settings_general,
@@ -49,6 +56,7 @@ fun SettingsScreen() = Screen {
                 onClick = {
                     viewModel.navigateToProtocolSettings()
                 },
+                testTag = ":SettingsScreen:Protocols",
             )
             SettingsItem(
                 iconId = R.drawable.ic_settings_network,
