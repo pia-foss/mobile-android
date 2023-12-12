@@ -18,8 +18,6 @@
     <string name="resume">RESUME</string>
     <string name="paused_until">Paused until %s</string>
     <string name="traffic">TRAFFIC</string>
-    <string name="download">Download</string>
-    <string name="upload">Upload</string>
     <string name="usage_kb_to_format">%s kB</string>
     <string name="usage_mb_to_format">%s mB</string>
     <string name="connection">CONNECTION</string>

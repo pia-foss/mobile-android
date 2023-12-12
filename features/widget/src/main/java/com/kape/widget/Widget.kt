@@ -9,6 +9,7 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
@@ -29,7 +30,7 @@ class Widget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         // TODO: to be implemented by https://polymoon.atlassian.net/browse/PIA-930
         provideContent {
-            Size3WidgetContent()
+            Size1WidgetContent()
         }
     }
 
@@ -135,6 +136,92 @@ class Widget : GlanceAppWidget() {
                         Image(
                             provider = ImageProvider(com.kape.ui.R.drawable.ic_upload),
                             contentDescription = null,
+                        )
+                        Text(
+                            text = "12 KB/s",
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                                fontSize = 12.sp,
+                            ),
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun Size4WidgetContent() {
+        GlanceTheme(colors = WidgetColors.colors) {
+            Column(
+                modifier = GlanceModifier.background(GlanceTheme.colors.background).width(240.dp)
+                    .height(186.dp)
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Image(
+                    provider = ImageProvider(com.kape.ui.R.drawable.pia_medium),
+                    contentDescription = null,
+                    modifier = GlanceModifier.width(40.dp),
+                )
+                Spacer(modifier = GlanceModifier.height(4.dp))
+                // TODO: proper implementation to follow: https://polymoon.atlassian.net/browse/PIA-1014
+                Row(
+                    modifier = GlanceModifier.width(240.dp),
+                    verticalAlignment = Alignment.Vertical.CenterVertically,
+                ) {
+                    Text(
+                        text = "Automatic Region",
+                        modifier = GlanceModifier.width(120.dp).padding(start = 16.dp),
+                    )
+                    Row(
+                        modifier = GlanceModifier.fillMaxWidth().padding(end = 16.dp),
+                        horizontalAlignment = Alignment.Horizontal.End,
+                    ) {
+                        WidgetConnectButton(ConnectionStatus.CONNECTED)
+                    }
+                }
+                Spacer(modifier = GlanceModifier.height(16.dp))
+                Box(
+                    modifier = GlanceModifier.height(0.5.dp).fillMaxWidth()
+                        .padding(horizontal = 24.dp).background(GlanceTheme.colors.outline),
+                ) {}
+                Spacer(modifier = GlanceModifier.height(16.dp))
+                Row(
+                    modifier = GlanceModifier.width(200.dp),
+                    verticalAlignment = Alignment.Vertical.CenterVertically,
+                ) {
+                    Column(
+                        modifier = GlanceModifier.width(100.dp),
+                        horizontalAlignment = Alignment.Horizontal.Start,
+                    ) {
+                        Text(
+                            text = LocalContext.current.getString(com.kape.ui.R.string.download)
+                                .uppercase(),
+                            style = TextStyle(
+                                color = GlanceTheme.colors.onSurface,
+                                fontSize = 12.sp,
+                            ),
+                        )
+                        Text(
+                            text = "354 MB/s",
+                            style = TextStyle(
+                                color = GlanceTheme.colors.primary,
+                                fontSize = 12.sp,
+                            ),
+                        )
+                    }
+                    Column(
+                        modifier = GlanceModifier.width(100.dp),
+                        horizontalAlignment = Alignment.Horizontal.End,
+                    ) {
+                        Text(
+                            text = LocalContext.current.getString(com.kape.ui.R.string.upload)
+                                .uppercase(),
+                            style = TextStyle(
+                                color = GlanceTheme.colors.onSurface,
+                                fontSize = 12.sp,
+                            ),
                         )
                         Text(
                             text = "12 KB/s",

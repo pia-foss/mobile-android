@@ -15,4 +15,7 @@
     <string name="best_value">BEST VALUE - FREE TRIAL</string>
 
     <string name="ok">OK</string>
+
+    <string name="download">Download</string>
+    <string name="upload">Upload</string>
 </resources>

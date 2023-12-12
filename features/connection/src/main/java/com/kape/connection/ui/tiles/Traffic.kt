@@ -29,7 +29,7 @@ fun Traffic(download: String, upload: String) {
         Spacer(modifier = Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.weight(0.4f)) {
-                TileTitleText(content = stringResource(id = R.string.download))
+                TileTitleText(content = stringResource(id = com.kape.ui.R.string.download))
                 Spacer(modifier = Modifier.height(4.dp))
                 IPText(content = download)
             }
@@ -44,7 +44,7 @@ fun Traffic(download: String, upload: String) {
             )
 
             Column(Modifier.weight(0.4f)) {
-                TileTitleText(content = stringResource(id = R.string.upload))
+                TileTitleText(content = stringResource(id = com.kape.ui.R.string.upload))
                 Spacer(modifier = Modifier.height(4.dp))
                 IPText(content = upload)
             }
