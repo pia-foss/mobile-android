@@ -2,6 +2,7 @@ package com.kape.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
@@ -10,7 +11,9 @@ import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
+import androidx.glance.LocalSize
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
@@ -27,19 +30,39 @@ import androidx.glance.text.TextStyle
 import com.kape.vpnconnect.utils.ConnectionStatus
 
 class Widget : GlanceAppWidget() {
+
+    companion object {
+        private val size1 = DpSize(80.dp, 106.dp)
+        private val size2 = DpSize(160.dp, 106.dp)
+        private val size3 = DpSize(160.dp, 186.dp)
+        private val size4 = DpSize(240.dp, 186.dp)
+    }
+
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        // TODO: to be implemented by https://polymoon.atlassian.net/browse/PIA-930
         provideContent {
-            Size1WidgetContent()
+            when (LocalSize.current) {
+                size1 -> Size1WidgetContent()
+                size2 -> Size2WidgetContent()
+                size3 -> Size3WidgetContent()
+                size4 -> Size4WidgetContent()
+                else ->
+                    throw IllegalArgumentException("Invalid size not matching the provided ones: ${LocalSize.current}")
+            }
         }
     }
+
+    override val sizeMode = SizeMode.Responsive(
+        setOf(size1, size2, size3, size4),
+    )
 
     @Composable
     fun Size1WidgetContent() {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
-                modifier = GlanceModifier.background(GlanceTheme.colors.background)
-                    .padding(8.dp),
+                modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
+                    .width(80.dp)
+                    .height(106.dp),
+                horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
             ) {
                 Image(
                     provider = ImageProvider(com.kape.ui.R.drawable.pia_medium),
@@ -57,9 +80,9 @@ class Widget : GlanceAppWidget() {
     fun Size2WidgetContent() {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
-                modifier = GlanceModifier.background(GlanceTheme.colors.background).width(160.dp)
-                    .height(106.dp)
-                    .padding(8.dp),
+                modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
+                    .width(160.dp)
+                    .height(106.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
@@ -84,9 +107,9 @@ class Widget : GlanceAppWidget() {
     fun Size3WidgetContent() {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
-                modifier = GlanceModifier.background(GlanceTheme.colors.background).width(160.dp)
-                    .height(186.dp)
-                    .padding(8.dp),
+                modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
+                    .width(160.dp)
+                    .height(186.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
@@ -154,9 +177,9 @@ class Widget : GlanceAppWidget() {
     fun Size4WidgetContent() {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
-                modifier = GlanceModifier.background(GlanceTheme.colors.background).width(240.dp)
-                    .height(186.dp)
-                    .padding(8.dp),
+                modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
+                    .width(240.dp)
+                    .height(186.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
