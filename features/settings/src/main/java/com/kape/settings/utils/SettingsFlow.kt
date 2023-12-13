@@ -14,7 +14,6 @@ import com.kape.settings.ui.screens.PrivacySettingsScreen
 import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.SettingsScreen
 import com.kape.settings.ui.screens.VpnLogScreen
-import com.kape.settings.ui.screens.WidgetSettingsScreen
 import com.kape.settings.ui.vm.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -34,6 +33,5 @@ fun SettingsFlow() {
         SettingsStep.Network -> NetworkSettingsScreen()
         SettingsStep.Privacy -> PrivacySettingsScreen()
         SettingsStep.Protocol -> ProtocolSettingsScreen()
-        SettingsStep.Widget -> WidgetSettingsScreen()
     }
 }

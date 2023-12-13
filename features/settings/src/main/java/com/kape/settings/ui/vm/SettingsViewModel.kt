@@ -121,14 +121,6 @@ class SettingsViewModel(
         _state.emit(SettingsStep.Help)
     }
 
-    fun navigateToWidgetSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Widget)
-    }
-
-    fun exitWidgetSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.General)
-    }
-
     fun navigateToAutomation() = router.handleFlow(EnterFlow.Automation)
 
     fun toggleLaunchOnBoot(enable: Boolean) {
