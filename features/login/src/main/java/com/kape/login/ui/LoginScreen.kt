@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
@@ -101,6 +102,7 @@ fun LoginScreen(navController: NavController) = Screen {
             label = stringResource(id = R.string.enter_username),
             maskInput = false,
             keyboard = KeyboardType.Text,
+            imeAction = ImeAction.Next,
             content = username,
         )
         Input(
@@ -110,6 +112,7 @@ fun LoginScreen(navController: NavController) = Screen {
             label = stringResource(id = R.string.enter_password),
             maskInput = true,
             keyboard = KeyboardType.Text,
+            imeAction = ImeAction.Next,
             content = password,
         )
         PrimaryButton(
