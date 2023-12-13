@@ -13,6 +13,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -26,6 +27,7 @@ fun Input(
     label: String? = null,
     maskInput: Boolean,
     keyboard: KeyboardType,
+    imeAction: ImeAction = ImeAction.Default,
     content: MutableState<String>,
     errorMessage: String? = null,
 ) {
@@ -63,6 +65,7 @@ fun Input(
             keyboardOptions = KeyboardOptions(
                 autoCorrect = false,
                 keyboardType = keyboard,
+                imeAction = imeAction,
             ),
             isError = errorMessage != null,
         )
