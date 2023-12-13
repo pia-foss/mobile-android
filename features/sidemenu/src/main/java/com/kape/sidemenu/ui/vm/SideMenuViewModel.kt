@@ -64,4 +64,8 @@ class SideMenuViewModel(
     fun navigateToSupport() {
         router.handleFlow(EnterFlow.Support)
     }
+
+    fun navigateToAbout() {
+        router.handleFlow(EnterFlow.About)
+    }
 }

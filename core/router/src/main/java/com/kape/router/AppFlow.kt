@@ -21,6 +21,7 @@ sealed class EnterFlow : AppFlow {
     data object KillSwitchSettings : EnterFlow()
     data object DedicatedIp : EnterFlow()
     data object Automation : EnterFlow()
+    data object About : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -38,6 +39,7 @@ sealed class ExitFlow : AppFlow {
     data object KillSwitchSettings : ExitFlow()
     data object DedicatedIp : ExitFlow()
     data object Automation : ExitFlow()
+    data object About : ExitFlow()
 }
 
 object Back : AppFlow

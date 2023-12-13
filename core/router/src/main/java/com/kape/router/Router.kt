@@ -41,6 +41,7 @@ class Router {
             EnterFlow.Support -> _navigation.value = WebContent.Support
             EnterFlow.Automation -> _navigation.value = Automation.Route
             EnterFlow.ProtocolSettings -> _navigation.value = Settings.Protocols
+            EnterFlow.About -> _navigation.value = About.Main
         }
     }
 
@@ -60,6 +61,7 @@ class Router {
             ExitFlow.Permissions -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.Automation -> handleEnterFlow(EnterFlow.Settings)
             ExitFlow.ProtocolSettings -> handleEnterFlow(EnterFlow.Connection)
+            ExitFlow.About -> handleEnterFlow(EnterFlow.Connection)
         }
     }
 
