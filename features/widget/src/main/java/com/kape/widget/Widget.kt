@@ -29,6 +29,7 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnlauncher.VpnLauncher
@@ -36,6 +37,7 @@ import com.kape.vpnlauncher.VpnLauncher
 class Widget(
     private val vpnLauncher: VpnLauncher,
     private val connectionManager: ConnectionManager,
+    private val usageProvider: UsageProvider,
 ) : GlanceAppWidget() {
 
     companion object {
@@ -48,11 +50,26 @@ class Widget(
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val connectionState = connectionManager.connectionStatus.collectAsState()
+            val name = connectionManager.serverName.collectAsState()
+            val downloadSpeed = usageProvider.widgetDownloadSpeed.value
+            val uploadSpeed = usageProvider.widgetUploadSpeed.value
             when (LocalSize.current) {
                 size1 -> Size1WidgetContent(connectionState.value)
-                size2 -> Size2WidgetContent(connectionState.value)
-                size3 -> Size3WidgetContent(connectionState.value)
-                size4 -> Size4WidgetContent(connectionState.value)
+                size2 -> Size2WidgetContent(connectionState.value, name.value)
+                size3 -> Size3WidgetContent(
+                    connectionState.value,
+                    name.value,
+                    downloadSpeed,
+                    uploadSpeed,
+                )
+
+                size4 -> Size4WidgetContent(
+                    connectionState.value,
+                    name.value,
+                    downloadSpeed,
+                    uploadSpeed,
+                )
+
                 else ->
                     throw IllegalArgumentException("Invalid size not matching the provided ones: ${LocalSize.current}")
             }
@@ -85,7 +102,7 @@ class Widget(
     }
 
     @Composable
-    fun Size2WidgetContent(status: ConnectionStatus) {
+    fun Size2WidgetContent(status: ConnectionStatus, name: String) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
@@ -104,7 +121,7 @@ class Widget(
                     modifier = GlanceModifier.width(128.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
-                    Text(text = "Automatic Region", modifier = GlanceModifier.width(80.dp))
+                    Text(text = name, modifier = GlanceModifier.width(80.dp))
                     WidgetConnectButton(status)
                 }
             }
@@ -112,7 +129,12 @@ class Widget(
     }
 
     @Composable
-    fun Size3WidgetContent(status: ConnectionStatus) {
+    fun Size3WidgetContent(
+        status: ConnectionStatus,
+        name: String,
+        downloadSpeed: String,
+        uploadSpeed: String,
+    ) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
@@ -131,7 +153,7 @@ class Widget(
                     modifier = GlanceModifier.width(128.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
-                    Text(text = "Automatic Region", modifier = GlanceModifier.width(80.dp))
+                    Text(text = name, modifier = GlanceModifier.width(80.dp))
                     WidgetConnectButton(status)
                 }
                 Spacer(modifier = GlanceModifier.height(16.dp))
@@ -153,7 +175,7 @@ class Widget(
                             contentDescription = null,
                         )
                         Text(
-                            text = "354 MB/s",
+                            text = downloadSpeed,
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
                                 fontSize = 12.sp,
@@ -169,7 +191,7 @@ class Widget(
                             contentDescription = null,
                         )
                         Text(
-                            text = "12 KB/s",
+                            text = uploadSpeed,
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
                                 fontSize = 12.sp,
@@ -182,7 +204,12 @@ class Widget(
     }
 
     @Composable
-    fun Size4WidgetContent(status: ConnectionStatus) {
+    fun Size4WidgetContent(
+        status: ConnectionStatus,
+        name: String,
+        downloadSpeed: String,
+        uploadSpeed: String,
+    ) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
@@ -202,7 +229,7 @@ class Widget(
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
                     Text(
-                        text = "Automatic Region",
+                        text = name,
                         modifier = GlanceModifier.width(120.dp).padding(start = 16.dp),
                     )
                     Row(
@@ -235,7 +262,7 @@ class Widget(
                             ),
                         )
                         Text(
-                            text = "354 MB/s",
+                            text = downloadSpeed,
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
                                 fontSize = 12.sp,
@@ -255,7 +282,7 @@ class Widget(
                             ),
                         )
                         Text(
-                            text = "12 KB/s",
+                            text = uploadSpeed,
                             style = TextStyle(
                                 color = GlanceTheme.colors.primary,
                                 fontSize = 12.sp,

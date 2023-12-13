@@ -2,6 +2,7 @@ package com.kape.widget
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnlauncher.VpnLauncher
 import org.koin.core.component.KoinComponent
@@ -11,7 +12,8 @@ class WidgetReceiver : GlanceAppWidgetReceiver(), KoinComponent {
 
     private val vpnLauncher: VpnLauncher by inject()
     private val connectionManager: ConnectionManager by inject()
+    private val usageProvider: UsageProvider by inject()
 
     override val glanceAppWidget: GlanceAppWidget
-        get() = Widget(vpnLauncher, connectionManager)
+        get() = Widget(vpnLauncher, connectionManager, usageProvider)
 }
