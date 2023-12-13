@@ -2,9 +2,11 @@ package screens.steps
 
 import screens.objects.AppPermissionObjects
 import screens.objects.LoginUiObjects
+import screens.objects.MainScreenObjects
+import screens.objects.SideMenuObjects
 import screens.objects.SignUpUiObjects
+import screens.steps.helpers.UiAutomatorStepsHelper
 import screens.steps.helpers.UiAutomatorStepsHelper.defaultTimeout
-import screens.steps.helpers.UiAutomatorStepsHelper.device
 import screens.steps.helpers.UiAutomatorStepsHelper.inputTextInField
 import screens.steps.helpers.UiAutomatorStepsHelper.waitUntilFound
 import screens.steps.interfaces.SignInSteps
@@ -47,10 +49,14 @@ class UiAutomatorSignInSteps : SignInSteps {
 
     override fun navigateToSignUpScreen() {
         if (LoginUiObjects.loginButton.exists())
-            device.pressBack()
-        // TODO: Add logic to navigate from other screens
+            UiAutomatorStepsHelper.device.pressBack()
+        else if (MainScreenObjects.connectButton.exists()) {
+            MainScreenObjects.sideMenu.clickAndWaitForNewWindow(defaultTimeout)
+            SideMenuObjects.logoutButton.clickAndWaitForNewWindow(defaultTimeout)
+        }
 
         waitUntilFound(SignUpUiObjects.loginButton)
         assert(SignUpUiObjects.loginButton.exists())
     }
+
 }
