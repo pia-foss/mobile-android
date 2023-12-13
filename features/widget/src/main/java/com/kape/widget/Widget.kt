@@ -12,6 +12,7 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
@@ -27,9 +28,16 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
+import com.kape.vpnlauncher.VpnLauncher
 
-class Widget : GlanceAppWidget() {
+class Widget(
+    private val vpnLauncher: VpnLauncher,
+    private val connectionManager: ConnectionManager,
+) : GlanceAppWidget() {
+
+    private val status = connectionManager.connectionStatus.value
 
     companion object {
         private val size1 = DpSize(80.dp, 106.dp)
@@ -71,7 +79,7 @@ class Widget : GlanceAppWidget() {
                 )
                 Spacer(modifier = GlanceModifier.height(4.dp))
                 // TODO: proper implementation to follow: https://polymoon.atlassian.net/browse/PIA-1014
-                WidgetConnectButton(ConnectionStatus.CONNECTED)
+                WidgetConnectButton(status)
             }
         }
     }
@@ -97,7 +105,7 @@ class Widget : GlanceAppWidget() {
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
                     Text(text = "Automatic Region", modifier = GlanceModifier.width(80.dp))
-                    WidgetConnectButton(ConnectionStatus.CONNECTED)
+                    WidgetConnectButton(status)
                 }
             }
         }
@@ -124,7 +132,7 @@ class Widget : GlanceAppWidget() {
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
                     Text(text = "Automatic Region", modifier = GlanceModifier.width(80.dp))
-                    WidgetConnectButton(ConnectionStatus.CONNECTED)
+                    WidgetConnectButton(status)
                 }
                 Spacer(modifier = GlanceModifier.height(16.dp))
                 Box(
@@ -201,7 +209,7 @@ class Widget : GlanceAppWidget() {
                         modifier = GlanceModifier.fillMaxWidth().padding(end = 16.dp),
                         horizontalAlignment = Alignment.Horizontal.End,
                     ) {
-                        WidgetConnectButton(ConnectionStatus.CONNECTED)
+                        WidgetConnectButton(status)
                     }
                 }
                 Spacer(modifier = GlanceModifier.height(16.dp))
@@ -264,7 +272,13 @@ class Widget : GlanceAppWidget() {
         GlanceTheme(colors = WidgetColors.colors) {
             Box(
                 modifier = GlanceModifier.width(48.dp).height(48.dp)
-                    .background(getBackgroundForStatus(status)),
+                    .background(getBackgroundForStatus(status)).clickable {
+                        if (vpnLauncher.isVpnConnected()) {
+                            vpnLauncher.stopVpn()
+                        } else {
+                            vpnLauncher.launchVpn()
+                        }
+                    },
                 contentAlignment = Alignment.Center,
             ) {
                 Box(

@@ -1,5 +1,7 @@
 import Dependencies.desugarJdkLibs
 import Dependencies.implementGlance
+import Dependencies.implementKoin
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
@@ -50,6 +52,9 @@ android {
 dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
     implementGlance()
+    implementKoin()
+    implementVpnManager()
     implementation(project(":core:vpnconnect"))
+    implementation(project(":core:vpnlauncher"))
     implementation(project(":capabilities:ui"))
 }
