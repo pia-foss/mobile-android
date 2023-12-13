@@ -3,7 +3,7 @@ package com.kape.vpn.service
 import android.content.Intent
 import android.net.VpnService
 import com.kape.login.domain.AuthenticationDataSource
-import com.kape.vpn.utils.VpnLauncher
+import com.kape.vpnlauncher.VpnLauncher
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

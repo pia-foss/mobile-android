@@ -1,4 +1,4 @@
-package com.kape.vpn.utils
+package com.kape.vpnlauncher
 
 import android.content.Context
 import android.net.VpnService

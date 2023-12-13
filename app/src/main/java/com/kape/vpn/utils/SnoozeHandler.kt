@@ -3,6 +3,7 @@ package com.kape.vpn.utils
 import android.app.AlarmManager
 import android.app.PendingIntent
 import com.kape.connection.ConnectionPrefs
+import com.kape.vpnlauncher.VpnLauncher
 import org.koin.core.component.KoinComponent
 
 const val SNOOZE_REQUEST_CODE = 24

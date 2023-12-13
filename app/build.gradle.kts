@@ -125,6 +125,7 @@ dependencies {
     implementAccount()
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))
+    implementation(project(":core:vpnlauncher"))
     implementation(project(":core:portforwarding"))
     implementation(project(":core:regions"))
     implementKpi()
