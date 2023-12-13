@@ -2,6 +2,7 @@ package com.kape.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,8 +38,6 @@ class Widget(
     private val connectionManager: ConnectionManager,
 ) : GlanceAppWidget() {
 
-    private val status = connectionManager.connectionStatus.value
-
     companion object {
         private val size1 = DpSize(80.dp, 106.dp)
         private val size2 = DpSize(160.dp, 106.dp)
@@ -48,11 +47,12 @@ class Widget(
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
+            val connectionState = connectionManager.connectionStatus.collectAsState()
             when (LocalSize.current) {
-                size1 -> Size1WidgetContent()
-                size2 -> Size2WidgetContent()
-                size3 -> Size3WidgetContent()
-                size4 -> Size4WidgetContent()
+                size1 -> Size1WidgetContent(connectionState.value)
+                size2 -> Size2WidgetContent(connectionState.value)
+                size3 -> Size3WidgetContent(connectionState.value)
+                size4 -> Size4WidgetContent(connectionState.value)
                 else ->
                     throw IllegalArgumentException("Invalid size not matching the provided ones: ${LocalSize.current}")
             }
@@ -64,7 +64,7 @@ class Widget(
     )
 
     @Composable
-    fun Size1WidgetContent() {
+    fun Size1WidgetContent(status: ConnectionStatus) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
@@ -85,7 +85,7 @@ class Widget(
     }
 
     @Composable
-    fun Size2WidgetContent() {
+    fun Size2WidgetContent(status: ConnectionStatus) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
@@ -112,7 +112,7 @@ class Widget(
     }
 
     @Composable
-    fun Size3WidgetContent() {
+    fun Size3WidgetContent(status: ConnectionStatus) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
@@ -182,7 +182,7 @@ class Widget(
     }
 
     @Composable
-    fun Size4WidgetContent() {
+    fun Size4WidgetContent(status: ConnectionStatus) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)

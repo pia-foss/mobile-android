@@ -34,7 +34,6 @@ class VpnLauncher(
         }
     }
 
-
     fun stopVpn() = GlobalScope.launch {
         connectionUseCase.stopConnection().collect()
     }
