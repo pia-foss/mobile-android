@@ -141,7 +141,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
             scope.launch {
                 state.close()
             }
-            // todo: implement once about feature is ready
+            viewModel.navigateToAbout()
         }
         SideMenuItem(
             iconId = R.drawable.ic_privacy,

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.kape.about.di.aboutModule
 import com.kape.appbar.di.appBarModule
 import com.kape.automation.di.automationModule
 import com.kape.connection.di.connectionModule
@@ -88,6 +89,7 @@ class App : Application() {
                 add(shadowsocksRegionsModule(appModule))
                 add(automationModule(appModule))
                 add(networkManagementModule)
+                add(aboutModule(appModule))
             },
         )
     }

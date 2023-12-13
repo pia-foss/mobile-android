@@ -151,6 +151,7 @@ dependencies {
     implementation(project(":features:dedicatedip"))
     implementation(project(":features:automation"))
     implementation(project(":features:widget"))
+    implementation(project(":features:about"))
 
     implementAndroidBase()
     implementViewModel()

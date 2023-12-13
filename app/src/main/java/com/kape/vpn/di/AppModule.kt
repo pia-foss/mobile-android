@@ -53,6 +53,7 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.BufferedReader
+import java.io.File
 
 const val PARAM_USER_AGENT = "user-agent"
 
@@ -88,6 +89,7 @@ val appModule = module {
     single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
     single { NetworkListener(get(), get(), get(), get()) }
     single(named("rules-updated-intent")) { provideRulesUpdatedIntent(get()) }
+    single(named("licences")) { provideLicences(get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -254,3 +256,7 @@ private fun provideCertificate(context: Context) =
 
 private const val USER_AGENT =
     "privateinternetaccess.com Android Client/${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE}))"
+
+private fun provideLicences(context: Context): List<String> =
+    context.assets.open("acknowledgements.txt").bufferedReader().use(BufferedReader::readLines)
+

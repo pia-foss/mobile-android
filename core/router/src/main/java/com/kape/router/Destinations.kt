@@ -41,6 +41,10 @@ object Settings {
     const val Protocols = "settings-protocol"
 }
 
+object About {
+    const val Main = "about-screen"
+}
+
 object PerAppSettings {
     const val Main = "per-app-settings-screen"
 }
