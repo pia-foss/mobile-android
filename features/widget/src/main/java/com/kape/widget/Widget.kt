@@ -2,6 +2,7 @@ package com.kape.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -12,6 +13,7 @@ import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
@@ -27,9 +29,14 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
+import com.kape.vpnlauncher.VpnLauncher
 
-class Widget : GlanceAppWidget() {
+class Widget(
+    private val vpnLauncher: VpnLauncher,
+    private val connectionManager: ConnectionManager,
+) : GlanceAppWidget() {
 
     companion object {
         private val size1 = DpSize(80.dp, 106.dp)
@@ -40,11 +47,12 @@ class Widget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
+            val connectionState = connectionManager.connectionStatus.collectAsState()
             when (LocalSize.current) {
-                size1 -> Size1WidgetContent()
-                size2 -> Size2WidgetContent()
-                size3 -> Size3WidgetContent()
-                size4 -> Size4WidgetContent()
+                size1 -> Size1WidgetContent(connectionState.value)
+                size2 -> Size2WidgetContent(connectionState.value)
+                size3 -> Size3WidgetContent(connectionState.value)
+                size4 -> Size4WidgetContent(connectionState.value)
                 else ->
                     throw IllegalArgumentException("Invalid size not matching the provided ones: ${LocalSize.current}")
             }
@@ -56,7 +64,7 @@ class Widget : GlanceAppWidget() {
     )
 
     @Composable
-    fun Size1WidgetContent() {
+    fun Size1WidgetContent(status: ConnectionStatus) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
@@ -71,13 +79,13 @@ class Widget : GlanceAppWidget() {
                 )
                 Spacer(modifier = GlanceModifier.height(4.dp))
                 // TODO: proper implementation to follow: https://polymoon.atlassian.net/browse/PIA-1014
-                WidgetConnectButton(ConnectionStatus.CONNECTED)
+                WidgetConnectButton(status)
             }
         }
     }
 
     @Composable
-    fun Size2WidgetContent() {
+    fun Size2WidgetContent(status: ConnectionStatus) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
@@ -97,14 +105,14 @@ class Widget : GlanceAppWidget() {
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
                     Text(text = "Automatic Region", modifier = GlanceModifier.width(80.dp))
-                    WidgetConnectButton(ConnectionStatus.CONNECTED)
+                    WidgetConnectButton(status)
                 }
             }
         }
     }
 
     @Composable
-    fun Size3WidgetContent() {
+    fun Size3WidgetContent(status: ConnectionStatus) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
@@ -124,7 +132,7 @@ class Widget : GlanceAppWidget() {
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
                     Text(text = "Automatic Region", modifier = GlanceModifier.width(80.dp))
-                    WidgetConnectButton(ConnectionStatus.CONNECTED)
+                    WidgetConnectButton(status)
                 }
                 Spacer(modifier = GlanceModifier.height(16.dp))
                 Box(
@@ -174,7 +182,7 @@ class Widget : GlanceAppWidget() {
     }
 
     @Composable
-    fun Size4WidgetContent() {
+    fun Size4WidgetContent(status: ConnectionStatus) {
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier = GlanceModifier.background(GlanceTheme.colors.background).padding(8.dp)
@@ -201,7 +209,7 @@ class Widget : GlanceAppWidget() {
                         modifier = GlanceModifier.fillMaxWidth().padding(end = 16.dp),
                         horizontalAlignment = Alignment.Horizontal.End,
                     ) {
-                        WidgetConnectButton(ConnectionStatus.CONNECTED)
+                        WidgetConnectButton(status)
                     }
                 }
                 Spacer(modifier = GlanceModifier.height(16.dp))
@@ -264,7 +272,13 @@ class Widget : GlanceAppWidget() {
         GlanceTheme(colors = WidgetColors.colors) {
             Box(
                 modifier = GlanceModifier.width(48.dp).height(48.dp)
-                    .background(getBackgroundForStatus(status)),
+                    .background(getBackgroundForStatus(status)).clickable {
+                        if (vpnLauncher.isVpnConnected()) {
+                            vpnLauncher.stopVpn()
+                        } else {
+                            vpnLauncher.launchVpn()
+                        }
+                    },
                 contentAlignment = Alignment.Center,
             ) {
                 Box(

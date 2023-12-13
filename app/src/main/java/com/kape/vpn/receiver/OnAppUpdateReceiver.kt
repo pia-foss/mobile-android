@@ -7,7 +7,7 @@ import android.webkit.CookieManager
 import android.webkit.WebStorage
 import com.kape.login.domain.GetUserLoggedInUseCase
 import com.kape.settings.SettingsPrefs
-import com.kape.vpn.utils.VpnLauncher
+import com.kape.vpnlauncher.VpnLauncher
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 

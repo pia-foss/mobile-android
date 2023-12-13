@@ -5,8 +5,6 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -35,8 +33,8 @@ import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.NetworkListener
 import com.kape.vpn.utils.SNOOZE_REQUEST_CODE
 import com.kape.vpn.utils.SnoozeHandler
-import com.kape.vpn.utils.VpnLauncher
 import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
 import com.privateinternetaccess.account.AccountBuilder

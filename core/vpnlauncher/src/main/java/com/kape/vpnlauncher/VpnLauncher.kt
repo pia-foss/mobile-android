@@ -1,4 +1,4 @@
-package com.kape.vpn.utils
+package com.kape.vpnlauncher
 
 import android.content.Context
 import android.net.VpnService
@@ -33,7 +33,6 @@ class VpnLauncher(
             // TODO: define what happens here
         }
     }
-
 
     fun stopVpn() = GlobalScope.launch {
         connectionUseCase.stopConnection().collect()

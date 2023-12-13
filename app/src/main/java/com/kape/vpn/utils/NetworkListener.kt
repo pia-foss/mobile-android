@@ -13,6 +13,7 @@ import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.domain.NetworkInfoSource
 import com.kape.vpn.receiver.OnRulesChangedReceiver
+import com.kape.vpnlauncher.VpnLauncher
 
 class NetworkListener(
     private val context: Context,
