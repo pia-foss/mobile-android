@@ -140,7 +140,7 @@ fun DedicatedIpScreen() = Screen {
                         ) {
                             Text(
                                 text = stringResource(id = R.string.activate),
-                                color = LocalColors.current.onSurface,
+                                color = LocalColors.current.onPrimary,
                             )
                         }
                     }
