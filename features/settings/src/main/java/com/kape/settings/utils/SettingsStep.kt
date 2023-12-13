@@ -11,5 +11,4 @@ sealed class SettingsStep {
     data object KillSwitch : SettingsStep()
     data object ConnectionStats : SettingsStep()
     data object DebugLogs : SettingsStep()
-    data object Widget : SettingsStep()
 }

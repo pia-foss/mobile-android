@@ -9,7 +9,6 @@ import androidx.compose.ui.res.stringResource
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
-import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.Screen
@@ -61,13 +60,6 @@ fun GeneralSettingsScreen() = Screen {
                     viewModel.toggleConnectOnUpdate(it)
                 },
             )
-
-            SettingsItem(
-                titleId = R.string.settings_widget_title,
-                subtitle = stringResource(id = R.string.settings_widget_description),
-            ) {
-                viewModel.navigateToWidgetSettings()
-            }
         }
     }
 }

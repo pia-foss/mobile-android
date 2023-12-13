@@ -90,10 +90,6 @@ object Dependencies {
         add(IMPLEMENTATION, "com.madgag.spongycastle:core:1.58.0.0")
     }
 
-    fun DependencyHandler.implementColorPicker() {
-        add(IMPLEMENTATION, "com.raedapps:alwan:1.0.0")
-    }
-
     fun DependencyHandler.implementFeatureModule() {
         implementCompose()
         implementComposeNavigation()
