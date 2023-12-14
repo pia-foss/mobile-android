@@ -32,9 +32,8 @@ fun PrivacySettingsScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-            ) {
-                viewModel.exitPrivacySettings()
-            }
+                onLeftIconClick = { viewModel.exitPrivacySettings() },
+            )
         },
     ) {
         Column(

@@ -49,15 +49,16 @@ import org.koin.androidx.compose.koinViewModel
 fun RegionSelectionScreen() = Screen {
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
     val isLoading = remember { mutableStateOf(false) }
-    val viewModel: VpnRegionSelectionViewModel = koinViewModel<VpnRegionSelectionViewModel>().apply {
-        autoRegionIso = stringResource(id = R.string.automatic_iso)
-        autoRegionName = stringResource(id = R.string.automatic)
-        LaunchedEffect(Unit) {
-            locale?.let {
-                loadVpnRegions(it, isLoading)
+    val viewModel: VpnRegionSelectionViewModel =
+        koinViewModel<VpnRegionSelectionViewModel>().apply {
+            autoRegionIso = stringResource(id = R.string.automatic_iso)
+            autoRegionName = stringResource(id = R.string.automatic)
+            LaunchedEffect(Unit) {
+                locale?.let {
+                    loadVpnRegions(it, isLoading)
+                }
             }
         }
-    }
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.region_selection_title))
     }
@@ -65,9 +66,7 @@ fun RegionSelectionScreen() = Screen {
     val isSearchEnabled = remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.background(LocalColors.current.surfaceVariant)) {
-        AppBar(appBarViewModel) {
-            viewModel.navigateBack()
-        }
+        AppBar(appBarViewModel, onLeftIconClick = { viewModel.navigateBack() })
 
         if (isLoading.value) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -136,7 +135,10 @@ fun RegionSelectionScreen() = Screen {
 }
 
 @Composable
-fun SortingOptions(viewModel: VpnRegionSelectionViewModel, showSortingOptions: MutableState<Boolean>) {
+fun SortingOptions(
+    viewModel: VpnRegionSelectionViewModel,
+    showSortingOptions: MutableState<Boolean>,
+) {
     val sortBySelectedOption: MutableState<VpnRegionSelectionViewModel.SortByOption> = remember {
         viewModel.sortBySelectedOption
     }
