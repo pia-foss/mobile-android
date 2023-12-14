@@ -78,8 +78,7 @@ fun DedicatedIpScreen() = Screen {
         },
     ) {
         Column(
-            modifier = Modifier
-                .padding(it),
+            modifier = Modifier.padding(it),
         ) {
             Column(
                 modifier = Modifier
@@ -94,54 +93,56 @@ fun DedicatedIpScreen() = Screen {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = stringResource(id = R.string.dedicated_ip_description),
+                    text = stringResource(id = if (viewModel.dipList.isEmpty()) R.string.dedicated_ip_description else R.string.dip_summary),
                     fontSize = 12.sp,
                     color = LocalColors.current.onSurface,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                Card(
-                    border = BorderStroke(1.dp, color = LocalColors.current.primary),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    var text = remember {
-                        mutableStateOf(TextFieldValue(""))
-                    }
-                    Row {
-                        TextField(
-                            value = text.value,
-                            onValueChange = {
-                                text.value = it
-                            },
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.dedicated_ip_hint),
-                                    color = LocalColors.current.onSurface,
-                                )
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(6.5f),
-                            singleLine = true,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedTextColor = LocalColors.current.onSurface,
-                            ),
-                        )
-                        Button(
-                            onClick = {
-                                if (text.value.text.isNotEmpty()) {
-                                    viewModel.activateDedicatedIp(text)
-                                }
-                            },
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .align(CenterVertically)
-                                .weight(3.5f),
-                            shape = RoundedCornerShape(4.dp),
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.activate),
-                                color = LocalColors.current.onPrimary,
+                if (viewModel.dipList.isEmpty()) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Card(
+                        border = BorderStroke(1.dp, color = LocalColors.current.primary),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        val text = remember {
+                            mutableStateOf(TextFieldValue(""))
+                        }
+                        Row {
+                            TextField(
+                                value = text.value,
+                                onValueChange = {
+                                    text.value = it
+                                },
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(id = R.string.dedicated_ip_hint),
+                                        color = LocalColors.current.onSurface,
+                                    )
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(6.5f),
+                                singleLine = true,
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    unfocusedTextColor = LocalColors.current.onSurface,
+                                ),
                             )
+                            Button(
+                                onClick = {
+                                    if (text.value.text.isNotEmpty()) {
+                                        viewModel.activateDedicatedIp(text)
+                                    }
+                                },
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .align(CenterVertically)
+                                    .weight(3.5f),
+                                shape = RoundedCornerShape(4.dp),
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.activate),
+                                    color = LocalColors.current.onPrimary,
+                                )
+                            }
                         }
                     }
                 }
@@ -262,11 +263,18 @@ fun DipItem(
                     .padding(horizontal = 8.dp)
                     .align(CenterVertically),
             )
+            Text(
+                text = server.dedicatedIp ?: "",
+                modifier = Modifier
+                    .align(CenterVertically)
+                    .padding(horizontal = 16.dp),
+            )
             IconButton(
                 onClick = {
                     serverForDeletion.value = server
                     showDialog.value = true
                 },
+                modifier = Modifier.align(CenterVertically),
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_close),
