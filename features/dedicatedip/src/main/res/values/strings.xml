@@ -12,4 +12,6 @@
 
     <string name="dip_remove_title">Remove Dedicated IP</string>
     <string name="dip_remove_description">Remove %s - %s?</string>
+
+    <string name="dip_summary">Secure your remote connections to any asset with a dedicated IP from a country of your choice. During your subscription, this IP will be yours and yours alone, protecting your data transfers with the strongest encryption out there.</string>
 </resources>
