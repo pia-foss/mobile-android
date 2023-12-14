@@ -262,11 +262,18 @@ fun DipItem(
                     .padding(horizontal = 8.dp)
                     .align(CenterVertically),
             )
+            Text(
+                text = server.dedicatedIp ?: "",
+                modifier = Modifier
+                    .align(CenterVertically)
+                    .padding(horizontal = 16.dp),
+            )
             IconButton(
                 onClick = {
                     serverForDeletion.value = server
                     showDialog.value = true
                 },
+                modifier = Modifier.align(CenterVertically),
             ) {
                 Image(
                     painter = painterResource(R.drawable.ic_close),
