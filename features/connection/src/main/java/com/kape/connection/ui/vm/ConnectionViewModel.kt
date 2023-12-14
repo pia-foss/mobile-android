@@ -93,6 +93,10 @@ class ConnectionViewModel(
         router.handleFlow(EnterFlow.ProtocolSettings)
     }
 
+    fun navigateToCustomization() {
+        // TODO: implement navigation to customization screen
+    }
+
     fun exitApp() {
         router.handleFlow(Exit)
     }

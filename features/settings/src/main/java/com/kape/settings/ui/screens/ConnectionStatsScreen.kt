@@ -30,9 +30,8 @@ fun ConnectionStatsScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-            ) {
-                viewModel.exitConnectionStats()
-            }
+                onLeftIconClick = { viewModel.exitConnectionStats() },
+            )
         },
     ) {
         viewModel.getRecentEvents()

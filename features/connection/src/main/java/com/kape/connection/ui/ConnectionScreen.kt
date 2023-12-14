@@ -77,11 +77,13 @@ fun ConnectionScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 type = AppBarType.Connection,
-            ) {
-                scope.launch {
-                    drawerState.open()
-                }
-            }
+                onLeftIconClick = {
+                    scope.launch {
+                        drawerState.open()
+                    }
+                },
+                onRightIconClick = { viewModel.navigateToCustomization() },
+            )
             Spacer(modifier = Modifier.height(16.dp))
             ConnectButton(
                 connectionStatus.value,

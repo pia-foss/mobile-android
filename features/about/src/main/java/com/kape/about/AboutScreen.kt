@@ -25,9 +25,8 @@ fun AboutScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-            ) {
-                viewModel.navigateBack()
-            }
+                onLeftIconClick = { viewModel.navigateBack() },
+            )
         },
     ) {
         LazyColumn(

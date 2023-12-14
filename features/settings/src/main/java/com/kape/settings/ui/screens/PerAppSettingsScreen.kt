@@ -49,9 +49,8 @@ fun PerAppSettingsScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-            ) {
-                viewModel.navigateUp()
-            }
+                onLeftIconClick = { viewModel.navigateUp() },
+            )
         },
     ) {
         Column(
@@ -60,7 +59,12 @@ fun PerAppSettingsScreen() = Screen {
                 .fillMaxHeight()
                 .background(LocalColors.current.background),
         ) {
-            Search(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), hint = "") {
+            Search(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                hint = "",
+            ) {
                 viewModel.filterAppsByName(it, packageManager)
             }
             LazyColumn {

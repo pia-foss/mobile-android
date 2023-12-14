@@ -60,9 +60,8 @@ fun AutomationScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-            ) {
-                viewModel.exitAutomation()
-            }
+                onLeftIconClick = { viewModel.exitAutomation() },
+            )
         },
     ) {
         Column(modifier = Modifier.padding(it)) {

@@ -44,9 +44,8 @@ fun NetworkSettingsScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-            ) {
-                viewModel.navigateUp()
-            }
+                onLeftIconClick = { viewModel.navigateUp() },
+            )
         },
     ) {
         Column(

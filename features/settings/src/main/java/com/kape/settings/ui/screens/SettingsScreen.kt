@@ -30,9 +30,8 @@ fun SettingsScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-            ) {
-                viewModel.navigateToConnection()
-            }
+                onLeftIconClick = { viewModel.navigateToConnection() },
+            )
         },
     ) {
         Column(

@@ -32,9 +32,8 @@ fun VpnLogScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-            ) {
-                viewModel.exitDebugLogs()
-            }
+                onLeftIconClick = { viewModel.exitDebugLogs() },
+            )
         },
     ) {
         Column(

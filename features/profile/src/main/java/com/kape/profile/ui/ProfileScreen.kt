@@ -40,9 +40,8 @@ fun ProfileScreen() = Screen {
     Column {
         AppBar(
             viewModel = appBarViewModel,
-        ) {
-            viewModel.navigateBack()
-        }
+            onLeftIconClick = { viewModel.navigateBack() },
+        )
         if (state.loading) {
             Box(modifier = Modifier.fillMaxSize()) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

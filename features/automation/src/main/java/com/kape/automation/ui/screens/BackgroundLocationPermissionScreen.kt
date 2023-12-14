@@ -55,9 +55,8 @@ fun BackgroundLocationPermissionScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-            ) {
-                viewModel.exitAutomation()
-            }
+                onLeftIconClick = { viewModel.exitAutomation() },
+            )
         },
     ) {
         Column(

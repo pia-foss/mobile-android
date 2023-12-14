@@ -14,6 +14,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -43,6 +44,7 @@ fun AppBar(
     viewModel: AppBarViewModel,
     type: AppBarType = AppBarType.Navigation,
     onLeftIconClick: () -> Unit,
+    onRightIconClick: () -> Unit = {},
 ) {
     val scheme = LocalColors.current
     val showDarkIcons = shouldShowDarkIcons(connectionState = viewModel.appBarConnectionState)
@@ -63,6 +65,7 @@ fun AppBar(
         status = viewModel.appBarConnectionState,
         viewModel.appBarText,
         onLeftIconClick,
+        onRightIconClick,
     )
 }
 
@@ -73,6 +76,7 @@ private fun AppBarContent(
     status: ConnectionStatus,
     title: String? = null,
     onLeftIconClick: () -> Unit,
+    onRightIconClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -95,25 +99,38 @@ private fun AppBarContent(
 
         when (type) {
             AppBarType.Connection -> {
-                Row(
-                    modifier = Modifier.align(Center),
-                ) {
-                    if (status == ConnectionStatus.DISCONNECTED) {
-                        Icon(
-                            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_small),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(24.dp)
-                                .align(CenterVertically)
-                                .padding(end = 8.dp),
-                            tint = Color.Unspecified,
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.align(Center),
+                    ) {
+                        if (status == ConnectionStatus.DISCONNECTED) {
+                            Icon(
+                                painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_small),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .align(CenterVertically)
+                                    .padding(end = 8.dp),
+                                tint = Color.Unspecified,
+                            )
+                        }
+
+                        AppBarConnectionTextDefault(
+                            content = title ?: "",
+                            modifier = Modifier.align(CenterVertically),
                         )
                     }
 
-                    AppBarConnectionTextDefault(
-                        content = title ?: "",
-                        modifier = Modifier.align(CenterVertically),
-                    )
+                    IconButton(
+                        onClick = { onRightIconClick() },
+                        modifier = Modifier.align(CenterEnd),
+                    ) {
+                        Icon(
+                            painter = painterResource(id = com.kape.ui.R.drawable.ic_reorder),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
                 }
             }
 

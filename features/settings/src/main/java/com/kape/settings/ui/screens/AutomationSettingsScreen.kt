@@ -31,9 +31,8 @@ fun AutomationSettingsScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 type = AppBarType.Navigation,
-            ) {
-                viewModel.navigateUp()
-            }
+                onLeftIconClick = { viewModel.navigateUp() },
+            )
         },
     ) {
         Column(
