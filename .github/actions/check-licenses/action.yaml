@@ -48,6 +48,6 @@ runs:
     - uses: actions/upload-artifact@v3
       with:
         name: acknowledgements
-        path: acknowledgements
+        path: app/src/main/assets
         if-no-files-found: error
     - uses: ./.github/actions/check-git-working-tree-is-clean
