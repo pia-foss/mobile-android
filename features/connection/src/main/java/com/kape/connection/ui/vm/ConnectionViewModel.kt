@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
 import com.kape.connection.domain.ClientStateDataSource
+import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
 import com.kape.portforwarding.data.model.PortForwardingStatus
@@ -55,6 +56,7 @@ class ConnectionViewModel(
     private val portForwardingUseCase: PortForwardingUseCase,
     private val dipPrefs: DipPrefs,
     private val renewDipUseCase: RenewDipUseCase,
+    private val customizationPrefs: CustomizationPrefs,
 ) : ViewModel(), KoinComponent {
 
     private val oneHourLong = 1L
@@ -78,7 +80,6 @@ class ConnectionViewModel(
         MutableStateFlow<PortForwardingStatus>(PortForwardingStatus.NoPortForwarding)
     val portForwardingStatus: StateFlow<PortForwardingStatus> = _portForwardingStatus
 
-//    val portForwardingStatus = portForwardingUseCase.portForwardingStatus
     val port = mutableStateOf(prefs.getPortBindingInfo()?.decodedPayload?.port)
 
     init {
@@ -132,6 +133,8 @@ class ConnectionViewModel(
             vpnServersLoaded(vpnServers = it)
         }
     }
+
+    fun getOrderedElements() = customizationPrefs.getOrderedElements()
 
     private fun vpnServersLoaded(vpnServers: List<VpnServer>) {
         availableVpnServers.clear()

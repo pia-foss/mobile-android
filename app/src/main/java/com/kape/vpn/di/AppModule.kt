@@ -11,6 +11,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.kape.connection.ConnectionPrefs
 import com.kape.csi.CsiPrefs
+import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.notifications.data.NotificationChannelManager
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
@@ -90,6 +91,7 @@ val appModule = module {
     single { NetworkListener(get(), get(), get(), get()) }
     single(named("rules-updated-intent")) { provideRulesUpdatedIntent(get()) }
     single(named("licences")) { provideLicences(get()) }
+    single { CustomizationPrefs(get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
