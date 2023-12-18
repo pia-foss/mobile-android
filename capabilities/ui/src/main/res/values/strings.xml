@@ -36,4 +36,7 @@
     <string name="protocols">Protocols</string>
 
     <string name="quick_connect">QUICK CONNECT</string>
+
+    <string name="selected_region">SELECTED REGION</string>
+    <string name="current_region">CURRENT REGION</string>
 </resources>

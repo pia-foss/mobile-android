@@ -1,4 +1,4 @@
-package com.kape.connection.ui.tiles
+package com.kape.ui.tiles
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,7 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.connection.R
+import com.kape.ui.R
 import com.kape.ui.text.SelectedRegionServerText
 import com.kape.ui.text.SelectedRegionTitleText
 import com.kape.ui.utils.LocalColors

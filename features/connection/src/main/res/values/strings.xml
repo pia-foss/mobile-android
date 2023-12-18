@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="selected_region">SELECTED REGION</string>
-    <string name="current_region">CURRENT REGION</string>
     <string name="map">map image</string>
     <string name="vpn_snooze">VPN SNOOZE</string>
     <string name="snooze_5_minutes">5 mins</string>
