@@ -18,4 +18,6 @@
 
     <string name="download">Download</string>
     <string name="upload">Upload</string>
+
+    <string name="connection">CONNECTION</string>
 </resources>

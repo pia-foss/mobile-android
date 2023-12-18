@@ -1,4 +1,4 @@
-package com.kape.connection.ui.tiles
+package com.kape.ui.tiles
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,14 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.connection.R
-import com.kape.settings.data.ProtocolSettings
+import com.kape.ui.R
 import com.kape.ui.text.ConnectionInfoText
 import com.kape.ui.text.TileTitleText
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun ConnectionInfo(settings: ProtocolSettings) {
+fun ConnectionInfo(
+    connection: String,
+    port: String,
+    auth: String,
+    transport: String,
+    encryption: String,
+    handshake: String,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -34,14 +40,14 @@ fun ConnectionInfo(settings: ProtocolSettings) {
             modifier = Modifier.fillMaxWidth(),
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                InfoRow(iconId = R.drawable.ic_connection, label = settings.name)
-                InfoRow(iconId = R.drawable.ic_port, label = settings.port)
-                InfoRow(iconId = R.drawable.ic_authentication, label = settings.auth)
+                InfoRow(iconId = R.drawable.ic_connection, label = connection)
+                InfoRow(iconId = R.drawable.ic_port, label = port)
+                InfoRow(iconId = R.drawable.ic_authentication, label = auth)
             }
             Column(modifier = Modifier.weight(1f)) {
-                InfoRow(iconId = R.drawable.ic_socket, label = settings.transport.value)
-                InfoRow(iconId = R.drawable.ic_encryption, label = settings.dataEncryption.value)
-                InfoRow(iconId = R.drawable.ic_handshake, label = settings.handshake)
+                InfoRow(iconId = R.drawable.ic_socket, label = transport)
+                InfoRow(iconId = R.drawable.ic_encryption, label = encryption)
+                InfoRow(iconId = R.drawable.ic_handshake, label = handshake)
             }
         }
     }
