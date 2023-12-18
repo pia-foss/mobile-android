@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
 import com.kape.connection.domain.ClientStateDataSource
-import com.kape.connection.ui.tiles.MAX_SERVERS
 import com.kape.connection.utils.SnoozeInterval
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
@@ -25,6 +24,7 @@ import com.kape.router.Exit
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
+import com.kape.ui.tiles.MAX_SERVERS
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider

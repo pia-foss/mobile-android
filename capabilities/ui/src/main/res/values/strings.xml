@@ -34,4 +34,6 @@
     <string name="vpn_kill_switch">VPN Kill Switch</string>
     <string name="automation">Automation</string>
     <string name="protocols">Protocols</string>
+
+    <string name="quick_connect">QUICK CONNECT</string>
 </resources>

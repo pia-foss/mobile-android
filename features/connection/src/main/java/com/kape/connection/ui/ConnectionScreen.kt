@@ -27,8 +27,6 @@ import com.kape.appbar.view.AppBar
 import com.kape.appbar.view.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.tiles.LocationPicker
-import com.kape.connection.ui.tiles.QuickConnect
-import com.kape.connection.ui.tiles.QuickSettings
 import com.kape.connection.ui.tiles.Snooze
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.SnoozeInterval
@@ -38,6 +36,8 @@ import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Separator
 import com.kape.ui.tiles.ConnectionInfo
 import com.kape.ui.tiles.IPTile
+import com.kape.ui.tiles.QuickConnect
+import com.kape.ui.tiles.QuickSettings
 import com.kape.ui.tiles.Traffic
 import com.kape.vpnconnect.utils.ConnectionManager
 import kotlinx.coroutines.CoroutineScope
