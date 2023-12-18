@@ -20,4 +20,11 @@
     <string name="upload">Upload</string>
 
     <string name="connection">CONNECTION</string>
+    <string name="public_ip">Public IP</string>
+    <string name="vpn_ip">VPN IP</string>
+    <string name="no_ip">---</string>
+
+    <string name="pfwd_error">Error</string>
+    <string name="pfwd_disabled">---</string>
+    <string name="pfwd_requesting">Requesting</string>
 </resources>

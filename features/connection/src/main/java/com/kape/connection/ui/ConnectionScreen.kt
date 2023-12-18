@@ -19,13 +19,13 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.view.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.connection.ui.tiles.IPTile
 import com.kape.connection.ui.tiles.LocationPicker
 import com.kape.connection.ui.tiles.QuickConnect
 import com.kape.connection.ui.tiles.QuickSettings
@@ -33,10 +33,12 @@ import com.kape.connection.ui.tiles.Snooze
 import com.kape.connection.ui.tiles.Traffic
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.SnoozeInterval
+import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.sidemenu.ui.SideMenu
 import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Separator
 import com.kape.ui.tiles.ConnectionInfo
+import com.kape.ui.tiles.IPTile
 import com.kape.vpnconnect.utils.ConnectionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -98,12 +100,18 @@ fun ConnectionScreen() = Screen {
                     viewModel.showRegionSelection()
                 }
             }
+            val state = viewModel.portForwardingStatus.collectAsState()
             IPTile(
                 isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
                 publicIp = viewModel.ip,
                 vpnIp = viewModel.vpnIp,
-                portForwardingStatus = viewModel.portForwardingStatus,
-                port = viewModel.port.value.toString(),
+                portForwardingStatus = when (state.value) {
+                    PortForwardingStatus.Error -> stringResource(id = com.kape.ui.R.string.pfwd_error)
+                    PortForwardingStatus.NoPortForwarding -> stringResource(id = com.kape.ui.R.string.pfwd_disabled)
+                    PortForwardingStatus.Requesting -> stringResource(id = com.kape.ui.R.string.pfwd_requesting)
+                    PortForwardingStatus.Success -> viewModel.port.value.toString()
+                    else -> ""
+                },
             )
             Separator()
             QuickConnect(

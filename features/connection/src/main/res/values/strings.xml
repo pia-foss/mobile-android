@@ -3,9 +3,6 @@
     <string name="selected_region">SELECTED REGION</string>
     <string name="current_region">CURRENT REGION</string>
     <string name="map">map image</string>
-    <string name="public_ip">Public IP</string>
-    <string name="vpn_ip">VPN IP</string>
-    <string name="no_ip">---</string>
     <string name="quick_settings">QUICK SETTINGS</string>
     <string name="vpn_kill_switch">VPN Kill Switch</string>
     <string name="automation">Automation</string>
@@ -24,9 +21,5 @@
     <string name="survey_action">Take the Survey</string>
     <string name="favorite_servers">FAVORITE SERVERS</string>
     <string name="quick_connect">QUICK CONNECT</string>
-
-    <string name="pfwd_error">Error</string>
-    <string name="pfwd_disabled">---</string>
-    <string name="pfwd_requesting">Requesting</string>
 
 </resources>
