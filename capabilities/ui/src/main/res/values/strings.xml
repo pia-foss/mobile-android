@@ -27,4 +27,6 @@
     <string name="pfwd_error">Error</string>
     <string name="pfwd_disabled">---</string>
     <string name="pfwd_requesting">Requesting</string>
+
+    <string name="traffic">TRAFFIC</string>
 </resources>

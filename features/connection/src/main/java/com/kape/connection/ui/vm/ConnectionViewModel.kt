@@ -77,6 +77,7 @@ class ConnectionViewModel(
     private val _portForwardingStatus =
         MutableStateFlow<PortForwardingStatus>(PortForwardingStatus.NoPortForwarding)
     val portForwardingStatus: StateFlow<PortForwardingStatus> = _portForwardingStatus
+
 //    val portForwardingStatus = portForwardingUseCase.portForwardingStatus
     val port = mutableStateOf(prefs.getPortBindingInfo()?.decodedPayload?.port)
 
