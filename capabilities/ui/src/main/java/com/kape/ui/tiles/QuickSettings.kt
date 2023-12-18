@@ -1,4 +1,4 @@
-package com.kape.connection.ui.tiles
+package com.kape.ui.tiles
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.connection.R
+import com.kape.ui.R
 import com.kape.ui.text.QuickConnectText
 import com.kape.ui.text.TileTitleText
 import com.kape.ui.utils.LocalColors
@@ -58,7 +58,7 @@ fun QuickSettings(
 
             QuickSettingItem(
                 iconId = R.drawable.ic_quick_protocols,
-                labelId = com.kape.settings.R.string.protocols,
+                labelId = R.string.protocols,
                 modifier = Modifier
                     .weight(1f)
                     .clickable { onProtocolsClick() },

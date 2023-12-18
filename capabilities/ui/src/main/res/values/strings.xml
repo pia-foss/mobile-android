@@ -29,4 +29,9 @@
     <string name="pfwd_requesting">Requesting</string>
 
     <string name="traffic">TRAFFIC</string>
+
+    <string name="quick_settings">QUICK SETTINGS</string>
+    <string name="vpn_kill_switch">VPN Kill Switch</string>
+    <string name="automation">Automation</string>
+    <string name="protocols">Protocols</string>
 </resources>
