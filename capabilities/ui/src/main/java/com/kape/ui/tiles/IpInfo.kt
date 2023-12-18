@@ -1,4 +1,4 @@
-package com.kape.connection.ui.tiles
+package com.kape.ui.tiles
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,8 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kape.connection.R
-import com.kape.portforwarding.data.model.PortForwardingStatus
+import com.kape.ui.R
 import com.kape.ui.text.IPText
 import com.kape.ui.text.TileTitleText
 import com.kape.ui.utils.LocalColors
@@ -28,8 +26,7 @@ fun IPTile(
     publicIp: String,
     vpnIp: String,
     isPortForwardingEnabled: Boolean,
-    portForwardingStatus: MutableState<PortForwardingStatus>,
-    port: String? = null,
+    portForwardingStatus: String,
 ) {
     Row(modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp)) {
         Column(Modifier.weight(0.4f)) {
@@ -38,7 +35,7 @@ fun IPTile(
         }
 
         Icon(
-            painter = painterResource(id = com.kape.ui.R.drawable.ic_arrow),
+            painter = painterResource(id = R.drawable.ic_arrow),
             contentDescription = null,
             tint = LocalColors.current.onSurface,
             modifier = Modifier
@@ -60,12 +57,7 @@ fun IPTile(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = when (portForwardingStatus.value) {
-                            PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
-                            PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
-                            PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                            PortForwardingStatus.Success -> port ?: ""
-                        },
+                        text = portForwardingStatus,
                         color = LocalColors.current.onSurface,
                         fontSize = 14.sp,
                     )

@@ -1,4 +1,4 @@
-package com.kape.connection.ui.tiles
+package com.kape.ui.tiles
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,11 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.connection.R
-import com.kape.connection.utils.SnoozeInterval
+import com.kape.ui.R
 import com.kape.ui.text.QuickConnectText
 import com.kape.ui.text.TileTitleText
 import com.kape.ui.utils.LocalColors
+import com.kape.ui.utils.SnoozeInterval
 
 @Composable
 fun Snooze(

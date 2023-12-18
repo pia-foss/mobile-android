@@ -14,16 +14,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
 import com.kape.connection.domain.ClientStateDataSource
-import com.kape.connection.ui.tiles.MAX_SERVERS
-import com.kape.connection.utils.SnoozeInterval
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
+import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
+import com.kape.ui.tiles.MAX_SERVERS
+import com.kape.ui.utils.SnoozeInterval
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
@@ -31,6 +32,8 @@ import com.kape.vpnregions.domain.GetVpnRegionsUseCase
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.domain.SetVpnRegionsUseCase
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -71,7 +74,11 @@ class ConnectionViewModel(
     val download = usageProvider.download
     val upload = usageProvider.upload
 
-    val portForwardingStatus = portForwardingUseCase.portForwardingStatus
+    private val _portForwardingStatus =
+        MutableStateFlow<PortForwardingStatus>(PortForwardingStatus.NoPortForwarding)
+    val portForwardingStatus: StateFlow<PortForwardingStatus> = _portForwardingStatus
+
+//    val portForwardingStatus = portForwardingUseCase.portForwardingStatus
     val port = mutableStateOf(prefs.getPortBindingInfo()?.decodedPayload?.port)
 
     init {

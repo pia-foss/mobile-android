@@ -1,4 +1,4 @@
-package com.kape.connection.ui.tiles
+package com.kape.ui.tiles
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.connection.R
+import com.kape.ui.R
 import com.kape.ui.text.IPText
 import com.kape.ui.text.TileTitleText
 import com.kape.ui.utils.LocalColors
@@ -35,7 +35,7 @@ fun Traffic(download: String, upload: String) {
             }
 
             Icon(
-                painter = painterResource(id = com.kape.ui.R.drawable.ic_arrow),
+                painter = painterResource(id = R.drawable.ic_arrow),
                 contentDescription = null,
                 tint = LocalColors.current.onSurface,
                 modifier = Modifier

@@ -40,6 +40,7 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementation(project(":core:router"))
+    implementation(project(":core:utils"))
 
     implementCompose()
     implementComposeNavigation()

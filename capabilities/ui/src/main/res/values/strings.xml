@@ -18,4 +18,32 @@
 
     <string name="download">Download</string>
     <string name="upload">Upload</string>
+
+    <string name="connection">CONNECTION</string>
+    <string name="public_ip">Public IP</string>
+    <string name="vpn_ip">VPN IP</string>
+    <string name="no_ip">---</string>
+
+    <string name="pfwd_error">Error</string>
+    <string name="pfwd_disabled">---</string>
+    <string name="pfwd_requesting">Requesting</string>
+
+    <string name="traffic">TRAFFIC</string>
+
+    <string name="quick_settings">QUICK SETTINGS</string>
+    <string name="vpn_kill_switch">VPN Kill Switch</string>
+    <string name="automation">Automation</string>
+    <string name="protocols">Protocols</string>
+
+    <string name="quick_connect">QUICK CONNECT</string>
+
+    <string name="selected_region">SELECTED REGION</string>
+    <string name="current_region">CURRENT REGION</string>
+
+    <string name="vpn_snooze">VPN SNOOZE</string>
+    <string name="resume">RESUME</string>
+    <string name="snooze_5_minutes">5 mins</string>
+    <string name="snooze_15_minutes">15 mins</string>
+    <string name="snooze_1_hour">1 hour</string>
+    <string name="snooze_description">Disconnects the VPN and automatically reconnects when the timer elapses.</string>
 </resources>
