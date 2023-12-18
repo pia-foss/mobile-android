@@ -39,4 +39,11 @@
 
     <string name="selected_region">SELECTED REGION</string>
     <string name="current_region">CURRENT REGION</string>
+
+    <string name="vpn_snooze">VPN SNOOZE</string>
+    <string name="resume">RESUME</string>
+    <string name="snooze_5_minutes">5 mins</string>
+    <string name="snooze_15_minutes">15 mins</string>
+    <string name="snooze_1_hour">1 hour</string>
+    <string name="snooze_description">Disconnects the VPN and automatically reconnects when the timer elapses.</string>
 </resources>

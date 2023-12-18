@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="map">map image</string>
-    <string name="vpn_snooze">VPN SNOOZE</string>
-    <string name="snooze_5_minutes">5 mins</string>
-    <string name="snooze_15_minutes">15 mins</string>
-    <string name="snooze_1_hour">1 hour</string>
-    <string name="snooze_description">Disconnects the VPN and automatically reconnects when the timer elapses.</string>
-    <string name="resume">RESUME</string>
     <string name="paused_until">Paused until %s</string>
-    <string name="traffic">TRAFFIC</string>
     <string name="usage_kb_to_format">%s kB</string>
     <string name="usage_mb_to_format">%s mB</string>
     <string name="survey_message">Want to help make PIA better? Let us know how we can improve!</string>
     <string name="survey_action">Take the Survey</string>
     <string name="favorite_servers">FAVORITE SERVERS</string>
-
-
 </resources>
