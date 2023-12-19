@@ -1,5 +1,6 @@
 package com.kape.connection.ui
 
+import android.content.Context
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,8 @@ import com.kape.appbar.view.AppBar
 import com.kape.appbar.view.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.vm.ConnectionViewModel
+import com.kape.customization.data.Element
+import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.sidemenu.ui.SideMenu
 import com.kape.ui.elements.Screen
@@ -95,73 +98,109 @@ fun ConnectionScreen() = Screen {
             ) {
                 viewModel.onConnectionButtonClicked()
             }
-            viewModel.selectedVpnServer.value?.let {
-                LocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {
-                    viewModel.showRegionSelection()
+            viewModel.getOrderedElements().forEach {
+                DisplayComponent(
+                    screenElement = it,
+                    isVisible = it.isVisible,
+                    viewModel = viewModel,
+                )
+                Separator()
+            }
+        }
+    }
+}
+
+@Composable
+private fun DisplayComponent(
+    screenElement: ScreenElement,
+    isVisible: Boolean,
+    viewModel: ConnectionViewModel,
+) {
+    if (isVisible) {
+        val context: Context = LocalContext.current
+        when (screenElement.element) {
+            Element.ConnectionInfo -> {
+                val settings = viewModel.getConnectionSettings()
+                ConnectionInfo(
+                    connection = settings.name,
+                    port = settings.port,
+                    auth = settings.auth,
+                    transport = settings.transport.value,
+                    encryption = settings.dataEncryption.value,
+                    handshake = settings.handshake,
+                )
+            }
+
+            Element.IpInfo -> {
+                val state = viewModel.portForwardingStatus.collectAsState()
+                IPTile(
+                    isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
+                    publicIp = viewModel.ip,
+                    vpnIp = viewModel.vpnIp,
+                    portForwardingStatus = when (state.value) {
+                        PortForwardingStatus.Error -> stringResource(id = com.kape.ui.R.string.pfwd_error)
+                        PortForwardingStatus.NoPortForwarding -> stringResource(id = com.kape.ui.R.string.pfwd_disabled)
+                        PortForwardingStatus.Requesting -> stringResource(id = com.kape.ui.R.string.pfwd_requesting)
+                        PortForwardingStatus.Success -> viewModel.port.value.toString()
+                        else -> ""
+                    },
+                )
+            }
+
+            Element.QuickConnect -> {
+                QuickConnect(
+                    servers = viewModel.quickConnectVpnServers.value,
+                    onClick = {
+                        viewModel.quickConnect(it)
+                    },
+                )
+            }
+
+            Element.QuickSettings -> {
+                QuickSettings(
+                    onKillSwitchClick = {
+                        viewModel.navigateToKillSwitch()
+                    },
+                    onAutomationClick = {
+                        viewModel.navigateToAutomation()
+                    },
+                    onProtocolsClick = {
+                        viewModel.navigateToProtocols()
+                    },
+                )
+            }
+
+            Element.RegionSelection -> {
+                viewModel.selectedVpnServer.value?.let {
+                    LocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {
+                        viewModel.showRegionSelection()
+                    }
                 }
             }
-            val state = viewModel.portForwardingStatus.collectAsState()
-            IPTile(
-                isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                publicIp = viewModel.ip,
-                vpnIp = viewModel.vpnIp,
-                portForwardingStatus = when (state.value) {
-                    PortForwardingStatus.Error -> stringResource(id = com.kape.ui.R.string.pfwd_error)
-                    PortForwardingStatus.NoPortForwarding -> stringResource(id = com.kape.ui.R.string.pfwd_disabled)
-                    PortForwardingStatus.Requesting -> stringResource(id = com.kape.ui.R.string.pfwd_requesting)
-                    PortForwardingStatus.Success -> viewModel.port.value.toString()
-                    else -> ""
-                },
-            )
-            Separator()
-            QuickConnect(
-                servers = viewModel.quickConnectVpnServers.value,
-                onClick = {
-                    viewModel.quickConnect(it)
-                },
-            )
-            Separator()
-            QuickSettings(
-                onKillSwitchClick = {
-                    viewModel.navigateToKillSwitch()
-                },
-                onAutomationClick = {
-                    viewModel.navigateToAutomation()
-                },
-                onProtocolsClick = {
-                    viewModel.navigateToProtocols()
-                },
-            )
-            Separator()
-            if (viewModel.snoozeTime.longValue != 0L && viewModel.snoozeTime.longValue < System.currentTimeMillis()) {
-                viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
-            }
-            Snooze(
-                viewModel.snoozeActive,
-                onClick = {
-                    if (viewModel.isConnectionActive()) {
-                        viewModel.snooze(context, it)
-                    }
-                },
-                onResumeClick = {
+
+            Element.Snooze -> {
+                if (viewModel.snoozeTime.longValue != 0L && viewModel.snoozeTime.longValue < System.currentTimeMillis()) {
                     viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
-                },
-            )
-            Separator()
-            Traffic(
-                viewModel.download.value,
-                viewModel.upload.value,
-            )
-            Separator()
-            val settings = viewModel.getConnectionSettings()
-            ConnectionInfo(
-                connection = settings.name,
-                port = settings.port,
-                auth = settings.auth,
-                transport = settings.transport.value,
-                encryption = settings.dataEncryption.value,
-                handshake = settings.handshake,
-            )
+                }
+                Snooze(
+                    viewModel.snoozeActive,
+                    onClick = {
+                        if (viewModel.isConnectionActive()) {
+                            viewModel.snooze(context, it)
+                        }
+                    },
+                    onResumeClick = {
+                        viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
+                    },
+                )
+            }
+
+            Element.Traffic -> {
+                Traffic(
+                    viewModel.download.value,
+                    viewModel.upload.value,
+                )
+            }
         }
     }
 }

@@ -28,6 +28,7 @@ private val localConnectionModule = module {
             get(),
             get(),
             get(),
+            get(),
         )
     }
 }
