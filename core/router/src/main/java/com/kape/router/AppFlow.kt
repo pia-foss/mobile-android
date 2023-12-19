@@ -22,6 +22,7 @@ sealed class EnterFlow : AppFlow {
     data object DedicatedIp : EnterFlow()
     data object Automation : EnterFlow()
     data object About : EnterFlow()
+    data object Customization : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {
@@ -40,6 +41,7 @@ sealed class ExitFlow : AppFlow {
     data object DedicatedIp : ExitFlow()
     data object Automation : ExitFlow()
     data object About : ExitFlow()
+    data object Customization : ExitFlow()
 }
 
 object Back : AppFlow

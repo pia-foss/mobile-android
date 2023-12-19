@@ -21,12 +21,12 @@ class CustomizationPrefs(context: Context) : Prefs(context, "customization") {
     ).apply()
 
     private fun defaultList(): List<ScreenElement> = listOf(
-        ScreenElement(Element.RegionSelection, true, 0),
-        ScreenElement(Element.IpInfo, true, 1),
-        ScreenElement(Element.QuickConnect, true, 2),
-        ScreenElement(Element.QuickSettings, true, 3),
-        ScreenElement(Element.Snooze, true, 4),
-        ScreenElement(Element.Traffic, true, 5),
-        ScreenElement(Element.ConnectionInfo, true, 6),
+        ScreenElement(Element.RegionSelection),
+        ScreenElement(Element.IpInfo),
+        ScreenElement(Element.QuickConnect),
+        ScreenElement(Element.QuickSettings),
+        ScreenElement(Element.Snooze),
+        ScreenElement(Element.Traffic),
+        ScreenElement(Element.ConnectionInfo),
     )
 }

@@ -1,5 +1,6 @@
 import Dependencies.desugarJdkLibs
-import Dependencies.implementKoin
+import Dependencies.implementFeatureModule
+import Dependencies.implementReorderable
 
 plugins {
     id("com.android.library")
@@ -49,6 +50,16 @@ android {
 
 dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
-    implementKoin()
+    implementReorderable()
+    implementFeatureModule()
+    implementation(project(":core:router"))
+    implementation(project(":core:utils"))
+    implementation(project(":core:localprefs:customization"))
+    implementation(project(":core:localprefs:customization:data"))
+    implementation(project(":core:portforwarding"))
+    implementation(project(":core:localprefs:settings"))
+    implementation(project(":core:localprefs:settings:data"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":features:appbar"))
+    implementation(project(":features:connection"))
 }
