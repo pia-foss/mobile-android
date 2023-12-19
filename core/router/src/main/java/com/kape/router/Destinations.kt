@@ -57,6 +57,10 @@ object Automation {
     const val Route = "automation"
 }
 
+object Customization {
+    const val Route = "customization"
+}
+
 object WebContent {
     // Please note these values are links within the signup module's strings file.
     const val Terms = "web-screen-terms"

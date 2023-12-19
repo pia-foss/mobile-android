@@ -9,6 +9,7 @@ import com.kape.appbar.di.appBarModule
 import com.kape.automation.di.automationModule
 import com.kape.connection.di.connectionModule
 import com.kape.csi.di.csiModule
+import com.kape.customization.di.customizationModule
 import com.kape.dedicatedip.di.dedicatedIpModule
 import com.kape.login.di.loginModule
 import com.kape.networkmanagement.di.networkManagementModule
@@ -90,6 +91,7 @@ class App : Application() {
                 add(automationModule(appModule))
                 add(networkManagementModule)
                 add(aboutModule(appModule))
+                add(customizationModule(appModule))
             },
         )
     }

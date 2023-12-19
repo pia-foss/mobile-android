@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.kape.about.AboutScreen
 import com.kape.automation.ui.AutomationFlow
 import com.kape.connection.ui.ConnectionScreen
+import com.kape.customization.CustomizationScreen
 import com.kape.dedicatedip.ui.DedicatedIpScreen
 import com.kape.login.ui.loginNavigation
 import com.kape.payments.ui.PaymentProvider
@@ -26,6 +27,7 @@ import com.kape.router.About
 import com.kape.vpnregionselection.ui.RegionSelectionScreen
 import com.kape.router.Automation
 import com.kape.router.Connection
+import com.kape.router.Customization
 import com.kape.router.DedicatedIp
 import com.kape.router.EnterFlow
 import com.kape.router.NavigateBack
@@ -166,6 +168,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(About.Main) {
                                 AboutScreen()
+                            }
+                            composable(Customization.Route) {
+                                CustomizationScreen()
                             }
                         }
                     }

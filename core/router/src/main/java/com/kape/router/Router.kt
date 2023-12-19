@@ -42,6 +42,7 @@ class Router {
             EnterFlow.Automation -> _navigation.value = Automation.Route
             EnterFlow.ProtocolSettings -> _navigation.value = Settings.Protocols
             EnterFlow.About -> _navigation.value = About.Main
+            EnterFlow.Customization -> _navigation.value = Customization.Route
         }
     }
 
@@ -62,6 +63,7 @@ class Router {
             ExitFlow.Automation -> handleEnterFlow(EnterFlow.Settings)
             ExitFlow.ProtocolSettings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.About -> handleEnterFlow(EnterFlow.Connection)
+            ExitFlow.Customization -> handleEnterFlow(EnterFlow.Connection)
         }
     }
 

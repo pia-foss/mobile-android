@@ -116,3 +116,13 @@ fun Check(isChecked: Boolean, modifier: Modifier) {
         modifier = modifier,
     )
 }
+
+@Composable
+fun Visibility(isChecked: Boolean, modifier: Modifier) {
+    Icon(
+        painter = painterResource(id = if (isChecked) R.drawable.ic_visibility_on else R.drawable.ic_visibility_off),
+        contentDescription = null,
+        tint = LocalColors.current.onSurface,
+        modifier = modifier,
+    )
+}

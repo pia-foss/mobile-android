@@ -138,6 +138,7 @@ private fun AppBarContent(
                 Icon(
                     painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_medium),
                     contentDescription = null,
+                    tint = Color.Unspecified,
                     modifier = Modifier
                         .align(Center)
                         .fillMaxWidth(),

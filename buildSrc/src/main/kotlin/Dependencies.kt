@@ -154,6 +154,10 @@ object Dependencies {
         implementMaterial3()
     }
 
+    fun DependencyHandler.implementReorderable() {
+        add(IMPLEMENTATION, "org.burnoutcrew.composereorderable:reorderable:0.9.6")
+    }
+
     private fun DependencyHandler.implementMaterial3() {
         add(IMPLEMENTATION, "androidx.compose.material3:material3")
     }

@@ -154,6 +154,7 @@ dependencies {
     implementation(project(":features:automation"))
     implementation(project(":features:widget"))
     implementation(project(":features:about"))
+    implementation(project(":features:customization"))
 
     implementAndroidBase()
     implementViewModel()
