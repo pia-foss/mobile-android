@@ -8,7 +8,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
@@ -77,7 +76,12 @@ fun SecondaryButton(
 
 @Composable
 fun OptionButton(selected: Boolean, modifier: Modifier) {
-    RadioButton(selected = selected, onClick = { }, modifier = modifier)
+    Icon(
+        painter = painterResource(id = if (selected) R.drawable.ic_radio_button_selected else R.drawable.ic_radio_button_default),
+        contentDescription = null,
+        tint = LocalColors.current.primary,
+        modifier = modifier,
+    )
 }
 
 @Composable
