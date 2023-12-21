@@ -86,19 +86,21 @@ fun NotificationPermissionScreen() = Screen {
                 .height(140.dp)
                 .fillMaxWidth(),
         )
-        OnboardingTitleText(
-            content = stringResource(id = com.kape.permissions.R.string.notifications_title),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        )
+        Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+            OnboardingTitleText(
+                content = stringResource(id = com.kape.permissions.R.string.notifications_title),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            )
 
-        OnboardingDescriptionText(
-            content = stringResource(id = com.kape.permissions.R.string.notifications_description),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        )
+            OnboardingDescriptionText(
+                content = stringResource(id = com.kape.permissions.R.string.notifications_description),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            )
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 

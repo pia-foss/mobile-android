@@ -108,29 +108,27 @@ fun VpnPermissionScreen() = Screen {
                 .height(140.dp)
                 .fillMaxWidth(),
         )
-        OnboardingTitleText(
-            content = stringResource(id = R.string.vpn_permission_title),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        )
-
-        OnboardingDescriptionText(
-            content = stringResource(id = R.string.vpn_permission_description),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        OnboardingFooterText(
-            content = stringResource(id = R.string.vpn_permission_footer),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        )
-
+        Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+            OnboardingTitleText(
+                content = stringResource(id = R.string.vpn_permission_title),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            )
+            OnboardingDescriptionText(
+                content = stringResource(id = R.string.vpn_permission_description),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            OnboardingFooterText(
+                content = stringResource(id = R.string.vpn_permission_footer),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            )
+        }
         PrimaryButton(
             text = stringResource(id = com.kape.ui.R.string.ok),
             modifier = Modifier

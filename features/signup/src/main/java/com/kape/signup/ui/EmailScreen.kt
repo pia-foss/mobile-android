@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,27 +35,29 @@ fun EmailScreen(viewModel: SignupViewModel) = Screen {
         Spacer(modifier = Modifier.height(48.dp))
         Image(
             painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
-            contentDescription = stringResource(id = R.string.logo),
+            contentDescription = null,
             modifier = Modifier
                 .padding(48.dp)
                 .align(Alignment.CenterHorizontally),
         )
         Spacer(modifier = Modifier.height(64.dp))
-        Text(
-            text = stringResource(id = R.string.email_title),
-            fontSize = 16.sp,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(id = R.string.email_text),
-            color = LocalColors.current.outlineVariant,
-            fontSize = 14.sp,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(horizontal = 24.dp),
-        )
+        Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+            Text(
+                text = stringResource(id = R.string.email_title),
+                fontSize = 16.sp,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = stringResource(id = R.string.email_text),
+                color = LocalColors.current.outlineVariant,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 24.dp),
+            )
+        }
         Spacer(modifier = Modifier.height(24.dp))
         Input(
             modifier = Modifier.padding(horizontal = 24.dp),
