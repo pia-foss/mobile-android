@@ -258,7 +258,7 @@ class SettingsViewModel(
 
     fun getInstalledApplications(packageManager: PackageManager) {
         installedApps = PerAppSettingsUtils.getInstalledApps(packageManager = packageManager)
-        appList.value = installedApps
+        appList.value = installedApps.sortedBy { it.loadLabel(packageManager).toString() }
     }
 
     fun filterAppsByName(value: String, packageManager: PackageManager) {
