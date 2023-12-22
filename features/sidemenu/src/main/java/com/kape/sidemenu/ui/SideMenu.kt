@@ -130,9 +130,9 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
             }
             viewModel.logout()
         }
-
+        Spacer(modifier = Modifier.height(16.dp))
         Separator()
-
+        Spacer(modifier = Modifier.height(16.dp))
         SideMenuItem(
             iconId = R.drawable.ic_about,
             titleId = R.string.drawer_item_title_about,
