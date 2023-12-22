@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -17,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -80,10 +78,6 @@ fun HelpScreen() = Screen {
                     )
                 },
             )
-            Divider(
-                color = LocalColors.current.outline,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
             SettingsItem(
                 titleId = R.string.help_view_debug_log_title,
                 subtitle = stringResource(id = R.string.help_view_debug_log_description),
@@ -91,19 +85,11 @@ fun HelpScreen() = Screen {
                     viewModel.navigateToDebugLogs()
                 },
             )
-            Divider(
-                color = LocalColors.current.outline,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
             SettingsItem(
                 titleId = R.string.help_send_log_title,
                 onClick = {
                     viewModel.sendLogs()
                 },
-            )
-            Divider(
-                color = LocalColors.current.outline,
-                modifier = Modifier.padding(vertical = 8.dp),
             )
             SettingsToggle(
                 titleId = R.string.help_improve_pia_title,
@@ -114,10 +100,6 @@ fun HelpScreen() = Screen {
                 },
             )
             if (viewModel.improvePiaEnabled.value) {
-                Divider(
-                    color = LocalColors.current.outline,
-                    modifier = Modifier.padding(vertical = 8.dp),
-                )
                 SettingsItem(
                     titleId = R.string.help_view_shared_data_title,
                     onClick = {
@@ -125,10 +107,6 @@ fun HelpScreen() = Screen {
                     },
                 )
             }
-            Divider(
-                color = LocalColors.current.outline,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
 
             if (showDialog.value) {
                 SuccessDialog(
