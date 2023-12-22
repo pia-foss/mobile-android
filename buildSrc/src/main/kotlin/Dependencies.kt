@@ -158,6 +158,10 @@ object Dependencies {
         add(IMPLEMENTATION, "org.burnoutcrew.composereorderable:reorderable:0.9.6")
     }
 
+    fun DependencyHandler.implementWebView() {
+        add(IMPLEMENTATION, "com.google.accompanist:accompanist-webview:0.32.0")
+    }
+
     private fun DependencyHandler.implementMaterial3() {
         add(IMPLEMENTATION, "androidx.compose.material3:material3")
     }

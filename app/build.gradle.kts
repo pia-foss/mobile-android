@@ -155,6 +155,7 @@ dependencies {
     implementation(project(":features:widget"))
     implementation(project(":features:about"))
     implementation(project(":features:customization"))
+    implementation(project(":features:inappbrowser"))
 
     implementAndroidBase()
     implementViewModel()

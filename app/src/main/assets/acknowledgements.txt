@@ -106,7 +106,8 @@ androidx.window:window
 androidx.work:work-runtime, androidx.work:work-runtime-ktx
 com.google.accompanist:accompanist-drawablepainter,
 com.google.accompanist:accompanist-swiperefresh,
-com.google.accompanist:accompanist-systemuicontroller
+com.google.accompanist:accompanist-systemuicontroller,
+com.google.accompanist:accompanist-webview
 com.google.code.gson:gson
 com.google.crypto.tink:tink-android
 com.google.guava:listenablefuture
@@ -7820,7 +7821,8 @@ androidx.work:work-runtime, androidx.work:work-runtime-ktx
 ================================================================================
 com.google.accompanist:accompanist-drawablepainter,
 com.google.accompanist:accompanist-swiperefresh,
-com.google.accompanist:accompanist-systemuicontroller
+com.google.accompanist:accompanist-systemuicontroller,
+com.google.accompanist:accompanist-webview
 
 
                                  Apache License
