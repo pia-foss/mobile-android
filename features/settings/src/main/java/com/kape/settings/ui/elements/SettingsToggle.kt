@@ -4,7 +4,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -35,7 +37,8 @@ fun SettingsToggle(
     val isChecked = remember { stateEnabled }
     Column(
         modifier = Modifier
-            .defaultMinSize(minHeight = 56.dp),
+            .defaultMinSize(minHeight = 56.dp)
+            .padding(top = 8.dp),
     ) {
         Row(
             modifier = Modifier
@@ -68,6 +71,7 @@ fun SettingsToggle(
                 toggle(it)
             }
         }
+        Spacer(modifier = Modifier.height(8.dp))
         Separator()
     }
 }
