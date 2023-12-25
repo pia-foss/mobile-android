@@ -1,5 +1,6 @@
 package com.kape.settings.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,11 +29,15 @@ fun VpnLogScreen() = Screen {
         appBarText(stringResource(id = R.string.debug_logs_title))
     }
 
+    BackHandler {
+        viewModel.navigateUp()
+    }
+
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.exitDebugLogs() },
+                onLeftIconClick = { viewModel.navigateUp() },
             )
         },
     ) {

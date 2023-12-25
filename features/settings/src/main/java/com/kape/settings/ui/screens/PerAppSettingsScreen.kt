@@ -1,6 +1,7 @@
 package com.kape.settings.ui.screens
 
 import android.graphics.drawable.Drawable
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -43,6 +44,10 @@ fun PerAppSettingsScreen() = Screen {
     }
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.per_app_settings))
+    }
+
+    BackHandler {
+        viewModel.navigateUp()
     }
 
     Scaffold(

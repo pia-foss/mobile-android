@@ -1,5 +1,6 @@
 package com.kape.settings.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -25,6 +26,10 @@ fun AutomationSettingsScreen() = Screen {
         appBarText(stringResource(id = R.string.automation))
     }
     val automationEnabled = remember { mutableStateOf(viewModel.isAutomationEnabled()) }
+
+    BackHandler {
+        viewModel.navigateUp()
+    }
 
     Scaffold(
         topBar = {

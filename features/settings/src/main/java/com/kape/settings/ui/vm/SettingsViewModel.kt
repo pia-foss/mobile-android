@@ -66,7 +66,38 @@ class SettingsViewModel(
     private var installedApps = listOf<ApplicationInfo>()
 
     fun navigateUp() {
-        router.handleFlow(Back)
+        when (_state.value) {
+            is SettingsStep.Automation -> {
+                if ((_state.value as SettingsStep.Automation).isShortcut) {
+                    router.handleFlow(Back)
+                } else {
+                    _state.value = SettingsStep.Main
+                }
+            }
+
+            SettingsStep.ConnectionStats -> _state.value = SettingsStep.Help
+            SettingsStep.DebugLogs -> _state.value = SettingsStep.Help
+            SettingsStep.General -> _state.value = SettingsStep.Main
+            SettingsStep.Help -> _state.value = SettingsStep.Main
+            is SettingsStep.KillSwitch -> {
+                if ((_state.value as SettingsStep.KillSwitch).isShortcut) {
+                    router.handleFlow(Back)
+                } else {
+                    _state.value = SettingsStep.Main
+                }
+            }
+
+            SettingsStep.Main -> router.handleFlow(Back)
+            SettingsStep.Network -> _state.value = SettingsStep.Main
+            SettingsStep.Privacy -> _state.value = SettingsStep.Main
+            is SettingsStep.Protocol -> {
+                if ((_state.value as SettingsStep.Protocol).isShortcut) {
+                    router.handleFlow(Back)
+                } else {
+                    _state.value = SettingsStep.Main
+                }
+            }
+        }
     }
 
     fun navigateToConnection() {
@@ -78,7 +109,7 @@ class SettingsViewModel(
     }
 
     fun navigateToProtocolSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Protocol)
+        _state.emit(SettingsStep.Protocol(false))
     }
 
     fun navigateToNetworkSettings() = viewModelScope.launch {
@@ -94,31 +125,19 @@ class SettingsViewModel(
     }
 
     fun navigateToAutomationSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Automation)
+        _state.emit(SettingsStep.Automation(false))
     }
 
     fun navigateToKillSwitch() = viewModelScope.launch {
-        _state.emit(SettingsStep.KillSwitch)
-    }
-
-    fun exitPrivacySettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Privacy)
+        _state.emit(SettingsStep.KillSwitch(false))
     }
 
     fun navigateToConnectionStats() = viewModelScope.launch {
         _state.emit(SettingsStep.ConnectionStats)
     }
 
-    fun exitConnectionStats() = viewModelScope.launch {
-        _state.emit(SettingsStep.Help)
-    }
-
     fun navigateToDebugLogs() = viewModelScope.launch {
         _state.emit(SettingsStep.DebugLogs)
-    }
-
-    fun exitDebugLogs() = viewModelScope.launch {
-        _state.emit(SettingsStep.Help)
     }
 
     fun navigateToAutomation() = router.handleFlow(EnterFlow.Automation)

@@ -23,15 +23,15 @@ fun SettingsFlow() {
     val state by remember(viewModel) { viewModel.state }.collectAsState()
 
     when (state) {
-        SettingsStep.Automation -> AutomationSettingsScreen()
+        is SettingsStep.Automation -> AutomationSettingsScreen()
         SettingsStep.ConnectionStats -> ConnectionStatsScreen()
         SettingsStep.DebugLogs -> VpnLogScreen()
         SettingsStep.General -> GeneralSettingsScreen()
         SettingsStep.Help -> HelpScreen()
-        SettingsStep.KillSwitch -> KillSwitchSettingScreen()
+        is SettingsStep.KillSwitch -> KillSwitchSettingScreen()
         SettingsStep.Main -> SettingsScreen()
         SettingsStep.Network -> NetworkSettingsScreen()
         SettingsStep.Privacy -> PrivacySettingsScreen()
-        SettingsStep.Protocol -> ProtocolSettingsScreen()
+        is SettingsStep.Protocol -> ProtocolSettingsScreen()
     }
 }
