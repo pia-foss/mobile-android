@@ -53,7 +53,7 @@ fun GeneralSettingsScreen() = Screen {
 
             SettingsToggle(
                 titleId = R.string.connect_on_update_title,
-                subtitleId = R.string.connect_on_update_title,
+                subtitleId = R.string.connect_on_update_description,
                 enabled = viewModel.connectOnUpdate,
                 toggle = {
                     viewModel.toggleConnectOnUpdate(it)
