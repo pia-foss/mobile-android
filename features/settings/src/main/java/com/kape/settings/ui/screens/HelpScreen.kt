@@ -3,6 +3,7 @@ package com.kape.settings.ui.screens
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -36,6 +37,10 @@ fun HelpScreen() = Screen {
     val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
     val showToast = remember { mutableStateOf(false) }
+
+    BackHandler {
+        viewModel.navigateUp()
+    }
 
     Scaffold(
         topBar = {

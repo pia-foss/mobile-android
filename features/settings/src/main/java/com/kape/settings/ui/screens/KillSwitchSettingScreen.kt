@@ -2,6 +2,7 @@ package com.kape.settings.ui.screens
 
 import android.content.Intent
 import android.provider.Settings
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,10 @@ fun KillSwitchSettingScreen() = Screen {
         appBarText(stringResource(id = R.string.privacy_kill_switch_title))
     }
     val context = LocalContext.current
+
+    BackHandler {
+        viewModel.navigateUp()
+    }
 
     Scaffold(
         topBar = {

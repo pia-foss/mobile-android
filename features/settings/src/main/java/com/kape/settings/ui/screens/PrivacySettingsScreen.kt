@@ -1,5 +1,6 @@
 package com.kape.settings.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -28,11 +29,16 @@ fun PrivacySettingsScreen() = Screen {
         appBarText(stringResource(id = R.string.privacy))
     }
     val showWarning = remember { mutableStateOf(false) }
+
+    BackHandler {
+        viewModel.navigateUp()
+    }
+
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.exitPrivacySettings() },
+                onLeftIconClick = { viewModel.navigateUp() },
             )
         },
     ) {

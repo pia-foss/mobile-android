@@ -1,5 +1,6 @@
 package com.kape.settings.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -34,6 +35,10 @@ fun ProtocolSettingsScreen() = Screen {
     }
     val protocolDialogVisible = remember { mutableStateOf(false) }
     val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol().name) }
+
+    BackHandler {
+        viewModel.navigateUp()
+    }
 
     Scaffold(
         topBar = {

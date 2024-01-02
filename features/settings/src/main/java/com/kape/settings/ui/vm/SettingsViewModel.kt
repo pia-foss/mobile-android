@@ -18,17 +18,11 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
-import com.kape.settings.data.WidgetSettings
 import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.settings.utils.SettingsStep
 import com.kape.shareevents.domain.KpiDataSource
-import com.kape.ui.utils.defaultWidgetBackgroundColor
-import com.kape.ui.utils.defaultWidgetDownloadColor
-import com.kape.ui.utils.defaultWidgetTextColor
-import com.kape.ui.utils.defaultWidgetUploadColor
-import com.kape.ui.utils.toColorString
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,7 +60,22 @@ class SettingsViewModel(
     private var installedApps = listOf<ApplicationInfo>()
 
     fun navigateUp() {
-        router.handleFlow(Back)
+        when (_state.value) {
+            SettingsStep.Automation -> _state.value = SettingsStep.Main
+            SettingsStep.ConnectionStats -> _state.value = SettingsStep.Help
+            SettingsStep.DebugLogs -> _state.value = SettingsStep.Help
+            SettingsStep.General -> _state.value = SettingsStep.Main
+            SettingsStep.Help -> _state.value = SettingsStep.Main
+            SettingsStep.KillSwitch -> _state.value = SettingsStep.Main
+            SettingsStep.Main -> router.handleFlow(Back)
+            SettingsStep.Network -> _state.value = SettingsStep.Main
+            SettingsStep.Privacy -> _state.value = SettingsStep.Main
+            SettingsStep.Protocol -> _state.value = SettingsStep.Main
+            SettingsStep.ShortcutAutomation,
+            SettingsStep.ShortcutKillSwitch,
+            SettingsStep.ShortcutProtocol,
+            -> router.handleFlow(Back)
+        }
     }
 
     fun navigateToConnection() {
@@ -101,24 +110,12 @@ class SettingsViewModel(
         _state.emit(SettingsStep.KillSwitch)
     }
 
-    fun exitPrivacySettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Privacy)
-    }
-
     fun navigateToConnectionStats() = viewModelScope.launch {
         _state.emit(SettingsStep.ConnectionStats)
     }
 
-    fun exitConnectionStats() = viewModelScope.launch {
-        _state.emit(SettingsStep.Help)
-    }
-
     fun navigateToDebugLogs() = viewModelScope.launch {
         _state.emit(SettingsStep.DebugLogs)
-    }
-
-    fun exitDebugLogs() = viewModelScope.launch {
-        _state.emit(SettingsStep.Help)
     }
 
     fun navigateToAutomation() = router.handleFlow(EnterFlow.Automation)
@@ -291,21 +288,5 @@ class SettingsViewModel(
 
     fun resetRequestId() {
         requestId.value = null
-    }
-
-    fun getWidgetSettings(): WidgetSettings {
-        return prefs.getWidgetSettings() ?: run {
-            WidgetSettings(
-                defaultWidgetBackgroundColor().toColorString(),
-                defaultWidgetTextColor().toColorString(),
-                defaultWidgetUploadColor().toColorString(),
-                defaultWidgetDownloadColor().toColorString(),
-                8,
-            )
-        }
-    }
-
-    fun updateWidgetSettings(settings: WidgetSettings) {
-        prefs.setWidgetSettings(settings)
     }
 }
