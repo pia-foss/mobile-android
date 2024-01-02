@@ -20,7 +20,7 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun InAppBrowser(url: String, requiresJavascript: Boolean) = Screen {
+fun InAppBrowser(url: String) = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val viewModel: InAppBrowserViewModel = koinViewModel()
     val state = rememberWebViewState(url = url)
@@ -34,7 +34,7 @@ fun InAppBrowser(url: String, requiresJavascript: Boolean) = Screen {
             .fillMaxWidth()
             .padding(top = 56.dp),
         onCreated = {
-            it.settings.javaScriptEnabled = requiresJavascript
+            it.settings.javaScriptEnabled = true
         },
     )
 

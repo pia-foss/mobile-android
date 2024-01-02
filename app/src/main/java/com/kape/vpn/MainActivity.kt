@@ -1,6 +1,5 @@
 package com.kape.vpn
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -126,19 +125,16 @@ class MainActivity : ComponentActivity() {
                             composable(WebContent.Terms) {
                                 InAppBrowser(
                                     url = getString(R.string.url_terms_of_service),
-                                    requiresJavascript = true,
                                 )
                             }
                             composable(WebContent.Privacy) {
                                 InAppBrowser(
                                     url = getString(R.string.url_privacy_policy),
-                                    requiresJavascript = true,
                                 )
                             }
                             composable(WebContent.Support) {
                                 InAppBrowser(
                                     url = getString(R.string.url_support),
-                                    requiresJavascript = true,
                                 )
                             }
                             composable(PerAppSettings.Main) {
