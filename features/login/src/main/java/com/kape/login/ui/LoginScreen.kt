@@ -5,12 +5,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -115,17 +118,26 @@ fun LoginScreen(navController: NavController) = Screen {
             imeAction = ImeAction.Next,
             content = password,
         )
-        PrimaryButton(
-            text = stringResource(id = R.string.login),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .testTag(":LoginScreen:login_button"),
-        ) {
-            if (isConnected) {
-                viewModel.login(username.value, password.value)
-            } else {
-                Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
+        if (state.loading) {
+            Spacer(modifier = Modifier.height(16.dp))
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(CenterHorizontally),
+            )
+        } else {
+            PrimaryButton(
+                text = stringResource(id = R.string.login),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .testTag(":LoginScreen:login_button"),
+            ) {
+                if (isConnected) {
+                    viewModel.login(username.value, password.value)
+                } else {
+                    Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
