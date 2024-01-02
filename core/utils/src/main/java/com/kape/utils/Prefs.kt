@@ -21,4 +21,6 @@ open class Prefs(context: Context, name: String) {
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
         )
     }
+
+    fun clear() = prefs.edit().clear().apply()
 }

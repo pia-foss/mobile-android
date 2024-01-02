@@ -57,5 +57,17 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":capabilities:ui"))
 
+    // prefs
+    implementation(project(":core:localprefs:connection"))
+    implementation(project(":core:localprefs:csi"))
+    implementation(project(":core:localprefs:customization"))
+    implementation(project(":core:localprefs:dip"))
+    implementation(project(":core:localprefs:networkmanagement"))
+    implementation(project(":core:localprefs:payments"))
+    implementation(project(":core:localprefs:regions"))
+    implementation(project(":core:localprefs:settings"))
+    implementation(project(":core:localprefs:shareevents"))
+    implementation(project(":core:localprefs:signup"))
+
     implementFeatureModule()
 }
