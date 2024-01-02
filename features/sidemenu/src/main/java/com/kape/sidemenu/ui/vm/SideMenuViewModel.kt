@@ -27,7 +27,7 @@ class SideMenuViewModel(
         viewModelScope.launch {
             profileUseCase.getProfile().collect {
                 it?.let {
-                    username.value = it.username
+                    username.value = it.username.uppercase()
                     showExpire.value = it.subscription.showExpire
                     daysRemaining.value = it.subscription.daysRemaining
                 }
