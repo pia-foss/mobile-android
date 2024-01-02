@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -65,6 +66,7 @@ fun DedicatedIpScreen() = Screen {
     }
     val showToast = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
+    val showSpinner = remember { mutableStateOf(false) }
     val serverForDeletion = remember { mutableStateOf<VpnServer?>(null) }
     val context = LocalContext.current
 
@@ -125,22 +127,31 @@ fun DedicatedIpScreen() = Screen {
                                     unfocusedTextColor = LocalColors.current.onSurface,
                                 ),
                             )
-                            Button(
-                                onClick = {
-                                    if (text.value.text.isNotEmpty()) {
-                                        viewModel.activateDedicatedIp(text)
-                                    }
-                                },
-                                modifier = Modifier
-                                    .padding(end = 8.dp)
-                                    .align(CenterVertically)
-                                    .weight(3.5f),
-                                shape = RoundedCornerShape(4.dp),
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.activate),
-                                    color = LocalColors.current.onPrimary,
+                            if (showSpinner.value) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .align(CenterVertically)
+                                        .padding(8.dp),
                                 )
+                            } else {
+                                Button(
+                                    onClick = {
+                                        if (text.value.text.isNotEmpty()) {
+                                            showSpinner.value = true
+                                            viewModel.activateDedicatedIp(text)
+                                        }
+                                    },
+                                    modifier = Modifier
+                                        .padding(end = 8.dp)
+                                        .align(CenterVertically)
+                                        .weight(3.5f),
+                                    shape = RoundedCornerShape(4.dp),
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.activate),
+                                        color = LocalColors.current.onPrimary,
+                                    )
+                                }
                             }
                         }
                     }
@@ -170,6 +181,7 @@ fun DedicatedIpScreen() = Screen {
             }
 
             showToast.value = viewModel.activationState.value != null
+            showSpinner.value = false
 
             if (showToast.value) {
                 Toast.makeText(
