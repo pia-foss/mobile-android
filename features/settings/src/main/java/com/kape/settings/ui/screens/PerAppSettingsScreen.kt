@@ -124,7 +124,7 @@ private fun AppRow(
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = name,
-                modifier = Modifier.align(CenterVertically),
+                modifier = Modifier.align(CenterVertically).weight(2f),
             )
             Spacer(modifier = Modifier.weight(1f))
             LockCheckBox(checked = isExcluded, Modifier.align(CenterVertically))
