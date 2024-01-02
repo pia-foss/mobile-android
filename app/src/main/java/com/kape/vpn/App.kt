@@ -11,6 +11,7 @@ import com.kape.connection.di.connectionModule
 import com.kape.csi.di.csiModule
 import com.kape.customization.di.customizationModule
 import com.kape.dedicatedip.di.dedicatedIpModule
+import com.kape.inappbrowser.di.inAppBrowserModule
 import com.kape.login.di.loginModule
 import com.kape.networkmanagement.di.networkManagementModule
 import com.kape.notifications.di.notificationModule
@@ -92,6 +93,7 @@ class App : Application() {
                 add(networkManagementModule)
                 add(aboutModule(appModule))
                 add(customizationModule(appModule))
+                add(inAppBrowserModule(appModule))
             },
         )
     }

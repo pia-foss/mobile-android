@@ -1,6 +1,5 @@
 package com.kape.vpn
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,6 +18,7 @@ import com.kape.automation.ui.AutomationFlow
 import com.kape.connection.ui.ConnectionScreen
 import com.kape.customization.CustomizationScreen
 import com.kape.dedicatedip.ui.DedicatedIpScreen
+import com.kape.inappbrowser.ui.InAppBrowser
 import com.kape.login.ui.loginNavigation
 import com.kape.payments.ui.PaymentProvider
 import com.kape.permissions.utils.PermissionsFlow
@@ -48,7 +48,6 @@ import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.utils.SettingsFlow
 import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
-import com.kape.ui.elements.WebViewScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
 import org.koin.android.ext.android.inject
@@ -124,31 +123,18 @@ class MainActivity : ComponentActivity() {
                             composable(Profile.Main) { ProfileScreen() }
                             composable(Subscribe.Main) { SignupScreensFlow() }
                             composable(WebContent.Terms) {
-                                WebViewScreen(
-                                    initialUrl = Uri.parse(
-                                        getString(R.string.url_terms_of_service),
-                                    ),
+                                InAppBrowser(
+                                    url = getString(R.string.url_terms_of_service),
                                 )
                             }
                             composable(WebContent.Privacy) {
-                                WebViewScreen(
-                                    initialUrl = Uri.parse(
-                                        getString(R.string.url_privacy_policy),
-                                    ),
-                                )
-                            }
-                            composable(WebContent.Survey) {
-                                WebViewScreen(
-                                    initialUrl = Uri.parse(
-                                        getString(R.string.url_survey),
-                                    ),
+                                InAppBrowser(
+                                    url = getString(R.string.url_privacy_policy),
                                 )
                             }
                             composable(WebContent.Support) {
-                                WebViewScreen(
-                                    initialUrl = Uri.parse(
-                                        getString(R.string.url_support),
-                                    ),
+                                InAppBrowser(
+                                    url = getString(R.string.url_support),
                                 )
                             }
                             composable(PerAppSettings.Main) {

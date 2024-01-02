@@ -32,7 +32,6 @@ class Router {
             EnterFlow.Subscribe -> _navigation.value = Subscribe.Main
             EnterFlow.PrivacyPolicy -> _navigation.value = WebContent.Privacy
             EnterFlow.TermsOfService -> _navigation.value = WebContent.Terms
-            EnterFlow.Survey -> _navigation.value = WebContent.Survey
             EnterFlow.Settings -> _navigation.value = Settings.Route
             EnterFlow.AutomationSettings -> _navigation.value = Settings.Automation
             EnterFlow.PerAppSettings -> _navigation.value = PerAppSettings.Main
