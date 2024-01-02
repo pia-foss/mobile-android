@@ -6,6 +6,6 @@ enum class DataEncryption(val value: String) {
     CHA_CHA_20("ChaCha20"), ;
 
     companion object {
-        fun fromName(name: String) = DataEncryption.values().find { it.name == name }
+        fun fromName(name: String) = entries.find { it.value == name }
     }
 }

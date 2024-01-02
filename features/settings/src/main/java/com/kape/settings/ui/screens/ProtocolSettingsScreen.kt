@@ -253,6 +253,7 @@ fun EncryptionSelectionDialog(
         onConfirm = {
             DataEncryption.fromName(encryptionSelection.value)?.let {
                 viewModel.setEncryption(it)
+                encryptionSelection.value = viewModel.getOpenVpnSettings().dataEncryption.value
             }
             encryptionDialogVisible.value = false
         },

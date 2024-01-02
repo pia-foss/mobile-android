@@ -5,6 +5,6 @@ enum class Transport(val value: String) {
     TCP("TCP"), ;
 
     companion object {
-        fun fromName(name: String) = Transport.values().find { it.value == name }
+        fun fromName(name: String) = entries.find { it.value == name }
     }
 }
