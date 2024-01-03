@@ -80,25 +80,27 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
             )
             Image(
                 painter = painterResource(id = R.drawable.ic_globe),
-                contentDescription = stringResource(id = R.string.logo),
+                contentDescription = null,
                 modifier = Modifier
                     .padding(20.dp)
                     .fillMaxWidth()
                     .size(150.dp),
             )
-            OnboardingTitleText(
-                content = stringResource(id = R.string.subscribe_screen_title),
-                modifier = Modifier
-                    .align(CenterHorizontally),
-            )
-            OnboardingDescriptionText(
-                content = stringResource(id = R.string.subscribe_screen_description).format(
-                    subscriptionData?.yearly?.mainPrice,
-                ),
-                modifier = Modifier
-                    .align(CenterHorizontally)
-                    .padding(horizontal = 20.dp, vertical = 8.dp),
-            )
+            Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                OnboardingTitleText(
+                    content = stringResource(id = R.string.subscribe_screen_title),
+                    modifier = Modifier
+                        .align(CenterHorizontally),
+                )
+                OnboardingDescriptionText(
+                    content = stringResource(id = R.string.subscribe_screen_description).format(
+                        subscriptionData?.yearly?.mainPrice,
+                    ),
+                    modifier = Modifier
+                        .align(CenterHorizontally)
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                )
+            }
             Spacer(modifier = Modifier.height(16.dp))
             YearlySubscriptionCard(
                 selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
