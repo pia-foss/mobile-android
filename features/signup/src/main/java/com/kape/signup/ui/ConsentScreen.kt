@@ -41,7 +41,7 @@ fun ConsentScreen(viewModel: SignupViewModel) = Screen {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_consent),
-                contentDescription = stringResource(id = R.string.logo),
+                contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(24.dp),
