@@ -23,21 +23,11 @@ class PermissionsViewModel(
     private val router: Router,
 ) : ViewModel(), KoinComponent {
 
-    private val _state = MutableStateFlow<PermissionsStep>(PermissionsStep.Vpn)
+    private val _state = MutableStateFlow(getPermissionStep())
     val state: StateFlow<PermissionsStep> = _state
 
     private val _vpnPermissionState = MutableStateFlow(IDLE)
     val vpnPermissionState: StateFlow<VpnProfileState> = _vpnPermissionState
-
-    fun checkFlowCompleted() = viewModelScope.launch {
-        if (useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
-            if (isNotificationPermissionGranted()) {
-                router.handleFlow(ExitFlow.Permissions)
-            } else {
-                _state.value = PermissionsStep.Notifications
-            }
-        }
-    }
 
     fun onOkButtonClicked() = viewModelScope.launch {
         _vpnPermissionState.emit(REQUEST)
@@ -57,4 +47,14 @@ class PermissionsViewModel(
         notificationPermissionManager.isNotificationsPermissionGranted()
 
     fun exitOnboarding() = router.handleFlow(ExitFlow.Permissions)
+
+    private fun getPermissionStep(): PermissionsStep {
+        return if (!useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
+            PermissionsStep.Vpn
+        } else if (!isNotificationPermissionGranted()) {
+            PermissionsStep.Notifications
+        } else {
+            PermissionsStep.Granted
+        }
+    }
 }

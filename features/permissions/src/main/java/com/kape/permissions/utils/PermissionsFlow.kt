@@ -17,5 +17,6 @@ fun PermissionsFlow() {
     when (state) {
         PermissionsStep.Notifications -> NotificationPermissionScreen()
         PermissionsStep.Vpn -> VpnPermissionScreen()
+        PermissionsStep.Granted -> viewModel.exitOnboarding()
     }
 }
