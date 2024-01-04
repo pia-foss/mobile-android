@@ -97,6 +97,7 @@ fun ConnectionScreen() = Screen {
             ) {
                 viewModel.onConnectionButtonClicked()
             }
+            Spacer(modifier = Modifier.height(36.dp))
             viewModel.getOrderedElements().forEach {
                 DisplayComponent(
                     screenElement = it,
