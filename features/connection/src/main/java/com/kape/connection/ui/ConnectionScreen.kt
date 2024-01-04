@@ -132,7 +132,7 @@ private fun DisplayComponent(
             }
 
             Element.IpInfo -> {
-                val state = viewModel.portForwardingStatus.collectAsState()
+                val state = viewModel.portForwardingStatus
                 IPTile(
                     isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
                     publicIp = viewModel.ip,

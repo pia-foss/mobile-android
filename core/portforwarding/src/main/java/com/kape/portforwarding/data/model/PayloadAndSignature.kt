@@ -7,4 +7,5 @@ import kotlinx.serialization.Serializable
 data class PayloadAndSignature(
     val payload: DecodedPayload,
     val signature: String,
+    val encodedPayload: String,
 )
