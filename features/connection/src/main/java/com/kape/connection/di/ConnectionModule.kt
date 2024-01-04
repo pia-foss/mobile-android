@@ -5,6 +5,7 @@ import com.kape.connection.domain.ClientStateDataSource
 import com.kape.connection.ui.vm.ConnectionViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 fun connectionModule(appModule: Module) = module {
@@ -29,6 +30,8 @@ private val localConnectionModule = module {
             get(),
             get(),
             get(),
+            get(),
+            get(named("port-forwarding-pending-intent")),
         )
     }
 }

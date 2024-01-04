@@ -83,7 +83,8 @@ val appModule = module {
     single { provideSetSnoozePendingIntent(get()) }
     single { provideAlarmManager(get()) }
     single { SnoozeHandler(get(), get(), get(), get()) }
-    single { providePortForwardingPendingIntent(get()) }
+    single(named("port-forwarding-intent")) { providePortForwardingReceiverIntent(get()) }
+    single(named("port-forwarding-pending-intent")) { providePortForwardingPendingIntent(get(), get(named("port-forwarding-intent"))) }
     single { CsiEndpointProvider() }
     single { CsiPrefs(get()) }
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
@@ -229,8 +230,11 @@ private fun provideCancelSnoozePendingIntent(context: Context): PendingIntent? {
     )
 }
 
-private fun providePortForwardingPendingIntent(context: Context): PendingIntent {
-    val intent = Intent(context, PortForwardingReceiver::class.java)
+private fun providePortForwardingReceiverIntent(context: Context): Intent {
+    return Intent(context, PortForwardingReceiver::class.java)
+}
+
+private fun providePortForwardingPendingIntent(context: Context, intent: Intent): PendingIntent {
     val flags: Int = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
     return PendingIntent.getBroadcast(
         context, 0, intent, flags,

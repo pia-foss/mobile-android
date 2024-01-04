@@ -19,8 +19,10 @@ class PortForwardingUseCase(
 
     val portForwardingStatus =
         mutableStateOf<PortForwardingStatus>(PortForwardingStatus.NoPortForwarding)
+    val port = mutableStateOf<String?>(null)
 
     suspend fun bindPort() {
+        portForwardingStatus.value = PortForwardingStatus.Requesting
         val gateway = connectionPrefs.getGateway()
         if (gateway.isEmpty()) {
             portForwardingStatus.value = PortForwardingStatus.Error
@@ -40,12 +42,13 @@ class PortForwardingUseCase(
 
         // If there is active data persisted. Send the bind port reminder request to keep the NAT
         // on the server rather than requesting a new port
-        connectionPrefs.getPortBindingInfo()?.let {
-            if (tokenExpirationDateDaysLeft(it.decodedPayload.expirationDate) > MIN_EXPIRATION_DAYS) {
+        connectionPrefs.getPortBindingInfo()?.let { portBindingInfo ->
+            if (tokenExpirationDateDaysLeft(portBindingInfo.decodedPayload.expirationDate) > MIN_EXPIRATION_DAYS) {
                 portForwardingStatus.value = PortForwardingStatus.Requesting
-                api.bindPort(it.decodedPayload.token, it.payload, it.signature, gateway).collect {
+                api.bindPort(portBindingInfo.decodedPayload.token, portBindingInfo.payload, portBindingInfo.signature, gateway).collect {
                     if (it) {
                         portForwardingStatus.value = PortForwardingStatus.Success
+                        port.value = portBindingInfo.decodedPayload.port.toString()
                     } else {
                         portForwardingStatus.value = PortForwardingStatus.Error
                     }
@@ -61,13 +64,14 @@ class PortForwardingUseCase(
         portForwardingStatus.value = PortForwardingStatus.Requesting
         api.getPayloadAndSignature(vpnToken, gateway).collect {
             if (it != null) {
-                api.bindPort(it.payload.token, it.payload.toString(), it.signature, gateway)
+                api.bindPort(it.payload.token, it.encodedPayload, it.signature, gateway)
                     .collect { successful ->
                         if (successful) {
                             val portBindInformation =
-                                PortBindInformation(it.payload.toString(), it.signature, it.payload)
+                                PortBindInformation(it.encodedPayload, it.signature, it.payload)
                             connectionPrefs.setPortBindingInformation(portBindInformation)
                             portForwardingStatus.value = PortForwardingStatus.Success
+                            port.value = it.payload.port.toString()
                         } else {
                             portForwardingStatus.value = PortForwardingStatus.Error
                         }

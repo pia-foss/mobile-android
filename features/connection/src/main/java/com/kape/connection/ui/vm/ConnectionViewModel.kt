@@ -33,8 +33,6 @@ import com.kape.vpnregions.domain.GetVpnRegionsUseCase
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.domain.SetVpnRegionsUseCase
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -55,6 +53,8 @@ class ConnectionViewModel(
     private val dipPrefs: DipPrefs,
     private val renewDipUseCase: RenewDipUseCase,
     private val customizationPrefs: CustomizationPrefs,
+    private val alarmManager: AlarmManager,
+    private val portForwardingIntent: PendingIntent,
 ) : ViewModel(), KoinComponent {
 
     private var availableVpnServers = mutableListOf<VpnServer>()
@@ -70,11 +70,8 @@ class ConnectionViewModel(
     val download = usageProvider.download
     val upload = usageProvider.upload
 
-    private val _portForwardingStatus =
-        MutableStateFlow<PortForwardingStatus>(PortForwardingStatus.NoPortForwarding)
-    val portForwardingStatus: StateFlow<PortForwardingStatus> = _portForwardingStatus
-
-    val port = mutableStateOf(prefs.getPortBindingInfo()?.decodedPayload?.port)
+    val portForwardingStatus = portForwardingUseCase.portForwardingStatus
+    val port = portForwardingUseCase.port
 
     init {
         viewModelScope.launch {
@@ -250,6 +247,7 @@ class ConnectionViewModel(
                     server = it,
                     isManualConnection = true,
                 ).collect {
+                    startPortForwarding()
                     launch {
                         delay(3000)
                         clientStateDataSource.getClientStatus().collect { connected ->
@@ -271,7 +269,27 @@ class ConnectionViewModel(
         connectionUseCase.stopConnection().collect {
             clientStateDataSource.resetVpnIp()
             vpnIp = prefs.getClientVpnIp()
+            portForwardingStatus.value = PortForwardingStatus.NoPortForwarding
         }
+        stopPortForwarding()
+    }
+
+    private fun startPortForwarding() {
+        if (isPortForwardingEnabled()) {
+            viewModelScope.launch {
+                portForwardingUseCase.bindPort()
+            }
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                0,
+                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                portForwardingIntent,
+            )
+        }
+    }
+
+    private fun stopPortForwarding() {
+        alarmManager.cancel(portForwardingIntent)
     }
 
     private fun setSnoozeAlarm(context: Context, time: Long) {

@@ -30,6 +30,7 @@ class PortForwardingApiImpl(
     ): Flow<PayloadAndSignature?> = flow {
         var payload: DecodedPayload? = null
         var signature = ""
+        var encodedPayload = ""
 
         val urlEncodedEndpoint: String = Uri.parse("https://$gateway:19999/getSignature")
             .buildUpon()
@@ -47,14 +48,14 @@ class PortForwardingApiImpl(
             emit(null)
         }
         if (jsonResponse.has("payload")) {
-            val data = jsonResponse["payload"].toString()
-            payload = decodePayload(data)
+            encodedPayload = jsonResponse["payload"].toString()
+            payload = decodePayload(encodedPayload)
         }
         if (jsonResponse.has("signature")) {
             signature = jsonResponse["signature"].toString()
         }
         payload?.let {
-            val payloadAndSignatureResponse = PayloadAndSignature(it, signature)
+            val payloadAndSignatureResponse = PayloadAndSignature(it, signature, encodedPayload)
             emit(payloadAndSignatureResponse)
         } ?: run {
             emit(null)
