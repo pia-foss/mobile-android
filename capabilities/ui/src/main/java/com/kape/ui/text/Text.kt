@@ -1,9 +1,14 @@
 package com.kape.ui.text
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
 
@@ -251,13 +256,36 @@ fun ConnectionInfoText(content: String) {
 }
 
 @Composable
-fun RegionSelectionText(content: String, modifier: Modifier) {
+fun RegionSelectionText(content: String) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
-        modifier = modifier,
     )
+}
+
+@Composable
+fun RegionSelectionIpText(content: String) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurfaceVariant,
+        style = PiaTypography.body3,
+    )
+}
+
+@Composable
+fun RegionSelectionDipText(content: String) {
+    Card(
+        border = BorderStroke(1.dp, LocalColors.current.onSurfaceVariant),
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        Text(
+            text = content,
+            color = LocalColors.current.onSurfaceVariant,
+            style = PiaTypography.caption2,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+        )
+    }
 }
 
 @Composable
