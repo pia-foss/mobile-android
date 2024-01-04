@@ -65,7 +65,7 @@ class ConnectionViewModel(
 
     private var availableVpnServers = mutableListOf<VpnServer>()
     var selectedVpnServer = mutableStateOf(prefs.getSelectedServer())
-    val snoozeActive = mutableStateOf(false)
+    val snoozeActive = mutableStateOf(prefs.isSnoozeEnabled())
     val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
     val snoozeTime = mutableLongStateOf(prefs.getLastSnoozeEndTime())
@@ -153,21 +153,25 @@ class ConnectionViewModel(
         when (interval) {
             SnoozeInterval.SNOOZE_SHORT_MS -> {
                 end = nowInMillis + SnoozeInterval.SNOOZE_SHORT_MS.value
+                prefs.setEnableSnooze(true)
                 snoozeActive.value = true
             }
 
             SnoozeInterval.SNOOZE_MEDIUM_MS -> {
                 end = nowInMillis + SnoozeInterval.SNOOZE_MEDIUM_MS.value
+                prefs.setEnableSnooze(true)
                 snoozeActive.value = true
             }
 
             SnoozeInterval.SNOOZE_LONG_MS -> {
                 end = nowInMillis + SnoozeInterval.SNOOZE_LONG_MS.value
+                prefs.setEnableSnooze(true)
                 snoozeActive.value = true
             }
 
             else -> {
                 end = 0
+                prefs.setEnableSnooze(false)
                 snoozeActive.value = false
             }
         }
