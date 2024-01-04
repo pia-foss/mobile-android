@@ -38,8 +38,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 
 class ConnectionViewModel(
@@ -58,10 +56,6 @@ class ConnectionViewModel(
     private val renewDipUseCase: RenewDipUseCase,
     private val customizationPrefs: CustomizationPrefs,
 ) : ViewModel(), KoinComponent {
-
-    private val oneHourLong = 1L
-    private val fiveMinuteLong = 5L
-    private val fifteenMinuteLong = 15L
 
     private var availableVpnServers = mutableListOf<VpnServer>()
     var selectedVpnServer = mutableStateOf(prefs.getSelectedServer())
@@ -146,10 +140,9 @@ class ConnectionViewModel(
     }
 
     fun snooze(context: Context, interval: SnoozeInterval) {
-        val formatter = DateTimeFormatter.ofPattern("HH:mm")
         val nowInMillis = Calendar.getInstance().timeInMillis
-        val nowTime = LocalTime.now()
         val end: Long
+
         when (interval) {
             SnoozeInterval.SNOOZE_SHORT_MS -> {
                 end = nowInMillis + SnoozeInterval.SNOOZE_SHORT_MS.value
@@ -177,8 +170,10 @@ class ConnectionViewModel(
         }
         if (snoozeActive.value) {
             disconnect()
-            setSnoozeAlarm(context, end)
+        } else {
+            connect()
         }
+        setSnoozeAlarm(context, end)
     }
 
     private fun renewDedicatedIps() = viewModelScope.launch {
