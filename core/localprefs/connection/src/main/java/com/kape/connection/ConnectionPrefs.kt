@@ -14,6 +14,7 @@ private const val SELECTED_SERVER = "selected-server"
 private const val LAST_SNOOZE_END_TIME = "last-snooze-end-time"
 private const val GATEWAY = "gateway"
 private const val PORT_BINDING_INFO = "port-binding-info"
+private const val SNOOZE_ENABLED = "snooze-enabled"
 const val NO_IP = "---"
 
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
@@ -64,4 +65,8 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
     }
 
     fun clearPortBindingInfo() = setPortBindingInformation(null)
+
+    fun setEnableSnooze(on: Boolean) = prefs.edit().putBoolean(SNOOZE_ENABLED, on).apply()
+
+    fun isSnoozeEnabled() = prefs.getBoolean(SNOOZE_ENABLED, false)
 }
