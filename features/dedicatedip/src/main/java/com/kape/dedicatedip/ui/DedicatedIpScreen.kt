@@ -125,6 +125,7 @@ fun DedicatedIpScreen() = Screen {
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
                                     unfocusedTextColor = LocalColors.current.onSurface,
+                                    focusedBorderColor = Color.Transparent,
                                 ),
                             )
                             if (showSpinner.value) {
