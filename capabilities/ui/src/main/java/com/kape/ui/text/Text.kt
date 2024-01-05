@@ -128,7 +128,7 @@ fun SignUpPricePerMonthText(content: String, modifier: Modifier) {
 fun BestValueBannerText(content: String, modifier: Modifier) {
     Text(
         text = content,
-        color = LocalColors.current.onPrimary,
+        color = LocalColors.current.onTertiary,
         style = PiaTypography.caption1,
         modifier = modifier,
     )
