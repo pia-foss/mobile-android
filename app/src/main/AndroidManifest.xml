@@ -87,7 +87,7 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.OnSnoozeReceiver" />
+        <receiver android:name="com.kape.snooze.OnSnoozeReceiver" />
         <receiver android:name=".receiver.PortForwardingReceiver" />
         <receiver android:name=".receiver.OnRulesChangedReceiver" />
 

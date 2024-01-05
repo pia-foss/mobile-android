@@ -26,6 +26,7 @@ import com.kape.shareevents.di.kpiModule
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.sidemenu.di.sideMenuModule
 import com.kape.signup.di.signupModule
+import com.kape.snooze.di.snoozeModule
 import com.kape.splash.di.splashModule
 import com.kape.vpn.di.appModule
 import com.kape.vpn.utils.NetworkListener
@@ -94,6 +95,7 @@ class App : Application() {
                 add(aboutModule(appModule))
                 add(customizationModule(appModule))
                 add(inAppBrowserModule(appModule))
+                add(snoozeModule(appModule))
             },
         )
     }

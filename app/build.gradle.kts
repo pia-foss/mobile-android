@@ -139,6 +139,7 @@ dependencies {
     implementation(project(":capabilities:notifications"))
     implementation(project(":capabilities:csi"))
     implementation(project(":capabilities:networkmanagement"))
+    implementation(project(":capabilities:snooze"))
 
     implementation(project(":features:splash"))
     implementation(project(":features:signup"))

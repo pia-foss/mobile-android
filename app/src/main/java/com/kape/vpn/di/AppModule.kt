@@ -28,12 +28,9 @@ import com.kape.vpn.provider.PlatformProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.vpn.provider.VpnManagerProvider
 import com.kape.vpn.receiver.OnRulesChangedReceiver
-import com.kape.vpn.receiver.OnSnoozeReceiver
 import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.NetworkListener
-import com.kape.vpn.utils.SNOOZE_REQUEST_CODE
-import com.kape.vpn.utils.SnoozeHandler
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -54,7 +51,6 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.BufferedReader
-import java.io.File
 
 const val PARAM_USER_AGENT = "user-agent"
 
@@ -79,10 +75,7 @@ val appModule = module {
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
     single { VpnLauncher(get(), get(), get()) }
-    single { provideCancelSnoozePendingIntent(get()) }
-    single { provideSetSnoozePendingIntent(get()) }
     single { provideAlarmManager(get()) }
-    single { SnoozeHandler(get(), get(), get(), get()) }
     single(named("port-forwarding-intent")) { providePortForwardingReceiverIntent(get()) }
     single(named("port-forwarding-pending-intent")) { providePortForwardingPendingIntent(get(), get(named("port-forwarding-intent"))) }
     single { CsiEndpointProvider() }
@@ -209,24 +202,6 @@ private fun createNotificationBuilder(context: Context): Notification.Builder {
     return Notification.Builder(
         context,
         NotificationChannelManager.CHANNEL_ID,
-    )
-}
-
-private fun provideSetSnoozePendingIntent(context: Context): PendingIntent {
-    return PendingIntent.getBroadcast(
-        context,
-        SNOOZE_REQUEST_CODE,
-        Intent(context, OnSnoozeReceiver::class.java),
-        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT,
-    )
-}
-
-private fun provideCancelSnoozePendingIntent(context: Context): PendingIntent? {
-    return PendingIntent.getBroadcast(
-        context,
-        SNOOZE_REQUEST_CODE,
-        Intent(context, OnSnoozeReceiver::class.java),
-        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE,
     )
 }
 
