@@ -187,7 +187,7 @@ private fun DisplayComponent(
 
         Element.Snooze -> {
             Snooze(
-                viewModel.snoozeActive,
+                viewModel.isSnoozeActive,
                 onClick = {},
                 onResumeClick = {},
             )

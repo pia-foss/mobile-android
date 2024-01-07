@@ -23,12 +23,14 @@ import com.kape.ui.R
 import com.kape.ui.text.QuickConnectText
 import com.kape.ui.text.TileTitleText
 import com.kape.ui.utils.LocalColors
-import com.kape.ui.utils.SnoozeInterval
+import com.kape.utils.FIFTEEN_MINUTES
+import com.kape.utils.FIVE_MINUTES
+import com.kape.utils.SIXTY_MINUTES
 
 @Composable
 fun Snooze(
     active: MutableState<Boolean>,
-    onClick: (interval: SnoozeInterval) -> Unit,
+    onClick: (interval: Int) -> Unit,
     onResumeClick: () -> Unit,
 ) {
     Column(
@@ -57,7 +59,7 @@ fun Snooze(
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            onClick(SnoozeInterval.SNOOZE_SHORT_MS)
+                            onClick(FIVE_MINUTES)
                         },
                 )
 
@@ -67,7 +69,7 @@ fun Snooze(
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            onClick(SnoozeInterval.SNOOZE_MEDIUM_MS)
+                            onClick(FIFTEEN_MINUTES)
                         },
                 )
 
@@ -77,7 +79,7 @@ fun Snooze(
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            onClick(SnoozeInterval.SNOOZE_LONG_MS)
+                            onClick(SIXTY_MINUTES)
                         },
                 )
             }

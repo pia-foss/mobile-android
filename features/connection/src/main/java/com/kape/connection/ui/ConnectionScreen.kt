@@ -1,6 +1,8 @@
 package com.kape.connection.ui
 
 import android.content.Context
+import android.content.Intent
+import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -41,7 +43,6 @@ import com.kape.ui.tiles.QuickConnect
 import com.kape.ui.tiles.QuickSettings
 import com.kape.ui.tiles.Snooze
 import com.kape.ui.tiles.Traffic
-import com.kape.ui.utils.SnoozeInterval
 import com.kape.vpnconnect.utils.ConnectionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -179,18 +180,19 @@ private fun DisplayComponent(
             }
 
             Element.Snooze -> {
-                if (viewModel.snoozeTime.longValue != 0L && viewModel.snoozeTime.longValue < System.currentTimeMillis()) {
-                    viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
-                }
                 Snooze(
-                    viewModel.snoozeActive,
+                    active = viewModel.isSnoozeActive,
                     onClick = {
                         if (viewModel.isConnectionActive()) {
-                            viewModel.snooze(context, it)
+                            if (!viewModel.isAlarmPermissionGranted()) {
+                                context.startActivity(Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+                            } else {
+                                viewModel.snooze(it)
+                            }
                         }
                     },
                     onResumeClick = {
-                        viewModel.snooze(context, SnoozeInterval.SNOOZE_DEFAULT_MS)
+                        viewModel.cancelSnooze()
                     },
                 )
             }

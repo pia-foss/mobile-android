@@ -56,6 +56,7 @@ dependencies {
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:notifications"))
     implementation(project(":capabilities:shareevents"))
+    implementation(project(":capabilities:snooze"))
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
     implementation(project(":core:regions"))

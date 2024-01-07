@@ -2,12 +2,8 @@ package com.kape.connection.ui.vm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.os.Build
-import android.provider.Settings
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -24,8 +20,8 @@ import com.kape.router.Exit
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
+import com.kape.snooze.SnoozeHandler
 import com.kape.ui.tiles.MAX_SERVERS
-import com.kape.ui.utils.SnoozeInterval
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
@@ -36,7 +32,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import java.util.Calendar
 
 class ConnectionViewModel(
     private val setVpnRegionsUseCase: SetVpnRegionsUseCase,
@@ -47,7 +42,7 @@ class ConnectionViewModel(
     private val router: Router,
     private val prefs: ConnectionPrefs,
     private val settingsPrefs: SettingsPrefs,
-    private val setSnoozePendingIntent: PendingIntent,
+    private val snoozeHandler: SnoozeHandler,
     private val usageProvider: UsageProvider,
     private val portForwardingUseCase: PortForwardingUseCase,
     private val dipPrefs: DipPrefs,
@@ -59,10 +54,8 @@ class ConnectionViewModel(
 
     private var availableVpnServers = mutableListOf<VpnServer>()
     var selectedVpnServer = mutableStateOf(prefs.getSelectedServer())
-    val snoozeActive = mutableStateOf(prefs.isSnoozeEnabled())
-    val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
-    val snoozeTime = mutableLongStateOf(prefs.getLastSnoozeEndTime())
+    val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
 
     var ip by mutableStateOf(prefs.getClientIp())
     var vpnIp by mutableStateOf(prefs.getClientVpnIp())
@@ -72,6 +65,7 @@ class ConnectionViewModel(
 
     val portForwardingStatus = portForwardingUseCase.portForwardingStatus
     val port = portForwardingUseCase.port
+    val isSnoozeActive = snoozeHandler.isSnoozeActive
 
     init {
         viewModelScope.launch {
@@ -127,6 +121,16 @@ class ConnectionViewModel(
 
     fun getOrderedElements() = customizationPrefs.getOrderedElements()
 
+    fun snooze(interval: Int) = snoozeHandler.setSnooze(interval)
+
+    fun cancelSnooze() = snoozeHandler.cancelSnooze()
+
+    fun isAlarmPermissionGranted() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        alarmManager.canScheduleExactAlarms()
+    } else {
+        true
+    }
+
     private fun vpnServersLoaded(vpnServers: List<VpnServer>) {
         availableVpnServers.clear()
         availableVpnServers.addAll(vpnServers)
@@ -134,43 +138,6 @@ class ConnectionViewModel(
         getQuickConnectServers()
         getSelectedServer()
         setVpnRegionsUseCase.setVpnServers(servers = vpnServers)
-    }
-
-    fun snooze(context: Context, interval: SnoozeInterval) {
-        val nowInMillis = Calendar.getInstance().timeInMillis
-        val end: Long
-
-        when (interval) {
-            SnoozeInterval.SNOOZE_SHORT_MS -> {
-                end = nowInMillis + SnoozeInterval.SNOOZE_SHORT_MS.value
-                prefs.setEnableSnooze(true)
-                snoozeActive.value = true
-            }
-
-            SnoozeInterval.SNOOZE_MEDIUM_MS -> {
-                end = nowInMillis + SnoozeInterval.SNOOZE_MEDIUM_MS.value
-                prefs.setEnableSnooze(true)
-                snoozeActive.value = true
-            }
-
-            SnoozeInterval.SNOOZE_LONG_MS -> {
-                end = nowInMillis + SnoozeInterval.SNOOZE_LONG_MS.value
-                prefs.setEnableSnooze(true)
-                snoozeActive.value = true
-            }
-
-            else -> {
-                end = 0
-                prefs.setEnableSnooze(false)
-                snoozeActive.value = false
-            }
-        }
-        if (snoozeActive.value) {
-            disconnect()
-        } else {
-            connect()
-        }
-        setSnoozeAlarm(context, end)
     }
 
     private fun renewDedicatedIps() = viewModelScope.launch {
@@ -291,31 +258,5 @@ class ConnectionViewModel(
 
     private fun stopPortForwarding() {
         alarmManager.cancel(portForwardingIntent)
-    }
-
-    private fun setSnoozeAlarm(context: Context, time: Long) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (!alarmManager.canScheduleExactAlarms()) {
-                val intent = Intent()
-                intent.action = Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-                context.startActivity(intent)
-            } else {
-                setSnooze(alarmManager, time)
-            }
-        } else {
-            setSnooze(alarmManager, time)
-        }
-    }
-
-    private fun setSnooze(alarmManager: AlarmManager, time: Long) {
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, time, setSnoozePendingIntent)
-        prefs.setLastSnoozeEndTime(time)
-    }
-
-    private fun cancelSnooze() {
-        alarmManager.cancel(setSnoozePendingIntent)
-        prefs.setEnableSnooze(false)
-        prefs.setLastSnoozeEndTime(0)
-        snoozeActive.value = false
     }
 }
