@@ -243,6 +243,7 @@ class ConnectionViewModel(
             selectedVpnServer.value?.let {
                 getVpnRegionsUseCase.selectVpnServer(it.key)
                 prefs.addToQuickConnect(it.key)
+                cancelSnooze()
                 connectionUseCase.startConnection(
                     server = it,
                     isManualConnection = true,
@@ -293,7 +294,6 @@ class ConnectionViewModel(
     }
 
     private fun setSnoozeAlarm(context: Context, time: Long) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             if (!alarmManager.canScheduleExactAlarms()) {
                 val intent = Intent()
@@ -310,5 +310,12 @@ class ConnectionViewModel(
     private fun setSnooze(alarmManager: AlarmManager, time: Long) {
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC, time, setSnoozePendingIntent)
         prefs.setLastSnoozeEndTime(time)
+    }
+
+    private fun cancelSnooze() {
+        alarmManager.cancel(setSnoozePendingIntent)
+        prefs.setEnableSnooze(false)
+        prefs.setLastSnoozeEndTime(0)
+        snoozeActive.value = false
     }
 }
