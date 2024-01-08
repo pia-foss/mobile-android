@@ -64,6 +64,7 @@ fun SettingsToggle(
 
                 subtitleId?.let {
                     SettingsL2TextDescription(content = stringResource(id = it))
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
             Toggle(isOn = isChecked.value) {
