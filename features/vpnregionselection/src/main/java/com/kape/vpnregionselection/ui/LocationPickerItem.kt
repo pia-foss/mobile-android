@@ -1,7 +1,9 @@
 package com.kape.vpnregionselection.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,9 +26,13 @@ import com.kape.ui.elements.FavoriteIcon
 import com.kape.ui.elements.Separator
 import com.kape.ui.text.RegionSelectionDipText
 import com.kape.ui.text.RegionSelectionIpText
+import com.kape.ui.text.RegionSelectionLatencyText
 import com.kape.ui.text.RegionSelectionText
+import com.kape.ui.theme.getLatencyColor
+import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
 import com.kape.utils.vpnserver.VpnServer
+import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
 import com.kape.vpnregionselection.R
 
 @Composable
@@ -69,6 +75,25 @@ fun LocationPickerItem(
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
+            server.latency?.let {
+                Box(
+                    modifier = Modifier
+                        .align(CenterVertically)
+                        .size(8.dp)
+                        .background(
+                            LocalColors.current.getLatencyColor(server.latency),
+                            shape = CircleShape,
+                        ),
+                )
+                if (it.toInt() < VPN_REGIONS_PING_TIMEOUT) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    RegionSelectionLatencyText(
+                        "${server.latency}ms",
+                        Modifier.align(CenterVertically),
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.width(16.dp))
             if (enableFavorite) {
                 FavoriteIcon(
                     isChecked = isFavorite,
