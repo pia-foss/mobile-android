@@ -116,9 +116,23 @@ class VpnRegionSelectionViewModel(
         items?.let {
             for (server in it) {
                 if (isVpnServerFavorite(server.name)) {
-                    favorites.add(ServerItem(type = ItemType.Content(true, server = server)))
+                    favorites.add(
+                        ServerItem(
+                            type = ItemType.Content(
+                                isFavorite = true,
+                                server = server,
+                            ),
+                        ),
+                    )
                 } else {
-                    all.add(ServerItem(ItemType.Content(false, server = server)))
+                    all.add(
+                        ServerItem(
+                            ItemType.Content(
+                                isFavorite = false,
+                                server = server,
+                            ),
+                        ),
+                    )
                 }
             }
             all.add(0, autoRegion)
@@ -128,13 +142,20 @@ class VpnRegionSelectionViewModel(
                     favorites.add(
                         ServerItem(
                             type = ItemType.Content(
-                                true,
+                                isFavorite = true,
                                 server = item.type.server,
                             ),
                         ),
                     )
                 } else {
-                    all.add(ServerItem(ItemType.Content(false, server = item.type.server)))
+                    all.add(
+                        ServerItem(
+                            ItemType.Content(
+                                isFavorite = false,
+                                server = item.type.server,
+                            ),
+                        ),
+                    )
                 }
             }
         }
@@ -144,6 +165,8 @@ class VpnRegionSelectionViewModel(
             list.addAll(favorites)
             list.add(ServerItem(type = ItemType.HeadingAll))
         }
+
+        all.sortBy { !(it.type as ItemType.Content).server.isDedicatedIp }
         Collections.swap(
             all,
             0,
