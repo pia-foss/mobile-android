@@ -289,6 +289,16 @@ fun RegionSelectionDipText(content: String) {
 }
 
 @Composable
+fun RegionSelectionLatencyText(content: String?, modifier: Modifier) {
+    Text(
+        text = "$content",
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.body3,
+        modifier = modifier,
+    )
+}
+
+@Composable
 fun InputLabelText(content: String) {
     Text(
         text = content,
