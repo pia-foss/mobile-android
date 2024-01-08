@@ -43,6 +43,8 @@ class VpnRegionSelectionViewModel(
                 arrangeVpnServers(it)
                 isLoading.value = false
             }
+            arrangeVpnServers(it)
+            isLoading.value = false
         }
     }
 
