@@ -46,4 +46,7 @@
     <string name="snooze_15_minutes">15 mins</string>
     <string name="snooze_1_hour">1 hour</string>
     <string name="snooze_description">Disconnects the VPN and automatically reconnects when the timer elapses.</string>
+
+    <string name="minute_to_format">%s minute</string>
+    <string name="minutes_to_format">%s minutes</string>
 </resources>

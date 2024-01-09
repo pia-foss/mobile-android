@@ -66,6 +66,7 @@ class ConnectionViewModel(
     val portForwardingStatus = portForwardingUseCase.portForwardingStatus
     val port = portForwardingUseCase.port
     val isSnoozeActive = snoozeHandler.isSnoozeActive
+    val timeUntilResume = snoozeHandler.timeUntilResume
 
     init {
         viewModelScope.launch {

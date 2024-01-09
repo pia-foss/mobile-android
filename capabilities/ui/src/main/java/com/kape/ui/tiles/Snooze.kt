@@ -30,6 +30,7 @@ import com.kape.utils.SIXTY_MINUTES
 @Composable
 fun Snooze(
     active: MutableState<Boolean>,
+    timeUntilResume: String,
     onClick: (interval: Int) -> Unit,
     onResumeClick: () -> Unit,
 ) {
@@ -44,10 +45,9 @@ fun Snooze(
             if (active.value) {
                 SnoozeItem(
                     iconId = R.drawable.ic_snooze_resume,
-                    labelId = R.string.resume,
+                    label = timeUntilResume,
                     isActive = true,
                     modifier = Modifier
-                        .weight(1f)
                         .clickable {
                             onResumeClick()
                         },
@@ -55,7 +55,7 @@ fun Snooze(
             } else {
                 SnoozeItem(
                     iconId = R.drawable.ic_snooze,
-                    labelId = R.string.snooze_5_minutes,
+                    label = stringResource(id = R.string.snooze_5_minutes),
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
@@ -65,7 +65,7 @@ fun Snooze(
 
                 SnoozeItem(
                     iconId = R.drawable.ic_snooze,
-                    labelId = R.string.snooze_15_minutes,
+                    label = stringResource(id = R.string.snooze_15_minutes),
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
@@ -75,7 +75,7 @@ fun Snooze(
 
                 SnoozeItem(
                     iconId = R.drawable.ic_snooze,
-                    labelId = R.string.snooze_1_hour,
+                    label = stringResource(id = R.string.snooze_1_hour),
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
@@ -88,7 +88,7 @@ fun Snooze(
 }
 
 @Composable
-private fun SnoozeItem(iconId: Int, labelId: Int, isActive: Boolean = false, modifier: Modifier) {
+private fun SnoozeItem(iconId: Int, label: String, isActive: Boolean = false, modifier: Modifier) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
@@ -109,7 +109,7 @@ private fun SnoozeItem(iconId: Int, labelId: Int, isActive: Boolean = false, mod
         }
         Spacer(modifier = Modifier.height(4.dp))
         QuickConnectText(
-            content = stringResource(id = labelId),
+            content = label,
             modifier = Modifier.align(Alignment.CenterHorizontally),
         )
     }
