@@ -188,6 +188,17 @@ private fun DisplayComponent(
         Element.Snooze -> {
             Snooze(
                 viewModel.isSnoozeActive,
+                when (viewModel.timeUntilResume.intValue) {
+                    1 -> String.format(
+                        stringResource(id = R.string.minute_to_format),
+                        viewModel.timeUntilResume.intValue,
+                    )
+
+                    else -> String.format(
+                        stringResource(id = R.string.minutes_to_format),
+                        viewModel.timeUntilResume.intValue,
+                    )
+                },
                 onClick = {},
                 onResumeClick = {},
             )
