@@ -25,7 +25,7 @@ class VpnLauncher(
         if (vpnIntent == null) {
             // vpn permission is provided, initiate a connection
             if (settingsPrefs.isAutomationEnabled() && connectionPrefs.isDisconnectedByUser()) {
-                connectionPrefs.setDisconnectedByUser(false)
+                connectionPrefs.disconnectedByUser(false)
                 return
             } else {
                 connectionPrefs.getSelectedServer()?.let {

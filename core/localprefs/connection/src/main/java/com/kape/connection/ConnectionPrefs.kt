@@ -66,7 +66,7 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
     fun clearPortBindingInfo() = setPortBindingInformation(null)
 
-    fun setDisconnectedByUser(byUser: Boolean) =
+    fun disconnectedByUser(byUser: Boolean) =
         prefs.edit().putBoolean(DISCONNECTED_BY_USER, byUser).apply()
 
     fun isDisconnectedByUser() = prefs.getBoolean(DISCONNECTED_BY_USER, false)
