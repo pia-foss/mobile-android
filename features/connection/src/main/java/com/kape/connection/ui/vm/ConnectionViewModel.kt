@@ -188,9 +188,6 @@ class ConnectionViewModel(
 
     fun onConnectionButtonClicked() {
         if (connectionUseCase.isConnected()) {
-            if (settingsPrefs.isAutomationEnabled()) {
-                prefs.disconnectedByUser(true)
-            }
             disconnect()
         } else {
             connect()
@@ -238,6 +235,9 @@ class ConnectionViewModel(
     }
 
     private fun disconnect() = viewModelScope.launch {
+        if (settingsPrefs.isAutomationEnabled()) {
+            prefs.disconnectedByUser(true)
+        }
         connectionUseCase.stopConnection().collect {
             clientStateDataSource.resetVpnIp()
             vpnIp = prefs.getClientVpnIp()
