@@ -3,6 +3,7 @@ package com.kape.vpnlauncher
 import android.content.Context
 import android.net.VpnService
 import com.kape.connection.ConnectionPrefs
+import com.kape.settings.SettingsPrefs
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -15,6 +16,7 @@ class VpnLauncher(
     private val context: Context,
     private val connectionPrefs: ConnectionPrefs,
     private val connectionUseCase: ConnectionUseCase,
+    private val settingsPrefs: SettingsPrefs,
 ) : KoinComponent {
 
     fun launchVpn() {
@@ -22,10 +24,15 @@ class VpnLauncher(
 
         if (vpnIntent == null) {
             // vpn permission is provided, initiate a connection
-            connectionPrefs.getSelectedServer()?.let {
-                if (!connectionUseCase.isConnected()) {
-                    GlobalScope.launch {
-                        connectionUseCase.startConnection(it, false).collect()
+            if (settingsPrefs.isAutomationEnabled() && connectionPrefs.isDisconnectedByUser()) {
+                connectionPrefs.disconnectedByUser(false)
+                return
+            } else {
+                connectionPrefs.getSelectedServer()?.let {
+                    if (!connectionUseCase.isConnected()) {
+                        GlobalScope.launch {
+                            connectionUseCase.startConnection(it, false).collect()
+                        }
                     }
                 }
             }

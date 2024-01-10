@@ -38,5 +38,6 @@ dependencies {
     implementKoin()
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:connection"))
+    implementation(project(":core:localprefs:settings"))
     implementation(project(":core:vpnconnect"))
 }
