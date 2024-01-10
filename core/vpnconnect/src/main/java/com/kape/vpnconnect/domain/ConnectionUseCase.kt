@@ -120,8 +120,8 @@ class ConnectionUseCase(
             ),
             notificationId = 123,
             notification = notificationBuilder.build(),
-            allowedApplicationPackages = settingsPrefs.getVpnExcludedApps(),
-            disallowedApplicationPackages = emptyList(),
+            allowedApplicationPackages = emptyList(),
+            disallowedApplicationPackages = settingsPrefs.getVpnExcludedApps(),
             allowLocalNetworkAccess = settingsPrefs.isAllowLocalTrafficEnabled(),
             serverList = ServerList(
                 servers = listOf(

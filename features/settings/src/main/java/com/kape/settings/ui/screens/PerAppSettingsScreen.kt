@@ -77,16 +77,16 @@ fun PerAppSettingsScreen() = Screen {
                 items(items.size) { index ->
                     val item = items[index]
                     val isExcluded =
-                        viewModel.vpnExcludedApps.value.contains(item.loadLabel(packageManager))
+                        viewModel.vpnExcludedApps.value.contains(item.packageName)
                     AppRow(
                         icon = item.loadIcon(packageManager),
                         name = item.loadLabel(packageManager).toString(),
                         isExcluded = isExcluded,
                         onClick = { name, isChecked ->
                             if (isChecked) {
-                                viewModel.addToVpnExcludedApps(name)
+                                viewModel.addToVpnExcludedApps(item.packageName)
                             } else {
-                                viewModel.removeFromVpnExcludedApps(name)
+                                viewModel.removeFromVpnExcludedApps(item.packageName)
                             }
                         },
                     )
