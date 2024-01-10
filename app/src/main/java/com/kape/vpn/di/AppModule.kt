@@ -74,7 +74,7 @@ val appModule = module {
     single { Router() }
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
-    single { VpnLauncher(get(), get(), get()) }
+    single { VpnLauncher(get(), get(), get(), get()) }
     single { provideAlarmManager(get()) }
     single(named("port-forwarding-intent")) { providePortForwardingReceiverIntent(get()) }
     single(named("port-forwarding-pending-intent")) { providePortForwardingPendingIntent(get(), get(named("port-forwarding-intent"))) }

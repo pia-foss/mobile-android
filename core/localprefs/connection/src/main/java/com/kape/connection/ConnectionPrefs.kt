@@ -14,6 +14,7 @@ private const val SELECTED_SERVER = "selected-server"
 private const val LAST_SNOOZE_END_TIME = "last-snooze-end-time"
 private const val GATEWAY = "gateway"
 private const val PORT_BINDING_INFO = "port-binding-info"
+private const val DISCONNECTED_BY_USER = "disconnected-by-user"
 const val NO_IP = "---"
 
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
@@ -64,4 +65,9 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
     }
 
     fun clearPortBindingInfo() = setPortBindingInformation(null)
+
+    fun setDisconnectedByUser(byUser: Boolean) =
+        prefs.edit().putBoolean(DISCONNECTED_BY_USER, byUser).apply()
+
+    fun isDisconnectedByUser() = prefs.getBoolean(DISCONNECTED_BY_USER, false)
 }
