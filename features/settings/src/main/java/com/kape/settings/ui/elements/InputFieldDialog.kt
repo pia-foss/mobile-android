@@ -3,6 +3,7 @@ package com.kape.settings.ui.elements
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
@@ -14,34 +15,55 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kape.settings.R
+import com.kape.settings.data.CustomDns
 import com.kape.ui.text.Input
 import com.kape.ui.utils.LocalColors
 
 @Composable
 fun InputFieldDialog(
     @StringRes titleId: Int,
-    onClear: () -> Unit,
-    onConfirm: () -> Unit,
+    current: CustomDns,
+    onConfirm: (custom: CustomDns) -> Unit,
+    onDismiss: () -> Unit,
     footnote: String? = null,
     isDnsNumeric: (ipAddress: String) -> Boolean,
 ) {
-    val primaryDns = remember { mutableStateOf("") }
-    val secondaryDns = remember { mutableStateOf("") }
+    val primaryDns = remember { mutableStateOf(current.primaryDns) }
+    val secondaryDns = remember { mutableStateOf(current.secondaryDns) }
 
     AlertDialog(
-        onDismissRequest = onConfirm,
+        onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(text = stringResource(id = R.string.save))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onClear) {
-                Text(text = stringResource(id = R.string.clear))
+            Row {
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.testTag(":OptionsDialog:Cancel"),
+                ) {
+                    Text(text = stringResource(id = R.string.cancel))
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                TextButton(
+                    onClick = {
+                        primaryDns.value = ""
+                        secondaryDns.value = ""
+                    },
+                    modifier = Modifier.testTag(":OptionsDialog:Clear"),
+                ) {
+                    Text(text = stringResource(id = R.string.clear))
+                }
+                TextButton(
+                    onClick = { onConfirm(CustomDns(primaryDns.value, secondaryDns.value)) },
+                    modifier = Modifier.testTag(":OptionsDialog:Ok"),
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.save),
+                    )
+                }
             }
         },
         title = {

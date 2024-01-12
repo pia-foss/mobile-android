@@ -15,8 +15,8 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.DnsOptions
+import com.kape.settings.ui.elements.CustomDnsDialog
 import com.kape.settings.ui.elements.DnsSelectionDialog
-import com.kape.settings.ui.elements.InputFieldDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.elements.TextDialog
@@ -30,15 +30,19 @@ fun NetworkSettingsScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.networks))
     }
-    val dnsOptions = mapOf(
+    val dnsOptions = mutableMapOf(
         DnsOptions.PIA to stringResource(id = R.string.pia),
         DnsOptions.SYSTEM to stringResource(id = R.string.network_dns_selection_system),
-        DnsOptions.CUSTOM to "${stringResource(id = R.string.network_dns_selection_custom)} ${
-        getCustomDnsInfo(
-            viewModel.getCustomDns(),
-        )
-        }",
     )
+    if (viewModel.getCustomDns().isInUse()) {
+        dnsOptions[DnsOptions.CUSTOM] =
+            "${stringResource(id = R.string.network_dns_selection_custom)} ${
+            getCustomDnsInfo(
+                viewModel.getCustomDns(),
+            )
+            }"
+    }
+
     val dnsSelection =
         remember { mutableStateOf(dnsOptions.getValue(viewModel.getSelectedDnsOption())) }
     val dnsDialogVisible = remember { mutableStateOf(false) }
@@ -103,7 +107,6 @@ fun NetworkSettingsScreen() = Screen {
                 dnsDialogVisible.value = false
             },
             onEdit = {
-                viewModel.setSelectedDnsOption(DnsOptions.CUSTOM)
                 customDnsDialogVisible.value = true
                 dnsDialogVisible.value = false
             },
@@ -112,9 +115,21 @@ fun NetworkSettingsScreen() = Screen {
 
     if (customDnsDialogVisible.value) {
         CustomDnsDialog(
-            viewModel = viewModel,
-            dnsSelection = dnsSelection,
-            customDnsDialogVisible = customDnsDialogVisible,
+            customDns = viewModel.getCustomDns(),
+            displayFootnote = viewModel.maceEnabled.value,
+            onConfirm = {
+                customDnsDialogVisible.value = false
+                viewModel.setCustomDns(
+                    customDns = it,
+                )
+                if (it.isInUse()) {
+                    viewModel.setSelectedDnsOption(DnsOptions.CUSTOM)
+                } else {
+                    viewModel.setSelectedDnsOption(DnsOptions.PIA)
+                }
+            },
+            onDismiss = { customDnsDialogVisible.value = false },
+            isDnsNumeric = { viewModel.isDnsNumeric(it) },
         )
     }
 
@@ -124,51 +139,6 @@ fun NetworkSettingsScreen() = Screen {
             dnsSelection = dnsSelection,
             allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
         )
-    }
-}
-
-@Composable
-fun CustomDnsDialog(
-    viewModel: SettingsViewModel,
-    dnsSelection: MutableState<String>,
-    customDnsDialogVisible: MutableState<Boolean>,
-) {
-    val customPrimaryDns = remember { mutableStateOf(viewModel.getCustomDns().primaryDns) }
-    val customSecondaryDns = remember { mutableStateOf(viewModel.getCustomDns().secondaryDns) }
-    val footnote =
-        if (viewModel.maceEnabled.value) stringResource(id = R.string.custom_dns_disabling_mace) else null
-    InputFieldDialog(
-        R.string.network_dns_selection_title,
-        onClear = {
-            customPrimaryDns.value = ""
-            customSecondaryDns.value = ""
-        },
-        onConfirm = {
-            val primaryDns = customPrimaryDns.value
-            val secondaryDns = customSecondaryDns.value
-            if (primaryDns.isEmpty() && secondaryDns.isEmpty()) {
-                dnsSelection.value = DnsOptions.PIA.value
-            } else if (
-                (primaryDns.isNotEmpty() && viewModel.isDnsNumeric(ipAddress = primaryDns).not()) ||
-                (
-                    secondaryDns.isNotEmpty() && viewModel.isDnsNumeric(ipAddress = secondaryDns)
-                        .not()
-                    )
-            ) {
-                return@InputFieldDialog
-            }
-
-            customDnsDialogVisible.value = false
-            viewModel.setCustomDns(
-                customDns = CustomDns(
-                    primaryDns = primaryDns,
-                    secondaryDns = secondaryDns,
-                ),
-            )
-        },
-        footnote,
-    ) {
-        viewModel.isDnsNumeric(it)
     }
 }
 
