@@ -3,6 +3,7 @@ package com.kape.settings.ui.elements
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
@@ -12,7 +13,8 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -22,25 +24,53 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.settings.R
+import com.kape.settings.utils.ButtonProperty
+import com.kape.settings.utils.ButtonType
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun OptionsDialog(
+fun <T> OptionsDialog(
     @StringRes titleId: Int,
-    options: List<String>,
+    options: Map<T, String>,
+    buttons: Map<ButtonType, ButtonProperty>,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-    onOptionSelected: ((String) -> Unit)? = null,
-    selection: MutableState<String>,
+    onConfirm: (selection: T) -> Unit,
+    onNeutral: () -> Unit = {},
+    selection: T,
 ) {
+    val selected = remember { mutableStateOf(selection) }
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(
-                onClick = onConfirm,
-                modifier = Modifier.testTag(":OptionsDialog:Ok"),
-            ) {
-                Text(text = stringResource(id = R.string.ok))
+            Row {
+                buttons[ButtonType.Neutral]?.let {
+                    it.label?.let { label ->
+                        TextButton(
+                            onClick = onNeutral,
+                            modifier = Modifier.testTag(":OptionsDialog:$label"),
+                        ) {
+                            Text(text = label)
+                        }
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+                buttons[ButtonType.Negative]?.label?.let {
+                    TextButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.testTag(":OptionsDialog:$it"),
+                    ) {
+                        Text(text = it)
+                    }
+                }
+                TextButton(
+                    onClick = { onConfirm(selected.value) },
+                    modifier = Modifier.testTag(":OptionsDialog:Ok"),
+                ) {
+                    Text(
+                        text = buttons[ButtonType.Positive]?.label
+                            ?: stringResource(id = R.string.ok),
+                    )
+                }
             }
         },
         modifier = Modifier
@@ -54,17 +84,14 @@ fun OptionsDialog(
             Column(
                 Modifier.fillMaxWidth(),
             ) {
-                options.forEach { text ->
+                options.forEach {
                     Row(
                         Modifier
                             .fillMaxWidth()
                             .selectable(
-                                selected = (text == selection.value),
+                                selected = (it.value == selected.value),
                                 onClick = {
-                                    selection.value = text
-                                    onOptionSelected?.let {
-                                        it(text)
-                                    }
+                                    selected.value = it.key
                                 },
                             )
                             .padding(vertical = 8.dp)
@@ -74,14 +101,14 @@ fun OptionsDialog(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(
-                            selected = (text == selection.value),
+                            selected = (it.key == selected.value),
                             onClick = null,
                         )
                         Text(
-                            text = text,
+                            text = it.value,
                             Modifier
                                 .padding(horizontal = 8.dp)
-                                .testTag(":OptionsDialog:$text"),
+                                .testTag(":OptionsDialog:${it.value}"),
                         )
                     }
                 }

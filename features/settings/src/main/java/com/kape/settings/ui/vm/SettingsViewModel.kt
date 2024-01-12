@@ -219,22 +219,22 @@ class SettingsViewModel(
         prefs.setOpenVpnSettings(currentSettings)
     }
 
-    fun getPorts(): List<String> {
-        val listOfPorts = mutableListOf<String>()
+    fun getPorts(): Map<Int, String> {
+        val availablePorts = mutableMapOf<Int, String>()
         when (getOpenVpnSettings().transport) {
             Transport.UDP -> {
                 regionsRepository.getUdpPorts().distinct().forEach {
-                    listOfPorts.add(it.toString())
+                    availablePorts[it] = it.toString()
                 }
             }
 
             Transport.TCP -> {
                 regionsRepository.getTcpPorts().distinct().forEach {
-                    listOfPorts.add(it.toString())
+                    availablePorts[it] = it.toString()
                 }
             }
         }
-        return listOfPorts
+        return availablePorts
     }
 
     fun addToVpnExcludedApps(app: String) {

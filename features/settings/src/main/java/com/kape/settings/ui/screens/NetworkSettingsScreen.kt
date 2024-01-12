@@ -21,6 +21,7 @@ import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.elements.TextDialog
 import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.utils.getDefaultButtons
 import com.kape.ui.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
@@ -85,7 +86,7 @@ fun NetworkSettingsScreen() = Screen {
     if (dnsDialogVisible.value) {
         DnsSelectionDialog(
             viewModel = viewModel,
-            dnsSelection = dnsSelection,
+            dnsSelection = viewModel.getSelectedDnsOption(),
             dnsOptions = dnsOptions,
             dnsDialogVisible = dnsDialogVisible,
             customDnsDialogVisible = customDnsDialogVisible,
@@ -113,7 +114,7 @@ fun NetworkSettingsScreen() = Screen {
 @Composable
 fun DnsSelectionDialog(
     viewModel: SettingsViewModel,
-    dnsSelection: MutableState<String>,
+    dnsSelection: DnsOptions,
     dnsOptions: Map<DnsOptions, String>,
     dnsDialogVisible: MutableState<Boolean>,
     customDnsDialogVisible: MutableState<Boolean>,
@@ -121,37 +122,39 @@ fun DnsSelectionDialog(
 ) {
     OptionsDialog(
         R.string.network_dns_selection_title,
-        options = listOf(
-            dnsOptions.getValue(DnsOptions.PIA),
-            dnsOptions.getValue(DnsOptions.SYSTEM),
-            dnsOptions.getValue(DnsOptions.CUSTOM),
+        options = mapOf(
+            DnsOptions.PIA to dnsOptions.getValue(DnsOptions.PIA),
+            DnsOptions.SYSTEM to dnsOptions.getValue(DnsOptions.SYSTEM),
+            DnsOptions.CUSTOM to dnsOptions.getValue(DnsOptions.CUSTOM),
         ),
+        buttons = getDefaultButtons(),
         onDismiss = { },
         onConfirm = {
             dnsDialogVisible.value = false
-            if (viewModel.getSelectedDnsOption() == DnsOptions.SYSTEM &&
+            viewModel.setSelectedDnsOption(it)
+            if (it == DnsOptions.SYSTEM &&
                 viewModel.isAllowLocalTrafficEnabled.value.not()
             ) {
                 allowLocalTrafficDialogVisible.value = true
             }
         },
-        onOptionSelected = {
-            when (it) {
-                dnsOptions[DnsOptions.PIA] -> {
-                    viewModel.setSelectedDnsOption(DnsOptions.PIA)
-                }
-
-                dnsOptions[DnsOptions.SYSTEM] -> {
-                    viewModel.setSelectedDnsOption(DnsOptions.SYSTEM)
-                }
-
-                dnsOptions[DnsOptions.CUSTOM] -> {
-                    viewModel.setSelectedDnsOption(DnsOptions.CUSTOM)
-                    customDnsDialogVisible.value = true
-                    dnsDialogVisible.value = false
-                }
-            }
-        },
+//        onOptionSelected = {
+//            when (it) {
+//                dnsOptions[DnsOptions.PIA] -> {
+//                    viewModel.setSelectedDnsOption(DnsOptions.PIA)
+//                }
+//
+//                dnsOptions[DnsOptions.SYSTEM] -> {
+//                    viewModel.setSelectedDnsOption(DnsOptions.SYSTEM)
+//                }
+//
+//                dnsOptions[DnsOptions.CUSTOM] -> {
+//                    viewModel.setSelectedDnsOption(DnsOptions.CUSTOM)
+//                    customDnsDialogVisible.value = true
+//                    dnsDialogVisible.value = false
+//                }
+//            }
+//        },
         selection = dnsSelection,
     )
 }
