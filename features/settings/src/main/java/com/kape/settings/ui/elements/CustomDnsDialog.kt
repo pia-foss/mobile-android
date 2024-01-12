@@ -1,6 +1,5 @@
 package com.kape.settings.ui.elements
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.kape.settings.R
@@ -24,7 +23,6 @@ fun CustomDnsDialog(
                 (it.primaryDns.isNotEmpty() && isDnsNumeric(it.primaryDns).not()) ||
                 (it.secondaryDns.isNotEmpty() && isDnsNumeric(it.secondaryDns).not())
             ) {
-                Log.e("aaa", "onConfirm: should return: $it")
                 return@InputFieldDialog
             } else {
                 onConfirm(it)

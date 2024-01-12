@@ -153,6 +153,7 @@ fun AllowLanDialog(
         descriptionId = R.string.network_dns_selection_system_lan_requirement,
         onDismiss = {
             dnsSelection.value = DnsOptions.PIA.value
+            viewModel.setSelectedDnsOption(DnsOptions.PIA)
             allowLocalTrafficDialogVisible.value = false
         },
         onConfirm = {
