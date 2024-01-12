@@ -6,6 +6,7 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="clear">Clear</string>
+    <string name="edit">Edit</string>
     <!--    General     -->
     <string name="general">General</string>
     <string name="protocols">Protocols</string>

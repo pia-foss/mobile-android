@@ -23,6 +23,7 @@ import com.kape.settings.ui.elements.OptionsDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.utils.getDefaultButtons
 import com.kape.ui.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
@@ -34,7 +35,7 @@ fun ProtocolSettingsScreen() = Screen {
         appBarText(stringResource(id = R.string.protocols))
     }
     val protocolDialogVisible = remember { mutableStateOf(false) }
-    val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol().name) }
+    val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
 
     BackHandler {
         viewModel.navigateUp()
@@ -73,21 +74,19 @@ fun ProtocolSettingsScreen() = Screen {
 
             if (protocolDialogVisible.value) {
                 OptionsDialog(
-                    R.string.protocol_selection_title,
-                    options = listOf(
-                        VpnProtocols.OpenVPN.name,
-                        VpnProtocols.WireGuard.name,
+                    titleId = R.string.protocol_selection_title,
+                    options = mapOf(
+                        VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
+                        VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
                     ),
-                    onDismiss = {
-                        protocolDialogVisible.value = false
-                    },
+                    buttons = getDefaultButtons(),
+                    onDismiss = { protocolDialogVisible.value = false },
                     onConfirm = {
-                        VpnProtocols.fromName(protocolSelection.value)?.let {
-                            viewModel.selectProtocol(it)
-                        }
+                        viewModel.selectProtocol(it)
+                        protocolSelection.value = it
                         protocolDialogVisible.value = false
                     },
-                    selection = protocolSelection,
+                    selection = protocolSelection.value,
                 )
             }
         }
@@ -100,11 +99,7 @@ fun OpenVpnProtocolSettingsScreen(
     protocolDialogVisible: MutableState<Boolean>,
 ) {
     val transportDialogVisible = remember { mutableStateOf(false) }
-    val transportSelection =
-        remember { mutableStateOf(viewModel.getOpenVpnSettings().transport.value) }
     val encryptionDialogVisible = remember { mutableStateOf(false) }
-    val encryptionSelection =
-        remember { mutableStateOf(viewModel.getOpenVpnSettings().dataEncryption.value) }
     val portDialogVisible = remember { mutableStateOf(false) }
     val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
     ProtocolSelectionLine(
@@ -141,7 +136,7 @@ fun OpenVpnProtocolSettingsScreen(
         TransportSelectionDialog(
             viewModel = viewModel,
             transportDialogVisible = transportDialogVisible,
-            transportSelection = transportSelection,
+            transportSelection = viewModel.getOpenVpnSettings().transport,
             portSelection = portSelection,
         )
     }
@@ -150,7 +145,7 @@ fun OpenVpnProtocolSettingsScreen(
         EncryptionSelectionDialog(
             viewModel = viewModel,
             encryptionDialogVisible = encryptionDialogVisible,
-            encryptionSelection = encryptionSelection,
+            encryptionSelection = viewModel.getOpenVpnSettings().dataEncryption,
         )
     }
 
@@ -158,7 +153,7 @@ fun OpenVpnProtocolSettingsScreen(
         PortSelectionDialog(
             viewModel = viewModel,
             portDialogVisible = portDialogVisible,
-            portSelection = portSelection,
+            portSelection = viewModel.getOpenVpnSettings().port,
         )
     }
 }
@@ -212,23 +207,19 @@ fun HandshakeLine(handshake: String) {
 fun TransportSelectionDialog(
     viewModel: SettingsViewModel,
     transportDialogVisible: MutableState<Boolean>,
-    transportSelection: MutableState<String>,
+    transportSelection: Transport,
     portSelection: MutableState<String>,
 ) {
     OptionsDialog(
         R.string.protocol_transport_title,
-        options = listOf(
-            Transport.UDP.value,
-            Transport.TCP.value,
-        ),
+        options = mapOf(Transport.UDP to Transport.UDP.value, Transport.TCP to Transport.TCP.value),
+        buttons = getDefaultButtons(),
         onDismiss = {
             transportDialogVisible.value = false
         },
         onConfirm = {
-            Transport.fromName(transportSelection.value)?.let {
-                viewModel.setTransport(it)
-                portSelection.value = viewModel.getOpenVpnSettings().port
-            }
+            viewModel.setTransport(it)
+            portSelection.value = viewModel.getOpenVpnSettings().port
             transportDialogVisible.value = false
         },
         selection = transportSelection,
@@ -239,22 +230,20 @@ fun TransportSelectionDialog(
 fun EncryptionSelectionDialog(
     viewModel: SettingsViewModel,
     encryptionDialogVisible: MutableState<Boolean>,
-    encryptionSelection: MutableState<String>,
+    encryptionSelection: DataEncryption,
 ) {
     OptionsDialog(
         R.string.protocol_data_encryption_title,
-        options = listOf(
-            DataEncryption.AES_128_GCM.value,
-            DataEncryption.AES_256_GCM.value,
+        options = mapOf(
+            DataEncryption.AES_128_GCM to DataEncryption.AES_128_GCM.value,
+            DataEncryption.AES_256_GCM to DataEncryption.AES_256_GCM.value,
         ),
+        buttons = getDefaultButtons(),
         onDismiss = {
             encryptionDialogVisible.value = false
         },
         onConfirm = {
-            DataEncryption.fromName(encryptionSelection.value)?.let {
-                viewModel.setEncryption(it)
-                encryptionSelection.value = viewModel.getOpenVpnSettings().dataEncryption.value
-            }
+            viewModel.setEncryption(it)
             encryptionDialogVisible.value = false
         },
         selection = encryptionSelection,
@@ -265,18 +254,19 @@ fun EncryptionSelectionDialog(
 fun PortSelectionDialog(
     viewModel: SettingsViewModel,
     portDialogVisible: MutableState<Boolean>,
-    portSelection: MutableState<String>,
+    portSelection: String,
 ) {
     OptionsDialog(
         R.string.protocol_port_title,
         options = viewModel.getPorts(),
+        buttons = getDefaultButtons(),
         onDismiss = {
             portDialogVisible.value = false
         },
         onConfirm = {
-            viewModel.setPort(portSelection.value)
+            viewModel.setPort(it.toString())
             portDialogVisible.value = false
         },
-        selection = portSelection,
+        selection = portSelection.toInt(),
     )
 }
