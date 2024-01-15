@@ -141,8 +141,8 @@ fun ColorScheme.getLatencyColor(latency: String?): Color {
         return Color.White
     }
     return when (latency.toLong()) {
-        in 0..200 -> latencyGreen()
-        in 200..500 -> latencyYellow()
+        in 0..99 -> latencyGreen()
+        in 100..249 -> latencyYellow()
         else -> latencyRed()
     }
 }
