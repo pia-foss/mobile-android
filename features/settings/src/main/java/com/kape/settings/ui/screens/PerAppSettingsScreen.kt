@@ -5,26 +5,25 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -32,7 +31,6 @@ import com.kape.settings.R
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Search
-import com.kape.ui.elements.Separator
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -103,33 +101,50 @@ private fun AppRow(
     isExcluded: Boolean,
     onClick: (name: String, isExcluded: Boolean) -> Unit,
 ) {
-    Column {
-        Row(
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 56.dp)
+            .clickable {
+                onClick(name, !isExcluded)
+            },
+    ) {
+        val (image, text, button) = createRefs()
+
+        Icon(
+            painter = rememberDrawablePainter(drawable = icon),
+            contentDescription = null,
+            tint = Color.Unspecified,
             modifier = Modifier
-                .fillMaxWidth()
-                .defaultMinSize(minHeight = 56.dp)
-                .padding(horizontal = 16.dp)
-                .clickable {
-                    onClick(name, !isExcluded)
+                .constrainAs(image) {
+                    start.linkTo(parent.start, margin = 16.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
+                .size(48.dp),
+        )
+
+        Text(
+            text = name,
+            textAlign = TextAlign.Start,
+            modifier = Modifier
+                .constrainAs(text) {
+                    start.linkTo(image.end, margin = 16.dp)
+                    end.linkTo(button.start, margin = 16.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    width = Dimension.fillToConstraints
                 },
-        ) {
-            Icon(
-                painter = rememberDrawablePainter(drawable = icon),
-                contentDescription = null,
-                tint = Color.Unspecified,
-                modifier = Modifier
-                    .size(36.dp)
-                    .align(CenterVertically),
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = name,
-                modifier = Modifier.align(CenterVertically).weight(2f),
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            LockCheckBox(checked = isExcluded, Modifier.align(CenterVertically))
-        }
-        Separator()
+        )
+
+        LockCheckBox(
+            checked = isExcluded,
+            modifier = Modifier.constrainAs(button) {
+                end.linkTo(parent.end, margin = 16.dp)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            },
+        )
     }
 }
 
