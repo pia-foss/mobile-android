@@ -97,4 +97,8 @@
     <string name="custom_dns_mace_warning">In order to enable MACE, the default DNS must be used. Would you like to reset your DNS to default?</string>
     <string name="custom_dns_disabling_mace">MACE will be disabled while using a custom DNS.</string>
     <string name="custom_dns">Custom DNS</string>
+
+    <string name="reconnect">Reconnect</string>
+    <string name="later">Later</string>
+    <string name="reconnect_apply_changes">Reconnect to the VPN to apply these changes.</string>
 </resources>

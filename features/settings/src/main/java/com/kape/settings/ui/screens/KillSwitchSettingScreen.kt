@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
+import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
@@ -86,7 +87,22 @@ fun KillSwitchSettingScreen() = Screen {
                     .padding(16.dp),
             ) {
                 context.startActivity(Intent(Settings.ACTION_VPN_SETTINGS))
+
+                // There is no way for us to know if the settings have changed
+                // We always show the dialog
+                viewModel.reconnectDialogVisible.value = true
             }
+        }
+        if (viewModel.reconnectDialogVisible.value) {
+            ReconnectDialog(
+                onReconnect = {
+                    viewModel.reconnect()
+                    viewModel.reconnectDialogVisible.value = false
+                },
+                onLater = {
+                    viewModel.reconnectDialogVisible.value = false
+                },
+            )
         }
     }
 }

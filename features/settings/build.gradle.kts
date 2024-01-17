@@ -56,6 +56,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:regions"))
     implementation(project(":core:vpnconnect"))
+    implementation(project(":core:localprefs:connection"))
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))
     implementation(project(":capabilities:ui"))

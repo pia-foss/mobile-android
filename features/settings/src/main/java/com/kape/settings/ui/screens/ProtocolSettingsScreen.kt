@@ -20,6 +20,7 @@ import com.kape.settings.data.DataEncryption
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.ui.elements.OptionsDialog
+import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
@@ -82,11 +83,27 @@ fun ProtocolSettingsScreen() = Screen {
                     buttons = getDefaultButtons(),
                     onDismiss = { protocolDialogVisible.value = false },
                     onConfirm = {
+                        val hasProtocolChanged = protocolSelection.value != it
                         viewModel.selectProtocol(it)
                         protocolSelection.value = it
                         protocolDialogVisible.value = false
+
+                        if (hasProtocolChanged) {
+                            viewModel.showReconnectDialogIfVpnNotConnected()
+                        }
                     },
                     selection = protocolSelection.value,
+                )
+            }
+            if (viewModel.reconnectDialogVisible.value) {
+                ReconnectDialog(
+                    onReconnect = {
+                        viewModel.reconnect()
+                        viewModel.reconnectDialogVisible.value = false
+                    },
+                    onLater = {
+                        viewModel.reconnectDialogVisible.value = false
+                    },
                 )
             }
         }

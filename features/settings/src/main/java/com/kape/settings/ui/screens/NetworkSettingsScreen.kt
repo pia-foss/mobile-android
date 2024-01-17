@@ -17,6 +17,7 @@ import com.kape.settings.data.CustomDns
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.CustomDnsDialog
 import com.kape.settings.ui.elements.DnsSelectionDialog
+import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.elements.TextDialog
@@ -77,6 +78,7 @@ fun NetworkSettingsScreen() = Screen {
                 enabled = viewModel.isPortForwardingEnabled(),
                 toggle = {
                     viewModel.toggleEnablePortForwarding(it)
+                    viewModel.reconnectDialogVisible.value = true
                 },
             )
             SettingsToggle(
@@ -85,6 +87,7 @@ fun NetworkSettingsScreen() = Screen {
                 stateEnabled = viewModel.isAllowLocalTrafficEnabled,
                 toggle = { checked ->
                     viewModel.toggleAllowLocalNetwork(checked)
+                    viewModel.reconnectDialogVisible.value = true
                 },
             )
         }
@@ -95,12 +98,16 @@ fun NetworkSettingsScreen() = Screen {
             options = dnsOptions,
             selection = viewModel.getSelectedDnsOption(),
             onConfirm = {
+                val hasDnsOptionChanged = viewModel.getSelectedDnsOption() != it
                 dnsDialogVisible.value = false
                 viewModel.setSelectedDnsOption(it)
                 if (it == DnsOptions.SYSTEM &&
                     viewModel.isAllowLocalTrafficEnabled.value.not()
                 ) {
                     allowLocalTrafficDialogVisible.value = true
+                }
+                if (hasDnsOptionChanged) {
+                    viewModel.showReconnectDialogIfVpnNotConnected()
                 }
             },
             onDismiss = {
@@ -119,17 +126,34 @@ fun NetworkSettingsScreen() = Screen {
             displayFootnote = viewModel.maceEnabled.value,
             onConfirm = {
                 customDnsDialogVisible.value = false
+                val hasCustomDnsChanged = viewModel.getCustomDns() != it
                 viewModel.setCustomDns(
                     customDns = it,
                 )
                 if (it.isInUse()) {
                     viewModel.setSelectedDnsOption(DnsOptions.CUSTOM)
+                    if (hasCustomDnsChanged) {
+                        viewModel.showReconnectDialogIfVpnNotConnected()
+                    }
                 } else {
                     viewModel.setSelectedDnsOption(DnsOptions.PIA)
+                    viewModel.showReconnectDialogIfVpnNotConnected()
                 }
             },
             onDismiss = { customDnsDialogVisible.value = false },
             isDnsNumeric = { viewModel.isDnsNumeric(it) },
+        )
+    }
+
+    if (viewModel.reconnectDialogVisible.value) {
+        ReconnectDialog(
+            onReconnect = {
+                viewModel.reconnect()
+                viewModel.reconnectDialogVisible.value = false
+            },
+            onLater = {
+                viewModel.reconnectDialogVisible.value = false
+            },
         )
     }
 
@@ -155,6 +179,7 @@ fun AllowLanDialog(
             dnsSelection.value = DnsOptions.PIA.value
             viewModel.setSelectedDnsOption(DnsOptions.PIA)
             allowLocalTrafficDialogVisible.value = false
+            viewModel.reconnectDialogVisible.value = false
         },
         onConfirm = {
             viewModel.toggleAllowLocalNetwork(true)

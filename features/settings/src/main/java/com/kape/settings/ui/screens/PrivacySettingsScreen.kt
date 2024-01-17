@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
+import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
@@ -63,8 +64,20 @@ fun PrivacySettingsScreen() = Screen {
                     } else {
                         viewModel.toggleMace(it)
                     }
+                    viewModel.reconnectDialogVisible.value = true
                 },
             )
+            if (viewModel.reconnectDialogVisible.value) {
+                ReconnectDialog(
+                    onReconnect = {
+                        viewModel.reconnect()
+                        viewModel.reconnectDialogVisible.value = false
+                    },
+                    onLater = {
+                        viewModel.reconnectDialogVisible.value = false
+                    },
+                )
+            }
             if (showWarning.value) {
                 WarningDialog {
                     viewModel.toggleMace(true)

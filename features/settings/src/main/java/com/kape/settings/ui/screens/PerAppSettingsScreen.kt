@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +29,7 @@ import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
+import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Search
@@ -43,6 +45,7 @@ fun PerAppSettingsScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.per_app_settings))
     }
+    val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
 
     BackHandler {
         viewModel.navigateUp()
@@ -52,7 +55,13 @@ fun PerAppSettingsScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
+                onLeftIconClick = {
+                    if (lastExcludedApps != viewModel.vpnExcludedApps.value) {
+                        viewModel.reconnectDialogVisible.value = true
+                    } else {
+                        viewModel.navigateUp()
+                    }
+                },
             )
         },
     ) {
@@ -90,6 +99,19 @@ fun PerAppSettingsScreen() = Screen {
                     )
                 }
             }
+        }
+        if (viewModel.reconnectDialogVisible.value) {
+            ReconnectDialog(
+                onReconnect = {
+                    viewModel.reconnect()
+                    viewModel.reconnectDialogVisible.value = false
+                    viewModel.navigateUp()
+                },
+                onLater = {
+                    viewModel.reconnectDialogVisible.value = false
+                    viewModel.navigateUp()
+                },
+            )
         }
     }
 }

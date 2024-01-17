@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.connection.ConnectionPrefs
 import com.kape.csi.domain.SendLogUseCase
 import com.kape.location.data.LocationPermissionManager
 import com.kape.router.Back
@@ -23,6 +24,7 @@ import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.settings.utils.SettingsStep
 import com.kape.shareevents.domain.KpiDataSource
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +34,7 @@ import org.koin.core.component.KoinComponent
 
 class SettingsViewModel(
     private val prefs: SettingsPrefs,
+    private val connectionPrefs: ConnectionPrefs,
     private val router: Router,
     private val regionsRepository: VpnRegionRepository,
     val version: String,
@@ -40,6 +43,7 @@ class SettingsViewModel(
     private val sendLogUseCase: SendLogUseCase,
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
     private val locationPermissionManager: LocationPermissionManager,
+    private val connectionUseCase: ConnectionUseCase,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow<SettingsStep>(SettingsStep.Main)
@@ -58,6 +62,7 @@ class SettingsViewModel(
     val maceEnabled = mutableStateOf(prefs.isMaceEnabled())
     private val isDnsNumeric = mutableStateOf(true)
     private var installedApps = listOf<ApplicationInfo>()
+    var reconnectDialogVisible = mutableStateOf(false)
 
     fun navigateUp() {
         when (_state.value) {
@@ -185,6 +190,7 @@ class SettingsViewModel(
 
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()
+        val hasSettingChanged = currentSettings.transport != transport
         currentSettings.transport = transport
         val ports = if (transport == Transport.UDP) {
             regionsRepository.getUdpPorts()
@@ -193,30 +199,54 @@ class SettingsViewModel(
         }
         currentSettings.port = ports[0].toString()
         prefs.setOpenVpnSettings(currentSettings)
+
+        if (hasSettingChanged) {
+            showReconnectDialogIfVpnNotConnected()
+        }
     }
 
     fun setEncryption(encryption: DataEncryption) {
         val currentSettings = getOpenVpnSettings()
+        val hasSettingChanged = currentSettings.dataEncryption != encryption
         currentSettings.dataEncryption = encryption
         prefs.setOpenVpnSettings(currentSettings)
-    }
 
-    fun setOpenVpnEnableSmallPackets(enable: Boolean) {
-        val currentSettings = getOpenVpnSettings()
-        currentSettings.useSmallPackets = enable
-        prefs.setOpenVpnSettings(currentSettings)
-    }
-
-    fun setWireGuardEnableSmallPackets(enable: Boolean) {
-        val currentSettings = getWireGuardSettings()
-        currentSettings.useSmallPackets = enable
-        prefs.setWireGuardSettings(currentSettings)
+        if (hasSettingChanged) {
+            showReconnectDialogIfVpnNotConnected()
+        }
     }
 
     fun setPort(port: String) {
         val currentSettings = getOpenVpnSettings()
+        val hasSettingChanged = currentSettings.port != port
         currentSettings.port = port
         prefs.setOpenVpnSettings(currentSettings)
+
+        if (hasSettingChanged) {
+            showReconnectDialogIfVpnNotConnected()
+        }
+    }
+
+    fun setOpenVpnEnableSmallPackets(enable: Boolean) {
+        val currentSettings = getOpenVpnSettings()
+        val hasSettingChanged = currentSettings.useSmallPackets != enable
+        currentSettings.useSmallPackets = enable
+        prefs.setOpenVpnSettings(currentSettings)
+
+        if (hasSettingChanged) {
+            showReconnectDialogIfVpnNotConnected()
+        }
+    }
+
+    fun setWireGuardEnableSmallPackets(enable: Boolean) {
+        val currentSettings = getWireGuardSettings()
+        val hasSettingChanged = currentSettings.useSmallPackets != enable
+        currentSettings.useSmallPackets = enable
+        prefs.setWireGuardSettings(currentSettings)
+
+        if (hasSettingChanged) {
+            showReconnectDialogIfVpnNotConnected()
+        }
     }
 
     fun getPorts(): Map<Int, String> {
@@ -288,5 +318,17 @@ class SettingsViewModel(
 
     fun resetRequestId() {
         requestId.value = null
+    }
+
+    fun showReconnectDialogIfVpnNotConnected() {
+        if (connectionUseCase.isConnected()) {
+            reconnectDialogVisible.value = true
+        }
+    }
+
+    fun reconnect() {
+        connectionPrefs.getSelectedServer()?.let {
+            connectionUseCase.reconnect(it)
+        }
     }
 }

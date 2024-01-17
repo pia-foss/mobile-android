@@ -17,6 +17,7 @@ import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
@@ -154,6 +155,20 @@ class ConnectionUseCase(
         connectionSource.stopConnection().collect {
             connectionManager.setConnectedServerName("", "")
             emit(it)
+        }
+    }
+
+    fun reconnect(server: VpnServer): Flow<Boolean> = flow {
+        if (isConnected()) {
+            stopConnection().collect {
+                startConnection(server, false).collect {
+                    emit(it)
+                }
+            }
+        } else {
+            startConnection(server, false).collect {
+                emit(it)
+            }
         }
     }
 

@@ -41,6 +41,14 @@ class VpnLauncher(
         }
     }
 
+    fun relaunchVpn() = GlobalScope.launch {
+        if (isVpnConnected()) {
+            connectionUseCase.stopConnection().collect() {
+                launchVpn()
+            }
+        }
+    }
+
     fun stopVpn() = GlobalScope.launch {
         connectionUseCase.stopConnection().collect()
     }

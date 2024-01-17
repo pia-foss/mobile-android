@@ -54,6 +54,7 @@ class ConnectionViewModel(
 
     private var availableVpnServers = mutableListOf<VpnServer>()
     var selectedVpnServer = mutableStateOf(prefs.getSelectedServer())
+    private var lastSelectedVpnServerKey: String = selectedVpnServer.value?.key.toString()
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
     val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
 
@@ -147,7 +148,7 @@ class ConnectionViewModel(
         }
     }
 
-    private fun getSelectedServer() {
+    private fun getSelectedServer() = viewModelScope.launch {
         if (availableVpnServers.isNotEmpty()) {
             selectedVpnServer.value =
                 availableVpnServers.firstOrNull { it.key == getVpnRegionsUseCase.getSelectedVpnServerKey() }
@@ -156,6 +157,12 @@ class ConnectionViewModel(
                 getVpnRegionsUseCase.selectVpnServer(it.key)
                 prefs.setSelectedServer(it)
             }
+        }
+        if (lastSelectedVpnServerKey != selectedVpnServer.value?.key) {
+            selectedVpnServer.value?.let {
+                connectionUseCase.reconnect(it).collect()
+            }
+            lastSelectedVpnServerKey = selectedVpnServer.value?.key.toString()
         }
     }
 
@@ -203,7 +210,11 @@ class ConnectionViewModel(
 
     fun quickConnect(key: String) {
         selectedVpnServer.value = availableVpnServers.firstOrNull { it.key == key }
-        connect()
+        viewModelScope.launch {
+            selectedVpnServer.value?.let {
+                connectionUseCase.reconnect(it).collect {}
+            }
+        }
     }
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
