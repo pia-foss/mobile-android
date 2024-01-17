@@ -166,6 +166,10 @@ object Dependencies {
         add(IMPLEMENTATION, "com.google.accompanist:accompanist-webview:0.32.0")
     }
 
+    fun DependencyHandler.implementConstraintLayout() {
+        add(IMPLEMENTATION, "androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    }
+
     private fun DependencyHandler.implementMaterial3() {
         add(IMPLEMENTATION, "androidx.compose.material3:material3")
     }
