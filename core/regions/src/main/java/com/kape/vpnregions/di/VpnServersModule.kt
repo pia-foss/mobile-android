@@ -24,7 +24,7 @@ val localVpnRegionsModule = module {
     single { RegionInputStream(get()) }
     single { RegionSerialization() }
     single { GetVpnRegionsUseCase(get(), get()) }
-    single { ReadVpnRegionsDetailsUseCase(get(), get(), get()) }
+    single { ReadVpnRegionsDetailsUseCase(get(), get()) }
     single { SetVpnRegionsUseCase(get()) }
     single { UpdateLatencyUseCase(get()) }
 }

@@ -6,6 +6,7 @@ import com.kape.utils.vpnserver.VpnServerInfo
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.kape.vpnregions.utils.adaptServersInfo
 import com.kape.vpnregions.utils.adaptVpnServers
+import com.kape.vpnregions.utils.getServerForDip
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -23,20 +24,28 @@ class VpnRegionRepository(
     }
 
     fun fetchVpnRegions(locale: String): Flow<List<VpnServer>> = flow {
+        var serverList = mutableListOf<VpnServer>()
         if (serverMap.isEmpty() or (System.currentTimeMillis() - lastUpdate >= UPDATE_INTERVAL_MS)) {
             source.fetchVpnRegions(locale).collect {
                 lastUpdate = System.currentTimeMillis()
                 if (it == null) {
-                    emit(emptyList())
+                    serverList.clear()
                 } else {
-                    serverMap = adaptVpnServers(it, dipPrefs)
+                    serverMap = adaptVpnServers(it)
                     serverInfo = adaptServersInfo(it)
-                    emit(serverMap.values.toList())
+                    serverList.addAll(serverMap.values.toList())
                 }
             }
         } else {
-            emit(serverMap.values.toList())
+            serverList.addAll(serverMap.values.toList())
         }
+
+        for (dip in dipPrefs.getDedicatedIps()) {
+            serverList.firstOrNull { it.iso.lowercase() == dip.id }?.let {
+                serverList.add(getServerForDip(it, dip))
+            }
+        }
+        emit(serverList)
     }
 
     fun fetchLatencies(): Flow<List<VpnServer>> = flow {
