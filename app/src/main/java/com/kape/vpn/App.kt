@@ -15,6 +15,7 @@ import com.kape.inappbrowser.di.inAppBrowserModule
 import com.kape.login.di.loginModule
 import com.kape.networkmanagement.di.networkManagementModule
 import com.kape.notifications.di.notificationModule
+import com.kape.obfuscator.di.obfuscatorModule
 import com.kape.payments.di.paymentsModule
 import com.kape.permissions.di.permissionsModule
 import com.kape.portforwarding.di.portForwardingModule
@@ -96,6 +97,7 @@ class App : Application() {
                 add(customizationModule(appModule))
                 add(inAppBrowserModule(appModule))
                 add(snoozeModule(appModule))
+                add(obfuscatorModule(appModule))
             },
         )
     }

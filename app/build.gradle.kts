@@ -10,6 +10,7 @@ import Dependencies.implementGlance
 import Dependencies.implementKoin
 import Dependencies.implementKpi
 import Dependencies.implementMultiplatformSettings
+import Dependencies.implementObfuscator
 import Dependencies.implementRegions
 import Dependencies.implementViewModel
 import Dependencies.implementVpnManager
@@ -130,9 +131,11 @@ dependencies {
     implementation(project(":core:vpnlauncher"))
     implementation(project(":core:portforwarding"))
     implementation(project(":core:regions"))
+    implementation(project(":core:obfuscator"))
     implementKpi()
     implementRegions()
     implementCsi()
+    implementObfuscator()
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))

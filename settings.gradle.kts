@@ -57,6 +57,7 @@ include(":core:httpclient")
 include(":core:localprefs:dip")
 include(":core:localprefs:csi")
 include(":core:regions")
+include(":core:obfuscator")
 
 include(":features")
 include(":features:splash")

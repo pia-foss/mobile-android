@@ -140,6 +140,10 @@ object Dependencies {
         add(IMPLEMENTATION, "com.kape.android:regions-android:1.6.2")
     }
 
+    fun DependencyHandler.implementObfuscator() {
+        add(IMPLEMENTATION, "com.kape.android:obfuscator:0.0.1")
+    }
+
     fun DependencyHandler.implementVpnManager() {
         add(IMPLEMENTATION, "com.kape.android:vpnmanager:0.1.1")
     }

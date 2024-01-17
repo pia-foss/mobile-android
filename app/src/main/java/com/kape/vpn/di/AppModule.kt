@@ -13,6 +13,8 @@ import com.kape.connection.ConnectionPrefs
 import com.kape.csi.CsiPrefs
 import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.notifications.data.NotificationChannelManager
+import com.kape.obfuscator.presenter.ObfuscatorAPI
+import com.kape.obfuscator.presenter.ObfuscatorBuilder
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.vpn.BuildConfig
@@ -82,6 +84,7 @@ val appModule = module {
     single { CsiPrefs(get()) }
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
     single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
+    single { provideObfuscatorApi(get()) }
     single { NetworkListener(get(), get(), get(), get()) }
     single(named("rules-updated-intent")) { provideRulesUpdatedIntent(get()) }
     single(named("licences")) { provideLicences(get()) }
@@ -155,6 +158,15 @@ private fun provideCsiApi(
             csiDataProvider.regionInformationProvider,
             csiDataProvider.userSettingsProvider,
         )
+        .build()
+}
+
+private fun provideObfuscatorApi(
+    context: Context,
+): ObfuscatorAPI {
+    return ObfuscatorBuilder()
+        .setContext(context)
+        .setClientCoroutineContext(Dispatchers.Main)
         .build()
 }
 
