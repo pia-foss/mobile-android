@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":core:payments"))
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
+    implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))
 
     // prefs

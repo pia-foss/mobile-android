@@ -14,6 +14,7 @@ import com.kape.shareevents.KpiPrefs
 import com.kape.signup.ConsentPrefs
 import com.kape.utils.ApiError
 import com.kape.utils.ApiResult
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.VpnRegionPrefs
 import io.mockk.coEvery
 import io.mockk.every
@@ -29,6 +30,7 @@ import java.util.stream.Stream
 
 internal class LogoutUseCaseTest : BaseTest() {
     private val source = mockk<AuthenticationDataSource>()
+    private val connectionUseCase = mockk<ConnectionUseCase>()
     private val connectionPrefs = mockk<ConnectionPrefs>()
     private val csiPrefs = mockk<CsiPrefs>()
     private val customizationPrefs = mockk<CustomizationPrefs>()
@@ -48,6 +50,7 @@ internal class LogoutUseCaseTest : BaseTest() {
         useCase = LogoutUseCase(
             source,
             connectionPrefs,
+            connectionUseCase,
             csiPrefs,
             customizationPrefs,
             dipPrefs,
@@ -67,6 +70,10 @@ internal class LogoutUseCaseTest : BaseTest() {
         coEvery { source.logout() } returns flow {
             emit(result)
         }
+        coEvery { connectionUseCase.stopConnection() } returns flow {
+            emit(true)
+        }
+        every { connectionUseCase.isConnected() } returns true
         every { connectionPrefs.clear() } returns Unit
         every { csiPrefs.clear() } returns Unit
         every { customizationPrefs.clear() } returns Unit

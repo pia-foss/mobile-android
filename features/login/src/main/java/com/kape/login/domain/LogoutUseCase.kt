@@ -11,13 +11,16 @@ import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.shareevents.KpiPrefs
 import com.kape.signup.ConsentPrefs
 import com.kape.utils.ApiResult
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.VpnRegionPrefs
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 class LogoutUseCase(
     private val source: AuthenticationDataSource,
     private val connectionPrefs: ConnectionPrefs,
+    private val connectionUseCase: ConnectionUseCase,
     private val csiPrefs: CsiPrefs,
     private val customizationPrefs: CustomizationPrefs,
     private val dipPrefs: DipPrefs,
@@ -35,6 +38,9 @@ class LogoutUseCase(
             when (it) {
                 ApiResult.Success -> emit(true)
                 is ApiResult.Error -> emit(false)
+            }
+            if (connectionUseCase.isConnected()) {
+                connectionUseCase.stopConnection().collect()
             }
             clearPrefs()
         }
