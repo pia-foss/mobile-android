@@ -124,8 +124,6 @@ class ConnectionViewModel(
 
     fun snooze(interval: Int) = snoozeHandler.setSnooze(interval)
 
-    fun cancelSnooze() = snoozeHandler.cancelSnooze()
-
     fun isAlarmPermissionGranted() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         alarmManager.canScheduleExactAlarms()
     } else {
@@ -186,6 +184,10 @@ class ConnectionViewModel(
         router.handleFlow(EnterFlow.RegionSelection)
     }
 
+    fun onSnoozeResumed() {
+        connect()
+    }
+
     fun onConnectionButtonClicked() {
         if (connectionUseCase.isConnected()) {
             disconnect()
@@ -211,7 +213,7 @@ class ConnectionViewModel(
             selectedVpnServer.value?.let {
                 getVpnRegionsUseCase.selectVpnServer(it.key)
                 prefs.addToQuickConnect(it.key)
-                cancelSnooze()
+                snoozeHandler.cancelSnooze()
                 connectionUseCase.startConnection(
                     server = it,
                     isManualConnection = true,

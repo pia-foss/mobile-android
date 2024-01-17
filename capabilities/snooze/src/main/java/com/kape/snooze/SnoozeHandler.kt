@@ -38,7 +38,6 @@ class SnoozeHandler(
         alarmManager.cancel(cancelSnoozePendingIntent)
         connectionPrefs.setLastSnoozeEndTime(0)
         countDownTimer?.cancel()
-        vpnLauncher.launchVpn()
     }
 
     private fun setCountdownTimer(end: Long) {

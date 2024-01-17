@@ -203,7 +203,7 @@ private fun DisplayComponent(
                         }
                     },
                     onResumeClick = {
-                        viewModel.cancelSnooze()
+                        viewModel.onSnoozeResumed()
                     },
                 )
             }
