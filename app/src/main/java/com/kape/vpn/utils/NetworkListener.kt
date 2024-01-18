@@ -12,6 +12,7 @@ import com.kape.networkmanagement.R
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.domain.NetworkInfoSource
+import com.kape.settings.SettingsPrefs
 import com.kape.vpn.receiver.OnRulesChangedReceiver
 import com.kape.vpnlauncher.VpnLauncher
 
@@ -20,6 +21,7 @@ class NetworkListener(
     private val networkPrefs: NetworkManagementPrefs,
     private val vpnLauncher: VpnLauncher,
     private val networkInfoSource: NetworkInfoSource,
+    private val settingsPrefs: SettingsPrefs,
 ) {
     private val callback: NetworkCallback =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -65,16 +67,18 @@ class NetworkListener(
     }
 
     private fun handleCurrentNetwork(ssid: String, isWifi: Boolean) {
-        networkPrefs.getRuleForNetwork(ssid)?.let {
-            applyNetworkRule(it)
-        } ?: run {
-            if (isWifi) {
-                networkPrefs.getRuleForNetwork(context.getString(R.string.nmt_open_wifi))?.let {
-                    applyNetworkRule(it)
-                }
-            } else {
-                networkPrefs.getRuleForNetwork(context.getString(R.string.nmt_mobile_data))?.let {
-                    applyNetworkRule(it)
+        if (settingsPrefs.isAutomationEnabled()) {
+            networkPrefs.getRuleForNetwork(ssid)?.let {
+                applyNetworkRule(it)
+            } ?: run {
+                if (isWifi) {
+                    networkPrefs.getRuleForNetwork(context.getString(R.string.nmt_open_wifi))?.let {
+                        applyNetworkRule(it)
+                    }
+                } else {
+                    networkPrefs.getRuleForNetwork(context.getString(R.string.nmt_mobile_data))?.let {
+                        applyNetworkRule(it)
+                    }
                 }
             }
         }

@@ -85,7 +85,7 @@ val appModule = module {
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
     single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
     single { provideObfuscatorApi(get()) }
-    single { NetworkListener(get(), get(), get(), get()) }
+    single { NetworkListener(get(), get(), get(), get(), get()) }
     single(named("rules-updated-intent")) { provideRulesUpdatedIntent(get()) }
     single(named("licences")) { provideLicences(get()) }
     single { CustomizationPrefs(get()) }
