@@ -336,8 +336,10 @@ class SettingsViewModel(
     }
 
     fun reconnect() {
-        connectionPrefs.getSelectedServer()?.let {
-            connectionUseCase.reconnect(it)
+        viewModelScope.launch {
+            connectionPrefs.getSelectedServer()?.let {
+                connectionUseCase.reconnect(it).collect {}
+            }
         }
     }
 }
