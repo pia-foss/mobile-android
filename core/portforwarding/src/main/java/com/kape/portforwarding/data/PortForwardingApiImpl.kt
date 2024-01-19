@@ -36,28 +36,32 @@ class PortForwardingApiImpl(
             .buildUpon()
             .appendQueryParameter("token", vpnToken)
             .build().toString()
-        val response = client.get(urlEncodedEndpoint) {
-            header("User-Agent", userAgent)
-        }
-        if (response.status != HttpStatusCode.OK) {
-            emit(null)
-        }
-        val jsonString = response.body<String>()
-        val jsonResponse = JSONObject(jsonString)
-        if (!jsonResponse.has("status") || jsonResponse["status"] != "OK") {
-            emit(null)
-        }
-        if (jsonResponse.has("payload")) {
-            encodedPayload = jsonResponse["payload"].toString()
-            payload = decodePayload(encodedPayload)
-        }
-        if (jsonResponse.has("signature")) {
-            signature = jsonResponse["signature"].toString()
-        }
-        payload?.let {
-            val payloadAndSignatureResponse = PayloadAndSignature(it, signature, encodedPayload)
-            emit(payloadAndSignatureResponse)
-        } ?: run {
+        try {
+            val response = client.get(urlEncodedEndpoint) {
+                header("User-Agent", userAgent)
+            }
+            if (response.status != HttpStatusCode.OK) {
+                emit(null)
+            }
+            val jsonString = response.body<String>()
+            val jsonResponse = JSONObject(jsonString)
+            if (!jsonResponse.has("status") || jsonResponse["status"] != "OK") {
+                emit(null)
+            }
+            if (jsonResponse.has("payload")) {
+                encodedPayload = jsonResponse["payload"].toString()
+                payload = decodePayload(encodedPayload)
+            }
+            if (jsonResponse.has("signature")) {
+                signature = jsonResponse["signature"].toString()
+            }
+            payload?.let {
+                val payloadAndSignatureResponse = PayloadAndSignature(it, signature, encodedPayload)
+                emit(payloadAndSignatureResponse)
+            } ?: run {
+                emit(null)
+            }
+        } catch (exception: Exception) {
             emit(null)
         }
     }
@@ -74,11 +78,15 @@ class PortForwardingApiImpl(
             .appendQueryParameter("payload", payload)
             .appendQueryParameter("signature", signature)
             .build().toString()
-        val response = client.get(urlEncodedEndpoint) {
-            header(HttpHeaders.UserAgent, userAgent)
-            header(HttpHeaders.Authorization, token)
+        try {
+            val response = client.get(urlEncodedEndpoint) {
+                header(HttpHeaders.UserAgent, userAgent)
+                header(HttpHeaders.Authorization, token)
+            }
+            emit(response.status == HttpStatusCode.OK)
+        } catch (exception: Exception) {
+            emit(false)
         }
-        emit(response.status == HttpStatusCode.OK)
     }
 
     override fun setKnownEndpointCommonName(knownEndpointCommonName: List<Pair<String, String>>) {
