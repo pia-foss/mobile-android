@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
+import com.kape.settings.data.VpnProtocols
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.Screen
@@ -26,6 +27,7 @@ fun SettingsScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.settings))
     }
+    val shouldShowObfuscation = viewModel.getSelectedProtocol() == VpnProtocols.OpenVPN
 
     BackHandler {
         viewModel.navigateUp()
@@ -84,6 +86,15 @@ fun SettingsScreen() = Screen {
                     viewModel.navigateToAutomationSettings()
                 },
             )
+            if (shouldShowObfuscation) {
+                SettingsItem(
+                    iconId = R.drawable.ic_settings_obfuscation,
+                    titleId = R.string.obfuscation,
+                    onClick = {
+                        viewModel.navigateToObfuscationSettings()
+                    },
+                )
+            }
             SettingsItem(
                 iconId = R.drawable.ic_settings_help,
                 titleId = R.string.help,

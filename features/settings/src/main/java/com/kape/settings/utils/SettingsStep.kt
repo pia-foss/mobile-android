@@ -8,6 +8,7 @@ sealed class SettingsStep {
     data object Privacy : SettingsStep()
     data object Help : SettingsStep()
     data object Automation : SettingsStep()
+    data object Obfuscation : SettingsStep()
     data object KillSwitch : SettingsStep()
     data object ConnectionStats : SettingsStep()
     data object DebugLogs : SettingsStep()

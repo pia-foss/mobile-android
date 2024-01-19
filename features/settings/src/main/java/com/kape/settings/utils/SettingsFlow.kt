@@ -10,6 +10,7 @@ import com.kape.settings.ui.screens.GeneralSettingsScreen
 import com.kape.settings.ui.screens.HelpScreen
 import com.kape.settings.ui.screens.KillSwitchSettingScreen
 import com.kape.settings.ui.screens.NetworkSettingsScreen
+import com.kape.settings.ui.screens.ObfuscationSettingsScreen
 import com.kape.settings.ui.screens.PrivacySettingsScreen
 import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.SettingsScreen
@@ -24,6 +25,7 @@ fun SettingsFlow() {
 
     when (state) {
         SettingsStep.Automation, SettingsStep.ShortcutAutomation -> AutomationSettingsScreen()
+        SettingsStep.Obfuscation -> ObfuscationSettingsScreen()
         SettingsStep.ConnectionStats -> ConnectionStatsScreen()
         SettingsStep.DebugLogs -> VpnLogScreen()
         SettingsStep.General -> GeneralSettingsScreen()

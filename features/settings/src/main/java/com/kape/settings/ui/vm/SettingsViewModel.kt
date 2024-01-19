@@ -67,6 +67,7 @@ class SettingsViewModel(
     fun navigateUp() {
         when (_state.value) {
             SettingsStep.Automation -> _state.value = SettingsStep.Main
+            SettingsStep.Obfuscation -> _state.value = SettingsStep.Main
             SettingsStep.ConnectionStats -> _state.value = SettingsStep.Help
             SettingsStep.DebugLogs -> _state.value = SettingsStep.Help
             SettingsStep.General -> _state.value = SettingsStep.Main
@@ -109,6 +110,14 @@ class SettingsViewModel(
 
     fun navigateToAutomationSettings() = viewModelScope.launch {
         _state.emit(SettingsStep.Automation)
+    }
+
+    fun navigateToObfuscationSettings() = viewModelScope.launch {
+        _state.emit(SettingsStep.Obfuscation)
+    }
+
+    fun exitObfuscationSettings() = viewModelScope.launch {
+        _state.emit(SettingsStep.Main)
     }
 
     fun navigateToKillSwitch() = viewModelScope.launch {
