@@ -2,7 +2,6 @@ package com.kape.portforwarding.domain
 
 import androidx.compose.runtime.mutableStateOf
 import com.kape.connection.ConnectionPrefs
-import com.kape.connection.model.PortBindInformation
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import java.text.SimpleDateFormat
@@ -63,15 +62,13 @@ class PortForwardingUseCase(
 
         portForwardingStatus.value = PortForwardingStatus.Requesting
         api.getPayloadAndSignature(vpnToken, gateway).collect {
+            connectionPrefs.setPortBindingInformation(it)
             if (it != null) {
-                api.bindPort(it.payload.token, it.encodedPayload, it.signature, gateway)
+                api.bindPort(it.decodedPayload.token, it.payload, it.signature, gateway)
                     .collect { successful ->
                         if (successful) {
-                            val portBindInformation =
-                                PortBindInformation(it.encodedPayload, it.signature, it.payload)
-                            connectionPrefs.setPortBindingInformation(portBindInformation)
                             portForwardingStatus.value = PortForwardingStatus.Success
-                            port.value = it.payload.port.toString()
+                            port.value = it.decodedPayload.port.toString()
                         } else {
                             portForwardingStatus.value = PortForwardingStatus.Error
                         }
