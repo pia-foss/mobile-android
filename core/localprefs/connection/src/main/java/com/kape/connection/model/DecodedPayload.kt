@@ -9,6 +9,6 @@ data class DecodedPayload(
     val port: Int,
     @SerialName("token")
     val token: String,
-    @SerialName("expirationDate")
+    @SerialName("expires_at")
     val expirationDate: String,
 )
