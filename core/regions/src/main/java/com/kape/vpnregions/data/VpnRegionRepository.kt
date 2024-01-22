@@ -24,7 +24,7 @@ class VpnRegionRepository(
     }
 
     fun fetchVpnRegions(locale: String): Flow<List<VpnServer>> = flow {
-        var serverList = mutableListOf<VpnServer>()
+        val serverList = mutableListOf<VpnServer>()
         if (serverMap.isEmpty() or (System.currentTimeMillis() - lastUpdate >= UPDATE_INTERVAL_MS)) {
             source.fetchVpnRegions(locale).collect {
                 lastUpdate = System.currentTimeMillis()
@@ -35,17 +35,12 @@ class VpnRegionRepository(
                     serverInfo = adaptServersInfo(it)
                     serverList.addAll(serverMap.values.toList())
                 }
+                emit(addDipToServerList(serverList))
             }
         } else {
             serverList.addAll(serverMap.values.toList())
+            emit(addDipToServerList(serverList))
         }
-
-        for (dip in dipPrefs.getDedicatedIps()) {
-            serverList.firstOrNull { it.iso.lowercase() == dip.id }?.let {
-                serverList.add(getServerForDip(it, dip))
-            }
-        }
-        emit(serverList)
     }
 
     fun fetchLatencies(): Flow<List<VpnServer>> = flow {
@@ -64,4 +59,15 @@ class VpnRegionRepository(
     fun getUdpPorts() = serverInfo.udpPorts ?: emptyList()
 
     fun getTcpPorts() = serverInfo.tcpPorts ?: emptyList()
+
+    private fun addDipToServerList(servers: List<VpnServer>): List<VpnServer> {
+        val updatedList = mutableListOf<VpnServer>()
+        updatedList.addAll(servers)
+        for (dip in dipPrefs.getDedicatedIps()) {
+            servers.firstOrNull { it.iso.lowercase() == dip.id }?.let {
+                updatedList.add(getServerForDip(it, dip))
+            }
+        }
+        return updatedList
+    }
 }
