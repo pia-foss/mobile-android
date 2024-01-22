@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
+import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
@@ -59,11 +60,11 @@ fun PrivacySettingsScreen() = Screen {
                 subtitleId = R.string.mace_description,
                 enabled = viewModel.maceEnabled.value,
                 toggle = {
-                    if (viewModel.getCustomDns().isInUse() && !viewModel.maceEnabled.value) {
+                    // MACE requires using PIA DNS
+                    if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !viewModel.maceEnabled.value) {
                         showWarning.value = true
-                    } else {
-                        viewModel.toggleMace(it)
                     }
+                    viewModel.toggleMace(it)
                     viewModel.showReconnectDialogIfVpnNotConnected()
                 },
             )
@@ -79,10 +80,12 @@ fun PrivacySettingsScreen() = Screen {
                 )
             }
             if (showWarning.value) {
-                WarningDialog {
-                    viewModel.toggleMace(true)
-                    showWarning.value = false
-                }
+                WarningDialog(
+                    onConfirm = {
+                        viewModel.setSelectedDnsOption(DnsOptions.PIA)
+                        showWarning.value = false
+                    },
+                )
             }
         }
     }
