@@ -35,11 +35,11 @@ class VpnRegionRepository(
                     serverInfo = adaptServersInfo(it)
                     serverList.addAll(serverMap.values.toList())
                 }
-                emit(updateVpnServerList(serverList))
+                emit(addDipToServerList(serverList))
             }
         } else {
             serverList.addAll(serverMap.values.toList())
-            emit(updateVpnServerList(serverList))
+            emit(addDipToServerList(serverList))
         }
     }
 
@@ -60,7 +60,7 @@ class VpnRegionRepository(
 
     fun getTcpPorts() = serverInfo.tcpPorts ?: emptyList()
 
-    private fun updateVpnServerList(servers: List<VpnServer>): List<VpnServer> {
+    private fun addDipToServerList(servers: List<VpnServer>): List<VpnServer> {
         val updatedList = mutableListOf<VpnServer>()
         updatedList.addAll(servers)
         for (dip in dipPrefs.getDedicatedIps()) {
