@@ -330,9 +330,13 @@ class SettingsViewModel(
     }
 
     fun showReconnectDialogIfVpnNotConnected() {
-        if (connectionUseCase.isConnected()) {
+        if (isConnected()) {
             reconnectDialogVisible.value = true
         }
+    }
+
+    fun isConnected(): Boolean {
+        return connectionUseCase.isConnected()
     }
 
     fun reconnect() {

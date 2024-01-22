@@ -78,7 +78,7 @@ fun NetworkSettingsScreen() = Screen {
                 enabled = viewModel.isPortForwardingEnabled(),
                 toggle = {
                     viewModel.toggleEnablePortForwarding(it)
-                    viewModel.reconnectDialogVisible.value = true
+                    viewModel.showReconnectDialogIfVpnNotConnected()
                 },
             )
             SettingsToggle(
@@ -87,7 +87,7 @@ fun NetworkSettingsScreen() = Screen {
                 stateEnabled = viewModel.isAllowLocalTrafficEnabled,
                 toggle = { checked ->
                     viewModel.toggleAllowLocalNetwork(checked)
-                    viewModel.reconnectDialogVisible.value = true
+                    viewModel.showReconnectDialogIfVpnNotConnected()
                 },
             )
         }
