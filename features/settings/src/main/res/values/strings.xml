@@ -50,7 +50,7 @@
     <string name="network_dns_selection_custom">Custom</string>
     <string name="network_dns_selection_custom_invalid">Invalid Address</string>
     <string name="network_dns_selection_custom_primary">Primary DNS</string>
-    <string name="network_dns_selection_custom_secondary">Secondary DNS</string>
+    <string name="network_dns_selection_custom_secondary">Secondary DNS (optional)</string>
     <string name="network_port_forwarding_title">Request Port Forwarding</string>
     <string name="network_port_forwarding_description">Will allow incoming connections to your mobile device over an external port</string>
     <string name="network_allow_lan_traffic_title">Allow LAN Traffic</string>
