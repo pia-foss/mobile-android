@@ -56,8 +56,8 @@ fun PerAppSettingsScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    if (lastExcludedApps != viewModel.vpnExcludedApps.value) {
-                        viewModel.reconnectDialogVisible.value = true
+                    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
+                        viewModel.showReconnectDialogIfVpnNotConnected()
                     } else {
                         viewModel.navigateUp()
                     }
