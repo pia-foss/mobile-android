@@ -34,6 +34,7 @@ class LogoutUseCase(
 ) {
 
     fun logout(): Flow<Boolean> = flow {
+        clearPrefs()
         source.logout().collect {
             when (it) {
                 ApiResult.Success -> emit(true)
@@ -42,7 +43,6 @@ class LogoutUseCase(
             if (connectionUseCase.isConnected()) {
                 connectionUseCase.stopConnection().collect()
             }
-            clearPrefs()
         }
     }
 
