@@ -54,7 +54,7 @@ class ConnectionViewModel(
 
     private var availableVpnServers = mutableListOf<VpnServer>()
     var selectedVpnServer = mutableStateOf(prefs.getSelectedServer())
-    private var lastSelectedVpnServerKey: String = selectedVpnServer.value?.key.toString()
+    private var lastSelectedVpnServerKey: String? = null
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
     val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
 
@@ -158,11 +158,14 @@ class ConnectionViewModel(
                 prefs.setSelectedServer(it)
             }
         }
-        if (lastSelectedVpnServerKey != selectedVpnServer.value?.key) {
+
+        if (lastSelectedVpnServerKey == null) {
+            lastSelectedVpnServerKey = selectedVpnServer.value?.key.toString()
+        } else if (lastSelectedVpnServerKey != selectedVpnServer.value?.key) {
             selectedVpnServer.value?.let {
+                lastSelectedVpnServerKey = selectedVpnServer.value?.key.toString()
                 connectionUseCase.reconnect(it).collect()
             }
-            lastSelectedVpnServerKey = selectedVpnServer.value?.key.toString()
         }
     }
 
