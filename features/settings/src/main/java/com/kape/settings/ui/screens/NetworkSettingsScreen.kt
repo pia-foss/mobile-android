@@ -49,6 +49,7 @@ fun NetworkSettingsScreen() = Screen {
     val dnsDialogVisible = remember { mutableStateOf(false) }
     val customDnsDialogVisible = remember { mutableStateOf(false) }
     val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
+    val dnsWarningDialogVisible = remember { mutableStateOf(false) }
 
     BackHandler {
         viewModel.navigateUp()
@@ -99,6 +100,7 @@ fun NetworkSettingsScreen() = Screen {
             selection = viewModel.getSelectedDnsOption(),
             onConfirm = {
                 val hasDnsOptionChanged = viewModel.getSelectedDnsOption() != it
+                val previousDnsSelectionWasPIA = viewModel.getSelectedDnsOption() == DnsOptions.PIA
                 dnsDialogVisible.value = false
                 viewModel.setSelectedDnsOption(it)
                 if (it == DnsOptions.SYSTEM &&
@@ -106,8 +108,14 @@ fun NetworkSettingsScreen() = Screen {
                 ) {
                     allowLocalTrafficDialogVisible.value = true
                 }
+
                 if (hasDnsOptionChanged) {
-                    viewModel.showReconnectDialogIfVpnNotConnected()
+                    // Only show the warning dialog if the user was on a safe DNS option (PIA DNS)
+                    if (previousDnsSelectionWasPIA) {
+                        dnsWarningDialogVisible.value = true
+                    } else {
+                        viewModel.showReconnectDialogIfVpnNotConnected()
+                    }
                 }
             },
             onDismiss = {
@@ -145,6 +153,13 @@ fun NetworkSettingsScreen() = Screen {
         )
     }
 
+    if (dnsWarningDialogVisible.value) {
+        UnsafeDnsWarningDialog(
+            viewModel = viewModel,
+            dnsWarningDialogVisible = dnsWarningDialogVisible,
+        )
+    }
+
     if (viewModel.reconnectDialogVisible.value) {
         ReconnectDialog(
             onReconnect = {
@@ -164,6 +179,31 @@ fun NetworkSettingsScreen() = Screen {
             allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
         )
     }
+}
+
+@Composable
+fun UnsafeDnsWarningDialog(
+    viewModel: SettingsViewModel,
+    dnsWarningDialogVisible: MutableState<Boolean>,
+) {
+    val titleId = if (viewModel.getSelectedDnsOption() == DnsOptions.SYSTEM) {
+        R.string.network_dns_selection_system
+    } else {
+        R.string.network_dns_selection_custom
+    }
+    TextDialog(
+        titleId = titleId,
+        descriptionId = R.string.network_dns_selection_unsafe_warning,
+        onDismiss = {
+            viewModel.setSelectedDnsOption(DnsOptions.PIA)
+            dnsWarningDialogVisible.value = false
+            viewModel.reconnectDialogVisible.value = false
+        },
+        onConfirm = {
+            dnsWarningDialogVisible.value = false
+            viewModel.showReconnectDialogIfVpnNotConnected()
+        },
+    )
 }
 
 @Composable
