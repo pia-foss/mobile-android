@@ -8,8 +8,12 @@ object Dependencies {
     private const val DEBUG_IMPLEMENTATION = "debugImplementation"
     private const val GOOGLE_IMPLEMENTATION = "googleImplementation"
     private const val AMAZON_IMPLEMENTATION = "amazonImplementation"
-    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2023.10.00"
-    private const val COMPOSE_NAVIGATION = "2.6.0"
+    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2024.01.00"
+    private const val COMPOSE_NAVIGATION = "2.7.6"
+    private const val JETPACK = "2.7.0"
+    private const val ACCOMPANIST = "0.32.0"
+    private const val KOIN = "3.5.3"
+    const val KOTLIN_COMPILER_EXTENSION = "1.5.8"
 
     const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.0.4"
 
@@ -18,7 +22,7 @@ object Dependencies {
         add(IMPLEMENTATION, "androidx.compose.ui:ui")
         add(IMPLEMENTATION, "androidx.compose.ui:ui-graphics")
         add(IMPLEMENTATION, "androidx.compose.ui:ui-tooling-preview")
-        add(IMPLEMENTATION, "com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+        add(IMPLEMENTATION, "com.google.accompanist:accompanist-systemuicontroller:$ACCOMPANIST")
         add(ANDROID_TEST_IMPLEMENTATION, platform(COMPOSE_BOM))
         add(ANDROID_TEST_IMPLEMENTATION, "androidx.compose.ui:ui-test-junit4")
         add(DEBUG_IMPLEMENTATION, "androidx.compose.ui:ui-tooling")
@@ -36,30 +40,30 @@ object Dependencies {
 
     fun DependencyHandler.implementSwipeToRefresh() {
         add(IMPLEMENTATION, "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
-        add(IMPLEMENTATION, "com.google.accompanist:accompanist-swiperefresh:0.30.1")
+        add(IMPLEMENTATION, "com.google.accompanist:accompanist-swiperefresh:$ACCOMPANIST")
     }
 
     fun DependencyHandler.implementViewModel() {
-        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-viewmodel-ktx:$JETPACK")
     }
 
     fun DependencyHandler.implementAndroidBase() {
-        add(IMPLEMENTATION, "androidx.core:core-ktx:1.10.1")
-        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-process:2.6.2")
-        add(IMPLEMENTATION, "androidx.activity:activity-compose:1.7.2")
+        add(IMPLEMENTATION, "androidx.core:core-ktx:1.12.0")
+        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-runtime-ktx:$JETPACK")
+        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-viewmodel-ktx:$JETPACK")
+        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-process:$JETPACK")
+        add(IMPLEMENTATION, "androidx.activity:activity-compose:1.8.2")
     }
 
     fun DependencyHandler.implementKoin() {
-        add(IMPLEMENTATION, "io.insert-koin:koin-core:3.4.3")
-        add(IMPLEMENTATION, "io.insert-koin:koin-android:3.4.3")
-        add(IMPLEMENTATION, "io.insert-koin:koin-androidx-compose:3.4.6")
-        add(IMPLEMENTATION, "io.insert-koin:koin-androidx-navigation:3.4.3")
-        add(TEST_IMPLEMENTATION, "io.insert-koin:koin-test-junit5:3.4.1")
-        add(TEST_IMPLEMENTATION, "io.insert-koin:koin-android-test:3.4.3")
-        add(ANDROID_TEST_IMPLEMENTATION, "io.insert-koin:koin-android-test:3.4.3")
-        add(ANDROID_TEST_IMPLEMENTATION, "io.insert-koin:koin-test:3.4.3")
+        add(IMPLEMENTATION, "io.insert-koin:koin-core:$KOIN")
+        add(IMPLEMENTATION, "io.insert-koin:koin-android:$KOIN")
+        add(IMPLEMENTATION, "io.insert-koin:koin-androidx-compose:$KOIN")
+        add(IMPLEMENTATION, "io.insert-koin:koin-androidx-navigation:$KOIN")
+        add(TEST_IMPLEMENTATION, "io.insert-koin:koin-test-junit5:$KOIN")
+        add(TEST_IMPLEMENTATION, "io.insert-koin:koin-android-test:$KOIN")
+        add(ANDROID_TEST_IMPLEMENTATION, "io.insert-koin:koin-android-test:$KOIN")
+        add(ANDROID_TEST_IMPLEMENTATION, "io.insert-koin:koin-test:$KOIN")
     }
 
     fun DependencyHandler.implementCrypto() {
@@ -71,14 +75,14 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementSerialization() {
-        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-core:1.5.1")
-        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
-        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.2")
+        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
     }
 
     fun DependencyHandler.implementKtor() {
-        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:2.3.3")
-        add(IMPLEMENTATION, "io.ktor:ktor-client-core:2.3.3")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:2.3.7")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-core:2.3.7")
     }
 
     fun DependencyHandler.implementPayments() {
@@ -102,9 +106,9 @@ object Dependencies {
 
     fun DependencyHandler.implementTest() {
         add(TEST_IMPLEMENTATION, "junit:junit:4.13.2")
-        add(TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.13.5")
+        add(TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.13.9")
         add(TEST_IMPLEMENTATION, "app.cash.turbine:turbine:1.0.0")
-        add(TEST_IMPLEMENTATION, "org.junit.jupiter:junit-jupiter-params:5.10.0")
+        add(TEST_IMPLEMENTATION, "org.junit.jupiter:junit-jupiter-params:5.10.1")
     }
 
     fun DependencyHandler.implementAndroidTest() {
@@ -163,7 +167,7 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementWebView() {
-        add(IMPLEMENTATION, "com.google.accompanist:accompanist-webview:0.32.0")
+        add(IMPLEMENTATION, "com.google.accompanist:accompanist-webview:$ACCOMPANIST")
     }
 
     fun DependencyHandler.implementConstraintLayout() {
@@ -171,7 +175,7 @@ object Dependencies {
     }
 
     private fun DependencyHandler.implementMaterial3() {
-        add(IMPLEMENTATION, "androidx.compose.material3:material3")
+        add(IMPLEMENTATION, "androidx.compose.material3:material3:1.2.0-beta02")
     }
 
     fun isNonStable(version: String): Boolean {
