@@ -55,7 +55,8 @@ fun RegionSelectionScreen() = Screen {
             autoRegionName = stringResource(id = R.string.automatic)
             LaunchedEffect(Unit) {
                 locale?.let {
-                    loadVpnRegions(it, isLoading)
+                    loadInitialRegions()
+                    loadVpnRegions(it, isLoading, false)
                 }
             }
         }
@@ -87,7 +88,7 @@ fun RegionSelectionScreen() = Screen {
             state = rememberSwipeRefreshState(isLoading.value),
             onRefresh = {
                 locale?.let {
-                    viewModel.loadVpnRegions(locale, isLoading)
+                    viewModel.loadVpnRegions(locale, isLoading, true)
                 }
             },
         ) {
