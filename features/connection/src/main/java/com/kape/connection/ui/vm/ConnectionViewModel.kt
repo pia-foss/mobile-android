@@ -1,7 +1,6 @@
 package com.kape.connection.ui.vm
 
 import android.app.AlarmManager
-import android.app.PendingIntent
 import android.os.Build
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +13,6 @@ import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
 import com.kape.portforwarding.data.model.PortForwardingStatus
-import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
 import com.kape.router.Router
@@ -44,12 +42,10 @@ class ConnectionViewModel(
     private val settingsPrefs: SettingsPrefs,
     private val snoozeHandler: SnoozeHandler,
     private val usageProvider: UsageProvider,
-    private val portForwardingUseCase: PortForwardingUseCase,
     private val dipPrefs: DipPrefs,
     private val renewDipUseCase: RenewDipUseCase,
     private val customizationPrefs: CustomizationPrefs,
     private val alarmManager: AlarmManager,
-    private val portForwardingIntent: PendingIntent,
 ) : ViewModel(), KoinComponent {
 
     private var availableVpnServers = mutableListOf<VpnServer>()
@@ -64,8 +60,8 @@ class ConnectionViewModel(
     val download = usageProvider.download
     val upload = usageProvider.upload
 
-    val portForwardingStatus = portForwardingUseCase.portForwardingStatus
-    val port = portForwardingUseCase.port
+    val portForwardingStatus = connectionUseCase.portForwardingStatus
+    val port = connectionUseCase.port
     val isSnoozeActive = snoozeHandler.isSnoozeActive
     val timeUntilResume = snoozeHandler.timeUntilResume
 
@@ -232,7 +228,6 @@ class ConnectionViewModel(
                     server = it,
                     isManualConnection = true,
                 ).collect {
-                    startPortForwarding()
                     launch {
                         delay(3000)
                         clientStateDataSource.getClientStatus().collect { connected ->
@@ -259,24 +254,5 @@ class ConnectionViewModel(
             vpnIp = prefs.getClientVpnIp()
             portForwardingStatus.value = PortForwardingStatus.NoPortForwarding
         }
-        stopPortForwarding()
-    }
-
-    private fun startPortForwarding() {
-        if (isPortForwardingEnabled()) {
-            viewModelScope.launch {
-                portForwardingUseCase.bindPort()
-            }
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP,
-                0,
-                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                portForwardingIntent,
-            )
-        }
-    }
-
-    private fun stopPortForwarding() {
-        alarmManager.cancel(portForwardingIntent)
     }
 }

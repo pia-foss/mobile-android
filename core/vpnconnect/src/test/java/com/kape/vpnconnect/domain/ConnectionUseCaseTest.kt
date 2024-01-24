@@ -1,9 +1,13 @@
 package com.kape.vpnconnect.domain
 
+import android.app.AlarmManager
 import android.app.Notification
 import android.app.PendingIntent
+import androidx.compose.runtime.mutableStateOf
 import app.cash.turbine.test
 import com.kape.connection.ConnectionPrefs
+import com.kape.portforwarding.data.model.PortForwardingStatus
+import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
@@ -44,6 +48,7 @@ internal class ConnectionUseCaseTest {
         every { getOpenVpnSettings() } returns OpenVpnSettings()
         every { getWireGuardSettings() } returns WireGuardSettings()
         every { isMaceEnabled() } returns true
+        every { isPortForwardingEnabled() } returns false
     }
     private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
         every { setSelectedServer(any()) } returns Unit
@@ -56,6 +61,13 @@ internal class ConnectionUseCaseTest {
         every { setContentIntent(any()) } returns Notification.Builder(context, "")
         every { build() } returns Notification()
     }
+    private val portForwardingUseCase: PortForwardingUseCase =
+        mockk<PortForwardingUseCase>().apply {
+            every { portForwardingStatus } returns mutableStateOf(PortForwardingStatus.NoPortForwarding)
+            every { port } returns mutableStateOf("")
+        }
+    private val alarmManager: AlarmManager = mockk(relaxed = true)
+    private val portForwardingIntent: PendingIntent = mockk()
     private lateinit var useCase: ConnectionUseCase
     private val getActiveInterfaceDnsUseCase = mockk<GetActiveInterfaceDnsUseCase>()
 
@@ -78,6 +90,7 @@ internal class ConnectionUseCaseTest {
             intent,
             notificationBuilder,
             getActiveInterfaceDnsUseCase,
+            portForwardingUseCase, alarmManager, portForwardingIntent,
         )
         every { connectionManager.setConnectedServerName(any(), any()) } returns Unit
     }

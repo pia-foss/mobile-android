@@ -42,6 +42,7 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":core:portforwarding"))
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))
     implementation(project(":core:localprefs:connection"))
