@@ -11,6 +11,7 @@ import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 fun vpnConnectModule(appModule: Module) = module {
@@ -31,7 +32,13 @@ private val localVpnConnectModule = module {
             get(),
         )
     }
-    single { ConnectionUseCase(get(), get(), get(), get(), get(), get(), get(), get()) }
+    single {
+        ConnectionUseCase(
+            get(), get(), get(), get(), get(), get(), get(), get(), get(),
+            get(),
+            get(named("port-forwarding-pending-intent")),
+        )
+    }
     single { provideConnectionStatusValues(get()) }
     single { ConnectionManager(get(), get(), get()) }
     single { GetLogsUseCase(get()) }

@@ -1,8 +1,10 @@
 package com.kape.vpnconnect.domain
 
+import android.app.AlarmManager
 import android.app.Notification
 import android.app.PendingIntent
 import com.kape.connection.ConnectionPrefs
+import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.ProtocolSettings
@@ -33,11 +35,13 @@ class ConnectionUseCase(
     private val configureIntent: PendingIntent,
     private val notificationBuilder: Notification.Builder,
     private val getActiveInterfaceDnsUseCase: GetActiveInterfaceDnsUseCase,
+    private val portForwardingUseCase: PortForwardingUseCase,
+    private val alarmManager: AlarmManager,
+    private val portForwardingIntent: PendingIntent,
 ) : KoinComponent {
 
-    companion object {
-        private const val PIA_DNS = "10.0.0.242"
-    }
+    val portForwardingStatus = portForwardingUseCase.portForwardingStatus
+    val port = portForwardingUseCase.port
 
     fun startConnection(server: VpnServer, isManualConnection: Boolean): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name, server.iso)
@@ -148,6 +152,7 @@ class ConnectionUseCase(
 
         connectionSource.startConnection(clientConfiguration, connectionManager).collect {
             emit(it)
+            startPortForwarding().collect()
         }
     }
 
@@ -155,6 +160,7 @@ class ConnectionUseCase(
         connectionSource.stopConnection().collect {
             connectionManager.setConnectedServerName("", "")
             emit(it)
+            stopPortForwarding()
         }
     }
 
@@ -174,16 +180,35 @@ class ConnectionUseCase(
 
     fun isConnected(): Boolean = connectionManager.isConnected()
 
-    fun getServerGroup(): VpnServer.ServerGroup = when (settingsPrefs.getSelectedProtocol()) {
-        VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
-        VpnProtocols.OpenVPN -> {
-            if (settingsPrefs.getOpenVpnSettings().transport == Transport.UDP) {
-                VpnServer.ServerGroup.OPENVPN_UDP
-            } else {
-                VpnServer.ServerGroup.OPENVPN_TCP
-            }
+    fun getVpnToken() = connectionSource.getVpnToken()
+
+    fun startPortForwarding(): Flow<Boolean> = flow {
+        if (settingsPrefs.isPortForwardingEnabled()) {
+            portForwardingUseCase.bindPort(getVpnToken())
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                0,
+                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                portForwardingIntent,
+            )
+        } else {
+            emit(false)
         }
     }
 
-    fun getVpnToken() = connectionSource.getVpnToken()
+    private fun stopPortForwarding() {
+        alarmManager.cancel(portForwardingIntent)
+    }
+
+    private fun getServerGroup(): VpnServer.ServerGroup =
+        when (settingsPrefs.getSelectedProtocol()) {
+            VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
+            VpnProtocols.OpenVPN -> {
+                if (settingsPrefs.getOpenVpnSettings().transport == Transport.UDP) {
+                    VpnServer.ServerGroup.OPENVPN_UDP
+                } else {
+                    VpnServer.ServerGroup.OPENVPN_TCP
+                }
+            }
+        }
 }

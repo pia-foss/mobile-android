@@ -38,10 +38,11 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:vpnconnect"))
     implementation(project(":core:utils"))
     implementation(project(":core:httpclient"))
     implementation(project(":core:localprefs:connection"))
+    implementation(project(":core:localprefs:settings"))
+    implementation(project(":core:localprefs:settings:data"))
     implementCoroutines()
     implementSerialization()
     implementKtor()

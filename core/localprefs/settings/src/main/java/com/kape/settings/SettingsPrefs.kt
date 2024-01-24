@@ -5,7 +5,6 @@ import com.kape.settings.data.CustomDns
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
-import com.kape.settings.data.WidgetSettings
 import com.kape.settings.data.WireGuardSettings
 import com.kape.utils.Prefs
 import kotlinx.serialization.encodeToString
@@ -22,13 +21,9 @@ private const val CUSTOM_DNS_SETTINGS = "custom-dns-settings"
 private const val HELP_IMPROVE_PIA = "help-improve-pia"
 private const val VPN_EXCLUDED_APPS = "vpn-excluded-apps"
 private const val PORT_FORWARDING = "port-forwarding"
-private const val QUICK_KILL_SWITCH = "quick-setting-kill-switch"
-private const val QUICK_AUTOMATION = "quick-setting-automation"
-private const val QUICK_BROWSER = "quick-setting-browser"
 private const val ALLOW_LOCAL_TRAFFIC = "allow-local-traffic"
 private const val AUTOMATION = "setting-automation"
 private const val MACE = "setting-mace"
-private const val WIDGET = "setting-widget"
 
 class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
@@ -148,13 +143,4 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
     fun setMaceEnabled(enable: Boolean) = prefs.edit().putBoolean(MACE, enable).apply()
 
     fun isMaceEnabled() = prefs.getBoolean(MACE, false)
-
-    fun setWidgetSettings(settings: WidgetSettings) =
-        prefs.edit().putString(WIDGET, Json.encodeToString(settings)).apply()
-
-    fun getWidgetSettings(): WidgetSettings? = prefs.getString(WIDGET, null)?.let {
-        return Json.decodeFromString(it)
-    } ?: run {
-        return null
-    }
 }

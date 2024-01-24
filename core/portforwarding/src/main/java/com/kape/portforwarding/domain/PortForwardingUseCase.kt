@@ -3,7 +3,10 @@ package com.kape.portforwarding.domain
 import androidx.compose.runtime.mutableStateOf
 import com.kape.connection.ConnectionPrefs
 import com.kape.portforwarding.data.model.PortForwardingStatus
-import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.Transport
+import com.kape.settings.data.VpnProtocols
+import com.kape.utils.vpnserver.VpnServer
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -13,14 +16,14 @@ private const val MIN_EXPIRATION_DAYS = 7
 class PortForwardingUseCase(
     private val api: PortForwardingApi,
     private val connectionPrefs: ConnectionPrefs,
-    private val connectionUseCase: ConnectionUseCase,
+    private val settingsPrefs: SettingsPrefs,
 ) {
 
     val portForwardingStatus =
         mutableStateOf<PortForwardingStatus>(PortForwardingStatus.NoPortForwarding)
     val port = mutableStateOf<String?>(null)
 
-    suspend fun bindPort() {
+    suspend fun bindPort(vpnToken: String) {
         portForwardingStatus.value = PortForwardingStatus.Requesting
         val gateway = connectionPrefs.getGateway()
         if (gateway.isEmpty()) {
@@ -30,7 +33,7 @@ class PortForwardingUseCase(
         // Set the gateway's CN for the selected protocol before the binding request
         val server = connectionPrefs.getSelectedServer()
         server?.let {
-            it.endpoints[connectionUseCase.getServerGroup()]?.let { serverEndpointDetails ->
+            it.endpoints[getServerGroup()]?.let { serverEndpointDetails ->
                 val tunnelCommonName = mutableListOf<Pair<String, String>>()
                 for ((_, commonName) in serverEndpointDetails) {
                     tunnelCommonName.add(Pair(gateway, commonName))
@@ -55,7 +58,6 @@ class PortForwardingUseCase(
             }
         }
 
-        val vpnToken = connectionUseCase.getVpnToken()
         if (vpnToken.isEmpty()) {
             portForwardingStatus.value = PortForwardingStatus.Error
         }
@@ -78,6 +80,18 @@ class PortForwardingUseCase(
             }
         }
     }
+
+    private fun getServerGroup(): VpnServer.ServerGroup =
+        when (settingsPrefs.getSelectedProtocol()) {
+            VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
+            VpnProtocols.OpenVPN -> {
+                if (settingsPrefs.getOpenVpnSettings().transport == Transport.UDP) {
+                    VpnServer.ServerGroup.OPENVPN_UDP
+                } else {
+                    VpnServer.ServerGroup.OPENVPN_TCP
+                }
+            }
+        }
 
     private fun tokenExpirationDateDaysLeft(tokenExpirationDate: String): Long {
         val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
