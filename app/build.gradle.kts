@@ -21,6 +21,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kape.licenses")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 android {
@@ -173,6 +174,18 @@ dependencies {
     implementCoroutines()
 
     implementAndroidUiTest()
+
+    // Test coverage
+    kover(project(":capabilities:csi"))
+    kover(project(":capabilities:shareevents"))
+    kover(project(":core:payments"))
+    kover(project(":core:regions"))
+    kover(project(":core:vpnconnect"))
+    kover(project(":features:connection"))
+    kover(project(":features:dedicatedip"))
+    kover(project(":features:login"))
+    kover(project(":features:profile"))
+    kover(project(":features:signup"))
 }
 
 task("fetchRegionsInformation"){
@@ -188,4 +201,17 @@ task("fetchRegionsInformation"){
         .writeText(
             URL("https://serverlist.piaservers.net/shadow_socks").readText()
         )
+}
+
+koverReport {
+    filters {
+        excludes {
+            // exclusion rules - classes to exclude from report
+            classes("com.kape.*.di.*", "com.kape.*.ui.*")
+        }
+        includes {
+            // inclusion rules - classes only those that will be present in reports
+            classes("com.kape.*.data.*", "com.kape.*.domain.*")
+        }
+    }
 }

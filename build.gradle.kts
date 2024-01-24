@@ -10,6 +10,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.5.1" apply false
     id("org.jetbrains.kotlin.jvm") version "1.8.0" apply false
     id("com.github.ben-manes.versions") version "0.51.0"
+    id("org.jetbrains.kotlinx.kover") version "0.7.5"
 }
 
 allprojects {
