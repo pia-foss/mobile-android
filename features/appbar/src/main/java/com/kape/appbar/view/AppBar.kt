@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -23,6 +24,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
@@ -33,12 +35,18 @@ import com.kape.ui.text.AppBarTitleText
 import com.kape.ui.theme.connectedGradient
 import com.kape.ui.theme.connectingGradient
 import com.kape.ui.theme.defaultGradient
+import com.kape.ui.theme.errorGradient
 import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarDefault
+import com.kape.ui.theme.statusBarError
 import com.kape.ui.utils.LocalColors
+import com.kape.ui.utils.connectivityState
+import com.kape.utils.InternetConnectionState
 import com.kape.vpnconnect.utils.ConnectionStatus
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun AppBar(
     viewModel: AppBarViewModel,
@@ -48,12 +56,14 @@ fun AppBar(
 ) {
     val scheme = LocalColors.current
     val showDarkIcons = shouldShowDarkIcons(connectionState = viewModel.appBarConnectionState)
+    val connection by connectivityState()
+    val isConnected = connection === InternetConnectionState.Connected
 
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.setStatusBarColor(
             getStatusBarColor(
-                viewModel.appBarConnectionState,
+                if (isConnected) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
                 scheme,
             ),
             showDarkIcons,
@@ -62,8 +72,8 @@ fun AppBar(
 
     AppBarContent(
         type = type,
-        status = viewModel.appBarConnectionState,
-        viewModel.appBarText,
+        status = if (isConnected) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
+        if (isConnected) viewModel.appBarText else stringResource(id = com.kape.ui.R.string.no_internet_connection),
         onLeftIconClick,
         onRightIconClick,
     )
@@ -169,6 +179,7 @@ private fun getAppBarLeftIcon(type: AppBarType): Int {
 
 private fun getAppBarBackgroundColor(status: ConnectionStatus, scheme: ColorScheme): Brush {
     return when (status) {
+        ConnectionStatus.ERROR -> Brush.verticalGradient(scheme.errorGradient())
         ConnectionStatus.CONNECTED -> Brush.verticalGradient(scheme.connectedGradient())
         ConnectionStatus.DISCONNECTED -> Brush.verticalGradient(scheme.defaultGradient(scheme))
         ConnectionStatus.CONNECTING,
@@ -179,6 +190,7 @@ private fun getAppBarBackgroundColor(status: ConnectionStatus, scheme: ColorSche
 
 private fun getStatusBarColor(status: ConnectionStatus, scheme: ColorScheme): Color {
     return when (status) {
+        ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
         ConnectionStatus.DISCONNECTED -> scheme.statusBarDefault(scheme)
         ConnectionStatus.RECONNECTING,
@@ -194,6 +206,7 @@ private fun shouldShowDarkIcons(connectionState: ConnectionStatus): Boolean {
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTED,
         ConnectionStatus.CONNECTING,
+        ConnectionStatus.ERROR,
         -> true
     }
 }

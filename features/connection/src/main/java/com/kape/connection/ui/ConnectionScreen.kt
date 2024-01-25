@@ -16,6 +16,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -44,20 +45,26 @@ import com.kape.ui.tiles.ShadowsocksLocationPicker
 import com.kape.ui.tiles.Snooze
 import com.kape.ui.tiles.Traffic
 import com.kape.ui.tiles.VpnLocationPicker
+import com.kape.ui.utils.connectivityState
+import com.kape.utils.InternetConnectionState
 import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnconnect.utils.ConnectionStatus
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.util.Locale
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalCoroutinesApi::class)
 @Composable
 fun ConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val locale = Locale.getDefault().language
     val connectionManager: ConnectionManager = koinInject()
+    val connection by connectivityState()
+    val isConnected = connection === InternetConnectionState.Connected
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val scope: CoroutineScope = rememberCoroutineScope()
     val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
@@ -93,7 +100,7 @@ fun ConnectionScreen() = Screen {
             )
             Spacer(modifier = Modifier.height(16.dp))
             ConnectButton(
-                connectionStatus.value,
+                if (isConnected) connectionStatus.value else ConnectionStatus.ERROR,
                 Modifier
                     .align(CenterHorizontally)
                     .testTag(":ConnectionScreen:connection_button"),
@@ -183,7 +190,10 @@ private fun DisplayComponent(
 
             Element.ShadowsocksRegionSelection -> {
                 viewModel.getSelectedShadowsocksServer()?.let {
-                    ShadowsocksLocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {
+                    ShadowsocksLocationPicker(
+                        server = it,
+                        isConnected = viewModel.isConnectionActive(),
+                    ) {
                         viewModel.showShadowsocksRegionSelection()
                     }
                 }
