@@ -1,4 +1,4 @@
-package com.kape.vpnregionselection.ui
+package com.kape.obfuscationregionselection.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -36,27 +36,26 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.obfuscationregionselection.R
+import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
+import com.kape.obfuscationregionselection.util.ItemType
 import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Search
 import com.kape.ui.text.MenuText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnregionselection.R
-import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
-import com.kape.vpnregionselection.util.ItemType
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun VpnRegionSelectionScreen() = Screen {
+fun ShadowsocksRegionSelectionScreen() = Screen {
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
     val isLoading = remember { mutableStateOf(false) }
-    val viewModel: VpnRegionSelectionViewModel =
-        koinViewModel<VpnRegionSelectionViewModel>().apply {
+    val viewModel: ShadowsocksRegionSelectionViewModel =
+        koinViewModel<ShadowsocksRegionSelectionViewModel>().apply {
             autoRegionIso = stringResource(id = R.string.automatic_iso)
             autoRegionName = stringResource(id = R.string.automatic)
             LaunchedEffect(Unit) {
                 locale?.let {
-                    loadInitialRegions()
-                    loadVpnRegions(it, isLoading, false)
+                    loadShadowsocksRegions(it, isLoading)
                 }
             }
         }
@@ -88,7 +87,7 @@ fun VpnRegionSelectionScreen() = Screen {
             state = rememberSwipeRefreshState(isLoading.value),
             onRefresh = {
                 locale?.let {
-                    viewModel.loadVpnRegions(locale, isLoading, true)
+                    viewModel.loadShadowsocksRegions(locale, isLoading)
                 }
             },
         ) {
@@ -106,8 +105,8 @@ fun VpnRegionSelectionScreen() = Screen {
                                 server = item.type.server,
                                 isFavorite = item.type.isFavorite,
                                 enableFavorite = item.type.enableFavorite,
-                                onClick = { viewModel.onVpnRegionSelected(it) },
-                                onFavoriteVpnClick = { viewModel.onFavoriteVpnClicked(it) },
+                                onClick = { viewModel.onShadowsocksRegionSelected(it) },
+                                onFavoriteShadowsocksClick = { viewModel.onFavoriteShadowsocksClicked(it) },
                             )
                         }
 
@@ -137,10 +136,10 @@ fun VpnRegionSelectionScreen() = Screen {
 
 @Composable
 fun SortingOptions(
-    viewModel: VpnRegionSelectionViewModel,
+    viewModel: ShadowsocksRegionSelectionViewModel,
     showSortingOptions: MutableState<Boolean>,
 ) {
-    val sortBySelectedOption: MutableState<VpnRegionSelectionViewModel.SortByOption> = remember {
+    val sortBySelectedOption: MutableState<ShadowsocksRegionSelectionViewModel.SortByOption> = remember {
         viewModel.sortBySelectedOption
     }
     AlertDialog(

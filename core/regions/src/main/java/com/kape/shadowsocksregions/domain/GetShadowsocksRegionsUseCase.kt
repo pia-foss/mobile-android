@@ -16,9 +16,8 @@ class GetShadowsocksRegionsUseCase(
             emit(it)
         }
     }
-
-    fun getSelectedShadowsocksServerKey() =
-        shadowsocksRegionPrefs.getSelectedShadowsocksServerKey()
+    fun getSelectedShadowsocksServer(): ShadowsocksServer? =
+        shadowsocksRegionPrefs.getSelectedShadowsocksServer()
 
     fun getShadowsocksServers() =
         shadowsocksRegionPrefs.getShadowsocksServers()

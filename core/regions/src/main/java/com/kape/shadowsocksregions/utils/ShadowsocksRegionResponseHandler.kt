@@ -8,6 +8,7 @@ fun adaptShadowsocksServers(
 ): List<ShadowsocksServer> {
     return shadowsocksRegionsResponse.map {
         ShadowsocksServer(
+            iso = it.iso,
             region = it.region,
             host = it.host,
             port = it.port,

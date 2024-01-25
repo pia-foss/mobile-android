@@ -33,11 +33,12 @@ import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Visibility
 import com.kape.ui.tiles.ConnectionInfo
 import com.kape.ui.tiles.IPTile
-import com.kape.ui.tiles.LocationPicker
 import com.kape.ui.tiles.QuickConnect
 import com.kape.ui.tiles.QuickSettings
+import com.kape.ui.tiles.ShadowsocksLocationPicker
 import com.kape.ui.tiles.Snooze
 import com.kape.ui.tiles.Traffic
+import com.kape.ui.tiles.VpnLocationPicker
 import com.kape.ui.utils.LocalColors
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
@@ -179,9 +180,15 @@ private fun DisplayComponent(
             )
         }
 
-        Element.RegionSelection -> {
+        Element.VpnRegionSelection -> {
             viewModel.selectedVpnServer.value?.let {
-                LocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {}
+                VpnLocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {}
+            }
+        }
+
+        Element.ShadowsocksRegionSelection -> {
+            viewModel.getSelectedShadowsocksServer()?.let {
+                ShadowsocksLocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {}
             }
         }
 

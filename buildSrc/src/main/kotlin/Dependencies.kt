@@ -137,7 +137,7 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementRegions() {
-        add(IMPLEMENTATION, "com.kape.android:regions-android:1.6.4")
+        add(IMPLEMENTATION, "com.kape.android:regions-android:1.6.5")
     }
 
     fun DependencyHandler.implementObfuscator() {

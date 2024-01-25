@@ -18,8 +18,12 @@ import com.kape.router.Exit
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
+import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
+import com.kape.shadowsocksregions.domain.ReadShadowsocksRegionsDetailsUseCase
+import com.kape.shadowsocksregions.domain.SetShadowsocksRegionsUseCase
 import com.kape.snooze.SnoozeHandler
 import com.kape.ui.tiles.MAX_SERVERS
+import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
@@ -35,6 +39,9 @@ class ConnectionViewModel(
     private val setVpnRegionsUseCase: SetVpnRegionsUseCase,
     private val getVpnRegionsUseCase: GetVpnRegionsUseCase,
     private val readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
+    private val setShadowsocksRegionsUseCase: SetShadowsocksRegionsUseCase,
+    private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
+    private val readShadowsocksRegionsDetailsUseCase: ReadShadowsocksRegionsDetailsUseCase,
     private val connectionUseCase: ConnectionUseCase,
     private val clientStateDataSource: ClientStateDataSource,
     private val router: Router,
@@ -49,7 +56,7 @@ class ConnectionViewModel(
 ) : ViewModel(), KoinComponent {
 
     private var availableVpnServers = mutableListOf<VpnServer>()
-    var selectedVpnServer = mutableStateOf(prefs.getSelectedServer())
+    var selectedVpnServer = mutableStateOf(prefs.getSelectedVpnServer())
     private var lastSelectedVpnServerKey: String? = null
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
     val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
@@ -95,7 +102,7 @@ class ConnectionViewModel(
     fun autoConnect() {
         viewModelScope.launch {
             if (settingsPrefs.isConnectOnLaunchEnabled()) {
-                prefs.getSelectedServer()?.let {
+                prefs.getSelectedVpnServer()?.let {
                     connectionUseCase.startConnection(it, false).collect()
                 }
             }
@@ -117,6 +124,19 @@ class ConnectionViewModel(
         }
     }
 
+    fun loadShadowsocksServers(locale: String) = viewModelScope.launch {
+        // If there are no servers persisted. Let's use the initial set of servers we are
+        // shipping the application with while we perform a request for an updated version.
+        if (getShadowsocksRegionsUseCase.getShadowsocksServers().isEmpty()) {
+            val servers = readShadowsocksRegionsDetailsUseCase.readShadowsocksRegionsDetailsFromAssetsFolder()
+            shadowsocksServersLoaded(shadowsocksServers = servers)
+        }
+
+        getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale).collect {
+            shadowsocksServersLoaded(shadowsocksServers = it)
+        }
+    }
+
     fun getOrderedElements() = customizationPrefs.getOrderedElements()
 
     fun snooze(interval: Int) = snoozeHandler.setSnooze(interval)
@@ -130,10 +150,14 @@ class ConnectionViewModel(
     private fun vpnServersLoaded(vpnServers: List<VpnServer>) {
         availableVpnServers.clear()
         availableVpnServers.addAll(vpnServers)
-        filterFavoriteServers()
-        getQuickConnectServers()
-        getSelectedServer()
+        filterFavoriteVpnServers()
+        getQuickConnectVpnServers()
+        getSelectedVpnServer()
         setVpnRegionsUseCase.setVpnServers(servers = vpnServers)
+    }
+
+    private fun shadowsocksServersLoaded(shadowsocksServers: List<ShadowsocksServer>) {
+        setShadowsocksRegionsUseCase.setShadowsocksServers(shadowsocksServers = shadowsocksServers)
     }
 
     private fun renewDedicatedIps() = viewModelScope.launch {
@@ -144,14 +168,14 @@ class ConnectionViewModel(
         }
     }
 
-    private fun getSelectedServer() = viewModelScope.launch {
+    private fun getSelectedVpnServer() = viewModelScope.launch {
         if (availableVpnServers.isNotEmpty()) {
             selectedVpnServer.value =
                 availableVpnServers.firstOrNull { it.key == getVpnRegionsUseCase.getSelectedVpnServerKey() }
                     ?: availableVpnServers.sortedBy { it.latency?.toInt() }.firstOrNull()
             selectedVpnServer.value?.let {
                 getVpnRegionsUseCase.selectVpnServer(it.key)
-                prefs.setSelectedServer(it)
+                prefs.setSelectedVpnServer(it)
             }
         }
 
@@ -165,12 +189,25 @@ class ConnectionViewModel(
         }
     }
 
-    private fun filterFavoriteServers() {
+    fun getSelectedShadowsocksServer(): ShadowsocksServer? {
+        val shadowsocksServers = getShadowsocksRegionsUseCase.getShadowsocksServers()
+        if (shadowsocksServers.isEmpty()) {
+            return null
+        }
+
+        return getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()?.let { selectedShadowsocksServer ->
+            shadowsocksServers.firstOrNull { shadowsocksServer ->
+                shadowsocksServer.region == selectedShadowsocksServer.region
+            }
+        } ?: shadowsocksServers.first()
+    }
+
+    private fun filterFavoriteVpnServers() {
         favoriteVpnServers.value =
             availableVpnServers.filter { it.name in getVpnRegionsUseCase.getFavoriteVpnServers() }
     }
 
-    private fun getQuickConnectServers() {
+    private fun getQuickConnectVpnServers() {
         val servers = mutableListOf<String>()
         if (favoriteVpnServers.value.size > MAX_SERVERS) {
             for (index in MAX_SERVERS until favoriteVpnServers.value.size) {
@@ -186,8 +223,12 @@ class ConnectionViewModel(
         quickConnectVpnServers.value = availableVpnServers.filter { it.key in servers }
     }
 
-    fun showRegionSelection() {
-        router.handleFlow(EnterFlow.RegionSelection)
+    fun showVpnRegionSelection() {
+        router.handleFlow(EnterFlow.VpnRegionSelection)
+    }
+
+    fun showShadowsocksRegionSelection() {
+        router.handleFlow(EnterFlow.ShadowsocksRegionSelection)
     }
 
     fun onSnoozeResumed() {

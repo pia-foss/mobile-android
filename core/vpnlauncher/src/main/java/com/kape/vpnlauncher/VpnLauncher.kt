@@ -28,7 +28,7 @@ class VpnLauncher(
                 connectionPrefs.disconnectedByUser(false)
                 return
             } else {
-                connectionPrefs.getSelectedServer()?.let {
+                connectionPrefs.getSelectedVpnServer()?.let {
                     if (!connectionUseCase.isConnected()) {
                         GlobalScope.launch {
                             connectionUseCase.startConnection(it, false).collect()

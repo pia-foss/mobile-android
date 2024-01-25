@@ -7,8 +7,8 @@ class SetShadowsocksRegionsUseCase(
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
 ) {
 
-    fun setSelectShadowsocksServer(shadowsocksServerName: String) =
-        shadowsocksRegionPrefs.setSelectShadowsocksServer(shadowsocksServerName)
+    fun setSelectShadowsocksServer(shadowsocksServer: ShadowsocksServer) =
+        shadowsocksRegionPrefs.setSelectShadowsocksServer(shadowsocksServer)
 
     fun setShadowsocksServers(shadowsocksServers: List<ShadowsocksServer>) =
         shadowsocksRegionPrefs.setShadowsocksServers(shadowsocksServers)

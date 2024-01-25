@@ -23,6 +23,6 @@ val localShadowsocksRegionsModule = module {
     single<ShadowsocksRegionDataSource> { RegionDataSourceImpl(get()) }
     single { ShadowsocksRegionRepository(get()) }
     single { GetShadowsocksRegionsUseCase(get(), get()) }
-    single { ReadShadowsocksRegionsDetailsUseCase(get(), get()) }
+    single { ReadShadowsocksRegionsDetailsUseCase(get(), get(), get()) }
     single { SetShadowsocksRegionsUseCase(get()) }
 }

@@ -37,8 +37,11 @@
 
     <string name="quick_connect">QUICK CONNECT</string>
 
-    <string name="selected_region">SELECTED REGION</string>
-    <string name="current_region">CURRENT REGION</string>
+    <string name="selected_vpn_region">SELECTED VPN REGION</string>
+    <string name="current_vpn_region">CURRENT VPN REGION</string>
+
+    <string name="selected_obfuscation_region">SELECTED OBFUSCATION REGION</string>
+    <string name="current_obfuscation_region">CURRENT OBFUSCATION REGION</string>
 
     <string name="vpn_snooze">VPN SNOOZE</string>
     <string name="resume">RESUME</string>

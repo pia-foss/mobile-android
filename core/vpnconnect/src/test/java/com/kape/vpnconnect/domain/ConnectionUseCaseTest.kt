@@ -51,7 +51,7 @@ internal class ConnectionUseCaseTest {
         every { isPortForwardingEnabled() } returns false
     }
     private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
-        every { setSelectedServer(any()) } returns Unit
+        every { setSelectedVpnServer(any()) } returns Unit
     }
     private val intent: PendingIntent = mockk()
     private val context: android.content.Context = mockk()

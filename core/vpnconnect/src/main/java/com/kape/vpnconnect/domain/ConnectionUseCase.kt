@@ -46,7 +46,7 @@ class ConnectionUseCase(
     fun startConnection(server: VpnServer, isManualConnection: Boolean): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name, server.iso)
         connectionManager.isManualConnection = isManualConnection
-        connectionPrefs.setSelectedServer(server)
+        connectionPrefs.setSelectedVpnServer(server)
         val index = connectionSource.getVpnToken().indexOf(":")
         val details = server.endpoints[getServerGroup()]
 

@@ -38,11 +38,12 @@ import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Separator
 import com.kape.ui.tiles.ConnectionInfo
 import com.kape.ui.tiles.IPTile
-import com.kape.ui.tiles.LocationPicker
 import com.kape.ui.tiles.QuickConnect
 import com.kape.ui.tiles.QuickSettings
+import com.kape.ui.tiles.ShadowsocksLocationPicker
 import com.kape.ui.tiles.Snooze
 import com.kape.ui.tiles.Traffic
+import com.kape.ui.tiles.VpnLocationPicker
 import com.kape.vpnconnect.utils.ConnectionManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -67,6 +68,7 @@ fun ConnectionScreen() = Screen {
 
     LaunchedEffect(key1 = Unit) {
         viewModel.loadVpnServers(locale)
+        viewModel.loadShadowsocksServers(locale)
         viewModel.autoConnect()
     }
 
@@ -171,10 +173,18 @@ private fun DisplayComponent(
                 )
             }
 
-            Element.RegionSelection -> {
+            Element.VpnRegionSelection -> {
                 viewModel.selectedVpnServer.value?.let {
-                    LocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {
-                        viewModel.showRegionSelection()
+                    VpnLocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {
+                        viewModel.showVpnRegionSelection()
+                    }
+                }
+            }
+
+            Element.ShadowsocksRegionSelection -> {
+                viewModel.getSelectedShadowsocksServer()?.let {
+                    ShadowsocksLocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {
+                        viewModel.showShadowsocksRegionSelection()
                     }
                 }
             }

@@ -341,7 +341,7 @@ class SettingsViewModel(
 
     fun reconnect() {
         viewModelScope.launch {
-            connectionPrefs.getSelectedServer()?.let {
+            connectionPrefs.getSelectedVpnServer()?.let {
                 connectionUseCase.reconnect(it).collect {}
             }
         }

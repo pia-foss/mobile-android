@@ -31,7 +31,7 @@ class PortForwardingUseCase(
         }
 
         // Set the gateway's CN for the selected protocol before the binding request
-        val server = connectionPrefs.getSelectedServer()
+        val server = connectionPrefs.getSelectedVpnServer()
         server?.let {
             it.endpoints[getServerGroup()]?.let { serverEndpointDetails ->
                 val tunnelCommonName = mutableListOf<Pair<String, String>>()

@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 public data class ShadowsocksServer(
+    val iso: String = "world",
     val region: String,
     val host: String,
     val port: Int,

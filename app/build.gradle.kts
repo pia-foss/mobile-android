@@ -151,6 +151,7 @@ dependencies {
     implementation(project(":features:permissions"))
     implementation(project(":features:profile"))
     implementation(project(":features:vpnregionselection"))
+    implementation(project(":features:obfuscationregionselection"))
     implementation(project(":features:sidemenu"))
     implementation(project(":features:connection"))
     implementation(project(":features:appbar"))

@@ -31,7 +31,7 @@ import com.kape.ui.utils.getFlagResource
 import com.kape.utils.vpnserver.VpnServer
 
 @Composable
-fun LocationPicker(server: VpnServer, isConnected: Boolean, onClick: () -> Unit) {
+fun VpnLocationPicker(server: VpnServer, isConnected: Boolean, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +57,7 @@ fun LocationPicker(server: VpnServer, isConnected: Boolean, onClick: () -> Unit)
 
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.align(CenterVertically)) {
-            SelectedRegionTitleText(content = stringResource(id = if (isConnected) R.string.current_region else R.string.selected_region))
+            SelectedRegionTitleText(content = stringResource(id = if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region))
             Spacer(modifier = Modifier.height(4.dp))
             SelectedRegionServerText(content = server.name)
         }

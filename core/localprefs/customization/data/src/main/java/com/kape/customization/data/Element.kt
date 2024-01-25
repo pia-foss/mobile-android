@@ -5,7 +5,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Element {
     @Serializable
-    data object RegionSelection : Element()
+    data object VpnRegionSelection : Element()
+
+    @Serializable
+    data object ShadowsocksRegionSelection : Element()
 
     @Serializable
     data object ConnectionInfo : Element()

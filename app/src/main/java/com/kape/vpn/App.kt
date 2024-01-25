@@ -15,6 +15,7 @@ import com.kape.inappbrowser.di.inAppBrowserModule
 import com.kape.login.di.loginModule
 import com.kape.networkmanagement.di.networkManagementModule
 import com.kape.notifications.di.notificationModule
+import com.kape.obfuscationregionselection.di.shadowsocksSelectionModule
 import com.kape.obfuscator.di.obfuscatorModule
 import com.kape.payments.di.paymentsModule
 import com.kape.permissions.di.permissionsModule
@@ -75,6 +76,7 @@ class App : Application() {
                 add(sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
                 add(profileModule(appModule))
                 add(regionSelectionModule(appModule))
+                add(shadowsocksSelectionModule(appModule))
                 add(splashModule)
                 add(signupModule(appModule))
                 add(kpiModule(appModule))

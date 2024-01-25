@@ -20,11 +20,12 @@ import com.kape.customization.CustomizationScreen
 import com.kape.dedicatedip.ui.DedicatedIpScreen
 import com.kape.inappbrowser.ui.InAppBrowser
 import com.kape.login.ui.loginNavigation
+import com.kape.obfuscationregionselection.ui.ShadowsocksRegionSelectionScreen
 import com.kape.payments.ui.PaymentProvider
 import com.kape.permissions.utils.PermissionsFlow
 import com.kape.profile.ui.ProfileScreen
 import com.kape.router.About
-import com.kape.vpnregionselection.ui.RegionSelectionScreen
+import com.kape.vpnregionselection.ui.VpnRegionSelectionScreen
 import com.kape.router.Automation
 import com.kape.router.Connection
 import com.kape.router.Customization
@@ -35,9 +36,10 @@ import com.kape.router.NavigateOut
 import com.kape.router.PerAppSettings
 import com.kape.router.Permissions
 import com.kape.router.Profile
-import com.kape.router.RegionSelection
+import com.kape.router.VpnRegionSelection
 import com.kape.router.Router
 import com.kape.router.Settings
+import com.kape.router.ShadowsocksRegionSelection
 import com.kape.router.Splash
 import com.kape.router.Subscribe
 import com.kape.router.WebContent
@@ -74,7 +76,7 @@ class MainActivity : ComponentActivity() {
         intent.action?.let {
             when (it) {
                 Settings.Route -> router.handleFlow(EnterFlow.Settings)
-                RegionSelection.Main -> router.handleFlow(EnterFlow.RegionSelection)
+                VpnRegionSelection.Main -> router.handleFlow(EnterFlow.VpnRegionSelection)
                 Connection.Main -> router.handleFlow(EnterFlow.Connection)
             }
         }
@@ -119,9 +121,12 @@ class MainActivity : ComponentActivity() {
                             composable(Automation.Route) { AutomationFlow() }
                             composable(Splash.Main) { SplashScreen() }
                             composable(Connection.Main) { ConnectionScreen() }
-                            composable(RegionSelection.Main) { RegionSelectionScreen() }
                             composable(Profile.Main) { ProfileScreen() }
                             composable(Subscribe.Main) { SignupScreensFlow() }
+                            composable(VpnRegionSelection.Main) { VpnRegionSelectionScreen() }
+                            composable(ShadowsocksRegionSelection.Main) {
+                                ShadowsocksRegionSelectionScreen()
+                            }
                             composable(WebContent.Terms) {
                                 InAppBrowser(
                                     url = getString(R.string.url_terms_of_service),

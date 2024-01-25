@@ -21,8 +21,12 @@ object Connection {
     const val Main = "connection-screen"
 }
 
-object RegionSelection {
+object VpnRegionSelection {
     const val Main = "region-selection-screen"
+}
+
+object ShadowsocksRegionSelection {
+    const val Main = "shadowsocks-region-selection-screen"
 }
 
 object Profile {

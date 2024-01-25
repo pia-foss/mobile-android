@@ -50,7 +50,7 @@ internal class GetShadowsocksRegionsUseCaseTest : KoinTest {
             Arguments.of(
                 listOf(
                     ShadowsocksServer(
-                        region = "region",
+                        name = "region",
                         host = "host",
                         port = 8080,
                         key = "key",

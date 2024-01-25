@@ -27,7 +27,8 @@ class Router {
             EnterFlow.Permissions -> _navigation.value = Permissions.Route
             EnterFlow.Splash -> _navigation.value = Splash.Main
             EnterFlow.Connection -> _navigation.value = Connection.Main
-            EnterFlow.RegionSelection -> _navigation.value = RegionSelection.Main
+            EnterFlow.VpnRegionSelection -> _navigation.value = VpnRegionSelection.Main
+            EnterFlow.ShadowsocksRegionSelection -> _navigation.value = ShadowsocksRegionSelection.Main
             EnterFlow.Profile -> _navigation.value = Profile.Main
             EnterFlow.Subscribe -> _navigation.value = Subscribe.Main
             EnterFlow.PrivacyPolicy -> _navigation.value = WebContent.Privacy
