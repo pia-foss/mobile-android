@@ -173,11 +173,13 @@ class VpnRegionSelectionViewModel(
 
         if (favorites.isNotEmpty()) {
             list.add(0, ServerItem(type = ItemType.HeadingFavorites))
+            favorites.sortBy { (it.type as ItemType.Content).server.latency?.toInt() }
             list.addAll(favorites)
             list.add(ServerItem(type = ItemType.HeadingAll))
         }
 
-        all.sortBy { !(it.type as ItemType.Content).server.isDedicatedIp }
+        all.sortBy { (it.type as ItemType.Content).server.latency?.toInt() }
+        all.sortByDescending { (it.type as ItemType.Content).server.isDedicatedIp }
         Collections.swap(
             all,
             0,
