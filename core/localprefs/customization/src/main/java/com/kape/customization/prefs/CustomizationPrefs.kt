@@ -26,7 +26,7 @@ class CustomizationPrefs(context: Context) : Prefs(context, "customization") {
         ScreenElement(Element.IpInfo),
         ScreenElement(Element.QuickConnect),
         ScreenElement(Element.QuickSettings),
-        ScreenElement(Element.Snooze),
+//        ScreenElement(Element.Snooze),
         ScreenElement(Element.Traffic),
         ScreenElement(Element.ConnectionInfo),
     )
