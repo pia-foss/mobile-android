@@ -85,6 +85,7 @@ internal class LogoutUseCaseTest : BaseTest() {
         every { settingsPrefs.clear() } returns Unit
         every { kpiPrefs.clear() } returns Unit
         every { consentPrefs.clear() } returns Unit
+        every { settingsPrefs.isAutomationEnabled() } returns false
 
         useCase.logout().test {
             val actual = awaitItem()

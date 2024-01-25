@@ -14,7 +14,6 @@ import com.kape.utils.ApiResult
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.VpnRegionPrefs
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 class LogoutUseCase(
@@ -34,14 +33,28 @@ class LogoutUseCase(
 ) {
 
     fun logout(): Flow<Boolean> = flow {
+        if (settingsPrefs.isAutomationEnabled()) {
+            connectionPrefs.disconnectedByUser(true)
+        }
+        if (connectionUseCase.isConnected()) {
+            connectionUseCase.stopConnection().collect {
+                performLogout().collect {
+                    emit(it)
+                }
+            }
+        } else {
+            performLogout().collect {
+                emit(it)
+            }
+        }
+    }
+
+    private fun performLogout(): Flow<Boolean> = flow {
         clearPrefs()
         source.logout().collect {
             when (it) {
                 ApiResult.Success -> emit(true)
                 is ApiResult.Error -> emit(false)
-            }
-            if (connectionUseCase.isConnected()) {
-                connectionUseCase.stopConnection().collect()
             }
         }
     }

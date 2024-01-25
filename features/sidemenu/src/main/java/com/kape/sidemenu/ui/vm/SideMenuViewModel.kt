@@ -37,7 +37,7 @@ class SideMenuViewModel(
 
     fun logout() = viewModelScope.launch {
         logoutUseCase.logout().collect {
-            router.handleFlow(EnterFlow.Subscribe)
+            router.handleFlow(EnterFlow.Splash)
         }
     }
 
