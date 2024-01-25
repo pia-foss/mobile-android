@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kape.connection.R
 import com.kape.ui.theme.connectionDefault
+import com.kape.ui.theme.connectionError
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionStatus
 
@@ -56,6 +57,7 @@ fun ConnectButton(status: ConnectionStatus, modifier: Modifier, onClick: () -> U
             when (status) {
                 ConnectionStatus.CONNECTED,
                 ConnectionStatus.DISCONNECTED,
+                ConnectionStatus.ERROR,
                 -> {
                     CircularProgressIndicator(
                         modifier = Modifier
@@ -98,5 +100,7 @@ private fun getStatusColor(status: ConnectionStatus): Color {
         ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
         -> LocalColors.current.connectionDefault()
+
+        ConnectionStatus.ERROR -> LocalColors.current.connectionError()
     }
 }

@@ -76,16 +76,16 @@ fun LocationPickerItem(
             }
             Spacer(modifier = Modifier.weight(1f))
             server.latency?.let {
-                Box(
-                    modifier = Modifier
-                        .align(CenterVertically)
-                        .size(8.dp)
-                        .background(
-                            LocalColors.current.getLatencyColor(server.latency),
-                            shape = CircleShape,
-                        ),
-                )
                 if (it.toInt() < VPN_REGIONS_PING_TIMEOUT) {
+                    Box(
+                        modifier = Modifier
+                            .align(CenterVertically)
+                            .size(8.dp)
+                            .background(
+                                LocalColors.current.getLatencyColor(server.latency),
+                                shape = CircleShape,
+                            ),
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                     RegionSelectionLatencyText(
                         "${server.latency}ms",

@@ -28,12 +28,12 @@ import com.kape.login.R
 import com.kape.login.ui.vm.LoginWithEmailViewModel
 import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
-import com.kape.login.utils.connectivityState
 import com.kape.router.Login
 import com.kape.ui.elements.NoNetworkBanner
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 import com.kape.ui.text.Input
+import com.kape.ui.utils.connectivityState
 import com.kape.utils.InternetConnectionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel

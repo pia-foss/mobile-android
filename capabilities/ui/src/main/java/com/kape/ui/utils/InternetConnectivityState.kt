@@ -1,4 +1,4 @@
-package com.kape.login.utils
+package com.kape.ui.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
