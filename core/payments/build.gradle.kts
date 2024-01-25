@@ -1,3 +1,4 @@
+import Dependencies.KOTLIN_COMPILER_EXTENSION
 import Dependencies.desugarJdkLibs
 import Dependencies.implementAccount
 import Dependencies.implementCoroutines
@@ -12,7 +13,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlinx-serialization")
     id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.8.2.0"
 }
 
 android {
@@ -49,7 +49,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = KOTLIN_COMPILER_EXTENSION
     }
 }
 

@@ -1,4 +1,5 @@
 
+import Dependencies.KOTLIN_COMPILER_EXTENSION
 import Dependencies.implementFeatureModule
 
 plugins {
@@ -36,7 +37,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = KOTLIN_COMPILER_EXTENSION
     }
 }
 
