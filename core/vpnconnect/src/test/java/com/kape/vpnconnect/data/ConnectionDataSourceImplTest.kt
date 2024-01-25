@@ -18,6 +18,7 @@ import com.privateinternetaccess.account.AndroidAccountAPI
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -33,9 +34,11 @@ internal class ConnectionDataSourceImplTest {
     private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
         every { clearGateway() } returns Unit
         every { clearPortBindingInfo() } returns Unit
+        every { setGateway(any()) } returns Unit
     }
     private val alarmManager: AlarmManager = mockk<AlarmManager>().apply {
         every { cancel(any<PendingIntent>()) } returns Unit
+        every { setRepeating(any(), any(), any(), any()) } returns Unit
     }
     private val portForwardingIntent: PendingIntent = mockk()
     private val settingsPrefs: SettingsPrefs = mockk<SettingsPrefs>().apply {
@@ -77,12 +80,33 @@ internal class ConnectionDataSourceImplTest {
     }
 
     @Test
-    fun `startConnection - success`() = runTest {
+    fun `startConnection - kpiEnabled - success`() = runTest {
+        coEvery { connectionApi.addConnectionListener(any(), any()) } returns Unit
+        coEvery { connectionApi.startConnection(any(), any()) } answers {
+            lastArg<(Result<ServerPeerInformation?>) -> Unit>().invoke(
+                Result.success(
+                    ServerPeerInformation("", "gateway"),
+                ),
+            )
+        }
+        every { settingsPrefs.isHelpImprovePiaEnabled() } returns true
+        source.startConnection(clientConfiguration, connectionListener).test {
+            verify { kpiDataSource.start() }
+            verify { connectionPrefs.setGateway("gateway") }
+            val actual = awaitItem()
+            assertEquals(true, actual)
+        }
+    }
+
+    @Test
+    fun `startConnection - kpiDisabled - success`() = runTest {
         coEvery { connectionApi.addConnectionListener(any(), any()) } returns Unit
         coEvery { connectionApi.startConnection(any(), any()) } answers {
             lastArg<(Result<ServerPeerInformation?>) -> Unit>().invoke(Result.success(null))
         }
+        every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
         source.startConnection(clientConfiguration, connectionListener).test {
+            verify { kpiDataSource.stop() }
             val actual = awaitItem()
             assertEquals(true, actual)
         }
