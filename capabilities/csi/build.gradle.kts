@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint")
     id("de.mannodermaus.android-junit5") version "1.10.0.0"
+    id("org.jetbrains.kotlinx.kover")
 }
 
 android {

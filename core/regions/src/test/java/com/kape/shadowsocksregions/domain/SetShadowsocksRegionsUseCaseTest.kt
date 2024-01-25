@@ -32,11 +32,11 @@ internal class SetShadowsocksRegionsUseCaseTest : KoinTest {
 
     @Test
     fun `set shadowsocks servers list`() = runTest {
-        val expected = "setShadowsocksServerList"
+        val expected: ShadowsocksServer = mockk()
         every { shadowsocksRegionPrefs.setSelectShadowsocksServer(any()) } returns Unit
-        every { shadowsocksRegionPrefs.getSelectedShadowsocksServerKey() } returns expected
+        every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns expected
         setShadowsocksRegionsUseCase.setSelectShadowsocksServer(expected)
-        val actual = getShadowsocksRegionsUseCase.getSelectedShadowsocksServerKey()
+        val actual = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
         assertEquals(expected, actual)
     }
 
@@ -47,14 +47,6 @@ internal class SetShadowsocksRegionsUseCaseTest : KoinTest {
         every { shadowsocksRegionPrefs.getShadowsocksServers() } returns expected
         setShadowsocksRegionsUseCase.setShadowsocksServers(expected)
         val actual = getShadowsocksRegionsUseCase.getShadowsocksServers()
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `get selected shadowsocks server if any`() = runTest {
-        val expected = "setSelectedShadowsocksServer"
-        every { shadowsocksRegionPrefs.getSelectedShadowsocksServerKey() } returns expected
-        val actual = getShadowsocksRegionsUseCase.getSelectedShadowsocksServerKey()
         assertEquals(expected, actual)
     }
 }

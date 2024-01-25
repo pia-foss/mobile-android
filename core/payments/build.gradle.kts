@@ -13,6 +13,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlinx-serialization")
     id("org.jlleitschuh.gradle.ktlint")
+    id("org.jetbrains.kotlinx.kover")
 }
 
 android {
