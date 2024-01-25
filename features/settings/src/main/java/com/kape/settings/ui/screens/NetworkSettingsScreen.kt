@@ -103,6 +103,7 @@ fun NetworkSettingsScreen() = Screen {
                 val previousDnsSelectionWasPIA = viewModel.getSelectedDnsOption() == DnsOptions.PIA
                 dnsDialogVisible.value = false
                 viewModel.setSelectedDnsOption(it)
+
                 if (it == DnsOptions.SYSTEM &&
                     viewModel.isAllowLocalTrafficEnabled.value.not()
                 ) {
@@ -115,6 +116,9 @@ fun NetworkSettingsScreen() = Screen {
                         dnsWarningDialogVisible.value = true
                     } else {
                         viewModel.showReconnectDialogIfVpnNotConnected()
+                    }
+                    if (it != DnsOptions.PIA) {
+                        viewModel.toggleMace(false)
                     }
                 }
             },
@@ -153,13 +157,6 @@ fun NetworkSettingsScreen() = Screen {
         )
     }
 
-    if (dnsWarningDialogVisible.value) {
-        UnsafeDnsWarningDialog(
-            viewModel = viewModel,
-            dnsWarningDialogVisible = dnsWarningDialogVisible,
-        )
-    }
-
     if (viewModel.reconnectDialogVisible.value) {
         ReconnectDialog(
             onReconnect = {
@@ -179,12 +176,21 @@ fun NetworkSettingsScreen() = Screen {
             allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
         )
     }
+
+    if (dnsWarningDialogVisible.value) {
+        UnsafeDnsWarningDialog(
+            viewModel = viewModel,
+            dnsWarningDialogVisible = dnsWarningDialogVisible,
+            allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
+        )
+    }
 }
 
 @Composable
 fun UnsafeDnsWarningDialog(
     viewModel: SettingsViewModel,
     dnsWarningDialogVisible: MutableState<Boolean>,
+    allowLocalTrafficDialogVisible: MutableState<Boolean>,
 ) {
     val titleId = if (viewModel.getSelectedDnsOption() == DnsOptions.SYSTEM) {
         R.string.network_dns_selection_system
@@ -197,11 +203,14 @@ fun UnsafeDnsWarningDialog(
         onDismiss = {
             viewModel.setSelectedDnsOption(DnsOptions.PIA)
             dnsWarningDialogVisible.value = false
+            allowLocalTrafficDialogVisible.value = false
             viewModel.reconnectDialogVisible.value = false
         },
         onConfirm = {
             dnsWarningDialogVisible.value = false
-            viewModel.showReconnectDialogIfVpnNotConnected()
+            if (!allowLocalTrafficDialogVisible.value) {
+                viewModel.showReconnectDialogIfVpnNotConnected()
+            }
         },
     )
 }
@@ -224,6 +233,7 @@ fun AllowLanDialog(
         onConfirm = {
             viewModel.toggleAllowLocalNetwork(true)
             allowLocalTrafficDialogVisible.value = false
+            viewModel.showReconnectDialogIfVpnNotConnected()
         },
     )
 }
