@@ -36,6 +36,22 @@ fun InputFieldDialog(
     val primaryDns = remember { mutableStateOf(current.primaryDns) }
     val secondaryDns = remember { mutableStateOf(current.secondaryDns) }
 
+    fun showPrimaryDnsErrorIfNeeded(error: String): String? {
+        return if (primaryDns.value.isEmpty()) {
+            if (secondaryDns.value.isEmpty()) {
+                null
+            } else {
+                error
+            }
+        } else {
+            if (isDnsNumeric(primaryDns.value)) {
+                null
+            } else {
+                error
+            }
+        }
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
@@ -86,14 +102,7 @@ fun InputFieldDialog(
                             maskInput = false,
                             keyboard = KeyboardType.Decimal,
                             content = primaryDns,
-                            errorMessage = if (
-                                secondaryDns.value.isEmpty() ||
-                                isDnsNumeric(secondaryDns.value)
-                            ) {
-                                null
-                            } else {
-                                stringResource(id = R.string.network_dns_selection_custom_invalid)
-                            },
+                            errorMessage = showPrimaryDnsErrorIfNeeded(stringResource(id = R.string.network_dns_selection_custom_invalid)),
                         )
                     }
                     Row(
