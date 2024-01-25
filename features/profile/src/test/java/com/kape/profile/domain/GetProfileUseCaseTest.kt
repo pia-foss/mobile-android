@@ -14,7 +14,6 @@ import org.koin.test.KoinTest
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
-
 class GetProfileUseCaseTest : KoinTest {
 
     private val dataSource: ProfileDatasource = mockk()
