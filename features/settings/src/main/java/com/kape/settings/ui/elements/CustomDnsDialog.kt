@@ -19,13 +19,14 @@ fun CustomDnsDialog(
         R.string.network_dns_selection_title,
         current = customDns,
         onConfirm = {
-            if (
-                (it.primaryDns.isNotEmpty() && isDnsNumeric(it.primaryDns).not()) ||
-                (it.secondaryDns.isNotEmpty() && isDnsNumeric(it.secondaryDns).not())
-            ) {
-                return@InputFieldDialog
-            } else {
+            val bothDnsEmpty = it.primaryDns.isEmpty() && it.secondaryDns.isEmpty()
+            val primaryDnsOK = it.primaryDns.isNotEmpty() && isDnsNumeric(it.primaryDns)
+            val secondaryDnsOK = it.secondaryDns.isEmpty() || isDnsNumeric(it.secondaryDns)
+
+            if (bothDnsEmpty || (primaryDnsOK && secondaryDnsOK)) {
                 onConfirm(it)
+            } else {
+                return@InputFieldDialog
             }
         },
         onDismiss = onDismiss,
