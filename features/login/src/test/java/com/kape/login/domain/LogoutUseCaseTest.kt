@@ -64,16 +64,21 @@ internal class LogoutUseCaseTest : BaseTest() {
         )
     }
 
-    @ParameterizedTest(name = "source: {0}, expected: {1}")
+    @ParameterizedTest(name = "automationEnabled: {0}, connectionActive: {1}, result: {2}, expected: {3}")
     @MethodSource("data")
-    fun logout(result: ApiResult, expected: Boolean) = runTest {
+    fun logout(
+        isAutomationEnabled: Boolean,
+        isConnectionActive: Boolean,
+        result: ApiResult,
+        expected: Boolean,
+    ) = runTest {
         coEvery { source.logout() } returns flow {
             emit(result)
         }
         coEvery { connectionUseCase.stopConnection() } returns flow {
             emit(true)
         }
-        every { connectionUseCase.isConnected() } returns true
+        every { connectionUseCase.isConnected() } returns isConnectionActive
         every { connectionPrefs.clear() } returns Unit
         every { csiPrefs.clear() } returns Unit
         every { customizationPrefs.clear() } returns Unit
@@ -85,7 +90,8 @@ internal class LogoutUseCaseTest : BaseTest() {
         every { settingsPrefs.clear() } returns Unit
         every { kpiPrefs.clear() } returns Unit
         every { consentPrefs.clear() } returns Unit
-        every { settingsPrefs.isAutomationEnabled() } returns false
+        every { settingsPrefs.isAutomationEnabled() } returns isAutomationEnabled
+        every { connectionPrefs.disconnectedByUser(any()) } returns Unit
 
         useCase.logout().test {
             val actual = awaitItem()
@@ -97,11 +103,14 @@ internal class LogoutUseCaseTest : BaseTest() {
     companion object {
         @JvmStatic
         fun data() = Stream.of(
-            Arguments.of(ApiResult.Success, true),
-            Arguments.of(ApiResult.Error(ApiError.AuthFailed), false),
-            Arguments.of(ApiResult.Error(ApiError.AccountExpired), false),
-            Arguments.of(ApiResult.Error(ApiError.Throttled), false),
-            Arguments.of(ApiResult.Error(ApiError.Unknown), false),
+            Arguments.of(true, true, ApiResult.Success, true),
+            Arguments.of(true, false, ApiResult.Success, true),
+            Arguments.of(false, true, ApiResult.Success, true),
+            Arguments.of(false, false, ApiResult.Success, true),
+            Arguments.of(true, true, ApiResult.Error(ApiError.AuthFailed), false),
+            Arguments.of(false, false, ApiResult.Error(ApiError.AccountExpired), false),
+            Arguments.of(true, false, ApiResult.Error(ApiError.Throttled), false),
+            Arguments.of(false, true, ApiResult.Error(ApiError.Unknown), false),
         )
     }
 }

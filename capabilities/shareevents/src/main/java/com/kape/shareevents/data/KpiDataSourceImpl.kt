@@ -29,7 +29,6 @@ class KpiDataSourceImpl(
 
     override fun stop() {
         api.stop {
-            // TODO: handle error?
         }
     }
 
@@ -44,13 +43,11 @@ class KpiDataSourceImpl(
                 eventInstant = Clock.System.now(),
             )
         api.submit(event) {
-            // TODO: handle error?
         }
     }
 
     override fun flush() {
         api.flush {
-            // TODO: handle error?
         }
     }
 

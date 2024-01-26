@@ -2,6 +2,7 @@ package com.kape.profile.data.models
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.kape.utils.KoverIgnore
 import java.text.SimpleDateFormat
 import java.time.Duration
 
@@ -18,6 +19,7 @@ data class Subscription(
         return DATE_FORMAT.format(timestamp)
     }
 
+    @KoverIgnore("formatter, no need for test coverage")
     companion object {
         val DATE_FORMAT = SimpleDateFormat("MMM dd, yyyy")
     }
