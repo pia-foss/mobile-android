@@ -163,6 +163,7 @@ class VpnRegionSelectionViewModel(
                         ServerItem(
                             ItemType.Content(
                                 isFavorite = false,
+                                enableFavorite = item.type.enableFavorite,
                                 server = item.type.server,
                             ),
                         ),
