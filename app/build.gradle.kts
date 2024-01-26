@@ -208,6 +208,7 @@ koverReport {
         excludes {
             // exclusion rules - classes to exclude from report
             classes("com.kape.*.di.*", "com.kape.*.ui.*")
+            annotatedBy("*.KoverIgnore")
         }
         includes {
             // inclusion rules - classes only those that will be present in reports
