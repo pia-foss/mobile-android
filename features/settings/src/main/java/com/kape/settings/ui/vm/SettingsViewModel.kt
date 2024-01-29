@@ -210,7 +210,7 @@ class SettingsViewModel(
         prefs.setOpenVpnSettings(currentSettings)
 
         if (hasSettingChanged) {
-            showReconnectDialogIfVpnNotConnected()
+            showReconnectDialogIfVpnConnected()
         }
     }
 
@@ -221,7 +221,7 @@ class SettingsViewModel(
         prefs.setOpenVpnSettings(currentSettings)
 
         if (hasSettingChanged) {
-            showReconnectDialogIfVpnNotConnected()
+            showReconnectDialogIfVpnConnected()
         }
     }
 
@@ -232,7 +232,7 @@ class SettingsViewModel(
         prefs.setOpenVpnSettings(currentSettings)
 
         if (hasSettingChanged) {
-            showReconnectDialogIfVpnNotConnected()
+            showReconnectDialogIfVpnConnected()
         }
     }
 
@@ -243,7 +243,7 @@ class SettingsViewModel(
         prefs.setOpenVpnSettings(currentSettings)
 
         if (hasSettingChanged) {
-            showReconnectDialogIfVpnNotConnected()
+            showReconnectDialogIfVpnConnected()
         }
     }
 
@@ -254,7 +254,7 @@ class SettingsViewModel(
         prefs.setWireGuardSettings(currentSettings)
 
         if (hasSettingChanged) {
-            showReconnectDialogIfVpnNotConnected()
+            showReconnectDialogIfVpnConnected()
         }
     }
 
@@ -329,7 +329,7 @@ class SettingsViewModel(
         requestId.value = null
     }
 
-    fun showReconnectDialogIfVpnNotConnected() {
+    fun showReconnectDialogIfVpnConnected() {
         if (isConnected()) {
             reconnectDialogVisible.value = true
         }

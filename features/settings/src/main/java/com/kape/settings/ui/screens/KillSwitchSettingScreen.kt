@@ -90,7 +90,7 @@ fun KillSwitchSettingScreen() = Screen {
 
                 // There is no way for us to know if the settings have changed
                 // We always show the dialog
-                viewModel.reconnectDialogVisible.value = true
+                viewModel.showReconnectDialogIfVpnConnected()
             }
         }
         if (viewModel.reconnectDialogVisible.value) {

@@ -89,7 +89,7 @@ fun ProtocolSettingsScreen() = Screen {
                         protocolDialogVisible.value = false
 
                         if (hasProtocolChanged) {
-                            viewModel.showReconnectDialogIfVpnNotConnected()
+                            viewModel.showReconnectDialogIfVpnConnected()
                         }
                     },
                     selection = protocolSelection.value,

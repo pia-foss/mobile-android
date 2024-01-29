@@ -65,7 +65,7 @@ fun PrivacySettingsScreen() = Screen {
                         showWarning.value = true
                     }
                     viewModel.toggleMace(it)
-                    viewModel.showReconnectDialogIfVpnNotConnected()
+                    viewModel.showReconnectDialogIfVpnConnected()
                 },
             )
             if (viewModel.reconnectDialogVisible.value) {
