@@ -79,7 +79,7 @@ fun NetworkSettingsScreen() = Screen {
                 enabled = viewModel.isPortForwardingEnabled(),
                 toggle = {
                     viewModel.toggleEnablePortForwarding(it)
-                    viewModel.showReconnectDialogIfVpnNotConnected()
+                    viewModel.showReconnectDialogIfVpnConnected()
                 },
             )
             SettingsToggle(
@@ -88,7 +88,7 @@ fun NetworkSettingsScreen() = Screen {
                 stateEnabled = viewModel.isAllowLocalTrafficEnabled,
                 toggle = { checked ->
                     viewModel.toggleAllowLocalNetwork(checked)
-                    viewModel.showReconnectDialogIfVpnNotConnected()
+                    viewModel.showReconnectDialogIfVpnConnected()
                 },
             )
         }
@@ -115,7 +115,7 @@ fun NetworkSettingsScreen() = Screen {
                     if (previousDnsSelectionWasPIA) {
                         dnsWarningDialogVisible.value = true
                     } else {
-                        viewModel.showReconnectDialogIfVpnNotConnected()
+                        viewModel.showReconnectDialogIfVpnConnected()
                     }
                     if (it != DnsOptions.PIA) {
                         viewModel.toggleMace(false)
@@ -145,11 +145,11 @@ fun NetworkSettingsScreen() = Screen {
                 if (it.isInUse()) {
                     viewModel.setSelectedDnsOption(DnsOptions.CUSTOM)
                     if (hasCustomDnsChanged) {
-                        viewModel.showReconnectDialogIfVpnNotConnected()
+                        viewModel.showReconnectDialogIfVpnConnected()
                     }
                 } else {
                     viewModel.setSelectedDnsOption(DnsOptions.PIA)
-                    viewModel.showReconnectDialogIfVpnNotConnected()
+                    viewModel.showReconnectDialogIfVpnConnected()
                 }
             },
             onDismiss = { customDnsDialogVisible.value = false },
@@ -209,7 +209,7 @@ fun UnsafeDnsWarningDialog(
         onConfirm = {
             dnsWarningDialogVisible.value = false
             if (!allowLocalTrafficDialogVisible.value) {
-                viewModel.showReconnectDialogIfVpnNotConnected()
+                viewModel.showReconnectDialogIfVpnConnected()
             }
         },
     )
@@ -233,7 +233,7 @@ fun AllowLanDialog(
         onConfirm = {
             viewModel.toggleAllowLocalNetwork(true)
             allowLocalTrafficDialogVisible.value = false
-            viewModel.showReconnectDialogIfVpnNotConnected()
+            viewModel.showReconnectDialogIfVpnConnected()
         },
     )
 }
