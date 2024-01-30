@@ -76,6 +76,7 @@ fun ConnectionScreen() = Screen {
     LaunchedEffect(key1 = Unit) {
         viewModel.loadVpnServers(locale)
         viewModel.loadShadowsocksServers(locale)
+        viewModel.setIps()
         viewModel.autoConnect()
     }
 
