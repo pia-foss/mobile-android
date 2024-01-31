@@ -29,7 +29,8 @@ import kotlin.test.assertEquals
 
 internal class ConnectionUseCaseTest {
 
-    private val source: ConnectionDataSource = mockk()
+    private val connectionDataSource: ConnectionDataSource = mockk()
+    private val clientStateDataSource: ClientStateDataSource = mockk()
     private val server: VpnServer = mockk<VpnServer>(relaxed = true).apply {
         every { endpoints } returns emptyMap()
         every { latency } returns "0"
@@ -82,7 +83,8 @@ internal class ConnectionUseCaseTest {
             modules(appModule, vpnConnectModule(appModule))
         }
         useCase = ConnectionUseCase(
-            source,
+            connectionDataSource,
+            clientStateDataSource,
             certificate,
             connectionManager,
             settingsPrefs,
@@ -98,10 +100,10 @@ internal class ConnectionUseCaseTest {
     @Test
     fun `startConnection - success`() = runTest {
         val expected = true
-        every { source.startConnection(any(), any()) } returns flow {
+        every { connectionDataSource.startConnection(any(), any()) } returns flow {
             emit(expected)
         }
-        every { source.getVpnToken() } returns "username:password"
+        every { connectionDataSource.getVpnToken() } returns "username:password"
 
         useCase.startConnection(server, true).test {
             val actual = awaitItem()
@@ -113,10 +115,10 @@ internal class ConnectionUseCaseTest {
     @Test
     fun `startConnection - failure`() = runTest {
         val expected = false
-        every { source.startConnection(any(), any()) } returns flow {
+        every { connectionDataSource.startConnection(any(), any()) } returns flow {
             emit(expected)
         }
-        every { source.getVpnToken() } returns "username:password"
+        every { connectionDataSource.getVpnToken() } returns "username:password"
 
         useCase.startConnection(server, true).test {
             val actual = awaitItem()
@@ -128,10 +130,10 @@ internal class ConnectionUseCaseTest {
     @Test
     fun `stopConnection - success`() = runTest {
         val expected = true
-        every { source.stopConnection() } returns flow {
+        every { connectionDataSource.stopConnection() } returns flow {
             emit(expected)
         }
-        every { source.getVpnToken() } returns "username:password"
+        every { connectionDataSource.getVpnToken() } returns "username:password"
 
         useCase.stopConnection().test {
             val actual = awaitItem()
@@ -143,10 +145,10 @@ internal class ConnectionUseCaseTest {
     @Test
     fun `stopConnection - failure`() = runTest {
         val expected = false
-        every { source.stopConnection() } returns flow {
+        every { connectionDataSource.stopConnection() } returns flow {
             emit(expected)
         }
-        every { source.getVpnToken() } returns "username:password"
+        every { connectionDataSource.getVpnToken() } returns "username:password"
 
         useCase.stopConnection().test {
             val actual = awaitItem()

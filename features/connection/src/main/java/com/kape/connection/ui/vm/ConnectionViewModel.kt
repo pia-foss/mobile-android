@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
 import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement
-import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
@@ -28,15 +27,13 @@ import com.kape.snooze.SnoozeHandler
 import com.kape.ui.tiles.MAX_SERVERS
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.utils.vpnserver.VpnServer
+import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnregions.domain.GetVpnRegionsUseCase
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.domain.SetVpnRegionsUseCase
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -206,7 +203,7 @@ class ConnectionViewModel(
         } else if (lastSelectedVpnServerKey != selectedVpnServer.value?.key) {
             selectedVpnServer.value?.let {
                 lastSelectedVpnServerKey = selectedVpnServer.value?.key.toString()
-                reconnect()
+                connectionUseCase.reconnect(it).collect()
             }
         }
     }
@@ -259,7 +256,7 @@ class ConnectionViewModel(
 
     fun onConnectionButtonClicked() = viewModelScope.launch {
         if (connectionUseCase.isConnected()) {
-            disconnect().collect() {}
+            disconnect()
         } else {
             connect()
         }
@@ -274,22 +271,12 @@ class ConnectionViewModel(
         selectedVpnServer.value = availableVpnServers.firstOrNull { it.key == key }
         viewModelScope.launch {
             selectedVpnServer.value?.let {
-                reconnect()
+                connectionUseCase.reconnect(it).collect {}
             }
         }
     }
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
-
-    private fun reconnect() = viewModelScope.launch {
-        if (connectionUseCase.isConnected()) {
-            disconnect().collect() {
-                connect()
-            }
-        } else {
-            connect()
-        }
-    }
 
     private fun connect() = viewModelScope.launch {
         selectedVpnServer.value?.let {
@@ -303,13 +290,12 @@ class ConnectionViewModel(
         }
     }
 
-    private fun disconnect(): Flow<Unit> = flow {
+    private fun disconnect() = viewModelScope.launch {
         if (settingsPrefs.isAutomationEnabled()) {
             prefs.disconnectedByUser(true)
         }
         connectionUseCase.stopConnection().collect {
             portForwardingStatus.value = PortForwardingStatus.NoPortForwarding
-            emit(Unit)
         }
     }
 }
