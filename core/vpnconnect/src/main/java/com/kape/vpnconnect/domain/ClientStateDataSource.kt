@@ -1,4 +1,4 @@
-package com.kape.connection.domain
+package com.kape.vpnconnect.domain
 
 import kotlinx.coroutines.flow.Flow
 

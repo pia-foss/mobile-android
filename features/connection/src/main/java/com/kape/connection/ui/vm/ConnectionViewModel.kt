@@ -8,9 +8,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
-import com.kape.connection.domain.ClientStateDataSource
 import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement
+import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
@@ -66,8 +66,8 @@ class ConnectionViewModel(
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
     private val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
 
-    var ip by mutableStateOf(prefs.getClientIp())
-    var vpnIp by mutableStateOf(prefs.getClientVpnIp())
+    val clientIp = connectionUseCase.clientIp
+    val vpnIp = connectionUseCase.vpnIp
 
     val download = usageProvider.download
     val upload = usageProvider.upload
@@ -139,16 +139,6 @@ class ConnectionViewModel(
 
         getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale).collect {
             shadowsocksServersLoaded(shadowsocksServers = it)
-        }
-    }
-
-    fun setIps() = viewModelScope.launch {
-        clientStateDataSource.getClientStatus().collect { connected ->
-            if (!connected) {
-                ip = prefs.getClientIp()
-                clientStateDataSource.resetVpnIp()
-            }
-            vpnIp = prefs.getClientVpnIp()
         }
     }
 
@@ -309,12 +299,7 @@ class ConnectionViewModel(
             connectionUseCase.startConnection(
                 server = it,
                 isManualConnection = true,
-            ).collect {
-                launch {
-                    delay(3000)
-                    setIps()
-                }
-            }
+            ).collect()
         }
     }
 
@@ -323,8 +308,6 @@ class ConnectionViewModel(
             prefs.disconnectedByUser(true)
         }
         connectionUseCase.stopConnection().collect {
-            clientStateDataSource.resetVpnIp()
-            vpnIp = prefs.getClientVpnIp()
             portForwardingStatus.value = PortForwardingStatus.NoPortForwarding
             emit(Unit)
         }

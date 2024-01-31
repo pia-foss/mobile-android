@@ -1,9 +1,9 @@
-package com.kape.connection.data
+package com.kape.vpnconnect.data
 
 import app.cash.turbine.test
 import com.kape.connection.ConnectionPrefs
 import com.kape.connection.NO_IP
-import com.kape.connection.domain.ClientStateDataSource
+import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.ClientStatusInformation

@@ -3,6 +3,9 @@ package com.kape.vpnconnect.domain
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.PendingIntent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.kape.connection.ConnectionPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.SettingsPrefs
@@ -18,6 +21,7 @@ import com.kape.vpnmanager.data.models.OpenVpnClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -28,6 +32,7 @@ private const val MACE_DNS = "10.0.0.241"
 
 class ConnectionUseCase(
     private val connectionSource: ConnectionDataSource,
+    private val clientStateDataSource: ClientStateDataSource,
     private val certificate: String,
     private val connectionManager: ConnectionManager,
     private val settingsPrefs: SettingsPrefs,
@@ -42,6 +47,8 @@ class ConnectionUseCase(
 
     val portForwardingStatus = portForwardingUseCase.portForwardingStatus
     val port = portForwardingUseCase.port
+    val clientIp = mutableStateOf(connectionPrefs.getClientIp())
+    val vpnIp = mutableStateOf(connectionPrefs.getClientVpnIp())
 
     fun startConnection(server: VpnServer, isManualConnection: Boolean): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name, server.iso)
@@ -150,8 +157,16 @@ class ConnectionUseCase(
             ),
         )
 
-        connectionSource.startConnection(clientConfiguration, connectionManager).collect {
-            emit(it)
+        connectionSource.startConnection(clientConfiguration, connectionManager).collect { connected ->
+            emit(connected)
+            delay(3000)
+            clientStateDataSource.getClientStatus().collect {
+                if (!connected) {
+                    clientIp.value = connectionPrefs.getClientIp()
+                    clientStateDataSource.resetVpnIp()
+                }
+                vpnIp.value = connectionPrefs.getClientVpnIp()
+            }
             startPortForwarding().collect()
         }
     }
@@ -159,6 +174,8 @@ class ConnectionUseCase(
     fun stopConnection(): Flow<Boolean> = flow {
         connectionSource.stopConnection().collect {
             connectionManager.setConnectedServerName("", "")
+            clientStateDataSource.resetVpnIp()
+            vpnIp.value = ""
             emit(it)
             stopPortForwarding()
         }
