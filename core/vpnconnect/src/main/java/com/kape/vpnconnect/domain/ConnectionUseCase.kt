@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.kape.connection.ConnectionPrefs
-import com.kape.connection.NO_IP
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.DnsOptions
@@ -176,7 +175,7 @@ class ConnectionUseCase(
         connectionSource.stopConnection().collect {
             connectionManager.setConnectedServerName("", "")
             clientStateDataSource.resetVpnIp()
-            vpnIp.value = NO_IP
+            vpnIp.value = connectionPrefs.getClientVpnIp()
             emit(it)
             stopPortForwarding()
         }
