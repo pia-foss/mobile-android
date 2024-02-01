@@ -8,6 +8,7 @@ import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.VpnRegionPrefs
 import com.kape.vpnregions.domain.GetVpnRegionsUseCase
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
@@ -23,6 +24,7 @@ class VpnRegionSelectionViewModel(
     private val getVpnRegionsUseCase: GetVpnRegionsUseCase,
     private val updateLatencyUseCase: UpdateLatencyUseCase,
     private val readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
+    private val connectionUseCase: ConnectionUseCase,
     private val router: Router,
     private val vpnRegionPrefs: VpnRegionPrefs,
 ) : ViewModel(), KoinComponent {
@@ -44,13 +46,15 @@ class VpnRegionSelectionViewModel(
                 isLoading.value = true
             }
             getVpnRegionsUseCase.loadVpnServers(locale).collect {
-                updateLatencyUseCase.updateLatencies().collect { updatedServers ->
-                    for (server in updatedServers) {
-                        it.filter { it.name == server.name }[0].latency =
-                            server.latency ?: VPN_REGIONS_PING_TIMEOUT.toString()
+                if (connectionUseCase.isConnected().not()) {
+                    updateLatencyUseCase.updateLatencies().collect { updatedServers ->
+                        for (server in updatedServers) {
+                            it.filter { it.name == server.name }[0].latency =
+                                server.latency ?: VPN_REGIONS_PING_TIMEOUT.toString()
+                        }
+                        arrangeVpnServers(it)
+                        isLoading.value = false
                     }
-                    arrangeVpnServers(it)
-                    isLoading.value = false
                 }
                 arrangeVpnServers(it)
                 isLoading.value = false
