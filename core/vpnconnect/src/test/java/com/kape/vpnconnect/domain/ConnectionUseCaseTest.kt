@@ -16,8 +16,11 @@ import com.kape.settings.data.WireGuardSettings
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.utils.ConnectionManager
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -30,7 +33,12 @@ import kotlin.test.assertEquals
 internal class ConnectionUseCaseTest {
 
     private val connectionDataSource: ConnectionDataSource = mockk()
-    private val clientStateDataSource: ClientStateDataSource = mockk()
+    private val clientStateDataSource: ClientStateDataSource = mockk<ClientStateDataSource>().apply {
+        every { getClientStatus() } returns flow {
+            emit(true)
+        }
+        every { resetVpnIp() } just Runs
+    }
     private val server: VpnServer = mockk<VpnServer>(relaxed = true).apply {
         every { endpoints } returns emptyMap()
         every { latency } returns "0"
@@ -53,6 +61,8 @@ internal class ConnectionUseCaseTest {
     }
     private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
         every { setSelectedVpnServer(any()) } returns Unit
+        every { getClientIp() } returns "clientIp"
+        every { getClientVpnIp() } returns "vpnIp"
     }
     private val intent: PendingIntent = mockk()
     private val context: android.content.Context = mockk()
@@ -154,6 +164,21 @@ internal class ConnectionUseCaseTest {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)
+        }
+    }
+
+    @Test
+    fun `startConnection - failure - reset vpn IP`() = runTest {
+        val expected = false
+        every { connectionDataSource.startConnection(any(), any()) } returns flow {
+            emit(expected)
+        }
+        every { connectionDataSource.getVpnToken() } returns "username:password"
+
+        useCase.startConnection(server, true).test {
+            awaitItem()
+            awaitComplete()
+            verify(exactly = 1) { clientStateDataSource.resetVpnIp() }
         }
     }
 }
