@@ -153,8 +153,8 @@ private fun DisplayComponent(
             val state = viewModel.portForwardingStatus
             IPTile(
                 isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                publicIp = viewModel.ip,
-                vpnIp = viewModel.vpnIp,
+                publicIp = viewModel.clientIp.value,
+                vpnIp = viewModel.vpnIp.value,
                 portForwardingStatus = when (state.value) {
                     PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
                     PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)

@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
-import com.kape.connection.domain.ClientStateDataSource
 import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement
 import com.kape.customization.prefs.CustomizationPrefs
@@ -28,12 +27,12 @@ import com.kape.snooze.SnoozeHandler
 import com.kape.ui.tiles.MAX_SERVERS
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.utils.vpnserver.VpnServer
+import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnregions.domain.GetVpnRegionsUseCase
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.domain.SetVpnRegionsUseCase
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -62,10 +61,10 @@ class ConnectionViewModel(
     var selectedVpnServer = mutableStateOf(prefs.getSelectedVpnServer())
     private var lastSelectedVpnServerKey: String? = null
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
-    val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
+    private val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
 
-    var ip by mutableStateOf(prefs.getClientIp())
-    var vpnIp by mutableStateOf(prefs.getClientVpnIp())
+    val clientIp = connectionUseCase.clientIp
+    val vpnIp = connectionUseCase.vpnIp
 
     val download = usageProvider.download
     val upload = usageProvider.upload
@@ -255,7 +254,7 @@ class ConnectionViewModel(
         connect()
     }
 
-    fun onConnectionButtonClicked() {
+    fun onConnectionButtonClicked() = viewModelScope.launch {
         if (connectionUseCase.isConnected()) {
             disconnect()
         } else {
@@ -279,30 +278,15 @@ class ConnectionViewModel(
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
 
-    private fun connect() {
-        viewModelScope.launch {
-            selectedVpnServer.value?.let {
-                getVpnRegionsUseCase.selectVpnServer(it.key)
-                prefs.addToQuickConnect(it.key)
-                snoozeHandler.cancelSnooze()
-                connectionUseCase.startConnection(
-                    server = it,
-                    isManualConnection = true,
-                ).collect {
-                    launch {
-                        delay(3000)
-                        clientStateDataSource.getClientStatus().collect { connected ->
-                            if (connected) {
-                                vpnIp = prefs.getClientVpnIp()
-                            } else {
-                                ip = prefs.getClientIp()
-                                clientStateDataSource.resetVpnIp()
-                                vpnIp = prefs.getClientVpnIp()
-                            }
-                        }
-                    }
-                }
-            }
+    private fun connect() = viewModelScope.launch {
+        selectedVpnServer.value?.let {
+            getVpnRegionsUseCase.selectVpnServer(it.key)
+            prefs.addToQuickConnect(it.key)
+            snoozeHandler.cancelSnooze()
+            connectionUseCase.startConnection(
+                server = it,
+                isManualConnection = true,
+            ).collect()
         }
     }
 
@@ -311,8 +295,6 @@ class ConnectionViewModel(
             prefs.disconnectedByUser(true)
         }
         connectionUseCase.stopConnection().collect {
-            clientStateDataSource.resetVpnIp()
-            vpnIp = prefs.getClientVpnIp()
             portForwardingStatus.value = PortForwardingStatus.NoPortForwarding
         }
     }
