@@ -25,7 +25,7 @@ import com.kape.ui.text.Input
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun InputFieldDialog(
+fun CustomDnsInputFieldDialog(
     @StringRes titleId: Int,
     current: CustomDns,
     onConfirm: (custom: CustomDns) -> Unit,

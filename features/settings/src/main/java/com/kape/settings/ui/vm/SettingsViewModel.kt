@@ -14,8 +14,10 @@ import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.CustomDns
+import com.kape.settings.data.CustomObfuscation
 import com.kape.settings.data.DataEncryption
 import com.kape.settings.data.DnsOptions
+import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
@@ -53,6 +55,7 @@ class SettingsViewModel(
     val connectOnStart = prefs.isConnectOnLaunchEnabled()
     val connectOnUpdate = prefs.isConnectOnAppUpdateEnabled()
     val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
+    val shadowsocksObfuscationEnabled = mutableStateOf(prefs.isShadowsocksObfuscationEnabled())
     val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
     val isAllowLocalTrafficEnabled = mutableStateOf(prefs.isAllowLocalTrafficEnabled())
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
@@ -165,6 +168,11 @@ class SettingsViewModel(
         isAllowLocalTrafficEnabled.value = enable
     }
 
+    fun toggleShadowsocksObfuscation(enabled: Boolean) {
+        prefs.setShadowsocksObfuscationEnabled(enabled)
+        shadowsocksObfuscationEnabled.value = enabled
+    }
+
     fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled()
 
     fun getSelectedProtocol(): VpnProtocols = prefs.getSelectedProtocol()
@@ -179,15 +187,29 @@ class SettingsViewModel(
 
     fun setCustomDns(customDns: CustomDns) = prefs.setCustomDns(customDns = customDns)
 
-    fun isDnsNumeric(ipAddress: String): Boolean {
+    fun getCustomObfuscation(): CustomObfuscation? =
+        prefs.getCustomObfuscation()
+
+    fun setCustomObfuscation(customObfuscation: CustomObfuscation) =
+        prefs.setCustomObfuscation(customObfuscation = customObfuscation)
+
+    fun isNumericIpAddress(ipAddress: String): Boolean {
         isDnsNumeric.value = isNumericIpAddressUseCase.invoke(ipAddress = ipAddress)
         return isDnsNumeric.value
     }
+
+    fun isPortValid(port: String): Boolean =
+        port.isNotEmpty() && port.toInt() > 0
 
     fun setSelectedDnsOption(dnsOptions: DnsOptions) =
         prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
 
     fun getSelectedDnsOption(): DnsOptions = prefs.getSelectedDnsOption()
+
+    fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) =
+        prefs.setSelectedObfuscationOption(obfuscationOptions = obfuscationOptions)
+
+    fun getSelectedObfuscationOption(): ObfuscationOptions = prefs.getSelectedObfuscationOption()
 
     fun isAutomationEnabled() = prefs.isAutomationEnabled()
 

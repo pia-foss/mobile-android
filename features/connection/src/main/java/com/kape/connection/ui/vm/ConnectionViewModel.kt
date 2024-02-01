@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
 import com.kape.connection.domain.ClientStateDataSource
+import com.kape.customization.data.Element
+import com.kape.customization.data.ScreenElement
 import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
@@ -17,6 +19,7 @@ import com.kape.router.EnterFlow
 import com.kape.router.Exit
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import com.kape.shadowsocksregions.domain.ReadShadowsocksRegionsDetailsUseCase
@@ -138,6 +141,23 @@ class ConnectionViewModel(
     }
 
     fun getOrderedElements() = customizationPrefs.getOrderedElements()
+
+    fun isScreenElementVisible(screenElement: ScreenElement): Boolean =
+        when (screenElement.element) {
+            Element.ShadowsocksRegionSelection ->
+                screenElement.isVisible &&
+                    settingsPrefs.isShadowsocksObfuscationEnabled() &&
+                    settingsPrefs.getSelectedProtocol() == VpnProtocols.OpenVPN &&
+                    settingsPrefs.getSelectedObfuscationOption() == ObfuscationOptions.PIA
+            Element.VpnRegionSelection,
+            Element.ConnectionInfo,
+            Element.QuickConnect,
+            Element.QuickSettings,
+            Element.Snooze,
+            Element.IpInfo,
+            Element.Traffic,
+            -> screenElement.isVisible
+        }
 
     fun snooze(interval: Int) = snoozeHandler.setSnooze(interval)
 

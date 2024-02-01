@@ -22,7 +22,7 @@ class CustomizationPrefs(context: Context) : Prefs(context, "customization") {
 
     private fun defaultList(): List<ScreenElement> = listOf(
         ScreenElement(Element.VpnRegionSelection),
-//        ScreenElement(Element.ShadowsocksRegionSelection),
+        ScreenElement(Element.ShadowsocksRegionSelection),
         ScreenElement(Element.IpInfo),
         ScreenElement(Element.QuickConnect),
         ScreenElement(Element.QuickSettings),

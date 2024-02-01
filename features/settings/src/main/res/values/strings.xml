@@ -61,7 +61,14 @@
     <string name="obfuscation_external_proxy_app_description">Make sure you exclude the app you are using to connect in the per app settings.</string>
 
     <string name="obfuscation_shadowsocks_title">Shadowsocks</string>
+    <string name="obfuscation_shadowsocks_subtitle">Shadowsocks Configuration</string>
     <string name="obfuscation_shadowsocks_description">You will hide you are using a VPN. You can select a shadowsocks region on the main screen.</string>
+    <string name="obfuscation_shadowsocks_host">Host</string>
+    <string name="obfuscation_shadowsocks_port">Port</string>
+    <string name="obfuscation_shadowsocks_key">Key</string>
+    <string name="obfuscation_shadowsocks_cipher">Cipher</string>
+    <string name="obfuscation_shadowsocks_invalid_host">Invalid Host</string>
+    <string name="obfuscation_shadowsocks_invalid_port">Invalid Port</string>
 
     <string name="privacy_kill_switch_title">VPN Kill Switch</string>
     <string name="privacy_kill_switch_description">Android includes a better alternative to Kill Switch functionality, click for more information</string>

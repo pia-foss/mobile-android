@@ -15,7 +15,7 @@ fun CustomDnsDialog(
 ) {
     val footnote =
         if (displayFootnote) stringResource(id = R.string.custom_dns_disabling_mace) else null
-    InputFieldDialog(
+    CustomDnsInputFieldDialog(
         R.string.network_dns_selection_title,
         current = customDns,
         onConfirm = {
@@ -26,7 +26,7 @@ fun CustomDnsDialog(
             if (bothDnsEmpty || (primaryDnsOK && secondaryDnsOK)) {
                 onConfirm(it)
             } else {
-                return@InputFieldDialog
+                return@CustomDnsInputFieldDialog
             }
         },
         onDismiss = onDismiss,

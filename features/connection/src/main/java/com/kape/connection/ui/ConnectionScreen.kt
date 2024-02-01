@@ -111,7 +111,7 @@ fun ConnectionScreen() = Screen {
             viewModel.getOrderedElements().forEach {
                 DisplayComponent(
                     screenElement = it,
-                    isVisible = it.isVisible,
+                    isVisible = viewModel.isScreenElementVisible(it),
                     viewModel = viewModel,
                 )
                 Separator()

@@ -153,7 +153,7 @@ fun NetworkSettingsScreen() = Screen {
                 }
             },
             onDismiss = { customDnsDialogVisible.value = false },
-            isDnsNumeric = { viewModel.isDnsNumeric(it) },
+            isDnsNumeric = { viewModel.isNumericIpAddress(it) },
         )
     }
 
