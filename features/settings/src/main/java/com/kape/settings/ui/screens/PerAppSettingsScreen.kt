@@ -48,7 +48,7 @@ fun PerAppSettingsScreen() = Screen {
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
 
     BackHandler {
-        viewModel.navigateUp()
+        onBackPressed(viewModel, lastExcludedApps)
     }
 
     Scaffold(
@@ -56,11 +56,7 @@ fun PerAppSettingsScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
-                        viewModel.showReconnectDialogIfVpnConnected()
-                    } else {
-                        viewModel.navigateUp()
-                    }
+                    onBackPressed(viewModel, lastExcludedApps)
                 },
             )
         },
@@ -184,4 +180,12 @@ private fun LockCheckBox(checked: Boolean, modifier: Modifier) {
         tint = Color.Unspecified,
         modifier = modifier.size(24.dp),
     )
+}
+
+private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>) {
+    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
+        viewModel.showReconnectDialogIfVpnConnected()
+    } else {
+        viewModel.navigateUp()
+    }
 }
