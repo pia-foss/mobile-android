@@ -114,7 +114,7 @@ fun LoginScreen(navController: NavController) = Screen {
                 .testTag(":LoginScreen:enter_password"),
             label = stringResource(id = R.string.enter_password),
             maskInput = true,
-            keyboard = KeyboardType.Text,
+            keyboard = KeyboardType.Password,
             imeAction = ImeAction.Next,
             content = password,
         )
