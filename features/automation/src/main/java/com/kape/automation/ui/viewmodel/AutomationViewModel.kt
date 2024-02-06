@@ -45,8 +45,12 @@ class AutomationViewModel(
             if (locationPermissionManager.isFineLocationPermissionGranted() &&
                 locationPermissionManager.isBackgroundLocationPermissionGranted()
             ) {
-                settingsPrefs.setAutomationEnabled(true)
-                _state.emit(AutomationStep.Main)
+                if (settingsPrefs.isAutomationEnabled().not()) {
+                    settingsPrefs.setAutomationEnabled(true)
+                    _state.emit(AutomationStep.MainSet)
+                } else {
+                    _state.emit(AutomationStep.MainUpdate)
+                }
             } else {
                 if (!locationPermissionManager.isFineLocationPermissionGranted()) {
                     _state.emit(AutomationStep.LocationPermission)
