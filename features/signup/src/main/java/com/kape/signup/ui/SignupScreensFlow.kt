@@ -19,19 +19,19 @@ import org.koin.androidx.compose.koinViewModel
 fun SignupScreensFlow() {
     val viewModel: SignupViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.state }.collectAsState()
+    val connectionState by remember(viewModel) { viewModel.isConnected }.collectAsState()
 
     when (state.step) {
         SignupStep.Consent -> ConsentScreen(viewModel = viewModel)
         SignupStep.Default -> {
-            if (state.loading) {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = LocalColors.current.primary,
-                    )
+            when (connectionState) {
+                true -> {
+                    if (viewModel.subscriptionData.value == null) {
+                        viewModel.loadPrices()
+                    }
                 }
-            } else {
-                viewModel.loadPrices()
+
+                false -> viewModel.loadEmptyPrices()
             }
             when (state.error) {
                 SignupError.EmailInvalid -> TODO()
@@ -55,7 +55,27 @@ fun SignupScreensFlow() {
         }
 
         is SignupStep.Subscriptions -> {
-            SignUpScreen(viewModel = viewModel, (state.step as SignupStep.Subscriptions).data)
+            when (connectionState) {
+                true -> {
+                    if (viewModel.subscriptionData.value == null) {
+                        viewModel.loadPrices()
+                    }
+                }
+
+                false -> viewModel.loadEmptyPrices()
+            }
+            SignUpScreen(viewModel = viewModel, viewModel.subscriptionData.value)
+        }
+
+        SignupStep.LoadingPlans -> {
+            if (state.loading) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = LocalColors.current.primary,
+                    )
+                }
+            }
         }
     }
 }

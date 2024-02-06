@@ -10,7 +10,7 @@ data class SignupScreenState(
 )
 
 val DEFAULT = SignupScreenState(loading = false, SignupStep.Default)
-val LOADING = SignupScreenState(loading = true, SignupStep.Default)
+val LOADING = SignupScreenState(loading = true, SignupStep.LoadingPlans)
 val CONSENT = SignupScreenState(loading = false, SignupStep.Consent)
 val EMAIL = SignupScreenState(loading = false, SignupStep.Email)
 val IN_PROCESS = SignupScreenState(loading = false, SignupStep.InProcess)
@@ -24,25 +24,24 @@ val ERROR_REGISTRATION = SignupScreenState(
     SignupStep.Default,
     error = SignupError.RegistrationFailed,
 )
-
-fun subscriptions(data: SubscriptionData?) =
-    SignupScreenState(loading = false, SignupStep.Subscriptions(data))
+val SUBSCRIPTIONS = SignupScreenState(loading = false, SignupStep.Subscriptions)
 
 fun signedUp(credentials: Credentials) =
     SignupScreenState(loading = false, SignupStep.SignedUp(credentials))
 
 sealed class SignupStep {
-    object Default : SignupStep()
-    data class Subscriptions(val data: SubscriptionData?) : SignupStep()
-    object Consent : SignupStep()
-    object Email : SignupStep()
-    object InProcess : SignupStep()
+    data object Default : SignupStep()
+    data object Subscriptions : SignupStep()
+    data object Consent : SignupStep()
+    data object Email : SignupStep()
+    data object InProcess : SignupStep()
+    data object LoadingPlans : SignupStep()
     data class SignedUp(val credentials: Credentials) : SignupStep()
 }
 
 sealed class SignupError {
-    object EmailInvalid : SignupError()
-    object RegistrationFailed : SignupError()
+    data object EmailInvalid : SignupError()
+    data object RegistrationFailed : SignupError()
 }
 
 data class SubscriptionData(val selected: MutableState<Plan>, val yearly: Plan, val monthly: Plan)
