@@ -13,7 +13,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -41,12 +43,8 @@ import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.theme.statusBarError
 import com.kape.ui.utils.LocalColors
-import com.kape.ui.utils.connectivityState
-import com.kape.utils.InternetConnectionState
 import com.kape.vpnconnect.utils.ConnectionStatus
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun AppBar(
     viewModel: AppBarViewModel,
@@ -56,14 +54,13 @@ fun AppBar(
 ) {
     val scheme = LocalColors.current
     val showDarkIcons = shouldShowDarkIcons(connectionState = viewModel.appBarConnectionState)
-    val connection by connectivityState()
-    val isConnected = connection === InternetConnectionState.Connected
-
     val systemUiController = rememberSystemUiController()
+    val connectionState by remember(viewModel) { viewModel.isConnected }.collectAsState()
+
     SideEffect {
         systemUiController.setStatusBarColor(
             getStatusBarColor(
-                if (isConnected) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
+                if (connectionState) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
                 scheme,
             ),
             showDarkIcons,
@@ -72,8 +69,8 @@ fun AppBar(
 
     AppBarContent(
         type = type,
-        status = if (isConnected) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
-        if (isConnected) viewModel.appBarText else stringResource(id = com.kape.ui.R.string.no_internet_connection),
+        status = if (connectionState) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
+        if (connectionState) viewModel.appBarText else stringResource(id = com.kape.ui.R.string.no_internet_connection),
         onLeftIconClick,
         onRightIconClick,
     )

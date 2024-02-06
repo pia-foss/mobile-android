@@ -68,7 +68,7 @@ class App : Application() {
             mutableListOf<Module>().apply {
                 add(appModule)
                 add(vpnConnectModule(appModule))
-                add(appBarModule)
+                add(appBarModule(appModule))
                 add(notificationModule)
                 add(paymentsModule(appModule))
                 add(loginModule(appModule))
@@ -83,7 +83,7 @@ class App : Application() {
                 add(connectionModule(appModule))
                 add(
                     settingsModule(
-                        appBarModule,
+                        appBarModule(appModule),
                         BuildConfig.VERSION_CODE,
                         BuildConfig.VERSION_NAME,
                     ),
