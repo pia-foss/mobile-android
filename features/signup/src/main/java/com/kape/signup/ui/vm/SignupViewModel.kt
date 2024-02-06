@@ -1,5 +1,6 @@
 package com.kape.signup.ui.vm
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -21,11 +22,12 @@ import com.kape.signup.utils.IN_PROCESS
 import com.kape.signup.utils.LOADING
 import com.kape.signup.utils.Plan
 import com.kape.signup.utils.PriceFormatter
+import com.kape.signup.utils.SUBSCRIPTIONS
 import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SignupStep
 import com.kape.signup.utils.SubscriptionData
 import com.kape.signup.utils.signedUp
-import com.kape.signup.utils.subscriptions
+import com.kape.utils.NetworkConnectionRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -39,12 +41,14 @@ class SignupViewModel(
     private val useCase: SignupUseCase,
     private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
     private val router: Router,
+    private val networkConnectionRepo: NetworkConnectionRepo,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(DEFAULT)
     val state: StateFlow<SignupScreenState> = _state
+    val subscriptionData: MutableState<SubscriptionData?> = mutableStateOf(null)
 
-    private var data: SubscriptionData? = null
+    val isConnected = networkConnectionRepo.isConnected
 
     init {
         viewModelScope.launch {
@@ -58,7 +62,7 @@ class SignupViewModel(
                         }
 
                         PurchaseState.InitFailed -> {
-                            _state.emit(SignupScreenState(false, SignupStep.Subscriptions(null)))
+                            onProductsFailedToLoad()
                         }
 
                         PurchaseState.InitSuccess -> {
@@ -66,7 +70,7 @@ class SignupViewModel(
                         }
 
                         PurchaseState.ProductsLoadedFailed -> {
-                            _state.emit(SignupScreenState(false, SignupStep.Subscriptions(null)))
+                            onProductsFailedToLoad()
                         }
 
                         PurchaseState.ProductsLoadedSuccess -> {
@@ -115,10 +119,9 @@ class SignupViewModel(
                                     formatter.formatMonthlyPlan(monthlyPlan.price.toString())
                                 },
                             )
-                            data = SubscriptionData(mutableStateOf(yearly), yearly, monthly)
-                            data?.let { subscriptionData ->
-                                _state.emit(subscriptions(subscriptionData))
-                            }
+                            subscriptionData.value =
+                                SubscriptionData(mutableStateOf(yearly), yearly, monthly)
+                            _state.emit(SUBSCRIPTIONS)
                         }
 
                         PurchaseState.PurchaseFailed -> {
@@ -130,8 +133,8 @@ class SignupViewModel(
                                 _state.emit(CONSENT)
                             } else if (it == PurchaseState.PurchaseFailed) {
                                 // TODO: handle error?
-                                data?.let { subscriptionData ->
-                                    _state.emit(subscriptions(subscriptionData))
+                                subscriptionData.value?.let { subscriptionData ->
+                                    _state.emit(SUBSCRIPTIONS)
                                 }
                             }
                         }
@@ -144,6 +147,10 @@ class SignupViewModel(
     fun loadPrices() = viewModelScope.launch {
         _state.emit(LOADING)
         paymentProvider.loadProducts()
+    }
+
+    fun loadEmptyPrices() = viewModelScope.launch {
+        _state.emit(SUBSCRIPTIONS)
     }
 
     fun purchase(id: String) = viewModelScope.launch {
@@ -183,5 +190,9 @@ class SignupViewModel(
 
     fun exitApp() {
         router.handleFlow(Exit)
+    }
+
+    private fun onProductsFailedToLoad() = viewModelScope.launch {
+        _state.emit(SignupScreenState(false, SignupStep.Subscriptions))
     }
 }
