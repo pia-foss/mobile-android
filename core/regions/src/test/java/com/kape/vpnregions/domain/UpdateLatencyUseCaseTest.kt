@@ -30,10 +30,10 @@ internal class UpdateLatencyUseCaseTest : KoinTest {
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("data")
     fun `updateLatencies`(expected: List<VpnServer>) = runTest {
-        coEvery { repo.fetchLatencies() } returns flow {
+        coEvery { repo.fetchLatencies(false) } returns flow {
             emit(expected)
         }
-        useCase.updateLatencies().test {
+        useCase.updateLatencies(false).test {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)
