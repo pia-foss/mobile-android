@@ -23,7 +23,8 @@ fun AutomationFlow() {
     when (state) {
         AutomationStep.LocationPermission -> LocationPermissionScreen()
         AutomationStep.EnableBackgroundLocation -> BackgroundLocationPermissionScreen()
-        AutomationStep.Main -> AutomationScreen()
         AutomationStep.AddRule -> AddNewRuleScreen()
+        AutomationStep.MainSet -> AutomationScreen(isSet = true)
+        AutomationStep.MainUpdate -> AutomationScreen(isSet = false)
     }
 }

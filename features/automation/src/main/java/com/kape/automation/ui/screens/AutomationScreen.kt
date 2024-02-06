@@ -42,7 +42,7 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AutomationScreen() = Screen {
+fun AutomationScreen(isSet: Boolean) = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.trusted_network_plural))
@@ -52,8 +52,10 @@ fun AutomationScreen() = Screen {
 
     val context: Context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        context.sendBroadcast(viewModel.broadcastIntent)
+    if (isSet) {
+        LaunchedEffect(Unit) {
+            context.sendBroadcast(viewModel.broadcastIntent)
+        }
     }
 
     Scaffold(
