@@ -46,8 +46,8 @@ class VpnRegionSelectionViewModel(
                 isLoading.value = true
             }
             getVpnRegionsUseCase.loadVpnServers(locale).collect {
-                if (connectionUseCase.isConnected().not()) {
-                    updateLatencyUseCase.updateLatencies().collect { updatedServers ->
+                updateLatencyUseCase.updateLatencies(connectionUseCase.isConnected())
+                    .collect { updatedServers ->
                         for (server in updatedServers) {
                             it.filter { it.name == server.name }[0].latency =
                                 server.latency ?: VPN_REGIONS_PING_TIMEOUT.toString()
@@ -55,9 +55,6 @@ class VpnRegionSelectionViewModel(
                         arrangeVpnServers(it)
                         isLoading.value = false
                     }
-                }
-                arrangeVpnServers(it)
-                isLoading.value = false
             }
         }
 

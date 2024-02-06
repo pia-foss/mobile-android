@@ -7,7 +7,9 @@ import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.kape.vpnregions.utils.adaptServersInfo
 import com.kape.vpnregions.utils.adaptVpnServers
 import com.kape.vpnregions.utils.getServerForDip
+import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 class VpnRegionRepository(
@@ -17,6 +19,7 @@ class VpnRegionRepository(
 
     private var serverMap: Map<String, VpnServer> = hashMapOf()
     private var serverInfo: VpnServerInfo = VpnServerInfo()
+    private var latencyInfo: List<RegionLowerLatencyInformation> = emptyList()
     private var lastUpdate: Long = 0
 
     companion object {
@@ -43,15 +46,19 @@ class VpnRegionRepository(
         }
     }
 
-    fun fetchLatencies(): Flow<List<VpnServer>> = flow {
-        source.pingRequests().collect {
-            if (it == null) {
-                emit(emptyList())
-            } else {
-                for (info in it) {
-                    serverMap[info.region]?.latency = info.latency.toString()
+    fun fetchLatencies(useCachedLatencies: Boolean): Flow<List<VpnServer>> = flow {
+        if (useCachedLatencies) {
+            populateLatencies()
+            emit(serverMap.values.toList())
+        } else {
+            source.pingRequests().collect {
+                if (it == null) {
+                    emit(emptyList())
+                } else {
+                    latencyInfo = it
+                    populateLatencies()
+                    emit(serverMap.values.toList())
                 }
-                emit(serverMap.values.toList())
             }
         }
     }
@@ -69,5 +76,11 @@ class VpnRegionRepository(
             }
         }
         return updatedList
+    }
+
+    private fun populateLatencies() {
+        for (info in latencyInfo) {
+            serverMap[info.region]?.latency = info.latency.toString()
+        }
     }
 }

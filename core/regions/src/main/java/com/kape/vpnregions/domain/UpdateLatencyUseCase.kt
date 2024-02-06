@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.flow
 
 class UpdateLatencyUseCase(private val repo: VpnRegionRepository) {
 
-    fun updateLatencies(): Flow<List<VpnServer>> = flow {
-        repo.fetchLatencies().collect {
+    fun updateLatencies(useCachedLatencies: Boolean): Flow<List<VpnServer>> = flow {
+        repo.fetchLatencies(useCachedLatencies).collect {
             emit(it)
         }
     }

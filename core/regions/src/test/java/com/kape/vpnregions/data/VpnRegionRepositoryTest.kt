@@ -57,7 +57,7 @@ class VpnRegionRepositoryTest : KoinTest {
             every { dipPrefs.getDedicatedIps() } returns emptyList()
 
             repository.fetchVpnRegions("en").collect()
-            repository.fetchLatencies().test {
+            repository.fetchLatencies(false).test {
                 val actual = awaitItem()
                 awaitComplete()
                 Assertions.assertEquals(expected, actual)
