@@ -17,7 +17,7 @@ import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
-import com.kape.utils.NetworkConnectionRepo
+import com.kape.utils.NetworkConnectionListener
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
 import com.kape.vpn.R
@@ -65,7 +65,7 @@ val appModule = module {
     single { VpnManagerProvider() }
     single { RegionsModuleStateProvider(get()) }
     single { KpiModuleStateProvider(get(), get()) }
-    single { NetworkConnectionRepo(get()) }
+    single { NetworkConnectionListener(get()) }
     single { provideAndroidAccountApi(get()) }
     single { provideRegionsApi(get(), get()) }
     single { provideKpiApi(get()) }
