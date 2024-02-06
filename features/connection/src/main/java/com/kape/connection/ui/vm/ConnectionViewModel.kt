@@ -58,7 +58,7 @@ class ConnectionViewModel(
     private val customizationPrefs: CustomizationPrefs,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val alarmManager: AlarmManager,
-    networkConnectionListener: NetworkConnectionListener
+    networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
     private var availableVpnServers = mutableListOf<VpnServer>()
