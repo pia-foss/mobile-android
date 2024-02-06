@@ -30,6 +30,7 @@ import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnregions.VpnRegionPrefs
 import com.kape.vpnregions.domain.GetVpnRegionsUseCase
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.domain.SetVpnRegionsUseCase
@@ -54,6 +55,7 @@ class ConnectionViewModel(
     private val dipPrefs: DipPrefs,
     private val renewDipUseCase: RenewDipUseCase,
     private val customizationPrefs: CustomizationPrefs,
+    private val vpnRegionPrefs: VpnRegionPrefs,
     private val alarmManager: AlarmManager,
 ) : ViewModel(), KoinComponent {
 
@@ -271,7 +273,8 @@ class ConnectionViewModel(
         selectedVpnServer.value = availableVpnServers.firstOrNull { it.key == key }
         viewModelScope.launch {
             selectedVpnServer.value?.let {
-                connectionUseCase.reconnect(it).collect {}
+                vpnRegionPrefs.selectVpnServer(key)
+                connectionUseCase.reconnect(it).collect()
             }
         }
     }
