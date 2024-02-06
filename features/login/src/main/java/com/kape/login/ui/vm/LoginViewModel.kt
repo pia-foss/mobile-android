@@ -15,6 +15,7 @@ import com.kape.payments.ui.PaymentProvider
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.router.ExitFlow
 import com.kape.router.Router
+import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -25,10 +26,12 @@ class LoginViewModel(
     private val userLoggedInUseCase: GetUserLoggedInUseCase,
     private val paymentProvider: PaymentProvider,
     private val router: Router,
+    networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(IDLE)
     val loginState: StateFlow<LoginScreenState> = _state
+    val isConnected = networkConnectionListener.isConnected
 
     private lateinit var packageName: String
 

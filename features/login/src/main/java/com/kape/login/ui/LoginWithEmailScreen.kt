@@ -33,18 +33,13 @@ import com.kape.ui.elements.NoNetworkBanner
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 import com.kape.ui.text.Input
-import com.kape.ui.utils.connectivityState
-import com.kape.utils.InternetConnectionState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun LoginWithEmailScreen(navController: NavController) = Screen {
     val viewModel: LoginWithEmailViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
-    val connection by connectivityState()
-    val isConnected = connection === InternetConnectionState.Connected
+    val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
     val currentContext = LocalContext.current
     val noNetworkMessage = stringResource(id = R.string.no_internet)
     val email = remember { mutableStateOf("") }

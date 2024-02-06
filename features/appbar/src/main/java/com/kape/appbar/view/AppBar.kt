@@ -55,12 +55,12 @@ fun AppBar(
     val scheme = LocalColors.current
     val showDarkIcons = shouldShowDarkIcons(connectionState = viewModel.appBarConnectionState)
     val systemUiController = rememberSystemUiController()
-    val connectionState by remember(viewModel) { viewModel.isConnected }.collectAsState()
+    val isConnected = viewModel.isConnected.collectAsState()
 
     SideEffect {
         systemUiController.setStatusBarColor(
             getStatusBarColor(
-                if (connectionState) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
+                if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
                 scheme,
             ),
             showDarkIcons,
@@ -69,8 +69,8 @@ fun AppBar(
 
     AppBarContent(
         type = type,
-        status = if (connectionState) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
-        if (connectionState) viewModel.appBarText else stringResource(id = com.kape.ui.R.string.no_internet_connection),
+        status = if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
+        if (isConnected.value) viewModel.appBarText else stringResource(id = com.kape.ui.R.string.no_internet_connection),
         onLeftIconClick,
         onRightIconClick,
     )
