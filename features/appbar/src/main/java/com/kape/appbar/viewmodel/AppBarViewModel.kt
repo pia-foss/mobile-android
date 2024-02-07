@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.utils.NetworkConnectionRepo
+import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import kotlinx.coroutines.launch
@@ -13,10 +13,10 @@ import org.koin.core.component.KoinComponent
 
 class AppBarViewModel(
     private val connectionManager: ConnectionManager,
-    private val networkConnectionRepo: NetworkConnectionRepo,
+    networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
-    val isConnected = networkConnectionRepo.isConnected
+    val isConnected = networkConnectionListener.isConnected
 
     var appBarText by mutableStateOf("")
         private set

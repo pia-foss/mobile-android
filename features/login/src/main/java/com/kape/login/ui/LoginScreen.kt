@@ -50,18 +50,14 @@ import com.kape.ui.elements.Screen
 import com.kape.ui.text.Input
 import com.kape.ui.text.SignInText
 import com.kape.ui.utils.LocalColors
-import com.kape.ui.utils.connectivityState
-import com.kape.utils.InternetConnectionState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalCoroutinesApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen(navController: NavController) = Screen {
     val viewModel: LoginViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
-    val connection by connectivityState()
-    val isConnected = connection === InternetConnectionState.Connected
+    val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
     val currentContext = LocalContext.current
     val noNetworkMessage = stringResource(id = R.string.no_internet)
 

@@ -17,7 +17,7 @@ import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
-import com.kape.utils.NetworkConnectionRepo
+import com.kape.utils.NetworkConnectionListener
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
 import com.kape.vpn.R
@@ -33,7 +33,7 @@ import com.kape.vpn.provider.VpnManagerProvider
 import com.kape.vpn.receiver.OnRulesChangedReceiver
 import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.service.WidgetProviderService
-import com.kape.vpn.utils.NetworkListener
+import com.kape.vpn.utils.NetworkManager
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -65,7 +65,14 @@ val appModule = module {
     single { VpnManagerProvider() }
     single { RegionsModuleStateProvider(get()) }
     single { KpiModuleStateProvider(get(), get()) }
-    single { NetworkConnectionRepo(get()) }
+    single { NetworkManager(get(), get(), get(), get()) }
+    single {
+        NetworkConnectionListener(
+            get(),
+            (get() as NetworkManager)::handleCurrentNetwork,
+            OnRulesChangedReceiver(),
+        )
+    }
     single { provideAndroidAccountApi(get()) }
     single { provideRegionsApi(get(), get()) }
     single { provideKpiApi(get()) }
@@ -81,13 +88,17 @@ val appModule = module {
     single { VpnLauncher(get(), get(), get(), get()) }
     single { provideAlarmManager(get()) }
     single(named("port-forwarding-intent")) { providePortForwardingReceiverIntent(get()) }
-    single(named("port-forwarding-pending-intent")) { providePortForwardingPendingIntent(get(), get(named("port-forwarding-intent"))) }
+    single(named("port-forwarding-pending-intent")) {
+        providePortForwardingPendingIntent(
+            get(),
+            get(named("port-forwarding-intent")),
+        )
+    }
     single { CsiEndpointProvider() }
     single { CsiPrefs(get()) }
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
     single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
     single { provideObfuscatorApi(get()) }
-    single { NetworkListener(get(), get(), get(), get(), get()) }
     single(named("rules-updated-intent")) { provideRulesUpdatedIntent(get()) }
     single(named("licences")) { provideLicences(get()) }
     single { CustomizationPrefs(get()) }

@@ -27,12 +27,12 @@ import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SignupStep
 import com.kape.signup.utils.SubscriptionData
 import com.kape.signup.utils.signedUp
-import com.kape.utils.NetworkConnectionRepo
+import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import java.util.*
+import java.util.Locale
 
 class SignupViewModel(
     private val paymentProvider: PaymentProvider,
@@ -41,14 +41,14 @@ class SignupViewModel(
     private val useCase: SignupUseCase,
     private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
     private val router: Router,
-    private val networkConnectionRepo: NetworkConnectionRepo,
+    networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(DEFAULT)
     val state: StateFlow<SignupScreenState> = _state
     val subscriptionData: MutableState<SubscriptionData?> = mutableStateOf(null)
 
-    val isConnected = networkConnectionRepo.isConnected
+    val isConnected = networkConnectionListener.isConnected
 
     init {
         viewModelScope.launch {

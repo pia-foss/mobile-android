@@ -45,27 +45,23 @@ import com.kape.ui.tiles.ShadowsocksLocationPicker
 import com.kape.ui.tiles.Snooze
 import com.kape.ui.tiles.Traffic
 import com.kape.ui.tiles.VpnLocationPicker
-import com.kape.ui.utils.connectivityState
-import com.kape.utils.InternetConnectionState
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.util.Locale
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val locale = Locale.getDefault().language
     val connectionManager: ConnectionManager = koinInject()
-    val connection by connectivityState()
-    val isConnected = connection === InternetConnectionState.Connected
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val isConnected = viewModel.isConnected.collectAsState()
     val scope: CoroutineScope = rememberCoroutineScope()
     val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
 
@@ -100,7 +96,7 @@ fun ConnectionScreen() = Screen {
             )
             Spacer(modifier = Modifier.height(16.dp))
             ConnectButton(
-                if (isConnected) connectionStatus.value else ConnectionStatus.ERROR,
+                if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
                 Modifier
                     .align(CenterHorizontally)
                     .testTag(":ConnectionScreen:connection_button"),

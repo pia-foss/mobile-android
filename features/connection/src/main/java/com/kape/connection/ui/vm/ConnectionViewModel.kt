@@ -25,6 +25,7 @@ import com.kape.shadowsocksregions.domain.ReadShadowsocksRegionsDetailsUseCase
 import com.kape.shadowsocksregions.domain.SetShadowsocksRegionsUseCase
 import com.kape.snooze.SnoozeHandler
 import com.kape.ui.tiles.MAX_SERVERS
+import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ClientStateDataSource
@@ -57,6 +58,7 @@ class ConnectionViewModel(
     private val customizationPrefs: CustomizationPrefs,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val alarmManager: AlarmManager,
+    networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
     private var availableVpnServers = mutableListOf<VpnServer>()
@@ -64,6 +66,7 @@ class ConnectionViewModel(
     private var lastSelectedVpnServerKey: String? = null
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
     private val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
+    val isConnected = networkConnectionListener.isConnected
 
     val clientIp = connectionUseCase.clientIp
     val vpnIp = connectionUseCase.vpnIp

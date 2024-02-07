@@ -8,11 +8,11 @@ import com.kape.location.data.LocationPermissionManager
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkRulesManager
-import com.kape.networkmanagement.data.NetworkScanner
 import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
+import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,14 +23,14 @@ class AutomationViewModel(
     private val locationPermissionManager: LocationPermissionManager,
     private val settingsPrefs: SettingsPrefs,
     private val networkRulesManager: NetworkRulesManager,
-    private val networkScanner: NetworkScanner,
+    private val networkConnectionListener: NetworkConnectionListener,
     val broadcastIntent: Intent,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow<AutomationStep>(AutomationStep.LocationPermission)
     val state: StateFlow<AutomationStep> = _state
 
-    val availableNetwork = networkScanner.currentSSID
+    val availableNetwork = networkConnectionListener.currentSSID
 
     init {
         navigateToNextScreen()
@@ -65,7 +65,7 @@ class AutomationViewModel(
         _state.emit(AutomationStep.AddRule)
     }
 
-    fun scanNetworks() = networkScanner.scanNetwork()
+    fun scanNetworks() = networkConnectionListener.triggerUpdate()
 
     fun getNetworkItems() = networkRulesManager.getRules()
 

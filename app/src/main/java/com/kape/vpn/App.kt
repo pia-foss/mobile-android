@@ -21,7 +21,6 @@ import com.kape.payments.di.paymentsModule
 import com.kape.permissions.di.permissionsModule
 import com.kape.portforwarding.di.portForwardingModule
 import com.kape.profile.di.profileModule
-import com.kape.vpnregionselection.di.regionSelectionModule
 import com.kape.settings.di.settingsModule
 import com.kape.shadowsocksregions.di.shadowsocksRegionsModule
 import com.kape.shareevents.di.kpiModule
@@ -31,9 +30,9 @@ import com.kape.signup.di.signupModule
 import com.kape.snooze.di.snoozeModule
 import com.kape.splash.di.splashModule
 import com.kape.vpn.di.appModule
-import com.kape.vpn.utils.NetworkListener
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnregions.di.vpnRegionsModule
+import com.kape.vpnregionselection.di.regionSelectionModule
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -42,7 +41,6 @@ import org.koin.core.module.Module
 class App : Application() {
 
     private val kpiDataSource: KpiDataSource by inject()
-    private val networkListener: NetworkListener by inject()
 
     private val lifecycleObserver = object : DefaultLifecycleObserver {
         override fun onStop(owner: LifecycleOwner) {
@@ -58,7 +56,6 @@ class App : Application() {
             .lifecycle
             .addObserver(lifecycleObserver)
         setupKoinDependencyInjection()
-        networkListener.register()
     }
 
 
