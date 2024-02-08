@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.connection.ConnectionPrefs
 import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
@@ -27,6 +28,7 @@ class VpnRegionSelectionViewModel(
     private val connectionUseCase: ConnectionUseCase,
     private val router: Router,
     private val vpnRegionPrefs: VpnRegionPrefs,
+    private val connectionPrefs: ConnectionPrefs,
 ) : ViewModel(), KoinComponent {
 
     val servers = mutableStateOf(emptyList<ServerItem>())
@@ -60,6 +62,7 @@ class VpnRegionSelectionViewModel(
 
     fun onVpnRegionSelected(server: VpnServer) {
         vpnRegionPrefs.selectVpnServer(server.key)
+        connectionPrefs.addToQuickConnect(server.key)
         router.handleFlow(ExitFlow.RegionSelection)
     }
 
