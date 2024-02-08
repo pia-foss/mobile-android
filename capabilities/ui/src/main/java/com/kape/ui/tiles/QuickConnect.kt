@@ -97,7 +97,7 @@ private fun QuickConnectItem(server: VpnServer? = null, modifier: Modifier) {
                         contentDescription = null,
                         tint = Color.Unspecified,
                         modifier = Modifier
-                            .align(Alignment.TopEnd)
+                            .align(Alignment.BottomEnd)
                             .size(10.dp),
                     )
                 }
