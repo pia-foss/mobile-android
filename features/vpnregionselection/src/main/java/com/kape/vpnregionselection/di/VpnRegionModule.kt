@@ -10,5 +10,5 @@ fun regionSelectionModule(appModule: Module) = module {
 }
 
 val localRegionSelectionModule = module {
-    viewModel { VpnRegionSelectionViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { VpnRegionSelectionViewModel(get(), get(), get(), get(), get()) }
 }

@@ -2,15 +2,12 @@ package com.kape.vpnregions.domain
 
 import app.cash.turbine.test
 import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnregions.VpnRegionPrefs
 import com.kape.vpnregions.data.VpnRegionRepository
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -21,13 +18,12 @@ import kotlin.test.assertEquals
 internal class GetVpnRegionsUseCaseTest : KoinTest {
 
     private val repo: VpnRegionRepository = mockk(relaxed = true)
-    private val prefs: VpnRegionPrefs = mockk()
 
     private lateinit var useCase: GetVpnRegionsUseCase
 
     @BeforeEach
     internal fun setUp() {
-        useCase = GetVpnRegionsUseCase(repo, prefs)
+        useCase = GetVpnRegionsUseCase(repo)
     }
 
     @ParameterizedTest(name = "expected: {0}")
@@ -41,24 +37,6 @@ internal class GetVpnRegionsUseCaseTest : KoinTest {
             awaitComplete()
             assertEquals(expected, actual)
         }
-    }
-
-    @Test
-    fun `select vpn server`() = runTest {
-        val expected = "selectedServer"
-        every { prefs.selectVpnServer(any()) } returns Unit
-        every { prefs.getSelectedVpnServerKey() } returns expected
-        useCase.selectVpnServer(expected)
-        val actual = useCase.getSelectedVpnServerKey()
-        assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `get favorite vpn servers if any`() = runTest {
-        val expected = listOf("Germany", "UK")
-        every { prefs.getFavoriteVpnServers() } returns expected
-        val actual = useCase.getFavoriteVpnServers()
-        assertEquals(expected, actual)
     }
 
     companion object {
