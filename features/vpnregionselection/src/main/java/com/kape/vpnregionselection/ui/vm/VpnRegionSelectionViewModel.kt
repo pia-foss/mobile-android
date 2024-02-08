@@ -11,10 +11,7 @@ import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.VpnRegionPrefs
-import com.kape.vpnregions.domain.GetVpnRegionsUseCase
-import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
-import com.kape.vpnregions.domain.UpdateLatencyUseCase
-import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
+import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
 import kotlinx.coroutines.launch
@@ -22,9 +19,7 @@ import org.koin.core.component.KoinComponent
 import java.util.Collections
 
 class VpnRegionSelectionViewModel(
-    private val getVpnRegionsUseCase: GetVpnRegionsUseCase,
-    private val updateLatencyUseCase: UpdateLatencyUseCase,
-    private val readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
+    private val regionListProvider: RegionListProvider,
     private val connectionUseCase: ConnectionUseCase,
     private val router: Router,
     private val vpnRegionPrefs: VpnRegionPrefs,
@@ -38,25 +33,15 @@ class VpnRegionSelectionViewModel(
 
     val sortBySelectedOption: MutableState<SortByOption> = mutableStateOf(SortByOption.NONE)
 
-    fun loadInitialRegions() = viewModelScope.launch {
-        arrangeVpnServers(readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder())
-    }
-
     fun loadVpnRegions(locale: String, isLoading: MutableState<Boolean>, displayLoading: Boolean) =
         viewModelScope.launch {
+            arrangeVpnServers(regionListProvider.servers.value)
             if (displayLoading) {
                 isLoading.value = true
             }
-            getVpnRegionsUseCase.loadVpnServers(locale).collect {
-                updateLatencyUseCase.updateLatencies(connectionUseCase.isConnected())
-                    .collect { updatedServers ->
-                        for (server in updatedServers) {
-                            it.filter { it.name == server.name }[0].latency =
-                                server.latency ?: VPN_REGIONS_PING_TIMEOUT.toString()
-                        }
-                        arrangeVpnServers(it)
-                        isLoading.value = false
-                    }
+            regionListProvider.updateServerList(locale, connectionUseCase.isConnected()).collect {
+                arrangeVpnServers(it)
+                isLoading.value = false
             }
         }
 

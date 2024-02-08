@@ -51,7 +51,6 @@ fun VpnRegionSelectionScreen() = Screen {
             autoRegionName = stringResource(id = R.string.automatic)
             LaunchedEffect(Unit) {
                 locale?.let {
-                    loadInitialRegions()
                     loadVpnRegions(it, isLoading, false)
                 }
             }
