@@ -98,14 +98,15 @@ private fun QuickConnectItem(server: VpnServer? = null, modifier: Modifier) {
                         tint = Color.Unspecified,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
-                            .size(10.dp),
+                            .size(12.dp),
                     )
                 }
             }
         }
         Spacer(modifier = Modifier.height(4.dp))
+        val serverText = server?.let { if (it.isDedicatedIp) "DIP - ${it.iso}" else it.iso } ?: ""
         QuickConnectText(
-            content = server?.iso ?: "",
+            content = serverText,
             modifier = Modifier.align(CenterHorizontally),
         )
     }
