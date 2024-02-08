@@ -1,40 +1,10 @@
-<!--
-  ~  Copyright (c) 2020 Private Internet Access, Inc.
-  ~
-  ~  This file is part of the Private Internet Access Android Client.
-  ~
-  ~  The Private Internet Access Android Client is free software: you can redistribute it and/or
-  ~  modify it under the terms of the GNU General Public License as published by the Free
-  ~  Software Foundation, either version 3 of the License, or (at your option) any later version.
-  ~
-  ~  The Private Internet Access Android Client is distributed in the hope that it will be useful,
-  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-  ~  or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-  ~  details.
-  ~
-  ~  You should have received a copy of the GNU General Public License along with the Private
-  ~  Internet Access Android Client.  If not, see <https://www.gnu.org/licenses/>.
-  -->
-
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="43dp"
-    android:height="34dp"
-    android:viewportWidth="43"
-    android:viewportHeight="34">
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
   <path
-      android:pathData="M37.367,28.988a1.19,1.19 0,0 1,-1.19 -1.19V8.505H19.274a1.19,1.19 0,0 1,0 -2.382h19.283v21.673a1.19,1.19 0,0 1,-1.19 1.191"
-      android:fillColor="#fff"
-      android:fillType="evenOdd"/>
-  <path
-      android:pathData="M37.19,31.93l5.177,-6.978H32.012zM14.275,14.936h14.284V0.646H14.275z"
-      android:fillColor="#fff"
-      android:fillType="evenOdd"/>
-  <path
-      android:pathData="M23.44,28.238H4.159V6.564a1.19,1.19 0,1 1,2.38 0v19.292h16.903a1.19,1.19 0,0 1,0 2.382"
-      android:fillColor="#fff"
-      android:fillType="evenOdd"/>
-  <path
-      android:pathData="M5.526,2.432L0.349,9.41h10.354zM14.157,33.716H28.44v-14.29H14.157z"
-      android:fillColor="#fff"
+      android:pathData="M8.688,6.596C8.688,5.714 9.402,5 10.283,5H13.786C14.668,5 15.382,5.714 15.382,6.596V7.306H17.477C18.359,7.306 19.073,8.021 19.073,8.902V12.561L19.638,11.851C19.949,11.539 20.455,11.539 20.766,11.851C21.078,12.163 21.078,12.668 20.766,12.979L18.839,15.052C18.528,15.363 18.023,15.363 17.711,15.052L15.799,12.979C15.487,12.668 15.487,12.163 15.799,11.851C16.111,11.539 16.616,11.539 16.927,11.851L17.477,12.561V8.902H15.382V10.099C15.382,10.98 14.668,11.695 13.786,11.695H10.283C9.402,11.695 8.688,10.98 8.688,10.099V6.596ZM13.786,6.596H10.283V10.099H13.786V6.596ZM8.688,15.285L6.523,15.285L6.523,11.626L7.073,12.337C7.384,12.648 7.889,12.648 8.201,12.337C8.513,12.025 8.513,11.52 8.201,11.208L6.289,9.136C5.977,8.824 5.472,8.824 5.161,9.136L3.234,11.208C2.922,11.52 2.922,12.025 3.234,12.337C3.545,12.648 4.051,12.648 4.362,12.337L4.927,11.626L4.927,15.285C4.927,16.167 5.641,16.881 6.523,16.881H8.688V17.592C8.688,18.473 9.402,19.187 10.283,19.187H13.786C14.668,19.187 15.382,18.473 15.382,17.592V14.089C15.382,13.207 14.668,12.493 13.786,12.493H10.283C9.402,12.493 8.688,13.207 8.688,14.089V15.285ZM10.283,14.089H13.786V17.592H10.283V14.089Z"
+      android:fillColor="#eeeeee"
       android:fillType="evenOdd"/>
 </vector>
