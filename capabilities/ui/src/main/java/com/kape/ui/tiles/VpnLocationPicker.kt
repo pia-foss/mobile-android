@@ -31,7 +31,12 @@ import com.kape.ui.utils.getFlagResource
 import com.kape.utils.vpnserver.VpnServer
 
 @Composable
-fun VpnLocationPicker(server: VpnServer, isConnected: Boolean, onClick: () -> Unit) {
+fun VpnLocationPicker(
+    server: VpnServer,
+    isConnected: Boolean,
+    isOptimal: Boolean,
+    onClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +49,15 @@ fun VpnLocationPicker(server: VpnServer, isConnected: Boolean, onClick: () -> Un
     ) {
         Image(
             painter = painterResource(
-                id = getFlagResource(LocalContext.current, server.iso),
+                id = if (isOptimal) {
+                    getFlagResource(
+                        LocalContext.current,
+                        "",
+                    )
+                } else {
+                    getFlagResource(LocalContext.current, server.iso)
+                },
+
             ),
             contentScale = ContentScale.Crop,
             contentDescription = null,
@@ -57,9 +70,20 @@ fun VpnLocationPicker(server: VpnServer, isConnected: Boolean, onClick: () -> Un
 
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.align(CenterVertically)) {
-            SelectedRegionTitleText(content = stringResource(id = if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region))
+            val heading = if (isOptimal) {
+                R.string.optimal_vpn_region
+            } else {
+                if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region
+            }
+            SelectedRegionTitleText(content = stringResource(id = heading))
+
             Spacer(modifier = Modifier.height(4.dp))
-            SelectedRegionServerText(content = server.name)
+            val name = if (isOptimal && !isConnected) {
+                stringResource(id = R.string.automatic)
+            } else {
+                server.name
+            }
+            SelectedRegionServerText(content = name)
         }
         Spacer(modifier = Modifier.weight(1f))
         Icon(

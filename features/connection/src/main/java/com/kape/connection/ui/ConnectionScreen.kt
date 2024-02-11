@@ -177,7 +177,11 @@ private fun DisplayComponent(
 
             Element.VpnRegionSelection -> {
                 viewModel.selectedVpnServer.value?.let {
-                    VpnLocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {
+                    VpnLocationPicker(
+                        server = it,
+                        isConnected = viewModel.isConnectionActive(),
+                        viewModel.showOptimalLocation.value,
+                    ) {
                         viewModel.showVpnRegionSelection()
                     }
                 }

@@ -63,6 +63,7 @@ class ConnectionViewModel(
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
     private val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
     val isConnected = networkConnectionListener.isConnected
+    val showOptimalLocation = mutableStateOf(true)
 
     val clientIp = connectionUseCase.clientIp
     val vpnIp = connectionUseCase.vpnIp
@@ -128,7 +129,8 @@ class ConnectionViewModel(
         // If there are no servers persisted. Let's use the initial set of servers we are
         // shipping the application with while we perform a request for an updated version.
         if (getShadowsocksRegionsUseCase.getShadowsocksServers().isEmpty()) {
-            val servers = readShadowsocksRegionsDetailsUseCase.readShadowsocksRegionsDetailsFromAssetsFolder()
+            val servers =
+                readShadowsocksRegionsDetailsUseCase.readShadowsocksRegionsDetailsFromAssetsFolder()
             shadowsocksServersLoaded(shadowsocksServers = servers)
         }
 
@@ -146,6 +148,7 @@ class ConnectionViewModel(
                     settingsPrefs.isShadowsocksObfuscationEnabled() &&
                     settingsPrefs.getSelectedProtocol() == VpnProtocols.OpenVPN &&
                     settingsPrefs.getSelectedObfuscationOption() == ObfuscationOptions.PIA
+
             Element.VpnRegionSelection,
             Element.ConnectionInfo,
             Element.QuickConnect,
@@ -189,16 +192,19 @@ class ConnectionViewModel(
         if (availableVpnServers.isNotEmpty()) {
             selectedVpnServer.value =
                 availableVpnServers.firstOrNull { it.key == vpnRegionPrefs.getSelectedVpnServerKey() }
-                    ?: availableVpnServers.sortedBy { it.latency?.toInt() }.firstOrNull()
+
             selectedVpnServer.value?.let {
-                vpnRegionPrefs.selectVpnServer(it.key)
-                prefs.setSelectedVpnServer(it)
+                showOptimalLocation.value = false
+            } ?: run {
+                selectedVpnServer.value =
+                    availableVpnServers.sortedBy { it.latency?.toInt() }.firstOrNull()
+                selectedVpnServer.value?.let {
+                    showOptimalLocation.value = true
+                }
             }
         }
 
-        if (lastSelectedVpnServerKey == null) {
-            lastSelectedVpnServerKey = selectedVpnServer.value?.key.toString()
-        } else if (lastSelectedVpnServerKey != selectedVpnServer.value?.key) {
+        if (lastSelectedVpnServerKey != null && lastSelectedVpnServerKey != selectedVpnServer.value?.key) {
             selectedVpnServer.value?.let {
                 lastSelectedVpnServerKey = selectedVpnServer.value?.key.toString()
                 connectionUseCase.reconnect(it).collect()
@@ -212,11 +218,12 @@ class ConnectionViewModel(
             return null
         }
 
-        return getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()?.let { selectedShadowsocksServer ->
-            shadowsocksServers.firstOrNull { shadowsocksServer ->
-                shadowsocksServer.region == selectedShadowsocksServer.region
-            }
-        } ?: shadowsocksServers.first()
+        return getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
+            ?.let { selectedShadowsocksServer ->
+                shadowsocksServers.firstOrNull { shadowsocksServer ->
+                    shadowsocksServer.region == selectedShadowsocksServer.region
+                }
+            } ?: shadowsocksServers.first()
     }
 
     private fun filterFavoriteVpnServers() {
@@ -279,7 +286,9 @@ class ConnectionViewModel(
 
     private fun connect() = viewModelScope.launch {
         selectedVpnServer.value?.let {
+            lastSelectedVpnServerKey = it.key
             vpnRegionPrefs.selectVpnServer(it.key)
+            prefs.setSelectedVpnServer(it)
             prefs.addToQuickConnect(it.key)
             snoozeHandler.cancelSnooze()
             connectionUseCase.startConnection(

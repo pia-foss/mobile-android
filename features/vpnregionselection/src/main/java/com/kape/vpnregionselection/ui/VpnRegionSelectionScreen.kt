@@ -48,7 +48,7 @@ fun VpnRegionSelectionScreen() = Screen {
     val viewModel: VpnRegionSelectionViewModel =
         koinViewModel<VpnRegionSelectionViewModel>().apply {
             autoRegionIso = stringResource(id = R.string.automatic_iso)
-            autoRegionName = stringResource(id = R.string.automatic)
+            autoRegionName = stringResource(id = com.kape.ui.R.string.automatic)
             LaunchedEffect(Unit) {
                 locale?.let {
                     loadVpnRegions(it, isLoading, false)
