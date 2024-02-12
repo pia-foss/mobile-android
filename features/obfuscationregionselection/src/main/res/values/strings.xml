@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="region_selection_title">Region Selection</string>
-
     <string name="sort_regions_title">Sort regions by</string>
     <string name="name">Name</string>
     <string name="latency">Latency</string>
     <string name="favorites">Favorites</string>
-    <string name="all_regions">All Regions</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="automatic">Automatic</string>

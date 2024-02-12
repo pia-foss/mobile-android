@@ -4,7 +4,6 @@
     <string name="drawer_item_title_subscription_expires_format" comment="format string: placeholder will be replaced with 'x days', 'x hours' or 'x minutes'">Your subscription expires in %1$s.</string>
     <string name="drawer_item_title_subscription_expired">Your subscription is expired</string>
     <string name="drawer_item_description_update_account">UPDATE ACCOUNT</string>
-    <string name="drawer_item_title_region_selection">Region Selection</string>
     <string name="drawer_item_title_account">Account</string>
     <string name="drawer_item_title_dedicated_ip">Dedicated IP</string>
     <string name="drawer_item_title_per_app_settings">Per App Settings</string>
