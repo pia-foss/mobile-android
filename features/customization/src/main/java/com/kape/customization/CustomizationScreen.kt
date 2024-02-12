@@ -182,13 +182,20 @@ private fun DisplayComponent(
 
         Element.VpnRegionSelection -> {
             viewModel.selectedVpnServer.value?.let {
-                VpnLocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {}
+                VpnLocationPicker(
+                    server = it,
+                    isConnected = viewModel.isConnectionActive(),
+                    viewModel.showOptimalLocation.value,
+                ) {}
             }
         }
 
         Element.ShadowsocksRegionSelection -> {
             viewModel.getSelectedShadowsocksServer()?.let {
-                ShadowsocksLocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {}
+                ShadowsocksLocationPicker(
+                    server = it,
+                    isConnected = viewModel.isConnectionActive(),
+                ) {}
             }
         }
 

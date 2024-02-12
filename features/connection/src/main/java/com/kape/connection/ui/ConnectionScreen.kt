@@ -16,7 +16,6 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -110,7 +109,6 @@ fun ConnectionScreen() = Screen {
                     isVisible = viewModel.isScreenElementVisible(it),
                     viewModel = viewModel,
                 )
-                Separator()
             }
         }
     }
@@ -151,6 +149,7 @@ private fun DisplayComponent(
                         else -> ""
                     },
                 )
+                Separator()
             }
 
             Element.QuickConnect -> {
@@ -178,7 +177,11 @@ private fun DisplayComponent(
 
             Element.VpnRegionSelection -> {
                 viewModel.selectedVpnServer.value?.let {
-                    VpnLocationPicker(server = it, isConnected = viewModel.isConnectionActive()) {
+                    VpnLocationPicker(
+                        server = it,
+                        isConnected = viewModel.isConnectionActive(),
+                        viewModel.showOptimalLocation.value,
+                    ) {
                         viewModel.showVpnRegionSelection()
                     }
                 }

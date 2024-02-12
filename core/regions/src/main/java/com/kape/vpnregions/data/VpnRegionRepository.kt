@@ -57,7 +57,7 @@ class VpnRegionRepository(
                 } else {
                     latencyInfo = it
                     populateLatencies()
-                    emit(serverMap.values.toList())
+                    emit(addDipToServerList(serverMap.values.toList()))
                 }
             }
         }

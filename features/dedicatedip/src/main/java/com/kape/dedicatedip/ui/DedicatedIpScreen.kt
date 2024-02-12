@@ -245,7 +245,7 @@ fun DipItem(
                         .height(22.dp),
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_dip_badge),
+                    painter = painterResource(id = com.kape.ui.R.drawable.ic_dip_badge),
                     contentDescription = null,
                     tint = Color.Unspecified,
                     modifier = Modifier
