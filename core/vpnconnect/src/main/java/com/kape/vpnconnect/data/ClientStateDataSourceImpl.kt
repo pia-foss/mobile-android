@@ -18,14 +18,14 @@ class ClientStateDataSourceImpl(
         accountAPI.clientStatus { status: ClientStatusInformation?, error: List<AccountRequestError> ->
             status?.let {
                 if (status.connected) {
-                    connectionPrefs.setClientVpnIp(status.ip)
+                    connectionPrefs.setVpnIp(status.ip)
                 } else {
                     connectionPrefs.setClientIp(status.ip)
-                    connectionPrefs.setClientVpnIp(NO_IP)
+                    connectionPrefs.setVpnIp(NO_IP)
                 }
                 trySend(true)
             } ?: run {
-                connectionPrefs.setClientVpnIp(NO_IP)
+                connectionPrefs.setVpnIp(NO_IP)
                 trySend(false)
             }
         }
@@ -33,6 +33,6 @@ class ClientStateDataSourceImpl(
     }
 
     override fun resetVpnIp() {
-        connectionPrefs.setClientVpnIp(NO_IP)
+        connectionPrefs.setVpnIp(NO_IP)
     }
 }

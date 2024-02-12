@@ -29,7 +29,7 @@ class ClientStateDataSourceImplTest {
     @Test
     fun `getClientStatus - connected - vpn ip is set`() = runTest {
         val info = ClientStatusInformation(connected = true, ip = "100.100.100.100")
-        every { connectionPrefs.setClientVpnIp(any()) } returns Unit
+        every { connectionPrefs.setVpnIp(any()) } returns Unit
         coEvery { accountAPI.clientStatus(any()) } answers {
             lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(
                 info,
@@ -39,7 +39,7 @@ class ClientStateDataSourceImplTest {
         clientStateDataSource.getClientStatus().test {
             val actual = awaitItem()
             assertNotNull(actual)
-            verify { connectionPrefs.setClientVpnIp(info.ip) }
+            verify { connectionPrefs.setVpnIp(info.ip) }
         }
     }
 
@@ -47,7 +47,7 @@ class ClientStateDataSourceImplTest {
     fun `getClientStatus - not connected - ip is set`() = runTest {
         val info = ClientStatusInformation(connected = false, ip = "100.100.100.100")
         every { connectionPrefs.setClientIp(any()) } returns Unit
-        every { connectionPrefs.setClientVpnIp(any()) } returns Unit
+        every { connectionPrefs.setVpnIp(any()) } returns Unit
         coEvery { accountAPI.clientStatus(any()) } answers {
             lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(
                 info,
@@ -58,14 +58,14 @@ class ClientStateDataSourceImplTest {
             val actual = awaitItem()
             assertNotNull(actual)
             verify { connectionPrefs.setClientIp(info.ip) }
-            verify { connectionPrefs.setClientVpnIp(NO_IP) }
+            verify { connectionPrefs.setVpnIp(NO_IP) }
         }
     }
 
     @Test
     fun `getClientStatus - fails - ip is set to empty`() = runTest {
         every { connectionPrefs.setClientIp(any()) } returns Unit
-        every { connectionPrefs.setClientVpnIp(any()) } returns Unit
+        every { connectionPrefs.setVpnIp(any()) } returns Unit
         coEvery { accountAPI.clientStatus(any()) } answers {
             lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(
                 null,
@@ -75,7 +75,7 @@ class ClientStateDataSourceImplTest {
         clientStateDataSource.getClientStatus().test {
             val actual = awaitItem()
             assertNotNull(actual)
-            verify { connectionPrefs.setClientVpnIp(NO_IP) }
+            verify { connectionPrefs.setVpnIp(NO_IP) }
         }
     }
 }

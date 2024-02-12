@@ -62,7 +62,7 @@ internal class ConnectionUseCaseTest {
     private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
         every { setSelectedVpnServer(any()) } returns Unit
         every { getClientIp() } returns "clientIp"
-        every { getClientVpnIp() } returns "vpnIp"
+        every { getVpnIp() } returns "vpnIp"
     }
     private val intent: PendingIntent = mockk()
     private val context: android.content.Context = mockk()

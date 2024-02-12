@@ -78,7 +78,7 @@ class ConnectionViewModel(
 
     init {
         viewModelScope.launch {
-            clientStateDataSource.getClientStatus().collect()
+            connectionUseCase.getClientStatus().collect()
         }
         renewDedicatedIps()
     }
