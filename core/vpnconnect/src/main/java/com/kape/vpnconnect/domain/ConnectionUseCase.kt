@@ -3,9 +3,7 @@ package com.kape.vpnconnect.domain
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.PendingIntent
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import com.kape.connection.ConnectionPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.SettingsPrefs
@@ -48,7 +46,7 @@ class ConnectionUseCase(
     val portForwardingStatus = portForwardingUseCase.portForwardingStatus
     val port = portForwardingUseCase.port
     val clientIp = mutableStateOf(connectionPrefs.getClientIp())
-    val vpnIp = mutableStateOf(connectionPrefs.getClientVpnIp())
+    val vpnIp = mutableStateOf(connectionPrefs.getVpnIp())
 
     fun startConnection(server: VpnServer, isManualConnection: Boolean): Flow<Boolean> = flow {
         connectionManager.setConnectedServerName(server.name, server.iso)
@@ -165,7 +163,7 @@ class ConnectionUseCase(
                     clientIp.value = connectionPrefs.getClientIp()
                     clientStateDataSource.resetVpnIp()
                 }
-                vpnIp.value = connectionPrefs.getClientVpnIp()
+                vpnIp.value = connectionPrefs.getVpnIp()
             }
             startPortForwarding().collect()
         }
@@ -175,7 +173,7 @@ class ConnectionUseCase(
         connectionSource.stopConnection().collect {
             connectionManager.setConnectedServerName("", "")
             clientStateDataSource.resetVpnIp()
-            vpnIp.value = connectionPrefs.getClientVpnIp()
+            vpnIp.value = connectionPrefs.getVpnIp()
             emit(it)
             stopPortForwarding()
         }
@@ -210,6 +208,13 @@ class ConnectionUseCase(
             )
         } else {
             emit(false)
+        }
+    }
+
+    fun getClientStatus(): Flow<Boolean> = flow {
+        clientStateDataSource.getClientStatus().collect {
+            clientIp.value = connectionPrefs.getClientIp()
+            vpnIp.value = connectionPrefs.getVpnIp()
         }
     }
 
