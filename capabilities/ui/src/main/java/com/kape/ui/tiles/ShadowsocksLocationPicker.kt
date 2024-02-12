@@ -31,7 +31,12 @@ import com.kape.ui.utils.getFlagResource
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 
 @Composable
-fun ShadowsocksLocationPicker(server: ShadowsocksServer, isConnected: Boolean, onClick: () -> Unit) {
+fun ShadowsocksLocationPicker(
+    server: ShadowsocksServer,
+    isConnected: Boolean,
+    isOptimal: Boolean,
+    onClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
