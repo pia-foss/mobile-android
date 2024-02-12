@@ -195,6 +195,7 @@ private fun DisplayComponent(
                 ShadowsocksLocationPicker(
                     server = it,
                     isConnected = viewModel.isConnectionActive(),
+                    viewModel.showOptimalLocation.value,
                 ) {}
             }
         }
