@@ -81,6 +81,11 @@ class PortForwardingUseCase(
         }
     }
 
+    fun clearBindPort() {
+        portForwardingStatus.value = PortForwardingStatus.NoPortForwarding
+        port.value = ""
+    }
+
     private fun getServerGroup(): VpnServer.ServerGroup =
         when (settingsPrefs.getSelectedProtocol()) {
             VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD

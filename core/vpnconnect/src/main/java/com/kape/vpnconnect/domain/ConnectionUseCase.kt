@@ -164,8 +164,8 @@ class ConnectionUseCase(
                     clientStateDataSource.resetVpnIp()
                 }
                 vpnIp.value = connectionPrefs.getVpnIp()
+                startPortForwarding().collect()
             }
-            startPortForwarding().collect()
         }
     }
 
@@ -174,8 +174,8 @@ class ConnectionUseCase(
             connectionManager.setConnectedServerName("", "")
             clientStateDataSource.resetVpnIp()
             vpnIp.value = connectionPrefs.getVpnIp()
-            emit(it)
             stopPortForwarding()
+            emit(it)
         }
     }
 
@@ -206,9 +206,16 @@ class ConnectionUseCase(
                 AlarmManager.INTERVAL_FIFTEEN_MINUTES,
                 portForwardingIntent,
             )
+            emit(true)
         } else {
             emit(false)
         }
+    }
+
+    private fun stopPortForwarding() {
+        connectionSource.stopPortForwarding()
+        portForwardingUseCase.clearBindPort()
+        alarmManager.cancel(portForwardingIntent)
     }
 
     fun getClientStatus(): Flow<Boolean> = flow {
@@ -216,10 +223,6 @@ class ConnectionUseCase(
             clientIp.value = connectionPrefs.getClientIp()
             vpnIp.value = connectionPrefs.getVpnIp()
         }
-    }
-
-    private fun stopPortForwarding() {
-        alarmManager.cancel(portForwardingIntent)
     }
 
     private fun getServerGroup(): VpnServer.ServerGroup =
