@@ -19,8 +19,8 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
     }
 
     fun removeFromFavorites(vpnServerName: String) {
-        val favourites = getFavoriteVpnServers()
-        favourites.toMutableList().remove(vpnServerName)
+        val favourites = getFavoriteVpnServers().toMutableList()
+        favourites.remove(vpnServerName)
         prefs.edit().putString(VPN_FAVORITES, Json.encodeToString(favourites)).apply()
     }
 
@@ -36,8 +36,8 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
         return list
     }
 
-    fun selectVpnServer(vpnServerName: String) {
-        prefs.edit().putString(VPN_SELECTED_SERVER, vpnServerName).apply()
+    fun selectVpnServer(vpnServerKey: String) {
+        prefs.edit().putString(VPN_SELECTED_SERVER, vpnServerKey).apply()
     }
 
     fun getSelectedVpnServerKey() = prefs.getString(VPN_SELECTED_SERVER, "")

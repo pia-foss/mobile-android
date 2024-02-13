@@ -145,9 +145,9 @@ class ConnectionViewModel(
         when (screenElement.element) {
             Element.ShadowsocksRegionSelection ->
                 screenElement.isVisible &&
-                        settingsPrefs.isShadowsocksObfuscationEnabled() &&
-                        settingsPrefs.getSelectedProtocol() == VpnProtocols.OpenVPN &&
-                        settingsPrefs.getSelectedObfuscationOption() == ObfuscationOptions.PIA
+                    settingsPrefs.isShadowsocksObfuscationEnabled() &&
+                    settingsPrefs.getSelectedProtocol() == VpnProtocols.OpenVPN &&
+                    settingsPrefs.getSelectedObfuscationOption() == ObfuscationOptions.PIA
 
             Element.VpnRegionSelection,
             Element.ConnectionInfo,
@@ -248,8 +248,10 @@ class ConnectionViewModel(
             }
             val previousConnections = prefs.getQuickConnectServers().reversed()
             for (server in previousConnections) {
-                availableVpnServers.firstOrNull { it.name == server }?.let {
-                    orderedServers.add(it)
+                availableVpnServers.firstOrNull { it.key == server }?.let {
+                    if (orderedServers.firstOrNull { it.key == server } == null) {
+                        orderedServers.add(it)
+                    }
                 }
             }
         }
@@ -303,7 +305,14 @@ class ConnectionViewModel(
             connectionUseCase.startConnection(
                 server = it,
                 isManualConnection = true,
-            ).collect()
+            ).collect {
+                if (it) {
+                    lastSelectedVpnServerKey?.let {
+                        prefs.addToQuickConnect(it)
+                    }
+                    getQuickConnectVpnServers()
+                }
+            }
         }
     }
 
