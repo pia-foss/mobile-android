@@ -47,7 +47,6 @@ class VpnRegionSelectionViewModel(
 
     fun onVpnRegionSelected(server: VpnServer) {
         vpnRegionPrefs.selectVpnServer(server.key)
-        connectionPrefs.addToQuickConnect(server.key)
         router.handleFlow(ExitFlow.RegionSelection)
     }
 

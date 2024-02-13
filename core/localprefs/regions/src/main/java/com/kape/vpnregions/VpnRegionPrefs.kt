@@ -13,27 +13,31 @@ private const val VPN_SERVERS = "servers"
 class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
 
     fun addToFavorites(vpnServerName: String) {
-        val favorites = prefs.getStringSet(VPN_FAVORITES, mutableSetOf())
-        favorites!!.add(vpnServerName)
-        prefs.edit().putStringSet(VPN_FAVORITES, favorites).apply()
+        val favorites = getFavoriteVpnServers().toMutableList()
+        favorites.add(vpnServerName)
+        prefs.edit().putString(VPN_FAVORITES, Json.encodeToString(favorites)).apply()
     }
 
     fun removeFromFavorites(vpnServerName: String) {
-        val favourites = prefs.getStringSet(VPN_FAVORITES, mutableSetOf())
-        favourites!!.remove(vpnServerName)
-        prefs.edit().putStringSet(VPN_FAVORITES, favourites).apply()
+        val favourites = getFavoriteVpnServers().toMutableList()
+        favourites.remove(vpnServerName)
+        prefs.edit().putString(VPN_FAVORITES, Json.encodeToString(favourites)).apply()
     }
 
     fun isFavorite(vpnServerName: String): Boolean {
-        return prefs.getStringSet(VPN_FAVORITES, emptySet())?.contains(vpnServerName) ?: false
+        val favorites: List<String> = getFavoriteVpnServers()
+        return favorites.contains(vpnServerName)
     }
 
     fun getFavoriteVpnServers(): List<String> {
-        return prefs.getStringSet(VPN_FAVORITES, emptySet())?.toList() ?: emptyList()
+        val list: List<String> = prefs.getString(VPN_FAVORITES, null)?.let {
+            Json.decodeFromString(it)
+        } ?: emptyList()
+        return list
     }
 
-    fun selectVpnServer(vpnServerName: String) {
-        prefs.edit().putString(VPN_SELECTED_SERVER, vpnServerName).apply()
+    fun selectVpnServer(vpnServerKey: String) {
+        prefs.edit().putString(VPN_SELECTED_SERVER, vpnServerKey).apply()
     }
 
     fun getSelectedVpnServerKey() = prefs.getString(VPN_SELECTED_SERVER, "")
