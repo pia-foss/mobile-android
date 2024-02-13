@@ -42,6 +42,10 @@ class PortForwardingUseCase(
             }
         }
 
+        if (vpnToken.isEmpty()) {
+            portForwardingStatus.value = PortForwardingStatus.Error
+        }
+
         // If there is active data persisted. Send the bind port reminder request to keep the NAT
         // on the server rather than requesting a new port
         connectionPrefs.getPortBindingInfo()?.let { portBindingInfo ->
@@ -56,27 +60,23 @@ class PortForwardingUseCase(
                     }
                 }
             }
-        }
-
-        if (vpnToken.isEmpty()) {
-            portForwardingStatus.value = PortForwardingStatus.Error
-        }
-
-        portForwardingStatus.value = PortForwardingStatus.Requesting
-        api.getPayloadAndSignature(vpnToken, gateway).collect {
-            connectionPrefs.setPortBindingInformation(it)
-            if (it != null) {
-                api.bindPort(it.decodedPayload.token, it.payload, it.signature, gateway)
-                    .collect { successful ->
-                        if (successful) {
-                            portForwardingStatus.value = PortForwardingStatus.Success
-                            port.value = it.decodedPayload.port.toString()
-                        } else {
-                            portForwardingStatus.value = PortForwardingStatus.Error
+        } ?: run {
+            portForwardingStatus.value = PortForwardingStatus.Requesting
+            api.getPayloadAndSignature(vpnToken, gateway).collect {
+                connectionPrefs.setPortBindingInformation(it)
+                if (it != null) {
+                    api.bindPort(it.decodedPayload.token, it.payload, it.signature, gateway)
+                        .collect { successful ->
+                            if (successful) {
+                                portForwardingStatus.value = PortForwardingStatus.Success
+                                port.value = it.decodedPayload.port.toString()
+                            } else {
+                                portForwardingStatus.value = PortForwardingStatus.Error
+                            }
                         }
-                    }
-            } else {
-                portForwardingStatus.value = PortForwardingStatus.Error
+                } else {
+                    portForwardingStatus.value = PortForwardingStatus.Error
+                }
             }
         }
     }
