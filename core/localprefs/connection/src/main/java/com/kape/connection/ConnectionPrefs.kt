@@ -20,14 +20,15 @@ const val NO_IP = "---"
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
     fun addToQuickConnect(serverKey: String) {
-        val quickConnectList =
-            prefs.getStringSet(QUICK_CONNECT, mutableSetOf())?.toMutableList() ?: mutableListOf()
+        val quickConnectList = getQuickConnectServers().toMutableList()
         quickConnectList.add(serverKey)
-        prefs.edit().putStringSet(QUICK_CONNECT, quickConnectList.toSet()).apply()
+        prefs.edit().putString(QUICK_CONNECT, Json.encodeToString(quickConnectList)).apply()
     }
 
     fun getQuickConnectServers(): List<String> {
-        return prefs.getStringSet(QUICK_CONNECT, emptySet())?.toList() ?: emptyList()
+        return prefs.getString(QUICK_CONNECT, null)?.let {
+            Json.decodeFromString(it)
+        } ?: emptyList()
     }
 
     fun setClientIp(ip: String) = prefs.edit().putString(CLIENT_IP, ip).apply()
