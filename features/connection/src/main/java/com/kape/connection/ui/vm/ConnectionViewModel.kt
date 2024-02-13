@@ -145,9 +145,9 @@ class ConnectionViewModel(
         when (screenElement.element) {
             Element.ShadowsocksRegionSelection ->
                 screenElement.isVisible &&
-                    settingsPrefs.isShadowsocksObfuscationEnabled() &&
-                    settingsPrefs.getSelectedProtocol() == VpnProtocols.OpenVPN &&
-                    settingsPrefs.getSelectedObfuscationOption() == ObfuscationOptions.PIA
+                        settingsPrefs.isShadowsocksObfuscationEnabled() &&
+                        settingsPrefs.getSelectedProtocol() == VpnProtocols.OpenVPN &&
+                        settingsPrefs.getSelectedObfuscationOption() == ObfuscationOptions.PIA
 
             Element.VpnRegionSelection,
             Element.ConnectionInfo,
@@ -227,24 +227,33 @@ class ConnectionViewModel(
     }
 
     private fun filterFavoriteVpnServers() {
-        favoriteVpnServers.value =
-            availableVpnServers.filter { it.name in vpnRegionPrefs.getFavoriteVpnServers() }
+        val favoriteServers = mutableListOf<VpnServer>()
+        for (item in vpnRegionPrefs.getFavoriteVpnServers()) {
+            availableVpnServers.firstOrNull { it.name == item }?.let {
+                favoriteServers.add(it)
+            }
+        }
+        favoriteVpnServers.value = favoriteServers
     }
 
     private fun getQuickConnectVpnServers() {
-        val servers = mutableListOf<String>()
+        val orderedServers = mutableListOf<VpnServer>()
         if (favoriteVpnServers.value.size > MAX_SERVERS) {
-            for (index in MAX_SERVERS until favoriteVpnServers.value.size) {
-                servers.add(favoriteVpnServers.value[index].key)
+            for (index in 0 until MAX_SERVERS) {
+                orderedServers.add(favoriteVpnServers.value[index])
+            }
+        } else {
+            for (index in 0 until favoriteVpnServers.value.size) {
+                orderedServers.add(favoriteVpnServers.value[index])
+            }
+            val previousConnections = prefs.getQuickConnectServers().reversed()
+            for (server in previousConnections) {
+                availableVpnServers.firstOrNull { it.name == server }?.let {
+                    orderedServers.add(it)
+                }
             }
         }
-        val previousConnections =
-            availableVpnServers.filter { it.key in prefs.getQuickConnectServers() }
-
-        for (server in previousConnections) {
-            servers.add(server.key)
-        }
-        quickConnectVpnServers.value = availableVpnServers.filter { it.key in servers }
+        quickConnectVpnServers.value = orderedServers
     }
 
     fun showVpnRegionSelection() {
