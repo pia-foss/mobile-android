@@ -32,7 +32,9 @@ import kotlin.test.assertEquals
 
 internal class ConnectionUseCaseTest {
 
-    private val connectionDataSource: ConnectionDataSource = mockk()
+    private val connectionDataSource: ConnectionDataSource = mockk<ConnectionDataSource>().apply {
+        every { stopPortForwarding() } returns Unit
+    }
     private val clientStateDataSource: ClientStateDataSource = mockk<ClientStateDataSource>().apply {
         every { getClientStatus() } returns flow {
             emit(true)
@@ -76,6 +78,7 @@ internal class ConnectionUseCaseTest {
         mockk<PortForwardingUseCase>().apply {
             every { portForwardingStatus } returns mutableStateOf(PortForwardingStatus.NoPortForwarding)
             every { port } returns mutableStateOf("")
+            every { clearBindPort() } returns Unit
         }
     private val alarmManager: AlarmManager = mockk(relaxed = true)
     private val portForwardingIntent: PendingIntent = mockk()
