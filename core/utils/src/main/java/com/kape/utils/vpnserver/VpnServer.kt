@@ -1,5 +1,6 @@
 package com.kape.utils.vpnserver
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,6 +14,7 @@ data class VpnServer(
     val longitude: String?,
     val isGeo: Boolean,
     val isOffline: Boolean,
+    @SerialName("isAllowsPF")
     val allowsPortForwarding: Boolean,
     val dipToken: String?,
     val dedicatedIp: String?,
