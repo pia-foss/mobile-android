@@ -171,9 +171,14 @@ fun NetworkSettingsScreen() = Screen {
 
     if (allowLocalTrafficDialogVisible.value) {
         AllowLanDialog(
+            titleId = R.string.network_dns_selection_system,
+            descriptionId = R.string.network_dns_selection_system_lan_requirement,
             viewModel = viewModel,
-            dnsSelection = dnsSelection,
             allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
+            onDismiss = {
+                dnsSelection.value = DnsOptions.PIA.value
+                viewModel.setSelectedDnsOption(DnsOptions.PIA)
+            },
         )
     }
 
@@ -217,23 +222,26 @@ fun UnsafeDnsWarningDialog(
 
 @Composable
 fun AllowLanDialog(
+    titleId: Int,
+    descriptionId: Int,
     viewModel: SettingsViewModel,
-    dnsSelection: MutableState<String>,
     allowLocalTrafficDialogVisible: MutableState<Boolean>,
+    onDismiss: () -> Unit = {},
+    onConfirm: () -> Unit = {},
 ) {
     TextDialog(
-        titleId = R.string.network_dns_selection_system,
-        descriptionId = R.string.network_dns_selection_system_lan_requirement,
+        titleId = titleId,
+        descriptionId = descriptionId,
         onDismiss = {
-            dnsSelection.value = DnsOptions.PIA.value
-            viewModel.setSelectedDnsOption(DnsOptions.PIA)
             allowLocalTrafficDialogVisible.value = false
             viewModel.reconnectDialogVisible.value = false
+            onDismiss()
         },
         onConfirm = {
             viewModel.toggleAllowLocalNetwork(true)
             allowLocalTrafficDialogVisible.value = false
             viewModel.showReconnectDialogIfVpnConnected()
+            onConfirm()
         },
     )
 }

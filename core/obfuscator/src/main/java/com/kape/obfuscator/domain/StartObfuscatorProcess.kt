@@ -13,20 +13,20 @@ class StartObfuscatorProcess(
 ) {
 
     companion object {
-        private const val LOCALHOST_PROXY = "127.0.0.1"
-        private const val OBFUSCATOR_PROXY_PORT = 8383
+        const val OBFUSCATOR_PROXY_HOST = "127.0.0.1"
+        const val OBFUSCATOR_PROXY_PORT = 8383
     }
 
     operator fun invoke(
         obfuscatorProcessInformation: ObfuscatorProcessInformation,
         obfuscatorProcessListener: ObfuscatorProcessListener,
-    ): Flow<Result<Int>> = callbackFlow {
+    ): Flow<Result<Unit>> = callbackFlow {
         obfuscatorAPI.start(
             commandLineParams = listOf(
-                "-v", "--log-without-time",
+                "-vvv", "--log-without-time",
                 "-s", "${obfuscatorProcessInformation.serverIp}:${obfuscatorProcessInformation.serverPort}",
                 "-k", obfuscatorProcessInformation.serverKey,
-                "-b", "$LOCALHOST_PROXY:$OBFUSCATOR_PROXY_PORT",
+                "-b", "$OBFUSCATOR_PROXY_HOST:$OBFUSCATOR_PROXY_PORT",
                 "-m", obfuscatorProcessInformation.serverEncryptMethod,
             ),
             obfuscatorProcessEventHandler = startObfuscatorProcessEventHandler(
@@ -35,7 +35,7 @@ class StartObfuscatorProcess(
         ) {
             it.fold(
                 onSuccess = {
-                    trySend(Result.success(OBFUSCATOR_PROXY_PORT))
+                    trySend(Result.success(Unit))
                 },
                 onFailure = { throwable ->
                     trySend(Result.failure(throwable))

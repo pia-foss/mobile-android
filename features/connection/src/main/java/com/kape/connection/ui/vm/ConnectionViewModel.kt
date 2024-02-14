@@ -218,12 +218,13 @@ class ConnectionViewModel(
             return null
         }
 
-        return getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
-            ?.let { selectedShadowsocksServer ->
-                shadowsocksServers.firstOrNull { shadowsocksServer ->
-                    shadowsocksServer.region == selectedShadowsocksServer.region
-                }
-            } ?: shadowsocksServers.first()
+        var selectedShadowsocksServer = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
+        if (selectedShadowsocksServer == null) {
+            selectedShadowsocksServer = shadowsocksServers.first()
+            setShadowsocksRegionsUseCase.setSelectShadowsocksServer(selectedShadowsocksServer)
+        }
+
+        return selectedShadowsocksServer
     }
 
     private fun filterFavoriteVpnServers() {

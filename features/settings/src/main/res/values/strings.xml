@@ -57,12 +57,14 @@
     <string name="network_allow_lan_traffic_title">Allow LAN Traffic</string>
     <string name="network_allow_lan_traffic_description">Always permits traffic between devices on your local network</string>
 
+    <!--    Obfuscation Settings    -->
     <string name="obfuscation_external_proxy_app_title">External Proxy App</string>
     <string name="obfuscation_external_proxy_app_description">Make sure you exclude the app you are using to connect in the per app settings.</string>
-
     <string name="obfuscation_shadowsocks_title">Shadowsocks</string>
     <string name="obfuscation_shadowsocks_subtitle">Shadowsocks Configuration</string>
     <string name="obfuscation_shadowsocks_description">You will hide you are using a VPN. You can select a shadowsocks region on the main screen.</string>
+    <string name="obfuscation_shadowsocks_lan_requirement">To access the proxy client, we need to Allow LAN Traffic.</string>
+    <string name="obfuscation_shadowsocks_tcp_requirement">In order to connect to the shadowsocks server, we need to update the transport to TCP.</string>
     <string name="obfuscation_shadowsocks_host">Host</string>
     <string name="obfuscation_shadowsocks_port">Port</string>
     <string name="obfuscation_shadowsocks_key">Key</string>

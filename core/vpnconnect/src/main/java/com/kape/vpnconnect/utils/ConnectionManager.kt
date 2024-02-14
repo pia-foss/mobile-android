@@ -4,8 +4,8 @@ import android.content.Context
 import com.kape.shareevents.data.models.KpiConnectionStatus
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.vpnconnect.R
+import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
-import com.kape.vpnmanager.presenters.VPNManagerConnectionStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -38,10 +38,16 @@ class ConnectionManager(
 
     override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
         val currentStatus = when (status) {
-            VPNManagerConnectionStatus.DISCONNECTED -> ConnectionStatus.DISCONNECTED
-            VPNManagerConnectionStatus.CONNECTING -> ConnectionStatus.CONNECTING
-            VPNManagerConnectionStatus.RECONNECTING -> ConnectionStatus.RECONNECTING
-            VPNManagerConnectionStatus.CONNECTED -> ConnectionStatus.CONNECTED
+            VPNManagerConnectionStatus.Disconnecting,
+            is VPNManagerConnectionStatus.Disconnected,
+            -> ConnectionStatus.DISCONNECTED
+            VPNManagerConnectionStatus.Authenticating,
+            VPNManagerConnectionStatus.LinkUp,
+            VPNManagerConnectionStatus.Configuring,
+            VPNManagerConnectionStatus.Connecting,
+            -> ConnectionStatus.CONNECTING
+            VPNManagerConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
+            is VPNManagerConnectionStatus.Connected -> ConnectionStatus.CONNECTED
         }
         _connectionStatus.value = currentStatus
         submitKpiEventUseCase.submitConnectionEvent(
@@ -55,10 +61,16 @@ class ConnectionManager(
 
     private fun getKpiConnectionStatus(status: VPNManagerConnectionStatus): KpiConnectionStatus {
         return when (status) {
-            VPNManagerConnectionStatus.DISCONNECTED -> KpiConnectionStatus.NotConnected
-            VPNManagerConnectionStatus.CONNECTING -> KpiConnectionStatus.Connecting
-            VPNManagerConnectionStatus.RECONNECTING -> KpiConnectionStatus.Reconnecting
-            VPNManagerConnectionStatus.CONNECTED -> KpiConnectionStatus.Connected
+            VPNManagerConnectionStatus.Disconnecting,
+            is VPNManagerConnectionStatus.Disconnected,
+            -> KpiConnectionStatus.NotConnected
+            VPNManagerConnectionStatus.Authenticating,
+            VPNManagerConnectionStatus.LinkUp,
+            VPNManagerConnectionStatus.Configuring,
+            VPNManagerConnectionStatus.Connecting,
+            -> KpiConnectionStatus.Connecting
+            VPNManagerConnectionStatus.Reconnecting -> KpiConnectionStatus.Reconnecting
+            is VPNManagerConnectionStatus.Connected -> KpiConnectionStatus.Connected
         }
     }
 }

@@ -166,6 +166,10 @@ class SettingsViewModel(
     fun toggleAllowLocalNetwork(enable: Boolean) {
         prefs.setAllowLocalTrafficEnabled(enable)
         isAllowLocalTrafficEnabled.value = enable
+
+        if (enable.not()) {
+            toggleShadowsocksObfuscation(enabled = false)
+        }
     }
 
     fun toggleShadowsocksObfuscation(enabled: Boolean) {
@@ -177,7 +181,13 @@ class SettingsViewModel(
 
     fun getSelectedProtocol(): VpnProtocols = prefs.getSelectedProtocol()
 
-    fun selectProtocol(protocol: VpnProtocols) = prefs.setSelectedProtocol(protocol)
+    fun selectProtocol(protocol: VpnProtocols) {
+        prefs.setSelectedProtocol(protocol)
+
+        if (protocol != VpnProtocols.OpenVPN) {
+            toggleShadowsocksObfuscation(enabled = false)
+        }
+    }
 
     fun getWireGuardSettings(): WireGuardSettings = prefs.getWireGuardSettings()
 
@@ -234,7 +244,14 @@ class SettingsViewModel(
         if (hasSettingChanged) {
             showReconnectDialogIfVpnConnected()
         }
+
+        if (transport == Transport.UDP) {
+            toggleShadowsocksObfuscation(enabled = false)
+        }
     }
+
+    fun getTransport(): Transport =
+        getOpenVpnSettings().transport
 
     fun setEncryption(encryption: DataEncryption) {
         val currentSettings = getOpenVpnSettings()

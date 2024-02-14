@@ -145,11 +145,11 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementObfuscator() {
-        add(IMPLEMENTATION, "com.kape.android:obfuscator:0.0.1")
+        add(IMPLEMENTATION, "com.kape.android:obfuscator:0.0.2")
     }
 
     fun DependencyHandler.implementVpnManager() {
-        add(IMPLEMENTATION, "com.kape.android:vpnmanager:0.1.1")
+        add(IMPLEMENTATION, "com.kape.android:vpnmanager:0.2.0-rc03")
     }
 
     fun DependencyHandler.implementDrawablePainter() {

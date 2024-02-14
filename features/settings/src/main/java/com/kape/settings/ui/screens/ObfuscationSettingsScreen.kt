@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -12,10 +13,13 @@ import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.data.ObfuscationOptions
+import com.kape.settings.data.Transport
 import com.kape.settings.ui.elements.CustomObfuscationDialog
 import com.kape.settings.ui.elements.ObfuscationSelectionDialog
+import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
+import com.kape.settings.ui.elements.TextDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.Screen
 import org.koin.androidx.compose.koinViewModel
@@ -36,6 +40,8 @@ fun ObfuscationSettingsScreen() = Screen {
 
     val customObfuscationDialogVisible = remember { mutableStateOf(false) }
     val obfuscationDialogVisible = remember { mutableStateOf(false) }
+    val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
+    val tcpTransportDialogVisible = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -61,9 +67,14 @@ fun ObfuscationSettingsScreen() = Screen {
             SettingsToggle(
                 titleId = R.string.obfuscation_shadowsocks_title,
                 subtitleId = R.string.obfuscation_shadowsocks_description,
-                enabled = viewModel.shadowsocksObfuscationEnabled.value,
+                stateEnabled = viewModel.shadowsocksObfuscationEnabled,
                 toggle = { enabled ->
                     viewModel.toggleShadowsocksObfuscation(enabled)
+                    if (viewModel.isAllowLocalTrafficEnabled.value.not()) {
+                        allowLocalTrafficDialogVisible.value = true
+                    } else if (viewModel.getTransport() != Transport.TCP) {
+                        tcpTransportDialogVisible.value = true
+                    }
                 },
             )
             if (viewModel.shadowsocksObfuscationEnabled.value) {
@@ -126,4 +137,70 @@ fun ObfuscationSettingsScreen() = Screen {
             },
         )
     }
+
+    if (viewModel.reconnectDialogVisible.value) {
+        ReconnectDialog(
+            onReconnect = {
+                viewModel.reconnect()
+                viewModel.reconnectDialogVisible.value = false
+            },
+            onLater = {
+                viewModel.reconnectDialogVisible.value = false
+            },
+        )
+    }
+
+    if (allowLocalTrafficDialogVisible.value) {
+        AllowLanDialog(
+            titleId = R.string.obfuscation_shadowsocks_title,
+            descriptionId = R.string.obfuscation_shadowsocks_lan_requirement,
+            viewModel = viewModel,
+            allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
+            onDismiss = {
+                viewModel.toggleShadowsocksObfuscation(false)
+            },
+            onConfirm = {
+                if (viewModel.getTransport() != Transport.TCP) {
+                    tcpTransportDialogVisible.value = true
+                }
+            },
+        )
+    }
+
+    if (tcpTransportDialogVisible.value) {
+        UpdateOpenVPNTransportToTcpDialog(
+            titleId = R.string.obfuscation_shadowsocks_title,
+            descriptionId = R.string.obfuscation_shadowsocks_tcp_requirement,
+            viewModel = viewModel,
+            tcpTransportDialogVisible = tcpTransportDialogVisible,
+            onDismiss = {
+                viewModel.toggleShadowsocksObfuscation(false)
+            },
+        )
+    }
+}
+
+@Composable
+fun UpdateOpenVPNTransportToTcpDialog(
+    titleId: Int,
+    descriptionId: Int,
+    viewModel: SettingsViewModel,
+    tcpTransportDialogVisible: MutableState<Boolean>,
+    onDismiss: () -> Unit = {},
+    onConfirm: () -> Unit = {},
+) {
+    TextDialog(
+        titleId = titleId,
+        descriptionId = descriptionId,
+        onDismiss = {
+            tcpTransportDialogVisible.value = false
+            viewModel.setTransport(Transport.UDP)
+            onDismiss()
+        },
+        onConfirm = {
+            viewModel.setTransport(Transport.TCP)
+            tcpTransportDialogVisible.value = false
+            onConfirm()
+        },
+    )
 }

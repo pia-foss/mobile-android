@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import androidx.compose.runtime.mutableStateOf
 import app.cash.turbine.test
 import com.kape.connection.ConnectionPrefs
+import com.kape.obfuscator.domain.StartObfuscatorProcess
+import com.kape.obfuscator.domain.StopObfuscatorProcess
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.SettingsPrefs
@@ -13,6 +15,7 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
+import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.utils.ConnectionManager
@@ -60,12 +63,14 @@ internal class ConnectionUseCaseTest {
         every { getWireGuardSettings() } returns WireGuardSettings()
         every { isMaceEnabled() } returns true
         every { isPortForwardingEnabled() } returns false
+        every { isShadowsocksObfuscationEnabled() } returns false
     }
     private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
         every { setSelectedVpnServer(any()) } returns Unit
         every { getClientIp() } returns "clientIp"
         every { getVpnIp() } returns "vpnIp"
     }
+    private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs = mockk<ShadowsocksRegionPrefs>()
     private val intent: PendingIntent = mockk()
     private val context: android.content.Context = mockk()
     private val notificationBuilder: Notification.Builder = mockk<Notification.Builder>().apply {
@@ -84,6 +89,8 @@ internal class ConnectionUseCaseTest {
     private val portForwardingIntent: PendingIntent = mockk()
     private lateinit var useCase: ConnectionUseCase
     private val getActiveInterfaceDnsUseCase = mockk<GetActiveInterfaceDnsUseCase>()
+    private val startObfuscatorProcess: StartObfuscatorProcess = mockk(relaxed = true)
+    private val stopObfuscatorProcess: StopObfuscatorProcess = mockk(relaxed = true)
 
     private val appModule = module {
         single { "certificate" }
@@ -102,9 +109,12 @@ internal class ConnectionUseCaseTest {
             connectionManager,
             settingsPrefs,
             connectionPrefs,
+            shadowsocksRegionPrefs,
             intent,
             notificationBuilder,
             getActiveInterfaceDnsUseCase,
+            startObfuscatorProcess,
+            stopObfuscatorProcess,
             portForwardingUseCase, alarmManager, portForwardingIntent,
         )
         every { connectionManager.setConnectedServerName(any(), any()) } returns Unit

@@ -5,18 +5,29 @@ import android.app.Notification
 import android.app.PendingIntent
 import androidx.compose.runtime.mutableStateOf
 import com.kape.connection.ConnectionPrefs
+import com.kape.obfuscator.data.ObfuscatorProcessInformation
+import com.kape.obfuscator.data.ObfuscatorProcessListener
+import com.kape.obfuscator.domain.StartObfuscatorProcess
+import com.kape.obfuscator.domain.StartObfuscatorProcess.Companion.OBFUSCATOR_PROXY_HOST
+import com.kape.obfuscator.domain.StartObfuscatorProcess.Companion.OBFUSCATOR_PROXY_PORT
+import com.kape.obfuscator.domain.StopObfuscatorProcess
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.SettingsPrefs
+import com.kape.settings.data.DataEncryption
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.ProtocolSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
+import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnmanager.api.OpenVpnSocksProxyDetails
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.DnsInformation
 import com.kape.vpnmanager.data.models.OpenVpnClientConfiguration
+import com.kape.vpnmanager.data.models.ProtocolCipher
 import com.kape.vpnmanager.data.models.ServerList
+import com.kape.vpnmanager.data.models.TransportProtocol
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import kotlinx.coroutines.delay
@@ -35,9 +46,12 @@ class ConnectionUseCase(
     private val connectionManager: ConnectionManager,
     private val settingsPrefs: SettingsPrefs,
     private val connectionPrefs: ConnectionPrefs,
+    private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
     private val configureIntent: PendingIntent,
     private val notificationBuilder: Notification.Builder,
     private val getActiveInterfaceDnsUseCase: GetActiveInterfaceDnsUseCase,
+    private val startObfuscatorProcess: StartObfuscatorProcess,
+    private val stopObfuscatorProcess: StopObfuscatorProcess,
     private val portForwardingUseCase: PortForwardingUseCase,
     private val alarmManager: AlarmManager,
     private val portForwardingIntent: PendingIntent,
@@ -52,6 +66,166 @@ class ConnectionUseCase(
         connectionManager.setConnectedServerName(server.name, server.iso)
         connectionManager.isManualConnection = isManualConnection
         connectionPrefs.setSelectedVpnServer(server)
+        startShadowsocksConnection().collect { succeeded ->
+            if (succeeded.not()) {
+                emit(false)
+                return@collect
+            }
+
+            startVpnConnection(server = server).collect { connected ->
+                emit(connected)
+                if (connected) {
+                    startPortForwarding().collect()
+                } else {
+                    stopShadowsocksConnection().collect()
+                }
+            }
+        }
+    }
+
+    fun stopConnection(): Flow<Boolean> = flow {
+        stopVpnConnection().collect {
+            emit(it)
+            stopShadowsocksConnection().collect()
+            stopPortForwarding()
+        }
+    }
+
+    fun reconnect(server: VpnServer): Flow<Boolean> = flow {
+        if (isConnected()) {
+            stopConnection().collect {
+                startConnection(server, false).collect {
+                    emit(it)
+                }
+            }
+        } else {
+            startConnection(server, false).collect {
+                emit(it)
+            }
+        }
+    }
+
+    fun isConnected(): Boolean = connectionManager.isConnected()
+
+    private fun getVpnToken() = connectionSource.getVpnToken()
+
+    private fun startVpnConnection(server: VpnServer): Flow<Boolean> = flow {
+        connectionSource.startConnection(
+            generateConnectionConfiguration(server = server),
+            connectionManager,
+        ).collect { connected ->
+            emit(connected)
+            delay(3000)
+            clientStateDataSource.getClientStatus().collect {
+                if (!connected) {
+                    clientIp.value = connectionPrefs.getClientIp()
+                    clientStateDataSource.resetVpnIp()
+                }
+                vpnIp.value = connectionPrefs.getVpnIp()
+                startPortForwarding().collect()
+            }
+        }
+    }
+
+    private fun stopVpnConnection(): Flow<Boolean> = flow {
+        connectionSource.stopConnection().collect {
+            connectionManager.setConnectedServerName("", "")
+            clientStateDataSource.resetVpnIp()
+            vpnIp.value = connectionPrefs.getVpnIp()
+            stopPortForwarding()
+            emit(it)
+        }
+    }
+
+    private fun startShadowsocksConnection(): Flow<Boolean> = flow {
+        if (settingsPrefs.isShadowsocksObfuscationEnabled().not()) {
+            emit(true)
+            return@flow
+        }
+
+        val selectedShadowsocksServer = shadowsocksRegionPrefs.getSelectedShadowsocksServer() ?: run {
+            emit(false)
+            return@flow
+        }
+
+        startObfuscatorProcess(
+            obfuscatorProcessInformation = ObfuscatorProcessInformation(
+                serverIp = selectedShadowsocksServer.host,
+                serverPort = selectedShadowsocksServer.port.toString(),
+                serverKey = selectedShadowsocksServer.key,
+                serverEncryptMethod = selectedShadowsocksServer.cipher,
+            ),
+            obfuscatorProcessListener = object : ObfuscatorProcessListener {
+                override fun processStopped() {
+                    stopConnection()
+                }
+            },
+        ).collect {
+            it.fold(
+                onSuccess = {
+                    emit(true)
+                },
+                onFailure = {
+                    emit(false)
+                },
+            )
+        }
+    }
+
+    private fun stopShadowsocksConnection(): Flow<Boolean> = flow {
+        stopObfuscatorProcess().collect {
+            it.fold(
+                onSuccess = {
+                    emit(true)
+                },
+                onFailure = {
+                    emit(false)
+                },
+            )
+        }
+    }
+
+    private fun startPortForwarding(): Flow<Boolean> = flow {
+        if (settingsPrefs.isPortForwardingEnabled()) {
+            portForwardingUseCase.bindPort(getVpnToken())
+            alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                0,
+                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                portForwardingIntent,
+            )
+            emit(true)
+        } else {
+            emit(false)
+        }
+    }
+
+    private fun stopPortForwarding() {
+        connectionSource.stopPortForwarding()
+        portForwardingUseCase.clearBindPort()
+        alarmManager.cancel(portForwardingIntent)
+    }
+
+    fun getClientStatus(): Flow<Boolean> = flow {
+        clientStateDataSource.getClientStatus().collect {
+            clientIp.value = connectionPrefs.getClientIp()
+            vpnIp.value = connectionPrefs.getVpnIp()
+        }
+    }
+
+    private fun getServerGroup(): VpnServer.ServerGroup =
+        when (settingsPrefs.getSelectedProtocol()) {
+            VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
+            VpnProtocols.OpenVPN -> {
+                if (settingsPrefs.getOpenVpnSettings().transport == Transport.UDP) {
+                    VpnServer.ServerGroup.OPENVPN_UDP
+                } else {
+                    VpnServer.ServerGroup.OPENVPN_TCP
+                }
+            }
+        }
+
+    private fun generateConnectionConfiguration(server: VpnServer): ClientConfiguration {
         val index = connectionSource.getVpnToken().indexOf(":")
         val details = server.endpoints[getServerGroup()]
 
@@ -59,7 +233,11 @@ class ConnectionUseCase(
         val cn: String
         val port: Int
 
-        if (!details.isNullOrEmpty()) {
+        if (details.isNullOrEmpty()) {
+            ip = ""
+            cn = ""
+            port = 8080
+        } else {
             if (details[0].ip.contains(":")) {
                 ip = details[0].ip.substring(0, details[0].ip.indexOf(":"))
                 port = details[0].ip.substring(details[0].ip.indexOf(":") + 1).toInt()
@@ -68,10 +246,6 @@ class ConnectionUseCase(
                 port = settingsPrefs.getOpenVpnSettings().port.toInt()
             }
             cn = details[0].cn
-        } else {
-            ip = ""
-            cn = ""
-            port = 8080
         }
 
         val protocolTarget: VPNManagerProtocolTarget
@@ -118,16 +292,11 @@ class ConnectionUseCase(
         notificationBuilder.setContentText("Connected")
         notificationBuilder.setContentIntent(configureIntent)
 
-        val clientConfiguration = ClientConfiguration(
+        return ClientConfiguration(
             sessionName = Clock.System.now().toString(),
             configureIntent = configureIntent,
             protocolTarget = protocolTarget,
             mtu = settings.mtu,
-            port = port,
-            dnsInformation = DnsInformation(
-                dnsList = dnsList,
-                systemDnsResolverEnabled = settingsPrefs.getSelectedDnsOption() == DnsOptions.SYSTEM,
-            ),
             notificationId = 123,
             notification = notificationBuilder.build(),
             allowedApplicationPackages = emptyList(),
@@ -137,103 +306,44 @@ class ConnectionUseCase(
                 servers = listOf(
                     ServerList.Server(
                         ip = ip,
-                        commonName = cn,
+                        port = port,
+                        commonOrDistinguishedName = cn,
+                        transport = when (settingsPrefs.getOpenVpnSettings().transport) {
+                            Transport.UDP -> TransportProtocol.UDP
+                            Transport.TCP -> TransportProtocol.TCP
+                        },
+                        ciphers = when (settingsPrefs.getOpenVpnSettings().dataEncryption) {
+                            DataEncryption.AES_128_GCM -> listOf(ProtocolCipher.AES_128_GCM)
+                            DataEncryption.AES_256_GCM -> listOf(ProtocolCipher.AES_256_GCM)
+                            DataEncryption.CHA_CHA_20 -> listOf(ProtocolCipher.CHA_CHA_20)
+                        },
                         latency = server.latency?.toLong(),
+                        dnsInformation = DnsInformation(
+                            dnsList = dnsList,
+                            systemDnsResolverEnabled = settingsPrefs.getSelectedDnsOption() == DnsOptions.SYSTEM,
+                        ),
                     ),
                 ),
             ),
             openVpnClientConfiguration = OpenVpnClientConfiguration(
                 caCertificate = certificate,
-                cipher = settingsPrefs.getOpenVpnSettings().dataEncryption.value,
-                transport = settingsPrefs.getOpenVpnSettings().transport.value.lowercase(),
                 username = connectionSource.getVpnToken().substring(0, index),
                 password = connectionSource.getVpnToken().substring(index + 1),
+                socksProxy = when (settingsPrefs.isShadowsocksObfuscationEnabled()) {
+                    true -> shadowsocksRegionPrefs.getSelectedShadowsocksServer()?.let {
+                        OpenVpnSocksProxyDetails(
+                            clientProxyAddress = OBFUSCATOR_PROXY_HOST,
+                            clientProxyPort = OBFUSCATOR_PROXY_PORT,
+                            serverProxyAddress = it.host,
+                        )
+                    }
+                    false -> null
+                },
             ),
             wireguardClientConfiguration = WireguardClientConfiguration(
                 token = connectionSource.getVpnToken(),
                 pinningCertificate = certificate,
             ),
         )
-
-        connectionSource.startConnection(clientConfiguration, connectionManager).collect { connected ->
-            emit(connected)
-            delay(3000)
-            clientStateDataSource.getClientStatus().collect {
-                if (!connected) {
-                    clientIp.value = connectionPrefs.getClientIp()
-                    clientStateDataSource.resetVpnIp()
-                }
-                vpnIp.value = connectionPrefs.getVpnIp()
-                startPortForwarding().collect()
-            }
-        }
     }
-
-    fun stopConnection(): Flow<Boolean> = flow {
-        connectionSource.stopConnection().collect {
-            connectionManager.setConnectedServerName("", "")
-            clientStateDataSource.resetVpnIp()
-            vpnIp.value = connectionPrefs.getVpnIp()
-            stopPortForwarding()
-            emit(it)
-        }
-    }
-
-    fun reconnect(server: VpnServer): Flow<Boolean> = flow {
-        if (isConnected()) {
-            stopConnection().collect {
-                startConnection(server, false).collect {
-                    emit(it)
-                }
-            }
-        } else {
-            startConnection(server, false).collect {
-                emit(it)
-            }
-        }
-    }
-
-    fun isConnected(): Boolean = connectionManager.isConnected()
-
-    fun getVpnToken() = connectionSource.getVpnToken()
-
-    fun startPortForwarding(): Flow<Boolean> = flow {
-        if (settingsPrefs.isPortForwardingEnabled()) {
-            portForwardingUseCase.bindPort(getVpnToken())
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP,
-                0,
-                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                portForwardingIntent,
-            )
-            emit(true)
-        } else {
-            emit(false)
-        }
-    }
-
-    private fun stopPortForwarding() {
-        connectionSource.stopPortForwarding()
-        portForwardingUseCase.clearBindPort()
-        alarmManager.cancel(portForwardingIntent)
-    }
-
-    fun getClientStatus(): Flow<Boolean> = flow {
-        clientStateDataSource.getClientStatus().collect {
-            clientIp.value = connectionPrefs.getClientIp()
-            vpnIp.value = connectionPrefs.getVpnIp()
-        }
-    }
-
-    private fun getServerGroup(): VpnServer.ServerGroup =
-        when (settingsPrefs.getSelectedProtocol()) {
-            VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
-            VpnProtocols.OpenVPN -> {
-                if (settingsPrefs.getOpenVpnSettings().transport == Transport.UDP) {
-                    VpnServer.ServerGroup.OPENVPN_UDP
-                } else {
-                    VpnServer.ServerGroup.OPENVPN_TCP
-                }
-            }
-        }
 }
