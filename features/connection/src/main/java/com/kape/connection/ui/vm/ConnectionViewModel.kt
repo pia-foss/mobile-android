@@ -207,7 +207,14 @@ class ConnectionViewModel(
         if (lastSelectedVpnServerKey != null && lastSelectedVpnServerKey != selectedVpnServer.value?.key) {
             selectedVpnServer.value?.let {
                 lastSelectedVpnServerKey = selectedVpnServer.value?.key.toString()
-                connectionUseCase.reconnect(it).collect()
+                connectionUseCase.reconnect(it).collect {
+                    if (it) {
+                        lastSelectedVpnServerKey?.let {
+                            prefs.addToQuickConnect(it)
+                        }
+                        getQuickConnectVpnServers()
+                    }
+                }
             }
         }
     }
