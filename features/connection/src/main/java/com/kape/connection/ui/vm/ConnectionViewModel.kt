@@ -126,16 +126,8 @@ class ConnectionViewModel(
     }
 
     fun loadShadowsocksServers(locale: String) = viewModelScope.launch {
-        // If there are no servers persisted. Let's use the initial set of servers we are
-        // shipping the application with while we perform a request for an updated version.
-        if (getShadowsocksRegionsUseCase.getShadowsocksServers().isEmpty()) {
-            val servers =
-                readShadowsocksRegionsDetailsUseCase.readShadowsocksRegionsDetailsFromAssetsFolder()
-            shadowsocksServersLoaded(shadowsocksServers = servers)
-        }
-
         getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale).collect {
-            shadowsocksServersLoaded(shadowsocksServers = it)
+            setShadowsocksRegionsUseCase.setShadowsocksServers(shadowsocksServers = it)
         }
     }
 
@@ -174,10 +166,6 @@ class ConnectionViewModel(
         getQuickConnectVpnServers()
         getSelectedVpnServer()
         setVpnRegionsUseCase.setVpnServers(servers = vpnServers)
-    }
-
-    private fun shadowsocksServersLoaded(shadowsocksServers: List<ShadowsocksServer>) {
-        setShadowsocksRegionsUseCase.setShadowsocksServers(shadowsocksServers = shadowsocksServers)
     }
 
     private fun renewDedicatedIps() = viewModelScope.launch {
@@ -219,20 +207,8 @@ class ConnectionViewModel(
         }
     }
 
-    fun getSelectedShadowsocksServer(): ShadowsocksServer? {
-        val shadowsocksServers = getShadowsocksRegionsUseCase.getShadowsocksServers()
-        if (shadowsocksServers.isEmpty()) {
-            return null
-        }
-
-        var selectedShadowsocksServer = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
-        if (selectedShadowsocksServer == null) {
-            selectedShadowsocksServer = shadowsocksServers.first()
-            setShadowsocksRegionsUseCase.setSelectShadowsocksServer(selectedShadowsocksServer)
-        }
-
-        return selectedShadowsocksServer
-    }
+    fun getSelectedShadowsocksServer(): ShadowsocksServer =
+        getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
 
     private fun filterFavoriteVpnServers() {
         val favoriteServers = mutableListOf<VpnServer>()

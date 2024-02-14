@@ -43,8 +43,8 @@
 
     <string name="automatic">Automatic</string>
 
-    <string name="selected_obfuscation_region">SELECTED OBFUSCATION REGION</string>
-    <string name="current_obfuscation_region">CURRENT OBFUSCATION REGION</string>
+    <string name="selected_obfuscation_region">SELECTED OBFUSCATION LOCATION</string>
+    <string name="current_obfuscation_region">CURRENT OBFUSCATION LOCATION</string>
 
     <string name="vpn_snooze">VPN SNOOZE</string>
     <string name="resume">RESUME</string>

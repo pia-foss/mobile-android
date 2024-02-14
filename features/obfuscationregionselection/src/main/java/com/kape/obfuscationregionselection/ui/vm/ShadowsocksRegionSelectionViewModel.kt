@@ -14,7 +14,6 @@ import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import java.util.Collections
 
 class ShadowsocksRegionSelectionViewModel(
     private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
@@ -24,12 +23,13 @@ class ShadowsocksRegionSelectionViewModel(
 
     val servers = mutableStateOf(emptyList<ShadowsocksServerItem>())
     val sorted = mutableStateOf(emptyList<ShadowsocksServerItem>())
-    lateinit var autoRegionName: String
-    lateinit var autoRegionIso: String
 
     val sortBySelectedOption: MutableState<SortByOption> = mutableStateOf(SortByOption.NONE)
 
-    fun loadShadowsocksRegions(locale: String, isLoading: MutableState<Boolean>) = viewModelScope.launch {
+    fun getShadowsocksRegions() =
+        arrangeShadowsocksServers(getShadowsocksRegionsUseCase.getShadowsocksServers())
+
+    fun fetchShadowsocksRegions(locale: String, isLoading: MutableState<Boolean>) = viewModelScope.launch {
         isLoading.value = true
         getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale).collect {
             arrangeShadowsocksServers(it)
@@ -96,7 +96,6 @@ class ShadowsocksRegionSelectionViewModel(
     }
 
     private fun arrangeShadowsocksServers(items: List<ShadowsocksServer>? = null) {
-        val autoRegion = getAutoRegion(autoRegionName, autoRegionIso)
         val list = mutableListOf<ShadowsocksServerItem>()
         val favorites = mutableListOf<ShadowsocksServerItem>()
         val all = mutableListOf<ShadowsocksServerItem>()
@@ -122,7 +121,6 @@ class ShadowsocksRegionSelectionViewModel(
                     )
                 }
             }
-            all.add(0, autoRegion)
         } ?: run {
             for (item in servers.value.filter { it.type is ItemType.Content }) {
                 if (isShadowsocksServerFavorite((item.type as ItemType.Content).server.region)) {
@@ -152,31 +150,8 @@ class ShadowsocksRegionSelectionViewModel(
             list.addAll(favorites)
             list.add(ShadowsocksServerItem(type = ItemType.HeadingAll))
         }
-
-        Collections.swap(
-            all,
-            0,
-            all.indexOf(all.filter { it.type is ItemType.Content && it.type.server.region == autoRegionName }[0]),
-        )
         list.addAll(all)
         servers.value = list
-    }
-
-    private fun getAutoRegion(region: String, iso: String): ShadowsocksServerItem {
-        return ShadowsocksServerItem(
-            type = ItemType.Content(
-                isFavorite = false,
-                enableFavorite = false,
-                server = ShadowsocksServer(
-                    iso = iso,
-                    region = region,
-                    host = "",
-                    port = 0,
-                    key = "",
-                    cipher = "",
-                ),
-            ),
-        )
     }
 
     sealed class SortByOption(val index: Int) {
