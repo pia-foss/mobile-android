@@ -13,7 +13,7 @@ data class VpnServer(
     val longitude: String?,
     val isGeo: Boolean,
     val isOffline: Boolean,
-    val isAllowsPF: Boolean,
+    val allowsPortForwarding: Boolean,
     val dipToken: String?,
     val dedicatedIp: String?,
     val isDedicatedIp: Boolean = !dedicatedIp.isNullOrEmpty(),

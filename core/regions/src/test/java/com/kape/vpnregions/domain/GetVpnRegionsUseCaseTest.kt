@@ -52,7 +52,7 @@ internal class GetVpnRegionsUseCaseTest : KoinTest {
                         key = "key",
                         isGeo = false,
                         isOffline = false,
-                        isAllowsPF = false,
+                        allowsPortForwarding = false,
                         latency = null,
                         dedicatedIp = null,
                         dipToken = null,

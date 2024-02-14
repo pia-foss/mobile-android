@@ -50,7 +50,7 @@ fun LocationPickerItem(
                 .clickable {
                     onClick(server)
                 }
-                .alpha(if (!server.isAllowsPF && isPortForwardingEnabled) 0.5f else 1f)
+                .alpha(if (!server.allowsPortForwarding && isPortForwardingEnabled) 0.5f else 1f)
                 .defaultMinSize(minHeight = 56.dp)
                 .padding(16.dp),
         ) {
@@ -67,7 +67,7 @@ fun LocationPickerItem(
             Column(modifier = Modifier.align(CenterVertically)) {
                 Row {
                     RegionSelectionText(content = server.name)
-                    if (!server.isAllowsPF && isPortForwardingEnabled) {
+                    if (!server.allowsPortForwarding && isPortForwardingEnabled) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
                             painter = painterResource(id = com.kape.ui.R.drawable.ic_port_forwarding_unavailable),
