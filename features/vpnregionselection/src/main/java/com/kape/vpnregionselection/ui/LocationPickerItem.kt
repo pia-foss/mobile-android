@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -39,6 +40,7 @@ fun LocationPickerItem(
     server: VpnServer,
     isFavorite: Boolean,
     enableFavorite: Boolean,
+    isPortForwardingEnabled: Boolean,
     onClick: ((server: VpnServer) -> Unit),
     onFavoriteVpnClick: ((vpnServerName: String) -> Unit),
 ) {
@@ -48,6 +50,7 @@ fun LocationPickerItem(
                 .clickable {
                     onClick(server)
                 }
+                .alpha(if (!server.allowsPortForwarding && isPortForwardingEnabled) 0.5f else 1f)
                 .defaultMinSize(minHeight = 56.dp)
                 .padding(16.dp),
         ) {
@@ -62,7 +65,19 @@ fun LocationPickerItem(
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.align(CenterVertically)) {
-                RegionSelectionText(content = server.name)
+                Row {
+                    RegionSelectionText(content = server.name)
+                    if (!server.allowsPortForwarding && isPortForwardingEnabled) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            painter = painterResource(id = com.kape.ui.R.drawable.ic_port_forwarding_unavailable),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
+                }
+
                 server.dedicatedIp?.let {
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = CenterVertically) {

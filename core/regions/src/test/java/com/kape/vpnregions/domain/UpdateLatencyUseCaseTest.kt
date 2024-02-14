@@ -53,7 +53,7 @@ internal class UpdateLatencyUseCaseTest : KoinTest {
                         key = "key",
                         isGeo = false,
                         isOffline = false,
-                        isAllowsPF = false,
+                        allowsPortForwarding = false,
                         latency = "latency",
                         dedicatedIp = null,
                         dipToken = null,

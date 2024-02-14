@@ -161,7 +161,7 @@ fun getServerForDip(
         server.longitude,
         server.isGeo,
         server.isOffline,
-        server.isAllowsPF,
+        server.allowsPortForwarding,
         dip.dipToken,
         dip.ip,
     )

@@ -95,6 +95,7 @@ fun VpnRegionSelectionScreen() = Screen {
                                 server = item.type.server,
                                 isFavorite = item.type.isFavorite,
                                 enableFavorite = item.type.enableFavorite,
+                                isPortForwardingEnabled = viewModel.isPortForwardingEnabled,
                                 onClick = { viewModel.onVpnRegionSelected(it) },
                                 onFavoriteVpnClick = { viewModel.onFavoriteVpnClicked(it) },
                             )

@@ -4,10 +4,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.connection.ConnectionPrefs
 import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
+import com.kape.settings.SettingsPrefs
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.VpnRegionPrefs
@@ -23,7 +23,7 @@ class VpnRegionSelectionViewModel(
     private val connectionUseCase: ConnectionUseCase,
     private val router: Router,
     private val vpnRegionPrefs: VpnRegionPrefs,
-    private val connectionPrefs: ConnectionPrefs,
+    private val settingsPrefs: SettingsPrefs,
 ) : ViewModel(), KoinComponent {
 
     val servers = mutableStateOf(emptyList<ServerItem>())
@@ -32,6 +32,7 @@ class VpnRegionSelectionViewModel(
     lateinit var autoRegionIso: String
 
     val sortBySelectedOption: MutableState<SortByOption> = mutableStateOf(SortByOption.NONE)
+    val isPortForwardingEnabled = settingsPrefs.isPortForwardingEnabled()
 
     fun loadVpnRegions(locale: String, isLoading: MutableState<Boolean>, displayLoading: Boolean) =
         viewModelScope.launch {
@@ -192,7 +193,7 @@ class VpnRegionSelectionViewModel(
                     latitude = null,
                     longitude = null,
                     isGeo = false,
-                    isAllowsPF = false,
+                    allowsPortForwarding = false,
                     isOffline = false,
                     dipToken = null,
                     dedicatedIp = null,
