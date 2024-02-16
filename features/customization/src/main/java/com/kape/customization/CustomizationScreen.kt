@@ -4,10 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
@@ -30,6 +28,7 @@ import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.ui.R
 import com.kape.ui.elements.Screen
+import com.kape.ui.elements.Separator
 import com.kape.ui.elements.Visibility
 import com.kape.ui.tiles.ConnectionInfo
 import com.kape.ui.tiles.IPTile
@@ -58,7 +57,7 @@ fun CustomizationScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                type = AppBarType.InAppBrowser,
+                type = AppBarType.Customization,
                 onLeftIconClick = { viewModel.exitCustomization() },
             )
         },
@@ -87,6 +86,7 @@ fun CustomizationScreen() = Screen {
                                 connectionViewModel,
                                 viewModel::toggleVisibility,
                             )
+                            Separator()
                         }
                     }
                 }
@@ -118,8 +118,8 @@ fun CreateCustomizableElement(
                 onVisibilityToggled(screenElement.element, !screenElement.isVisible)
             },
         )
-        Spacer(modifier = Modifier.width(16.dp))
         DisplayComponent(
+            modifier = Modifier.weight(1f),
             screenElement = screenElement,
             viewModel = connectionViewModel,
         )
@@ -133,6 +133,7 @@ fun CreateCustomizableElement(
 
 @Composable
 private fun DisplayComponent(
+    modifier: Modifier,
     screenElement: ScreenElement,
     viewModel: ConnectionViewModel,
 ) {
@@ -140,6 +141,7 @@ private fun DisplayComponent(
         Element.ConnectionInfo -> {
             val settings = viewModel.getConnectionSettings()
             ConnectionInfo(
+                modifier = modifier,
                 connection = settings.name,
                 port = settings.port,
                 auth = settings.auth,
@@ -152,6 +154,7 @@ private fun DisplayComponent(
         Element.IpInfo -> {
             val state = viewModel.portForwardingStatus
             IPTile(
+                modifier = modifier,
                 isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
                 publicIp = viewModel.clientIp.value,
                 vpnIp = viewModel.vpnIp.value,
@@ -167,6 +170,7 @@ private fun DisplayComponent(
 
         Element.QuickConnect -> {
             QuickConnect(
+                modifier = modifier,
                 servers = viewModel.quickConnectVpnServers.value,
                 onClick = {},
             )
@@ -174,6 +178,7 @@ private fun DisplayComponent(
 
         Element.QuickSettings -> {
             QuickSettings(
+                modifier = modifier,
                 onKillSwitchClick = {},
                 onAutomationClick = {},
                 onProtocolsClick = {},
@@ -183,6 +188,7 @@ private fun DisplayComponent(
         Element.VpnRegionSelection -> {
             viewModel.selectedVpnServer.value?.let {
                 VpnLocationPicker(
+                    modifier = modifier,
                     server = it,
                     isConnected = viewModel.isConnectionActive(),
                     viewModel.showOptimalLocation.value,
@@ -192,14 +198,15 @@ private fun DisplayComponent(
 
         Element.ShadowsocksRegionSelection -> {
             ShadowsocksLocationPicker(
+                modifier = modifier,
                 server = viewModel.getSelectedShadowsocksServer(),
                 isConnected = viewModel.isConnectionActive(),
-                viewModel.showOptimalLocation.value,
             ) {}
         }
 
         Element.Snooze -> {
             Snooze(
+                modifier = modifier,
                 viewModel.isSnoozeActive,
                 when (viewModel.timeUntilResume.intValue) {
                     1 -> String.format(
@@ -219,6 +226,7 @@ private fun DisplayComponent(
 
         Element.Traffic -> {
             Traffic(
+                modifier = modifier,
                 viewModel.download.value,
                 viewModel.upload.value,
             )

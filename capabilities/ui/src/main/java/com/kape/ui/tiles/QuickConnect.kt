@@ -34,9 +34,13 @@ import com.kape.utils.vpnserver.VpnServer
 const val MAX_SERVERS = 5
 
 @Composable
-fun QuickConnect(servers: List<VpnServer>, onClick: (serverKey: String) -> Unit) {
+fun QuickConnect(
+    modifier: Modifier = Modifier,
+    servers: List<VpnServer>,
+    onClick: (serverKey: String) -> Unit,
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
@@ -74,7 +78,7 @@ private fun QuickConnectItem(server: VpnServer? = null, modifier: Modifier) {
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .background(LocalColors.current.onPrimary, CircleShape)
+                    .background(LocalColors.current.surfaceVariant, CircleShape)
                     .padding(8.dp),
             ) {
                 Image(

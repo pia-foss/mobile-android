@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
@@ -204,6 +205,8 @@ fun OnboardingFooterText(content: String, modifier: Modifier) {
 fun SelectedRegionTitleText(content: String) {
     Text(
         text = content,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         color = LocalColors.current.onSurface,
         style = PiaTypography.caption2,
     )
@@ -213,6 +216,8 @@ fun SelectedRegionTitleText(content: String) {
 fun SelectedRegionServerText(content: String) {
     Text(
         text = content,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         color = LocalColors.current.onSurface,
         style = PiaTypography.subtitle3,
     )
@@ -222,6 +227,7 @@ fun SelectedRegionServerText(content: String) {
 fun QuickConnectText(content: String, modifier: Modifier) {
     Text(
         text = content,
+        textAlign = TextAlign.Center,
         color = LocalColors.current.onSurface,
         style = PiaTypography.caption1,
         modifier = modifier,
@@ -241,6 +247,8 @@ fun TileTitleText(content: String) {
 fun IPText(content: String) {
     Text(
         text = content,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
     )
@@ -250,6 +258,8 @@ fun IPText(content: String) {
 fun ConnectionInfoText(content: String) {
     Text(
         text = content,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
     )
@@ -259,6 +269,8 @@ fun ConnectionInfoText(content: String) {
 fun RegionSelectionText(content: String) {
     Text(
         text = content,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
     )
@@ -268,6 +280,8 @@ fun RegionSelectionText(content: String) {
 fun RegionSelectionIpText(content: String) {
     Text(
         text = content,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         color = LocalColors.current.onSurfaceVariant,
         style = PiaTypography.body3,
     )

@@ -22,7 +22,7 @@
     android:viewportWidth="28"
     android:viewportHeight="42">
     <path
-        android:fillColor="#56BE53"
+        android:fillColor="#037900"
         android:fillType="evenOdd"
         android:pathData="M14,0C6.28,0 0,6.199 0,13.82c0,7.363 12.841,27.02 13.388,27.852a0.733,0.733 0,0 0,1.224 0C15.159,40.839 28,21.182 28,13.819 28,6.2 21.72,0 14,0zM14,20.281c-3.16,0 -5.733,-2.539 -5.733,-5.659 0,-3.12 2.572,-5.659 5.733,-5.659 3.161,0 5.733,2.539 5.733,5.659 0,3.12 -2.572,5.659 -5.733,5.659z"
         tools:targetApi="n" />

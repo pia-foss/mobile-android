@@ -25,9 +25,9 @@ class CustomizationPrefs(context: Context) : Prefs(context, "customization") {
         ScreenElement(Element.ShadowsocksRegionSelection),
         ScreenElement(Element.IpInfo),
         ScreenElement(Element.QuickConnect),
-        ScreenElement(Element.QuickSettings, isVisible = false),
+        ScreenElement(Element.QuickSettings),
 //        ScreenElement(Element.Snooze),
-        ScreenElement(Element.Traffic, isVisible = false),
-        ScreenElement(Element.ConnectionInfo, isVisible = false),
+        ScreenElement(Element.Traffic),
+        ScreenElement(Element.ConnectionInfo),
     )
 }

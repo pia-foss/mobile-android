@@ -22,6 +22,7 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun ConnectionInfo(
+    modifier: Modifier = Modifier,
     connection: String,
     port: String,
     auth: String,
@@ -30,7 +31,7 @@ fun ConnectionInfo(
     handshake: String,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
@@ -65,7 +66,7 @@ fun InfoRow(iconId: Int, label: String) {
             tint = LocalColors.current.onSurface,
             modifier = Modifier.size(24.dp),
         )
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(8.dp))
         ConnectionInfoText(content = label)
     }
 }

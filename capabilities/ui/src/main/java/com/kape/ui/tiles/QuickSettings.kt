@@ -26,12 +26,13 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun QuickSettings(
+    modifier: Modifier = Modifier,
     onKillSwitchClick: () -> Unit,
     onAutomationClick: () -> Unit,
     onProtocolsClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 16.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
         TileTitleText(content = stringResource(id = R.string.quick_settings))
         Spacer(modifier = Modifier.height(8.dp))
@@ -73,7 +74,7 @@ private fun QuickSettingItem(iconId: Int, labelId: Int, modifier: Modifier) {
         Box(
             modifier = Modifier
                 .size(40.dp)
-                .background(LocalColors.current.onPrimary, CircleShape)
+                .background(LocalColors.current.surfaceVariant, CircleShape)
                 .padding(4.dp),
         ) {
             Icon(

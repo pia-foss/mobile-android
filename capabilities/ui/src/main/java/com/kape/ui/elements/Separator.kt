@@ -1,6 +1,5 @@
 package com.kape.ui.elements
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,9 +15,7 @@ fun Separator() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .height(0.5.dp)
-            .background(
-                LocalColors.current.outline,
-            ),
+            .height(0.5.dp),
+        color = LocalColors.current.outline,
     )
 }

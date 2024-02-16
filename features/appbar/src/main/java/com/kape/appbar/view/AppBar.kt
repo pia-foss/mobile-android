@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -105,39 +106,18 @@ private fun AppBarContent(
 
         when (type) {
             AppBarType.Connection -> {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Row(
-                        modifier = Modifier.align(Center),
-                    ) {
-                        if (status == ConnectionStatus.DISCONNECTED) {
-                            Icon(
-                                painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_small),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .align(CenterVertically)
-                                    .padding(end = 8.dp),
-                                tint = Color.Unspecified,
-                            )
-                        }
+                AppBarConnectionStatus(
+                    status = status,
+                    title = title,
+                    onRightIconClick = onRightIconClick,
+                )
+            }
 
-                        AppBarConnectionTextDefault(
-                            content = title ?: "",
-                            modifier = Modifier.align(CenterVertically),
-                        )
-                    }
-
-                    IconButton(
-                        onClick = { onRightIconClick() },
-                        modifier = Modifier.align(CenterEnd),
-                    ) {
-                        Icon(
-                            painter = painterResource(id = com.kape.ui.R.drawable.ic_reorder),
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                        )
-                    }
-                }
+            AppBarType.Customization -> {
+                AppBarConnectionStatus(
+                    status = status,
+                    title = title,
+                )
             }
 
             AppBarType.InAppBrowser -> {
@@ -167,6 +147,7 @@ private fun AppBarContent(
 private fun getAppBarLeftIcon(type: AppBarType): Int {
     return when (type) {
         AppBarType.Connection -> com.kape.ui.R.drawable.ic_menu
+        AppBarType.Customization,
         AppBarType.InAppBrowser,
         AppBarType.Navigation,
         -> com.kape.ui.R.drawable.ic_back
@@ -196,6 +177,49 @@ private fun getStatusBarColor(status: ConnectionStatus, scheme: ColorScheme): Co
 }
 
 @Composable
+private fun AppBarConnectionStatus(
+    status: ConnectionStatus,
+    title: String? = null,
+    onRightIconClick: (() -> Unit)? = null,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier.align(Center),
+        ) {
+            if (status == ConnectionStatus.DISCONNECTED) {
+                Icon(
+                    painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_small),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .align(CenterVertically)
+                        .padding(end = 8.dp),
+                    tint = Color.Unspecified,
+                )
+            }
+
+            AppBarConnectionTextDefault(
+                content = title ?: "",
+                modifier = Modifier.align(CenterVertically),
+            )
+        }
+
+        onRightIconClick?.let {
+            IconButton(
+                onClick = { it() },
+                modifier = Modifier.align(CenterEnd),
+            ) {
+                Icon(
+                    painter = painterResource(id = com.kape.ui.R.drawable.ic_reorder),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun shouldShowDarkIcons(connectionState: ConnectionStatus): Boolean {
     return when (connectionState) {
         ConnectionStatus.DISCONNECTED -> !isSystemInDarkTheme()
@@ -211,4 +235,5 @@ sealed class AppBarType {
     data object Connection : AppBarType()
     data object Navigation : AppBarType()
     data object InAppBrowser : AppBarType()
+    data object Customization : AppBarType()
 }

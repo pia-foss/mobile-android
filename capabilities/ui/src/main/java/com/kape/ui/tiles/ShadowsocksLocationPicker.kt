@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,15 +33,17 @@ import com.kape.utils.shadowsocksserver.ShadowsocksServer
 
 @Composable
 fun ShadowsocksLocationPicker(
+    modifier: Modifier = Modifier,
     server: ShadowsocksServer,
     isConnected: Boolean,
-    isOptimal: Boolean,
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(
+                paddingValues = PaddingValues(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+            )
             .background(LocalColors.current.surfaceVariant, RoundedCornerShape(12.dp))
             .height(56.dp)
             .clickable {

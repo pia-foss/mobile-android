@@ -159,6 +159,7 @@ private fun DisplayComponent(
                         viewModel.quickConnect(it)
                     },
                 )
+                Separator()
             }
 
             Element.QuickSettings -> {
@@ -173,6 +174,7 @@ private fun DisplayComponent(
                         viewModel.navigateToProtocols()
                     },
                 )
+                Separator()
             }
 
             Element.VpnRegionSelection -> {
@@ -180,7 +182,7 @@ private fun DisplayComponent(
                     VpnLocationPicker(
                         server = it,
                         isConnected = viewModel.isConnectionActive(),
-                        viewModel.showOptimalLocation.value,
+                        isOptimal = viewModel.showOptimalLocation.value,
                     ) {
                         viewModel.showVpnRegionSelection()
                     }
@@ -191,7 +193,6 @@ private fun DisplayComponent(
                 ShadowsocksLocationPicker(
                     server = viewModel.getSelectedShadowsocksServer(),
                     isConnected = viewModel.isConnectionActive(),
-                    viewModel.showOptimalLocation.value,
                 ) {
                     viewModel.showShadowsocksRegionSelection()
                 }
@@ -224,13 +225,15 @@ private fun DisplayComponent(
                         viewModel.onSnoozeResumed()
                     },
                 )
+                Separator()
             }
 
             Element.Traffic -> {
                 Traffic(
-                    viewModel.download.value,
-                    viewModel.upload.value,
+                    download = viewModel.download.value,
+                    upload = viewModel.upload.value,
                 )
+                Separator()
             }
         }
     }

@@ -29,13 +29,14 @@ import com.kape.utils.SIXTY_MINUTES
 
 @Composable
 fun Snooze(
+    modifier: Modifier = Modifier,
     active: MutableState<Boolean>,
     timeUntilResume: String,
     onClick: (interval: Int) -> Unit,
     onResumeClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {

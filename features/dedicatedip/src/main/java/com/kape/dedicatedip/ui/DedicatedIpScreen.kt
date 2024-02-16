@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.appbar.view.AppBar
@@ -121,7 +122,7 @@ fun DedicatedIpScreen() = Screen {
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .weight(6.5f),
+                                    .weight(6.0f),
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
                                     unfocusedTextColor = LocalColors.current.onSurface,
@@ -145,11 +146,13 @@ fun DedicatedIpScreen() = Screen {
                                     modifier = Modifier
                                         .padding(end = 8.dp)
                                         .align(CenterVertically)
-                                        .weight(3.5f),
+                                        .weight(4.0f),
                                     shape = RoundedCornerShape(4.dp),
                                 ) {
                                     Text(
                                         text = stringResource(id = R.string.activate),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
                                         color = LocalColors.current.onPrimary,
                                     )
                                 }

@@ -19,9 +19,13 @@ import com.kape.ui.text.TileTitleText
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun Traffic(download: String, upload: String) {
+fun Traffic(
+    modifier: Modifier = Modifier,
+    download: String,
+    upload: String,
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {

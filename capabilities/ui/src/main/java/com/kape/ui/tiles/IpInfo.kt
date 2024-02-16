@@ -3,6 +3,7 @@ package com.kape.ui.tiles
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,14 +24,16 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun IPTile(
+    modifier: Modifier = Modifier,
     publicIp: String,
     vpnIp: String,
     isPortForwardingEnabled: Boolean,
     portForwardingStatus: String,
 ) {
-    Row(modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp)) {
+    Row(modifier = modifier.padding(horizontal = 32.dp, vertical = 16.dp)) {
         Column(Modifier.weight(0.4f)) {
             TileTitleText(content = stringResource(id = R.string.public_ip).uppercase())
+            Spacer(modifier = Modifier.height(4.dp))
             IPText(content = publicIp)
         }
 
@@ -44,7 +47,8 @@ fun IPTile(
         )
 
         Column(Modifier.weight(0.4f)) {
-            TileTitleText(content = stringResource(id = R.string.vpn_ip))
+            TileTitleText(content = stringResource(id = R.string.vpn_ip).uppercase())
+            Spacer(modifier = Modifier.height(4.dp))
             IPText(content = vpnIp)
             if (isPortForwardingEnabled) {
                 Row {
