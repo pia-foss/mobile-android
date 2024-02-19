@@ -34,4 +34,6 @@ class CustomizationViewModel(private val prefs: CustomizationPrefs, private val 
         }
         prefs.setOrderedElements(items)
     }
+
+    fun isDragEnabled(draggedOver: ItemPosition, dragging: ItemPosition) = true
 }

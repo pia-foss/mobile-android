@@ -1,7 +1,8 @@
 package com.kape.customization
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,7 +30,6 @@ import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.ui.R
 import com.kape.ui.elements.Screen
-import com.kape.ui.elements.Separator
 import com.kape.ui.elements.Visibility
 import com.kape.ui.tiles.ConnectionInfo
 import com.kape.ui.tiles.IPTile
@@ -69,24 +70,30 @@ fun CustomizationScreen() = Screen {
             LaunchedEffect(key1 = Unit) {
                 connectionViewModel.loadVpnServers(locale)
             }
-            val state = rememberReorderableLazyListState(onMove = viewModel::onMove)
-            LazyColumn(state = state.listState, modifier = Modifier.reorderable(state)) {
-                items(viewModel.getOrderedElements()) { item ->
-                    ReorderableItem(
-                        state,
-                        viewModel.getOrderedElements().indexOf(item),
-                    ) { dragging ->
-                        Box(
+            val state =
+                rememberReorderableLazyListState(
+                    onMove = viewModel::onMove,
+                    canDragOver = viewModel::isDragEnabled,
+                )
+            LazyColumn(
+                state = state.listState,
+                modifier = Modifier.reorderable(state),
+            ) {
+                items(viewModel.getOrderedElements(), { item -> item.name }) { item ->
+                    ReorderableItem(state, item.name) { dragging ->
+                        val elevation = animateDpAsState(if (dragging) 8.dp else 0.dp)
+                        Column(
                             modifier = Modifier
                                 .detectReorderAfterLongPress(state)
-                                .fillMaxWidth(),
+                                .shadow(elevation.value)
+                                .fillMaxWidth()
+                                .background(LocalColors.current.surface),
                         ) {
                             CreateCustomizableElement(
-                                item,
-                                connectionViewModel,
-                                viewModel::toggleVisibility,
+                                screenElement = item,
+                                connectionViewModel = connectionViewModel,
+                                onVisibilityToggled = viewModel::toggleVisibility,
                             )
-                            Separator()
                         }
                     }
                 }

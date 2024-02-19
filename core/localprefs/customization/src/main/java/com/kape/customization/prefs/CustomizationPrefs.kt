@@ -21,13 +21,13 @@ class CustomizationPrefs(context: Context) : Prefs(context, "customization") {
     ).apply()
 
     private fun defaultList(): List<ScreenElement> = listOf(
-        ScreenElement(Element.VpnRegionSelection),
-        ScreenElement(Element.ShadowsocksRegionSelection),
-        ScreenElement(Element.IpInfo),
-        ScreenElement(Element.QuickConnect),
-        ScreenElement(Element.QuickSettings),
+        ScreenElement(Element.VpnRegionSelection, "vpn-region-selection"),
+        ScreenElement(Element.ShadowsocksRegionSelection, "shadowsocks-region-selection"),
+        ScreenElement(Element.IpInfo, "ip-info"),
+        ScreenElement(Element.QuickConnect, "quick-connect"),
+        ScreenElement(Element.QuickSettings, isVisible = false, name = "quick-settings"),
 //        ScreenElement(Element.Snooze),
-        ScreenElement(Element.Traffic),
-        ScreenElement(Element.ConnectionInfo),
+        ScreenElement(Element.Traffic, isVisible = false, name = "traffic"),
+        ScreenElement(Element.ConnectionInfo, isVisible = false, name = "conection-info"),
     )
 }
