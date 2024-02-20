@@ -30,7 +30,9 @@ class NetworkConnectionListener(
                 }
 
                 override fun onLost(network: Network) {
-                    _isConnected.value = false
+                    _isConnected.value =
+                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                            ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
                 }
 
                 override fun onCapabilitiesChanged(
@@ -63,7 +65,9 @@ class NetworkConnectionListener(
                 }
 
                 override fun onLost(network: Network) {
-                    _isConnected.value = false
+                    _isConnected.value =
+                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                            ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
                 }
 
                 override fun onCapabilitiesChanged(
