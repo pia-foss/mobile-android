@@ -15,9 +15,12 @@ private const val LAST_SNOOZE_END_TIME = "last-snooze-end-time"
 private const val GATEWAY = "gateway"
 private const val PORT_BINDING_INFO = "port-binding-info"
 private const val DISCONNECTED_BY_USER = "disconnected-by-user"
+private const val PROXY_PORT = "proxy-port"
+private const val DEFAULT_PROXY_PORT_VALUE = "8080"
 const val NO_IP = "---"
 
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
+
 
     fun addToQuickConnect(serverKey: String) {
         val quickConnectList = getQuickConnectServers().toMutableList()
@@ -71,4 +74,9 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
         prefs.edit().putBoolean(DISCONNECTED_BY_USER, byUser).apply()
 
     fun isDisconnectedByUser() = prefs.getBoolean(DISCONNECTED_BY_USER, false)
+
+    fun setProxyPort(port: String) = prefs.edit().putString(PROXY_PORT, port).apply()
+
+    fun getProxyPort(): String =
+        prefs.getString(PROXY_PORT, DEFAULT_PROXY_PORT_VALUE) ?: DEFAULT_PROXY_PORT_VALUE
 }

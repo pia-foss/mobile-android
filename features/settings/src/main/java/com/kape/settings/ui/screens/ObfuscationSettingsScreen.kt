@@ -42,6 +42,7 @@ fun ObfuscationSettingsScreen() = Screen {
     val obfuscationDialogVisible = remember { mutableStateOf(false) }
     val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
     val tcpTransportDialogVisible = remember { mutableStateOf(false) }
+    val externalProxyAppDialogVisible = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -57,14 +58,34 @@ fun ObfuscationSettingsScreen() = Screen {
             modifier = Modifier
                 .padding(it),
         ) {
-            SettingsItem(
+            SettingsToggle(
                 titleId = R.string.obfuscation_external_proxy_app_title,
-                subtitle = stringResource(id = R.string.obfuscation_external_proxy_app_description),
-                onClick = {
-                    viewModel.navigateToExternalAppList()
-                    // TODO: implement properly
+                subtitleId = R.string.obfuscation_external_proxy_app_description,
+                stateEnabled = viewModel.externalProxyAppEnabled,
+                toggle = {
+                    if (it && viewModel.externalProxyAppPackageName.value.isEmpty()) {
+                        externalProxyAppDialogVisible.value = true
+                    } else {
+                        viewModel.toggleExternalProxyApp(it)
+                    }
                 },
             )
+            if (viewModel.externalProxyAppEnabled.value && viewModel.externalProxyAppPackageName.value.isNotEmpty()) {
+                SettingsItem(
+                    titleId = R.string.selected_proxy_app,
+                    subtitle = viewModel.externalProxyAppPackageName.value,
+                    onClick = {
+                        viewModel.navigateToExternalAppList()
+                    },
+                )
+                SettingsItem(
+                    titleId = R.string.proxy_port,
+                    subtitle = viewModel.externalProxyAppPort.value,
+                    onClick = {
+
+                    },
+                )
+            }
             SettingsToggle(
                 titleId = R.string.obfuscation_shadowsocks_title,
                 subtitleId = R.string.obfuscation_shadowsocks_description,
@@ -179,6 +200,21 @@ fun ObfuscationSettingsScreen() = Screen {
             },
         )
     }
+
+    if (externalProxyAppDialogVisible.value) {
+        ExternalProxyAppDialog(
+            titleId = R.string.enable_proxy_dialog_title,
+            descriptionId = R.string.enable_proxy_dialog_message,
+            onConfirm = {
+                externalProxyAppDialogVisible.value = false
+                viewModel.navigateToExternalAppList()
+            },
+            onDismiss = {
+                externalProxyAppDialogVisible.value = false
+                viewModel.toggleExternalProxyApp(false)
+            },
+        )
+    }
 }
 
 @Composable
@@ -203,5 +239,20 @@ fun UpdateOpenVPNTransportToTcpDialog(
             tcpTransportDialogVisible.value = false
             onConfirm()
         },
+    )
+}
+
+@Composable
+fun ExternalProxyAppDialog(
+    titleId: Int,
+    descriptionId: Int,
+    onDismiss: () -> Unit = {},
+    onConfirm: () -> Unit = {},
+) {
+    TextDialog(
+        titleId = titleId,
+        descriptionId = descriptionId,
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
     )
 }

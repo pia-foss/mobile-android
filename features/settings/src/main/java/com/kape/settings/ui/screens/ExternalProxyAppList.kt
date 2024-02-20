@@ -44,10 +44,11 @@ fun ExternalProxyAppList() {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.proxy_selection_title))
     }
-    val selectedProxyApp = remember { viewModel.externalProxyAppPackageName.value }
+
+    val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
 
     BackHandler {
-        onBackPressed(viewModel, selectedProxyApp)
+        onBackPressed(viewModel, lastExcludedApps)
     }
 
     Scaffold(
@@ -55,7 +56,7 @@ fun ExternalProxyAppList() {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    onBackPressed(viewModel, selectedProxyApp)
+                    onBackPressed(viewModel, lastExcludedApps)
                 },
             )
         },
@@ -85,9 +86,9 @@ fun ExternalProxyAppList() {
                         isSelected = isSelected,
                         onClick = { name, isChecked ->
                             if (isChecked) {
-                                viewModel.externalProxyAppPackageName.value = item.packageName
+                                viewModel.setExternalProxyAppPackageName(item.packageName)
                             } else {
-                                viewModel.externalProxyAppPackageName.value = ""
+                                viewModel.setExternalProxyAppPackageName("")
                             }
                         },
                     )
@@ -174,8 +175,8 @@ private fun SelectedCheckBox(checked: Boolean, modifier: Modifier) {
     )
 }
 
-private fun onBackPressed(viewModel: SettingsViewModel, selectedAppPackageName: String) {
-    if (viewModel.isConnected() && selectedAppPackageName != viewModel.externalProxyAppPackageName.value) {
+private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>) {
+    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
         viewModel.navigateUp()

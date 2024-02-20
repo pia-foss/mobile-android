@@ -60,6 +60,7 @@ class SettingsViewModel(
     val isAllowLocalTrafficEnabled = mutableStateOf(prefs.isAllowLocalTrafficEnabled())
     val externalProxyAppEnabled = mutableStateOf(prefs.isExternalProxyAppEnabled())
     val externalProxyAppPackageName = mutableStateOf(prefs.getExternalProxyAppPackageName())
+    val externalProxyAppPort = mutableStateOf(connectionPrefs.getProxyPort())
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
     val eventList = mutableStateOf<List<String>>(emptyList())
     val debugLogs = mutableStateOf<List<String>>(emptyList())
@@ -184,6 +185,24 @@ class SettingsViewModel(
         shadowsocksObfuscationEnabled.value = enabled
     }
 
+    fun toggleExternalProxyApp(enabled: Boolean) {
+        prefs.setExternalProxyAppEnabled(enabled)
+        externalProxyAppEnabled.value = enabled
+    }
+
+    fun setExternalProxyAppPackageName(packageName: String) {
+        if (packageName.isEmpty()) {
+            prefs.setExternalProxyAppPackageName(packageName)
+            removeFromVpnExcludedApps(externalProxyAppPackageName.value)
+            externalProxyAppPackageName.value = packageName
+        } else {
+            prefs.setExternalProxyAppPackageName(packageName)
+            externalProxyAppPackageName.value = packageName
+            addToVpnExcludedApps(packageName)
+        }
+        toggleExternalProxyApp(packageName.isNotEmpty())
+    }
+
     fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled()
 
     fun getSelectedProtocol(): VpnProtocols = prefs.getSelectedProtocol()
@@ -234,7 +253,7 @@ class SettingsViewModel(
 
     fun areLocationPermissionsGranted() =
         locationPermissionManager.isFineLocationPermissionGranted() &&
-            locationPermissionManager.isBackgroundLocationPermissionGranted()
+                locationPermissionManager.isBackgroundLocationPermissionGranted()
 
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()
