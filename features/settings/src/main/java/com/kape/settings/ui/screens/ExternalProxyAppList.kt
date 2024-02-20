@@ -31,24 +31,23 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
-import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Search
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PerAppSettingsScreen() = Screen {
+fun ExternalProxyAppList() {
     val packageManager = LocalContext.current.packageManager
     val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
         getInstalledApplications(packageManager)
     }
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.per_app_settings))
+        appBarText(stringResource(id = R.string.proxy_selection_title))
     }
-    val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
+    val selectedProxyApp = remember { viewModel.externalProxyAppPackageName.value }
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps)
+        onBackPressed(viewModel, selectedProxyApp)
     }
 
     Scaffold(
@@ -56,7 +55,7 @@ fun PerAppSettingsScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    onBackPressed(viewModel, lastExcludedApps)
+                    onBackPressed(viewModel, selectedProxyApp)
                 },
             )
         },
@@ -79,17 +78,16 @@ fun PerAppSettingsScreen() = Screen {
                 val items = viewModel.appList.value
                 items(items.size) { index ->
                     val item = items[index]
-                    val isExcluded =
-                        viewModel.vpnExcludedApps.value.contains(item.packageName)
+                    val isSelected = viewModel.externalProxyAppPackageName.value == item.packageName
                     ApplicationRow(
                         icon = item.loadIcon(packageManager),
                         name = item.loadLabel(packageManager).toString(),
-                        isExcluded = isExcluded,
+                        isSelected = isSelected,
                         onClick = { name, isChecked ->
                             if (isChecked) {
-                                viewModel.addToVpnExcludedApps(item.packageName)
+                                viewModel.externalProxyAppPackageName.value = item.packageName
                             } else {
-                                viewModel.removeFromVpnExcludedApps(item.packageName)
+                                viewModel.externalProxyAppPackageName.value = ""
                             }
                         },
                     )
@@ -116,15 +114,15 @@ fun PerAppSettingsScreen() = Screen {
 private fun ApplicationRow(
     icon: Drawable,
     name: String,
-    isExcluded: Boolean,
-    onClick: (name: String, isExcluded: Boolean) -> Unit,
+    isSelected: Boolean,
+    onClick: (name: String, isSelected: Boolean) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp)
             .clickable {
-                onClick(name, !isExcluded)
+                onClick(name, !isSelected)
             },
     ) {
         val (image, text, button) = createRefs()
@@ -156,7 +154,7 @@ private fun ApplicationRow(
         )
 
         SelectedCheckBox(
-            checked = isExcluded,
+            checked = isSelected,
             modifier = Modifier.constrainAs(button) {
                 end.linkTo(parent.end, margin = 16.dp)
                 top.linkTo(parent.top)
@@ -169,21 +167,15 @@ private fun ApplicationRow(
 @Composable
 private fun SelectedCheckBox(checked: Boolean, modifier: Modifier) {
     Icon(
-        painter = if (checked) {
-            painterResource(id = R.drawable.ic_locket_open)
-        } else {
-            painterResource(
-                id = R.drawable.ic_locket_closed,
-            )
-        },
+        painter = painterResource(id = R.drawable.ic_check),
         contentDescription = null,
-        tint = Color.Unspecified,
+        tint = if (checked) LocalColors.current.primary else Color.Transparent,
         modifier = modifier.size(24.dp),
     )
 }
 
-private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>) {
-    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
+private fun onBackPressed(viewModel: SettingsViewModel, selectedAppPackageName: String) {
+    if (viewModel.isConnected() && selectedAppPackageName != viewModel.externalProxyAppPackageName.value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
         viewModel.navigateUp()

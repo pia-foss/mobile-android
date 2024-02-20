@@ -15,4 +15,5 @@ sealed class SettingsStep {
     data object ShortcutProtocol : SettingsStep()
     data object ShortcutAutomation : SettingsStep()
     data object ShortcutKillSwitch : SettingsStep()
+    data object ExternalProxyAppList : SettingsStep()
 }

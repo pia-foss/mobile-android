@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.kape.settings.ui.screens.AutomationSettingsScreen
 import com.kape.settings.ui.screens.ConnectionStatsScreen
+import com.kape.settings.ui.screens.ExternalProxyAppList
 import com.kape.settings.ui.screens.GeneralSettingsScreen
 import com.kape.settings.ui.screens.HelpScreen
 import com.kape.settings.ui.screens.KillSwitchSettingScreen
@@ -35,5 +36,6 @@ fun SettingsFlow() {
         SettingsStep.Network -> NetworkSettingsScreen()
         SettingsStep.Privacy -> PrivacySettingsScreen()
         SettingsStep.Protocol, SettingsStep.ShortcutProtocol -> ProtocolSettingsScreen()
+        SettingsStep.ExternalProxyAppList -> ExternalProxyAppList()
     }
 }

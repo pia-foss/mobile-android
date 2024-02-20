@@ -118,4 +118,8 @@
     <string name="reconnect">Reconnect</string>
     <string name="later">Later</string>
     <string name="reconnect_apply_changes">Reconnect to the VPN to apply these changes.</string>
+
+    <string name="proxy_selection_title">Select proxy app</string>
+    <string name="enable_proxy_dialog_title">Setup your proxy app</string>
+    <string name="enable_proxy_dialog_message">In order to use a proxy with our app, we need to know what app you plan on using.</string>
 </resources>

@@ -61,7 +61,8 @@ fun ObfuscationSettingsScreen() = Screen {
                 titleId = R.string.obfuscation_external_proxy_app_title,
                 subtitle = stringResource(id = R.string.obfuscation_external_proxy_app_description),
                 onClick = {
-                    TODO("To be implemented")
+                    viewModel.navigateToExternalAppList()
+                    // TODO: implement properly
                 },
             )
             SettingsToggle(
