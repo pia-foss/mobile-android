@@ -143,10 +143,11 @@ class ConnectionUseCase(
             return@flow
         }
 
-        val selectedShadowsocksServer = shadowsocksRegionPrefs.getSelectedShadowsocksServer() ?: run {
-            emit(false)
-            return@flow
-        }
+        val selectedShadowsocksServer =
+            shadowsocksRegionPrefs.getSelectedShadowsocksServer() ?: run {
+                emit(false)
+                return@flow
+            }
 
         startObfuscatorProcess(
             obfuscatorProcessInformation = ObfuscatorProcessInformation(
@@ -329,21 +330,35 @@ class ConnectionUseCase(
                 caCertificate = certificate,
                 username = connectionSource.getVpnToken().substring(0, index),
                 password = connectionSource.getVpnToken().substring(index + 1),
-                socksProxy = when (settingsPrefs.isShadowsocksObfuscationEnabled()) {
-                    true -> shadowsocksRegionPrefs.getSelectedShadowsocksServer()?.let {
-                        OpenVpnSocksProxyDetails(
-                            clientProxyAddress = OBFUSCATOR_PROXY_HOST,
-                            clientProxyPort = OBFUSCATOR_PROXY_PORT,
-                            serverProxyAddress = it.host,
-                        )
-                    }
-                    false -> null
-                },
+                socksProxy = getProxyDetails(),
             ),
             wireguardClientConfiguration = WireguardClientConfiguration(
                 token = connectionSource.getVpnToken(),
                 pinningCertificate = certificate,
             ),
         )
+    }
+
+    private fun getProxyDetails(): OpenVpnSocksProxyDetails? {
+        var proxyDetails: OpenVpnSocksProxyDetails? = null
+        if (settingsPrefs.isShadowsocksObfuscationEnabled()) {
+            proxyDetails = shadowsocksRegionPrefs.getSelectedShadowsocksServer()?.let {
+                OpenVpnSocksProxyDetails(
+                    clientProxyAddress = OBFUSCATOR_PROXY_HOST,
+                    clientProxyPort = OBFUSCATOR_PROXY_PORT,
+                    serverProxyAddress = it.host,
+                )
+            }
+        }
+        if (settingsPrefs.isExternalProxyAppEnabled()) {
+            proxyDetails = connectionPrefs.getSelectedVpnServer()?.let {
+                OpenVpnSocksProxyDetails(
+                    clientProxyAddress = OBFUSCATOR_PROXY_HOST,
+                    clientProxyPort = connectionPrefs.getProxyPort().toInt(),
+                    serverProxyAddress = OBFUSCATOR_PROXY_HOST,
+                )
+            }
+        }
+        return proxyDetails
     }
 }
