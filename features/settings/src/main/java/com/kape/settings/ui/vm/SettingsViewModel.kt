@@ -69,6 +69,7 @@ class SettingsViewModel(
     private val isDnsNumeric = mutableStateOf(true)
     private var installedApps = listOf<ApplicationInfo>()
     var reconnectDialogVisible = mutableStateOf(false)
+    val externalProxyTcpDialogVisible = mutableStateOf(false)
 
     fun navigateUp() {
         when (_state.value) {
@@ -403,6 +404,12 @@ class SettingsViewModel(
     fun showReconnectDialogIfVpnConnected() {
         if (isConnected()) {
             reconnectDialogVisible.value = true
+        }
+    }
+
+    fun showExternalProxyTcpDialogIfNeeded() {
+        if (prefs.isExternalProxyAppEnabled() && prefs.getOpenVpnSettings().transport != Transport.TCP) {
+            externalProxyTcpDialogVisible.value = true
         }
     }
 

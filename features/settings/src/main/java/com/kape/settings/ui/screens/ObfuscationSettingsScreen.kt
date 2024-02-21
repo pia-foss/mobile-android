@@ -236,6 +236,18 @@ fun ObfuscationSettingsScreen() = Screen {
             },
         )
     }
+
+    if (viewModel.externalProxyTcpDialogVisible.value) {
+        UpdateOpenVPNTransportToTcpDialog(
+            titleId = R.string.external_proxy_problem_title,
+            descriptionId = R.string.external_proxy_problem_message,
+            viewModel = viewModel,
+            tcpTransportDialogVisible = viewModel.externalProxyTcpDialogVisible,
+            onDismiss = {
+                viewModel.toggleExternalProxyApp(false)
+            },
+        )
+    }
 }
 
 @Composable

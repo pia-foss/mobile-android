@@ -87,6 +87,7 @@ fun ExternalProxyAppList() {
                         onClick = { name, isChecked ->
                             if (isChecked) {
                                 viewModel.setExternalProxyAppPackageName(item.packageName)
+                                viewModel.showExternalProxyTcpDialogIfNeeded()
                             } else {
                                 viewModel.setExternalProxyAppPackageName("")
                             }
