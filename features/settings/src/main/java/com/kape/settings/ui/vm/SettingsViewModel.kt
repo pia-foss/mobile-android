@@ -58,6 +58,9 @@ class SettingsViewModel(
     val shadowsocksObfuscationEnabled = mutableStateOf(prefs.isShadowsocksObfuscationEnabled())
     val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
     val isAllowLocalTrafficEnabled = mutableStateOf(prefs.isAllowLocalTrafficEnabled())
+    val externalProxyAppEnabled = mutableStateOf(prefs.isExternalProxyAppEnabled())
+    val externalProxyAppPackageName = mutableStateOf(prefs.getExternalProxyAppPackageName())
+    val externalProxyAppPort = mutableStateOf(connectionPrefs.getProxyPort())
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
     val eventList = mutableStateOf<List<String>>(emptyList())
     val debugLogs = mutableStateOf<List<String>>(emptyList())
@@ -66,11 +69,13 @@ class SettingsViewModel(
     private val isDnsNumeric = mutableStateOf(true)
     private var installedApps = listOf<ApplicationInfo>()
     var reconnectDialogVisible = mutableStateOf(false)
+    val externalProxyTcpDialogVisible = mutableStateOf(false)
 
     fun navigateUp() {
         when (_state.value) {
             SettingsStep.Automation -> _state.value = SettingsStep.Main
             SettingsStep.Obfuscation -> _state.value = SettingsStep.Main
+            SettingsStep.ExternalProxyAppList -> _state.value = SettingsStep.Obfuscation
             SettingsStep.ConnectionStats -> _state.value = SettingsStep.Help
             SettingsStep.DebugLogs -> _state.value = SettingsStep.Help
             SettingsStep.General -> _state.value = SettingsStep.Main
@@ -137,6 +142,10 @@ class SettingsViewModel(
 
     fun navigateToAutomation() = router.handleFlow(EnterFlow.Automation)
 
+    fun navigateToExternalAppList() = viewModelScope.launch {
+        _state.emit(SettingsStep.ExternalProxyAppList)
+    }
+
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
     }
@@ -175,6 +184,29 @@ class SettingsViewModel(
     fun toggleShadowsocksObfuscation(enabled: Boolean) {
         prefs.setShadowsocksObfuscationEnabled(enabled)
         shadowsocksObfuscationEnabled.value = enabled
+    }
+
+    fun toggleExternalProxyApp(enabled: Boolean) {
+        prefs.setExternalProxyAppEnabled(enabled)
+        externalProxyAppEnabled.value = enabled
+    }
+
+    fun setExternalProxyAppPackageName(packageName: String) {
+        if (packageName.isEmpty()) {
+            prefs.setExternalProxyAppPackageName(packageName)
+            removeFromVpnExcludedApps(externalProxyAppPackageName.value)
+            externalProxyAppPackageName.value = packageName
+        } else {
+            prefs.setExternalProxyAppPackageName(packageName)
+            externalProxyAppPackageName.value = packageName
+            addToVpnExcludedApps(packageName)
+        }
+        toggleExternalProxyApp(packageName.isNotEmpty())
+    }
+
+    fun setExternalProxyPort(port: String?) {
+        connectionPrefs.setProxyPort(port)
+        externalProxyAppPort.value = connectionPrefs.getProxyPort()
     }
 
     fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled()
@@ -341,7 +373,8 @@ class SettingsViewModel(
             appList.value = installedApps
         } else {
             appList.value = installedApps.filter {
-                packageManager.getApplicationLabel(it).toString().lowercase().contains(value.lowercase())
+                packageManager.getApplicationLabel(it).toString().lowercase()
+                    .contains(value.lowercase())
             }
         }
     }
@@ -371,6 +404,12 @@ class SettingsViewModel(
     fun showReconnectDialogIfVpnConnected() {
         if (isConnected()) {
             reconnectDialogVisible.value = true
+        }
+    }
+
+    fun showExternalProxyTcpDialogIfNeeded() {
+        if (prefs.isExternalProxyAppEnabled() && prefs.getOpenVpnSettings().transport != Transport.TCP) {
+            externalProxyTcpDialogVisible.value = true
         }
     }
 

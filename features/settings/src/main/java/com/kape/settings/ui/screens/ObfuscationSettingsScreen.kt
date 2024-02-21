@@ -16,6 +16,7 @@ import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.Transport
 import com.kape.settings.ui.elements.CustomObfuscationDialog
 import com.kape.settings.ui.elements.ObfuscationSelectionDialog
+import com.kape.settings.ui.elements.ProxyPortDialog
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
@@ -42,6 +43,8 @@ fun ObfuscationSettingsScreen() = Screen {
     val obfuscationDialogVisible = remember { mutableStateOf(false) }
     val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
     val tcpTransportDialogVisible = remember { mutableStateOf(false) }
+    val externalProxyAppDialogVisible = remember { mutableStateOf(false) }
+    val externalProxyPortDialogVisible = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -57,13 +60,34 @@ fun ObfuscationSettingsScreen() = Screen {
             modifier = Modifier
                 .padding(it),
         ) {
-            SettingsItem(
+            SettingsToggle(
                 titleId = R.string.obfuscation_external_proxy_app_title,
-                subtitle = stringResource(id = R.string.obfuscation_external_proxy_app_description),
-                onClick = {
-                    TODO("To be implemented")
+                subtitleId = R.string.obfuscation_external_proxy_app_description,
+                stateEnabled = viewModel.externalProxyAppEnabled,
+                toggle = {
+                    if (it && viewModel.externalProxyAppPackageName.value.isEmpty()) {
+                        externalProxyAppDialogVisible.value = true
+                    } else {
+                        viewModel.toggleExternalProxyApp(it)
+                    }
                 },
             )
+            if (viewModel.externalProxyAppEnabled.value && viewModel.externalProxyAppPackageName.value.isNotEmpty()) {
+                SettingsItem(
+                    titleId = R.string.selected_proxy_app,
+                    subtitle = viewModel.externalProxyAppPackageName.value,
+                    onClick = {
+                        viewModel.navigateToExternalAppList()
+                    },
+                )
+                SettingsItem(
+                    titleId = R.string.proxy_port,
+                    subtitle = viewModel.externalProxyAppPort.value,
+                    onClick = {
+                        externalProxyPortDialogVisible.value = true
+                    },
+                )
+            }
             SettingsToggle(
                 titleId = R.string.obfuscation_shadowsocks_title,
                 subtitleId = R.string.obfuscation_shadowsocks_description,
@@ -178,6 +202,52 @@ fun ObfuscationSettingsScreen() = Screen {
             },
         )
     }
+
+    if (externalProxyAppDialogVisible.value) {
+        ExternalProxyAppDialog(
+            titleId = R.string.enable_proxy_dialog_title,
+            descriptionId = R.string.enable_proxy_dialog_message,
+            onConfirm = {
+                externalProxyAppDialogVisible.value = false
+                viewModel.navigateToExternalAppList()
+            },
+            onDismiss = {
+                externalProxyAppDialogVisible.value = false
+                viewModel.toggleExternalProxyApp(false)
+            },
+        )
+    }
+
+    if (externalProxyPortDialogVisible.value) {
+        ProxyPortDialog(
+            currentPort = viewModel.externalProxyAppPort.value,
+            onConfirm = {
+                viewModel.setExternalProxyPort(it)
+                externalProxyPortDialogVisible.value = false
+                viewModel.showReconnectDialogIfVpnConnected()
+            },
+            onDefault = {
+                viewModel.setExternalProxyPort(null)
+                externalProxyPortDialogVisible.value = false
+                viewModel.showReconnectDialogIfVpnConnected()
+            },
+            onDismiss = {
+                externalProxyPortDialogVisible.value = false
+            },
+        )
+    }
+
+    if (viewModel.externalProxyTcpDialogVisible.value) {
+        UpdateOpenVPNTransportToTcpDialog(
+            titleId = R.string.external_proxy_problem_title,
+            descriptionId = R.string.external_proxy_problem_message,
+            viewModel = viewModel,
+            tcpTransportDialogVisible = viewModel.externalProxyTcpDialogVisible,
+            onDismiss = {
+                viewModel.toggleExternalProxyApp(false)
+            },
+        )
+    }
 }
 
 @Composable
@@ -202,5 +272,20 @@ fun UpdateOpenVPNTransportToTcpDialog(
             tcpTransportDialogVisible.value = false
             onConfirm()
         },
+    )
+}
+
+@Composable
+fun ExternalProxyAppDialog(
+    titleId: Int,
+    descriptionId: Int,
+    onDismiss: () -> Unit = {},
+    onConfirm: () -> Unit = {},
+) {
+    TextDialog(
+        titleId = titleId,
+        descriptionId = descriptionId,
+        onDismiss = onDismiss,
+        onConfirm = onConfirm,
     )
 }

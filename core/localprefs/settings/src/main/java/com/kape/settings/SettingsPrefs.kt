@@ -23,6 +23,8 @@ private const val CUSTOM_DNS_SETTINGS = "custom-dns-settings"
 private const val SELECTED_OBFUSCATION_OPTION_SETTINGS = "selected-obfuscation-option-settings"
 private const val CUSTOM_OBFUSCATION_SETTINGS = "custom-obfuscation-settings"
 private const val SHADOWSOCKS_OBFUSCATION_ENABLED = "shadowsocks-obfuscation-enabled"
+private const val EXTERNAL_PROXY_APP_ENABLED = "external-proxy-app-enabled"
+private const val EXTERNAL_PROXY_APP_PACKAGE_NAME = "external-proxy-app-package-name"
 private const val HELP_IMPROVE_PIA = "help-improve-pia"
 private const val VPN_EXCLUDED_APPS = "vpn-excluded-apps"
 private const val PORT_FORWARDING = "port-forwarding"
@@ -127,8 +129,25 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
     fun isShadowsocksObfuscationEnabled(): Boolean =
         prefs.getBoolean(SHADOWSOCKS_OBFUSCATION_ENABLED, false)
 
+    fun setExternalProxyAppEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean(EXTERNAL_PROXY_APP_ENABLED, enabled).apply()
+    }
+
+    fun isExternalProxyAppEnabled() = prefs.getBoolean(EXTERNAL_PROXY_APP_ENABLED, false)
+
+    fun setExternalProxyAppPackageName(packageName: String) = prefs.edit().putString(
+        EXTERNAL_PROXY_APP_PACKAGE_NAME,
+        packageName,
+    ).apply()
+
+    fun getExternalProxyAppPackageName(): String =
+        prefs.getString(EXTERNAL_PROXY_APP_PACKAGE_NAME, "") ?: ""
+
     fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) {
-        prefs.edit().putString(SELECTED_OBFUSCATION_OPTION_SETTINGS, Json.encodeToString(obfuscationOptions))
+        prefs.edit().putString(
+            SELECTED_OBFUSCATION_OPTION_SETTINGS,
+            Json.encodeToString(obfuscationOptions),
+        )
             .apply()
     }
 
@@ -141,7 +160,8 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
     }
 
     fun setCustomObfuscation(customObfuscation: CustomObfuscation) {
-        prefs.edit().putString(CUSTOM_OBFUSCATION_SETTINGS, Json.encodeToString(customObfuscation)).apply()
+        prefs.edit().putString(CUSTOM_OBFUSCATION_SETTINGS, Json.encodeToString(customObfuscation))
+            .apply()
     }
 
     fun getCustomObfuscation(): CustomObfuscation? {

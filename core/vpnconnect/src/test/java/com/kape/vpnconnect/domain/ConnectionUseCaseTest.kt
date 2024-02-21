@@ -64,6 +64,7 @@ internal class ConnectionUseCaseTest {
         every { isMaceEnabled() } returns true
         every { isPortForwardingEnabled() } returns false
         every { isShadowsocksObfuscationEnabled() } returns false
+        every { isExternalProxyAppEnabled() } returns false
     }
     private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
         every { setSelectedVpnServer(any()) } returns Unit

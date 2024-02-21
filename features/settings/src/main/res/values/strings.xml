@@ -5,6 +5,7 @@
     <string name="icon">Icon</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="default_option">Default</string>
     <string name="clear">Clear</string>
     <string name="edit">Edit</string>
     <!--    General     -->
@@ -118,4 +119,12 @@
     <string name="reconnect">Reconnect</string>
     <string name="later">Later</string>
     <string name="reconnect_apply_changes">Reconnect to the VPN to apply these changes.</string>
+
+    <string name="proxy_selection_title">Select proxy app</string>
+    <string name="enable_proxy_dialog_title">Setup your proxy app</string>
+    <string name="enable_proxy_dialog_message">In order to use a proxy with our app, we need to know what app you plan on using.</string>
+    <string name="selected_proxy_app">Selected proxy app</string>
+    <string name="proxy_port">Proxy port</string>
+    <string name="external_proxy_problem_title">Proxy Requirements</string>
+    <string name="external_proxy_problem_message">TCP is required in order for the app to work. Would you like to enable TCP?</string>
 </resources>
