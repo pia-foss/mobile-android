@@ -224,10 +224,12 @@ fun ObfuscationSettingsScreen() = Screen {
             onConfirm = {
                 viewModel.setExternalProxyPort(it)
                 externalProxyPortDialogVisible.value = false
+                viewModel.showReconnectDialogIfVpnConnected()
             },
             onDefault = {
                 viewModel.setExternalProxyPort(null)
                 externalProxyPortDialogVisible.value = false
+                viewModel.showReconnectDialogIfVpnConnected()
             },
             onDismiss = {
                 externalProxyPortDialogVisible.value = false
