@@ -21,7 +21,6 @@ const val NO_IP = "---"
 
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
-
     fun addToQuickConnect(serverKey: String) {
         val quickConnectList = getQuickConnectServers().toMutableList()
         quickConnectList.add(serverKey)
@@ -75,7 +74,7 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
     fun isDisconnectedByUser() = prefs.getBoolean(DISCONNECTED_BY_USER, false)
 
-    fun setProxyPort(port: String) = prefs.edit().putString(PROXY_PORT, port).apply()
+    fun setProxyPort(port: String?) = prefs.edit().putString(PROXY_PORT, port).apply()
 
     fun getProxyPort(): String =
         prefs.getString(PROXY_PORT, DEFAULT_PROXY_PORT_VALUE) ?: DEFAULT_PROXY_PORT_VALUE

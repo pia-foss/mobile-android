@@ -203,6 +203,11 @@ class SettingsViewModel(
         toggleExternalProxyApp(packageName.isNotEmpty())
     }
 
+    fun setExternalProxyPort(port: String?) {
+        connectionPrefs.setProxyPort(port)
+        externalProxyAppPort.value = connectionPrefs.getProxyPort()
+    }
+
     fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled()
 
     fun getSelectedProtocol(): VpnProtocols = prefs.getSelectedProtocol()
@@ -253,7 +258,7 @@ class SettingsViewModel(
 
     fun areLocationPermissionsGranted() =
         locationPermissionManager.isFineLocationPermissionGranted() &&
-                locationPermissionManager.isBackgroundLocationPermissionGranted()
+            locationPermissionManager.isBackgroundLocationPermissionGranted()
 
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()

@@ -5,6 +5,7 @@
     <string name="icon">Icon</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="default_option">Default</string>
     <string name="clear">Clear</string>
     <string name="edit">Edit</string>
     <!--    General     -->

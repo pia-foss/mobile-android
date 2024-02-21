@@ -16,6 +16,7 @@ import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.Transport
 import com.kape.settings.ui.elements.CustomObfuscationDialog
 import com.kape.settings.ui.elements.ObfuscationSelectionDialog
+import com.kape.settings.ui.elements.ProxyPortDialog
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
@@ -43,6 +44,7 @@ fun ObfuscationSettingsScreen() = Screen {
     val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
     val tcpTransportDialogVisible = remember { mutableStateOf(false) }
     val externalProxyAppDialogVisible = remember { mutableStateOf(false) }
+    val externalProxyPortDialogVisible = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -82,7 +84,7 @@ fun ObfuscationSettingsScreen() = Screen {
                     titleId = R.string.proxy_port,
                     subtitle = viewModel.externalProxyAppPort.value,
                     onClick = {
-
+                        externalProxyPortDialogVisible.value = true
                     },
                 )
             }
@@ -212,6 +214,23 @@ fun ObfuscationSettingsScreen() = Screen {
             onDismiss = {
                 externalProxyAppDialogVisible.value = false
                 viewModel.toggleExternalProxyApp(false)
+            },
+        )
+    }
+
+    if (externalProxyPortDialogVisible.value) {
+        ProxyPortDialog(
+            currentPort = viewModel.externalProxyAppPort.value,
+            onConfirm = {
+                viewModel.setExternalProxyPort(it)
+                externalProxyPortDialogVisible.value = false
+            },
+            onDefault = {
+                viewModel.setExternalProxyPort(null)
+                externalProxyPortDialogVisible.value = false
+            },
+            onDismiss = {
+                externalProxyPortDialogVisible.value = false
             },
         )
     }
