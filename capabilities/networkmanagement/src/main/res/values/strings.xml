@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="nmt_secure_wifi">Secure Wi-Fi</string>
-    <string name="nmt_open_wifi">Wi-Fi</string>
-    <string name="nmt_mobile_data">Mobile data</string>
-    <string name="nmt_disconnect">Always disconnect VPN</string>
-    <string name="nmt_connect">Always connect VPN</string>
-    <string name="nmt_retain">Retain VPN state</string>
-</resources>

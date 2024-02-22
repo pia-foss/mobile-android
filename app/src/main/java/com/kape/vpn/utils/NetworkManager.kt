@@ -2,7 +2,7 @@ package com.kape.vpn.utils
 
 import android.content.Context
 import com.kape.networkmanagement.NetworkManagementPrefs
-import com.kape.networkmanagement.R
+import com.kape.ui.R
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.settings.SettingsPrefs

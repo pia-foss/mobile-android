@@ -29,6 +29,7 @@ dependencies {
     implementation(project(":core:localprefs:networkmanagement:data"))
     implementation(project(":core:localprefs:networkmanagement"))
     implementation(project(":core:utils"))
+    implementation(project(":capabilities:ui"))
 
     implementKoin()
     implementSerialization()

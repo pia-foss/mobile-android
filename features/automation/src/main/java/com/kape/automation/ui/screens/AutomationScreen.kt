@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.automation.R
+import com.kape.ui.R
 import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.networkmanagement.data.NetworkBehavior
@@ -85,25 +85,25 @@ fun AutomationScreen(isSet: Boolean) = Screen {
 
                     when (networkItem.networkType) {
                         NetworkType.MobileData -> {
-                            icon = com.kape.ui.R.drawable.ic_mobile_data
+                            icon = R.drawable.ic_mobile_data
                             title =
-                                stringResource(id = com.kape.networkmanagement.R.string.nmt_mobile_data)
+                                stringResource(id = R.string.nmt_mobile_data)
                         }
 
                         NetworkType.WifiCustom -> {
-                            icon = com.kape.ui.R.drawable.ic_wifi_custom
+                            icon = R.drawable.ic_wifi_custom
                             title = networkItem.networkName
                         }
 
                         NetworkType.WifiOpen -> {
-                            icon = com.kape.ui.R.drawable.ic_open_wifi
+                            icon = R.drawable.ic_open_wifi
                             title = networkItem.networkName
                         }
 
                         NetworkType.WifiSecure -> {
-                            icon = com.kape.ui.R.drawable.ic_secure_wifi
+                            icon = R.drawable.ic_secure_wifi
                             title =
-                                stringResource(id = com.kape.networkmanagement.R.string.nmt_secure_wifi)
+                                stringResource(id = R.string.nmt_secure_wifi)
                         }
                     }
                     NetworkCard(
@@ -169,16 +169,16 @@ fun AutomationScreen(isSet: Boolean) = Screen {
 @Composable
 private fun getStatus(behavior: NetworkBehavior): String {
     return when (behavior) {
-        NetworkBehavior.AlwaysConnect -> stringResource(id = com.kape.networkmanagement.R.string.nmt_connect)
-        NetworkBehavior.AlwaysDisconnect -> stringResource(id = com.kape.networkmanagement.R.string.nmt_disconnect)
-        NetworkBehavior.RetainState -> stringResource(id = com.kape.networkmanagement.R.string.nmt_retain)
+        NetworkBehavior.AlwaysConnect -> stringResource(id = R.string.nmt_connect)
+        NetworkBehavior.AlwaysDisconnect -> stringResource(id = R.string.nmt_disconnect)
+        NetworkBehavior.RetainState -> stringResource(id = R.string.nmt_retain)
     }
 }
 
 fun getRuleForStatus(context: Context, status: String): NetworkBehavior {
     return when (status) {
-        context.getString(com.kape.networkmanagement.R.string.nmt_retain) -> NetworkBehavior.RetainState
-        context.getString(com.kape.networkmanagement.R.string.nmt_disconnect) -> NetworkBehavior.AlwaysDisconnect
+        context.getString(R.string.nmt_retain) -> NetworkBehavior.RetainState
+        context.getString(R.string.nmt_disconnect) -> NetworkBehavior.AlwaysDisconnect
         else -> NetworkBehavior.AlwaysConnect
     }
 }

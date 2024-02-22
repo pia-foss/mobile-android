@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.networkmanagement.R
+import com.kape.ui.R
 import com.kape.ui.text.DialogActionText
 import com.kape.ui.text.DialogTitleText
 import com.kape.ui.utils.LocalColors
