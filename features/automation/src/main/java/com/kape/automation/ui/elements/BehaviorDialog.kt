@@ -45,7 +45,7 @@ fun BehaviorDialog(
         )
 
         if (showRemoveOption) {
-            radioOptions.add(stringResource(id = com.kape.automation.R.string.nmt_remove_rule))
+            radioOptions.add(stringResource(id = com.kape.ui.R.string.nmt_remove_rule))
         }
 
         val selectedOption = remember {
@@ -62,7 +62,7 @@ fun BehaviorDialog(
             Modifier.fillMaxWidth(),
         ) {
             DialogTitleText(
-                content = stringResource(id = com.kape.automation.R.string.dialog_title),
+                content = stringResource(id = com.kape.ui.R.string.dialog_title),
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(

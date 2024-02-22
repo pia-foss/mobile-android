@@ -45,7 +45,7 @@ import org.koin.androidx.compose.koinViewModel
 fun AutomationScreen(isSet: Boolean) = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.trusted_network_plural))
+        appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
     }
     val showDialog = remember { mutableStateOf(false) }
     val currentItem = remember { mutableStateOf<NetworkItem?>(null) }
@@ -68,12 +68,12 @@ fun AutomationScreen(isSet: Boolean) = Screen {
     ) {
         Column(modifier = Modifier.padding(it)) {
             OnboardingTitleText(
-                content = stringResource(id = R.string.manage_automation_title),
+                content = stringResource(id = com.kape.ui.R.string.manage_automation_title),
                 modifier = Modifier.padding(16.dp),
             )
 
             OnboardingDescriptionText(
-                content = stringResource(id = R.string.manage_automation_description),
+                content = stringResource(id = com.kape.ui.R.string.manage_automation_description),
                 modifier = Modifier.padding(16.dp),
             )
 
@@ -138,7 +138,7 @@ fun AutomationScreen(isSet: Boolean) = Screen {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Hyperlink(
-                    content = stringResource(id = R.string.manage_automation_add),
+                    content = stringResource(id = com.kape.ui.R.string.manage_automation_add),
                     modifier = Modifier.align(CenterVertically),
                 )
             }
@@ -146,7 +146,7 @@ fun AutomationScreen(isSet: Boolean) = Screen {
     }
 
     if (showDialog.value) {
-        val removeRule = stringResource(id = R.string.nmt_remove_rule)
+        val removeRule = stringResource(id = com.kape.ui.R.string.nmt_remove_rule)
         currentItem.value?.let { rule ->
             BehaviorDialog(
                 status = getStatus(behavior = rule.networkBehavior),

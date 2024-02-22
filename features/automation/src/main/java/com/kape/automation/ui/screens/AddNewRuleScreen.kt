@@ -35,7 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 fun AddNewRuleScreen() = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.trusted_network_plural))
+        appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
     }
     val showDialog = remember { mutableStateOf(false) }
     var currentItem: String? = null
@@ -55,7 +55,7 @@ fun AddNewRuleScreen() = Screen {
     ) {
         Column(modifier = Modifier.padding(it)) {
             OnboardingFooterText(
-                content = stringResource(id = R.string.add_rule_title),
+                content = stringResource(id = com.kape.ui.R.string.add_rule_title),
                 modifier = Modifier.padding(16.dp),
             )
             viewModel.availableNetwork.value?.let {
@@ -68,7 +68,7 @@ fun AddNewRuleScreen() = Screen {
 
         if (showDialog.value) {
             BehaviorDialog(
-                status = stringResource(id = R.string.nmt_connect),
+                status = stringResource(id = com.kape.ui.R.string.nmt_connect),
                 showRemoveOption = false,
                 showDialog,
             ) {
