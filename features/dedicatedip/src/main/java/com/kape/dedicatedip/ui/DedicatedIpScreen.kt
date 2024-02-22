@@ -63,7 +63,7 @@ fun DedicatedIpScreen() = Screen {
         loadDedicatedIps(Locale.getDefault().language)
     }
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.dedicated_ip_title))
+        appBarText(stringResource(id = com.kape.ui.R.string.dedicated_ip_title))
     }
     val showToast = remember { mutableStateOf(false) }
     val showDialog = remember { mutableStateOf(false) }
@@ -89,13 +89,13 @@ fun DedicatedIpScreen() = Screen {
                     .padding(16.dp),
             ) {
                 Text(
-                    text = stringResource(id = R.string.dedicated_ip_title),
+                    text = stringResource(id = com.kape.ui.R.string.dedicated_ip_title),
                     fontSize = 18.sp,
                     color = LocalColors.current.onSurface,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = stringResource(id = if (viewModel.dipList.isEmpty()) R.string.dedicated_ip_description else R.string.dip_summary),
+                    text = stringResource(id = if (viewModel.dipList.isEmpty()) com.kape.ui.R.string.dedicated_ip_description else com.kape.ui.R.string.dip_summary),
                     fontSize = 12.sp,
                     color = LocalColors.current.onSurface,
                 )
@@ -116,7 +116,7 @@ fun DedicatedIpScreen() = Screen {
                                 },
                                 placeholder = {
                                     Text(
-                                        text = stringResource(id = R.string.dedicated_ip_hint),
+                                        text = stringResource(id = com.kape.ui.R.string.dedicated_ip_hint),
                                         color = LocalColors.current.onSurface,
                                     )
                                 },
@@ -150,7 +150,7 @@ fun DedicatedIpScreen() = Screen {
                                     shape = RoundedCornerShape(4.dp),
                                 ) {
                                     Text(
-                                        text = stringResource(id = R.string.activate),
+                                        text = stringResource(id = com.kape.ui.R.string.activate),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                         color = LocalColors.current.onPrimary,
@@ -166,7 +166,7 @@ fun DedicatedIpScreen() = Screen {
 
             if (viewModel.dipList.isNotEmpty()) {
                 Text(
-                    text = stringResource(id = R.string.owned_dedicated_ips),
+                    text = stringResource(id = com.kape.ui.R.string.owned_dedicated_ips),
                     fontSize = 18.sp,
                     color = LocalColors.current.primary,
                     modifier = Modifier.padding(horizontal = 16.dp),
@@ -191,10 +191,10 @@ fun DedicatedIpScreen() = Screen {
                 Toast.makeText(
                     context,
                     when (viewModel.activationState.value) {
-                        DipApiResult.Active -> stringResource(id = R.string.dip_success)
-                        DipApiResult.Error -> stringResource(id = R.string.dip_invalid)
-                        DipApiResult.Expired -> stringResource(id = R.string.dip_expired_warning)
-                        DipApiResult.Invalid -> stringResource(id = R.string.dip_invalid)
+                        DipApiResult.Active -> stringResource(id = com.kape.ui.R.string.dip_success)
+                        DipApiResult.Error -> stringResource(id = com.kape.ui.R.string.dip_invalid)
+                        DipApiResult.Expired -> stringResource(id = com.kape.ui.R.string.dip_expired_warning)
+                        DipApiResult.Invalid -> stringResource(id = com.kape.ui.R.string.dip_invalid)
                         null -> ""
                     },
                     Toast.LENGTH_LONG,
@@ -317,14 +317,14 @@ fun DeleteDipDialog(
         },
         title = {
             Text(
-                text = stringResource(id = R.string.dip_remove_title),
+                text = stringResource(id = com.kape.ui.R.string.dip_remove_title),
                 fontSize = 18.sp,
             )
         },
         text = {
             Text(
                 text = String.format(
-                    stringResource(id = R.string.dip_remove_description),
+                    stringResource(id = com.kape.ui.R.string.dip_remove_description),
                     server.name,
                     server.dedicatedIp,
                 ),
