@@ -60,4 +60,12 @@
 
     <string name="location_selection_title">Location Selection</string>
     <string name="all_locations">All Locations</string>
+
+    <string name="app_name">PIA VPN</string>
+    <string name="url_terms_of_service" translatable="false">https://www.privateinternetaccess.com/pages/terms-of-service/</string>
+    <string name="url_privacy_policy" translatable="false">https://www.privateinternetaccess.com/pages/privacy-policy/</string>
+    <string name="url_support" translatable="false">https://www.privateinternetaccess.com/helpdesk/</string>
+
+    <string name="qs_title">Connect to PIA</string>
+    <string name="change_server">Change Server</string>
 </resources>

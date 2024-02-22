@@ -129,17 +129,17 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(WebContent.Terms) {
                                 InAppBrowser(
-                                    url = getString(R.string.url_terms_of_service),
+                                    url = getString(com.kape.ui.R.string.url_terms_of_service),
                                 )
                             }
                             composable(WebContent.Privacy) {
                                 InAppBrowser(
-                                    url = getString(R.string.url_privacy_policy),
+                                    url = getString(com.kape.ui.R.string.url_privacy_policy),
                                 )
                             }
                             composable(WebContent.Support) {
                                 InAppBrowser(
-                                    url = getString(R.string.url_support),
+                                    url = getString(com.kape.ui.R.string.url_support),
                                 )
                             }
                             composable(PerAppSettings.Main) {
