@@ -2,10 +2,10 @@ package com.kape.settings.ui.elements
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.kape.ui.R
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.utils.ButtonProperty
 import com.kape.settings.utils.ButtonType
+import com.kape.ui.R
 
 @Composable
 fun DnsSelectionDialog(

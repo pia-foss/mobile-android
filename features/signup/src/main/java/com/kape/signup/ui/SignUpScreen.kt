@@ -25,9 +25,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.kape.ui.R
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.SubscriptionData
+import com.kape.ui.R
 import com.kape.ui.elements.HtmlText
 import com.kape.ui.elements.MonthlySubscriptionCard
 import com.kape.ui.elements.PrimaryButton

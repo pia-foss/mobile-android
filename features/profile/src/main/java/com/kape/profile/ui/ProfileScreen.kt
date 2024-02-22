@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.ui.R
 import com.kape.profile.ui.vm.ProfileViewModel
+import com.kape.ui.R
 import com.kape.ui.elements.Screen
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel

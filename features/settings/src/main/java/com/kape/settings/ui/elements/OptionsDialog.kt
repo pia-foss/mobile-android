@@ -23,9 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
-import com.kape.ui.R
 import com.kape.settings.utils.ButtonProperty
 import com.kape.settings.utils.ButtonType
+import com.kape.ui.R
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

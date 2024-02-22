@@ -26,12 +26,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.ui.R
 import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
+import com.kape.ui.R
 import com.kape.ui.elements.NetworkCard
 import com.kape.ui.elements.Screen
 import com.kape.ui.text.Hyperlink

@@ -35,7 +35,6 @@ import com.kape.ui.text.OnboardingDescriptionText
 import com.kape.ui.text.OnboardingTitleText
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)

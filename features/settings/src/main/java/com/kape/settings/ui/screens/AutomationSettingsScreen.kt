@@ -12,10 +12,10 @@ import androidx.compose.ui.res.stringResource
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.view.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.ui.R
 import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.ui.R
 import com.kape.ui.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
