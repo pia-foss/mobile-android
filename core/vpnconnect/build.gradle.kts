@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":core:localprefs:settings:data"))
     implementation(project(":core:localprefs:connection"))
     implementation(project(":capabilities:shareevents"))
+    implementation(project(":capabilities:ui"))
     implementVpnManager()
     implementKoin()
     implementAccount()

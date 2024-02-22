@@ -86,17 +86,17 @@ class UsageProvider(private val context: Context) :
         val bytesUnit = (bytes / unit.toDouble().pow(exp.toDouble())).toFloat()
         return if (speed) {
             when (exp) {
-                0 -> context.getString(R.string.bits_per_second, bytesUnit)
-                1 -> context.getString(R.string.kbits_per_second, bytesUnit)
-                2 -> context.getString(R.string.mbits_per_second, bytesUnit)
-                else -> context.getString(R.string.gbits_per_second, bytesUnit)
+                0 -> context.getString(com.kape.ui.R.string.bits_per_second, bytesUnit)
+                1 -> context.getString(com.kape.ui.R.string.kbits_per_second, bytesUnit)
+                2 -> context.getString(com.kape.ui.R.string.mbits_per_second, bytesUnit)
+                else -> context.getString(com.kape.ui.R.string.gbits_per_second, bytesUnit)
             }
         } else {
             when (exp) {
-                0 -> context.getString(R.string.volume_byte, bytesUnit)
-                1 -> context.getString(R.string.volume_kbyte, bytesUnit)
-                2 -> context.getString(R.string.volume_mbyte, bytesUnit)
-                else -> context.getString(R.string.volume_gbyte, bytesUnit)
+                0 -> context.getString(com.kape.ui.R.string.volume_byte, bytesUnit)
+                1 -> context.getString(com.kape.ui.R.string.volume_kbyte, bytesUnit)
+                2 -> context.getString(com.kape.ui.R.string.volume_mbyte, bytesUnit)
+                else -> context.getString(com.kape.ui.R.string.volume_gbyte, bytesUnit)
             }
         }
     }
