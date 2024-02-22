@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -38,55 +39,58 @@ fun ConsentScreen(viewModel: SignupViewModel) = Screen {
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = com.kape.signup.R.drawable.ic_consent),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp),
-            )
-            Text(
-                text = stringResource(id = R.string.consent_title),
-                fontSize = 16.sp,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(id = R.string.consent_message),
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(24.dp),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(id = R.string.find_out_more).uppercase(),
-                fontSize = 12.sp,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable {
-                        showMoreInfo.value = true
-                    },
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            PrimaryButton(
-                text = stringResource(id = R.string.accept),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            ) {
-                viewModel.allowEventSharing(true)
-            }
-            SecondaryButton(
-                text = stringResource(id = R.string.no_thanks),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .testTag(":SignUpScreen:Login"),
-            ) {
-                viewModel.allowEventSharing(false)
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                Image(
+                    painter = painterResource(id = com.kape.signup.R.drawable.ic_consent),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp),
+                )
+                Text(
+                    text = stringResource(id = R.string.consent_title),
+                    fontSize = 16.sp,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(id = R.string.consent_message),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(24.dp),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(id = R.string.find_out_more).uppercase(),
+                    fontSize = 12.sp,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .clickable {
+                            showMoreInfo.value = true
+                        },
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                PrimaryButton(
+                    text = stringResource(id = R.string.accept),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                ) {
+                    viewModel.allowEventSharing(true)
+                }
+                SecondaryButton(
+                    text = stringResource(id = R.string.no_thanks),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .testTag(":SignUpScreen:Login"),
+                ) {
+                    viewModel.allowEventSharing(false)
+                }
             }
         }
     }
