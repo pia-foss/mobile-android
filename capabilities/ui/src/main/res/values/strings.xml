@@ -334,4 +334,8 @@
     <string name="error_account_creation_title">Account Creation Failure</string>
     <string name="error_account_creation_message">We\'re unable to create an account at this time. Please try again later.\n\n Reopening the app will re-attempt to create an account.</string>
     <string name="error_account_creation_action">Go to Login</string>
+
+    <string name="port_forwarding">port forwarding</string>
+    <string name="geo">geo</string>
+    <string name="dedicated_ip">DEDICATED IP</string>
 </resources>

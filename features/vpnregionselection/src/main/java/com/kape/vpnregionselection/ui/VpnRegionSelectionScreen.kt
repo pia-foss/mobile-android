@@ -36,7 +36,7 @@ import com.kape.ui.elements.Screen
 import com.kape.ui.elements.Search
 import com.kape.ui.text.MenuText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnregionselection.R
+import com.kape.ui.R
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
 import com.kape.vpnregionselection.util.ItemType
 import org.koin.androidx.compose.koinViewModel

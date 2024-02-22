@@ -33,7 +33,7 @@ import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
-import com.kape.vpnregionselection.R
+import com.kape.ui.R
 
 @Composable
 fun LocationPickerItem(
