@@ -45,11 +45,12 @@ import com.kape.ui.text.OnboardingTitleText
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VpnPermissionScreen() = Screen {
-    val viewModel: PermissionsViewModel = getViewModel()
+    val viewModel: PermissionsViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsState()
     val startForResult =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -105,20 +106,20 @@ fun VpnPermissionScreen() = Screen {
         )
         Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
             OnboardingTitleText(
-                content = stringResource(id = R.string.vpn_permission_title),
+                content = stringResource(id = com.kape.ui.R.string.vpn_permission_title),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
             )
             OnboardingDescriptionText(
-                content = stringResource(id = R.string.vpn_permission_description),
+                content = stringResource(id = com.kape.ui.R.string.vpn_permission_description),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
             )
             Spacer(modifier = Modifier.weight(1f))
             OnboardingFooterText(
-                content = stringResource(id = R.string.vpn_permission_footer),
+                content = stringResource(id = com.kape.ui.R.string.vpn_permission_footer),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -138,5 +139,5 @@ fun VpnPermissionScreen() = Screen {
 }
 
 fun getVpnProfileToastText(granted: Boolean): Int {
-    return if (granted) R.string.toast_vpn_profile_granted else R.string.toast_vpn_profile_not_granted
+    return if (granted) com.kape.ui.R.string.toast_vpn_profile_granted else com.kape.ui.R.string.toast_vpn_profile_not_granted
 }

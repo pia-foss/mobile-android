@@ -36,11 +36,12 @@ import com.kape.ui.text.OnboardingTitleText
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NotificationPermissionScreen() = Screen {
-    val viewModel: PermissionsViewModel = getViewModel()
+    val viewModel: PermissionsViewModel = koinViewModel()
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {
@@ -88,14 +89,14 @@ fun NotificationPermissionScreen() = Screen {
         )
         Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
             OnboardingTitleText(
-                content = stringResource(id = com.kape.permissions.R.string.notifications_title),
+                content = stringResource(id = R.string.notifications_title),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
             )
 
             OnboardingDescriptionText(
-                content = stringResource(id = com.kape.permissions.R.string.notifications_description),
+                content = stringResource(id = R.string.notifications_description),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -105,7 +106,7 @@ fun NotificationPermissionScreen() = Screen {
         Spacer(modifier = Modifier.weight(1f))
 
         PrimaryButton(
-            text = stringResource(id = com.kape.permissions.R.string.notifications_action),
+            text = stringResource(id = R.string.notifications_action),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
