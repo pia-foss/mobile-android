@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
@@ -64,8 +65,8 @@ fun CustomizationScreen() = Screen {
         },
     ) {
         Column(
-            modifier = Modifier
-                .padding(it),
+            modifier = Modifier.padding(it).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             LaunchedEffect(key1 = Unit) {
                 connectionViewModel.loadVpnServers(locale)
@@ -77,7 +78,9 @@ fun CustomizationScreen() = Screen {
                 )
             LazyColumn(
                 state = state.listState,
-                modifier = Modifier.reorderable(state),
+                modifier = Modifier
+                    .reorderable(state)
+                    .widthIn(max = 520.dp),
             ) {
                 items(viewModel.getOrderedElements(), { item -> item.name }) { item ->
                     ReorderableItem(state, item.name) { dragging ->
