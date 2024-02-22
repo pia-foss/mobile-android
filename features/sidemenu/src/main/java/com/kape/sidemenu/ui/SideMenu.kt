@@ -81,7 +81,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 
         SideMenuItem(
             iconId = R.drawable.ic_account,
-            titleId = R.string.drawer_item_title_account,
+            titleId = com.kape.ui.R.string.drawer_item_title_account,
             ":SideMenu:Account",
         ) {
             scope.launch {
@@ -92,7 +92,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 
         SideMenuItem(
             iconId = R.drawable.ic_ip,
-            titleId = R.string.drawer_item_title_dedicated_ip,
+            titleId = com.kape.ui.R.string.drawer_item_title_dedicated_ip,
             ":SideMenu:DedicatedIp",
         ) {
             scope.launch {
@@ -103,7 +103,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 
         SideMenuItem(
             iconId = R.drawable.ic_per_app,
-            titleId = R.string.drawer_item_title_per_app_settings,
+            titleId = com.kape.ui.R.string.drawer_item_title_per_app_settings,
             ":SideMenu:PerAppSettings",
         ) {
             scope.launch {
@@ -114,7 +114,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 
         SideMenuItem(
             iconId = R.drawable.ic_settings,
-            titleId = R.string.drawer_item_title_settings,
+            titleId = com.kape.ui.R.string.drawer_item_title_settings,
             ":SideMenu:Settings",
         ) {
             scope.launch {
@@ -125,7 +125,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 
         SideMenuItem(
             iconId = R.drawable.ic_log_out,
-            titleId = R.string.drawer_item_title_logout,
+            titleId = com.kape.ui.R.string.drawer_item_title_logout,
             ":SideMenu:Logout",
         ) {
             scope.launch {
@@ -138,7 +138,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         Spacer(modifier = Modifier.height(16.dp))
         SideMenuItem(
             iconId = R.drawable.ic_about,
-            titleId = R.string.drawer_item_title_about,
+            titleId = com.kape.ui.R.string.drawer_item_title_about,
             ":SideMenu:About",
         ) {
             scope.launch {
@@ -148,7 +148,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         }
         SideMenuItem(
             iconId = R.drawable.ic_privacy,
-            titleId = R.string.drawer_item_title_privacy_policy,
+            titleId = com.kape.ui.R.string.drawer_item_title_privacy_policy,
             ":SideMenu:PrivacyPolicy",
         ) {
             scope.launch {
@@ -159,7 +159,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 
         SideMenuItem(
             iconId = R.drawable.ic_help,
-            titleId = R.string.drawer_item_title_contact_support,
+            titleId = com.kape.ui.R.string.drawer_item_title_contact_support,
             ":SideMenu:ContactSupport",
         ) {
             scope.launch {
@@ -189,7 +189,7 @@ private fun SideMenuHeaderItem(username: String, versionCode: String, versionNam
             SideMenuUsernameText(content = username, modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.height(4.dp))
             SideMenuVersionText(
-                content = stringResource(R.string.drawer_item_description_app_version_format).format(
+                content = stringResource(com.kape.ui.R.string.drawer_item_description_app_version_format).format(
                     versionName,
                     versionCode,
                 ),
