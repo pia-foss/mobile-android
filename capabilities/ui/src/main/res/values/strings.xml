@@ -170,4 +170,109 @@
     <string name="error_no_profile">"No profile"</string>
     <string name="empty">""</string>
 
+    <string name="pia">PIA</string>
+    <string name="settings">Settings</string>
+    <string name="icon">Icon</string>
+    <string name="save">Save</string>
+    <string name="default_option">Default</string>
+    <string name="edit">Edit</string>
+    <!--    General     -->
+    <string name="general">General</string>
+    <string name="networks">Networks</string>
+    <string name="privacy">Privacy</string>
+    <string name="obfuscation">Obfuscation</string>
+    <string name="help">Help</string>
+    <!--    Protocols      -->
+    <string name="open_vpn">OpenVPN</string>
+    <string name="wire_guard">Wireguard</string>
+    <!--    Automation     -->
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
+    <string name="manage_automation">Manage Automation</string>
+    <!--    General Settings    -->
+    <string name="connect_on_boot_title">Launch on System Startup</string>
+    <string name="connect_on_boot_description">Connect on system start</string>
+    <string name="connect_on_launch_title">Connect on Launch</string>
+    <string name="connect_on_launch_description">Connect when app is started</string>
+    <string name="connect_on_update_title">Connect on app update</string>
+    <string name="connect_on_update_description">After the app is updated, the app will autoconnect to keep you protected.</string>
+    <string name="protocol_selection_title">Protocol Selection</string>
+    <string name="protocol_transport_title">Transport</string>
+    <string name="protocol_data_encryption_title">Data Encryption</string>
+    <string name="protocol_port_title">Port</string>
+    <string name="protocol_use_small_packets_title">Use Small Packets</string>
+    <string name="protocol_use_small_packets_description">Will slightly lower the IP packet size to improve compatibility with some routers and mobile networks.</string>
+    <string name="protocol_handshake_title">Handshake</string>
+    <string name="protocol_handshake_description">RSA4096</string>
+    <!--    Networks Settings    -->
+    <string name="network_dns_title">DNS</string>
+    <string name="network_dns_selection_title">DNS Selection</string>
+    <string name="network_dns_selection_system">System DNS Resolver</string>
+    <string name="network_dns_selection_system_lan_requirement">To access the System\'s DNS Resolver, we need to Allow LAN Traffic.</string>
+    <string name="network_dns_selection_custom">Custom</string>
+    <string name="network_dns_selection_custom_invalid">Invalid Address</string>
+    <string name="network_dns_selection_custom_primary">Primary DNS</string>
+    <string name="network_dns_selection_custom_secondary">Secondary DNS (optional)</string>
+    <string name="network_dns_selection_unsafe_warning">Using a non PIA DNS could expose your DNS traffic to third parties and compromise your privacy.</string>
+    <string name="network_port_forwarding_title">Request Port Forwarding</string>
+    <string name="network_port_forwarding_description">Will allow incoming connections to your mobile device over an external port</string>
+    <string name="network_allow_lan_traffic_title">Allow LAN Traffic</string>
+    <string name="network_allow_lan_traffic_description">Always permits traffic between devices on your local network</string>
+    <!--    Obfuscation Settings    -->
+    <string name="obfuscation_external_proxy_app_title">External Proxy App</string>
+    <string name="obfuscation_external_proxy_app_description">Make sure you exclude the app you are using to connect in the per app settings.</string>
+    <string name="obfuscation_shadowsocks_title">Shadowsocks</string>
+    <string name="obfuscation_shadowsocks_subtitle">Shadowsocks Configuration</string>
+    <string name="obfuscation_shadowsocks_description">You will hide you are using a VPN. You can select a shadowsocks region on the main screen.</string>
+    <string name="obfuscation_shadowsocks_lan_requirement">To access the proxy client, we need to Allow LAN Traffic.</string>
+    <string name="obfuscation_shadowsocks_tcp_requirement">In order to connect to the shadowsocks server, we need to update the transport to TCP.</string>
+    <string name="obfuscation_shadowsocks_host">Host</string>
+    <string name="obfuscation_shadowsocks_port">Port</string>
+    <string name="obfuscation_shadowsocks_key">Key</string>
+    <string name="obfuscation_shadowsocks_cipher">Cipher</string>
+    <string name="obfuscation_shadowsocks_invalid_host">Invalid Host</string>
+    <string name="obfuscation_shadowsocks_invalid_port">Invalid Port</string>
+    <string name="privacy_kill_switch_title">VPN Kill Switch</string>
+    <string name="privacy_kill_switch_description">Android includes a better alternative to Kill Switch functionality, click for more information</string>
+    <string name="automation_title">Automation</string>
+    <string name="automation_description">Setup rules to handle auto-connect rules for trusted and untrusted networks.\n\nThis feature is experimental.</string>
+    <string name="help_version_title">Version</string>
+    <string name="help_view_debug_log_title">See Debug VPN Logs</string>
+    <string name="help_view_debug_log_description">Advanced user view to see VPN log</string>
+    <string name="help_send_log_title">Send Debug Log to Support</string>
+    <string name="help_improve_pia_title">Help improve PIA</string>
+    <string name="help_improve_pia_description">Help us improve by sharing VPN connection statistics. These reports never contain personally identifiable information.</string>
+    <string name="help_latest_news_title">Latest News</string>
+    <string name="help_view_shared_data_title">View Shared Data</string>
+    <string name="per_app_settings">Per App Settings</string>
+    <string name="search_apps">Search Apps</string>
+    <string name="kill_switch_title">The PIA \"VPN Kill Switch\" feature requires turning ON the Always-ON VPN in the Android Settings</string>
+    <string name="kill_switch_description">To proceed, go to Settings - Network &amp; Internet - Advanced - VPN - tap on the Settings icon - <b>activate Always-on VPN.</b></string>
+    <string name="kill_switch_action">Go to Network &amp; Internet Settings</string>
+    <string name="quick_setting_kill_switch">VPN Kill Switch</string>
+    <string name="quick_setting_automation">Automation</string>
+    <string name="quick_setting_private_browser">Private Browser</string>
+    <string name="connection_stats_title">Connection Stats</string>
+    <string name="connection_stats_no_events">There are no recent events</string>
+    <string name="app_url">market://details?id=com.privateinternetaccess.android</string>
+    <string name="debug_logs_title">VPN Debug Logs</string>
+    <string name="failure_sending_log">Failed to send debug logs: %s</string>
+    <string name="log_send_done_title">Debug information submitted.</string>
+    <string name="log_send_done_msg">Debug information successfully submitted. \nID: %s\nPlease note this ID, as our support team will require this to locate your submission.</string>
+    <string name="mace_title">PIA MACE™</string>
+    <string name="mace_description">Will block ads, trackers and malware while you\'re connected to the VPN</string>
+    <string name="custom_dns_mace_warning">In order to enable MACE, the default DNS must be used. Would you like to reset your DNS to default?</string>
+    <string name="custom_dns_disabling_mace">MACE will be disabled while using a custom DNS.</string>
+    <string name="custom_dns">Custom DNS</string>
+    <string name="reconnect">Reconnect</string>
+    <string name="later">Later</string>
+    <string name="reconnect_apply_changes">Reconnect to the VPN to apply these changes.</string>
+    <string name="proxy_selection_title">Select proxy app</string>
+    <string name="enable_proxy_dialog_title">Setup your proxy app</string>
+    <string name="enable_proxy_dialog_message">In order to use a proxy with our app, we need to know what app you plan on using.</string>
+    <string name="selected_proxy_app">Selected proxy app</string>
+    <string name="proxy_port">Proxy port</string>
+    <string name="external_proxy_problem_title">Proxy Requirements</string>
+    <string name="external_proxy_problem_message">TCP is required in order for the app to work. Would you like to enable TCP?</string>
+
 </resources>

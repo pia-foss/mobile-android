@@ -28,7 +28,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.R
+import com.kape.ui.R
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.Search
@@ -169,7 +169,7 @@ private fun ApplicationRow(
 @Composable
 private fun SelectedCheckBox(checked: Boolean, modifier: Modifier) {
     Icon(
-        painter = painterResource(id = R.drawable.ic_check),
+        painter = painterResource(id = com.kape.settings.R.drawable.ic_check),
         contentDescription = null,
         tint = if (checked) LocalColors.current.primary else Color.Transparent,
         modifier = modifier.size(24.dp),

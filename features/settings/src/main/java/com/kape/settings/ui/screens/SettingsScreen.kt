@@ -25,7 +25,7 @@ import org.koin.androidx.compose.koinViewModel
 fun SettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.settings))
+        appBarText(stringResource(id = com.kape.ui.R.string.settings))
     }
     val shouldShowObfuscation = viewModel.getSelectedProtocol() == VpnProtocols.OpenVPN
 
@@ -50,14 +50,14 @@ fun SettingsScreen() = Screen {
         ) {
             SettingsItem(
                 iconId = R.drawable.ic_settings_general,
-                titleId = R.string.general,
+                titleId = com.kape.ui.R.string.general,
                 onClick = {
                     viewModel.navigateToGeneralSettings()
                 },
             )
             SettingsItem(
                 iconId = R.drawable.ic_settings_protocols,
-                titleId = R.string.protocols,
+                titleId = com.kape.ui.R.string.protocols,
                 subtitle = viewModel.getSelectedProtocol().name,
                 onClick = {
                     viewModel.navigateToProtocolSettings()
@@ -66,22 +66,22 @@ fun SettingsScreen() = Screen {
             )
             SettingsItem(
                 iconId = R.drawable.ic_settings_network,
-                titleId = R.string.networks,
+                titleId = com.kape.ui.R.string.networks,
                 onClick = {
                     viewModel.navigateToNetworkSettings()
                 },
             )
             SettingsItem(
                 iconId = R.drawable.ic_settings_privacy,
-                titleId = R.string.privacy,
+                titleId = com.kape.ui.R.string.privacy,
                 onClick = {
                     viewModel.navigateToPrivacySettings()
                 },
             )
             SettingsItem(
                 iconId = R.drawable.ic_settings_automation,
-                titleId = R.string.automation,
-                subtitle = stringResource(id = if (viewModel.isAutomationEnabled()) R.string.enabled else R.string.disabled),
+                titleId = com.kape.ui.R.string.automation,
+                subtitle = stringResource(id = if (viewModel.isAutomationEnabled()) com.kape.ui.R.string.enabled else com.kape.ui.R.string.disabled),
                 onClick = {
                     viewModel.navigateToAutomationSettings()
                 },
@@ -89,7 +89,7 @@ fun SettingsScreen() = Screen {
             if (shouldShowObfuscation) {
                 SettingsItem(
                     iconId = R.drawable.ic_settings_obfuscation,
-                    titleId = R.string.obfuscation,
+                    titleId = com.kape.ui.R.string.obfuscation,
                     onClick = {
                         viewModel.navigateToObfuscationSettings()
                     },
@@ -97,7 +97,7 @@ fun SettingsScreen() = Screen {
             }
             SettingsItem(
                 iconId = R.drawable.ic_settings_help,
-                titleId = R.string.help,
+                titleId = com.kape.ui.R.string.help,
                 onClick = {
                     viewModel.navigateToHelpSettings()
                 },

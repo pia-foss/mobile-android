@@ -6,7 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.kape.settings.R
+import com.kape.ui.R
 
 @Composable
 fun ReconnectDialog(

@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.settings.R
+import com.kape.ui.R
 import com.kape.ui.elements.Separator
 import com.kape.ui.text.SettingsL2Text
 import com.kape.ui.text.SettingsL2TextDescription

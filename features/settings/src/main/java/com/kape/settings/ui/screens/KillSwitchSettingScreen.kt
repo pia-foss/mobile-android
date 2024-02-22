@@ -23,7 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.R
+import com.kape.ui.R
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.elements.PrimaryButton
@@ -59,7 +59,7 @@ fun KillSwitchSettingScreen() = Screen {
         ) {
             Spacer(modifier = Modifier.height(48.dp))
             Image(
-                painter = painterResource(id = R.drawable.ic_vpn_permission),
+                painter = painterResource(id = com.kape.settings.R.drawable.ic_vpn_permission),
                 contentDescription = null,
                 modifier = Modifier
                     .align(CenterHorizontally)

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.R
+import com.kape.ui.R
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.SettingsItem
