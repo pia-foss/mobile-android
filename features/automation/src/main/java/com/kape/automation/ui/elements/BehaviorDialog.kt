@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.networkmanagement.R
+import com.kape.ui.R
 import com.kape.ui.text.DialogActionText
 import com.kape.ui.text.DialogTitleText
 import com.kape.ui.utils.LocalColors
@@ -45,7 +45,7 @@ fun BehaviorDialog(
         )
 
         if (showRemoveOption) {
-            radioOptions.add(stringResource(id = com.kape.automation.R.string.nmt_remove_rule))
+            radioOptions.add(stringResource(id = com.kape.ui.R.string.nmt_remove_rule))
         }
 
         val selectedOption = remember {
@@ -62,7 +62,7 @@ fun BehaviorDialog(
             Modifier.fillMaxWidth(),
         ) {
             DialogTitleText(
-                content = stringResource(id = com.kape.automation.R.string.dialog_title),
+                content = stringResource(id = com.kape.ui.R.string.dialog_title),
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(

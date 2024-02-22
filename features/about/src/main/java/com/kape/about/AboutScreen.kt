@@ -18,7 +18,7 @@ import org.koin.androidx.compose.koinViewModel
 fun AboutScreen() = Screen {
     val viewModel: AboutViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.about))
+        appBarText(stringResource(id = com.kape.ui.R.string.about))
     }
 
     Scaffold(

@@ -25,9 +25,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.kape.signup.R
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.SubscriptionData
+import com.kape.ui.R
 import com.kape.ui.elements.HtmlText
 import com.kape.ui.elements.MonthlySubscriptionCard
 import com.kape.ui.elements.PrimaryButton
@@ -61,7 +61,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
             },
     ) {
         Image(
-            painter = painterResource(id = R.drawable.map),
+            painter = painterResource(id = com.kape.signup.R.drawable.map),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
         )
@@ -79,7 +79,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                     .fillMaxWidth(),
             )
             Image(
-                painter = painterResource(id = R.drawable.ic_globe),
+                painter = painterResource(id = com.kape.signup.R.drawable.ic_globe),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(20.dp)

@@ -24,7 +24,7 @@ class ConnectionManager(
     private val _serverIso = MutableStateFlow("")
     val serverIso: StateFlow<String> = _serverIso
 
-    private val _connectionStatusTitle = MutableStateFlow(context.getString(R.string.not_connected))
+    private val _connectionStatusTitle = MutableStateFlow(context.getString(com.kape.ui.R.string.not_connected))
     val connectionStatusTitle: StateFlow<String> = _connectionStatusTitle
 
     var isManualConnection: Boolean = false

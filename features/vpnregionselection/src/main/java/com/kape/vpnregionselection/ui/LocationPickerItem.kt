@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kape.ui.R
 import com.kape.ui.elements.FavoriteIcon
 import com.kape.ui.elements.Separator
 import com.kape.ui.text.RegionSelectionDipText
@@ -33,7 +34,6 @@ import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
-import com.kape.vpnregionselection.R
 
 @Composable
 fun LocationPickerItem(

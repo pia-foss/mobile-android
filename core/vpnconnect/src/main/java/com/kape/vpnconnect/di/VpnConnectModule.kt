@@ -46,11 +46,11 @@ private val localVpnConnectModule = module {
 
 private fun provideConnectionStatusValues(context: Context): Map<ConnectionStatus, String> {
     val values = mutableMapOf<ConnectionStatus, String>()
-    values[ConnectionStatus.CONNECTING] = context.getString(R.string.connecting)
+    values[ConnectionStatus.CONNECTING] = context.getString(com.kape.ui.R.string.connecting)
     values[ConnectionStatus.CONNECTED] =
-        context.getString(R.string.connected_to_format)
-    values[ConnectionStatus.DISCONNECTED] = context.getString(R.string.not_connected)
+        context.getString(com.kape.ui.R.string.connected_to_format)
+    values[ConnectionStatus.DISCONNECTED] = context.getString(com.kape.ui.R.string.not_connected)
     values[ConnectionStatus.RECONNECTING] =
-        context.getString(R.string.reconnecting)
+        context.getString(com.kape.ui.R.string.reconnecting)
     return values
 }

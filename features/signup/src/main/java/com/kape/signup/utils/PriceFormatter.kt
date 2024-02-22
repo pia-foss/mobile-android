@@ -1,8 +1,9 @@
 package com.kape.signup.utils
 
 import android.content.Context
-import com.kape.signup.R
-import java.util.*
+import com.kape.ui.R
+import java.util.Currency
+import java.util.Locale
 
 class PriceFormatter(private val context: Context) {
 

@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kape.signup.R
+import com.kape.ui.R
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 
@@ -28,7 +28,7 @@ fun SignupErrorScreen(toLogin: () -> Unit) = Screen {
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(48.dp))
         Image(
-            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
+            painter = painterResource(id = R.drawable.ic_logo_large),
             contentDescription = stringResource(id = R.string.logo),
             modifier = Modifier
                 .padding(48.dp)
@@ -36,7 +36,7 @@ fun SignupErrorScreen(toLogin: () -> Unit) = Screen {
         )
         Column(modifier = Modifier.align(Alignment.Center)) {
             Image(
-                painter = painterResource(id = R.drawable.ic_red_warning),
+                painter = painterResource(id = com.kape.signup.R.drawable.ic_red_warning),
                 contentDescription = stringResource(id = R.string.logo),
                 modifier = Modifier.align(CenterHorizontally),
             )

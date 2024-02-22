@@ -23,8 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kape.signup.R
 import com.kape.signup.ui.vm.SignupViewModel
+import com.kape.ui.R
 import com.kape.ui.elements.PrimaryButton
 import com.kape.ui.elements.Screen
 import com.kape.ui.elements.SecondaryButton
@@ -40,7 +40,7 @@ fun ConsentScreen(viewModel: SignupViewModel) = Screen {
                 .fillMaxSize(),
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_consent),
+                painter = painterResource(id = com.kape.signup.R.drawable.ic_consent),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()

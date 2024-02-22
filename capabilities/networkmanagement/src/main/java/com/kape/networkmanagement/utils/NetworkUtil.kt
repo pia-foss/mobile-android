@@ -1,10 +1,10 @@
 package com.kape.networkmanagement.utils
 
 import android.content.Context
-import com.kape.networkmanagement.R
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
+import com.kape.ui.R
 
 class NetworkUtil(private val context: Context) {
 

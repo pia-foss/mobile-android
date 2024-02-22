@@ -37,7 +37,7 @@ import org.koin.androidx.compose.koinViewModel
 fun LocationPermissionScreen() = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.trusted_network_plural))
+        appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
     }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -81,14 +81,14 @@ fun LocationPermissionScreen() = Screen {
                     .fillMaxWidth(),
             )
             OnboardingTitleText(
-                content = stringResource(id = R.string.location_permission_title),
+                content = stringResource(id = com.kape.ui.R.string.location_permission_title),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
             )
 
             OnboardingDescriptionText(
-                content = stringResource(id = R.string.location_permission_message),
+                content = stringResource(id = com.kape.ui.R.string.location_permission_message),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -97,14 +97,14 @@ fun LocationPermissionScreen() = Screen {
             Spacer(modifier = Modifier.weight(1f))
 
             OnboardingFooterText(
-                content = stringResource(id = R.string.location_permission_footer),
+                content = stringResource(id = com.kape.ui.R.string.location_permission_footer),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
             )
 
             PrimaryButton(
-                text = stringResource(id = R.string.location_permission_action),
+                text = stringResource(id = com.kape.ui.R.string.location_permission_action),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)

@@ -41,12 +41,12 @@ fun LoginWithEmailScreen(navController: NavController) = Screen {
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
     val currentContext = LocalContext.current
-    val noNetworkMessage = stringResource(id = R.string.no_internet)
+    val noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet)
     val email = remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (!isConnected) {
-            NoNetworkBanner(noNetworkMessage = stringResource(id = R.string.no_internet))
+            NoNetworkBanner(noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet))
         }
         Image(
             painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
@@ -55,7 +55,7 @@ fun LoginWithEmailScreen(navController: NavController) = Screen {
                 .padding(start = 150.dp, top = 36.dp, bottom = 24.dp, end = 150.dp),
         )
         Text(
-            text = stringResource(id = R.string.sign_in),
+            text = stringResource(id = com.kape.ui.R.string.sign_in),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -63,14 +63,14 @@ fun LoginWithEmailScreen(navController: NavController) = Screen {
         )
         Input(
             modifier = Modifier.padding(24.dp, 8.dp),
-            label = stringResource(id = R.string.enter_email),
+            label = stringResource(id = com.kape.ui.R.string.enter_email),
             maskInput = false,
             keyboard = KeyboardType.Email,
             content = email,
         )
 
         PrimaryButton(
-            text = stringResource(id = R.string.send_link),
+            text = stringResource(id = com.kape.ui.R.string.send_link),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -84,7 +84,7 @@ fun LoginWithEmailScreen(navController: NavController) = Screen {
     }
 
     if (state.flowCompleted) {
-        val message = stringResource(id = R.string.login_with_magic_link_success)
+        val message = stringResource(id = com.kape.ui.R.string.login_with_magic_link_success)
         LaunchedEffect(
             key1 = state,
             block = {
@@ -102,9 +102,9 @@ private fun getErrorMessage(state: LoginScreenState): String? {
         LoginError.Failed,
         LoginError.Invalid,
         LoginError.Throttled,
-        -> stringResource(id = R.string.error_missing_email)
+        -> stringResource(id = com.kape.ui.R.string.error_missing_email)
 
-        LoginError.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
+        LoginError.ServiceUnavailable -> stringResource(id = com.kape.ui.R.string.error_operation_failed)
         null -> null
     }
 }

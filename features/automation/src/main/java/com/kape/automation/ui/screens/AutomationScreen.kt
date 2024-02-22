@@ -26,12 +26,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.automation.R
 import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
+import com.kape.ui.R
 import com.kape.ui.elements.NetworkCard
 import com.kape.ui.elements.Screen
 import com.kape.ui.text.Hyperlink
@@ -45,7 +45,7 @@ import org.koin.androidx.compose.koinViewModel
 fun AutomationScreen(isSet: Boolean) = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.trusted_network_plural))
+        appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
     }
     val showDialog = remember { mutableStateOf(false) }
     val currentItem = remember { mutableStateOf<NetworkItem?>(null) }
@@ -68,12 +68,12 @@ fun AutomationScreen(isSet: Boolean) = Screen {
     ) {
         Column(modifier = Modifier.padding(it)) {
             OnboardingTitleText(
-                content = stringResource(id = R.string.manage_automation_title),
+                content = stringResource(id = com.kape.ui.R.string.manage_automation_title),
                 modifier = Modifier.padding(16.dp),
             )
 
             OnboardingDescriptionText(
-                content = stringResource(id = R.string.manage_automation_description),
+                content = stringResource(id = com.kape.ui.R.string.manage_automation_description),
                 modifier = Modifier.padding(16.dp),
             )
 
@@ -85,25 +85,25 @@ fun AutomationScreen(isSet: Boolean) = Screen {
 
                     when (networkItem.networkType) {
                         NetworkType.MobileData -> {
-                            icon = com.kape.ui.R.drawable.ic_mobile_data
+                            icon = R.drawable.ic_mobile_data
                             title =
-                                stringResource(id = com.kape.networkmanagement.R.string.nmt_mobile_data)
+                                stringResource(id = R.string.nmt_mobile_data)
                         }
 
                         NetworkType.WifiCustom -> {
-                            icon = com.kape.ui.R.drawable.ic_wifi_custom
+                            icon = R.drawable.ic_wifi_custom
                             title = networkItem.networkName
                         }
 
                         NetworkType.WifiOpen -> {
-                            icon = com.kape.ui.R.drawable.ic_open_wifi
+                            icon = R.drawable.ic_open_wifi
                             title = networkItem.networkName
                         }
 
                         NetworkType.WifiSecure -> {
-                            icon = com.kape.ui.R.drawable.ic_secure_wifi
+                            icon = R.drawable.ic_secure_wifi
                             title =
-                                stringResource(id = com.kape.networkmanagement.R.string.nmt_secure_wifi)
+                                stringResource(id = R.string.nmt_secure_wifi)
                         }
                     }
                     NetworkCard(
@@ -138,7 +138,7 @@ fun AutomationScreen(isSet: Boolean) = Screen {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Hyperlink(
-                    content = stringResource(id = R.string.manage_automation_add),
+                    content = stringResource(id = com.kape.ui.R.string.manage_automation_add),
                     modifier = Modifier.align(CenterVertically),
                 )
             }
@@ -146,7 +146,7 @@ fun AutomationScreen(isSet: Boolean) = Screen {
     }
 
     if (showDialog.value) {
-        val removeRule = stringResource(id = R.string.nmt_remove_rule)
+        val removeRule = stringResource(id = com.kape.ui.R.string.nmt_remove_rule)
         currentItem.value?.let { rule ->
             BehaviorDialog(
                 status = getStatus(behavior = rule.networkBehavior),
@@ -169,16 +169,16 @@ fun AutomationScreen(isSet: Boolean) = Screen {
 @Composable
 private fun getStatus(behavior: NetworkBehavior): String {
     return when (behavior) {
-        NetworkBehavior.AlwaysConnect -> stringResource(id = com.kape.networkmanagement.R.string.nmt_connect)
-        NetworkBehavior.AlwaysDisconnect -> stringResource(id = com.kape.networkmanagement.R.string.nmt_disconnect)
-        NetworkBehavior.RetainState -> stringResource(id = com.kape.networkmanagement.R.string.nmt_retain)
+        NetworkBehavior.AlwaysConnect -> stringResource(id = R.string.nmt_connect)
+        NetworkBehavior.AlwaysDisconnect -> stringResource(id = R.string.nmt_disconnect)
+        NetworkBehavior.RetainState -> stringResource(id = R.string.nmt_retain)
     }
 }
 
 fun getRuleForStatus(context: Context, status: String): NetworkBehavior {
     return when (status) {
-        context.getString(com.kape.networkmanagement.R.string.nmt_retain) -> NetworkBehavior.RetainState
-        context.getString(com.kape.networkmanagement.R.string.nmt_disconnect) -> NetworkBehavior.AlwaysDisconnect
+        context.getString(R.string.nmt_retain) -> NetworkBehavior.RetainState
+        context.getString(R.string.nmt_disconnect) -> NetworkBehavior.AlwaysDisconnect
         else -> NetworkBehavior.AlwaysConnect
     }
 }

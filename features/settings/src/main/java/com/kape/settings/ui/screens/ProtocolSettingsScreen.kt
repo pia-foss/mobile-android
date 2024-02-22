@@ -15,7 +15,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.R
 import com.kape.settings.data.DataEncryption
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
@@ -25,6 +24,7 @@ import com.kape.settings.ui.elements.SettingsItem
 import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.settings.utils.getDefaultButtons
+import com.kape.ui.R
 import com.kape.ui.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
