@@ -66,7 +66,7 @@ fun PerAppSettingsScreen() = Screen {
         Column(
             Modifier
                 .padding(it)
-                .fillMaxHeight()
+                .fillMaxWidth()
                 .background(LocalColors.current.background),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
