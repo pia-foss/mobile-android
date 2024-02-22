@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.AlertDialog
@@ -17,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -32,7 +34,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.obfuscationregionselection.R
 import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
 import com.kape.obfuscationregionselection.util.ItemType
 import com.kape.ui.elements.Screen
@@ -59,65 +60,76 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
     val showSortingOptions = remember { mutableStateOf(false) }
     val isSearchEnabled = remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.background(LocalColors.current.surfaceVariant)) {
+    Column(
+        modifier = Modifier
+            .background(LocalColors.current.surfaceVariant)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         AppBar(appBarViewModel, onLeftIconClick = { viewModel.navigateBack() })
 
-        Search(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            hint = stringResource(id = com.kape.ui.R.string.search),
-        ) {
-            viewModel.filterByName(it, isSearchEnabled)
-        }
+        Column(modifier = Modifier.widthIn(max = 520.dp)) {
+            Search(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                hint = stringResource(id = com.kape.ui.R.string.search),
+            ) {
+                viewModel.filterByName(it, isSearchEnabled)
+            }
 
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isLoading.value),
-            onRefresh = {
-                locale?.let {
-                    viewModel.fetchShadowsocksRegions(locale, isLoading)
-                }
-            },
-        ) {
-            LazyColumn {
-                val items = if (isSearchEnabled.value) {
-                    viewModel.sorted.value
-                } else {
-                    viewModel.servers.value
-                }
-                items(items.size) { index ->
-                    val item = items[index]
-                    when (item.type) {
-                        is ItemType.Content -> {
-                            LocationPickerItem(
-                                server = item.type.server,
-                                isFavorite = item.type.isFavorite,
-                                enableFavorite = item.type.enableFavorite,
-                                onClick = { viewModel.onShadowsocksRegionSelected(it) },
-                                onFavoriteShadowsocksClick = { viewModel.onFavoriteShadowsocksClicked(it) },
-                            )
-                        }
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isLoading.value),
+                onRefresh = {
+                    locale?.let {
+                        viewModel.fetchShadowsocksRegions(locale, isLoading)
+                    }
+                },
+            ) {
+                LazyColumn {
+                    val items = if (isSearchEnabled.value) {
+                        viewModel.sorted.value
+                    } else {
+                        viewModel.servers.value
+                    }
+                    items(items.size) { index ->
+                        val item = items[index]
+                        when (item.type) {
+                            is ItemType.Content -> {
+                                LocationPickerItem(
+                                    server = item.type.server,
+                                    isFavorite = item.type.isFavorite,
+                                    enableFavorite = item.type.enableFavorite,
+                                    onClick = { viewModel.onShadowsocksRegionSelected(it) },
+                                    onFavoriteShadowsocksClick = {
+                                        viewModel.onFavoriteShadowsocksClicked(
+                                            it,
+                                        )
+                                    },
+                                )
+                            }
 
-                        ItemType.HeadingAll -> {
-                            MenuText(
-                                content = stringResource(id = com.kape.ui.R.string.all_locations),
-                                modifier = Modifier.padding(16.dp),
-                            )
-                        }
+                            ItemType.HeadingAll -> {
+                                MenuText(
+                                    content = stringResource(id = com.kape.ui.R.string.all_locations),
+                                    modifier = Modifier.padding(16.dp),
+                                )
+                            }
 
-                        ItemType.HeadingFavorites -> {
-                            MenuText(
-                                content = stringResource(id = com.kape.ui.R.string.favorites),
-                                modifier = Modifier.padding(16.dp),
-                            )
+                            ItemType.HeadingFavorites -> {
+                                MenuText(
+                                    content = stringResource(id = com.kape.ui.R.string.favorites),
+                                    modifier = Modifier.padding(16.dp),
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if (showSortingOptions.value) {
-            SortingOptions(viewModel = viewModel, showSortingOptions)
+            if (showSortingOptions.value) {
+                SortingOptions(viewModel = viewModel, showSortingOptions)
+            }
         }
     }
 }
@@ -127,15 +139,19 @@ fun SortingOptions(
     viewModel: ShadowsocksRegionSelectionViewModel,
     showSortingOptions: MutableState<Boolean>,
 ) {
-    val sortBySelectedOption: MutableState<ShadowsocksRegionSelectionViewModel.SortByOption> = remember {
-        viewModel.sortBySelectedOption
-    }
+    val sortBySelectedOption: MutableState<ShadowsocksRegionSelectionViewModel.SortByOption> =
+        remember {
+            viewModel.sortBySelectedOption
+        }
     AlertDialog(
         onDismissRequest = {
             showSortingOptions.value = false
         },
         title = {
-            Text(text = stringResource(id = com.kape.ui.R.string.sort_regions_title), fontSize = 18.sp)
+            Text(
+                text = stringResource(id = com.kape.ui.R.string.sort_regions_title),
+                fontSize = 18.sp,
+            )
         },
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
