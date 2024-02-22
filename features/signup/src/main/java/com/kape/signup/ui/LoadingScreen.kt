@@ -34,9 +34,11 @@ fun LoadingScreen() = Screen {
                 .padding(48.dp)
                 .align(Alignment.TopCenter),
         )
-        Column(modifier = Modifier
-            .align(Alignment.Center)
-            .widthIn(max = 520.dp)) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .widthIn(max = 520.dp),
+        ) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .align(CenterHorizontally)

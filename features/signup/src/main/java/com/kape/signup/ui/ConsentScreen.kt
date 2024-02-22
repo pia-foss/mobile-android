@@ -39,7 +39,7 @@ fun ConsentScreen(viewModel: SignupViewModel) = Screen {
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
                 Image(

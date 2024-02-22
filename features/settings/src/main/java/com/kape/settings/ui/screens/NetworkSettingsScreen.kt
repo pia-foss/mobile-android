@@ -42,9 +42,9 @@ fun NetworkSettingsScreen() = Screen {
     if (viewModel.getCustomDns().isInUse()) {
         dnsOptions[DnsOptions.CUSTOM] =
             "${stringResource(id = R.string.network_dns_selection_custom)} ${
-                getCustomDnsInfo(
-                    viewModel.getCustomDns(),
-                )
+            getCustomDnsInfo(
+                viewModel.getCustomDns(),
+            )
             }"
     }
 

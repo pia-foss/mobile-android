@@ -52,7 +52,7 @@ fun SettingsScreen() = Screen {
                 .semantics {
                     testTagsAsResourceId = true
                 },
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
                 SettingsItem(

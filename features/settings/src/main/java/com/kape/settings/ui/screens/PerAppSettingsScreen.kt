@@ -68,7 +68,7 @@ fun PerAppSettingsScreen() = Screen {
                 .padding(it)
                 .fillMaxHeight()
                 .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
                 Search(
