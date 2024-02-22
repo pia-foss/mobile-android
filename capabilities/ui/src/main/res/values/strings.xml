@@ -136,4 +136,20 @@
     <string name="error_missing_credentials">You must enter a username and password</string>
     <string name="error_missing_email">You must provide a valid email address</string>
 
+    <string name="sort_regions_title">Sort regions by</string>
+    <string name="name">Name</string>
+    <string name="latency">Latency</string>
+    <string name="favorites">Favorites</string>
+    <string name="cancel">Cancel</string>
+    <string name="automatic_iso">world</string>
+    <string name="favorite">favorite</string>
+    <string name="flag">flag</string>
+    <string name="selected">selected</string>
+    <string name="offline">offline</string>
+    <string-array name="sorting_options">
+        <item>@string/name</item>
+        <item>@string/latency</item>
+        <item>@string/favorites</item>
+    </string-array>
+
 </resources>

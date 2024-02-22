@@ -107,7 +107,7 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
 
                         ItemType.HeadingFavorites -> {
                             MenuText(
-                                content = stringResource(id = R.string.favorites),
+                                content = stringResource(id = com.kape.ui.R.string.favorites),
                                 modifier = Modifier.padding(16.dp),
                             )
                         }
@@ -135,11 +135,11 @@ fun SortingOptions(
             showSortingOptions.value = false
         },
         title = {
-            Text(text = stringResource(id = R.string.sort_regions_title), fontSize = 18.sp)
+            Text(text = stringResource(id = com.kape.ui.R.string.sort_regions_title), fontSize = 18.sp)
         },
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
-                val options = stringArrayResource(id = R.array.sorting_options)
+                val options = stringArrayResource(id = com.kape.ui.R.array.sorting_options)
                 options.forEach {
                     Row(
                         verticalAlignment = CenterVertically,
@@ -179,7 +179,7 @@ fun SortingOptions(
                 },
             ) {
                 Text(
-                    text = stringResource(id = R.string.ok),
+                    text = stringResource(id = com.kape.ui.R.string.ok),
                     fontSize = 14.sp,
                     color = LocalColors.current.primary,
                 )
@@ -188,7 +188,7 @@ fun SortingOptions(
         dismissButton = {
             TextButton(onClick = { showSortingOptions.value = false }) {
                 Text(
-                    text = stringResource(id = R.string.cancel).toUpperCase(Locale.current),
+                    text = stringResource(id = com.kape.ui.R.string.cancel).toUpperCase(Locale.current),
                     fontSize = 14.sp,
                     color = LocalColors.current.primary,
                 )
