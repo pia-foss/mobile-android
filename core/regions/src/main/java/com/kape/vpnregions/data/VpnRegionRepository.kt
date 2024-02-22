@@ -9,7 +9,6 @@ import com.kape.vpnregions.utils.adaptVpnServers
 import com.kape.vpnregions.utils.getServerForDip
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 
 class VpnRegionRepository(
@@ -71,7 +70,7 @@ class VpnRegionRepository(
         val updatedList = mutableListOf<VpnServer>()
         updatedList.addAll(servers)
         for (dip in dipPrefs.getDedicatedIps()) {
-            servers.firstOrNull { it.iso.lowercase() == dip.id }?.let {
+            servers.firstOrNull { it.key == dip.id }?.let {
                 updatedList.add(getServerForDip(it, dip))
             }
         }
