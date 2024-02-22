@@ -5,8 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -53,15 +55,20 @@ fun AddNewRuleScreen() = Screen {
             )
         },
     ) {
-        Column(modifier = Modifier.padding(it)) {
-            OnboardingFooterText(
-                content = stringResource(id = com.kape.ui.R.string.add_rule_title),
-                modifier = Modifier.padding(16.dp),
-            )
-            viewModel.availableNetwork.value?.let {
-                WifiNetworkItem(ssid = it, showDialog) {
-                    currentItem = it
-                    showDialog.value = true
+        Column(
+            modifier = Modifier.padding(it).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                OnboardingFooterText(
+                    content = stringResource(id = com.kape.ui.R.string.add_rule_title),
+                    modifier = Modifier.padding(16.dp),
+                )
+                viewModel.availableNetwork.value?.let {
+                    WifiNetworkItem(ssid = it, showDialog) {
+                        currentItem = it
+                        showDialog.value = true
+                    }
                 }
             }
         }
