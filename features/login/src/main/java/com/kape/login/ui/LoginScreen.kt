@@ -59,7 +59,7 @@ fun LoginScreen(navController: NavController) = Screen {
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
     val currentContext = LocalContext.current
-    val noNetworkMessage = stringResource(id = R.string.no_internet)
+    val noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet)
 
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
@@ -78,7 +78,7 @@ fun LoginScreen(navController: NavController) = Screen {
             },
     ) {
         if (!isConnected) {
-            NoNetworkBanner(noNetworkMessage = stringResource(id = R.string.no_internet))
+            NoNetworkBanner(noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet))
         }
         Image(
             painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
@@ -89,7 +89,7 @@ fun LoginScreen(navController: NavController) = Screen {
                 .fillMaxWidth(),
         )
         SignInText(
-            content = stringResource(id = R.string.sign_in),
+            content = stringResource(id = com.kape.ui.R.string.sign_in),
             modifier = Modifier
                 .align(CenterHorizontally)
                 .padding(16.dp),
@@ -98,7 +98,7 @@ fun LoginScreen(navController: NavController) = Screen {
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .testTag(":LoginScreen:enter_username"),
-            label = stringResource(id = R.string.enter_username),
+            label = stringResource(id = com.kape.ui.R.string.enter_username),
             maskInput = false,
             keyboard = KeyboardType.Text,
             imeAction = ImeAction.Next,
@@ -108,7 +108,7 @@ fun LoginScreen(navController: NavController) = Screen {
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 8.dp)
                 .testTag(":LoginScreen:enter_password"),
-            label = stringResource(id = R.string.enter_password),
+            label = stringResource(id = com.kape.ui.R.string.enter_password),
             maskInput = true,
             keyboard = KeyboardType.Password,
             imeAction = ImeAction.Next,
@@ -123,7 +123,7 @@ fun LoginScreen(navController: NavController) = Screen {
             )
         } else {
             PrimaryButton(
-                text = stringResource(id = R.string.login),
+                text = stringResource(id = com.kape.ui.R.string.login),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
@@ -147,7 +147,7 @@ fun LoginScreen(navController: NavController) = Screen {
         }
 
         Text(
-            text = stringResource(id = R.string.login_with_receipt).toUpperCase(Locale.current),
+            text = stringResource(id = com.kape.ui.R.string.login_with_receipt).toUpperCase(Locale.current),
             color = LocalColors.current.primary,
             modifier = Modifier
                 .align(CenterHorizontally)
@@ -157,7 +157,7 @@ fun LoginScreen(navController: NavController) = Screen {
                 },
         )
         Text(
-            text = stringResource(id = R.string.login_with_magic_link).toUpperCase(Locale.current),
+            text = stringResource(id = com.kape.ui.R.string.login_with_magic_link).toUpperCase(Locale.current),
             color = LocalColors.current.primary,
             modifier = Modifier
                 .align(CenterHorizontally)
@@ -173,10 +173,10 @@ fun LoginScreen(navController: NavController) = Screen {
 private fun getErrorMessage(state: LoginScreenState): String? {
     return when (state.error) {
         LoginError.Expired -> "account expired flow" // TODO: handle when signup module is built
-        LoginError.Failed -> stringResource(id = R.string.error_username_password_invalid)
-        LoginError.Invalid -> stringResource(id = R.string.error_missing_credentials)
-        LoginError.Throttled -> stringResource(id = R.string.error_throttled)
-        LoginError.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
+        LoginError.Failed -> stringResource(id = com.kape.ui.R.string.error_username_password_invalid)
+        LoginError.Invalid -> stringResource(id = com.kape.ui.R.string.error_missing_credentials)
+        LoginError.Throttled -> stringResource(id = com.kape.ui.R.string.error_throttled)
+        LoginError.ServiceUnavailable -> stringResource(id = com.kape.ui.R.string.error_operation_failed)
         null -> null
     }
 }
