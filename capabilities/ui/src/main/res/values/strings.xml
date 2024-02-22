@@ -82,4 +82,6 @@
     <string name="volume_kbyte" translatable="false">%.1f kB</string>
     <string name="volume_mbyte" translatable="false">%.1f MB</string>
     <string name="volume_gbyte" translatable="false">%.1f GB</string>
+
+    <string name="about">About</string>
 </resources>
