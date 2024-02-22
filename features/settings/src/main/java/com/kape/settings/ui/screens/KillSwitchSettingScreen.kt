@@ -8,13 +8,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -54,43 +57,46 @@ fun KillSwitchSettingScreen() = Screen {
         Column(
             Modifier
                 .padding(it)
-                .fillMaxHeight()
+                .fillMaxSize()
                 .background(LocalColors.current.background),
+            horizontalAlignment = CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.height(48.dp))
-            Image(
-                painter = painterResource(id = com.kape.settings.R.drawable.ic_vpn_permission),
-                contentDescription = null,
-                modifier = Modifier
-                    .align(CenterHorizontally)
-                    .width(80.dp),
-            )
-            Spacer(modifier = Modifier.height(48.dp))
-            Text(
-                text = stringResource(id = R.string.kill_switch_title),
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(CenterHorizontally),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(id = R.string.kill_switch_description),
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .align(CenterHorizontally),
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            PrimaryButton(
-                text = stringResource(id = R.string.kill_switch_action),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            ) {
-                context.startActivity(Intent(Settings.ACTION_VPN_SETTINGS))
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                Spacer(modifier = Modifier.height(48.dp))
+                Image(
+                    painter = painterResource(id = com.kape.settings.R.drawable.ic_vpn_permission),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(CenterHorizontally)
+                        .width(80.dp),
+                )
+                Spacer(modifier = Modifier.height(48.dp))
+                Text(
+                    text = stringResource(id = R.string.kill_switch_title),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .align(CenterHorizontally),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(id = R.string.kill_switch_description),
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .align(CenterHorizontally),
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                PrimaryButton(
+                    text = stringResource(id = R.string.kill_switch_action),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                ) {
+                    context.startActivity(Intent(Settings.ACTION_VPN_SETTINGS))
 
-                // There is no way for us to know if the settings have changed
-                // We always show the dialog
-                viewModel.showReconnectDialogIfVpnConnected()
+                    // There is no way for us to know if the settings have changed
+                    // We always show the dialog
+                    viewModel.showReconnectDialogIfVpnConnected()
+                }
             }
         }
         if (viewModel.reconnectDialogVisible.value) {

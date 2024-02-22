@@ -4,11 +4,13 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -43,28 +45,32 @@ fun ConnectionStatsScreen() = Screen {
         viewModel.getRecentEvents()
         Column(
             modifier = Modifier
-                .padding(it),
+                .padding(it)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (viewModel.eventList.value.isEmpty()) {
-                Text(
-                    text = stringResource(id = R.string.connection_stats_no_events),
-                    color = LocalColors.current.outlineVariant,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp),
-                    textAlign = TextAlign.Center,
-                )
-            } else {
-                LazyColumn {
-                    items(viewModel.eventList.value) {
-                        Text(
-                            text = it,
-                            color = LocalColors.current.outlineVariant,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
-                            textAlign = TextAlign.Start,
-                        )
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                if (viewModel.eventList.value.isEmpty()) {
+                    Text(
+                        text = stringResource(id = R.string.connection_stats_no_events),
+                        color = LocalColors.current.outlineVariant,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                } else {
+                    LazyColumn {
+                        items(viewModel.eventList.value) {
+                            Text(
+                                text = it,
+                                color = LocalColors.current.outlineVariant,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp),
+                                textAlign = TextAlign.Start,
+                            )
+                        }
                     }
                 }
             }

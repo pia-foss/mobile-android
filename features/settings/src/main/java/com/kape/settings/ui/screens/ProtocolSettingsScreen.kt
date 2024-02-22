@@ -2,17 +2,21 @@ package com.kape.settings.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.data.DataEncryption
@@ -53,58 +57,62 @@ fun ProtocolSettingsScreen() = Screen {
         Column(
             modifier = Modifier
                 .padding(it)
+                .fillMaxWidth()
                 .semantics {
                     testTagsAsResourceId = true
                 },
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            when (viewModel.getSelectedProtocol()) {
-                VpnProtocols.OpenVPN -> {
-                    OpenVpnProtocolSettingsScreen(
-                        viewModel = viewModel,
-                        protocolDialogVisible = protocolDialogVisible,
-                    )
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                when (viewModel.getSelectedProtocol()) {
+                    VpnProtocols.OpenVPN -> {
+                        OpenVpnProtocolSettingsScreen(
+                            viewModel = viewModel,
+                            protocolDialogVisible = protocolDialogVisible,
+                        )
+                    }
+
+                    VpnProtocols.WireGuard -> {
+                        WireGuardProtocolSettingsScreen(
+                            viewModel = viewModel,
+                            protocolDialogVisible = protocolDialogVisible,
+                        )
+                    }
                 }
 
-                VpnProtocols.WireGuard -> {
-                    WireGuardProtocolSettingsScreen(
-                        viewModel = viewModel,
-                        protocolDialogVisible = protocolDialogVisible,
+                if (protocolDialogVisible.value) {
+                    OptionsDialog(
+                        titleId = R.string.protocol_selection_title,
+                        options = mapOf(
+                            VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
+                            VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
+                        ),
+                        buttons = getDefaultButtons(),
+                        onDismiss = { protocolDialogVisible.value = false },
+                        onConfirm = {
+                            val hasProtocolChanged = protocolSelection.value != it
+                            viewModel.selectProtocol(it)
+                            protocolSelection.value = it
+                            protocolDialogVisible.value = false
+
+                            if (hasProtocolChanged) {
+                                viewModel.showReconnectDialogIfVpnConnected()
+                            }
+                        },
+                        selection = protocolSelection.value,
                     )
                 }
-            }
-
-            if (protocolDialogVisible.value) {
-                OptionsDialog(
-                    titleId = R.string.protocol_selection_title,
-                    options = mapOf(
-                        VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
-                        VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
-                    ),
-                    buttons = getDefaultButtons(),
-                    onDismiss = { protocolDialogVisible.value = false },
-                    onConfirm = {
-                        val hasProtocolChanged = protocolSelection.value != it
-                        viewModel.selectProtocol(it)
-                        protocolSelection.value = it
-                        protocolDialogVisible.value = false
-
-                        if (hasProtocolChanged) {
-                            viewModel.showReconnectDialogIfVpnConnected()
-                        }
-                    },
-                    selection = protocolSelection.value,
-                )
-            }
-            if (viewModel.reconnectDialogVisible.value) {
-                ReconnectDialog(
-                    onReconnect = {
-                        viewModel.reconnect()
-                        viewModel.reconnectDialogVisible.value = false
-                    },
-                    onLater = {
-                        viewModel.reconnectDialogVisible.value = false
-                    },
-                )
+                if (viewModel.reconnectDialogVisible.value) {
+                    ReconnectDialog(
+                        onReconnect = {
+                            viewModel.reconnect()
+                            viewModel.reconnectDialogVisible.value = false
+                        },
+                        onLater = {
+                            viewModel.reconnectDialogVisible.value = false
+                        },
+                    )
+                }
             }
         }
     }

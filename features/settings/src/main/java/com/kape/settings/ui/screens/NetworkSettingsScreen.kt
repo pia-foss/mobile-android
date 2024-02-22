@@ -2,14 +2,18 @@ package com.kape.settings.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.data.CustomDns
@@ -38,9 +42,9 @@ fun NetworkSettingsScreen() = Screen {
     if (viewModel.getCustomDns().isInUse()) {
         dnsOptions[DnsOptions.CUSTOM] =
             "${stringResource(id = R.string.network_dns_selection_custom)} ${
-            getCustomDnsInfo(
-                viewModel.getCustomDns(),
-            )
+                getCustomDnsInfo(
+                    viewModel.getCustomDns(),
+                )
             }"
     }
 
@@ -65,32 +69,36 @@ fun NetworkSettingsScreen() = Screen {
     ) {
         Column(
             modifier = Modifier
-                .padding(it),
+                .padding(it)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SettingsItem(
-                titleId = R.string.network_dns_title,
-                subtitle = dnsOptions[viewModel.getSelectedDnsOption()],
-            ) {
-                dnsDialogVisible.value = !dnsDialogVisible.value
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                SettingsItem(
+                    titleId = R.string.network_dns_title,
+                    subtitle = dnsOptions[viewModel.getSelectedDnsOption()],
+                ) {
+                    dnsDialogVisible.value = !dnsDialogVisible.value
+                }
+                SettingsToggle(
+                    titleId = R.string.network_port_forwarding_title,
+                    subtitleId = R.string.network_port_forwarding_description,
+                    enabled = viewModel.isPortForwardingEnabled(),
+                    toggle = {
+                        viewModel.toggleEnablePortForwarding(it)
+                        viewModel.showReconnectDialogIfVpnConnected()
+                    },
+                )
+                SettingsToggle(
+                    titleId = R.string.network_allow_lan_traffic_title,
+                    subtitleId = R.string.network_allow_lan_traffic_description,
+                    stateEnabled = viewModel.isAllowLocalTrafficEnabled,
+                    toggle = { checked ->
+                        viewModel.toggleAllowLocalNetwork(checked)
+                        viewModel.showReconnectDialogIfVpnConnected()
+                    },
+                )
             }
-            SettingsToggle(
-                titleId = R.string.network_port_forwarding_title,
-                subtitleId = R.string.network_port_forwarding_description,
-                enabled = viewModel.isPortForwardingEnabled(),
-                toggle = {
-                    viewModel.toggleEnablePortForwarding(it)
-                    viewModel.showReconnectDialogIfVpnConnected()
-                },
-            )
-            SettingsToggle(
-                titleId = R.string.network_allow_lan_traffic_title,
-                subtitleId = R.string.network_allow_lan_traffic_description,
-                stateEnabled = viewModel.isAllowLocalTrafficEnabled,
-                toggle = { checked ->
-                    viewModel.toggleAllowLocalNetwork(checked)
-                    viewModel.showReconnectDialogIfVpnConnected()
-                },
-            )
         }
     }
 
