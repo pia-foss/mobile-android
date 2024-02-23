@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.appbar.view.AppBar
@@ -49,7 +50,7 @@ fun ProfileScreen() = Screen {
             }
         } else {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().semantics(mergeDescendants = true) { },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(
