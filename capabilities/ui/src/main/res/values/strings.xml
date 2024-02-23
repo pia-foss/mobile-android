@@ -8,6 +8,8 @@
     <string name="close">Close</string>
     <string name="clear">Clear</string>
     <string name="button">Button</string>
+    <string name="customize">Customize</string>
+    <string name="vpn_status">VPN status</string>
 
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Yearly</string>

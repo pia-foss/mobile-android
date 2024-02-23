@@ -15,7 +15,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -27,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
@@ -95,11 +95,22 @@ private fun AppBarContent(
             },
 
     ) {
+        val menuContentDescription = stringResource(id = com.kape.ui.R.string.menu)
+        val backContentDescription = stringResource(id = com.kape.ui.R.string.back)
         IconButton(
             onClick = { onLeftIconClick() },
             modifier = Modifier
                 .align(CenterStart)
-                .testTag(":AppBar:side_menu"),
+                .testTag(":AppBar:side_menu")
+                .semantics {
+                    contentDescription = when (type) {
+                        AppBarType.Connection -> menuContentDescription
+                        AppBarType.Customization,
+                        AppBarType.InAppBrowser,
+                        AppBarType.Navigation,
+                        -> backContentDescription
+                    }
+                },
         ) {
             Icon(painter = painterResource(id = getAppBarLeftIcon(type)), contentDescription = null)
         }
@@ -197,17 +208,26 @@ private fun AppBarConnectionStatus(
                     tint = Color.Unspecified,
                 )
             }
-
+            val statusPrefix = stringResource(id = com.kape.ui.R.string.vpn_status)
             AppBarConnectionTextDefault(
                 content = title ?: "",
-                modifier = Modifier.align(CenterVertically),
+                modifier = Modifier
+                    .align(CenterVertically)
+                    .semantics {
+                        contentDescription = "$statusPrefix $status"
+                    },
             )
         }
 
         onRightIconClick?.let {
+            val customizeContentDescription = stringResource(id = com.kape.ui.R.string.customize)
             IconButton(
                 onClick = { it() },
-                modifier = Modifier.align(CenterEnd),
+                modifier = Modifier
+                    .align(CenterEnd)
+                    .semantics {
+                        contentDescription = customizeContentDescription
+                    },
             ) {
                 Icon(
                     painter = painterResource(id = com.kape.ui.R.drawable.ic_reorder),
