@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
@@ -186,7 +187,15 @@ private fun SideMenuHeaderItem(username: String, versionCode: String, versionNam
                 .fillMaxWidth()
                 .align(CenterVertically),
         ) {
-            SideMenuUsernameText(content = username, modifier = Modifier.fillMaxWidth())
+            val usernamePrefix = stringResource(id = com.kape.ui.R.string.username)
+            SideMenuUsernameText(
+                content = username,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .semantics {
+                        contentDescription = "$usernamePrefix $username"
+                    },
+            )
             Spacer(modifier = Modifier.height(4.dp))
             SideMenuVersionText(
                 content = stringResource(com.kape.ui.R.string.drawer_item_description_app_version_format).format(
