@@ -45,9 +45,7 @@ fun SettingsItem(
             iconId?.let {
                 Icon(
                     painter = painterResource(iconId),
-                    contentDescription = stringResource(
-                        id = R.string.icon,
-                    ),
+                    contentDescription = null,
                     tint = Color.Unspecified,
                     modifier = Modifier.size(24.dp),
                 )
