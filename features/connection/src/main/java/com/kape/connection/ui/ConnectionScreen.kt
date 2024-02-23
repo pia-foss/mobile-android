@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
@@ -82,6 +83,7 @@ fun ConnectionScreen() = Screen {
                 .semantics {
                     testTagsAsResourceId = true
                 },
+            horizontalAlignment = CenterHorizontally,
         ) {
             AppBar(
                 viewModel = appBarViewModel,
@@ -93,22 +95,24 @@ fun ConnectionScreen() = Screen {
                 },
                 onRightIconClick = { viewModel.navigateToCustomization() },
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            ConnectButton(
-                if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
-                Modifier
-                    .align(CenterHorizontally)
-                    .testTag(":ConnectionScreen:connection_button"),
-            ) {
-                viewModel.onConnectionButtonClicked()
-            }
-            Spacer(modifier = Modifier.height(36.dp))
-            viewModel.getOrderedElements().forEach {
-                DisplayComponent(
-                    screenElement = it,
-                    isVisible = viewModel.isScreenElementVisible(it),
-                    viewModel = viewModel,
-                )
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                Spacer(modifier = Modifier.height(16.dp))
+                ConnectButton(
+                    if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
+                    Modifier
+                        .align(CenterHorizontally)
+                        .testTag(":ConnectionScreen:connection_button"),
+                ) {
+                    viewModel.onConnectionButtonClicked()
+                }
+                Spacer(modifier = Modifier.height(36.dp))
+                viewModel.getOrderedElements().forEach {
+                    DisplayComponent(
+                        screenElement = it,
+                        isVisible = viewModel.isScreenElementVisible(it),
+                        viewModel = viewModel,
+                    )
+                }
             }
         }
     }

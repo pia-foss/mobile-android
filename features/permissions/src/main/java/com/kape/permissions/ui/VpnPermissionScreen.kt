@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -86,53 +87,56 @@ fun VpnPermissionScreen() = Screen {
                 testTagsAsResourceId = true
             },
         verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = CenterHorizontally,
     ) {
-        Image(
-            painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(16.dp)
-                .height(40.dp)
-                .fillMaxWidth(),
-        )
-        Image(
-            painter = painterResource(id = R.drawable.image_lock),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(40.dp)
-                .height(140.dp)
-                .fillMaxWidth(),
-        )
-        Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-            OnboardingTitleText(
-                content = stringResource(id = com.kape.ui.R.string.vpn_permission_title),
+        Column(modifier = Modifier.widthIn(max = 520.dp)) {
+            Image(
+                painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .height(40.dp)
+                    .fillMaxWidth(),
+            )
+            Image(
+                painter = painterResource(id = R.drawable.image_lock),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(40.dp)
+                    .height(140.dp)
+                    .fillMaxWidth(),
+            )
+            Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                OnboardingTitleText(
+                    content = stringResource(id = com.kape.ui.R.string.vpn_permission_title),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                )
+                OnboardingDescriptionText(
+                    content = stringResource(id = com.kape.ui.R.string.vpn_permission_description),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                OnboardingFooterText(
+                    content = stringResource(id = com.kape.ui.R.string.vpn_permission_footer),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                )
+            }
+            PrimaryButton(
+                text = stringResource(id = com.kape.ui.R.string.ok),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
-            )
-            OnboardingDescriptionText(
-                content = stringResource(id = com.kape.ui.R.string.vpn_permission_description),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            OnboardingFooterText(
-                content = stringResource(id = com.kape.ui.R.string.vpn_permission_footer),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            )
-        }
-        PrimaryButton(
-            text = stringResource(id = com.kape.ui.R.string.ok),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
-                .align(CenterHorizontally)
-                .testTag(":VpnPermissionScreen:ok"),
-        ) {
-            viewModel.onOkButtonClicked()
+                    .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
+                    .align(CenterHorizontally)
+                    .testTag(":VpnPermissionScreen:ok"),
+            ) {
+                viewModel.onOkButtonClicked()
+            }
         }
     }
 }

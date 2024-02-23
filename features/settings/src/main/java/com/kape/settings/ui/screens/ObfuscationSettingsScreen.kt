@@ -1,14 +1,18 @@
 package com.kape.settings.ui.screens
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.data.ObfuscationOptions
@@ -58,56 +62,60 @@ fun ObfuscationSettingsScreen() = Screen {
     ) {
         Column(
             modifier = Modifier
-                .padding(it),
+                .padding(it)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SettingsToggle(
-                titleId = R.string.obfuscation_external_proxy_app_title,
-                subtitleId = R.string.obfuscation_external_proxy_app_description,
-                stateEnabled = viewModel.externalProxyAppEnabled,
-                toggle = {
-                    if (it && viewModel.externalProxyAppPackageName.value.isEmpty()) {
-                        externalProxyAppDialogVisible.value = true
-                    } else {
-                        viewModel.toggleExternalProxyApp(it)
-                    }
-                },
-            )
-            if (viewModel.externalProxyAppEnabled.value && viewModel.externalProxyAppPackageName.value.isNotEmpty()) {
-                SettingsItem(
-                    titleId = R.string.selected_proxy_app,
-                    subtitle = viewModel.externalProxyAppPackageName.value,
-                    onClick = {
-                        viewModel.navigateToExternalAppList()
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                SettingsToggle(
+                    titleId = R.string.obfuscation_external_proxy_app_title,
+                    subtitleId = R.string.obfuscation_external_proxy_app_description,
+                    stateEnabled = viewModel.externalProxyAppEnabled,
+                    toggle = {
+                        if (it && viewModel.externalProxyAppPackageName.value.isEmpty()) {
+                            externalProxyAppDialogVisible.value = true
+                        } else {
+                            viewModel.toggleExternalProxyApp(it)
+                        }
                     },
                 )
-                SettingsItem(
-                    titleId = R.string.proxy_port,
-                    subtitle = viewModel.externalProxyAppPort.value,
-                    onClick = {
-                        externalProxyPortDialogVisible.value = true
+                if (viewModel.externalProxyAppEnabled.value && viewModel.externalProxyAppPackageName.value.isNotEmpty()) {
+                    SettingsItem(
+                        titleId = R.string.selected_proxy_app,
+                        subtitle = viewModel.externalProxyAppPackageName.value,
+                        onClick = {
+                            viewModel.navigateToExternalAppList()
+                        },
+                    )
+                    SettingsItem(
+                        titleId = R.string.proxy_port,
+                        subtitle = viewModel.externalProxyAppPort.value,
+                        onClick = {
+                            externalProxyPortDialogVisible.value = true
+                        },
+                    )
+                }
+                SettingsToggle(
+                    titleId = R.string.obfuscation_shadowsocks_title,
+                    subtitleId = R.string.obfuscation_shadowsocks_description,
+                    stateEnabled = viewModel.shadowsocksObfuscationEnabled,
+                    toggle = { enabled ->
+                        viewModel.toggleShadowsocksObfuscation(enabled)
+                        if (viewModel.isAllowLocalTrafficEnabled.value.not()) {
+                            allowLocalTrafficDialogVisible.value = true
+                        } else if (viewModel.getTransport() != Transport.TCP) {
+                            tcpTransportDialogVisible.value = true
+                        }
                     },
                 )
-            }
-            SettingsToggle(
-                titleId = R.string.obfuscation_shadowsocks_title,
-                subtitleId = R.string.obfuscation_shadowsocks_description,
-                stateEnabled = viewModel.shadowsocksObfuscationEnabled,
-                toggle = { enabled ->
-                    viewModel.toggleShadowsocksObfuscation(enabled)
-                    if (viewModel.isAllowLocalTrafficEnabled.value.not()) {
-                        allowLocalTrafficDialogVisible.value = true
-                    } else if (viewModel.getTransport() != Transport.TCP) {
-                        tcpTransportDialogVisible.value = true
-                    }
-                },
-            )
-            if (viewModel.shadowsocksObfuscationEnabled.value) {
-                SettingsItem(
-                    titleId = R.string.obfuscation_shadowsocks_subtitle,
-                    onClick = {
-                        obfuscationDialogVisible.value = !obfuscationDialogVisible.value
-                    },
-                )
+                if (viewModel.shadowsocksObfuscationEnabled.value) {
+                    SettingsItem(
+                        titleId = R.string.obfuscation_shadowsocks_subtitle,
+                        onClick = {
+                            obfuscationDialogVisible.value = !obfuscationDialogVisible.value
+                        },
+                    )
+                }
             }
         }
     }

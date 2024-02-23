@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.AlertDialog
@@ -17,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -61,66 +63,72 @@ fun VpnRegionSelectionScreen() = Screen {
     val showSortingOptions = remember { mutableStateOf(false) }
     val isSearchEnabled = remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.background(LocalColors.current.surfaceVariant)) {
+    Column(
+        modifier = Modifier
+            .background(LocalColors.current.surfaceVariant)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         AppBar(appBarViewModel, onLeftIconClick = { viewModel.navigateBack() })
+        Column(modifier = Modifier.widthIn(max = 520.dp)) {
+            Search(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                hint = stringResource(id = com.kape.ui.R.string.search),
+            ) {
+                viewModel.filterByName(it, isSearchEnabled)
+            }
 
-        Search(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            hint = stringResource(id = com.kape.ui.R.string.search),
-        ) {
-            viewModel.filterByName(it, isSearchEnabled)
-        }
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isLoading.value),
+                onRefresh = {
+                    locale?.let {
+                        viewModel.loadVpnRegions(locale, isLoading, true)
+                    }
+                },
+            ) {
+                LazyColumn {
+                    val items = if (isSearchEnabled.value) {
+                        viewModel.sorted.value
+                    } else {
+                        viewModel.servers.value
+                    }
+                    items(items.size) { index ->
+                        val item = items[index]
+                        when (item.type) {
+                            is ItemType.Content -> {
+                                LocationPickerItem(
+                                    server = item.type.server,
+                                    isFavorite = item.type.isFavorite,
+                                    enableFavorite = item.type.enableFavorite,
+                                    isPortForwardingEnabled = viewModel.isPortForwardingEnabled,
+                                    onClick = { viewModel.onVpnRegionSelected(it) },
+                                    onFavoriteVpnClick = { viewModel.onFavoriteVpnClicked(it) },
+                                )
+                            }
 
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isLoading.value),
-            onRefresh = {
-                locale?.let {
-                    viewModel.loadVpnRegions(locale, isLoading, true)
-                }
-            },
-        ) {
-            LazyColumn {
-                val items = if (isSearchEnabled.value) {
-                    viewModel.sorted.value
-                } else {
-                    viewModel.servers.value
-                }
-                items(items.size) { index ->
-                    val item = items[index]
-                    when (item.type) {
-                        is ItemType.Content -> {
-                            LocationPickerItem(
-                                server = item.type.server,
-                                isFavorite = item.type.isFavorite,
-                                enableFavorite = item.type.enableFavorite,
-                                isPortForwardingEnabled = viewModel.isPortForwardingEnabled,
-                                onClick = { viewModel.onVpnRegionSelected(it) },
-                                onFavoriteVpnClick = { viewModel.onFavoriteVpnClicked(it) },
-                            )
-                        }
+                            ItemType.HeadingAll -> {
+                                MenuText(
+                                    content = stringResource(id = com.kape.ui.R.string.all_locations),
+                                    modifier = Modifier.padding(16.dp),
+                                )
+                            }
 
-                        ItemType.HeadingAll -> {
-                            MenuText(
-                                content = stringResource(id = com.kape.ui.R.string.all_locations),
-                                modifier = Modifier.padding(16.dp),
-                            )
-                        }
-
-                        ItemType.HeadingFavorites -> {
-                            MenuText(
-                                content = stringResource(id = R.string.favorites),
-                                modifier = Modifier.padding(16.dp),
-                            )
+                            ItemType.HeadingFavorites -> {
+                                MenuText(
+                                    content = stringResource(id = R.string.favorites),
+                                    modifier = Modifier.padding(16.dp),
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if (showSortingOptions.value) {
-            SortingOptions(viewModel = viewModel, showSortingOptions)
+            if (showSortingOptions.value) {
+                SortingOptions(viewModel = viewModel, showSortingOptions)
+            }
         }
     }
 }

@@ -55,8 +55,8 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.PIA">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

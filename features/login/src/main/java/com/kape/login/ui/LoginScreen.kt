@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -76,96 +77,103 @@ fun LoginScreen(navController: NavController) = Screen {
             .semantics {
                 testTagsAsResourceId = true
             },
+        horizontalAlignment = CenterHorizontally,
     ) {
-        if (!isConnected) {
-            NoNetworkBanner(noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet))
-        }
-        Image(
-            painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(16.dp)
-                .height(40.dp)
-                .fillMaxWidth(),
-        )
-        SignInText(
-            content = stringResource(id = com.kape.ui.R.string.sign_in),
-            modifier = Modifier
-                .align(CenterHorizontally)
-                .padding(16.dp),
-        )
-        Input(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .testTag(":LoginScreen:enter_username"),
-            label = stringResource(id = com.kape.ui.R.string.enter_username),
-            maskInput = false,
-            keyboard = KeyboardType.Text,
-            imeAction = ImeAction.Next,
-            content = username,
-        )
-        Input(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .testTag(":LoginScreen:enter_password"),
-            label = stringResource(id = com.kape.ui.R.string.enter_password),
-            maskInput = true,
-            keyboard = KeyboardType.Password,
-            imeAction = ImeAction.Next,
-            content = password,
-        )
-        if (state.loading) {
-            Spacer(modifier = Modifier.height(16.dp))
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(24.dp)
-                    .align(CenterHorizontally),
-            )
-        } else {
-            PrimaryButton(
-                text = stringResource(id = com.kape.ui.R.string.login),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .testTag(":LoginScreen:login_button"),
-            ) {
-                if (isConnected) {
-                    viewModel.login(username.value, password.value)
-                } else {
-                    Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
-                }
+        Column(modifier = Modifier.widthIn(max = 520.dp)) {
+            if (!isConnected) {
+                NoNetworkBanner(noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet))
             }
-        }
-
-        if (state.error != null) {
-            ErrorCard(
-                content = getErrorMessage(state = state) ?: "",
+            Image(
+                painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .height(40.dp)
+                    .fillMaxWidth(),
+            )
+            SignInText(
+                content = stringResource(id = com.kape.ui.R.string.sign_in),
+                modifier = Modifier
+                    .align(CenterHorizontally)
                     .padding(16.dp),
             )
-        }
+            Input(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .testTag(":LoginScreen:enter_username"),
+                label = stringResource(id = com.kape.ui.R.string.enter_username),
+                maskInput = false,
+                keyboard = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+                content = username,
+            )
+            Input(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .testTag(":LoginScreen:enter_password"),
+                label = stringResource(id = com.kape.ui.R.string.enter_password),
+                maskInput = true,
+                keyboard = KeyboardType.Password,
+                imeAction = ImeAction.Next,
+                content = password,
+            )
+            if (state.loading) {
+                Spacer(modifier = Modifier.height(16.dp))
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .align(CenterHorizontally),
+                )
+            } else {
+                PrimaryButton(
+                    text = stringResource(id = com.kape.ui.R.string.login),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .testTag(":LoginScreen:login_button"),
+                ) {
+                    if (isConnected) {
+                        viewModel.login(username.value, password.value)
+                    } else {
+                        Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
 
-        Text(
-            text = stringResource(id = com.kape.ui.R.string.login_with_receipt).toUpperCase(Locale.current),
-            color = LocalColors.current.primary,
-            modifier = Modifier
-                .align(CenterHorizontally)
-                .padding(16.dp, 16.dp, 16.dp, 8.dp)
-                .clickable {
-                    viewModel.loginWithReceipt(currentContext.packageName)
-                },
-        )
-        Text(
-            text = stringResource(id = com.kape.ui.R.string.login_with_magic_link).toUpperCase(Locale.current),
-            color = LocalColors.current.primary,
-            modifier = Modifier
-                .align(CenterHorizontally)
-                .padding(16.dp, 8.dp, 16.dp, 16.dp)
-                .clickable {
-                    navController.navigate(Login.WithEmail)
-                },
-        )
+            if (state.error != null) {
+                ErrorCard(
+                    content = getErrorMessage(state = state) ?: "",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                )
+            }
+
+            Text(
+                text = stringResource(id = com.kape.ui.R.string.login_with_receipt).toUpperCase(
+                    Locale.current,
+                ),
+                color = LocalColors.current.primary,
+                modifier = Modifier
+                    .align(CenterHorizontally)
+                    .padding(16.dp, 16.dp, 16.dp, 8.dp)
+                    .clickable {
+                        viewModel.loginWithReceipt(currentContext.packageName)
+                    },
+            )
+            Text(
+                text = stringResource(id = com.kape.ui.R.string.login_with_magic_link).toUpperCase(
+                    Locale.current,
+                ),
+                color = LocalColors.current.primary,
+                modifier = Modifier
+                    .align(CenterHorizontally)
+                    .padding(16.dp, 8.dp, 16.dp, 16.dp)
+                    .clickable {
+                        navController.navigate(Login.WithEmail)
+                    },
+            )
+        }
     }
 }
 

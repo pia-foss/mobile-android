@@ -2,11 +2,15 @@ package com.kape.settings.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.ui.elements.SettingsToggle
@@ -36,34 +40,38 @@ fun GeneralSettingsScreen() = Screen {
     ) {
         Column(
             modifier = Modifier
-                .padding(it),
+                .padding(it)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            SettingsToggle(
-                titleId = R.string.connect_on_boot_title,
-                subtitleId = R.string.connect_on_boot_description,
-                enabled = viewModel.launchOnBootEnabled,
-                toggle = {
-                    viewModel.toggleLaunchOnBoot(it)
-                },
-            )
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                SettingsToggle(
+                    titleId = R.string.connect_on_boot_title,
+                    subtitleId = R.string.connect_on_boot_description,
+                    enabled = viewModel.launchOnBootEnabled,
+                    toggle = {
+                        viewModel.toggleLaunchOnBoot(it)
+                    },
+                )
 
-            SettingsToggle(
-                titleId = R.string.connect_on_launch_title,
-                subtitleId = R.string.connect_on_launch_description,
-                enabled = viewModel.connectOnStart,
-                toggle = {
-                    viewModel.toggleConnectOnStart(it)
-                },
-            )
+                SettingsToggle(
+                    titleId = R.string.connect_on_launch_title,
+                    subtitleId = R.string.connect_on_launch_description,
+                    enabled = viewModel.connectOnStart,
+                    toggle = {
+                        viewModel.toggleConnectOnStart(it)
+                    },
+                )
 
-            SettingsToggle(
-                titleId = R.string.connect_on_update_title,
-                subtitleId = R.string.connect_on_update_description,
-                enabled = viewModel.connectOnUpdate,
-                toggle = {
-                    viewModel.toggleConnectOnUpdate(it)
-                },
-            )
+                SettingsToggle(
+                    titleId = R.string.connect_on_update_title,
+                    subtitleId = R.string.connect_on_update_description,
+                    enabled = viewModel.connectOnUpdate,
+                    toggle = {
+                        viewModel.toggleConnectOnUpdate(it)
+                    },
+                )
+            }
         }
     }
 }

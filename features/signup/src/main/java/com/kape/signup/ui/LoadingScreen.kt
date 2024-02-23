@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,13 +28,17 @@ fun LoadingScreen() = Screen {
     Box(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(48.dp))
         Image(
-            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
+            painter = painterResource(id = R.drawable.ic_logo_large),
             contentDescription = "logo",
             modifier = Modifier
                 .padding(48.dp)
                 .align(Alignment.TopCenter),
         )
-        Column(modifier = Modifier.align(Alignment.Center)) {
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .widthIn(max = 520.dp),
+        ) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .align(CenterHorizontally)

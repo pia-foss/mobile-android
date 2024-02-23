@@ -5,9 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -66,81 +68,88 @@ fun AutomationScreen(isSet: Boolean) = Screen {
             )
         },
     ) {
-        Column(modifier = Modifier.padding(it)) {
-            OnboardingTitleText(
-                content = stringResource(id = com.kape.ui.R.string.manage_automation_title),
-                modifier = Modifier.padding(16.dp),
-            )
+        Column(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxWidth(),
+            horizontalAlignment = CenterHorizontally,
+        ) {
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                OnboardingTitleText(
+                    content = stringResource(id = com.kape.ui.R.string.manage_automation_title),
+                    modifier = Modifier.padding(16.dp),
+                )
 
-            OnboardingDescriptionText(
-                content = stringResource(id = com.kape.ui.R.string.manage_automation_description),
-                modifier = Modifier.padding(16.dp),
-            )
+                OnboardingDescriptionText(
+                    content = stringResource(id = com.kape.ui.R.string.manage_automation_description),
+                    modifier = Modifier.padding(16.dp),
+                )
 
-            LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                items(viewModel.getNetworkItems()) { networkItem ->
-                    val icon: Int
-                    val title: String
-                    val status = getStatus(behavior = networkItem.networkBehavior)
+                LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+                    items(viewModel.getNetworkItems()) { networkItem ->
+                        val icon: Int
+                        val title: String
+                        val status = getStatus(behavior = networkItem.networkBehavior)
 
-                    when (networkItem.networkType) {
-                        NetworkType.MobileData -> {
-                            icon = R.drawable.ic_mobile_data
-                            title =
-                                stringResource(id = R.string.nmt_mobile_data)
+                        when (networkItem.networkType) {
+                            NetworkType.MobileData -> {
+                                icon = R.drawable.ic_mobile_data
+                                title =
+                                    stringResource(id = R.string.nmt_mobile_data)
+                            }
+
+                            NetworkType.WifiCustom -> {
+                                icon = R.drawable.ic_wifi_custom
+                                title = networkItem.networkName
+                            }
+
+                            NetworkType.WifiOpen -> {
+                                icon = R.drawable.ic_open_wifi
+                                title = networkItem.networkName
+                            }
+
+                            NetworkType.WifiSecure -> {
+                                icon = R.drawable.ic_secure_wifi
+                                title =
+                                    stringResource(id = R.string.nmt_secure_wifi)
+                            }
                         }
-
-                        NetworkType.WifiCustom -> {
-                            icon = R.drawable.ic_wifi_custom
-                            title = networkItem.networkName
+                        NetworkCard(
+                            icon = icon,
+                            title = title,
+                            status = status,
+                            color = when (networkItem.networkBehavior) {
+                                NetworkBehavior.AlwaysConnect -> LocalColors.current.primary
+                                NetworkBehavior.AlwaysDisconnect -> LocalColors.current.error
+                                NetworkBehavior.RetainState -> LocalColors.current.infoBlue()
+                            },
+                            isDefault = networkItem.isDefault,
+                        ) {
+                            currentItem.value = networkItem
+                            showDialog.value = true
                         }
-
-                        NetworkType.WifiOpen -> {
-                            icon = R.drawable.ic_open_wifi
-                            title = networkItem.networkName
-                        }
-
-                        NetworkType.WifiSecure -> {
-                            icon = R.drawable.ic_secure_wifi
-                            title =
-                                stringResource(id = R.string.nmt_secure_wifi)
-                        }
-                    }
-                    NetworkCard(
-                        icon = icon,
-                        title = title,
-                        status = status,
-                        color = when (networkItem.networkBehavior) {
-                            NetworkBehavior.AlwaysConnect -> LocalColors.current.primary
-                            NetworkBehavior.AlwaysDisconnect -> LocalColors.current.error
-                            NetworkBehavior.RetainState -> LocalColors.current.infoBlue()
-                        },
-                        isDefault = networkItem.isDefault,
-                    ) {
-                        currentItem.value = networkItem
-                        showDialog.value = true
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(24.dp))
-            Row(
-                modifier = Modifier
-                    .align(CenterHorizontally)
-                    .clickable {
-                        viewModel.navigateToAddNewRule()
-                    },
-            ) {
-                Icon(
-                    painter = painterResource(id = com.kape.ui.R.drawable.ic_add),
-                    contentDescription = null,
-                    tint = LocalColors.current.primary,
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Hyperlink(
-                    content = stringResource(id = com.kape.ui.R.string.manage_automation_add),
-                    modifier = Modifier.align(CenterVertically),
-                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier
+                        .align(CenterHorizontally)
+                        .clickable {
+                            viewModel.navigateToAddNewRule()
+                        },
+                ) {
+                    Icon(
+                        painter = painterResource(id = com.kape.ui.R.drawable.ic_add),
+                        contentDescription = null,
+                        tint = LocalColors.current.primary,
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Hyperlink(
+                        content = stringResource(id = com.kape.ui.R.string.manage_automation_add),
+                        modifier = Modifier.align(CenterVertically),
+                    )
+                }
             }
         }
     }
