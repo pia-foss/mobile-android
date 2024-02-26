@@ -7,6 +7,7 @@ import com.kape.login.domain.LoginUseCase
 import com.kape.login.domain.LogoutUseCase
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.ui.vm.LoginWithEmailViewModel
+import com.kape.login.utils.TokenAuthenticationUtil
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -17,6 +18,7 @@ fun loginModule(appModule: Module) = module {
 
 private val localLoginModule = module {
     single<AuthenticationDataSource> { AuthenticationDataSourceImpl(get()) }
+    single { TokenAuthenticationUtil(get(), get()) }
     single { LoginUseCase(get()) }
     single {
         LogoutUseCase(

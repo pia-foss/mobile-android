@@ -66,4 +66,15 @@ class AuthenticationDataSourceImpl(private val api: AndroidAccountAPI) :
         }
         awaitClose { channel.close() }
     }
+
+    override fun migrateToken(apiToken: String): Flow<ApiResult> = callbackFlow {
+        api.migrateApiToken(apiToken) {
+            if (it.isNotEmpty()) {
+                trySend(ApiResult.Error(getApiError(it.last().code)))
+                return@migrateApiToken
+            }
+            trySend(ApiResult.Success)
+        }
+        awaitClose { channel.close() }
+    }
 }
