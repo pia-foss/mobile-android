@@ -1,6 +1,7 @@
 
 import Dependencies.KOTLIN_COMPILER_EXTENSION
 import Dependencies.implementAccount
+import Dependencies.implementConstraintLayout
 import Dependencies.implementFeatureModule
 import Dependencies.implementRegions
 
@@ -54,4 +55,5 @@ dependencies {
     implementAccount()
     implementRegions()
     implementFeatureModule()
+    implementConstraintLayout()
 }

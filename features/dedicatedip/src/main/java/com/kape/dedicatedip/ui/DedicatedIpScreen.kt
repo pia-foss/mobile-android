@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,7 +21,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -45,12 +45,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.R
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.ui.elements.Screen
+import com.kape.ui.elements.Separator
 import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
@@ -184,7 +186,7 @@ fun DedicatedIpScreen() = Screen {
                     items(items.size) { index ->
                         val item = items[index]
                         DipItem(server = item, showDialog, serverForDeletion)
-                        Divider(color = LocalColors.current.outline)
+                        Separator()
                     }
                 }
             }
@@ -229,83 +231,101 @@ fun DipItem(
     showDialog: MutableState<Boolean>,
     serverForDeletion: MutableState<VpnServer?>,
 ) {
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(horizontal = 16.dp),
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .heightIn(min = 56.dp),
+    ) {
+        val (icon, name, latency, ip, removeButton) = createRefs()
+
+        Box(
+            modifier = Modifier.constrainAs(icon) {
+                start.linkTo(parent.start)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            },
         ) {
-            Box(modifier = Modifier.align(CenterVertically)) {
-                Icon(
-                    painter = painterResource(
-                        id = getFlagResource(
-                            LocalContext.current,
-                            server.iso,
-                        ),
+            Icon(
+                painter = painterResource(
+                    id = getFlagResource(
+                        LocalContext.current,
+                        server.iso,
                     ),
-                    tint = Color.Unspecified,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Center)
-                        .padding(4.dp)
-                        .width(32.dp)
-                        .height(22.dp),
-                )
-                Icon(
-                    painter = painterResource(id = com.kape.ui.R.drawable.ic_dip_badge),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                    modifier = Modifier
-                        .align(TopEnd)
-                        .size(14.dp),
-                )
-            }
-            Text(
-                text = server.name,
-                fontSize = 14.sp,
+                ),
+                tint = Color.Unspecified,
+                contentDescription = null,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .align(CenterVertically),
+                    .align(Center)
+                    .padding(4.dp)
+                    .width(32.dp)
+                    .height(22.dp),
             )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = if (server.latency != null && server.latency!!.toInt() < REGIONS_PING_TIMEOUT) {
-                    stringResource(id = com.kape.ui.R.string.latency_to_format).format(
-                        server.latency,
-                    )
-                } else {
-                    ""
-                },
-                fontSize = 12.sp,
-                color = LocalColors.current.getLatencyColor(server.latency),
+            Icon(
+                painter = painterResource(id = com.kape.ui.R.drawable.ic_dip_badge),
+                contentDescription = null,
+                tint = Color.Unspecified,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .align(CenterVertically),
+                    .align(TopEnd)
+                    .size(14.dp),
             )
-            Text(
-                text = server.dedicatedIp ?: "",
-                modifier = Modifier
-                    .align(CenterVertically)
-                    .padding(horizontal = 16.dp),
-            )
-            IconButton(
-                onClick = {
-                    serverForDeletion.value = server
-                    showDialog.value = true
-                },
-                modifier = Modifier.align(CenterVertically),
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_close),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(24.dp)
-                        .height(20.dp)
-                        .align(CenterVertically),
-                )
-            }
         }
+
+        Text(
+            text = server.name,
+            fontSize = 14.sp,
+            modifier = Modifier.constrainAs(name) {
+                start.linkTo(icon.end, margin = 8.dp)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            },
+        )
+
+        IconButton(
+            onClick = {
+                serverForDeletion.value = server
+                showDialog.value = true
+            },
+            modifier = Modifier.constrainAs(removeButton) {
+                end.linkTo(parent.end)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            },
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_close),
+                contentDescription = stringResource(id = com.kape.ui.R.string.dip_remove_title),
+                modifier = Modifier
+                    .width(24.dp)
+                    .height(20.dp),
+            )
+        }
+
+        Text(
+            text = server.dedicatedIp ?: "",
+            modifier = Modifier.constrainAs(ip) {
+                end.linkTo(removeButton.start)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            },
+        )
+
+        Text(
+            text = if (server.latency != null && server.latency!!.toInt() < REGIONS_PING_TIMEOUT) {
+                stringResource(id = com.kape.ui.R.string.latency_to_format).format(
+                    server.latency,
+                )
+            } else {
+                ""
+            },
+            fontSize = 12.sp,
+            color = LocalColors.current.getLatencyColor(server.latency),
+            modifier = Modifier.constrainAs(latency) {
+                end.linkTo(ip.start, margin = 8.dp)
+                top.linkTo(parent.top)
+                bottom.linkTo(parent.bottom)
+            },
+        )
     }
 }
 
@@ -354,6 +374,7 @@ fun DeleteDipDialog(
             TextButton(
                 onClick = {
                     showDialog.value = false
+                    onCancelClicked()
                 },
             ) {
                 Text(
