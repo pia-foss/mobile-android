@@ -1,77 +1,12 @@
 package com.kape.router
 
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class Router {
+interface Router {
 
-    private val _navigation = MutableStateFlow(Splash.Main)
-    val navigation: StateFlow<String> = _navigation
+    fun handleFlow(flow: AppFlow)
 
-    fun handleFlow(flow: AppFlow) {
-        when (flow) {
-            is EnterFlow -> handleEnterFlow(flow)
-            is ExitFlow -> handleExitFlow(flow)
-            is Back -> handleBack()
-            is Exit -> exitApp()
-        }
-    }
+    fun resetNavigation()
 
-    fun resetNavigation() {
-        _navigation.value = Splash.Main
-    }
-
-    private fun handleEnterFlow(flow: EnterFlow) {
-        when (flow) {
-            EnterFlow.Login -> _navigation.value = Login.Route
-            EnterFlow.Permissions -> _navigation.value = Permissions.Route
-            EnterFlow.Splash -> _navigation.value = Splash.Main
-            EnterFlow.Connection -> _navigation.value = Connection.Main
-            EnterFlow.VpnRegionSelection -> _navigation.value = VpnRegionSelection.Main
-            EnterFlow.ShadowsocksRegionSelection -> _navigation.value = ShadowsocksRegionSelection.Main
-            EnterFlow.Profile -> _navigation.value = Profile.Main
-            EnterFlow.Subscribe -> _navigation.value = Subscribe.Main
-            EnterFlow.PrivacyPolicy -> _navigation.value = WebContent.Privacy
-            EnterFlow.TermsOfService -> _navigation.value = WebContent.Terms
-            EnterFlow.Settings -> _navigation.value = Settings.Route
-            EnterFlow.AutomationSettings -> _navigation.value = Settings.Automation
-            EnterFlow.PerAppSettings -> _navigation.value = PerAppSettings.Main
-            EnterFlow.KillSwitchSettings -> _navigation.value = Settings.KillSwitch
-            EnterFlow.DedicatedIp -> _navigation.value = DedicatedIp.Main
-            EnterFlow.Support -> _navigation.value = WebContent.Support
-            EnterFlow.Automation -> _navigation.value = Automation.Route
-            EnterFlow.ProtocolSettings -> _navigation.value = Settings.Protocols
-            EnterFlow.About -> _navigation.value = About.Main
-            EnterFlow.Customization -> _navigation.value = Customization.Route
-        }
-    }
-
-    private fun handleExitFlow(flow: ExitFlow) {
-        when (flow) {
-            ExitFlow.Login -> handleEnterFlow(EnterFlow.Permissions)
-            ExitFlow.Splash -> handleEnterFlow(EnterFlow.Subscribe)
-            ExitFlow.Connection -> exitApp()
-            ExitFlow.RegionSelection -> handleBack()
-            ExitFlow.Profile -> handleBack()
-            ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.Permissions)
-            ExitFlow.Settings -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.PerAppSettings -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.DedicatedIp -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.AutomationSettings -> handleFlow(EnterFlow.Settings)
-            ExitFlow.KillSwitchSettings -> handleFlow(EnterFlow.Settings)
-            ExitFlow.Permissions -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.Automation -> handleEnterFlow(EnterFlow.Settings)
-            ExitFlow.ProtocolSettings -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.About -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.Customization -> handleEnterFlow(EnterFlow.Connection)
-        }
-    }
-
-    private fun handleBack() {
-        _navigation.value = NavigateBack
-    }
-
-    private fun exitApp() {
-        _navigation.value = NavigateOut
-    }
+    fun getNavigation(): StateFlow<String>
 }

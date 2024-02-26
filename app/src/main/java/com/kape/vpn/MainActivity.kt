@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(key1 = Unit) {
                 repeatOnLifecycle(Lifecycle.State.CREATED) {
-                    router.navigation.collect {
+                    router.getNavigation().collect {
                         when (it) {
                             NavigateBack -> navController.navigateUp()
                             NavigateOut -> {

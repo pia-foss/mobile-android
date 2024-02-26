@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.kape.connection.ConnectionPrefs
@@ -16,6 +17,8 @@ import com.kape.notifications.data.NotificationChannelManager
 import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
 import com.kape.router.Router
+import com.kape.router.mobile.MobileRouter
+import com.kape.router.tv.TvRouter
 import com.kape.settings.SettingsPrefs
 import com.kape.utils.NetworkConnectionListener
 import com.kape.vpn.BuildConfig
@@ -82,7 +85,7 @@ val appModule = module {
     single(named("service-intent")) { provideWidgetServiceIntent(get()) }
     single { UsageProvider(get()) }
     single { provideVpnManagerApi(get(), get(), get()) }
-    single { Router() }
+    single { providerRouter(get()) }
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
     single { VpnLauncher(get(), get(), get(), get()) }
@@ -266,3 +269,14 @@ private const val USER_AGENT =
 private fun provideLicences(context: Context): List<String> =
     context.assets.open("acknowledgements.txt").bufferedReader().use(BufferedReader::readLines)
 
+private fun providerRouter(context: Context): Router {
+//    when {
+//        context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEVISION) ||
+//        context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK) ||
+//        context.packageManager.hasSystemFeature(PackageManager.FEATURE_LIVE_TV) ||
+//        context.packageManager.hasSystemFeature("amazon.hardware.fire_tv") -> {
+//            return TvRouter()
+//        }
+//    }
+    return MobileRouter()
+}
