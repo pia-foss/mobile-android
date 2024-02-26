@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.text.IPText
@@ -32,7 +33,7 @@ fun Traffic(
         TileTitleText(content = stringResource(id = R.string.traffic))
         Spacer(modifier = Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
-            Column(Modifier.weight(0.4f)) {
+            Column(Modifier.weight(0.4f).semantics(mergeDescendants = true) {}) {
                 TileTitleText(content = stringResource(id = com.kape.ui.R.string.download))
                 Spacer(modifier = Modifier.height(4.dp))
                 IPText(content = download)
@@ -47,7 +48,7 @@ fun Traffic(
                     .weight(0.2f),
             )
 
-            Column(Modifier.weight(0.4f)) {
+            Column(Modifier.weight(0.4f).semantics(mergeDescendants = true) {}) {
                 TileTitleText(content = stringResource(id = com.kape.ui.R.string.upload))
                 Spacer(modifier = Modifier.height(4.dp))
                 IPText(content = upload)

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.ui.R
@@ -31,7 +32,11 @@ fun IPTile(
     portForwardingStatus: String,
 ) {
     Row(modifier = modifier.padding(horizontal = 32.dp, vertical = 16.dp)) {
-        Column(Modifier.weight(0.4f)) {
+        Column(
+            Modifier
+                .weight(0.4f)
+                .semantics(mergeDescendants = true) {},
+        ) {
             TileTitleText(content = stringResource(id = R.string.public_ip).uppercase())
             Spacer(modifier = Modifier.height(4.dp))
             IPText(content = publicIp)
@@ -46,7 +51,11 @@ fun IPTile(
                 .weight(0.2f),
         )
 
-        Column(Modifier.weight(0.4f)) {
+        Column(
+            Modifier
+                .weight(0.4f)
+                .semantics(mergeDescendants = true) {},
+        ) {
             TileTitleText(content = stringResource(id = R.string.vpn_ip).uppercase())
             Spacer(modifier = Modifier.height(4.dp))
             IPText(content = vpnIp)
