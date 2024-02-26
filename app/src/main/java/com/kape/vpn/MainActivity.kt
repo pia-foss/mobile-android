@@ -1,5 +1,6 @@
 package com.kape.vpn
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,12 +21,12 @@ import com.kape.customization.CustomizationScreen
 import com.kape.dedicatedip.ui.DedicatedIpScreen
 import com.kape.inappbrowser.ui.InAppBrowser
 import com.kape.login.ui.loginNavigation
+import com.kape.login.utils.TokenAuthenticationUtil
 import com.kape.obfuscationregionselection.ui.ShadowsocksRegionSelectionScreen
 import com.kape.payments.ui.PaymentProvider
 import com.kape.permissions.utils.PermissionsFlow
 import com.kape.profile.ui.ProfileScreen
 import com.kape.router.About
-import com.kape.vpnregionselection.ui.VpnRegionSelectionScreen
 import com.kape.router.Automation
 import com.kape.router.Connection
 import com.kape.router.Customization
@@ -36,12 +37,12 @@ import com.kape.router.NavigateOut
 import com.kape.router.PerAppSettings
 import com.kape.router.Permissions
 import com.kape.router.Profile
-import com.kape.router.VpnRegionSelection
 import com.kape.router.Router
 import com.kape.router.Settings
 import com.kape.router.ShadowsocksRegionSelection
 import com.kape.router.Splash
 import com.kape.router.Subscribe
+import com.kape.router.VpnRegionSelection
 import com.kape.router.WebContent
 import com.kape.settings.ui.screens.AutomationSettingsScreen
 import com.kape.settings.ui.screens.KillSwitchSettingScreen
@@ -52,11 +53,13 @@ import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
+import com.kape.vpnregionselection.ui.VpnRegionSelectionScreen
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
 
     private val router: Router by inject()
+    private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
 
     private val paymentProvider: PaymentProvider by inject()
     private var currentDestination: String = ""
@@ -70,7 +73,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         paymentProvider.register(this)
 
         intent.action?.let {
@@ -174,6 +176,17 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         if (currentDestination == Subscribe.Main) {
             paymentProvider.getPurchaseUpdates()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        intent?.data?.let {
+            setIntent(null)
+            if (it.toString().contains("login")) {
+                tokenAuthenticationUtil.authenticate(it)
+            }
         }
     }
 }

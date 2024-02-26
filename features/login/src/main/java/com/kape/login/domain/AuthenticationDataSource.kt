@@ -18,4 +18,6 @@ interface AuthenticationDataSource {
         productId: String,
         packageName: String,
     ): Flow<ApiResult>
+
+    fun migrateToken(apiToken: String): Flow<ApiResult>
 }
