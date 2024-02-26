@@ -24,6 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
@@ -96,12 +99,17 @@ fun ConnectionScreen() = Screen {
                 onRightIconClick = { viewModel.navigateToCustomization() },
             )
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                val connection = stringResource(id = com.kape.ui.R.string.connection)
                 Spacer(modifier = Modifier.height(16.dp))
                 ConnectButton(
                     if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
                     Modifier
                         .align(CenterHorizontally)
-                        .testTag(":ConnectionScreen:connection_button"),
+                        .testTag(":ConnectionScreen:connection_button")
+                        .semantics(mergeDescendants = true) {
+                            role = Role.Button
+                            contentDescription = connection
+                        },
                 ) {
                     viewModel.onConnectionButtonClicked()
                 }
