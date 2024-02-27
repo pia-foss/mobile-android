@@ -50,7 +50,7 @@ fun VpnRegionSelectionScreen() = Screen {
     val viewModel: VpnRegionSelectionViewModel =
         koinViewModel<VpnRegionSelectionViewModel>().apply {
             autoRegionIso = stringResource(id = R.string.automatic_iso)
-            autoRegionName = stringResource(id = com.kape.ui.R.string.automatic)
+            autoRegionName = stringResource(id = R.string.automatic)
             LaunchedEffect(Unit) {
                 locale?.let {
                     loadVpnRegions(it, isLoading, false)
@@ -58,7 +58,7 @@ fun VpnRegionSelectionScreen() = Screen {
             }
         }
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = com.kape.ui.R.string.location_selection_title))
+        appBarText(stringResource(id = R.string.location_selection_title))
     }
     val showSortingOptions = remember { mutableStateOf(false) }
     val isSearchEnabled = remember { mutableStateOf(false) }
@@ -75,7 +75,7 @@ fun VpnRegionSelectionScreen() = Screen {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                hint = stringResource(id = com.kape.ui.R.string.search),
+                hint = stringResource(id = R.string.search),
             ) {
                 viewModel.filterByName(it, isSearchEnabled)
             }
@@ -110,7 +110,7 @@ fun VpnRegionSelectionScreen() = Screen {
 
                             ItemType.HeadingAll -> {
                                 MenuText(
-                                    content = stringResource(id = com.kape.ui.R.string.all_locations),
+                                    content = stringResource(id = R.string.all_locations),
                                     modifier = Modifier.padding(16.dp),
                                 )
                             }
