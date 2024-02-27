@@ -58,6 +58,7 @@ class VpnRegionSelectionViewModel(
             vpnRegionPrefs.addToFavorites(serverName)
         }
         arrangeVpnServers()
+        updateVpnServers()
     }
 
     fun filterByName(value: String, isSearchEnabled: MutableState<Boolean>) =
@@ -177,6 +178,15 @@ class VpnRegionSelectionViewModel(
         )
         list.addAll(all)
         servers.value = list
+    }
+
+    private fun updateVpnServers() {
+        val updatedList = mutableListOf<ServerItem>()
+        for (item in sorted.value) {
+            val current = item.type as ItemType.Content
+            updatedList.add(servers.value.first { it.type is ItemType.Content && it.type.server.name == current.server.name })
+        }
+        sorted.value = updatedList
     }
 
     private fun getAutoRegion(name: String, iso: String): ServerItem {
