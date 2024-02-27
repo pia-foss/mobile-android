@@ -1,6 +1,9 @@
 package com.kape.vpn
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,8 +12,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -54,6 +60,7 @@ import com.kape.splash.ui.SplashScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
 import com.kape.vpnregionselection.ui.VpnRegionSelectionScreen
+import com.kape.vpn.utils.PlatformUtils
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
@@ -74,6 +81,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         paymentProvider.register(this)
+        defineScreenOrientation()
 
         intent.action?.let {
             when (it) {
@@ -117,54 +125,7 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.background,
                     ) {
                         NavHost(navController = navController, startDestination = Splash.Main) {
-                            loginNavigation(navController)
-                            composable(Settings.Route) { SettingsFlow() }
-                            composable(Permissions.Route) { PermissionsFlow() }
-                            composable(Automation.Route) { AutomationFlow() }
-                            composable(Splash.Main) { SplashScreen() }
-                            composable(Connection.Main) { ConnectionScreen() }
-                            composable(Profile.Main) { ProfileScreen() }
-                            composable(Subscribe.Main) { SignupScreensFlow() }
-                            composable(VpnRegionSelection.Main) { VpnRegionSelectionScreen() }
-                            composable(ShadowsocksRegionSelection.Main) {
-                                ShadowsocksRegionSelectionScreen()
-                            }
-                            composable(WebContent.Terms) {
-                                InAppBrowser(
-                                    url = getString(com.kape.ui.R.string.url_terms_of_service),
-                                )
-                            }
-                            composable(WebContent.Privacy) {
-                                InAppBrowser(
-                                    url = getString(com.kape.ui.R.string.url_privacy_policy),
-                                )
-                            }
-                            composable(WebContent.Support) {
-                                InAppBrowser(
-                                    url = getString(com.kape.ui.R.string.url_support),
-                                )
-                            }
-                            composable(PerAppSettings.Main) {
-                                PerAppSettingsScreen()
-                            }
-                            composable(DedicatedIp.Main) {
-                                DedicatedIpScreen()
-                            }
-                            composable(Settings.Automation) {
-                                AutomationSettingsScreen()
-                            }
-                            composable(Settings.KillSwitch) {
-                                KillSwitchSettingScreen()
-                            }
-                            composable(Settings.Protocols) {
-                                ProtocolSettingsScreen()
-                            }
-                            composable(About.Main) {
-                                AboutScreen()
-                            }
-                            composable(Customization.Route) {
-                                CustomizationScreen()
-                            }
+                            defineNavigationGraph(navController = navController)
                         }
                     }
                 }
@@ -189,4 +150,69 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    // region private
+    private fun defineScreenOrientation() {
+        if (PlatformUtils.isTv(context = this)) {
+            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
+    private fun NavGraphBuilder.defineNavigationGraph(navController: NavController) {
+        if (PlatformUtils.isTv(context = this@MainActivity)) {
+            composable(Splash.Main) { SplashScreen() }
+        } else {
+            loginNavigation(navController)
+            composable(Settings.Route) { SettingsFlow() }
+            composable(Permissions.Route) { PermissionsFlow() }
+            composable(Automation.Route) { AutomationFlow() }
+            composable(Splash.Main) { SplashScreen() }
+            composable(Connection.Main) { ConnectionScreen() }
+            composable(Profile.Main) { ProfileScreen() }
+            composable(Subscribe.Main) { SignupScreensFlow() }
+            composable(VpnRegionSelection.Main) { VpnRegionSelectionScreen() }
+            composable(ShadowsocksRegionSelection.Main) {
+                ShadowsocksRegionSelectionScreen()
+            }
+            composable(WebContent.Terms) {
+                InAppBrowser(
+                    url = getString(com.kape.ui.R.string.url_terms_of_service),
+                )
+            }
+            composable(WebContent.Privacy) {
+                InAppBrowser(
+                    url = getString(com.kape.ui.R.string.url_privacy_policy),
+                )
+            }
+            composable(WebContent.Support) {
+                InAppBrowser(
+                    url = getString(com.kape.ui.R.string.url_support),
+                )
+            }
+            composable(PerAppSettings.Main) {
+                PerAppSettingsScreen()
+            }
+            composable(DedicatedIp.Main) {
+                DedicatedIpScreen()
+            }
+            composable(Settings.Automation) {
+                AutomationSettingsScreen()
+            }
+            composable(Settings.KillSwitch) {
+                KillSwitchSettingScreen()
+            }
+            composable(Settings.Protocols) {
+                ProtocolSettingsScreen()
+            }
+            composable(About.Main) {
+                AboutScreen()
+            }
+            composable(Customization.Route) {
+                CustomizationScreen()
+            }
+        }
+    }
+    // endregion
 }

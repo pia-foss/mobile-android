@@ -28,9 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class MobileRouter : Router {
 
-    private val _navigation = MutableStateFlow(Splash.Main)
-    private val navigation: StateFlow<String> = _navigation
-
+    private val navigation = MutableStateFlow(Splash.Main)
     override fun handleFlow(flow: AppFlow) {
         when (flow) {
             is EnterFlow -> handleEnterFlow(flow)
@@ -41,7 +39,7 @@ class MobileRouter : Router {
     }
 
     override fun resetNavigation() {
-        _navigation.value = Splash.Main
+        navigation.value = Splash.Main
     }
 
     override fun getNavigation(): StateFlow<String> =
@@ -49,28 +47,28 @@ class MobileRouter : Router {
 
     private fun handleEnterFlow(flow: EnterFlow) {
         when (flow) {
-            EnterFlow.Login -> _navigation.value = Login.Route
-            EnterFlow.Permissions -> _navigation.value = Permissions.Route
-            EnterFlow.Splash -> _navigation.value = Splash.Main
-            EnterFlow.Connection -> _navigation.value = Connection.Main
-            EnterFlow.VpnRegionSelection -> _navigation.value = VpnRegionSelection.Main
+            EnterFlow.Login -> navigation.value = Login.Route
+            EnterFlow.Permissions -> navigation.value = Permissions.Route
+            EnterFlow.Splash -> navigation.value = Splash.Main
+            EnterFlow.Connection -> navigation.value = Connection.Main
+            EnterFlow.VpnRegionSelection -> navigation.value = VpnRegionSelection.Main
             EnterFlow.ShadowsocksRegionSelection ->
-                _navigation.value =
+                navigation.value =
                     ShadowsocksRegionSelection.Main
-            EnterFlow.Profile -> _navigation.value = Profile.Main
-            EnterFlow.Subscribe -> _navigation.value = Subscribe.Main
-            EnterFlow.PrivacyPolicy -> _navigation.value = WebContent.Privacy
-            EnterFlow.TermsOfService -> _navigation.value = WebContent.Terms
-            EnterFlow.Settings -> _navigation.value = Settings.Route
-            EnterFlow.AutomationSettings -> _navigation.value = Settings.Automation
-            EnterFlow.PerAppSettings -> _navigation.value = PerAppSettings.Main
-            EnterFlow.KillSwitchSettings -> _navigation.value = Settings.KillSwitch
-            EnterFlow.DedicatedIp -> _navigation.value = DedicatedIp.Main
-            EnterFlow.Support -> _navigation.value = WebContent.Support
-            EnterFlow.Automation -> _navigation.value = Automation.Route
-            EnterFlow.ProtocolSettings -> _navigation.value = Settings.Protocols
-            EnterFlow.About -> _navigation.value = About.Main
-            EnterFlow.Customization -> _navigation.value = Customization.Route
+            EnterFlow.Profile -> navigation.value = Profile.Main
+            EnterFlow.Subscribe -> navigation.value = Subscribe.Main
+            EnterFlow.PrivacyPolicy -> navigation.value = WebContent.Privacy
+            EnterFlow.TermsOfService -> navigation.value = WebContent.Terms
+            EnterFlow.Settings -> navigation.value = Settings.Route
+            EnterFlow.AutomationSettings -> navigation.value = Settings.Automation
+            EnterFlow.PerAppSettings -> navigation.value = PerAppSettings.Main
+            EnterFlow.KillSwitchSettings -> navigation.value = Settings.KillSwitch
+            EnterFlow.DedicatedIp -> navigation.value = DedicatedIp.Main
+            EnterFlow.Support -> navigation.value = WebContent.Support
+            EnterFlow.Automation -> navigation.value = Automation.Route
+            EnterFlow.ProtocolSettings -> navigation.value = Settings.Protocols
+            EnterFlow.About -> navigation.value = About.Main
+            EnterFlow.Customization -> navigation.value = Customization.Route
         }
     }
 
@@ -96,10 +94,10 @@ class MobileRouter : Router {
     }
 
     private fun handleBack() {
-        _navigation.value = NavigateBack
+        navigation.value = NavigateBack
     }
 
     private fun exitApp() {
-        _navigation.value = NavigateOut
+        navigation.value = NavigateOut
     }
 }

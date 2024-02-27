@@ -7,7 +7,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.kape.connection.ConnectionPrefs
@@ -37,6 +36,7 @@ import com.kape.vpn.receiver.OnRulesChangedReceiver
 import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.NetworkManager
+import com.kape.vpn.utils.PlatformUtils
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -269,14 +269,9 @@ private const val USER_AGENT =
 private fun provideLicences(context: Context): List<String> =
     context.assets.open("acknowledgements.txt").bufferedReader().use(BufferedReader::readLines)
 
-private fun providerRouter(context: Context): Router {
-//    when {
-//        context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEVISION) ||
-//        context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK) ||
-//        context.packageManager.hasSystemFeature(PackageManager.FEATURE_LIVE_TV) ||
-//        context.packageManager.hasSystemFeature("amazon.hardware.fire_tv") -> {
-//            return TvRouter()
-//        }
+private fun providerRouter(context: Context): Router =
+    MobileRouter()
+//    when (PlatformUtils.isTv(context = context)) {
+//        true -> TvRouter()
+//        false -> MobileRouter()
 //    }
-    return MobileRouter()
-}
