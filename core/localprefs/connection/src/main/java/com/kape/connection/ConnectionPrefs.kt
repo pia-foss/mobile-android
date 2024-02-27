@@ -23,6 +23,9 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
     fun addToQuickConnect(serverKey: String) {
         val quickConnectList = getQuickConnectServers().toMutableList()
+        if (quickConnectList.contains(serverKey)) {
+            quickConnectList.remove(serverKey)
+        }
         quickConnectList.add(serverKey)
         prefs.edit().putString(QUICK_CONNECT, Json.encodeToString(quickConnectList)).apply()
     }
