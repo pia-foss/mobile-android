@@ -19,14 +19,12 @@ import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
-import com.kape.shadowsocksregions.domain.ReadShadowsocksRegionsDetailsUseCase
 import com.kape.shadowsocksregions.domain.SetShadowsocksRegionsUseCase
 import com.kape.snooze.SnoozeHandler
 import com.kape.ui.tiles.MAX_SERVERS
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnregions.VpnRegionPrefs
@@ -41,9 +39,7 @@ class ConnectionViewModel(
     private val setVpnRegionsUseCase: SetVpnRegionsUseCase,
     private val setShadowsocksRegionsUseCase: SetShadowsocksRegionsUseCase,
     private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
-    private val readShadowsocksRegionsDetailsUseCase: ReadShadowsocksRegionsDetailsUseCase,
     private val connectionUseCase: ConnectionUseCase,
-    private val clientStateDataSource: ClientStateDataSource,
     private val router: Router,
     private val prefs: ConnectionPrefs,
     private val settingsPrefs: SettingsPrefs,
@@ -274,6 +270,8 @@ class ConnectionViewModel(
         viewModelScope.launch {
             selectedVpnServer.value?.let {
                 vpnRegionPrefs.selectVpnServer(key)
+                prefs.addToQuickConnect(key)
+                getQuickConnectVpnServers()
                 connectionUseCase.reconnect(it).collect()
             }
         }
