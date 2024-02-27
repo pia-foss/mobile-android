@@ -154,7 +154,6 @@ class SignupViewModel(
     }
 
     fun purchase(id: String) = viewModelScope.launch {
-        _state.emit(LOADING)
         paymentProvider.purchaseSelectedProduct(id)
     }
 
