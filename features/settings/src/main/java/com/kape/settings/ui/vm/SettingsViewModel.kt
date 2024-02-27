@@ -370,7 +370,7 @@ class SettingsViewModel(
 
     fun filterAppsByName(value: String, packageManager: PackageManager) {
         if (value.isEmpty()) {
-            appList.value = installedApps
+            appList.value = installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
         } else {
             appList.value = installedApps.filter {
                 packageManager.getApplicationLabel(it).toString().lowercase()
