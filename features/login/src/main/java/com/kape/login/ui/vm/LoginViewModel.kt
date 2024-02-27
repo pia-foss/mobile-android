@@ -35,33 +35,6 @@ class LoginViewModel(
 
     private lateinit var packageName: String
 
-    init {
-        viewModelScope.launch {
-            paymentProvider.purchaseHistoryState.collect {
-                _state.emit(LOADING)
-                when (it) {
-                    is PurchaseHistoryState.PurchaseHistorySuccess -> loginUseCase.loginWithReceipt(
-                        it.purchaseToken,
-                        it.productId,
-                        packageName,
-                    ).collect { state ->
-                        if (state == LoginState.Successful) {
-                            router.handleFlow(ExitFlow.Login)
-                            return@collect
-                        }
-                        _state.emit(getScreenState(state))
-                    }
-
-                    PurchaseHistoryState.Default -> {
-                        _state.emit(IDLE)
-                    }
-
-                    PurchaseHistoryState.PurchaseHistoryFailed -> _state.emit(FAILED)
-                }
-            }
-        }
-    }
-
     fun checkUserLoggedIn() {
         if (userLoggedInUseCase.isUserLoggedIn()) {
             router.handleFlow(ExitFlow.Login)
@@ -86,7 +59,35 @@ class LoginViewModel(
     fun loginWithReceipt(packageName: String) {
         this.packageName = packageName
         viewModelScope.launch {
+            collectPurchaseHistory()
             paymentProvider.getPurchaseHistory()
+        }
+    }
+
+    private fun collectPurchaseHistory() {
+        viewModelScope.launch {
+            paymentProvider.purchaseHistoryState.collect {
+                _state.emit(LOADING)
+                when (it) {
+                    is PurchaseHistoryState.PurchaseHistorySuccess -> loginUseCase.loginWithReceipt(
+                        it.purchaseToken,
+                        it.productId,
+                        packageName,
+                    ).collect { state ->
+                        if (state == LoginState.Successful) {
+                            router.handleFlow(ExitFlow.Login)
+                            return@collect
+                        }
+                        _state.emit(getScreenState(state))
+                    }
+
+                    PurchaseHistoryState.Default -> {
+                        _state.emit(IDLE)
+                    }
+
+                    PurchaseHistoryState.PurchaseHistoryFailed -> _state.emit(FAILED)
+                }
+            }
         }
     }
 }
