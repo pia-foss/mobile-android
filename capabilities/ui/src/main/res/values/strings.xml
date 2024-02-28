@@ -41,7 +41,7 @@
 
     <string name="selected_vpn_region">SELECTED VPN LOCATION</string>
     <string name="current_vpn_region">CURRENT VPN LOCATION</string>
-    <string name="optimal_vpn_region">OPTIMAL LOCATION</string>
+    <string name="optimal_vpn_region">Optimal Location</string>
 
     <string name="automatic">Automatic</string>
 
