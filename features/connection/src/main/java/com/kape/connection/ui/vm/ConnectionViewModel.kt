@@ -55,7 +55,6 @@ class ConnectionViewModel(
 
     private var availableVpnServers = mutableListOf<VpnServer>()
     var selectedVpnServer = mutableStateOf(prefs.getSelectedVpnServer())
-    private var lastSelectedVpnServerKey: String? = vpnRegionPrefs.getSelectedVpnServerKey()
     val quickConnectVpnServers = mutableStateOf(emptyList<VpnServer>())
     private val favoriteVpnServers = mutableStateOf(emptyList<VpnServer>())
     val isConnected = networkConnectionListener.isConnected
@@ -188,17 +187,15 @@ class ConnectionViewModel(
             }
         }
 
-        if (vpnRegionPrefs.getSelectedVpnServerKey() != "") {
-            if (lastSelectedVpnServerKey != selectedVpnServer.value?.key) {
-                selectedVpnServer.value?.let {
-                    lastSelectedVpnServerKey = selectedVpnServer.value?.key.toString()
-                    connectionUseCase.reconnect(it).collect {
-                        if (it) {
-                            lastSelectedVpnServerKey?.let {
-                                prefs.addToQuickConnect(it)
-                            }
-                            getQuickConnectVpnServers()
+        if (vpnRegionPrefs.needsVpnReconnect()) {
+            selectedVpnServer.value?.let {
+                connectionUseCase.reconnect(it).collect {
+                    if (it) {
+                        selectedVpnServer.value?.let {
+                            prefs.addToQuickConnect(it.key)
+                            vpnRegionPrefs.setVpnReconnect(false)
                         }
+                        getQuickConnectVpnServers()
                     }
                 }
             }
@@ -281,7 +278,6 @@ class ConnectionViewModel(
 
     private fun connect() = viewModelScope.launch {
         selectedVpnServer.value?.let {
-            lastSelectedVpnServerKey = it.key
             prefs.setSelectedVpnServer(it)
             prefs.addToQuickConnect(it.key)
             snoozeHandler.cancelSnooze()

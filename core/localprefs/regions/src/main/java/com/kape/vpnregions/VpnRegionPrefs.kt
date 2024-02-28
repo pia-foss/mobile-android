@@ -9,6 +9,7 @@ import kotlinx.serialization.json.Json
 private const val VPN_FAVORITES = "favorites"
 private const val VPN_SELECTED_SERVER = "selected-server"
 private const val VPN_SERVERS = "servers"
+private const val VPN_RECONNECT = "reconnect"
 
 class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
 
@@ -38,6 +39,13 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
 
     fun selectVpnServer(vpnServerKey: String) {
         prefs.edit().putString(VPN_SELECTED_SERVER, vpnServerKey).apply()
+        setVpnReconnect(true)
+    }
+
+    fun needsVpnReconnect() = prefs.getBoolean(VPN_RECONNECT, false)
+
+    fun setVpnReconnect(needsReconnect: Boolean) {
+        prefs.edit().putBoolean(VPN_RECONNECT, needsReconnect).apply()
     }
 
     fun getSelectedVpnServerKey() = prefs.getString(VPN_SELECTED_SERVER, "")
