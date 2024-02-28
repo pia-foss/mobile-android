@@ -30,7 +30,6 @@ import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.TransportProtocol
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -115,7 +114,6 @@ class ConnectionUseCase(
             connectionManager,
         ).collect { connected ->
             emit(connected)
-            delay(3000)
             clientStateDataSource.getClientStatus().collect {
                 if (!connected) {
                     clientIp.value = connectionPrefs.getClientIp()
