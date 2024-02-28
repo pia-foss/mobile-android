@@ -79,7 +79,7 @@ fun VpnLocationPicker(
             } else {
                 if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region
             }
-            SelectedRegionTitleText(content = stringResource(id = heading))
+            SelectedRegionTitleText(content = stringResource(id = heading).uppercase())
 
             Spacer(modifier = Modifier.height(4.dp))
             val name = if (isOptimal && !isConnected) {
