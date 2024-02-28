@@ -2,6 +2,7 @@ package com.kape.ui.elements
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,7 +30,7 @@ fun PrimaryButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.height(48.dp),
+        modifier = modifier.heightIn(min = 48.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.textButtonColors(
             containerColor = LocalColors.current.primary,
