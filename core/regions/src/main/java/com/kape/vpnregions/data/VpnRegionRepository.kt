@@ -48,7 +48,7 @@ class VpnRegionRepository(
     fun fetchLatencies(useCachedLatencies: Boolean): Flow<List<VpnServer>> = flow {
         if (useCachedLatencies) {
             populateLatencies()
-            emit(serverMap.values.toList())
+            emit(addDipToServerList(serverMap.values.toList()))
         } else {
             source.pingRequests().collect {
                 if (it == null) {
