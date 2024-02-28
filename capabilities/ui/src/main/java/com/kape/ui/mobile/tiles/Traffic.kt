@@ -1,4 +1,4 @@
-package com.kape.ui.tiles
+package com.kape.ui.mobile.tiles
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,8 +15,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
-import com.kape.ui.text.IPText
-import com.kape.ui.text.TileTitleText
+import com.kape.ui.mobile.text.IPText
+import com.kape.ui.mobile.text.TileTitleText
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -34,7 +34,7 @@ fun Traffic(
         Spacer(modifier = Modifier.height(8.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.weight(0.4f).semantics(mergeDescendants = true) {}) {
-                TileTitleText(content = stringResource(id = com.kape.ui.R.string.download))
+                TileTitleText(content = stringResource(id = R.string.download))
                 Spacer(modifier = Modifier.height(4.dp))
                 IPText(content = download)
             }
@@ -49,7 +49,7 @@ fun Traffic(
             )
 
             Column(Modifier.weight(0.4f).semantics(mergeDescendants = true) {}) {
-                TileTitleText(content = stringResource(id = com.kape.ui.R.string.upload))
+                TileTitleText(content = stringResource(id = R.string.upload))
                 Spacer(modifier = Modifier.height(4.dp))
                 IPText(content = upload)
             }

@@ -1,4 +1,4 @@
-package com.kape.ui.elements
+package com.kape.ui.mobile.elements
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

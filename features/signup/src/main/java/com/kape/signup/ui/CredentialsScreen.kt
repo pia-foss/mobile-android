@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 import com.kape.signup.data.models.Credentials
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
-import com.kape.ui.elements.PrimaryButton
-import com.kape.ui.elements.Screen
+import com.kape.ui.mobile.elements.PrimaryButton
+import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.theme.OutlineBackground
 import com.kape.ui.utils.LocalColors
 
@@ -32,7 +32,7 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Sc
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Image(
-                painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
+                painter = painterResource(id = R.drawable.ic_logo_large),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(16.dp)

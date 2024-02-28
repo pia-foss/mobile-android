@@ -18,9 +18,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.kape.ui.elements.FavoriteIcon
-import com.kape.ui.elements.Separator
-import com.kape.ui.text.RegionSelectionText
+import com.kape.ui.mobile.elements.FavoriteIcon
+import com.kape.ui.mobile.elements.Separator
+import com.kape.ui.mobile.text.RegionSelectionText
 import com.kape.ui.utils.getFlagResource
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 

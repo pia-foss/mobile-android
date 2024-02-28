@@ -36,9 +36,10 @@ import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
 import com.kape.obfuscationregionselection.util.ItemType
-import com.kape.ui.elements.Screen
-import com.kape.ui.elements.Search
-import com.kape.ui.text.MenuText
+import com.kape.ui.R
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.Search
+import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -55,7 +56,7 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
             }
         }
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = com.kape.ui.R.string.location_selection_title))
+        appBarText(stringResource(id = R.string.location_selection_title))
     }
     val showSortingOptions = remember { mutableStateOf(false) }
     val isSearchEnabled = remember { mutableStateOf(false) }
@@ -73,7 +74,7 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                hint = stringResource(id = com.kape.ui.R.string.search),
+                hint = stringResource(id = R.string.search),
             ) {
                 viewModel.filterByName(it, isSearchEnabled)
             }
@@ -111,14 +112,14 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
 
                             ItemType.HeadingAll -> {
                                 MenuText(
-                                    content = stringResource(id = com.kape.ui.R.string.all_locations),
+                                    content = stringResource(id = R.string.all_locations),
                                     modifier = Modifier.padding(16.dp),
                                 )
                             }
 
                             ItemType.HeadingFavorites -> {
                                 MenuText(
-                                    content = stringResource(id = com.kape.ui.R.string.favorites),
+                                    content = stringResource(id = R.string.favorites),
                                     modifier = Modifier.padding(16.dp),
                                 )
                             }

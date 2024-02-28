@@ -38,16 +38,17 @@ import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.sidemenu.ui.SideMenu
-import com.kape.ui.elements.Screen
-import com.kape.ui.elements.Separator
-import com.kape.ui.tiles.ConnectionInfo
-import com.kape.ui.tiles.IPTile
-import com.kape.ui.tiles.QuickConnect
-import com.kape.ui.tiles.QuickSettings
-import com.kape.ui.tiles.ShadowsocksLocationPicker
-import com.kape.ui.tiles.Snooze
-import com.kape.ui.tiles.Traffic
-import com.kape.ui.tiles.VpnLocationPicker
+import com.kape.ui.R
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.Separator
+import com.kape.ui.mobile.tiles.ConnectionInfo
+import com.kape.ui.mobile.tiles.IPTile
+import com.kape.ui.mobile.tiles.QuickConnect
+import com.kape.ui.mobile.tiles.QuickSettings
+import com.kape.ui.mobile.tiles.ShadowsocksLocationPicker
+import com.kape.ui.mobile.tiles.Snooze
+import com.kape.ui.mobile.tiles.Traffic
+import com.kape.ui.mobile.tiles.VpnLocationPicker
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import kotlinx.coroutines.CoroutineScope
@@ -99,7 +100,7 @@ fun ConnectionScreen() = Screen {
                 onRightIconClick = { viewModel.navigateToCustomization() },
             )
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                val connection = stringResource(id = com.kape.ui.R.string.connection)
+                val connection = stringResource(id = R.string.connection)
                 Spacer(modifier = Modifier.height(16.dp))
                 ConnectButton(
                     if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
@@ -154,9 +155,9 @@ private fun DisplayComponent(
                     publicIp = viewModel.clientIp.value,
                     vpnIp = viewModel.vpnIp.value,
                     portForwardingStatus = when (state.value) {
-                        PortForwardingStatus.Error -> stringResource(id = com.kape.ui.R.string.pfwd_error)
-                        PortForwardingStatus.NoPortForwarding -> stringResource(id = com.kape.ui.R.string.pfwd_disabled)
-                        PortForwardingStatus.Requesting -> stringResource(id = com.kape.ui.R.string.pfwd_requesting)
+                        PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
+                        PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
+                        PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
                         PortForwardingStatus.Success -> viewModel.port.value.toString()
                         else -> ""
                     },
@@ -215,12 +216,12 @@ private fun DisplayComponent(
                     active = viewModel.isSnoozeActive,
                     timeUntilResume = when (viewModel.timeUntilResume.intValue) {
                         1 -> String.format(
-                            stringResource(id = com.kape.ui.R.string.minute_to_format),
+                            stringResource(id = R.string.minute_to_format),
                             viewModel.timeUntilResume.intValue,
                         )
 
                         else -> String.format(
-                            stringResource(id = com.kape.ui.R.string.minutes_to_format),
+                            stringResource(id = R.string.minutes_to_format),
                             viewModel.timeUntilResume.intValue,
                         )
                     },

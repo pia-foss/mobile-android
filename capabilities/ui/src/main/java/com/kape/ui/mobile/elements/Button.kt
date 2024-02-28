@@ -1,4 +1,4 @@
-package com.kape.ui.elements
+package com.kape.ui.mobile.elements
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height
@@ -17,8 +17,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
-import com.kape.ui.text.PrimaryButtonText
-import com.kape.ui.text.SecondaryButtonText
+import com.kape.ui.mobile.text.PrimaryButtonText
+import com.kape.ui.mobile.text.SecondaryButtonText
 import com.kape.ui.utils.LocalColors
 
 @Composable

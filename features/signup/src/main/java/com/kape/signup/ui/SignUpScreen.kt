@@ -30,14 +30,14 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
-import com.kape.ui.elements.HtmlText
-import com.kape.ui.elements.MonthlySubscriptionCard
-import com.kape.ui.elements.PrimaryButton
-import com.kape.ui.elements.Screen
-import com.kape.ui.elements.SecondaryButton
-import com.kape.ui.elements.YearlySubscriptionCard
-import com.kape.ui.text.OnboardingDescriptionText
-import com.kape.ui.text.OnboardingTitleText
+import com.kape.ui.mobile.elements.HtmlText
+import com.kape.ui.mobile.elements.MonthlySubscriptionCard
+import com.kape.ui.mobile.elements.PrimaryButton
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.SecondaryButton
+import com.kape.ui.mobile.elements.YearlySubscriptionCard
+import com.kape.ui.mobile.text.OnboardingDescriptionText
+import com.kape.ui.mobile.text.OnboardingTitleText
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
 

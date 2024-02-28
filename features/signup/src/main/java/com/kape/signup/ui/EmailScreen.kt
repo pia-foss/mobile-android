@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
-import com.kape.ui.elements.PrimaryButton
-import com.kape.ui.elements.Screen
-import com.kape.ui.text.Input
+import com.kape.ui.mobile.elements.PrimaryButton
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.text.Input
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -36,7 +36,7 @@ fun EmailScreen(viewModel: SignupViewModel) = Screen {
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Spacer(modifier = Modifier.height(48.dp))
             Image(
-                painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
+                painter = painterResource(id = R.drawable.ic_logo_large),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(48.dp)

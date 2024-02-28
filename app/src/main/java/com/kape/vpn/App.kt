@@ -29,6 +29,7 @@ import com.kape.sidemenu.di.sideMenuModule
 import com.kape.signup.di.signupModule
 import com.kape.snooze.di.snoozeModule
 import com.kape.splash.di.splashModule
+import com.kape.tvwelcome.di.tvWelcomeModule
 import com.kape.vpn.di.appModule
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnregions.di.vpnRegionsModule
@@ -75,6 +76,7 @@ class App : Application() {
                 add(regionSelectionModule(appModule))
                 add(shadowsocksSelectionModule(appModule))
                 add(splashModule)
+                add(tvWelcomeModule)
                 add(signupModule(appModule))
                 add(kpiModule(appModule))
                 add(connectionModule(appModule))

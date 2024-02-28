@@ -32,8 +32,8 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.ui.text.AppBarConnectionTextDefault
-import com.kape.ui.text.AppBarTitleText
+import com.kape.ui.mobile.text.AppBarConnectionTextDefault
+import com.kape.ui.mobile.text.AppBarTitleText
 import com.kape.ui.theme.connectedGradient
 import com.kape.ui.theme.connectingGradient
 import com.kape.ui.theme.defaultGradient

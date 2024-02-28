@@ -48,6 +48,7 @@ import com.kape.router.Settings
 import com.kape.router.ShadowsocksRegionSelection
 import com.kape.router.Splash
 import com.kape.router.Subscribe
+import com.kape.router.TvWelcome
 import com.kape.router.VpnRegionSelection
 import com.kape.router.WebContent
 import com.kape.settings.ui.screens.AutomationSettingsScreen
@@ -57,6 +58,7 @@ import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.utils.SettingsFlow
 import com.kape.signup.ui.SignupScreensFlow
 import com.kape.splash.ui.SplashScreen
+import com.kape.tvwelcome.ui.TvWelcomeScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
 import com.kape.vpnregionselection.ui.VpnRegionSelectionScreen
@@ -163,6 +165,7 @@ class MainActivity : ComponentActivity() {
     private fun NavGraphBuilder.defineNavigationGraph(navController: NavController) {
         if (PlatformUtils.isTv(context = this@MainActivity)) {
             composable(Splash.Main) { SplashScreen() }
+            composable(TvWelcome.Main) { TvWelcomeScreen() }
         } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }

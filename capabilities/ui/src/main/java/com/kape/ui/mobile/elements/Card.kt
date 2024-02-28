@@ -1,4 +1,4 @@
-package com.kape.ui.elements
+package com.kape.ui.mobile.elements
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
@@ -28,13 +28,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
-import com.kape.ui.text.BestValueBannerText
-import com.kape.ui.text.ErrorText
-import com.kape.ui.text.SettingsL1Text
-import com.kape.ui.text.SettingsL2TextDescription
-import com.kape.ui.text.SignUpDurationText
-import com.kape.ui.text.SignUpPricePerMonthText
-import com.kape.ui.text.SignUpPriceText
+import com.kape.ui.mobile.text.BestValueBannerText
+import com.kape.ui.mobile.text.ErrorText
+import com.kape.ui.mobile.text.SettingsL1Text
+import com.kape.ui.mobile.text.SettingsL2TextDescription
+import com.kape.ui.mobile.text.SignUpDurationText
+import com.kape.ui.mobile.text.SignUpPricePerMonthText
+import com.kape.ui.mobile.text.SignUpPriceText
 import com.kape.ui.theme.errorBackground
 import com.kape.ui.theme.errorOutline
 import com.kape.ui.theme.infoBackground

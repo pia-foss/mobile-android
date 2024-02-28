@@ -15,14 +15,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.ui.elements.Screen
+import com.kape.ui.R
+import com.kape.ui.mobile.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AboutScreen() = Screen {
     val viewModel: AboutViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = com.kape.ui.R.string.about))
+        appBarText(stringResource(id = R.string.about))
     }
 
     Scaffold(

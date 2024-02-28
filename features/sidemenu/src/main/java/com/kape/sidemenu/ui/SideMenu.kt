@@ -34,10 +34,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kape.sidemenu.R
 import com.kape.sidemenu.ui.vm.SideMenuViewModel
-import com.kape.ui.elements.Separator
-import com.kape.ui.text.MenuText
-import com.kape.ui.text.SideMenuUsernameText
-import com.kape.ui.text.SideMenuVersionText
+import com.kape.ui.mobile.elements.Separator
+import com.kape.ui.mobile.text.MenuText
+import com.kape.ui.mobile.text.SideMenuUsernameText
+import com.kape.ui.mobile.text.SideMenuVersionText
 import com.kape.ui.theme.PiaScreen
 import com.kape.ui.utils.LocalColors
 import kotlinx.coroutines.CoroutineScope

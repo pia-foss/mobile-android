@@ -38,11 +38,11 @@ import com.kape.permissions.utils.GRANTED
 import com.kape.permissions.utils.IDLE
 import com.kape.permissions.utils.NOT_GRANTED
 import com.kape.permissions.utils.REQUEST
-import com.kape.ui.elements.PrimaryButton
-import com.kape.ui.elements.Screen
-import com.kape.ui.text.OnboardingDescriptionText
-import com.kape.ui.text.OnboardingFooterText
-import com.kape.ui.text.OnboardingTitleText
+import com.kape.ui.mobile.elements.PrimaryButton
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.text.OnboardingDescriptionText
+import com.kape.ui.mobile.text.OnboardingFooterText
+import com.kape.ui.mobile.text.OnboardingTitleText
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel

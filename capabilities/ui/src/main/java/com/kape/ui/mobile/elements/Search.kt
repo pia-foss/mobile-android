@@ -1,4 +1,4 @@
-package com.kape.ui.elements
+package com.kape.ui.mobile.elements
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
-import com.kape.ui.text.InputLabelText
+import com.kape.ui.mobile.text.InputLabelText
 import com.kape.ui.utils.LocalColors
 
 @Composable

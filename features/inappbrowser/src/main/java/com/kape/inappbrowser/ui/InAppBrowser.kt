@@ -15,7 +15,7 @@ import com.google.accompanist.web.rememberWebViewState
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.view.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.ui.elements.Screen
+import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 

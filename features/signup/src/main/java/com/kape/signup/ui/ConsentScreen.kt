@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
-import com.kape.ui.elements.PrimaryButton
-import com.kape.ui.elements.Screen
-import com.kape.ui.elements.SecondaryButton
+import com.kape.ui.mobile.elements.PrimaryButton
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.SecondaryButton
 
 @Composable
 fun ConsentScreen(viewModel: SignupViewModel) = Screen {

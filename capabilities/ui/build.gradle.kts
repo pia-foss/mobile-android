@@ -2,6 +2,7 @@ import Dependencies.KOTLIN_COMPILER_EXTENSION
 import Dependencies.desugarJdkLibs
 import Dependencies.implementCompose
 import Dependencies.implementComposeNavigation
+import Dependencies.implementComposeTv
 import Dependencies.implementKoin
 import Dependencies.implementSwipeToRefresh
 
@@ -44,6 +45,7 @@ dependencies {
     implementation(project(":core:utils"))
 
     implementCompose()
+    implementComposeTv()
     implementComposeNavigation()
     implementKoin()
     implementSwipeToRefresh()

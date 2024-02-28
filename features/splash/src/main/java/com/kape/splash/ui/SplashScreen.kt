@@ -15,7 +15,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.splash.ui.vm.SplashViewModel
-import com.kape.ui.elements.Screen
+import com.kape.ui.R
+import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
@@ -33,7 +34,7 @@ fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) = Screen {
             .background(LocalColors.current.background),
     ) {
         Image(
-            painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
+            painter = painterResource(id = R.drawable.ic_logo_large),
             contentDescription = null,
             modifier = Modifier
                 .align(Alignment.Center)

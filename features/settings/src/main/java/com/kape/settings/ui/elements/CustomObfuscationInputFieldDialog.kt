@@ -21,7 +21,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.kape.settings.data.CustomObfuscation
 import com.kape.ui.R
-import com.kape.ui.text.Input
+import com.kape.ui.mobile.text.Input
 
 @Composable
 fun CustomObfuscationInputFieldDialog(

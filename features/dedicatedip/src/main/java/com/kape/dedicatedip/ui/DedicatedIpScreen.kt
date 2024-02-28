@@ -51,8 +51,8 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.R
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
-import com.kape.ui.elements.Screen
-import com.kape.ui.elements.Separator
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource

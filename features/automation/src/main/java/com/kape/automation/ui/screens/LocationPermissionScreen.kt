@@ -26,11 +26,11 @@ import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.R
 import com.kape.automation.ui.viewmodel.AutomationViewModel
-import com.kape.ui.elements.PrimaryButton
-import com.kape.ui.elements.Screen
-import com.kape.ui.text.OnboardingDescriptionText
-import com.kape.ui.text.OnboardingFooterText
-import com.kape.ui.text.OnboardingTitleText
+import com.kape.ui.mobile.elements.PrimaryButton
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.text.OnboardingDescriptionText
+import com.kape.ui.mobile.text.OnboardingFooterText
+import com.kape.ui.mobile.text.OnboardingTitleText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 

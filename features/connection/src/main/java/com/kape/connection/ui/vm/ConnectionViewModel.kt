@@ -21,7 +21,7 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import com.kape.shadowsocksregions.domain.SetShadowsocksRegionsUseCase
 import com.kape.snooze.SnoozeHandler
-import com.kape.ui.tiles.MAX_SERVERS
+import com.kape.ui.mobile.tiles.MAX_SERVERS
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.utils.vpnserver.VpnServer

@@ -35,9 +35,9 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.ui.R
-import com.kape.ui.elements.Screen
-import com.kape.ui.elements.Search
-import com.kape.ui.text.MenuText
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.Search
+import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
 import com.kape.vpnregionselection.util.ItemType

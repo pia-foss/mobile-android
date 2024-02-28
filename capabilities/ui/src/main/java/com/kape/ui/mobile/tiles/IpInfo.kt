@@ -1,4 +1,4 @@
-package com.kape.ui.tiles
+package com.kape.ui.mobile.tiles
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,8 +19,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.ui.R
-import com.kape.ui.text.IPText
-import com.kape.ui.text.TileTitleText
+import com.kape.ui.mobile.text.IPText
+import com.kape.ui.mobile.text.TileTitleText
 import com.kape.ui.utils.LocalColors
 
 @Composable

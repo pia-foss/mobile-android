@@ -1,4 +1,4 @@
-package com.kape.ui.text
+package com.kape.ui.mobile.text
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
@@ -377,6 +377,16 @@ fun DialogActionText(content: String, modifier: Modifier) {
         text = content.uppercase(),
         color = LocalColors.current.primary,
         style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun WelcomeTitleText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.h1,
         modifier = modifier,
     )
 }

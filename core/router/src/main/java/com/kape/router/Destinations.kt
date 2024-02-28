@@ -17,6 +17,10 @@ object Splash {
     const val Main = "splash-screen"
 }
 
+object TvWelcome {
+    const val Main = "tv-welcome-screen"
+}
+
 object Connection {
     const val Main = "connection-screen"
 }

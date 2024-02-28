@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
-import com.kape.ui.text.DialogActionText
-import com.kape.ui.text.DialogTitleText
+import com.kape.ui.mobile.text.DialogActionText
+import com.kape.ui.mobile.text.DialogTitleText
 import com.kape.ui.utils.LocalColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +62,7 @@ fun BehaviorDialog(
             Modifier.fillMaxWidth(),
         ) {
             DialogTitleText(
-                content = stringResource(id = com.kape.ui.R.string.dialog_title),
+                content = stringResource(id = R.string.dialog_title),
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(

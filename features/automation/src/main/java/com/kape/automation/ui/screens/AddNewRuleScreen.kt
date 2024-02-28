@@ -27,9 +27,9 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.R
 import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
-import com.kape.ui.elements.Screen
-import com.kape.ui.text.MenuText
-import com.kape.ui.text.OnboardingFooterText
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.text.MenuText
+import com.kape.ui.mobile.text.OnboardingFooterText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 

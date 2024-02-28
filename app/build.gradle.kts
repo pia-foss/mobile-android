@@ -147,6 +147,7 @@ dependencies {
     implementation(project(":capabilities:snooze"))
 
     implementation(project(":features:splash"))
+    implementation(project(":features:tvwelcome"))
     implementation(project(":features:signup"))
     implementation(project(":features:login"))
     implementation(project(":features:settings"))

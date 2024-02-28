@@ -1,4 +1,4 @@
-package com.kape.ui.elements
+package com.kape.ui.mobile.elements
 
 import android.graphics.Typeface
 import android.text.Spanned

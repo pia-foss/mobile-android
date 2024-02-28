@@ -9,6 +9,7 @@ object Dependencies {
     private const val GOOGLE_IMPLEMENTATION = "googleImplementation"
     private const val AMAZON_IMPLEMENTATION = "amazonImplementation"
     private const val COMPOSE_BOM = "androidx.compose:compose-bom:2024.01.00"
+    private const val COMPOSE_TV = "1.0.0-alpha10"
     private const val COMPOSE_NAVIGATION = "2.7.6"
     private const val JETPACK = "2.7.0"
     private const val ACCOMPANIST = "0.32.0"
@@ -28,6 +29,11 @@ object Dependencies {
         add(DEBUG_IMPLEMENTATION, "androidx.compose.ui:ui-tooling")
         add(DEBUG_IMPLEMENTATION, "androidx.compose.ui:ui-test-manifest")
         implementMaterial3()
+    }
+
+    fun DependencyHandler.implementComposeTv() {
+        add(IMPLEMENTATION, "androidx.tv:tv-foundation:$COMPOSE_TV")
+        add(IMPLEMENTATION, "androidx.tv:tv-material:$COMPOSE_TV")
     }
 
     fun DependencyHandler.implementComposeNavigation() {
@@ -96,6 +102,7 @@ object Dependencies {
 
     fun DependencyHandler.implementFeatureModule() {
         implementCompose()
+        implementComposeTv()
         implementComposeNavigation()
         implementViewModel()
         implementKoin()

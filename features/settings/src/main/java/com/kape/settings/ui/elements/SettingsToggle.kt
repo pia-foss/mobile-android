@@ -21,10 +21,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.kape.ui.elements.Separator
-import com.kape.ui.elements.Toggle
-import com.kape.ui.text.SettingsL2Text
-import com.kape.ui.text.SettingsL2TextDescription
+import com.kape.ui.mobile.elements.Separator
+import com.kape.ui.mobile.elements.Toggle
+import com.kape.ui.mobile.text.SettingsL2Text
+import com.kape.ui.mobile.text.SettingsL2TextDescription
 
 @Composable
 fun SettingsToggle(

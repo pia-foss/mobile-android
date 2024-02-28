@@ -1,27 +1,15 @@
 package com.kape.router.tv
 
-import com.kape.router.About
 import com.kape.router.AppFlow
-import com.kape.router.Automation
 import com.kape.router.Back
-import com.kape.router.Connection
-import com.kape.router.Customization
-import com.kape.router.DedicatedIp
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
 import com.kape.router.ExitFlow
-import com.kape.router.Login
 import com.kape.router.NavigateBack
 import com.kape.router.NavigateOut
-import com.kape.router.PerAppSettings
-import com.kape.router.Permissions
-import com.kape.router.Profile
 import com.kape.router.Router
-import com.kape.router.Settings
-import com.kape.router.ShadowsocksRegionSelection
 import com.kape.router.Splash
-import com.kape.router.Subscribe
-import com.kape.router.VpnRegionSelection
+import com.kape.router.TvWelcome
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -66,13 +54,14 @@ class TvRouter : Router {
             EnterFlow.ProtocolSettings -> TODO("To be implemented")
             EnterFlow.About -> TODO("To be implemented")
             EnterFlow.Customization -> TODO("To be implemented")
+            EnterFlow.TvWelcome -> navigation.value = TvWelcome.Main
         }
     }
 
     private fun handleExitFlow(flow: ExitFlow) {
         when (flow) {
             ExitFlow.Login -> TODO("To be implemented")
-            ExitFlow.Splash -> handleEnterFlow(EnterFlow.Splash)
+            ExitFlow.Splash -> handleEnterFlow(EnterFlow.TvWelcome)
             ExitFlow.Connection -> TODO("To be implemented")
             ExitFlow.RegionSelection -> TODO("To be implemented")
             ExitFlow.Profile -> TODO("To be implemented")

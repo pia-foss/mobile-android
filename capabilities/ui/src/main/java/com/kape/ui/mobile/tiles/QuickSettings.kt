@@ -1,4 +1,4 @@
-package com.kape.ui.tiles
+package com.kape.ui.mobile.tiles
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,8 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
-import com.kape.ui.text.QuickConnectText
-import com.kape.ui.text.TileTitleText
+import com.kape.ui.mobile.text.QuickConnectText
+import com.kape.ui.mobile.text.TileTitleText
 import com.kape.ui.utils.LocalColors
 
 @Composable

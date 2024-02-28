@@ -32,8 +32,8 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
-import com.kape.ui.elements.Screen
-import com.kape.ui.elements.Search
+import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.Search
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
