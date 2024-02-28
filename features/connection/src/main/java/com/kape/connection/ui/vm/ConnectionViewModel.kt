@@ -188,12 +188,12 @@ class ConnectionViewModel(
         }
 
         if (vpnRegionPrefs.needsVpnReconnect()) {
+            vpnRegionPrefs.setVpnReconnect(false)
             selectedVpnServer.value?.let {
                 connectionUseCase.reconnect(it).collect {
                     if (it) {
                         selectedVpnServer.value?.let {
                             prefs.addToQuickConnect(it.key)
-                            vpnRegionPrefs.setVpnReconnect(false)
                         }
                         getQuickConnectVpnServers()
                     }
