@@ -64,7 +64,7 @@ fun LocationPickerItem(
                     .size(24.dp),
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.align(CenterVertically)) {
+            Column(modifier = Modifier.align(CenterVertically).weight(12f)) {
                 Row {
                     RegionSelectionText(content = server.name)
                     if (!server.allowsPortForwarding && isPortForwardingEnabled) {
