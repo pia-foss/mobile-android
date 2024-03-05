@@ -277,6 +277,10 @@ class ConnectionViewModel(
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
 
+    fun isVpnServerFavorite(serverName: String): Boolean {
+        return vpnRegionPrefs.isFavorite(serverName)
+    }
+
     private fun connect() = viewModelScope.launch {
         selectedVpnServer.value?.let {
             lastSelectedVpnServerKey = it.key

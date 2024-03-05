@@ -36,7 +36,7 @@ const val MAX_SERVERS = 5
 @Composable
 fun QuickConnect(
     modifier: Modifier = Modifier,
-    servers: List<VpnServer>,
+    servers: Map<VpnServer?, Boolean>,
     onClick: (serverKey: String) -> Unit,
 ) {
     Column(
@@ -53,16 +53,20 @@ fun QuickConnect(
                 }
             } else {
                 for (index in 0 until MAX_SERVERS) {
-                    if (servers.getOrNull(index) != null) {
+                    val server = servers.keys.toList().getOrNull(index)
+                    server?.let { current ->
                         QuickConnectItem(
-                            server = servers[index],
+                            server = current,
+                            isFavorite = servers[current] ?: false,
                             modifier = Modifier
                                 .weight(1f)
                                 .clickable {
-                                    onClick(servers[index].key)
+                                    servers.keys.toList()[index]?.let {
+                                        onClick(it.key)
+                                    }
                                 },
                         )
-                    } else {
+                    } ?: run {
                         QuickConnectItem(modifier = Modifier.weight(1f))
                     }
                 }
@@ -72,7 +76,11 @@ fun QuickConnect(
 }
 
 @Composable
-private fun QuickConnectItem(server: VpnServer? = null, modifier: Modifier) {
+private fun QuickConnectItem(
+    server: VpnServer? = null,
+    isFavorite: Boolean = false,
+    modifier: Modifier,
+) {
     Column(modifier = modifier, horizontalAlignment = CenterHorizontally) {
         Box {
             Box(
@@ -98,6 +106,16 @@ private fun QuickConnectItem(server: VpnServer? = null, modifier: Modifier) {
                 if (it.isDedicatedIp) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_dip_badge),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .size(12.dp),
+                    )
+                }
+                if (isFavorite) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_favorite),
                         contentDescription = null,
                         tint = Color.Unspecified,
                         modifier = Modifier

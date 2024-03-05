@@ -49,6 +49,7 @@ import com.kape.ui.mobile.tiles.ShadowsocksLocationPicker
 import com.kape.ui.mobile.tiles.Snooze
 import com.kape.ui.mobile.tiles.Traffic
 import com.kape.ui.mobile.tiles.VpnLocationPicker
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import kotlinx.coroutines.CoroutineScope
@@ -166,8 +167,12 @@ private fun DisplayComponent(
             }
 
             Element.QuickConnect -> {
+                val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
+                for (server in viewModel.quickConnectVpnServers.value) {
+                    quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name)
+                }
                 QuickConnect(
-                    servers = viewModel.quickConnectVpnServers.value,
+                    servers = quickConnectMap,
                     onClick = {
                         viewModel.quickConnect(it)
                     },
