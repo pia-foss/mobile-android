@@ -17,9 +17,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -42,7 +48,7 @@ import com.kape.ui.theme.PiaScreen
 import com.kape.ui.utils.LocalColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SideMenu(scope: CoroutineScope, drawerState: DrawerState, content: @Composable () -> Unit) {
@@ -59,7 +65,8 @@ fun SideMenu(scope: CoroutineScope, drawerState: DrawerState, content: @Composab
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
-    val viewModel: SideMenuViewModel = getViewModel()
+    val viewModel: SideMenuViewModel = koinViewModel()
+    val logoutDialogVisible = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -132,7 +139,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
             scope.launch {
                 state.close()
             }
-            viewModel.logout()
+            logoutDialogVisible.value = true
         }
         Spacer(modifier = Modifier.height(16.dp))
         Separator()
@@ -168,6 +175,18 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
             }
             viewModel.navigateToSupport()
         }
+    }
+
+    if (logoutDialogVisible.value) {
+        LogoutDialog(
+            onDismiss = {
+                logoutDialogVisible.value = false
+            },
+            onConfirm = {
+                viewModel.logout()
+                logoutDialogVisible.value = false
+            },
+        )
     }
 }
 
@@ -240,6 +259,46 @@ private fun SideMenuItem(
             modifier = Modifier.align(CenterVertically),
         )
     }
+}
+
+@Composable
+fun LogoutDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = stringResource(id = com.kape.ui.R.string.drawer_item_title_logout))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(id = com.kape.ui.R.string.cancel))
+            }
+        },
+        title = {
+            Text(
+                text = stringResource(id = com.kape.ui.R.string.logout_confirmation),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        },
+        text = {
+            Column(
+                Modifier.fillMaxWidth(),
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = CenterVertically,
+                ) {
+                    Text(text = stringResource(id = com.kape.ui.R.string.logout_confirmation_text))
+                }
+            }
+        },
+    )
 }
 
 @Preview
