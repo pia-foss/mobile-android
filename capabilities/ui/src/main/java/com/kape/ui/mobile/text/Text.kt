@@ -312,6 +312,15 @@ fun InputLabelText(content: String) {
 }
 
 @Composable
+fun SearchInputLabelText(content: String) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurfaceVariant,
+        style = PiaTypography.body2,
+    )
+}
+
+@Composable
 fun InputErrorText(content: String, modifier: Modifier) {
     Text(
         text = content,
