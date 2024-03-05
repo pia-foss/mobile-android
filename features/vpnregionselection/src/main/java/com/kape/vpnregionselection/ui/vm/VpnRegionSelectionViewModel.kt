@@ -116,52 +116,30 @@ class VpnRegionSelectionViewModel(
         val all = mutableListOf<ServerItem>()
         items?.let {
             for (server in it) {
-                if (isVpnServerFavorite(server.name)) {
-                    favorites.add(
-                        ServerItem(
-                            type = ItemType.Content(
-                                isFavorite = true,
-                                server = server,
-                            ),
+                all.add(
+                    ServerItem(
+                        type = ItemType.Content(
+                            isFavorite = isVpnServerFavorite(server.name),
+                            server = server,
                         ),
-                    )
-                } else {
-                    all.add(
-                        ServerItem(
-                            ItemType.Content(
-                                isFavorite = false,
-                                server = server,
-                            ),
-                        ),
-                    )
-                }
+                    ),
+                )
             }
             all.add(0, autoRegion)
         } ?: run {
             for (item in servers.value.filter { it.type is ItemType.Content }) {
-                if (isVpnServerFavorite((item.type as ItemType.Content).server.name)) {
-                    favorites.add(
-                        ServerItem(
-                            type = ItemType.Content(
-                                isFavorite = true,
-                                server = item.type.server,
-                            ),
+                all.add(
+                    ServerItem(
+                        type = ItemType.Content(
+                            isFavorite = isVpnServerFavorite((item.type as ItemType.Content).server.name),
+                            server = item.type.server,
                         ),
-                    )
-                } else {
-                    all.add(
-                        ServerItem(
-                            ItemType.Content(
-                                isFavorite = false,
-                                enableFavorite = item.type.enableFavorite,
-                                server = item.type.server,
-                            ),
-                        ),
-                    )
-                }
+                    ),
+                )
             }
         }
 
+        favorites.addAll(all.filter { (it.type as ItemType.Content).isFavorite }.distinct())
         if (favorites.isNotEmpty()) {
             list.add(0, ServerItem(type = ItemType.HeadingFavorites))
             favorites.sortBy { (it.type as ItemType.Content).server.latency?.toInt() }
@@ -176,7 +154,7 @@ class VpnRegionSelectionViewModel(
             0,
             all.indexOf(all.filter { it.type is ItemType.Content && it.type.server.name == autoRegionName }[0]),
         )
-        list.addAll(all)
+        list.addAll(all.distinct())
         servers.value = list
     }
 
