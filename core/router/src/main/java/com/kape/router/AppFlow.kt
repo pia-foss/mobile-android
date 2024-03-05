@@ -6,7 +6,6 @@ sealed class EnterFlow : AppFlow {
     data object Login : EnterFlow()
     data object Permissions : EnterFlow()
     data object Splash : EnterFlow()
-    data object TvWelcome : EnterFlow()
     data object Connection : EnterFlow()
     data object VpnRegionSelection : EnterFlow()
     data object ShadowsocksRegionSelection : EnterFlow()
@@ -24,6 +23,8 @@ sealed class EnterFlow : AppFlow {
     data object Automation : EnterFlow()
     data object About : EnterFlow()
     data object Customization : EnterFlow()
+    data object TvWelcome : EnterFlow()
+    data object TvLoginUsername : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {

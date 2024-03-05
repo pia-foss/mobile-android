@@ -1,7 +1,5 @@
 package com.kape.vpn
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -12,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
@@ -26,11 +23,14 @@ import com.kape.connection.ui.ConnectionScreen
 import com.kape.customization.CustomizationScreen
 import com.kape.dedicatedip.ui.DedicatedIpScreen
 import com.kape.inappbrowser.ui.InAppBrowser
-import com.kape.login.ui.loginNavigation
+import com.kape.login.ui.mobile.loginNavigation
+import com.kape.login.ui.tv.LoginPasswordScreen
+import com.kape.login.ui.tv.LoginUsernameScreen
 import com.kape.login.utils.TokenAuthenticationUtil
 import com.kape.obfuscationregionselection.ui.ShadowsocksRegionSelectionScreen
 import com.kape.payments.ui.PaymentProvider
-import com.kape.permissions.utils.PermissionsFlow
+import com.kape.permissions.utils.mobile.PermissionsFlow
+import com.kape.permissions.utils.tv.TvPermissionsFlow
 import com.kape.profile.ui.ProfileScreen
 import com.kape.router.About
 import com.kape.router.Automation
@@ -38,6 +38,7 @@ import com.kape.router.Connection
 import com.kape.router.Customization
 import com.kape.router.DedicatedIp
 import com.kape.router.EnterFlow
+import com.kape.router.Login
 import com.kape.router.NavigateBack
 import com.kape.router.NavigateOut
 import com.kape.router.PerAppSettings
@@ -48,6 +49,7 @@ import com.kape.router.Settings
 import com.kape.router.ShadowsocksRegionSelection
 import com.kape.router.Splash
 import com.kape.router.Subscribe
+import com.kape.router.TvLogin
 import com.kape.router.TvWelcome
 import com.kape.router.VpnRegionSelection
 import com.kape.router.WebContent
@@ -166,6 +168,9 @@ class MainActivity : ComponentActivity() {
         if (PlatformUtils.isTv(context = this@MainActivity)) {
             composable(Splash.Main) { SplashScreen() }
             composable(TvWelcome.Main) { TvWelcomeScreen() }
+            composable(TvLogin.Username) { LoginUsernameScreen() }
+            composable(Login.WithCredentials) { LoginPasswordScreen() }
+            composable(Permissions.Route) { TvPermissionsFlow() }
         } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }

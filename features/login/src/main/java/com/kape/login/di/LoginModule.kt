@@ -1,12 +1,15 @@
 package com.kape.login.di
 
 import com.kape.login.data.AuthenticationDataSourceImpl
-import com.kape.login.domain.AuthenticationDataSource
-import com.kape.login.domain.GetUserLoggedInUseCase
-import com.kape.login.domain.LoginUseCase
-import com.kape.login.domain.LogoutUseCase
+import com.kape.login.domain.mobile.AuthenticationDataSource
+import com.kape.login.domain.mobile.GetUserLoggedInUseCase
+import com.kape.login.domain.mobile.LoginUseCase
+import com.kape.login.domain.mobile.LogoutUseCase
+import com.kape.login.domain.tv.LoginUsernameUseCase
 import com.kape.login.ui.vm.LoginViewModel
-import com.kape.login.ui.vm.LoginWithEmailViewModel
+import com.kape.login.ui.vm.mobile.LoginWithEmailViewModel
+import com.kape.login.ui.vm.tv.LoginPasswordViewModel
+import com.kape.login.ui.vm.tv.LoginUsernameViewModel
 import com.kape.login.utils.TokenAuthenticationUtil
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
@@ -19,6 +22,7 @@ fun loginModule(appModule: Module) = module {
 private val localLoginModule = module {
     single<AuthenticationDataSource> { AuthenticationDataSourceImpl(get()) }
     single { TokenAuthenticationUtil(get(), get()) }
+    single { LoginUsernameUseCase() }
     single { LoginUseCase(get()) }
     single {
         LogoutUseCase(
@@ -38,6 +42,8 @@ private val localLoginModule = module {
         )
     }
     single { GetUserLoggedInUseCase(get()) }
+    viewModel { LoginUsernameViewModel(get(), get()) }
+    viewModel { LoginPasswordViewModel(get()) }
     viewModel { LoginViewModel(get(), get(), get(), get(), get()) }
     viewModel { LoginWithEmailViewModel(get(), get()) }
 }

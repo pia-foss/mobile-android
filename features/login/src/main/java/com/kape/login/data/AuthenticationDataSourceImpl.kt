@@ -1,6 +1,6 @@
 package com.kape.login.data
 
-import com.kape.login.domain.AuthenticationDataSource
+import com.kape.login.domain.mobile.AuthenticationDataSource
 import com.kape.utils.ApiResult
 import com.kape.utils.getApiError
 import com.privateinternetaccess.account.AndroidAccountAPI

@@ -1,7 +1,7 @@
 package com.kape.signup.domain
 
 import app.cash.turbine.test
-import com.kape.login.domain.LoginUseCase
+import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.LoginState
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.domain.GetPurchaseDetailsUseCase

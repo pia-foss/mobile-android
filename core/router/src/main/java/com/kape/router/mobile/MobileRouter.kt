@@ -70,7 +70,8 @@ class MobileRouter : Router {
             EnterFlow.ProtocolSettings -> navigation.value = Settings.Protocols
             EnterFlow.About -> navigation.value = About.Main
             EnterFlow.Customization -> navigation.value = Customization.Route
-            EnterFlow.TvWelcome -> navigation.value = TvWelcome.Main
+            EnterFlow.TvWelcome -> TODO()
+            EnterFlow.TvLoginUsername -> TODO()
         }
     }
 

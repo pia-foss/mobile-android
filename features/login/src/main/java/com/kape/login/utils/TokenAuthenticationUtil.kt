@@ -1,7 +1,7 @@
 package com.kape.login.utils
 
 import android.net.Uri
-import com.kape.login.domain.AuthenticationDataSource
+import com.kape.login.domain.mobile.AuthenticationDataSource
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import kotlinx.coroutines.CoroutineScope

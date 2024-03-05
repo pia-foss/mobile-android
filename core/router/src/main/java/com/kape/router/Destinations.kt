@@ -9,6 +9,10 @@ object Login {
     const val WithEmail = "login-with-email"
 }
 
+object TvLogin {
+    const val Username = "tv-username-screen"
+}
+
 object Permissions {
     const val Route = "permissions"
 }

@@ -12,7 +12,7 @@ class TvWelcomeViewModel(
 ) : ViewModel(), KoinComponent {
 
     fun login() = viewModelScope.launch {
-        router.handleFlow(EnterFlow.Login)
+        router.handleFlow(EnterFlow.TvLoginUsername)
     }
 
     fun signup() = viewModelScope.launch {

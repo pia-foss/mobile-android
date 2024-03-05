@@ -380,13 +380,3 @@ fun DialogActionText(content: String, modifier: Modifier) {
         modifier = modifier,
     )
 }
-
-@Composable
-fun WelcomeTitleText(content: String, modifier: Modifier) {
-    Text(
-        text = content,
-        color = LocalColors.current.onSurface,
-        style = PiaTypography.h1,
-        modifier = modifier,
-    )
-}

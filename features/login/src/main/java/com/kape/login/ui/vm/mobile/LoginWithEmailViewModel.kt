@@ -1,8 +1,8 @@
-package com.kape.login.ui.vm
+package com.kape.login.ui.vm.mobile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.login.domain.LoginUseCase
+import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.IDLE
 import com.kape.login.utils.INVALID
 import com.kape.login.utils.LOADING

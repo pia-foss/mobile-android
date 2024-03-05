@@ -1,4 +1,4 @@
-package com.kape.login.domain
+package com.kape.login.domain.mobile
 
 class GetUserLoggedInUseCase(private val source: AuthenticationDataSource) {
 

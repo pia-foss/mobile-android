@@ -2,6 +2,8 @@ package com.kape.login.domain
 
 import app.cash.turbine.test
 import com.kape.login.BaseTest
+import com.kape.login.domain.mobile.AuthenticationDataSource
+import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.LoginState
 import com.kape.utils.ApiError
 import com.kape.utils.ApiResult

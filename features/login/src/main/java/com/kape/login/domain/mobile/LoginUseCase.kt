@@ -1,4 +1,4 @@
-package com.kape.login.domain
+package com.kape.login.domain.mobile
 
 import com.kape.login.utils.LoginState
 import com.kape.utils.ApiError

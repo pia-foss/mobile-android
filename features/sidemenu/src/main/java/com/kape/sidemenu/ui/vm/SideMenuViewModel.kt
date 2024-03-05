@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.login.domain.LogoutUseCase
+import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.profile.domain.GetProfileUseCase
 import com.kape.router.EnterFlow
 import com.kape.router.Router

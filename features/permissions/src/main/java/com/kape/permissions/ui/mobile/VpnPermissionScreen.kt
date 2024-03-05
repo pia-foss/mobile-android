@@ -1,4 +1,4 @@
-package com.kape.permissions.ui
+package com.kape.permissions.ui.mobile
 
 import android.net.VpnService
 import android.widget.Toast

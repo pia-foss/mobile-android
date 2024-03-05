@@ -1,6 +1,8 @@
 package com.kape.login.domain
 
 import com.kape.login.BaseTest
+import com.kape.login.domain.mobile.AuthenticationDataSource
+import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest

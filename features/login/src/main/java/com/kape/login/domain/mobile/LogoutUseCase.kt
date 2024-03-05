@@ -1,4 +1,4 @@
-package com.kape.login.domain
+package com.kape.login.domain.mobile
 
 import com.kape.connection.ConnectionPrefs
 import com.kape.csi.CsiPrefs

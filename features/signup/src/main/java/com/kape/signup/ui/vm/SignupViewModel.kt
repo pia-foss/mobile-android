@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.login.domain.GetUserLoggedInUseCase
+import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.payments.ui.PaymentProvider
 import com.kape.payments.utils.PurchaseState
 import com.kape.router.EnterFlow

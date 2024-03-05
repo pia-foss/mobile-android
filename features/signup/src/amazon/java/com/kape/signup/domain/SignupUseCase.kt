@@ -1,6 +1,6 @@
 package com.kape.signup.domain
 
-import com.kape.login.domain.LoginUseCase
+import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.signup.data.models.Credentials
 import kotlinx.coroutines.flow.Flow

@@ -25,10 +25,10 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.tvwelcome.ui.vm.TvWelcomeViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.mobile.text.WelcomeTitleText
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.elements.SecondaryButton
+import com.kape.ui.tv.text.WelcomeTitleText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -72,7 +72,7 @@ fun TvWelcomeScreen(viewModel: TvWelcomeViewModel = koinViewModel()) = Screen {
                 viewModel.signup()
             }
         }
-        Spacer(modifier = Modifier.width(128.dp))
+        Spacer(modifier = Modifier.width(64.dp))
         Column(modifier = Modifier.weight(1f)) {
             Image(
                 painter = painterResource(id = com.kape.tvwelcome.R.drawable.tv_welcome),

@@ -6,6 +6,8 @@ import com.kape.csi.CsiPrefs
 import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.dip.DipPrefs
 import com.kape.login.BaseTest
+import com.kape.login.domain.mobile.AuthenticationDataSource
+import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.networkmanagement.NetworkManagementPrefs
 import com.kape.payments.SubscriptionPrefs
 import com.kape.settings.SettingsPrefs

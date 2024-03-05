@@ -1,4 +1,4 @@
-package com.kape.login.ui
+package com.kape.login.ui.mobile
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
