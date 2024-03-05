@@ -65,7 +65,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         modifier = Modifier
             .background(color = LocalColors.current.surface)
             .padding(horizontal = 24.dp, vertical = 24.dp)
-            .width(300.dp)
+            .width(250.dp)
             .fillMaxHeight()
             .verticalScroll(rememberScrollState())
             .semantics {
