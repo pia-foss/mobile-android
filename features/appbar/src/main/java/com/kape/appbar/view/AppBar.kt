@@ -1,7 +1,6 @@
 package com.kape.appbar.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,7 +52,6 @@ fun AppBar(
     onRightIconClick: () -> Unit = {},
 ) {
     val scheme = LocalColors.current
-    val showDarkIcons = shouldShowDarkIcons(connectionState = viewModel.appBarConnectionState)
     val systemUiController = rememberSystemUiController()
     val isConnected = viewModel.isConnected.collectAsState()
 
@@ -63,7 +61,7 @@ fun AppBar(
                 if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
                 scheme,
             ),
-            showDarkIcons,
+            shouldShowDarkIcons(connectionState = if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR),
         )
     }
 
@@ -112,7 +110,11 @@ private fun AppBarContent(
                     }
                 },
         ) {
-            Icon(painter = painterResource(id = getAppBarLeftIcon(type)), contentDescription = null)
+            Icon(
+                painter = painterResource(id = getAppBarLeftIcon(type)),
+                contentDescription = null,
+                tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
+            )
         }
 
         when (type) {
@@ -145,6 +147,7 @@ private fun AppBarContent(
             AppBarType.Navigation -> {
                 AppBarTitleText(
                     content = title ?: "",
+                    isError = status == ConnectionStatus.ERROR,
                     modifier = Modifier
                         .padding(start = 56.dp)
                         .align(Center)
@@ -211,6 +214,7 @@ private fun AppBarConnectionStatus(
             val statusPrefix = stringResource(id = com.kape.ui.R.string.vpn_status)
             AppBarConnectionTextDefault(
                 content = title ?: "",
+                isError = (status == ConnectionStatus.ERROR),
                 modifier = Modifier
                     .align(CenterVertically)
                     .semantics {
@@ -232,6 +236,7 @@ private fun AppBarConnectionStatus(
                 Icon(
                     painter = painterResource(id = com.kape.ui.R.drawable.ic_reorder),
                     contentDescription = null,
+                    tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
                     modifier = Modifier.size(24.dp),
                 )
             }
@@ -239,15 +244,16 @@ private fun AppBarConnectionStatus(
     }
 }
 
-@Composable
 private fun shouldShowDarkIcons(connectionState: ConnectionStatus): Boolean {
     return when (connectionState) {
-        ConnectionStatus.DISCONNECTED -> !isSystemInDarkTheme()
+        ConnectionStatus.DISCONNECTED,
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTED,
         ConnectionStatus.CONNECTING,
-        ConnectionStatus.ERROR,
         -> true
+
+        ConnectionStatus.ERROR,
+        -> false
     }
 }
 

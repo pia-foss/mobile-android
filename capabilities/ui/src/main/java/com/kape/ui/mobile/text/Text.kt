@@ -44,30 +44,20 @@ fun SideMenuVersionText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun AppBarConnectionTextDefault(content: String, modifier: Modifier) {
+fun AppBarConnectionTextDefault(content: String, isError: Boolean, modifier: Modifier) {
     Text(
         text = content,
-        color = LocalColors.current.onSurface,
+        color = if (isError) LocalColors.current.onPrimary else LocalColors.current.onSurface,
         style = PiaTypography.subtitle3,
         modifier = modifier,
     )
 }
 
 @Composable
-fun AppBarConnectionTextError(content: String, modifier: Modifier) {
+fun AppBarTitleText(content: String, isError: Boolean, modifier: Modifier) {
     Text(
         text = content,
-        color = LocalColors.current.onPrimary,
-        style = PiaTypography.subtitle3,
-        modifier = modifier,
-    )
-}
-
-@Composable
-fun AppBarTitleText(content: String, modifier: Modifier) {
-    Text(
-        text = content,
-        color = LocalColors.current.onSurface,
+        color = if (isError) LocalColors.current.onPrimary else LocalColors.current.onSurface,
         style = PiaTypography.h2,
         modifier = modifier,
     )
