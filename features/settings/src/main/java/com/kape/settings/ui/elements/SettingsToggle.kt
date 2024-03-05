@@ -44,7 +44,7 @@ fun SettingsToggle(
         Row(
             modifier = Modifier
                 .defaultMinSize(minHeight = 56.dp)
-                .padding(horizontal = 20.dp),
+                .padding(end = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             iconId?.let {
