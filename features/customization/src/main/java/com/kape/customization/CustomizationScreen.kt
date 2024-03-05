@@ -31,6 +31,7 @@ import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.elements.Visibility
 import com.kape.ui.mobile.tiles.ConnectionInfo
 import com.kape.ui.mobile.tiles.IPTile
@@ -41,6 +42,7 @@ import com.kape.ui.mobile.tiles.Snooze
 import com.kape.ui.mobile.tiles.Traffic
 import com.kape.ui.mobile.tiles.VpnLocationPicker
 import com.kape.ui.utils.LocalColors
+import com.kape.utils.vpnserver.VpnServer
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
@@ -65,7 +67,9 @@ fun CustomizationScreen() = Screen {
         },
     ) {
         Column(
-            modifier = Modifier.padding(it).fillMaxWidth(),
+            modifier = Modifier
+                .padding(it)
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             LaunchedEffect(key1 = Unit) {
@@ -179,11 +183,15 @@ private fun DisplayComponent(
         }
 
         Element.QuickConnect -> {
+            val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
+            for (server in viewModel.quickConnectVpnServers.value) {
+                quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name)
+            }
             QuickConnect(
-                modifier = modifier,
-                servers = viewModel.quickConnectVpnServers.value,
+                servers = quickConnectMap,
                 onClick = {},
             )
+            Separator()
         }
 
         Element.QuickSettings -> {
