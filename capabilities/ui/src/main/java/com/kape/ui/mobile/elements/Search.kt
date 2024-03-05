@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
-import com.kape.ui.mobile.text.InputLabelText
+import com.kape.ui.mobile.text.SearchInputLabelText
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -28,7 +28,7 @@ fun Search(modifier: Modifier, hint: String, onTextChanged: (text: String) -> Un
             onTextChanged(it)
         },
         placeholder = {
-            InputLabelText(content = hint)
+            SearchInputLabelText(content = hint)
         },
         shape = RoundedCornerShape(12.dp),
         leadingIcon = {
@@ -39,21 +39,23 @@ fun Search(modifier: Modifier, hint: String, onTextChanged: (text: String) -> Un
             )
         },
         trailingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_close),
-                contentDescription = null,
-                tint = Color.Unspecified,
-                modifier = Modifier.clickable {
-                    query.value = ""
-                    onTextChanged("")
-                },
-            )
+            if (query.value.isNotEmpty()) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_close),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier.clickable {
+                        query.value = ""
+                        onTextChanged("")
+                    },
+                )
+            }
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = LocalColors.current.surfaceVariant,
             unfocusedContainerColor = LocalColors.current.surfaceVariant,
             disabledContainerColor = LocalColors.current.surfaceVariant,
-            focusedBorderColor = LocalColors.current.surfaceVariant,
+            focusedBorderColor = LocalColors.current.onSurfaceVariant,
             errorBorderColor = LocalColors.current.error,
             cursorColor = LocalColors.current.onSurface,
         ),
