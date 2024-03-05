@@ -270,9 +270,7 @@ class ConnectionViewModel(
         viewModelScope.launch {
             selectedVpnServer.value?.let {
                 vpnRegionPrefs.selectVpnServer(key)
-                prefs.addToQuickConnect(key)
-                getQuickConnectVpnServers()
-                connectionUseCase.reconnect(it).collect()
+                getSelectedVpnServer()
             }
         }
     }
