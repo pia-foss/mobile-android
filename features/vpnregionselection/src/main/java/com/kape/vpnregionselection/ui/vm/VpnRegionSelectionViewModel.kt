@@ -177,7 +177,7 @@ class VpnRegionSelectionViewModel(
                     iso = iso,
                     latency = null,
                     endpoints = emptyMap(),
-                    key = "",
+                    key = "auto",
                     latitude = null,
                     longitude = null,
                     isGeo = false,
