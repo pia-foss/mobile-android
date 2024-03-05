@@ -58,3 +58,36 @@ fun EnterUsernameScreenTitleText(content: String, modifier: Modifier = Modifier)
         modifier = modifier,
     )
 }
+
+@Composable
+fun OnboardingTitleText(content: String, modifier: Modifier) {
+    androidx.compose.material3.Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.h2,
+        textAlign = TextAlign.Start,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun OnboardingDescriptionText(content: String, modifier: Modifier) {
+    androidx.compose.material3.Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.body1,
+        textAlign = TextAlign.Start,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun OnboardingFooterText(content: String, modifier: Modifier) {
+    androidx.compose.material3.Text(
+        text = content,
+        color = LocalColors.current.onSurfaceVariant,
+        style = PiaTypography.caption1,
+        textAlign = TextAlign.Start,
+        modifier = modifier,
+    )
+}
