@@ -92,7 +92,7 @@ fun Toggle(isOn: Boolean, onCheckedChange: (checked: Boolean) -> Unit) {
         onCheckedChange = onCheckedChange,
         colors = SwitchDefaults.colors(
             uncheckedBorderColor = LocalColors.current.onSurfaceVariant,
-            checkedBorderColor = LocalColors.current.onSurfaceVariant,
+            checkedBorderColor = Color.Unspecified,
             uncheckedTrackColor = LocalColors.current.onPrimary,
             checkedTrackColor = LocalColors.current.primary,
             uncheckedIconColor = LocalColors.current.onSurfaceVariant,
