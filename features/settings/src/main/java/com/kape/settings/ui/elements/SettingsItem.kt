@@ -5,9 +5,11 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -39,7 +41,7 @@ fun SettingsItem(
         Row(
             modifier = Modifier
                 .height(56.dp)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             iconId?.let {
@@ -49,11 +51,11 @@ fun SettingsItem(
                     tint = Color.Unspecified,
                     modifier = Modifier.size(24.dp),
                 )
+                Spacer(modifier = Modifier.width(16.dp))
             }
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 16.dp)
                     .testTag(testTag.toString()),
             ) {
                 SettingsL2Text(
@@ -67,6 +69,7 @@ fun SettingsItem(
                 }
             }
             onClick?.let {
+                Spacer(modifier = Modifier.width(16.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_arrow),
                     contentDescription = null,
