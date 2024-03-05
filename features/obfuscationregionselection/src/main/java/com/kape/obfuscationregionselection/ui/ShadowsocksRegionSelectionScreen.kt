@@ -2,33 +2,19 @@ package com.kape.obfuscationregionselection.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.os.ConfigurationCompat
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -58,7 +44,6 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.location_selection_title))
     }
-    val showSortingOptions = remember { mutableStateOf(false) }
     val isSearchEnabled = remember { mutableStateOf(false) }
 
     Column(
@@ -127,89 +112,6 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
                     }
                 }
             }
-
-            if (showSortingOptions.value) {
-                SortingOptions(viewModel = viewModel, showSortingOptions)
-            }
         }
     }
-}
-
-@Composable
-fun SortingOptions(
-    viewModel: ShadowsocksRegionSelectionViewModel,
-    showSortingOptions: MutableState<Boolean>,
-) {
-    val sortBySelectedOption: MutableState<ShadowsocksRegionSelectionViewModel.SortByOption> =
-        remember {
-            viewModel.sortBySelectedOption
-        }
-    AlertDialog(
-        onDismissRequest = {
-            showSortingOptions.value = false
-        },
-        title = {
-            Text(
-                text = stringResource(id = com.kape.ui.R.string.sort_regions_title),
-                fontSize = 18.sp,
-            )
-        },
-        text = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                val options = stringArrayResource(id = com.kape.ui.R.array.sorting_options)
-                options.forEach {
-                    Row(
-                        verticalAlignment = CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .selectable(
-                                selected = (options.indexOf(it) == sortBySelectedOption.value.index),
-                                onClick = {
-                                    sortBySelectedOption.value =
-                                        viewModel.getSortingOption(options.indexOf(it))
-                                },
-                                role = Role.RadioButton,
-                            )
-                            .padding(vertical = 4.dp),
-                    ) {
-                        RadioButton(
-                            selected = (options.indexOf(it) == sortBySelectedOption.value.index),
-                            onClick = null,
-                            colors = RadioButtonDefaults.colors(selectedColor = LocalColors.current.primary),
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .align(CenterVertically),
-                        )
-                        Text(
-                            text = it,
-                            modifier = Modifier
-                                .align(CenterVertically),
-                        )
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    viewModel.sortBy(sortBySelectedOption.value)
-                },
-            ) {
-                Text(
-                    text = stringResource(id = com.kape.ui.R.string.ok),
-                    fontSize = 14.sp,
-                    color = LocalColors.current.primary,
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = { showSortingOptions.value = false }) {
-                Text(
-                    text = stringResource(id = com.kape.ui.R.string.cancel).toUpperCase(Locale.current),
-                    fontSize = 14.sp,
-                    color = LocalColors.current.primary,
-                )
-            }
-        },
-    )
 }
