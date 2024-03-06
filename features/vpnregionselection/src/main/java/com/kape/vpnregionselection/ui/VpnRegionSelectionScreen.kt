@@ -102,7 +102,7 @@ fun VpnRegionSelectionScreen() = Screen {
 
                             ItemType.HeadingFavorites -> {
                                 MenuText(
-                                    content = stringResource(id = R.string.favorites),
+                                    content = stringResource(id = R.string.favorite),
                                     modifier = Modifier.padding(16.dp),
                                 )
                             }
