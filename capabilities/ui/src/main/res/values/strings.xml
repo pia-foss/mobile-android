@@ -153,11 +153,6 @@
     <string name="flag">flag</string>
     <string name="selected">selected</string>
     <string name="offline">offline</string>
-    <string-array name="sorting_options">
-        <item>@string/name</item>
-        <item>@string/latency</item>
-        <item>@string/favorites</item>
-    </string-array>
 
     <string name="vpn_permission_title">PIA needs access to your VPN configurations to secure your traffic</string>
     <string name="vpn_permission_description">You\’ll see a prompt for PIA VPN and need to\nallow access to VPN configurations.\nTo proceed, tap on “OK”</string>
