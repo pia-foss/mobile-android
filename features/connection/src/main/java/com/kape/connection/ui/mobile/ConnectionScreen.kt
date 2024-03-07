@@ -1,4 +1,4 @@
-package com.kape.connection.ui
+package com.kape.connection.ui.mobile
 
 import android.content.Context
 import android.content.Intent
@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.AppBar
 import com.kape.appbar.view.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement

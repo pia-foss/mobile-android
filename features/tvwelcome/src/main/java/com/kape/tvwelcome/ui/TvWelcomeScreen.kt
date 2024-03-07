@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -21,11 +20,10 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.kape.login.ui.vm.LoginViewModel
 import com.kape.tvwelcome.ui.vm.TvWelcomeViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.elements.SecondaryButton
 import com.kape.ui.tv.text.WelcomeTitleText
@@ -33,13 +31,11 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TvWelcomeScreen(viewModel: TvWelcomeViewModel = koinViewModel()) = Screen {
-    val scheme = LocalColors.current
-    val systemUiController = rememberSystemUiController()
+fun TvWelcomeScreen() = Screen {
+    val welcomeViewModel: TvWelcomeViewModel = koinViewModel()
+    val loginViewModel: LoginViewModel = koinViewModel()
     val initialFocusRequester = FocusRequester()
-    SideEffect {
-        systemUiController.setStatusBarColor(scheme.statusBarDefault(scheme))
-    }
+
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -47,7 +43,11 @@ fun TvWelcomeScreen(viewModel: TvWelcomeViewModel = koinViewModel()) = Screen {
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier = Modifier.weight(1f).padding(64.dp)) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(64.dp),
+        ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_logo_large),
                 contentDescription = null,
@@ -65,11 +65,11 @@ fun TvWelcomeScreen(viewModel: TvWelcomeViewModel = koinViewModel()) = Screen {
                 text = stringResource(id = R.string.login),
                 modifier = Modifier.focusRequester(initialFocusRequester),
             ) {
-                viewModel.login()
+                welcomeViewModel.login()
             }
             Spacer(modifier = Modifier.height(8.dp))
             SecondaryButton(text = stringResource(id = R.string.subscribe_now)) {
-                viewModel.signup()
+                welcomeViewModel.signup()
             }
         }
         Spacer(modifier = Modifier.width(64.dp))
@@ -82,6 +82,7 @@ fun TvWelcomeScreen(viewModel: TvWelcomeViewModel = koinViewModel()) = Screen {
     }
 
     LaunchedEffect(key1 = Unit) {
+        loginViewModel.checkUserLoggedIn()
         initialFocusRequester.requestFocus()
     }
 }

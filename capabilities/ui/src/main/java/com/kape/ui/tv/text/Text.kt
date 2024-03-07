@@ -1,8 +1,11 @@
+@file:OptIn(ExperimentalTvMaterial3Api::class)
+
 package com.kape.ui.tv.text
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
@@ -10,7 +13,6 @@ import androidx.tv.material3.Text
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun PrimaryButtonText(content: String) {
     Text(
@@ -22,7 +24,6 @@ fun PrimaryButtonText(content: String) {
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun SecondaryButtonText(content: String) {
     Text(
@@ -34,7 +35,6 @@ fun SecondaryButtonText(content: String) {
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun WelcomeTitleText(content: String, modifier: Modifier) {
     Text(
@@ -46,7 +46,6 @@ fun WelcomeTitleText(content: String, modifier: Modifier) {
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun EnterUsernameScreenTitleText(content: String, modifier: Modifier = Modifier) {
     Text(
@@ -72,7 +71,7 @@ fun OnboardingTitleText(content: String, modifier: Modifier) {
 
 @Composable
 fun OnboardingDescriptionText(content: String, modifier: Modifier) {
-    androidx.compose.material3.Text(
+    Text(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body1,
@@ -83,11 +82,27 @@ fun OnboardingDescriptionText(content: String, modifier: Modifier) {
 
 @Composable
 fun OnboardingFooterText(content: String, modifier: Modifier) {
-    androidx.compose.material3.Text(
+    Text(
         text = content,
         color = LocalColors.current.onSurfaceVariant,
         style = PiaTypography.caption1,
         textAlign = TextAlign.Start,
         modifier = modifier,
+    )
+}
+
+@Composable
+fun AppBarTitleText(
+    content: String,
+    textColor: Color,
+    isError: Boolean,
+    modifier: Modifier,
+) {
+    Text(
+        modifier = modifier,
+        text = content,
+        textAlign = TextAlign.Center,
+        color = if (isError) LocalColors.current.onPrimary else textColor,
+        style = PiaTypography.h1,
     )
 }

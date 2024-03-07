@@ -1,4 +1,4 @@
-package com.kape.connection.ui
+package com.kape.connection.ui.mobile
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost

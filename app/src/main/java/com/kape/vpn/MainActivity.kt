@@ -19,7 +19,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kape.about.AboutScreen
 import com.kape.automation.ui.AutomationFlow
-import com.kape.connection.ui.ConnectionScreen
+import com.kape.connection.ui.mobile.ConnectionScreen
+import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
 import com.kape.dedicatedip.ui.DedicatedIpScreen
 import com.kape.inappbrowser.ui.InAppBrowser
@@ -171,6 +172,7 @@ class MainActivity : ComponentActivity() {
             composable(TvLogin.Username) { LoginUsernameScreen() }
             composable(Login.WithCredentials) { LoginPasswordScreen() }
             composable(Permissions.Route) { TvPermissionsFlow() }
+            composable(Permissions.Route) { TvConnectionScreen() }
         } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }

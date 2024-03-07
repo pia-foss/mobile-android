@@ -2,6 +2,7 @@ package com.kape.router.tv
 
 import com.kape.router.AppFlow
 import com.kape.router.Back
+import com.kape.router.Connection
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
 import com.kape.router.ExitFlow
@@ -40,7 +41,7 @@ class TvRouter : Router {
             EnterFlow.Login -> navigation.value = Login.WithCredentials
             EnterFlow.Permissions -> navigation.value = Permissions.Route
             EnterFlow.Splash -> navigation.value = Splash.Main
-            EnterFlow.Connection -> TODO("To be implemented")
+            EnterFlow.Connection -> navigation.value = Connection.Main
             EnterFlow.VpnRegionSelection -> TODO("To be implemented")
             EnterFlow.ShadowsocksRegionSelection -> TODO("To be implemented")
             EnterFlow.Profile -> TODO("To be implemented")
@@ -75,7 +76,7 @@ class TvRouter : Router {
             ExitFlow.DedicatedIp -> TODO("To be implemented")
             ExitFlow.AutomationSettings -> TODO("To be implemented")
             ExitFlow.KillSwitchSettings -> TODO("To be implemented")
-            ExitFlow.Permissions -> TODO("To be implemented")
+            ExitFlow.Permissions -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.Automation -> TODO("To be implemented")
             ExitFlow.ProtocolSettings -> TODO("To be implemented")
             ExitFlow.About -> TODO("To be implemented")
