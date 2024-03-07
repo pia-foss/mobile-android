@@ -117,7 +117,7 @@ class CsiDataProvider(
         override val reportType: ReportType
             get() = ReportType.LOG
         override val value: String
-            get() = csiPrefs.getProtocolDebugLogs()
+            get() = redactIPsFromString(csiPrefs.getProtocolDebugLogs())
     }
 
     // region private
