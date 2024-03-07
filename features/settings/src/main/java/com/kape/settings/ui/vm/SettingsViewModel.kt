@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
+import com.kape.csi.CsiPrefs
 import com.kape.csi.domain.SendLogUseCase
 import com.kape.location.data.LocationPermissionManager
 import com.kape.router.Back
@@ -26,6 +27,7 @@ import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.settings.utils.SettingsStep
 import com.kape.shareevents.domain.KpiDataSource
+import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
@@ -37,10 +39,12 @@ import org.koin.core.component.KoinComponent
 class SettingsViewModel(
     private val prefs: SettingsPrefs,
     private val connectionPrefs: ConnectionPrefs,
+    private val csiPrefs: CsiPrefs,
     private val router: Router,
     private val regionsRepository: VpnRegionRepository,
     val version: String,
     private val kpiDataSource: KpiDataSource,
+    private val connectionDataSource: ConnectionDataSource,
     private val getDebugLogsUseCase: GetLogsUseCase,
     private val sendLogUseCase: SendLogUseCase,
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
@@ -392,8 +396,11 @@ class SettingsViewModel(
     }
 
     fun sendLogs() = viewModelScope.launch {
-        sendLogUseCase.sendLog().collect {
-            requestId.value = it
+        connectionDataSource.getDebugLogs().collect {
+            csiPrefs.setProtocolDebugLogs(it.joinToString(separator = "\n"))
+            sendLogUseCase.sendLog().collect {
+                requestId.value = it
+            }
         }
     }
 

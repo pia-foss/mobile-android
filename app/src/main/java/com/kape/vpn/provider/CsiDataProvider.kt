@@ -15,6 +15,7 @@ private const val CSI_LAST_KNOWN_EXCEPTION_FILENAME = "last_known_exception"
 private const val CSI_PROTOCOL_INFORMATION_FILENAME = "protocol_information"
 private const val CSI_REGION_INFORMATION_FILENAME = "regions_information"
 private const val CSI_USER_SETTINGS_FILENAME = "user_settings"
+private const val CSI_PROTOCOL_DEBUG_LOGS_FILENAME = "protocol_debug_logs"
 
 class CsiDataProvider(
     private val csiPrefs: CsiPrefs,
@@ -104,6 +105,19 @@ class CsiDataProvider(
             get() = ReportType.DIAGNOSTIC
         override val value: String
             get() = getDeviceInformation()
+    }
+
+    val protocolDebugLogsProvider = object : ICSIProvider {
+        override val filename: String
+            get() = CSI_PROTOCOL_DEBUG_LOGS_FILENAME
+        override val isPersistedData: Boolean
+            get() = false
+        override val providerType: ProviderType
+            get() = ProviderType.LOGGING_INFORMATION
+        override val reportType: ReportType
+            get() = ReportType.LOG
+        override val value: String
+            get() = csiPrefs.getProtocolDebugLogs()
     }
 
     // region private
