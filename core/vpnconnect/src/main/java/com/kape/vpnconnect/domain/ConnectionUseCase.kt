@@ -30,6 +30,7 @@ import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.TransportProtocol
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -114,6 +115,9 @@ class ConnectionUseCase(
             connectionManager,
         ).collect { connected ->
             emit(connected)
+            // The API can be sometimes be called before the tunnel is up which means the request times out
+            // Add a delay prior to the request to avoid it.
+            delay(1000)
             clientStateDataSource.getClientStatus().collect {
                 if (!connected) {
                     clientIp.value = connectionPrefs.getClientIp()
