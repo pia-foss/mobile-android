@@ -172,7 +172,7 @@ class MainActivity : ComponentActivity() {
             composable(TvLogin.Username) { LoginUsernameScreen() }
             composable(Login.WithCredentials) { LoginPasswordScreen() }
             composable(Permissions.Route) { TvPermissionsFlow() }
-            composable(Permissions.Route) { TvConnectionScreen() }
+            composable(Connection.Main) { TvConnectionScreen() }
         } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }

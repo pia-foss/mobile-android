@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
@@ -26,6 +30,7 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.TabRowDefaults
+import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.sidemenu.R
 import com.kape.ui.mobile.elements.Screen
@@ -50,6 +55,7 @@ fun TvConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val isConnected = viewModel.isConnected.collectAsState()
     val locale = Locale.getDefault().language
 
     BackHandler {
@@ -130,7 +136,9 @@ fun TvConnectionScreen() = Screen {
                     }
                 }
                 AppBarTitleText(
-                    content = "Not Connected",
+                    content = getTopTextConnectionString(
+                        status = connectionStatus.value,
+                    ),
                     textColor = getTopTextConnectionColor(
                         status = connectionStatus.value,
                         scheme = LocalColors.current,
@@ -156,8 +164,18 @@ fun TvConnectionScreen() = Screen {
                     }
                 }
             }
-            Row(modifier = Modifier.fillMaxSize()) {
-                // To be done
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 520.dp)
+                    .fillMaxHeight(),
+            ) {
+                Spacer(modifier = Modifier.height(32.dp))
+                ConnectButton(
+                    status = if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                ) {
+                    viewModel.onConnectionButtonClicked()
+                }
             }
         }
     }
@@ -184,5 +202,17 @@ private fun getTopTextConnectionColor(status: ConnectionStatus, scheme: ColorSch
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTING,
         -> scheme.statusBarConnecting()
+    }
+}
+
+@Composable
+private fun getTopTextConnectionString(status: ConnectionStatus): String {
+    return when (status) {
+        ConnectionStatus.ERROR -> stringResource(id = com.kape.ui.R.string.connection_error)
+        ConnectionStatus.CONNECTED -> stringResource(id = com.kape.ui.R.string.connected)
+        ConnectionStatus.DISCONNECTED -> stringResource(id = com.kape.ui.R.string.not_connected)
+        ConnectionStatus.RECONNECTING,
+        ConnectionStatus.CONNECTING,
+        -> stringResource(id = com.kape.ui.R.string.connecting)
     }
 }

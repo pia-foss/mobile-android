@@ -104,5 +104,6 @@ fun AppBarTitleText(
         textAlign = TextAlign.Center,
         color = if (isError) LocalColors.current.onPrimary else textColor,
         style = PiaTypography.h1,
+        fontSize = 32.sp,
     )
 }
