@@ -156,7 +156,7 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementVpnManager() {
-        add(IMPLEMENTATION, "com.kape.android:vpnmanager:0.2.0-rc03")
+        add(IMPLEMENTATION, "com.kape.android:vpnmanager:0.3.2")
     }
 
     fun DependencyHandler.implementDrawablePainter() {
