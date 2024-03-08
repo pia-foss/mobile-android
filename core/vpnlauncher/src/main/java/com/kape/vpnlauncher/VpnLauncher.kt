@@ -5,19 +5,25 @@ import android.net.VpnService
 import com.kape.connection.ConnectionPrefs
 import com.kape.settings.SettingsPrefs
 import com.kape.vpnconnect.domain.ConnectionUseCase
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import kotlin.coroutines.CoroutineContext
 
-@OptIn(DelicateCoroutinesApi::class)
 class VpnLauncher(
     private val context: Context,
     private val connectionPrefs: ConnectionPrefs,
     private val connectionUseCase: ConnectionUseCase,
     private val settingsPrefs: SettingsPrefs,
-) : KoinComponent {
+) : CoroutineScope, KoinComponent {
+
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.IO
 
     fun launchVpn() {
         val vpnIntent = VpnService.prepare(context)
@@ -30,7 +36,7 @@ class VpnLauncher(
             } else {
                 connectionPrefs.getSelectedVpnServer()?.let {
                     if (!connectionUseCase.isConnected()) {
-                        GlobalScope.launch {
+                        launch {
                             connectionUseCase.startConnection(it, false).collect()
                         }
                     }
@@ -41,15 +47,7 @@ class VpnLauncher(
         }
     }
 
-    fun relaunchVpn() = GlobalScope.launch {
-        if (isVpnConnected()) {
-            connectionUseCase.stopConnection().collect() {
-                launchVpn()
-            }
-        }
-    }
-
-    fun stopVpn() = GlobalScope.launch {
+    fun stopVpn() = launch {
         connectionUseCase.stopConnection().collect()
     }
 

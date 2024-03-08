@@ -27,6 +27,7 @@ import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.settings.utils.SettingsStep
 import com.kape.shareevents.domain.KpiDataSource
+import com.kape.utils.AutomationManager
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.domain.GetLogsUseCase
@@ -50,6 +51,7 @@ class SettingsViewModel(
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
     private val locationPermissionManager: LocationPermissionManager,
     private val connectionUseCase: ConnectionUseCase,
+    private val automationManager: AutomationManager,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow<SettingsStep>(SettingsStep.Main)
@@ -259,7 +261,10 @@ class SettingsViewModel(
 
     fun isAutomationEnabled() = prefs.isAutomationEnabled()
 
-    fun disableAutomation() = prefs.setAutomationEnabled(false)
+    fun disableAutomation() {
+        prefs.setAutomationEnabled(false)
+        automationManager.stopAutomationService()
+    }
 
     fun areLocationPermissionsGranted() =
         locationPermissionManager.isFineLocationPermissionGranted() &&

@@ -21,6 +21,7 @@ private val localAutomationModule = module {
             get(),
             get(),
             get(named("rules-updated-intent")),
+            get(),
         )
     }
 }
