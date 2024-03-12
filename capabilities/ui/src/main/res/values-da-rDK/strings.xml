@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">Tilslut let til enhver region</string>
   <string name="subscribe_screen_description">Med servere over hele kloden er du altid beskyttet. Start din gratis prøveperiode på syv dage, og betal derefter %s.</string>
   <string name="subscribe_now">Abonner nu</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;privatlivspolitik&lt;/a&gt; og &lt;a href=\"web-screen-terms\"&gt;servicevilkår&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">privatlivspolitik</a> og <a href="web-screen-terms">servicevilkår</a></string>
   <string name="monthly_ending">%1$s/måned</string>
   <string name="yearly_month_ending">%2$s%1$s/måned</string>
   <string name="yearly_ending">%1$s/år</string>

@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">Du kan enkelt koble deg til hvilken som helst region</string>
   <string name="subscribe_screen_description">Med servere over hele verden er du alltid beskyttet. Start en 7-dagers gratis prøveperiode og deretter %s.</string>
   <string name="subscribe_now">Abonner nå</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;Personvernerklæring&lt;/a&gt; og &lt;a href=\"web-screen-terms\"&gt;tjenestevilkår&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">Personvernerklæring</a> og <a href="web-screen-terms">tjenestevilkår</a></string>
   <string name="monthly_ending">%1$s/mnd</string>
   <string name="yearly_month_ending">%2$s%1$s/mnd</string>
   <string name="yearly_ending">%1$s per år</string>

@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">輕易就能連線到任何地區</string>
   <string name="subscribe_screen_description">我們的伺服器遍佈全球，能為您提供全面保護。開始 7 天免費試用，之後收費 %s。</string>
   <string name="subscribe_now">即刻訂閱</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;隱私權政策&lt;/a&gt; 和 &lt;a href=\"web-screen-terms\"&gt;服務條款&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">隱私權政策</a> 和 <a href="web-screen-terms">服務條款</a></string>
   <string name="monthly_ending">每月 %1$s</string>
   <string name="yearly_month_ending">%2$s%1$s/月</string>
   <string name="yearly_ending">每年 %1$s</string>

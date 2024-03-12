@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">Maak eenvoudig verbinding met elke regio</string>
   <string name="subscribe_screen_description">Met servers over de hele wereld ben je altijd beschermd. Start je gratis proefabonnement van 7 dagen nu. Daarna betaal je %s per jaar. </string>
   <string name="subscribe_now">Nu abonneren</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;Privacybeleid&lt;/a&gt; en &lt;a href=\"web-screen-terms\"&gt;Servicevoorwaarden&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">Privacybeleid</a> en <a href="web-screen-terms">Servicevoorwaarden</a></string>
   <string name="monthly_ending">%1$s/mnd</string>
   <string name="yearly_month_ending">%2$s%1$s/mnd</string>
   <string name="yearly_ending">%1$s per jaar</string>
