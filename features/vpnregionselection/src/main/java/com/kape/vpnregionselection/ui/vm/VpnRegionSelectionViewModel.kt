@@ -175,6 +175,7 @@ class VpnRegionSelectionViewModel(
                 server = VpnServer(
                     name = name,
                     iso = iso,
+                    dns = "",
                     latency = null,
                     endpoints = emptyMap(),
                     key = "auto",

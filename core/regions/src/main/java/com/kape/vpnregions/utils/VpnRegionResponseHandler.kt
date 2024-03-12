@@ -77,6 +77,7 @@ fun adaptVpnServers(vpnRegionsResponse: VpnRegionsResponse): Map<String, VpnServ
         val server = VpnServer(
             region.name,
             region.country,
+            region.dns,
             null,
             regionEndpoints,
             region.id,
@@ -154,6 +155,7 @@ fun getServerForDip(
     return VpnServer(
         server.name,
         server.iso,
+        server.dns,
         server.latency,
         updatedEndpointsPerProtocol,
         server.key,
