@@ -32,8 +32,11 @@ import androidx.tv.material3.TabRow
 import androidx.tv.material3.TabRowDefaults
 import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
+import com.kape.customization.data.Element
 import com.kape.sidemenu.R
 import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.tiles.ShadowsocksLocationPicker
+import com.kape.ui.mobile.tiles.VpnLocationPicker
 import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarDefault
@@ -175,6 +178,41 @@ fun TvConnectionScreen() = Screen {
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                 ) {
                     viewModel.onConnectionButtonClicked()
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                viewModel.getOrderedElements().forEach {
+                    when (it.element) {
+                        Element.VpnRegionSelection -> {
+                            viewModel.selectedVpnServer.value?.let { vpnServer ->
+                                VpnLocationPicker(
+                                    server = vpnServer,
+                                    isConnected = viewModel.isConnectionActive(),
+                                    isOptimal = viewModel.showOptimalLocation.value,
+                                ) {
+                                    viewModel.showVpnRegionSelection()
+                                }
+                            }
+                        }
+                        Element.ShadowsocksRegionSelection -> {
+                            ShadowsocksLocationPicker(
+                                server = viewModel.getSelectedShadowsocksServer(),
+                                isConnected = viewModel.isConnectionActive(),
+                            ) {
+                                viewModel.showShadowsocksRegionSelection()
+                            }
+                        }
+                        Element.QuickConnect -> {
+                            // To be implemented.
+                        }
+                        Element.ConnectionInfo,
+                        Element.IpInfo,
+                        Element.QuickSettings,
+                        Element.Snooze,
+                        Element.Traffic,
+                        -> {
+                            // Continue. Not showing them on TV.
+                        }
+                    }
                 }
             }
         }
