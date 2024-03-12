@@ -32,7 +32,7 @@ android {
         applicationId = "com.kape.vpn"
         minSdk = 24
         targetSdk = 34
-        versionCode = 650
+        versionCode = 651
         versionName = "4.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
