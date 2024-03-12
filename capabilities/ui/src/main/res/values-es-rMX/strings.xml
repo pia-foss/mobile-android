@@ -32,7 +32,7 @@
   <string name="quick_connect">CONEXIÓN RÁPIDA</string>
   <string name="selected_vpn_region">UBICACIÓN DE VPN SELECCIONADA</string>
   <string name="current_vpn_region">UBICACIÓN ACTUAL DE VPN</string>
-  <string name="optimal_vpn_region">OBICACIÓN ÓPTIMA</string>
+  <string name="optimal_vpn_region">UBICACIÓN ÓPTIMA</string>
   <string name="automatic">Automática</string>
   <string name="selected_obfuscation_region">SELECCIONAR UBICACIÓN DE OFUSCACIÓN</string>
   <string name="current_obfuscation_region">UBICACIÓN DE OFUSCACIÓN SELECCIONADA</string>
