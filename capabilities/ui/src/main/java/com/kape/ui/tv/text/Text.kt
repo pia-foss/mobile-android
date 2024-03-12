@@ -107,3 +107,22 @@ fun AppBarTitleText(
         fontSize = 32.sp,
     )
 }
+
+@Composable
+fun QuickConnectText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        textAlign = TextAlign.Center,
+        style = PiaTypography.caption1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun TileTitleText(content: String) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurfaceVariant,
+        style = PiaTypography.button2,
+    )
+}

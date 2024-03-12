@@ -2,6 +2,7 @@
 
 package com.kape.ui.tv.elements
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -88,4 +89,26 @@ fun RoundIconButton(
             contentDescription = null,
         )
     }
+}
+
+@Composable
+fun TileButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    content: @Composable RowScope.() -> Unit,
+) {
+    Button(
+        modifier = modifier,
+        shape = ButtonDefaults.shape(
+            shape = RoundedCornerShape(12.dp),
+        ),
+        colors = ButtonDefaults.colors(
+            containerColor = LocalColors.current.onPrimaryContainer,
+            contentColor = LocalColors.current.onSurface,
+            focusedContainerColor = LocalColors.current.primary,
+            focusedContentColor = LocalColors.current.onPrimaryContainer,
+        ),
+        onClick = onClick,
+        content = content,
+    )
 }

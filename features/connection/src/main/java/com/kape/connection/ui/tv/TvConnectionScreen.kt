@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -23,6 +25,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -45,7 +49,9 @@ import com.kape.ui.tv.elements.RoundIconButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.tv.text.PrimaryButtonText
 import com.kape.ui.tv.text.SecondaryButtonText
+import com.kape.ui.tv.tiles.QuickConnect
 import com.kape.ui.utils.LocalColors
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
@@ -59,6 +65,7 @@ fun TvConnectionScreen() = Screen {
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val isConnected = viewModel.isConnected.collectAsState()
+    val initialFocusRequester = FocusRequester()
     val locale = Locale.getDefault().language
 
     BackHandler {
@@ -66,6 +73,7 @@ fun TvConnectionScreen() = Screen {
     }
 
     LaunchedEffect(key1 = Unit) {
+        initialFocusRequester.requestFocus()
         viewModel.loadVpnServers(locale)
         viewModel.loadShadowsocksServers(locale)
         viewModel.autoConnect()
@@ -77,7 +85,11 @@ fun TvConnectionScreen() = Screen {
     )
     val selectedTabIndex = remember { mutableIntStateOf(0) }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .fillMaxSize(),
+    ) {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 4.dp,
@@ -175,46 +187,74 @@ fun TvConnectionScreen() = Screen {
                 Spacer(modifier = Modifier.height(32.dp))
                 ConnectButton(
                     status = if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .focusRequester(initialFocusRequester),
                 ) {
                     viewModel.onConnectionButtonClicked()
                 }
                 Spacer(modifier = Modifier.height(32.dp))
                 viewModel.getOrderedElements().forEach {
-                    when (it.element) {
-                        Element.VpnRegionSelection -> {
-                            viewModel.selectedVpnServer.value?.let { vpnServer ->
-                                VpnLocationPicker(
-                                    server = vpnServer,
-                                    isConnected = viewModel.isConnectionActive(),
-                                    isOptimal = viewModel.showOptimalLocation.value,
-                                ) {
-                                    viewModel.showVpnRegionSelection()
-                                }
-                            }
-                        }
-                        Element.ShadowsocksRegionSelection -> {
-                            ShadowsocksLocationPicker(
-                                server = viewModel.getSelectedShadowsocksServer(),
-                                isConnected = viewModel.isConnectionActive(),
-                            ) {
-                                viewModel.showShadowsocksRegionSelection()
-                            }
-                        }
-                        Element.QuickConnect -> {
-                            // To be implemented.
-                        }
-                        Element.ConnectionInfo,
-                        Element.IpInfo,
-                        Element.QuickSettings,
-                        Element.Snooze,
-                        Element.Traffic,
-                        -> {
-                            // Continue. Not showing them on TV.
-                        }
-                    }
+                    DisplayComponent(
+                        screenElement = it.element,
+                        isVisible = viewModel.isScreenElementVisible(it),
+                        viewModel = viewModel,
+                    )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun DisplayComponent(
+    screenElement: Element,
+    isVisible: Boolean,
+    viewModel: ConnectionViewModel,
+) {
+    if (isVisible.not()) {
+        return
+    }
+
+    when (screenElement) {
+        Element.VpnRegionSelection -> {
+            viewModel.selectedVpnServer.value?.let { vpnServer ->
+                VpnLocationPicker(
+                    server = vpnServer,
+                    isConnected = viewModel.isConnectionActive(),
+                    isOptimal = viewModel.showOptimalLocation.value,
+                ) {
+                    viewModel.showVpnRegionSelection()
+                }
+            }
+        }
+        Element.ShadowsocksRegionSelection -> {
+            ShadowsocksLocationPicker(
+                server = viewModel.getSelectedShadowsocksServer(),
+                isConnected = viewModel.isConnectionActive(),
+            ) {
+                viewModel.showShadowsocksRegionSelection()
+            }
+        }
+        Element.QuickConnect -> {
+            val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
+            for (server in viewModel.quickConnectVpnServers.value) {
+                quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name)
+            }
+            QuickConnect(
+                servers = quickConnectMap,
+                onClick = {
+                    viewModel.quickConnect(it)
+                },
+            )
+        }
+        Element.ConnectionInfo,
+        Element.IpInfo,
+        Element.QuickSettings,
+        Element.Snooze,
+        Element.Traffic,
+        -> {
+            // Continue. Not showing them on TV.
         }
     }
 }
