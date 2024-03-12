@@ -28,6 +28,7 @@ private fun localSettingsModule(version: String) = module {
             get(),
             get(),
             get(),
+            get(),
         )
     }
 }

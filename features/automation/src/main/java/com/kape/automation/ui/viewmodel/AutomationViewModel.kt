@@ -12,6 +12,7 @@ import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
+import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +26,7 @@ class AutomationViewModel(
     private val networkRulesManager: NetworkRulesManager,
     private val networkConnectionListener: NetworkConnectionListener,
     val broadcastIntent: Intent,
+    private val automationManager: AutomationManager,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow<AutomationStep>(AutomationStep.LocationPermission)
@@ -47,6 +49,7 @@ class AutomationViewModel(
             ) {
                 if (settingsPrefs.isAutomationEnabled().not()) {
                     settingsPrefs.setAutomationEnabled(true)
+                    automationManager.startAutomationService()
                     _state.emit(AutomationStep.MainSet)
                 } else {
                     _state.emit(AutomationStep.MainUpdate)

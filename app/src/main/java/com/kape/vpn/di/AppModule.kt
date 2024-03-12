@@ -19,6 +19,7 @@ import com.kape.router.Router
 import com.kape.router.mobile.MobileRouter
 import com.kape.router.tv.TvRouter
 import com.kape.settings.SettingsPrefs
+import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
@@ -34,6 +35,7 @@ import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.vpn.provider.VpnManagerProvider
 import com.kape.vpn.receiver.OnRulesChangedReceiver
 import com.kape.vpn.receiver.PortForwardingReceiver
+import com.kape.vpn.service.AutomationService
 import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.NetworkManager
 import com.kape.vpn.utils.PlatformUtils
@@ -59,6 +61,7 @@ import org.koin.dsl.module
 import java.io.BufferedReader
 
 const val PARAM_USER_AGENT = "user-agent"
+private const val AUTOMATION_SERVICE_INTENT = "automation-service-intent"
 
 val appModule = module {
     single { provideCertificate(get()) }
@@ -83,6 +86,8 @@ val appModule = module {
     single { providePendingIntent(get(), get()) }
     single { provideNotification(get()) }
     single(named("service-intent")) { provideWidgetServiceIntent(get()) }
+    single(named(AUTOMATION_SERVICE_INTENT)) { provideAutomationServiceIntent(get()) }
+    single { AutomationManager(get(), get(named(AUTOMATION_SERVICE_INTENT)), get()) }
     single { UsageProvider(get()) }
     single { provideVpnManagerApi(get(), get(), get()) }
     single { providerRouter(get()) }
@@ -252,6 +257,10 @@ fun provideWidgetServiceIntent(context: Context): PendingIntent {
         Intent(context, WidgetProviderService::class.java),
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
     )
+}
+
+fun provideAutomationServiceIntent(context: Context): Intent {
+    return Intent(context, AutomationService::class.java)
 }
 
 fun provideRulesUpdatedIntent(context: Context): Intent {

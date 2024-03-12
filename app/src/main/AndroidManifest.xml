@@ -28,6 +28,7 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <!--Android 14-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
 
     <uses-feature
@@ -106,6 +107,11 @@
         <receiver android:name="com.kape.snooze.OnSnoozeReceiver" />
         <receiver android:name=".receiver.PortForwardingReceiver" />
         <receiver android:name=".receiver.OnRulesChangedReceiver" />
+
+        <service
+            android:name=".service.AutomationService"
+            android:foregroundServiceType="location"
+            android:permission="android.permission.BIND_VPN_SERVICE" />
 
         <service
             android:name=".service.VpnAlwaysOnService"

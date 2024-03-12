@@ -186,6 +186,10 @@ class ConnectionViewModel(
                 }
             }
         }
+        // Required for automation
+        selectedVpnServer.value?.let {
+            prefs.setSelectedVpnServer(it)
+        }
 
         if (vpnRegionPrefs.needsVpnReconnect()) {
             vpnRegionPrefs.setVpnReconnect(false)
