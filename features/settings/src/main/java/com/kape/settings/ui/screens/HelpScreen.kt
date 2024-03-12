@@ -7,8 +7,10 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,6 +43,7 @@ fun HelpScreen() = Screen {
     val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
     val showToast = remember { mutableStateOf(false) }
+    val showSpinner = remember { mutableStateOf(false) }
 
     BackHandler {
         viewModel.navigateUp()
@@ -100,6 +103,7 @@ fun HelpScreen() = Screen {
                 SettingsItem(
                     titleId = R.string.help_send_log_title,
                     onClick = {
+                        showSpinner.value = true
                         viewModel.sendLogs()
                     },
                 )
@@ -120,7 +124,17 @@ fun HelpScreen() = Screen {
                     )
                 }
 
+                if (showSpinner.value) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .size(48.dp),
+                        color = LocalColors.current.primary,
+                    )
+                }
+
                 if (showDialog.value) {
+                    showSpinner.value = false
                     SuccessDialog(
                         requestId = viewModel.requestId.value ?: "",
                         showDialog = showDialog,
@@ -128,6 +142,7 @@ fun HelpScreen() = Screen {
                 }
 
                 if (showToast.value) {
+                    showSpinner.value = false
                     Toast.makeText(context, R.string.failure_sending_log, Toast.LENGTH_LONG)
                         .show()
                     showToast.value = false
