@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">Herhangi bir bölgeye kolayca bağlanın</string>
   <string name="subscribe_screen_description">Dünyanın dört bir yanındaki sunucularla, her zaman koruma altındasınız. 7 günlük ücretsiz denemenizi başlatın. Sonrasında %s.</string>
   <string name="subscribe_now">Şimdi abone olun</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;Gizlilik Politikası&lt;/a&gt; ve &lt;a href=\"web-screen-terms\"&gt;Hizmet Şartları&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">Gizlilik Politikası</a> ve <a href="web-screen-terms">Hizmet Şartları</a></string>
   <string name="monthly_ending">Ayda %1$s</string>
   <string name="yearly_month_ending">Ayda %2$s%1$s</string>
   <string name="yearly_ending">Yıllık %1$s</string>

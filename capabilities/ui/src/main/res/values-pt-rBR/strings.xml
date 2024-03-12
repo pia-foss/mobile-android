@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">Conecte-se a qualquer região facilmente</string>
   <string name="subscribe_screen_description">Com servidores no mundo todo, você está sempre protegido. Comece seu teste grátis de 7 dias e, depois, %s por ano.</string>
   <string name="subscribe_now">Assine agora</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;Política de Privacidade&lt;/a&gt; e &lt;a href=\"web-screen-terms\"&gt;Termos de Serviço&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">Política de Privacidade</a> e <a href="web-screen-terms">Termos de Serviço</a></string>
   <string name="monthly_ending">%1$s/mês</string>
   <string name="yearly_month_ending">%2$s%1$s/mês</string>
   <string name="yearly_ending">%1$s por ano</string>

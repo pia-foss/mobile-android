@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">Легкое подключение к любому региону</string>
   <string name="subscribe_screen_description">Благодаря серверам по всему миру вы всегда под защитой. Попробуйте наш сервис бесплатно в течение 7 дней, затем %s.</string>
   <string name="subscribe_now">Купить подписку сейчас</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;Политика конфиденциальности&lt;/a&gt; и &lt;a href=\"web-screen-terms\"&gt;Условия использования&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">Политика конфиденциальности</a> и <a href="web-screen-terms">Условия использования</a></string>
   <string name="monthly_ending">%1$s/мес.</string>
   <string name="yearly_month_ending">%2$s%1$s/мес.</string>
   <string name="yearly_ending">%1$s в год</string>

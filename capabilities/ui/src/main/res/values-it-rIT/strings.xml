@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">Collegati facilmente a qualsiasi regione</string>
   <string name="subscribe_screen_description">Grazie ai server sparsi in tutto il mondo, sei sempre protetto. Inizia la tua prova gratuita di 7 giorni e poi %s .</string>
   <string name="subscribe_now">Abbonati ora</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;Informativa sulla privacy&lt;/a&gt; e &lt;a href=\"web-screen-terms\"&gt;Termini di servizio&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">Informativa sulla privacy</a> e <a href="web-screen-terms">Termini di servizio</a></string>
   <string name="monthly_ending">%1$s al mese</string>
   <string name="yearly_month_ending">%2$s%1$s al mese</string>
   <string name="yearly_ending">%1$s all\'anno</string>

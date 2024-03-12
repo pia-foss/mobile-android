@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">เชื่อมต่อกับภูมิภาคต่าง ๆ อย่างง่ายดาย</string>
   <string name="subscribe_screen_description">ด้วยเซิร์ฟเวอร์ทั่วโลก คุณจะอยู่ภายใต้การคุ้มครองเสมอ เริ่มทดลองใช้ฟรี 7 วัน จากนั้น %s</string>
   <string name="subscribe_now">สมัครสมาชิกตอนนี้</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;นโยบายความเป็นส่วนตัว&lt;/a&gt; และ &lt;a href=\"web-screen-terms\"&gt;ข้อกำหนดในการให้บริการ&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">นโยบายความเป็นส่วนตัว</a> และ <a href="web-screen-terms">ข้อกำหนดในการให้บริการ</a></string>
   <string name="monthly_ending">%1$s /เดือน</string>
   <string name="yearly_month_ending">%2$s%1$s /เดือน</string>
   <string name="yearly_ending">%1$s ต่อปี</string>

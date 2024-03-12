@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">어떤 지역에든 간편히 연결</string>
   <string name="subscribe_screen_description">전 세계에 위치한 서버를 통해 항상 보호받을 수 있습니다. 7일 무료 체험 시작 후 %s .</string>
   <string name="subscribe_now">지금 구독하기</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;개인정보 취급방침&lt;/a&gt; 및 &lt;a href=\"web-screen-terms\"&gt;서비스 약관&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">개인정보 취급방침</a> 및 <a href="web-screen-terms">서비스 약관</a></string>
   <string name="monthly_ending">%1$s/월</string>
   <string name="yearly_month_ending">%2$s%1$s/월</string>
   <string name="yearly_ending">매년 %1$s</string>

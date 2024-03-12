@@ -264,7 +264,7 @@
   <string name="subscribe_screen_title">どの地域にも簡単に接続</string>
   <string name="subscribe_screen_description">世界中のサーバーを利用して、常に保護を維持できます。 7日間の無料トライアルを開始しましょう。その後年間%sでご利用いただけます。</string>
   <string name="subscribe_now">今すぐ登録</string>
-  <string name="footer">&lt;a href=\"web-screen-privacy\"&gt;プライバシーポリシー&lt;/a&gt;および&lt;a href=\"web-screen-terms\"&gt;利用規約&lt;/a&gt;</string>
+  <string name="footer"><a href="web-screen-privacy">プライバシーポリシー</a>および<a href="web-screen-terms">利用規約</a></string>
   <string name="monthly_ending">%1$s/月</string>
   <string name="yearly_month_ending">%2$s%1$s/月</string>
   <string name="yearly_ending">年額%1$s</string>
