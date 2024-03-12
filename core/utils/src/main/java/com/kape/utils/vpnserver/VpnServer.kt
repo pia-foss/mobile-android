@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 data class VpnServer(
     val name: String,
     val iso: String,
+    val dns: String,
     var latency: String?,
     val endpoints: Map<ServerGroup, List<ServerEndpointDetails>>,
     val key: String,
