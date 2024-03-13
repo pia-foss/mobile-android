@@ -8,4 +8,7 @@ object SideMenuObjects {
 
     val logoutButton =
         UiAutomatorObjectFinder.findByResourceId(":SideMenu:Logout")
+
+    val logoutDialogueConfirmButton =
+        UiAutomatorObjectFinder.findByResourceId(":SideMenu:ConfirmButton")
 }

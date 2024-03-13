@@ -53,6 +53,7 @@ class UiAutomatorSignInSteps : SignInSteps {
         else if (MainScreenObjects.connectButton.exists()) {
             MainScreenObjects.sideMenu.clickAndWaitForNewWindow(defaultTimeout)
             SideMenuObjects.logoutButton.clickAndWaitForNewWindow(defaultTimeout)
+            SideMenuObjects.logoutDialogueConfirmButton.clickAndWaitForNewWindow(defaultTimeout)
         }
 
         waitUntilFound(SignUpUiObjects.loginButton)

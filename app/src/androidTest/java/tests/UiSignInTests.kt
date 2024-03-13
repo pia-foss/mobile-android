@@ -4,9 +4,13 @@ import com.kape.vpn.BuildConfig
 import org.junit.Test
 import screens.objects.LoginUiObjects
 import screens.objects.MainScreenObjects
+import kotlin.test.Ignore
 
 class UiSignInTests : UiTest() {
 
+    @Ignore ("Ignoring because the app will perpetually load as the emulator is not signed in in google playstore" +
+            "when logging out resulting all test will fail because we also have to optimise clearing of instance" +
+            "in each of every tests")
     @Test
     fun sign_in_with_valid_credentials_reaches_connect_screen() {
         uiSignInAction.signIn(

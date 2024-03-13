@@ -261,20 +261,32 @@ private fun SideMenuItem(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LogoutDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
     AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = onDismiss,
         confirmButton = {
-            TextButton(onClick = onConfirm) {
+            TextButton(
+                onClick = onConfirm,
+                modifier = Modifier.testTag(
+                    ":SideMenu:ConfirmButton",
+                ),
+            ) {
                 Text(text = stringResource(id = com.kape.ui.R.string.drawer_item_title_logout))
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.testTag(
+                    ":SideMenu:DismissButton",
+                ),
+            ) {
                 Text(text = stringResource(id = com.kape.ui.R.string.cancel))
             }
         },
