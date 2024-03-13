@@ -64,8 +64,9 @@ import com.kape.splash.ui.SplashScreen
 import com.kape.tvwelcome.ui.TvWelcomeScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
-import com.kape.vpnregionselection.ui.VpnRegionSelectionScreen
+import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpn.utils.PlatformUtils
+import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
@@ -173,6 +174,7 @@ class MainActivity : ComponentActivity() {
             composable(Login.WithCredentials) { LoginPasswordScreen() }
             composable(Permissions.Route) { TvPermissionsFlow() }
             composable(Connection.Main) { TvConnectionScreen() }
+            composable(VpnRegionSelection.Main) { TvVpnRegionSelectionScreen() }
         } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }

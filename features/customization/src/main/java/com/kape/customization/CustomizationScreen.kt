@@ -22,8 +22,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.appbar.view.AppBar
-import com.kape.appbar.view.AppBarType
+import com.kape.appbar.view.mobile.AppBar
+import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.customization.data.Element

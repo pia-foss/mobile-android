@@ -3,6 +3,7 @@ import Dependencies.desugarJdkLibs
 import Dependencies.implementFeatureModule
 import Dependencies.implementSerialization
 import Dependencies.implementSwipeToRefresh
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
@@ -60,6 +61,7 @@ dependencies {
     implementation(project(":features:appbar"))
 
     implementFeatureModule()
+    implementVpnManager()
     implementSerialization()
     implementSwipeToRefresh()
 }

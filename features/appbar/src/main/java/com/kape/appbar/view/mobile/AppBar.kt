@@ -1,4 +1,4 @@
-package com.kape.appbar.view
+package com.kape.appbar.view.mobile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,6 +31,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.ui.R
 import com.kape.ui.mobile.text.AppBarConnectionTextDefault
 import com.kape.ui.mobile.text.AppBarTitleText
 import com.kape.ui.theme.connectedGradient
@@ -68,7 +69,7 @@ fun AppBar(
     AppBarContent(
         type = type,
         status = if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
-        if (isConnected.value) viewModel.appBarText else stringResource(id = com.kape.ui.R.string.no_internet_connection),
+        if (isConnected.value) viewModel.appBarText else stringResource(id = R.string.no_internet_connection),
         onLeftIconClick,
         onRightIconClick,
     )

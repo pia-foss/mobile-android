@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.kape.appbar.view.AppBar
+import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
 import com.kape.obfuscationregionselection.util.ItemType

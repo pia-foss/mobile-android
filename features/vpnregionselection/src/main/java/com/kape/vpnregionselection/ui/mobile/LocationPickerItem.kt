@@ -1,4 +1,4 @@
-package com.kape.vpnregionselection.ui
+package com.kape.vpnregionselection.ui.mobile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

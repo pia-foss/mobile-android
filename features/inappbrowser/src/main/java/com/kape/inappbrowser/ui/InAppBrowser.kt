@@ -12,8 +12,8 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.web.LoadingState
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
-import com.kape.appbar.view.AppBar
-import com.kape.appbar.view.AppBarType
+import com.kape.appbar.view.mobile.AppBar
+import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.utils.LocalColors

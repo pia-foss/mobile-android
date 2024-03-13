@@ -1,5 +1,6 @@
 import Dependencies.KOTLIN_COMPILER_EXTENSION
 import Dependencies.implementCompose
+import Dependencies.implementComposeTv
 import Dependencies.implementKoin
 import Dependencies.implementViewModel
 import Dependencies.implementVpnManager
@@ -48,6 +49,7 @@ dependencies {
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:utils"))
     implementCompose()
+    implementComposeTv()
     implementViewModel()
     implementKoin()
     implementVpnManager()

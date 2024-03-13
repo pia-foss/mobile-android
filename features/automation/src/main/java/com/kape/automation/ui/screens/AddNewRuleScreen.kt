@@ -22,9 +22,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.appbar.view.AppBar
+import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.automation.R
 import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.ui.mobile.elements.Screen

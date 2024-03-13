@@ -121,7 +121,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         }
 
         SideMenuItem(
-            iconId = R.drawable.ic_settings,
+            iconId = com.kape.ui.R.drawable.ic_settings,
             titleId = com.kape.ui.R.string.drawer_item_title_settings,
             ":SideMenu:Settings",
         ) {
@@ -166,7 +166,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         }
 
         SideMenuItem(
-            iconId = R.drawable.ic_help,
+            iconId = com.kape.ui.R.drawable.ic_help,
             titleId = com.kape.ui.R.string.drawer_item_title_contact_support,
             ":SideMenu:ContactSupport",
         ) {

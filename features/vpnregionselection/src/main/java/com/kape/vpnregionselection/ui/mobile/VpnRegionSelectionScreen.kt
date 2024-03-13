@@ -1,4 +1,4 @@
-package com.kape.vpnregionselection.ui
+package com.kape.vpnregionselection.ui.mobile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.kape.appbar.view.AppBar
+import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
