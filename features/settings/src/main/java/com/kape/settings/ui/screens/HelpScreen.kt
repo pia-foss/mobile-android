@@ -146,6 +146,7 @@ fun HelpScreen() = Screen {
                     Toast.makeText(context, R.string.failure_sending_log, Toast.LENGTH_LONG)
                         .show()
                     showToast.value = false
+                    viewModel.resetRequestId()
                 }
             }
         }
