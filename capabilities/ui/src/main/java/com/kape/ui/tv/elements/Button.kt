@@ -95,6 +95,7 @@ fun RoundIconButton(
 fun TileButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
+    onLongClick: () -> Unit = { },
     content: @Composable RowScope.() -> Unit,
 ) {
     Button(
@@ -109,6 +110,7 @@ fun TileButton(
             focusedContentColor = LocalColors.current.onPrimaryContainer,
         ),
         onClick = onClick,
+        onLongClick = onLongClick,
         content = content,
     )
 }

@@ -12,9 +12,11 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -42,7 +44,11 @@ fun TvHomeHeaderItem(
         stringResource(id = R.string.app_name),
         stringResource(R.string.location),
     )
+    val colorScheme = LocalColors.current
     val selectedTabIndex = remember { mutableIntStateOf(0) }
+    val tabPillActiveColor = remember { mutableStateOf(colorScheme.primary) }
+    val tabPillActiveTextColor = remember { mutableStateOf(colorScheme.onPrimary) }
+    val tabPillInactiveColor = remember { mutableStateOf(colorScheme.onPrimaryContainer) }
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -57,6 +63,17 @@ fun TvHomeHeaderItem(
                         color = LocalColors.current.primaryContainer,
                         shape = CircleShape,
                     )
+                    .onFocusChanged {
+                        if (it.hasFocus) {
+                            tabPillActiveColor.value = colorScheme.primary
+                            tabPillActiveTextColor.value = colorScheme.onPrimary
+                            tabPillInactiveColor.value = colorScheme.onPrimaryContainer
+                        } else {
+                            tabPillActiveColor.value = colorScheme.onPrimaryContainer
+                            tabPillActiveTextColor.value = colorScheme.onSurface
+                            tabPillInactiveColor.value = colorScheme.primaryContainer
+                        }
+                    }
                     .padding(4.dp),
                 selectedTabIndex = selectedTabIndex.intValue,
                 indicator = { tabPositions, _ ->
@@ -64,8 +81,8 @@ fun TvHomeHeaderItem(
                         TabRowDefaults.PillIndicator(
                             currentTabPosition = tabPositions[index],
                             doesTabRowHaveFocus = index == selectedTabIndex.intValue,
-                            activeColor = LocalColors.current.primary,
-                            inactiveColor = LocalColors.current.onPrimaryContainer,
+                            activeColor = tabPillActiveColor.value,
+                            inactiveColor = tabPillInactiveColor.value,
                         )
                     }
                 },
@@ -79,7 +96,7 @@ fun TvHomeHeaderItem(
                         },
                     ) {
                         if (index == selectedTabIndex.intValue) {
-                            PrimaryButtonText(content = tab)
+                            PrimaryButtonText(content = tab, color = tabPillActiveTextColor.value)
                         } else {
                             SecondaryButtonText(content = tab)
                         }

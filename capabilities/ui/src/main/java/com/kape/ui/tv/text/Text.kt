@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
@@ -14,23 +15,23 @@ import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun PrimaryButtonText(content: String) {
+fun PrimaryButtonText(content: String, color: Color = LocalColors.current.onPrimary) {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = content,
         textAlign = TextAlign.Center,
-        color = LocalColors.current.onPrimary,
+        color = color,
         style = PiaTypography.button1,
     )
 }
 
 @Composable
-fun SecondaryButtonText(content: String) {
+fun SecondaryButtonText(content: String, color: Color = LocalColors.current.onSurface) {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = content,
         textAlign = TextAlign.Center,
-        color = LocalColors.current.onError,
+        color = color,
         style = PiaTypography.button1,
     )
 }
@@ -124,5 +125,37 @@ fun TileTitleText(content: String) {
         text = content,
         color = LocalColors.current.onSurfaceVariant,
         style = PiaTypography.button2,
+    )
+}
+
+@Composable
+fun RegionSelectionNameText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        textAlign = TextAlign.Start,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = PiaTypography.body3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun RegionSelectionLatencyText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        textAlign = TextAlign.Start,
+        style = PiaTypography.caption1,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun RegionSelectionGridSectionText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle1,
+        modifier = modifier,
     )
 }

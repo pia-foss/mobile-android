@@ -128,17 +128,17 @@ private fun QuickConnectItem(
                         tint = Color.Unspecified,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
-                            .size(12.dp),
+                            .size(16.dp),
                     )
                 }
                 if (isFavorite) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_favorite),
+                        painter = painterResource(id = R.drawable.ic_heart_selected),
                         contentDescription = null,
                         tint = Color.Unspecified,
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
-                            .size(12.dp),
+                            .size(16.dp),
                     )
                 }
             }

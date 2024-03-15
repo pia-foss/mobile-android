@@ -31,7 +31,6 @@ class VpnRegionSelectionViewModel(
     lateinit var autoRegionName: String
     lateinit var autoRegionIso: String
 
-    val sortBySelectedOption: MutableState<SortByOption> = mutableStateOf(SortByOption.NONE)
     val isPortForwardingEnabled = settingsPrefs.isPortForwardingEnabled()
 
     fun loadVpnRegions(locale: String, isLoading: MutableState<Boolean>, displayLoading: Boolean) =
@@ -74,35 +73,22 @@ class VpnRegionSelectionViewModel(
             }
         }
 
-    fun sortBy(option: SortByOption) = viewModelScope.launch {
-        servers.value = when (option) {
-            SortByOption.NONE -> servers.value
-            SortByOption.NAME -> servers.value.filter { it.type is ItemType.Content }
-                .sortedBy { (it.type as ItemType.Content).server.name }
-
-            SortByOption.LATENCY -> servers.value.filter { it.type is ItemType.Content }
-                .sortedBy { (it.type as ItemType.Content).server.latency?.toInt() }
-
-            SortByOption.FAVORITE -> {
-                servers.value.filter { it.type is ItemType.Content }
-                    .sortedWith(compareBy<ServerItem> { (it.type as ItemType.Content).isFavorite }.thenBy { (it.type as ItemType.Content).server.name })
-                    .sortedByDescending { isVpnServerFavorite((it.type as ItemType.Content).server.name) }
-            }
-        }.toList()
-    }
-
-    fun getSortingOption(selected: Int): SortByOption {
-        return when (selected) {
-            SortByOption.NONE.index -> SortByOption.NONE
-            SortByOption.NAME.index -> SortByOption.NAME
-            SortByOption.LATENCY.index -> SortByOption.LATENCY
-            SortByOption.FAVORITE.index -> SortByOption.FAVORITE
-            else -> throw Exception("Sorting option not defined")
-        }
-    }
-
     fun navigateBack() {
         router.handleFlow(Back)
+    }
+
+    fun getTvVpnServers(): MutableState<List<ServerItem>> {
+        var autoRegionIndex = servers.value.indexOfFirst { serverItem: ServerItem ->
+            serverItem.type is ItemType.Content &&
+                serverItem.type.server.iso == autoRegionIso &&
+                serverItem.type.server.name == autoRegionName
+        }
+        if (autoRegionIndex == -1) {
+            autoRegionIndex = 0
+        } else {
+            autoRegionIndex += 1
+        }
+        return mutableStateOf(servers.value.subList(autoRegionIndex, servers.value.size))
     }
 
     private fun isVpnServerFavorite(serverName: String): Boolean {
@@ -189,12 +175,5 @@ class VpnRegionSelectionViewModel(
                 ),
             ),
         )
-    }
-
-    sealed class SortByOption(val index: Int) {
-        data object NONE : SortByOption(-1)
-        data object NAME : SortByOption(0)
-        data object LATENCY : SortByOption(1)
-        data object FAVORITE : SortByOption(2)
     }
 }
