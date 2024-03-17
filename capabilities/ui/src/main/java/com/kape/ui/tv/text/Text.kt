@@ -129,6 +129,26 @@ fun TileTitleText(content: String) {
 }
 
 @Composable
+fun SelectedRegionTitleText(content: String) {
+    Text(
+        text = content,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = PiaTypography.caption2,
+    )
+}
+
+@Composable
+fun SelectedRegionServerText(content: String) {
+    Text(
+        text = content,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = PiaTypography.subtitle3,
+    )
+}
+
+@Composable
 fun RegionSelectionNameText(content: String, modifier: Modifier = Modifier) {
     Text(
         text = content,

@@ -16,6 +16,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -37,15 +39,23 @@ import com.kape.vpnconnect.utils.ConnectionStatus
 
 @Composable
 fun TvHomeHeaderItem(
+    modifier: Modifier,
     title: String? = null,
     connectionStatus: State<ConnectionStatus>,
+    defaultSelectedTabIndex: Int,
+    onVpnSelected: () -> Unit = { },
+    onLocationsSelected: () -> Unit = { },
 ) {
     val tabs = listOf(
         stringResource(id = R.string.app_name),
-        stringResource(R.string.location),
+        stringResource(id = R.string.location),
+    )
+    val focusRequesters = listOf(
+        FocusRequester(),
+        FocusRequester(),
     )
     val colorScheme = LocalColors.current
-    val selectedTabIndex = remember { mutableIntStateOf(0) }
+    val selectedTabIndex = remember { mutableIntStateOf(defaultSelectedTabIndex) }
     val tabPillActiveColor = remember { mutableStateOf(colorScheme.primary) }
     val tabPillActiveTextColor = remember { mutableStateOf(colorScheme.onPrimary) }
     val tabPillInactiveColor = remember { mutableStateOf(colorScheme.onPrimaryContainer) }
@@ -58,7 +68,7 @@ fun TvHomeHeaderItem(
             horizontalArrangement = Arrangement.Start,
         ) {
             TabRow(
-                modifier = Modifier
+                modifier = modifier
                     .background(
                         color = LocalColors.current.primaryContainer,
                         shape = CircleShape,
@@ -68,6 +78,7 @@ fun TvHomeHeaderItem(
                             tabPillActiveColor.value = colorScheme.primary
                             tabPillActiveTextColor.value = colorScheme.onPrimary
                             tabPillInactiveColor.value = colorScheme.onPrimaryContainer
+                            focusRequesters[selectedTabIndex.intValue].requestFocus()
                         } else {
                             tabPillActiveColor.value = colorScheme.onPrimaryContainer
                             tabPillActiveTextColor.value = colorScheme.onSurface
@@ -89,10 +100,17 @@ fun TvHomeHeaderItem(
             ) {
                 tabs.forEachIndexed { index, tab ->
                     Tab(
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+                        modifier = Modifier
+                            .padding(vertical = 8.dp, horizontal = 16.dp)
+                            .focusRequester(focusRequesters[index]),
                         selected = index == selectedTabIndex.intValue,
                         onFocus = {
                             selectedTabIndex.intValue = index
+                            when (selectedTabIndex.intValue) {
+                                0 -> onVpnSelected()
+                                1 -> onLocationsSelected()
+                                else -> throw IllegalStateException("Unsupported TV Header State")
+                            }
                         },
                     ) {
                         if (index == selectedTabIndex.intValue) {
