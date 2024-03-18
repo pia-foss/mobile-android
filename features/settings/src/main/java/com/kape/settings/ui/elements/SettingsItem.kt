@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Separator
@@ -33,10 +34,18 @@ fun SettingsItem(
     testTag: String? = null,
     onClick: (() -> Unit)? = null,
 ) {
+    // Screen readers interpret the clickable modifier as an interactive element. By removing
+    // this modifier, the screen reader will no longer wrongly suggest the user to "tap twice to activate"
+    val clickableModifier = if (onClick != null) {
+        Modifier.clickable(onClick = onClick)
+    } else {
+        Modifier
+    }
     Column(
         modifier = Modifier
             .padding(vertical = 1.dp)
-            .clickable(onClick = onClick ?: {}),
+            .then(clickableModifier)
+            .semantics(mergeDescendants = true) {},
     ) {
         Row(
             modifier = Modifier
