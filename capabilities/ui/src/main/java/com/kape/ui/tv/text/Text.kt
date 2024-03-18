@@ -174,7 +174,7 @@ fun RegionSelectionLatencyText(content: String, modifier: Modifier = Modifier) {
 fun RegionSelectionGridSectionText(content: String, modifier: Modifier = Modifier) {
     Text(
         text = content,
-        color = LocalColors.current.onSurface,
+        color = LocalColors.current.onSurfaceVariant,
         style = PiaTypography.subtitle1,
         modifier = modifier,
     )

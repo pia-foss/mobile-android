@@ -63,6 +63,9 @@
 
     <string name="location_selection_title">Location Selection</string>
     <string name="all_locations">All Locations</string>
+    <string name="all">All</string>
+    <string name="no_favorite_locations_available">No Favorite Locations Available</string>
+    <string name="no_favorite_message">You didn\'t mark any servers as favorite yet.\n\nLong press the center of the clickpad on your TV remote at the location selection screen to mark a location as favorite.</string>
 
     <string name="app_name">PIA VPN</string>
     <string name="url_terms_of_service" translatable="false">https://www.privateinternetaccess.com/pages/terms-of-service/</string>

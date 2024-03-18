@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTvMaterial3Api::class)
+
 package com.kape.vpnregionselection.ui.tv
 
 import androidx.compose.foundation.background
@@ -9,6 +11,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -23,10 +28,13 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
 import androidx.tv.foundation.lazy.grid.TvGridCells
 import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
+import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.tv.material3.Text
 import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -50,7 +58,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
     val initialFocusRequester = remember { FocusRequester() }
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val isSearchEnabled = remember { mutableStateOf(false) }
+    val isFavoriteSelected = remember { mutableStateOf(false) }
     val viewModel: VpnRegionSelectionViewModel =
         koinViewModel<VpnRegionSelectionViewModel>().apply {
             autoRegionIso = stringResource(id = R.string.automatic_iso)
@@ -63,7 +71,13 @@ fun TvVpnRegionSelectionScreen() = Screen {
             }
         }
 
-    val serverItems = viewModel.getTvVpnServers().value
+    val serverItems = if (isFavoriteSelected.value) {
+        viewModel.getTvVpnServers().value.filter {
+            it.type is ItemType.Content && it.type.isFavorite
+        }
+    } else {
+        viewModel.getTvVpnServers().value
+    }
 
     Box(
         modifier = Modifier
@@ -100,14 +114,44 @@ fun TvVpnRegionSelectionScreen() = Screen {
                     .padding(top = 32.dp),
             ) {
                 Column(modifier = Modifier.weight(0.25f)) {
+                    TvColumnSelectionItem(
+                        modifier = Modifier.padding(top = 16.dp),
+                        onAllSelected = {
+                            isFavoriteSelected.value = false
+                        },
+                        onFavoriteSelected = {
+                            isFavoriteSelected.value = true
+                        },
+                    )
                 }
                 Column(
-                    modifier = Modifier.weight(0.75f),
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .weight(0.75f),
                 ) {
-                    RegionSelectionGridSectionText(
-                        content = stringResource(id = R.string.all_locations),
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                    )
+                    if (isFavoriteSelected.value) {
+                        if (serverItems.isEmpty()) {
+                            RegionSelectionGridSectionText(
+                                content = stringResource(id = R.string.no_favorite_locations_available),
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                            )
+                            Card(
+                                modifier = Modifier
+                                    .padding(all = 16.dp)
+                                    .semantics(mergeDescendants = true) { },
+                                shape = RoundedCornerShape(12.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = LocalColors.current.primaryContainer,
+                                ),
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(all = 16.dp),
+                                    color = LocalColors.current.onSurface,
+                                    text = stringResource(id = R.string.no_favorite_message),
+                                )
+                            }
+                        }
+                    }
                     TvLazyVerticalGrid(
                         columns = TvGridCells.Fixed(3),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -123,6 +167,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
                                         vpnServerName = serverItem.type.server.name,
                                         vpnServerLatency = serverItem.type.server.latency,
                                         vpnServerLatencyTimeout = VPN_REGIONS_PING_TIMEOUT.toString(),
+                                        enableFavorite = serverItem.type.enableFavorite,
                                         isFavorite = serverItem.type.isFavorite,
                                         onClick = {
                                             viewModel.onVpnRegionSelected(serverItem.type.server)

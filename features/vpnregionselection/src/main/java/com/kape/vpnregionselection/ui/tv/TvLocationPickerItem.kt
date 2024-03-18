@@ -34,6 +34,7 @@ fun TvLocationPickerItem(
     vpnServerName: String,
     vpnServerLatency: String?,
     vpnServerLatencyTimeout: String,
+    enableFavorite: Boolean,
     isFavorite: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit = { },
@@ -85,12 +86,14 @@ fun TvLocationPickerItem(
                     }
                 }
             }
-            FavoriteIcon(
-                isChecked = isFavorite,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(28.dp),
-            )
+            if (enableFavorite) {
+                FavoriteIcon(
+                    isChecked = isFavorite,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(28.dp),
+                )
+            }
         }
     }
 }

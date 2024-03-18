@@ -85,8 +85,6 @@ class VpnRegionSelectionViewModel(
         }
         if (autoRegionIndex == -1) {
             autoRegionIndex = 0
-        } else {
-            autoRegionIndex += 1
         }
         return mutableStateOf(servers.value.subList(autoRegionIndex, servers.value.size))
     }
