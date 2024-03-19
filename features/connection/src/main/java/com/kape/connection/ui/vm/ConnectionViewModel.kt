@@ -280,7 +280,8 @@ class ConnectionViewModel(
                             regionListProvider.servers.value.sortedBy { it.latency?.toInt() }
                                 .first()
                         } else {
-                            regionListProvider.servers.value.first { it.key == existingKey }
+                            regionListProvider.servers.value.firstOrNull { it.key == existingKey }
+                                ?: regionListProvider.servers.value.first()
                         }
                     if (vpnRegionPrefs.needsVpnReconnect()) {
                         vpnRegionPrefs.setVpnReconnect(false)
