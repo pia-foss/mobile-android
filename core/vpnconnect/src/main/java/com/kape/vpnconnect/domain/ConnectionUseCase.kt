@@ -108,6 +108,8 @@ class ConnectionUseCase(
 
     fun isConnected(): Boolean = connectionManager.isConnected()
 
+    fun isConnecting(): Boolean = connectionManager.isConnecting()
+
     private fun getVpnToken() = connectionSource.getVpnToken()
 
     private fun startVpnConnection(server: VpnServer): Flow<Boolean> = flow {

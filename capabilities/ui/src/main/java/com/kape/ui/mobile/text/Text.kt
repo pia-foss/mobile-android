@@ -11,6 +11,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kape.ui.theme.PiaTypography
+import com.kape.ui.theme.infoBlue
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -153,6 +154,16 @@ fun ErrorText(content: String, modifier: Modifier) {
     Text(
         text = content,
         color = LocalColors.current.error,
+        style = PiaTypography.body3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun InfoText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.infoBlue(),
         style = PiaTypography.body3,
         modifier = modifier,
     )

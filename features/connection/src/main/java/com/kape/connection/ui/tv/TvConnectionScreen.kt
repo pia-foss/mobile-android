@@ -126,18 +126,19 @@ private fun DisplayComponent(
         return
     }
 
+    val state = viewModel.state.collectAsState()
+
     when (screenElement) {
         Element.VpnRegionSelection -> {
-            viewModel.selectedVpnServer.value?.let { vpnServer ->
-                VpnLocationPicker(
-                    server = vpnServer,
-                    isConnected = viewModel.isConnectionActive(),
-                    isOptimal = viewModel.showOptimalLocation.value,
-                ) {
-                    viewModel.showVpnRegionSelection()
-                }
+            VpnLocationPicker(
+                server = state.value.server,
+                isConnected = viewModel.isConnectionActive(),
+                isOptimal = state.value.isCurrentServerOptimal,
+            ) {
+                viewModel.showVpnRegionSelection()
             }
         }
+
         Element.ShadowsocksRegionSelection -> {
             ShadowsocksLocationPicker(
                 server = viewModel.getSelectedShadowsocksServer(),
@@ -146,9 +147,10 @@ private fun DisplayComponent(
                 viewModel.showShadowsocksRegionSelection()
             }
         }
+
         Element.QuickConnect -> {
             val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-            for (server in viewModel.quickConnectVpnServers.value) {
+            for (server in state.value.quickConnectServers) {
                 quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name)
             }
             QuickConnect(
@@ -158,6 +160,7 @@ private fun DisplayComponent(
                 },
             )
         }
+
         Element.ConnectionInfo,
         Element.IpInfo,
         Element.QuickSettings,

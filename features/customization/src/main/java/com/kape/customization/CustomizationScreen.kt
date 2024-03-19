@@ -13,7 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -48,14 +48,12 @@ import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyListState
 import org.burnoutcrew.reorderable.reorderable
 import org.koin.androidx.compose.koinViewModel
-import java.util.Locale
 
 @Composable
 fun CustomizationScreen() = Screen {
     val viewModel: CustomizationViewModel = koinViewModel()
     val connectionViewModel: ConnectionViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
-    val locale = Locale.getDefault().language
 
     Scaffold(
         topBar = {
@@ -72,9 +70,6 @@ fun CustomizationScreen() = Screen {
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            LaunchedEffect(key1 = Unit) {
-                connectionViewModel.loadVpnServers(locale)
-            }
             val state =
                 rememberReorderableLazyListState(
                     onMove = viewModel::onMove,
@@ -151,6 +146,7 @@ private fun DisplayComponent(
     screenElement: ScreenElement,
     viewModel: ConnectionViewModel,
 ) {
+    val state = viewModel.state.collectAsState()
     when (screenElement.element) {
         Element.ConnectionInfo -> {
             val settings = viewModel.getConnectionSettings()
@@ -184,7 +180,7 @@ private fun DisplayComponent(
 
         Element.QuickConnect -> {
             val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-            for (server in viewModel.quickConnectVpnServers.value) {
+            for (server in state.value.quickConnectServers) {
                 quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name)
             }
             QuickConnect(
@@ -204,14 +200,12 @@ private fun DisplayComponent(
         }
 
         Element.VpnRegionSelection -> {
-            viewModel.selectedVpnServer.value?.let {
-                VpnLocationPicker(
-                    modifier = modifier,
-                    server = it,
-                    isConnected = viewModel.isConnectionActive(),
-                    viewModel.showOptimalLocation.value,
-                ) {}
-            }
+            VpnLocationPicker(
+                modifier = modifier,
+                server = state.value.server,
+                isConnected = viewModel.isConnectionActive(),
+                state.value.isCurrentServerOptimal,
+            ) {}
         }
 
         Element.ShadowsocksRegionSelection -> {

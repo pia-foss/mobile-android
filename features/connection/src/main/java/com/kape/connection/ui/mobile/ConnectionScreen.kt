@@ -7,7 +7,9 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -35,11 +37,13 @@ import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
+import com.kape.connection.utils.ConnectionScreenState
 import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.sidemenu.ui.SideMenu
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.InfoCard
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.tiles.ConnectionInfo
@@ -70,6 +74,7 @@ fun ConnectionScreen() = Screen {
     val isConnected = viewModel.isConnected.collectAsState()
     val scope: CoroutineScope = rememberCoroutineScope()
     val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
+    val state = viewModel.state.collectAsState()
 
     BackHandler {
         viewModel.exitApp()
@@ -117,11 +122,13 @@ fun ConnectionScreen() = Screen {
                     viewModel.onConnectionButtonClicked()
                 }
                 Spacer(modifier = Modifier.height(36.dp))
+
                 viewModel.getOrderedElements().forEach {
                     DisplayComponent(
                         screenElement = it,
                         isVisible = viewModel.isScreenElementVisible(it),
                         viewModel = viewModel,
+                        state = state.value,
                     )
                 }
             }
@@ -134,6 +141,7 @@ private fun DisplayComponent(
     screenElement: ScreenElement,
     isVisible: Boolean,
     viewModel: ConnectionViewModel,
+    state: ConnectionScreenState,
 ) {
     if (isVisible) {
         val context: Context = LocalContext.current
@@ -169,7 +177,7 @@ private fun DisplayComponent(
 
             Element.QuickConnect -> {
                 val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-                for (server in viewModel.quickConnectVpnServers.value) {
+                for (server in state.quickConnectServers) {
                     quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name)
                 }
                 QuickConnect(
@@ -197,14 +205,22 @@ private fun DisplayComponent(
             }
 
             Element.VpnRegionSelection -> {
-                viewModel.selectedVpnServer.value?.let {
-                    VpnLocationPicker(
-                        server = it,
-                        isConnected = viewModel.isConnectionActive(),
-                        isOptimal = viewModel.showOptimalLocation.value,
-                    ) {
-                        viewModel.showVpnRegionSelection()
-                    }
+                VpnLocationPicker(
+                    server = state.server,
+                    isConnected = viewModel.isConnectionActive(),
+                    isOptimal = state.isCurrentServerOptimal,
+                ) {
+                    viewModel.showVpnRegionSelection()
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+                if (state.showOptimalLocationInfo) {
+                    InfoCard(
+                        content = stringResource(id = R.string.optimal_location_hint),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                    )
                 }
             }
 

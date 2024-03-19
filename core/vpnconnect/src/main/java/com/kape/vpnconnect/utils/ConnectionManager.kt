@@ -24,12 +24,16 @@ class ConnectionManager(
     private val _serverIso = MutableStateFlow("")
     val serverIso: StateFlow<String> = _serverIso
 
-    private val _connectionStatusTitle = MutableStateFlow(context.getString(com.kape.ui.R.string.not_connected))
+    private val _connectionStatusTitle =
+        MutableStateFlow(context.getString(com.kape.ui.R.string.not_connected))
     val connectionStatusTitle: StateFlow<String> = _connectionStatusTitle
 
     var isManualConnection: Boolean = false
 
     fun isConnected(): Boolean = connectionStatus.value == ConnectionStatus.CONNECTED
+
+    fun isConnecting(): Boolean =
+        connectionStatus.value == ConnectionStatus.CONNECTING || connectionStatus.value == ConnectionStatus.RECONNECTING
 
     fun setConnectedServerName(serverName: String, iso: String) {
         _serverName.value = serverName
@@ -41,11 +45,13 @@ class ConnectionManager(
             VPNManagerConnectionStatus.Disconnecting,
             is VPNManagerConnectionStatus.Disconnected,
             -> ConnectionStatus.DISCONNECTED
+
             VPNManagerConnectionStatus.Authenticating,
             VPNManagerConnectionStatus.LinkUp,
             VPNManagerConnectionStatus.Configuring,
             VPNManagerConnectionStatus.Connecting,
             -> ConnectionStatus.CONNECTING
+
             VPNManagerConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
             is VPNManagerConnectionStatus.Connected -> ConnectionStatus.CONNECTED
         }
@@ -64,11 +70,13 @@ class ConnectionManager(
             VPNManagerConnectionStatus.Disconnecting,
             is VPNManagerConnectionStatus.Disconnected,
             -> KpiConnectionStatus.NotConnected
+
             VPNManagerConnectionStatus.Authenticating,
             VPNManagerConnectionStatus.LinkUp,
             VPNManagerConnectionStatus.Configuring,
             VPNManagerConnectionStatus.Connecting,
             -> KpiConnectionStatus.Connecting
+
             VPNManagerConnectionStatus.Reconnecting -> KpiConnectionStatus.Reconnecting
             is VPNManagerConnectionStatus.Connected -> KpiConnectionStatus.Connected
         }
