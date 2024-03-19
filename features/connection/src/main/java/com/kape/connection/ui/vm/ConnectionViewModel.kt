@@ -22,6 +22,7 @@ import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import com.kape.shadowsocksregions.domain.SetShadowsocksRegionsUseCase
 import com.kape.snooze.SnoozeHandler
 import com.kape.ui.mobile.tiles.MAX_SERVERS
+import com.kape.utils.AUTO_KEY
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.utils.vpnserver.VpnServer
@@ -275,7 +276,12 @@ class ConnectionViewModel(
             if (!existingKey.isNullOrEmpty()) {
                 if (server.key != existingKey) {
                     val serverToConnect =
-                        regionListProvider.servers.value.first { it.key == existingKey }
+                        if (existingKey == AUTO_KEY) {
+                            regionListProvider.servers.value.sortedBy { it.latency?.toInt() }
+                                .first()
+                        } else {
+                            regionListProvider.servers.value.first { it.key == existingKey }
+                        }
                     if (vpnRegionPrefs.needsVpnReconnect()) {
                         vpnRegionPrefs.setVpnReconnect(false)
                         prefs.setSelectedVpnServer(serverToConnect)

@@ -8,6 +8,7 @@ import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
+import com.kape.utils.AUTO_KEY
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.VpnRegionPrefs
@@ -162,7 +163,7 @@ class VpnRegionSelectionViewModel(
                     dns = "",
                     latency = null,
                     endpoints = emptyMap(),
-                    key = "auto",
+                    key = AUTO_KEY,
                     latitude = null,
                     longitude = null,
                     isGeo = false,
