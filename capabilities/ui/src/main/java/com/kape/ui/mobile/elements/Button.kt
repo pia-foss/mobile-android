@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.mobile.text.PrimaryButtonText
@@ -106,7 +107,7 @@ fun Toggle(isOn: Boolean, onCheckedChange: (checked: Boolean) -> Unit) {
 fun FavoriteIcon(isChecked: Boolean, modifier: Modifier) {
     Icon(
         painter = painterResource(id = if (isChecked) R.drawable.ic_heart_selected else R.drawable.ic_heart_default),
-        contentDescription = null,
+        contentDescription = stringResource(id = if (isChecked) R.string.remove_from_favorites else R.string.add_to_favorites),
         tint = Color.Unspecified,
         modifier = modifier,
     )
