@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.mobile.text.BestValueBannerText
 import com.kape.ui.mobile.text.ErrorText
+import com.kape.ui.mobile.text.InfoText
 import com.kape.ui.mobile.text.SettingsL1Text
 import com.kape.ui.mobile.text.SettingsL2TextDescription
 import com.kape.ui.mobile.text.SignUpDurationText
@@ -210,12 +211,12 @@ fun InfoCard(content: String, modifier: Modifier) {
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_error),
+                painter = painterResource(id = R.drawable.ic_info_loading),
                 contentDescription = null,
                 tint = LocalColors.current.infoOutline(),
             )
             Spacer(modifier = Modifier.width(16.dp))
-            ErrorText(content = content, modifier = Modifier.align(CenterVertically))
+            InfoText(content = content, modifier = Modifier.align(CenterVertically))
         }
     }
 }

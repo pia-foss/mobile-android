@@ -43,6 +43,7 @@
     <string name="current_vpn_region">CURRENT VPN LOCATION</string>
     <string name="optimal_vpn_region">Optimal Location</string>
     <string name="location">Location</string>
+    <string name="optimal_location_hint">We\'re trying to find the best server for you. Once we found it, you\'ll access the Optimal Location feature.</string>
 
     <string name="automatic">Automatic</string>
 
