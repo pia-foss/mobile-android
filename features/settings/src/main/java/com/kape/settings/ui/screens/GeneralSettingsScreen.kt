@@ -48,7 +48,7 @@ fun GeneralSettingsScreen() = Screen {
                 SettingsToggle(
                     titleId = R.string.connect_on_boot_title,
                     subtitleId = R.string.connect_on_boot_description,
-                    enabled = viewModel.launchOnBootEnabled,
+                    enabled = viewModel.launchOnBootEnabled.value,
                     toggle = {
                         viewModel.toggleLaunchOnBoot(it)
                     },
@@ -57,7 +57,7 @@ fun GeneralSettingsScreen() = Screen {
                 SettingsToggle(
                     titleId = R.string.connect_on_launch_title,
                     subtitleId = R.string.connect_on_launch_description,
-                    enabled = viewModel.connectOnStart,
+                    enabled = viewModel.connectOnStart.value,
                     toggle = {
                         viewModel.toggleConnectOnStart(it)
                     },
@@ -66,7 +66,7 @@ fun GeneralSettingsScreen() = Screen {
                 SettingsToggle(
                     titleId = R.string.connect_on_update_title,
                     subtitleId = R.string.connect_on_update_description,
-                    enabled = viewModel.connectOnUpdate,
+                    enabled = viewModel.connectOnUpdate.value,
                     toggle = {
                         viewModel.toggleConnectOnUpdate(it)
                     },
