@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -82,14 +83,14 @@ fun <T> OptionsDialog(
         },
         text = {
             Column(
-                Modifier.fillMaxWidth(),
+                Modifier.fillMaxWidth().selectableGroup(),
             ) {
                 options.forEach {
                     Row(
                         Modifier
                             .fillMaxWidth()
                             .selectable(
-                                selected = (it.value == selected.value),
+                                selected = (it.key == selected.value),
                                 onClick = {
                                     selected.value = it.key
                                 },
