@@ -181,8 +181,9 @@ fun TvVpnRegionSelectionScreen() = Screen {
                                         },
                                     )
                                 }
-                                ItemType.HeadingAll -> { }
-                                ItemType.HeadingFavorites -> { }
+
+                                ItemType.HeadingAll -> {}
+                                ItemType.HeadingFavorites -> {}
                             }
                         }
                     }
@@ -197,7 +198,10 @@ fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Col
     return when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED -> scheme.statusBarDefault(scheme)
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
+            scheme,
+        )
+
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTING,
         -> scheme.statusBarConnecting()

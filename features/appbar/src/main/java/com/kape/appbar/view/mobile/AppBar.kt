@@ -173,7 +173,10 @@ private fun getAppBarBackgroundColor(status: ConnectionStatus, scheme: ColorSche
     return when (status) {
         ConnectionStatus.ERROR -> Brush.verticalGradient(scheme.errorGradient())
         ConnectionStatus.CONNECTED -> Brush.verticalGradient(scheme.connectedGradient())
-        ConnectionStatus.DISCONNECTED -> Brush.verticalGradient(scheme.defaultGradient(scheme))
+        ConnectionStatus.DISCONNECTING,
+        ConnectionStatus.DISCONNECTED,
+        -> Brush.verticalGradient(scheme.defaultGradient(scheme))
+
         ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
         -> Brush.verticalGradient(scheme.connectingGradient())
@@ -184,7 +187,10 @@ private fun getStatusBarColor(status: ConnectionStatus, scheme: ColorScheme): Co
     return when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED -> scheme.statusBarDefault(scheme)
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
+            scheme,
+        )
+
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTING,
         -> scheme.statusBarConnecting()
@@ -248,6 +254,7 @@ private fun AppBarConnectionStatus(
 private fun shouldShowDarkIcons(connectionState: ConnectionStatus): Boolean {
     return when (connectionState) {
         ConnectionStatus.DISCONNECTED,
+        ConnectionStatus.DISCONNECTING,
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTED,
         ConnectionStatus.CONNECTING,
