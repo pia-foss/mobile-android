@@ -57,9 +57,9 @@ class SettingsViewModel(
     private val _state = MutableStateFlow<SettingsStep>(SettingsStep.Main)
     val state: StateFlow<SettingsStep> = _state
 
-    val launchOnBootEnabled = prefs.isLaunchOnStartupEnabled()
-    val connectOnStart = prefs.isConnectOnLaunchEnabled()
-    val connectOnUpdate = prefs.isConnectOnAppUpdateEnabled()
+    val launchOnBootEnabled = mutableStateOf(prefs.isLaunchOnStartupEnabled())
+    val connectOnStart = mutableStateOf(prefs.isConnectOnLaunchEnabled())
+    val connectOnUpdate = mutableStateOf(prefs.isConnectOnAppUpdateEnabled())
     val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
     val shadowsocksObfuscationEnabled = mutableStateOf(prefs.isShadowsocksObfuscationEnabled())
     val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
@@ -154,14 +154,17 @@ class SettingsViewModel(
 
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
+        launchOnBootEnabled.value = enable
     }
 
     fun toggleConnectOnStart(enable: Boolean) {
         prefs.setEnableConnectOnLaunch(enable)
+        connectOnStart.value = enable
     }
 
     fun toggleConnectOnUpdate(enable: Boolean) {
         prefs.setEnableConnectOnAppUpdate(enable)
+        connectOnUpdate.value = enable
     }
 
     fun toggleImprovePia(enable: Boolean) {
