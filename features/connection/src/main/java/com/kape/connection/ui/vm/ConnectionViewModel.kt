@@ -32,6 +32,7 @@ import com.kape.vpnregions.VpnRegionPrefs
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -222,7 +223,7 @@ class ConnectionViewModel(
     }
 
     fun onConnectionButtonClicked() = viewModelScope.launch {
-        if (connectionUseCase.isConnected()) {
+        if (connectionUseCase.isConnected() || connectionUseCase.isConnecting()) {
             disconnect()
         } else {
             connect()
@@ -253,7 +254,7 @@ class ConnectionViewModel(
         connectionUseCase.startConnection(
             server = state.value.server,
             isManualConnection = true,
-        ).collect()
+        ).cancellable().collect()
     }
 
     private fun disconnect() = viewModelScope.launch {

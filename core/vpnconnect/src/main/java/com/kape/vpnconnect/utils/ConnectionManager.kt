@@ -3,7 +3,6 @@ package com.kape.vpnconnect.utils
 import android.content.Context
 import com.kape.shareevents.data.models.KpiConnectionStatus
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
-import com.kape.vpnconnect.R
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,10 +41,8 @@ class ConnectionManager(
 
     override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
         val currentStatus = when (status) {
-            VPNManagerConnectionStatus.Disconnecting,
-            is VPNManagerConnectionStatus.Disconnected,
-            -> ConnectionStatus.DISCONNECTED
-
+            VPNManagerConnectionStatus.Disconnecting -> ConnectionStatus.DISCONNECTING
+            is VPNManagerConnectionStatus.Disconnected -> ConnectionStatus.DISCONNECTED
             VPNManagerConnectionStatus.Authenticating,
             VPNManagerConnectionStatus.LinkUp,
             VPNManagerConnectionStatus.Configuring,
@@ -56,13 +53,13 @@ class ConnectionManager(
             is VPNManagerConnectionStatus.Connected -> ConnectionStatus.CONNECTED
         }
         _connectionStatus.value = currentStatus
+        connectionValues[currentStatus]?.let {
+            _connectionStatusTitle.value = String.format(it, serverName.value)
+        }
         submitKpiEventUseCase.submitConnectionEvent(
             getKpiConnectionStatus(status),
             isManualConnection,
         )
-        connectionValues[currentStatus]?.let {
-            _connectionStatusTitle.value = String.format(it, serverName.value)
-        }
     }
 
     private fun getKpiConnectionStatus(status: VPNManagerConnectionStatus): KpiConnectionStatus {

@@ -50,6 +50,7 @@ private fun provideConnectionStatusValues(context: Context): Map<ConnectionStatu
     values[ConnectionStatus.CONNECTED] =
         context.getString(com.kape.ui.R.string.connected_to_format)
     values[ConnectionStatus.DISCONNECTED] = context.getString(com.kape.ui.R.string.not_connected)
+    values[ConnectionStatus.DISCONNECTING] = context.getString(com.kape.ui.R.string.not_connected)
     values[ConnectionStatus.RECONNECTING] =
         context.getString(com.kape.ui.R.string.reconnecting)
     return values

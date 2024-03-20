@@ -328,6 +328,7 @@ class Widget(
             ConnectionStatus.CONNECTED -> ImageProvider(R.drawable.background_green)
             ConnectionStatus.CONNECTING,
             ConnectionStatus.DISCONNECTED,
+            ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
             -> ImageProvider(R.drawable.background_yellow)
 
@@ -340,6 +341,7 @@ class Widget(
             ConnectionStatus.CONNECTED -> ImageProvider(R.drawable.outline_green)
             ConnectionStatus.CONNECTING,
             ConnectionStatus.DISCONNECTED,
+            ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
             -> ImageProvider(R.drawable.outline_yellow)
 
@@ -352,6 +354,7 @@ class Widget(
             ConnectionStatus.CONNECTED -> ImageProvider(R.drawable.ic_power_green)
             ConnectionStatus.CONNECTING,
             ConnectionStatus.DISCONNECTED,
+            ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
             -> ImageProvider(R.drawable.ic_power_yellow)
 

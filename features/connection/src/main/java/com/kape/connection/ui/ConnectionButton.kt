@@ -44,6 +44,7 @@ fun ConnectButton(status: ConnectionStatus, modifier: Modifier, onClick: () -> U
         when (status) {
             ConnectionStatus.CONNECTED,
             ConnectionStatus.DISCONNECTED,
+            ConnectionStatus.DISCONNECTING,
             ConnectionStatus.ERROR,
             -> ButtonBackground(color = getStatusColor(status = status))
 
@@ -65,6 +66,7 @@ private fun getStatusColor(status: ConnectionStatus): Color {
     return when (status) {
         ConnectionStatus.CONNECTED -> LocalColors.current.primary
         ConnectionStatus.DISCONNECTED,
+        ConnectionStatus.DISCONNECTING,
         ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
         -> LocalColors.current.connectionDefault()
