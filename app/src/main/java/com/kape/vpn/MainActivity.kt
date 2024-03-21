@@ -167,15 +167,15 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun NavGraphBuilder.defineNavigationGraph(navController: NavController) {
-        if (PlatformUtils.isTv(context = this@MainActivity)) {
-            composable(Splash.Main) { SplashScreen() }
-            composable(TvWelcome.Main) { TvWelcomeScreen() }
-            composable(TvLogin.Username) { LoginUsernameScreen() }
-            composable(Login.WithCredentials) { LoginPasswordScreen() }
-            composable(Permissions.Route) { TvPermissionsFlow() }
-            composable(Connection.Main) { TvConnectionScreen() }
-            composable(VpnRegionSelection.Main) { TvVpnRegionSelectionScreen() }
-        } else {
+//        if (PlatformUtils.isTv(context = this@MainActivity)) {
+//            composable(Splash.Main) { SplashScreen() }
+//            composable(TvWelcome.Main) { TvWelcomeScreen() }
+//            composable(TvLogin.Username) { LoginUsernameScreen() }
+//            composable(Login.WithCredentials) { LoginPasswordScreen() }
+//            composable(Permissions.Route) { TvPermissionsFlow() }
+//            composable(Connection.Main) { TvConnectionScreen() }
+//            composable(VpnRegionSelection.Main) { TvVpnRegionSelectionScreen() }
+//        } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }
             composable(Permissions.Route) { PermissionsFlow() }
@@ -225,6 +225,6 @@ class MainActivity : ComponentActivity() {
                 CustomizationScreen()
             }
         }
-    }
+//    }
     // endregion
 }
