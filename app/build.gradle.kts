@@ -32,8 +32,8 @@ android {
         applicationId = "com.kape.vpn"
         minSdk = 24
         targetSdk = 34
-        versionCode = 653
-        versionName = "4.0.0-rc01"
+        versionCode = 654
+        versionName = "4.0.0-rc02"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
