@@ -1,4 +1,4 @@
-package com.kape.signup.ui
+package com.kape.signup.ui.mobile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable

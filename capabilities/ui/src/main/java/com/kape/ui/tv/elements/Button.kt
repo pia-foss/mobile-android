@@ -30,8 +30,8 @@ fun PrimaryButton(
             shape = RoundedCornerShape(12.dp),
         ),
         colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.primary,
-            contentColor = LocalColors.current.onPrimary,
+            containerColor = LocalColors.current.primaryContainer,
+            contentColor = LocalColors.current.onSurfaceVariant,
             focusedContainerColor = LocalColors.current.primary,
             focusedContentColor = LocalColors.current.onPrimary,
         ),
@@ -55,10 +55,10 @@ fun SecondaryButton(
             shape = RoundedCornerShape(12.dp),
         ),
         colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.outline,
-            contentColor = LocalColors.current.primary,
-            focusedContainerColor = LocalColors.current.outline,
-            focusedContentColor = LocalColors.current.primary,
+            containerColor = LocalColors.current.background,
+            contentColor = LocalColors.current.onSurfaceVariant,
+            focusedContainerColor = LocalColors.current.primary,
+            focusedContentColor = LocalColors.current.onPrimary,
         ),
         onClick = onClick,
     ) {

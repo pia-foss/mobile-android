@@ -15,7 +15,27 @@ import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun PrimaryButtonText(content: String, color: Color = LocalColors.current.onPrimary) {
+fun PrimaryButtonText(content: String) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = content,
+        textAlign = TextAlign.Center,
+        style = PiaTypography.button1,
+    )
+}
+
+@Composable
+fun SecondaryButtonText(content: String) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = content,
+        textAlign = TextAlign.Center,
+        style = PiaTypography.button2,
+    )
+}
+
+@Composable
+fun PrimaryTabText(content: String, color: Color = LocalColors.current.onPrimary) {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = content,
@@ -26,13 +46,13 @@ fun PrimaryButtonText(content: String, color: Color = LocalColors.current.onPrim
 }
 
 @Composable
-fun SecondaryButtonText(content: String, color: Color = LocalColors.current.onSurface) {
+fun SecondaryTabText(content: String, color: Color = LocalColors.current.onSurface) {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = content,
         textAlign = TextAlign.Center,
         color = color,
-        style = PiaTypography.button1,
+        style = PiaTypography.button2,
     )
 }
 
@@ -60,22 +80,35 @@ fun EnterUsernameScreenTitleText(content: String, modifier: Modifier = Modifier)
 }
 
 @Composable
-fun OnboardingTitleText(content: String, modifier: Modifier) {
-    androidx.compose.material3.Text(
+fun SignUpTitleText(content: String, modifier: Modifier = Modifier) {
+    Text(
         text = content,
+        textAlign = TextAlign.Center,
         color = LocalColors.current.onSurface,
-        style = PiaTypography.h2,
-        textAlign = TextAlign.Start,
+        style = PiaTypography.h1,
+        fontSize = 45.sp,
         modifier = modifier,
     )
 }
 
 @Composable
-fun OnboardingDescriptionText(content: String, modifier: Modifier) {
+fun OnboardingTitleText(content: String, modifier: Modifier = Modifier) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
-        style = PiaTypography.body1,
+        style = PiaTypography.h2,
+        textAlign = TextAlign.Start,
+        fontSize = 28.sp,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun OnboardingDescriptionText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
         textAlign = TextAlign.Start,
         modifier = modifier,
     )

@@ -1,4 +1,4 @@
-package com.kape.signup.ui
+package com.kape.signup.ui.mobile
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

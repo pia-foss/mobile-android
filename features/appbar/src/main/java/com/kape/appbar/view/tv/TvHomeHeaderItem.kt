@@ -32,8 +32,8 @@ import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarError
 import com.kape.ui.tv.elements.RoundIconButton
 import com.kape.ui.tv.text.AppBarTitleText
-import com.kape.ui.tv.text.PrimaryButtonText
-import com.kape.ui.tv.text.SecondaryButtonText
+import com.kape.ui.tv.text.PrimaryTabText
+import com.kape.ui.tv.text.SecondaryTabText
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionStatus
 
@@ -114,9 +114,9 @@ fun TvHomeHeaderItem(
                         },
                     ) {
                         if (index == selectedTabIndex.intValue) {
-                            PrimaryButtonText(content = tab, color = tabPillActiveTextColor.value)
+                            PrimaryTabText(content = tab, color = tabPillActiveTextColor.value)
                         } else {
-                            SecondaryButtonText(content = tab)
+                            SecondaryTabText(content = tab)
                         }
                     }
                 }

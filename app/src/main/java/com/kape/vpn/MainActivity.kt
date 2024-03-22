@@ -59,7 +59,8 @@ import com.kape.settings.ui.screens.KillSwitchSettingScreen
 import com.kape.settings.ui.screens.PerAppSettingsScreen
 import com.kape.settings.ui.screens.ProtocolSettingsScreen
 import com.kape.settings.utils.SettingsFlow
-import com.kape.signup.ui.SignupScreensFlow
+import com.kape.signup.ui.mobile.SignupScreensFlow
+import com.kape.signup.ui.tv.TvSignupScreensFlow
 import com.kape.splash.ui.SplashScreen
 import com.kape.tvwelcome.ui.TvWelcomeScreen
 import com.kape.ui.theme.PIATheme
@@ -170,6 +171,7 @@ class MainActivity : ComponentActivity() {
 //        if (PlatformUtils.isTv(context = this@MainActivity)) {
 //            composable(Splash.Main) { SplashScreen() }
 //            composable(TvWelcome.Main) { TvWelcomeScreen() }
+//            composable(Subscribe.Main) { TvSignupScreensFlow() }
 //            composable(TvLogin.Username) { LoginUsernameScreen() }
 //            composable(Login.WithCredentials) { LoginPasswordScreen() }
 //            composable(Permissions.Route) { TvPermissionsFlow() }

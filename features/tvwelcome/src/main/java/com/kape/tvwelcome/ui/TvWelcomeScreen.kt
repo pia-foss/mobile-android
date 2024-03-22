@@ -25,7 +25,6 @@ import com.kape.tvwelcome.ui.vm.TvWelcomeViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.elements.PrimaryButton
-import com.kape.ui.tv.elements.SecondaryButton
 import com.kape.ui.tv.text.WelcomeTitleText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
@@ -68,7 +67,7 @@ fun TvWelcomeScreen() = Screen {
                 welcomeViewModel.login()
             }
             Spacer(modifier = Modifier.height(8.dp))
-            SecondaryButton(text = stringResource(id = R.string.subscribe_now)) {
+            PrimaryButton(text = stringResource(id = R.string.subscribe_now)) {
                 welcomeViewModel.signup()
             }
         }

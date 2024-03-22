@@ -135,6 +135,7 @@
     <string name="tv_enter_password">Enter your password</string>
     <string name="enter_email">Enter email</string>
     <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
     <string name="sign_in">Sign in to your account</string>
     <string name="send_link">Send link</string>
     <string name="logjn_continue">Continue</string>
@@ -309,8 +310,10 @@
 
     <string name="subscribe_screen_title">Connect to any region easily</string>
     <string name="subscribe_screen_description">With servers around the globe, you are always under protection. Start your 7 days free trial then %s .</string>
+    <string name="tv_subscribe_screen_description">Start your 7 days free trial then %s.</string>
     <string name="subscribe_now">Subscribe now</string>
     <string name="footer"><a href="web-screen-privacy">Privacy Policy</a> and <a href="web-screen-terms">Terms of Service</a></string>
+    <string name="terms_of_service">Terms of Service</string>
     <string name="monthly_ending">%1$s/mo</string>
     <string name="yearly_month_ending">%2$s%1$s/mo</string>
     <string name="yearly_ending">%1$s per year</string>

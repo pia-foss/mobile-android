@@ -12,6 +12,7 @@ import com.kape.router.NavigateOut
 import com.kape.router.Permissions
 import com.kape.router.Router
 import com.kape.router.Splash
+import com.kape.router.Subscribe
 import com.kape.router.TvLogin
 import com.kape.router.TvWelcome
 import com.kape.router.VpnRegionSelection
@@ -46,7 +47,7 @@ class TvRouter : Router {
             EnterFlow.VpnRegionSelection -> navigation.value = VpnRegionSelection.Main
             EnterFlow.ShadowsocksRegionSelection -> TODO("To be implemented")
             EnterFlow.Profile -> TODO("To be implemented")
-            EnterFlow.Subscribe -> TODO("To be implemented")
+            EnterFlow.Subscribe -> navigation.value = Subscribe.Main
             EnterFlow.PrivacyPolicy -> TODO("To be implemented")
             EnterFlow.TermsOfService -> TODO("To be implemented")
             EnterFlow.Settings -> TODO("To be implemented")
