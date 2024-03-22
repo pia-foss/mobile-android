@@ -90,6 +90,8 @@ class MainActivity : ComponentActivity() {
         paymentProvider.register(this)
         defineScreenOrientation()
 
+        deepLinkLogin(intent)
+
         intent.action?.let {
             when (it) {
                 Settings.Route -> router.handleFlow(EnterFlow.Settings)
@@ -150,12 +152,7 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
-        intent?.data?.let {
-            setIntent(null)
-            if (it.toString().contains("login")) {
-                tokenAuthenticationUtil.authenticate(it)
-            }
-        }
+        deepLinkLogin(intent)
     }
 
     // region private
@@ -164,6 +161,14 @@ class MainActivity : ComponentActivity() {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         } else {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
+
+    private fun deepLinkLogin(intent: Intent?) {
+        intent?.data?.let {
+            if (it.toString().contains("login")) {
+                tokenAuthenticationUtil.authenticate(it)
+            }
         }
     }
 
