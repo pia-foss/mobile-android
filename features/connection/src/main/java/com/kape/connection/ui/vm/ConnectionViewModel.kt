@@ -235,8 +235,8 @@ class ConnectionViewModel(
         VpnProtocols.OpenVPN -> settingsPrefs.getOpenVpnSettings()
     }
 
-    fun quickConnect(key: String) {
-        vpnRegionPrefs.selectVpnServer(key)
+    fun quickConnect(server: VpnServer) {
+        vpnRegionPrefs.selectVpnServer(server)
         updateState(state.value.server, false)
     }
 
@@ -273,16 +273,15 @@ class ConnectionViewModel(
 
     private fun updateState(server: VpnServer, showOptimalLocationInfo: Boolean) =
         viewModelScope.launch {
-            val existingKey = vpnRegionPrefs.getSelectedVpnServerKey()
-            if (!existingKey.isNullOrEmpty()) {
-                if (server.key != existingKey) {
+            val existingServer = vpnRegionPrefs.getSelectedServer()
+            existingServer?.let {
+                if (server.key != existingServer.key) {
                     val serverToConnect =
-                        if (existingKey == AUTO_KEY) {
+                        if (existingServer.key == AUTO_KEY) {
                             regionListProvider.servers.value.sortedBy { it.latency?.toInt() }
                                 .first()
                         } else {
-                            regionListProvider.servers.value.firstOrNull { it.key == existingKey }
-                                ?: regionListProvider.servers.value.first()
+                            it
                         }
                     if (vpnRegionPrefs.needsVpnReconnect()) {
                         vpnRegionPrefs.setVpnReconnect(false)
@@ -299,7 +298,7 @@ class ConnectionViewModel(
                         connectionUseCase.reconnect(serverToConnect).collect()
                     }
                 }
-            } else {
+            } ?: run {
                 _state.emit(
                     ConnectionScreenState(
                         server,

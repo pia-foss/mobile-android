@@ -47,7 +47,7 @@ class VpnRegionSelectionViewModel(
         }
 
     fun onVpnRegionSelected(server: VpnServer) {
-        vpnRegionPrefs.selectVpnServer(server.key)
+        vpnRegionPrefs.selectVpnServer(server)
         router.handleFlow(ExitFlow.RegionSelection)
     }
 

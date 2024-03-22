@@ -7,7 +7,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private const val VPN_FAVORITES = "favorites"
-private const val VPN_SELECTED_SERVER = "selected-server"
+private const val VPN_SELECTED_SERVER = "selected-vpn-server"
 private const val VPN_SERVERS = "servers"
 private const val VPN_RECONNECT = "reconnect"
 
@@ -37,9 +37,13 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
         return list
     }
 
-    fun selectVpnServer(vpnServerKey: String) {
-        prefs.edit().putString(VPN_SELECTED_SERVER, vpnServerKey).apply()
+    fun selectVpnServer(vpnServer: VpnServer) {
+        prefs.edit().putString(VPN_SELECTED_SERVER, Json.encodeToString(vpnServer)).apply()
         setVpnReconnect(true)
+    }
+
+    fun getSelectedServer(): VpnServer? = prefs.getString(VPN_SELECTED_SERVER, null)?.let {
+        Json.decodeFromString(it)
     }
 
     fun needsVpnReconnect() = prefs.getBoolean(VPN_RECONNECT, false)
@@ -48,7 +52,8 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
         prefs.edit().putBoolean(VPN_RECONNECT, needsReconnect).apply()
     }
 
-    fun getSelectedVpnServerKey() = prefs.getString(VPN_SELECTED_SERVER, "")
+//    @Deprecated("To be removed for prod release")
+//    fun getSelectedVpnServerKey() = prefs.getString(VPN_SELECTED_SERVER, "")
 
     fun setVpnServers(vpnServers: List<VpnServer>) =
         prefs.edit().putString(VPN_SERVERS, Json.encodeToString(vpnServers)).apply()
