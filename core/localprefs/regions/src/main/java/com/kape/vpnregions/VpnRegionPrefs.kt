@@ -56,12 +56,4 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
     fun setVpnReconnect(needsReconnect: Boolean) {
         prefs.edit().putBoolean(VPN_RECONNECT, needsReconnect).apply()
     }
-
-    fun setVpnServers(vpnServers: List<VpnServer>) =
-        prefs.edit().putString(VPN_SERVERS, Json.encodeToString(vpnServers)).apply()
-
-    fun getVpnServers(): List<VpnServer> =
-        prefs.getString(VPN_SERVERS, null)?.let {
-            Json.decodeFromString(it)
-        } ?: emptyList()
 }
