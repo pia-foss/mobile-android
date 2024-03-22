@@ -1,6 +1,7 @@
 package com.kape.vpnregions
 
 import android.content.Context
+import com.kape.regions.data.ServerData
 import com.kape.utils.Prefs
 import com.kape.utils.vpnserver.VpnServer
 import kotlinx.serialization.encodeToString
@@ -13,25 +14,29 @@ private const val VPN_RECONNECT = "reconnect"
 
 class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
 
-    fun addToFavorites(vpnServerName: String) {
+    fun addToFavorites(serverData: ServerData) {
         val favorites = getFavoriteVpnServers().toMutableList()
-        favorites.add(vpnServerName)
+        favorites.add(serverData)
         prefs.edit().putString(VPN_FAVORITES, Json.encodeToString(favorites)).apply()
     }
 
-    fun removeFromFavorites(vpnServerName: String) {
+    fun removeFromFavorites(serverData: ServerData) {
         val favourites = getFavoriteVpnServers().toMutableList()
-        favourites.remove(vpnServerName)
+        favourites.remove(serverData)
         prefs.edit().putString(VPN_FAVORITES, Json.encodeToString(favourites)).apply()
     }
 
-    fun isFavorite(vpnServerName: String): Boolean {
-        val favorites: List<String> = getFavoriteVpnServers()
-        return favorites.contains(vpnServerName)
+    fun isFavorite(serverData: ServerData): Boolean {
+        val favorites: List<ServerData> = getFavoriteVpnServers()
+        return favorites.contains(serverData)
     }
 
-    fun getFavoriteVpnServers(): List<String> {
-        val list: List<String> = prefs.getString(VPN_FAVORITES, null)?.let {
+    fun isFavorite(serverName: String, isDip: Boolean): Boolean {
+        return isFavorite(ServerData(serverName, isDip))
+    }
+
+    fun getFavoriteVpnServers(): List<ServerData> {
+        val list: List<ServerData> = prefs.getString(VPN_FAVORITES, null)?.let {
             Json.decodeFromString(it)
         } ?: emptyList()
         return list
@@ -51,9 +56,6 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
     fun setVpnReconnect(needsReconnect: Boolean) {
         prefs.edit().putBoolean(VPN_RECONNECT, needsReconnect).apply()
     }
-
-//    @Deprecated("To be removed for prod release")
-//    fun getSelectedVpnServerKey() = prefs.getString(VPN_SELECTED_SERVER, "")
 
     fun setVpnServers(vpnServers: List<VpnServer>) =
         prefs.edit().putString(VPN_SERVERS, Json.encodeToString(vpnServers)).apply()

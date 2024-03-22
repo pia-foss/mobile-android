@@ -181,9 +181,10 @@ class ConnectionViewModel(
     private fun getFavoriteServers(): List<VpnServer> {
         val favoriteServers = mutableListOf<VpnServer>()
         for (item in vpnRegionPrefs.getFavoriteVpnServers()) {
-            regionListProvider.servers.value.firstOrNull { it.name == item }?.let {
-                favoriteServers.add(it)
-            }
+            regionListProvider.servers.value.firstOrNull { it.name == item.name && it.isDedicatedIp == item.isDip }
+                ?.let {
+                    favoriteServers.add(it)
+                }
         }
         return favoriteServers
     }
@@ -242,8 +243,8 @@ class ConnectionViewModel(
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
 
-    fun isVpnServerFavorite(serverName: String): Boolean {
-        return vpnRegionPrefs.isFavorite(serverName)
+    fun isVpnServerFavorite(serverName: String, isDip: Boolean): Boolean {
+        return vpnRegionPrefs.isFavorite(serverName, isDip)
     }
 
     private fun connect() = viewModelScope.launch {

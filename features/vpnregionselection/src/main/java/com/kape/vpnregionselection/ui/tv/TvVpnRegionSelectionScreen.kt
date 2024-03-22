@@ -36,6 +36,7 @@ import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import com.kape.appbar.view.tv.TvHomeHeaderItem
+import com.kape.regions.data.ServerData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.theme.statusBarConnected
@@ -175,7 +176,10 @@ fun TvVpnRegionSelectionScreen() = Screen {
                                         onLongClick = {
                                             if (serverItem.type.enableFavorite) {
                                                 viewModel.onFavoriteVpnClicked(
-                                                    serverItem.type.server.name,
+                                                    ServerData(
+                                                        serverItem.type.server.name,
+                                                        serverItem.type.server.isDedicatedIp,
+                                                    ),
                                                 )
                                             }
                                         },
