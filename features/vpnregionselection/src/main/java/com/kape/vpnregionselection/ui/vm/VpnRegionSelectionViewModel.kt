@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.regions.data.ServerData
 import com.kape.router.Back
 import com.kape.router.ExitFlow
 import com.kape.router.Router
@@ -47,15 +48,15 @@ class VpnRegionSelectionViewModel(
         }
 
     fun onVpnRegionSelected(server: VpnServer) {
-        vpnRegionPrefs.selectVpnServer(server.key)
+        vpnRegionPrefs.selectVpnServer(server)
         router.handleFlow(ExitFlow.RegionSelection)
     }
 
-    fun onFavoriteVpnClicked(serverName: String) {
-        if (vpnRegionPrefs.isFavorite(serverName)) {
-            vpnRegionPrefs.removeFromFavorites(serverName)
+    fun onFavoriteVpnClicked(serverData: ServerData) {
+        if (vpnRegionPrefs.isFavorite(serverData)) {
+            vpnRegionPrefs.removeFromFavorites(serverData)
         } else {
-            vpnRegionPrefs.addToFavorites(serverName)
+            vpnRegionPrefs.addToFavorites(serverData)
         }
         arrangeVpnServers()
         updateVpnServers()
@@ -90,8 +91,8 @@ class VpnRegionSelectionViewModel(
         return mutableStateOf(servers.value.subList(autoRegionIndex, servers.value.size))
     }
 
-    private fun isVpnServerFavorite(serverName: String): Boolean {
-        return vpnRegionPrefs.isFavorite(serverName)
+    private fun isVpnServerFavorite(serverData: ServerData): Boolean {
+        return vpnRegionPrefs.isFavorite(serverData)
     }
 
     private fun arrangeVpnServers(items: List<VpnServer>? = null) {
@@ -104,7 +105,12 @@ class VpnRegionSelectionViewModel(
                 all.add(
                     ServerItem(
                         type = ItemType.Content(
-                            isFavorite = isVpnServerFavorite(server.name),
+                            isFavorite = isVpnServerFavorite(
+                                ServerData(
+                                    server.name,
+                                    server.isDedicatedIp,
+                                ),
+                            ),
                             server = server,
                         ),
                     ),
@@ -116,7 +122,12 @@ class VpnRegionSelectionViewModel(
                 all.add(
                     ServerItem(
                         type = ItemType.Content(
-                            isFavorite = isVpnServerFavorite((item.type as ItemType.Content).server.name),
+                            isFavorite = isVpnServerFavorite(
+                                ServerData(
+                                    (item.type as ItemType.Content).server.name,
+                                    item.type.server.isDedicatedIp,
+                                ),
+                            ),
                             enableFavorite = item.type.enableFavorite,
                             server = item.type.server,
                         ),

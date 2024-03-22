@@ -20,6 +20,7 @@ internal class GetShadowsocksRegionsUseCaseTest : KoinTest {
 
     private val shadowsocksRegionRepository: ShadowsocksRegionRepository = mockk(relaxed = true)
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs = mockk()
+    private val readShadowsocksRegionsDetailsUseCase: ReadShadowsocksRegionsDetailsUseCase = mockk(relaxed = true)
 
     private lateinit var getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase
 
@@ -28,6 +29,7 @@ internal class GetShadowsocksRegionsUseCaseTest : KoinTest {
         getShadowsocksRegionsUseCase = GetShadowsocksRegionsUseCase(
             shadowsocksRegionRepository,
             shadowsocksRegionPrefs,
+            readShadowsocksRegionsDetailsUseCase,
         )
     }
 

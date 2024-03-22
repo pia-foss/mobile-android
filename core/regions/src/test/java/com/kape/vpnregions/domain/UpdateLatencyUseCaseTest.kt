@@ -49,6 +49,7 @@ internal class UpdateLatencyUseCaseTest : KoinTest {
                     VpnServer(
                         name = "",
                         iso = "",
+                        dns = "",
                         endpoints = emptyMap(),
                         key = "key",
                         isGeo = false,

@@ -37,7 +37,7 @@ const val MAX_SERVERS = 5
 fun QuickConnect(
     modifier: Modifier = Modifier,
     servers: Map<VpnServer?, Boolean>,
-    onClick: (serverKey: String) -> Unit,
+    onClick: (server: VpnServer) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -62,7 +62,7 @@ fun QuickConnect(
                                 .weight(1f)
                                 .clickable {
                                     servers.keys.toList()[index]?.let {
-                                        onClick(it.key)
+                                        onClick(it)
                                     }
                                 },
                         )

@@ -20,6 +20,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.regions.data.ServerData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Search
@@ -89,7 +90,14 @@ fun VpnRegionSelectionScreen() = Screen {
                                     enableFavorite = item.type.enableFavorite,
                                     isPortForwardingEnabled = viewModel.isPortForwardingEnabled,
                                     onClick = { viewModel.onVpnRegionSelected(it) },
-                                    onFavoriteVpnClick = { viewModel.onFavoriteVpnClicked(it) },
+                                    onFavoriteVpnClick = {
+                                        viewModel.onFavoriteVpnClicked(
+                                            ServerData(
+                                                item.type.server.name,
+                                                item.type.server.isDedicatedIp,
+                                            ),
+                                        )
+                                    },
                                 )
                             }
 

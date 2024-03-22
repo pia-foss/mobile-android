@@ -71,6 +71,7 @@ dependencies {
     implementation(project(":core:localprefs:customization:data"))
     implementation(project(":core:localprefs:dip"))
     implementation(project(":core:localprefs:regions"))
+    implementation(project(":core:localprefs:regions:data"))
     implementation(project(":core:utils"))
     implementation(project(":features:appbar"))
     implementation(project(":features:settings"))

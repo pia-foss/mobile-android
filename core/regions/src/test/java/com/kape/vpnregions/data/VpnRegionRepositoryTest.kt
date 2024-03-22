@@ -81,6 +81,7 @@ class VpnRegionRepositoryTest : KoinTest {
                     VpnServer(
                         "test",
                         "android",
+                        "",
                         null,
                         emptyMap(),
                         "id",
@@ -113,6 +114,7 @@ class VpnRegionRepositoryTest : KoinTest {
                     VpnServer(
                         "test",
                         "android",
+                        "",
                         "0",
                         emptyMap(),
                         "id",
