@@ -4,7 +4,9 @@ import android.content.Context
 import android.net.VpnService
 import com.kape.connection.ConnectionPrefs
 import com.kape.settings.SettingsPrefs
+import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,6 +20,7 @@ class VpnLauncher(
     private val connectionPrefs: ConnectionPrefs,
     private val connectionUseCase: ConnectionUseCase,
     private val settingsPrefs: SettingsPrefs,
+    private val regionListProvider: RegionListProvider,
 ) : CoroutineScope, KoinComponent {
 
     private val job = Job()
@@ -34,11 +37,11 @@ class VpnLauncher(
                 connectionPrefs.disconnectedByUser(false)
                 return
             } else {
-                connectionPrefs.getSelectedVpnServer()?.let {
-                    if (!connectionUseCase.isConnected()) {
-                        launch {
-                            connectionUseCase.startConnection(it, false).collect()
-                        }
+                val server: VpnServer = connectionPrefs.getSelectedVpnServer()
+                    ?: regionListProvider.servers.value.first()
+                if (!connectionUseCase.isConnected()) {
+                    launch {
+                        connectionUseCase.startConnection(server, false).collect()
                     }
                 }
             }
