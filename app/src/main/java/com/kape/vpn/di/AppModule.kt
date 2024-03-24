@@ -17,7 +17,6 @@ import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
 import com.kape.router.Router
 import com.kape.router.mobile.MobileRouter
-import com.kape.router.tv.TvRouter
 import com.kape.settings.SettingsPrefs
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
@@ -38,7 +37,6 @@ import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.service.AutomationService
 import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.NetworkManager
-import com.kape.vpn.utils.PlatformUtils
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -82,7 +80,7 @@ val appModule = module {
     single { provideAndroidAccountApi(get()) }
     single { provideRegionsApi(get(), get()) }
     single { provideKpiApi(get()) }
-    single { provideConfigurationIntent(get()) }
+    single { provideLauncherIntent(get()) }
     single { providePendingIntent(get(), get()) }
     single { provideNotification(get()) }
     single(named("service-intent")) { provideWidgetServiceIntent(get()) }
@@ -93,7 +91,7 @@ val appModule = module {
     single { providerRouter(get()) }
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
-    single { VpnLauncher(get(), get(), get(), get()) }
+    single { VpnLauncher(get(), get(), get(), get(), get()) }
     single { provideAlarmManager(get()) }
     single(named("port-forwarding-intent")) { providePortForwardingReceiverIntent(get()) }
     single(named("port-forwarding-pending-intent")) {
@@ -192,7 +190,7 @@ private fun provideObfuscatorApi(
         .build()
 }
 
-private fun provideConfigurationIntent(context: Context): Intent {
+private fun provideLauncherIntent(context: Context): Intent {
     return Intent(context, MainActivity::class.java).apply {
         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     }

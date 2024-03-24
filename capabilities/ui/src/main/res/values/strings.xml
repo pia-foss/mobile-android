@@ -75,6 +75,9 @@
 
     <string name="qs_title">Connect to PIA</string>
     <string name="change_server">Change Server</string>
+    <string name="qs_disconnect">Disconnect VPN (%s)</string>
+    <string name="qs_disconnect_nolocation">Disconnect VPN</string>
+    <string name="not_logged_in">not logged in</string>
 
     <string name="connected">Connected</string>
     <string name="connected_to_format">Connected to %s</string>
