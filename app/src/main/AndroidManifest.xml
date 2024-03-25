@@ -31,10 +31,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
 
-    <!-- Uncomment when TV is ready -->
-<!--    <uses-feature-->
-<!--        android:name="android.software.leanback"-->
-<!--        android:required="false" />-->
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
