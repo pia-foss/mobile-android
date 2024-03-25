@@ -64,13 +64,26 @@ fun LocationPickerItem(
                     .size(24.dp),
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.align(CenterVertically).weight(12f)) {
+            Column(
+                modifier = Modifier
+                    .align(CenterVertically)
+                    .weight(12f),
+            ) {
                 Row {
                     RegionSelectionText(content = server.name)
                     if (!server.allowsPortForwarding && isPortForwardingEnabled) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
                             painter = painterResource(id = com.kape.ui.R.drawable.ic_port_forwarding_unavailable),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
+                    if (server.isGeo) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            painter = painterResource(id = com.kape.vpnregionselection.R.drawable.ic_geo_default),
                             contentDescription = null,
                             tint = Color.Unspecified,
                             modifier = Modifier.size(16.dp),
