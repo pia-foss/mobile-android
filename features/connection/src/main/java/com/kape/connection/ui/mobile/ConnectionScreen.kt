@@ -15,6 +15,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +44,7 @@ import com.kape.connection.utils.ConnectionScreenState
 import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
-import com.kape.sidemenu.ui.SideMenu
+import com.kape.sidemenu.ui.SideMenuContent
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.InfoCard
 import com.kape.ui.mobile.elements.Screen
@@ -86,50 +89,63 @@ fun ConnectionScreen() = Screen {
         viewModel.autoConnect()
     }
 
-    SideMenu(scope, drawerState) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .semantics {
-                    testTagsAsResourceId = true
-                },
-            horizontalAlignment = CenterHorizontally,
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                SideMenuContent(scope = scope, state = drawerState)
+            }
+        },
+    ) {
+        Scaffold(
+            topBar = {
+                AppBar(
+                    viewModel = appBarViewModel,
+                    type = AppBarType.Connection,
+                    onLeftIconClick = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    },
+                    onRightIconClick = { viewModel.navigateToCustomization() },
+                )
+            },
         ) {
-            AppBar(
-                viewModel = appBarViewModel,
-                type = AppBarType.Connection,
-                onLeftIconClick = {
-                    scope.launch {
-                        drawerState.open()
+            Column(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .semantics {
+                        testTagsAsResourceId = true
+                    },
+                horizontalAlignment = CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    val connection = stringResource(id = R.string.connection)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ConnectButton(
+                        if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
+                        Modifier
+                            .align(CenterHorizontally)
+                            .testTag(":ConnectionScreen:connection_button")
+                            .semantics(mergeDescendants = true) {
+                                role = Role.Button
+                                contentDescription = connection
+                            },
+                    ) {
+                        viewModel.onConnectionButtonClicked()
                     }
-                },
-                onRightIconClick = { viewModel.navigateToCustomization() },
-            )
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                val connection = stringResource(id = R.string.connection)
-                Spacer(modifier = Modifier.height(16.dp))
-                ConnectButton(
-                    if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
-                    Modifier
-                        .align(CenterHorizontally)
-                        .testTag(":ConnectionScreen:connection_button")
-                        .semantics(mergeDescendants = true) {
-                            role = Role.Button
-                            contentDescription = connection
-                        },
-                ) {
-                    viewModel.onConnectionButtonClicked()
-                }
-                Spacer(modifier = Modifier.height(36.dp))
+                    Spacer(modifier = Modifier.height(36.dp))
 
-                viewModel.getOrderedElements().forEach {
-                    DisplayComponent(
-                        screenElement = it,
-                        isVisible = viewModel.isScreenElementVisible(it),
-                        viewModel = viewModel,
-                        state = state.value,
-                    )
+                    viewModel.getOrderedElements().forEach {
+                        DisplayComponent(
+                            screenElement = it,
+                            isVisible = viewModel.isScreenElementVisible(it),
+                            viewModel = viewModel,
+                            state = state.value,
+                        )
+                    }
                 }
             }
         }

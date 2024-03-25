@@ -5,6 +5,8 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusGroup
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,7 +22,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -50,21 +51,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-@Composable
-fun SideMenu(scope: CoroutineScope, drawerState: DrawerState, content: @Composable () -> Unit) {
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            SideMenuContent(scope = scope, state = drawerState)
-        },
-    ) {
-        content()
-    }
-}
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
+fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
     val viewModel: SideMenuViewModel = koinViewModel()
     val logoutDialogVisible = remember { mutableStateOf(false) }
 
@@ -74,6 +63,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
             .padding(horizontal = 24.dp, vertical = 24.dp)
             .width(250.dp)
             .fillMaxHeight()
+            .focusGroup()
             .verticalScroll(rememberScrollState())
             .semantics {
                 testTagsAsResourceId = true
@@ -192,7 +182,7 @@ private fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 
 @Composable
 private fun SideMenuHeaderItem(username: String, versionCode: String, versionName: String) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(modifier = Modifier.fillMaxWidth().focusable()) {
         Image(
             painter = painterResource(id = R.drawable.drawer_icon),
             modifier = Modifier
@@ -240,7 +230,8 @@ private fun SideMenuItem(
             .height(56.dp)
             .clickable {
                 onClick.invoke()
-            },
+            }
+            .focusable(),
     ) {
         Image(
             modifier = Modifier
