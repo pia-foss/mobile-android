@@ -91,6 +91,20 @@ class VpnRegionSelectionViewModel(
         return mutableStateOf(servers.value.subList(autoRegionIndex, servers.value.size))
     }
 
+    fun getTvSearchVpnServers(): MutableState<List<ServerItem>> {
+        var autoRegionIndex = sorted.value.indexOfFirst { serverItem: ServerItem ->
+            serverItem.type is ItemType.Content &&
+                serverItem.type.server.iso == autoRegionIso &&
+                serverItem.type.server.name == autoRegionName
+        }
+        if (autoRegionIndex == -1) {
+            autoRegionIndex = 0
+        } else {
+            autoRegionIndex += 1
+        }
+        return mutableStateOf(sorted.value.subList(autoRegionIndex, sorted.value.size))
+    }
+
     private fun isVpnServerFavorite(serverData: ServerData): Boolean {
         return vpnRegionPrefs.isFavorite(serverData)
     }

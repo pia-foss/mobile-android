@@ -27,6 +27,7 @@ fun TvColumnSelectionItem(
     modifier: Modifier,
     onAllSelected: () -> Unit = { },
     onFavoriteSelected: () -> Unit = { },
+    onSearchSelected: () -> Unit = { },
 ) {
     val colorScheme = LocalColors.current
     val selectedIndex = remember { mutableIntStateOf(0) }
@@ -45,6 +46,11 @@ fun TvColumnSelectionItem(
         ),
         ButtonDetails(
             title = stringResource(id = com.kape.ui.R.string.favorite),
+            contentColor = remember { mutableStateOf(colorScheme.onSurface) },
+            containerColor = remember { mutableStateOf(colorScheme.background) },
+        ),
+        ButtonDetails(
+            title = stringResource(id = com.kape.ui.R.string.search),
             contentColor = remember { mutableStateOf(colorScheme.onSurface) },
             containerColor = remember { mutableStateOf(colorScheme.background) },
         ),
@@ -74,6 +80,7 @@ fun TvColumnSelectionItem(
                             when (selectedIndex.intValue) {
                                 0 -> onAllSelected()
                                 1 -> onFavoriteSelected()
+                                2 -> onSearchSelected()
                                 else -> throw IllegalStateException("Unsupported TV Header State")
                             }
                         }

@@ -25,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.kape.ui.R
 import com.kape.ui.tv.elements.TileButton
 import com.kape.ui.tv.text.QuickConnectText
@@ -49,41 +48,34 @@ fun QuickConnect(
         TileTitleText(content = stringResource(id = R.string.quick_connect))
         Spacer(modifier = Modifier.height(8.dp))
         Row {
-            if (servers.isEmpty()) {
-                for (index in 1..MAX_SERVERS) {
-                    QuickConnectItem(modifier = Modifier.weight(1f))
+            for (index in 0 until MAX_SERVERS) {
+                val server = servers.keys.toList().getOrNull(index)
+                server?.let { current ->
+                    QuickConnectItem(
+                        server = current,
+                        isFavorite = servers[current] ?: false,
+                        onClick = {
+                            servers.keys.toList()[index]?.let {
+                                onClick(it)
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                    )
+                } ?: run {
+                    QuickConnectItem(
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusProperties { canFocus = false },
+                    )
                 }
-            } else {
-                for (index in 0 until MAX_SERVERS) {
-                    val server = servers.keys.toList().getOrNull(index)
-                    server?.let { current ->
-                        QuickConnectItem(
-                            server = current,
-                            isFavorite = servers[current] ?: false,
-                            onClick = {
-                                servers.keys.toList()[index]?.let {
-                                    onClick(it)
-                                }
-                            },
-                            modifier = Modifier.weight(1f),
-                        )
-                    } ?: run {
-                        QuickConnectItem(
-                            modifier = Modifier
-                                .weight(1f)
-                                .focusProperties { canFocus = false },
-                        )
-                    }
-                    if (index < MAX_SERVERS - 1) {
-                        Spacer(modifier = Modifier.width(16.dp))
-                    }
+                if (index < MAX_SERVERS - 1) {
+                    Spacer(modifier = Modifier.width(16.dp))
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun QuickConnectItem(
     server: VpnServer? = null,

@@ -39,6 +39,7 @@ import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.regions.data.ServerData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.Search
 import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarDefault
@@ -60,6 +61,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val isFavoriteSelected = remember { mutableStateOf(false) }
+    val isSearchEnabled = remember { mutableStateOf(false) }
     val viewModel: VpnRegionSelectionViewModel =
         koinViewModel<VpnRegionSelectionViewModel>().apply {
             autoRegionIso = stringResource(id = R.string.automatic_iso)
@@ -77,7 +79,11 @@ fun TvVpnRegionSelectionScreen() = Screen {
             it.type is ItemType.Content && it.type.isFavorite
         }
     } else {
-        viewModel.getTvVpnServers().value
+        if (isSearchEnabled.value && viewModel.getTvSearchVpnServers().value.isEmpty().not()) {
+            viewModel.getTvSearchVpnServers().value
+        } else {
+            viewModel.getTvVpnServers().value
+        }
     }
 
     Box(
@@ -119,9 +125,15 @@ fun TvVpnRegionSelectionScreen() = Screen {
                         modifier = Modifier.padding(top = 16.dp),
                         onAllSelected = {
                             isFavoriteSelected.value = false
+                            isSearchEnabled.value = false
                         },
                         onFavoriteSelected = {
                             isFavoriteSelected.value = true
+                            isSearchEnabled.value = false
+                        },
+                        onSearchSelected = {
+                            isFavoriteSelected.value = false
+                            isSearchEnabled.value = true
                         },
                     )
                 }
@@ -130,6 +142,16 @@ fun TvVpnRegionSelectionScreen() = Screen {
                         .padding(start = 16.dp)
                         .weight(0.75f),
                 ) {
+                    if (isSearchEnabled.value) {
+                        Search(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            hint = stringResource(id = R.string.search),
+                        ) {
+                            viewModel.filterByName(it, isSearchEnabled)
+                        }
+                    }
                     if (isFavoriteSelected.value) {
                         if (serverItems.isEmpty()) {
                             RegionSelectionGridSectionText(

@@ -52,7 +52,7 @@ fun SecondaryTabText(content: String, color: Color = LocalColors.current.onSurfa
         text = content,
         textAlign = TextAlign.Center,
         color = color,
-        style = PiaTypography.button2,
+        style = PiaTypography.button1,
     )
 }
 
