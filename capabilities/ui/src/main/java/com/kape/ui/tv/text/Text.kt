@@ -80,6 +80,18 @@ fun EnterUsernameScreenTitleText(content: String, modifier: Modifier = Modifier)
 }
 
 @Composable
+fun EnterEmailScreenTitleText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        textAlign = TextAlign.Start,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.h1,
+        fontSize = 28.sp,
+        modifier = modifier,
+    )
+}
+
+@Composable
 fun SignUpTitleText(content: String, modifier: Modifier = Modifier) {
     Text(
         text = content,

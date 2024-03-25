@@ -311,6 +311,7 @@
     <string name="logout_confirmation">Logout Confirmation</string>
     <string name="logout_confirmation_text">Logging out will terminate an active VPN connection and leave you unprotected</string>
 
+    <string name="fast_and_secure_streaming">Fast &amp; Secure VPN for Streaming</string>
     <string name="subscribe_screen_title">Connect to any region easily</string>
     <string name="subscribe_screen_description">With servers around the globe, you are always under protection. Start your 7 days free trial then %s .</string>
     <string name="tv_subscribe_screen_description">Start your 7 days free trial then %s.</string>

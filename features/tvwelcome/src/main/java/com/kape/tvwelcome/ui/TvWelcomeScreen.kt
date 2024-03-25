@@ -1,5 +1,6 @@
 package com.kape.tvwelcome.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,15 @@ fun TvWelcomeScreen() = Screen {
     val loginViewModel: LoginViewModel = koinViewModel()
     val initialFocusRequester = FocusRequester()
 
+    LaunchedEffect(key1 = Unit) {
+        loginViewModel.checkUserLoggedIn()
+        initialFocusRequester.requestFocus()
+    }
+
+    BackHandler {
+        welcomeViewModel.exitApp()
+    }
+
     Row(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +66,7 @@ fun TvWelcomeScreen() = Screen {
             )
             Spacer(modifier = Modifier.height(32.dp))
             WelcomeTitleText(
-                content = "Fast & Secure VPN for Streaming",
+                content = stringResource(id = R.string.fast_and_secure_streaming),
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(32.dp))
@@ -78,10 +88,5 @@ fun TvWelcomeScreen() = Screen {
                 contentDescription = null,
             )
         }
-    }
-
-    LaunchedEffect(key1 = Unit) {
-        loginViewModel.checkUserLoggedIn()
-        initialFocusRequester.requestFocus()
     }
 }

@@ -23,15 +23,21 @@ fun TvSignupScreensFlow() {
             viewModel.loadEmptyPrices()
         }
     }
+
     when (state.step) {
         SignupStep.Consent,
         SignupStep.Default,
-        SignupStep.Email,
-        SignupStep.InProcess,
-        SignupStep.LoadingPlans,
         is SignupStep.SignedUp,
         -> {
             // TBD
+        }
+        SignupStep.Email -> {
+            TvEmailScreen()
+        }
+        SignupStep.LoadingPlans,
+        SignupStep.InProcess,
+        -> {
+            TvLoadingScreen()
         }
         SignupStep.Subscriptions -> {
             TvSignUpScreen()

@@ -1,5 +1,6 @@
 package com.kape.signup.ui.vm
 
+import android.util.Patterns
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -166,6 +167,9 @@ class SignupViewModel(
         consentUseCase.setConsent(allow)
         _state.emit(EMAIL)
     }
+
+    fun isValidEmail(email: String): Boolean =
+        Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
     fun register(email: String) = viewModelScope.launch {
         if (email.isEmpty()) {
