@@ -104,6 +104,75 @@ fun SignUpTitleText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun SignupErrorTitleText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        textAlign = TextAlign.Center,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.h1,
+        fontSize = 28.sp,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SignupErrorDescriptionText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        textAlign = TextAlign.Start,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SignupConsentTitleText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        textAlign = TextAlign.Center,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.h1,
+        fontSize = 28.sp,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SignupConsentDescriptionText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        textAlign = TextAlign.Start,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SignupSuccessTitleText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        textAlign = TextAlign.Center,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.h1,
+        fontSize = 28.sp,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun SignupSuccessDescriptionText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        textAlign = TextAlign.Start,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
+}
+
+@Composable
 fun OnboardingTitleText(content: String, modifier: Modifier = Modifier) {
     Text(
         text = content,

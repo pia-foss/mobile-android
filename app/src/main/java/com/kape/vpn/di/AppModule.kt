@@ -17,6 +17,7 @@ import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
 import com.kape.router.Router
 import com.kape.router.mobile.MobileRouter
+import com.kape.router.tv.TvRouter
 import com.kape.settings.SettingsPrefs
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
@@ -37,6 +38,7 @@ import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.service.AutomationService
 import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.NetworkManager
+import com.kape.vpn.utils.PlatformUtils
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnmanager.presenters.VPNManagerAPI

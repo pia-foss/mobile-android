@@ -2,6 +2,7 @@ package com.kape.signup.ui.tv
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,25 +27,25 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.kape.signup.data.models.Credentials
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.tv.elements.MonthlySubscriptionCard
+import com.kape.ui.theme.OutlineBackground
 import com.kape.ui.tv.elements.PrimaryButton
-import com.kape.ui.tv.elements.SecondaryButton
-import com.kape.ui.tv.elements.YearlySubscriptionCard
-import com.kape.ui.tv.text.OnboardingDescriptionText
-import com.kape.ui.tv.text.OnboardingTitleText
 import com.kape.ui.tv.text.SignUpTitleText
+import com.kape.ui.tv.text.SignupSuccessDescriptionText
+import com.kape.ui.tv.text.SignupSuccessTitleText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TvSignUpScreen() = Screen {
-    val initialFocusRequester = FocusRequester()
+fun TvCredentialsScreen(credentials: Credentials) = Screen {
     val viewModel: SignupViewModel = koinViewModel()
-    val subscriptionData = viewModel.subscriptionData.value
+    val initialFocusRequester = FocusRequester()
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
@@ -53,8 +55,6 @@ fun TvSignUpScreen() = Screen {
         modifier = Modifier
             .fillMaxSize()
             .background(LocalColors.current.background),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(
             modifier = Modifier
@@ -74,7 +74,7 @@ fun TvSignUpScreen() = Screen {
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SignUpTitleText(
-                    content = stringResource(id = R.string.signup),
+                    content = stringResource(id = R.string.success),
                 )
                 Spacer(modifier = Modifier.height(64.dp))
                 Card(
@@ -86,7 +86,7 @@ fun TvSignUpScreen() = Screen {
                     ),
                 ) {
                     Image(
-                        painter = painterResource(id = com.kape.signup.R.drawable.ic_tv_signup),
+                        painter = painterResource(id = com.kape.signup.R.drawable.ic_tv_signup_success),
                         contentScale = ContentScale.Fit,
                         contentDescription = null,
                         modifier = Modifier
@@ -106,63 +106,62 @@ fun TvSignUpScreen() = Screen {
         Column(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxSize()
-                .padding(horizontal = 48.dp, vertical = 64.dp),
+                .padding(45.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            OnboardingTitleText(
-                content = stringResource(id = R.string.subscribe_screen_title),
-            )
-            OnboardingDescriptionText(
-                content = stringResource(id = R.string.tv_subscribe_screen_description).format(
-                    subscriptionData?.yearly?.mainPrice,
-                ),
-                modifier = Modifier.padding(vertical = 8.dp),
+            SignupSuccessTitleText(
+                content = stringResource(id = R.string.credentials_title),
             )
             Spacer(modifier = Modifier.height(16.dp))
-            YearlySubscriptionCard(
-                selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
-                price = subscriptionData?.yearly?.mainPrice ?: "",
-                perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
-                modifier = Modifier.fillMaxWidth().focusRequester(initialFocusRequester),
+            SignupSuccessDescriptionText(
+                content = stringResource(id = R.string.credentials_text),
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 2.dp,
+                        shape = OutlineBackground,
+                        color = LocalColors.current.outline,
+                    )
+                    .padding(16.dp)
+                    .semantics(mergeDescendants = true) { },
             ) {
-                subscriptionData?.let {
-                    subscriptionData.selected.value = subscriptionData.yearly
-                }
+                Text(
+                    text = stringResource(id = R.string.username),
+                    color = LocalColors.current.outlineVariant,
+                    fontSize = 14.sp,
+                )
+                Text(text = credentials.username, fontSize = 22.sp)
             }
             Spacer(modifier = Modifier.height(16.dp))
-            MonthlySubscriptionCard(
-                selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
-                price = subscriptionData?.monthly?.mainPrice ?: "",
-                modifier = Modifier.fillMaxWidth(),
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = 2.dp,
+                        shape = OutlineBackground,
+                        color = LocalColors.current.outline,
+                    )
+                    .padding(16.dp)
+                    .semantics(mergeDescendants = true) { },
             ) {
-                subscriptionData?.let {
-                    subscriptionData.selected.value = subscriptionData.monthly
-                }
+                Text(
+                    text = stringResource(id = R.string.password),
+                    color = LocalColors.current.outlineVariant,
+                    fontSize = 14.sp,
+                )
+                Text(text = credentials.password, fontSize = 22.sp)
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             PrimaryButton(
-                text = stringResource(id = R.string.subscribe_now),
-                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.get_started),
+                modifier = Modifier.focusRequester(initialFocusRequester),
             ) {
-                subscriptionData?.let {
-                    viewModel.purchase(subscriptionData.selected.value.id)
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                SecondaryButton(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(id = R.string.drawer_item_title_privacy_policy),
-                ) {
-                    viewModel.navigateToPrivacyPolicy()
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                SecondaryButton(
-                    modifier = Modifier.weight(1f),
-                    text = stringResource(id = R.string.terms_of_service),
-                ) {
-                    viewModel.navigateToTermsOfService()
-                }
+                viewModel.completeSubscription()
             }
         }
     }

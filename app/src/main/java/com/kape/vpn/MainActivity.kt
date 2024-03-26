@@ -182,6 +182,12 @@ class MainActivity : ComponentActivity() {
 //            composable(Permissions.Route) { TvPermissionsFlow() }
 //            composable(Connection.Main) { TvConnectionScreen() }
 //            composable(VpnRegionSelection.Main) { TvVpnRegionSelectionScreen() }
+//            composable(WebContent.Terms) {
+//                InAppBrowser(url = getString(com.kape.ui.R.string.url_terms_of_service))
+//            }
+//            composable(WebContent.Privacy) {
+//                InAppBrowser(url = getString(com.kape.ui.R.string.url_privacy_policy))
+//            }
 //        } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }

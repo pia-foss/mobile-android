@@ -346,6 +346,7 @@
     <string name="email_hint">Email address</string>
     <string name="submit">Submit</string>
     <string name="credentials_title">Card redeemed successfully</string>
+    <string name="success">Success!</string>
     <string name="credentials_text">You will also receive an email shortly with your username and password.</string>
     <string name="credentials_hint">Your login details</string>
     <string name="username">Username</string>

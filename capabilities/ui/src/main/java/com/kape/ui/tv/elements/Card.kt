@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTvMaterial3Api::class)
+
 package com.kape.ui.tv.elements
 
 import androidx.compose.foundation.BorderStroke
@@ -11,14 +13,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.tv.material3.Border
+import androidx.tv.material3.Card
+import androidx.tv.material3.CardDefaults
+import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.OptionButton
 import com.kape.ui.mobile.text.BestValueBannerText
@@ -39,14 +43,25 @@ fun YearlySubscriptionCard(
     Card(
         modifier = modifier.semantics(mergeDescendants = true) { },
         onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = LocalColors.current.onPrimaryContainer,
+        shape = CardDefaults.shape(
+            shape = RoundedCornerShape(12.dp),
+        ),
+        colors = CardDefaults.colors(
+            containerColor = LocalColors.current.onPrimary,
+            contentColor = LocalColors.current.onSurfaceVariant,
+            focusedContainerColor = LocalColors.current.onPrimaryContainer,
+            focusedContentColor = LocalColors.current.onSurfaceVariant,
         ),
         border = if (selected) {
-            BorderStroke(2.dp, LocalColors.current.primary)
+            CardDefaults.border(
+                border = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+                focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+            )
         } else {
-            BorderStroke(1.dp, LocalColors.current.onSurface)
+            CardDefaults.border(
+                border = Border(BorderStroke(1.dp, LocalColors.current.onSurface)),
+                focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+            )
         },
     ) {
         Row {
@@ -101,14 +116,25 @@ fun MonthlySubscriptionCard(
     Card(
         modifier = modifier.semantics(mergeDescendants = true) { },
         onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = LocalColors.current.onPrimaryContainer,
+        shape = CardDefaults.shape(
+            shape = RoundedCornerShape(12.dp),
+        ),
+        colors = CardDefaults.colors(
+            containerColor = LocalColors.current.onPrimary,
+            contentColor = LocalColors.current.onSurfaceVariant,
+            focusedContainerColor = LocalColors.current.onPrimaryContainer,
+            focusedContentColor = LocalColors.current.onSurfaceVariant,
         ),
         border = if (selected) {
-            BorderStroke(2.dp, LocalColors.current.primary)
+            CardDefaults.border(
+                border = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+                focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+            )
         } else {
-            BorderStroke(1.dp, LocalColors.current.onSurface)
+            CardDefaults.border(
+                border = Border(BorderStroke(1.dp, LocalColors.current.onSurface)),
+                focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+            )
         },
     ) {
         Row {

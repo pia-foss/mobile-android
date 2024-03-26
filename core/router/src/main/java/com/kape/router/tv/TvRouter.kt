@@ -16,6 +16,7 @@ import com.kape.router.Subscribe
 import com.kape.router.TvLogin
 import com.kape.router.TvWelcome
 import com.kape.router.VpnRegionSelection
+import com.kape.router.WebContent
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -48,8 +49,8 @@ class TvRouter : Router {
             EnterFlow.ShadowsocksRegionSelection -> TODO("To be implemented")
             EnterFlow.Profile -> TODO("To be implemented")
             EnterFlow.Subscribe -> navigation.value = Subscribe.Main
-            EnterFlow.PrivacyPolicy -> TODO("To be implemented")
-            EnterFlow.TermsOfService -> TODO("To be implemented")
+            EnterFlow.PrivacyPolicy -> navigation.value = WebContent.Privacy
+            EnterFlow.TermsOfService -> navigation.value = WebContent.Terms
             EnterFlow.Settings -> TODO("To be implemented")
             EnterFlow.AutomationSettings -> TODO("To be implemented")
             EnterFlow.PerAppSettings -> TODO("To be implemented")
@@ -72,7 +73,7 @@ class TvRouter : Router {
             ExitFlow.Connection -> TODO("To be implemented")
             ExitFlow.RegionSelection -> handleBack()
             ExitFlow.Profile -> TODO("To be implemented")
-            ExitFlow.Subscribe -> TODO("To be implemented")
+            ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.Permissions)
             ExitFlow.Settings -> TODO("To be implemented")
             ExitFlow.PerAppSettings -> TODO("To be implemented")
             ExitFlow.DedicatedIp -> TODO("To be implemented")
