@@ -1,7 +1,6 @@
 package com.kape.vpnconnect.di
 
 import android.content.Context
-import com.kape.vpnconnect.R
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
@@ -40,7 +39,7 @@ private val localVpnConnectModule = module {
         )
     }
     single { provideConnectionStatusValues(get()) }
-    single { ConnectionManager(get(), get(), get()) }
+    single { ConnectionManager(get(), get(), get(), get()) }
     single { GetLogsUseCase(get()) }
 }
 

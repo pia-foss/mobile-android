@@ -1,5 +1,7 @@
 package com.kape.vpnconnect.utils
 
+import android.app.Notification
+import android.app.NotificationManager
 import android.content.Context
 import com.kape.shareevents.data.models.KpiConnectionStatus
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
@@ -8,10 +10,13 @@ import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+const val NOTIFICATION_ID = 123
+
 class ConnectionManager(
     private val context: Context,
     private val connectionValues: Map<ConnectionStatus, String>,
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
+    private val notificationBuilder: Notification.Builder,
 ) : VPNManagerConnectionListener {
     private val _connectionStatus =
         MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
@@ -28,6 +33,9 @@ class ConnectionManager(
     val connectionStatusTitle: StateFlow<String> = _connectionStatusTitle
 
     var isManualConnection: Boolean = false
+
+    private val notificationManager: NotificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     fun isConnected(): Boolean = connectionStatus.value == ConnectionStatus.CONNECTED
 
@@ -56,6 +64,8 @@ class ConnectionManager(
         connectionValues[currentStatus]?.let {
             _connectionStatusTitle.value = String.format(it, serverName.value)
         }
+        notificationBuilder.setContentText(currentStatus.toString())
+        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
         submitKpiEventUseCase.submitConnectionEvent(
             getKpiConnectionStatus(status),
             isManualConnection,
