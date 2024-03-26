@@ -99,10 +99,20 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                 val data = prefs.getSubscriptions()
                 for (item in productDetailsList) {
                     if (data.any { it.id == item.productId }) {
-                        data.first { it.id == item.productId }.formattedPrice =
-                            item.subscriptionOfferDetails?.getOrNull(0)?.pricingPhases?.pricingPhaseList?.get(
-                                0,
-                            )?.formattedPrice
+                        item.subscriptionOfferDetails?.let {
+                            // if offers are more than one - there's a free trial
+                            if (it.size > 1) {
+                                data.first { it.id == item.productId }.formattedPrice =
+                                    item.subscriptionOfferDetails?.getOrNull(1)?.pricingPhases?.pricingPhaseList?.get(
+                                        0,
+                                    )?.formattedPrice
+                            } else {
+                                data.first { it.id == item.productId }.formattedPrice =
+                                    item.subscriptionOfferDetails?.getOrNull(0)?.pricingPhases?.pricingPhaseList?.get(
+                                        0,
+                                    )?.formattedPrice
+                            }
+                        }
                     }
                 }
                 prefs.storeSubscriptions(data)
