@@ -119,21 +119,16 @@ class ConnectionUseCase(
             connectionManager,
         ).collect { connected ->
             emit(connected)
-            var retryCount = 3
             // The API can be sometimes be called before the tunnel is up which means the request times out
             // Add a delay prior to the request to avoid it.
             delay(1000)
-            while (retryCount > 0) {
-                clientStateDataSource.getClientStatus().collect {
-                    if (!connected) {
-                        clientIp.value = connectionPrefs.getClientIp()
-                        clientStateDataSource.resetVpnIp()
-                        retryCount--
-                    }
-                    vpnIp.value = connectionPrefs.getVpnIp()
-                    startPortForwarding().collect()
-                    retryCount = 0
+            clientStateDataSource.getClientStatus().collect {
+                if (!connected) {
+                    clientIp.value = connectionPrefs.getClientIp()
+                    clientStateDataSource.resetVpnIp()
                 }
+                vpnIp.value = connectionPrefs.getVpnIp()
+                startPortForwarding().collect()
             }
         }
     }
