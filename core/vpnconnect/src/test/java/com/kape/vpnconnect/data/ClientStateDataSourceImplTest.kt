@@ -93,13 +93,13 @@ class ClientStateDataSourceImplTest {
                 1 -> {
                     lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(
                         null,
-                        listOf(AccountRequestError(600, "Timeout", 0))
+                        listOf(AccountRequestError(600, "Timeout", 0)),
                     )
                 }
                 2 -> {
                     lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(
                         secondCallClientStatus,
-                        emptyList()
+                        emptyList(),
                     )
                 }
                 else -> throw IllegalStateException("Unexpected call to clientStatus")
@@ -114,7 +114,7 @@ class ClientStateDataSourceImplTest {
             verifyOrder {
                 connectionPrefs.setVpnIp(NO_IP)
                 connectionPrefs.setVpnIp(secondCallClientStatus.ip)
-             }
+            }
         }
     }
 }
