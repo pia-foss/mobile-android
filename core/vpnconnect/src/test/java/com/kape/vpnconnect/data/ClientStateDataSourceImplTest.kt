@@ -11,6 +11,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import io.mockk.verifyOrder
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -73,9 +74,47 @@ class ClientStateDataSourceImplTest {
             )
         }
         clientStateDataSource.getClientStatus().test {
-            val actual = awaitItem()
-            assertNotNull(actual)
+            val firstItem = awaitItem()
+            val secondItem = awaitItem()
+            assertNotNull(firstItem)
+            assertNotNull(secondItem)
             verify { connectionPrefs.setVpnIp(NO_IP) }
+        }
+    }
+
+    @Test
+    fun `getClientStatus - fails the first time - succeeds the second time - ip is set`() = runTest {
+        val secondCallClientStatus = ClientStatusInformation(connected = true, ip = "100.100.100.100")
+        every { connectionPrefs.setClientIp(any()) } returns Unit
+        every { connectionPrefs.setVpnIp(any()) } returns Unit
+        var callCount = 0
+        coEvery { accountAPI.clientStatus(any()) } answers {
+            when (++callCount) {
+                1 -> {
+                    lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(
+                        null,
+                        listOf(AccountRequestError(600, "Timeout", 0)),
+                    )
+                }
+                2 -> {
+                    lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(
+                        secondCallClientStatus,
+                        emptyList(),
+                    )
+                }
+                else -> throw IllegalStateException("Unexpected call to clientStatus")
+            }
+        }
+        clientStateDataSource.getClientStatus().test {
+            val firstItem = awaitItem()
+            val secondItem = awaitItem()
+            assert(!firstItem)
+            assert(secondItem)
+
+            verifyOrder {
+                connectionPrefs.setVpnIp(NO_IP)
+                connectionPrefs.setVpnIp(secondCallClientStatus.ip)
+            }
         }
     }
 }

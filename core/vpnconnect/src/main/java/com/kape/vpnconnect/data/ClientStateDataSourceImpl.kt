@@ -14,8 +14,9 @@ class ClientStateDataSourceImpl(
     private val accountAPI: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
 ) : ClientStateDataSource {
+
     override fun getClientStatus(): Flow<Boolean> = callbackFlow {
-        accountAPI.clientStatus { status: ClientStatusInformation?, error: List<AccountRequestError> ->
+        fun processClientStatus(status: ClientStatusInformation?, error: List<AccountRequestError>) {
             status?.let {
                 if (status.connected) {
                     connectionPrefs.setVpnIp(status.ip)
@@ -29,6 +30,17 @@ class ClientStateDataSourceImpl(
                 trySend(false)
             }
         }
+
+        accountAPI.clientStatus { status: ClientStatusInformation?, error: List<AccountRequestError> ->
+            processClientStatus(status, error)
+            // Sometimes the API will timeout while the tunnel is being started. If that happens we retry once
+            if (error.isNotEmpty()) {
+                accountAPI.clientStatus { status: ClientStatusInformation?, error: List<AccountRequestError> ->
+                    processClientStatus(status, error)
+                }
+            }
+        }
+
         awaitClose { channel.close() }
     }
 
