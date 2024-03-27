@@ -60,12 +60,15 @@ class ConnectionManager(
             VPNManagerConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
             is VPNManagerConnectionStatus.Connected -> ConnectionStatus.CONNECTED
         }
+        // If we update the notification too often, Android will silence it.
+        if (_connectionStatus.value != currentStatus) {
+            notificationBuilder.setContentText(currentStatus.toString())
+            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+        }
         _connectionStatus.value = currentStatus
         connectionValues[currentStatus]?.let {
             _connectionStatusTitle.value = String.format(it, serverName.value)
         }
-        notificationBuilder.setContentText(currentStatus.toString())
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
         submitKpiEventUseCase.submitConnectionEvent(
             getKpiConnectionStatus(status),
             isManualConnection,
