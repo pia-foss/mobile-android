@@ -1,4 +1,4 @@
-package com.kape.settings.ui.screens
+package com.kape.settings.ui.screens.mobile
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

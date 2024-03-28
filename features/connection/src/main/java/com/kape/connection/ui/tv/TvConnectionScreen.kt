@@ -89,6 +89,9 @@ fun TvConnectionScreen() = Screen {
                 onLocationsSelected = {
                     viewModel.showVpnRegionSelection()
                 },
+                onSettingsSelected = {
+                    viewModel.navigateToSettings()
+                },
             )
             Column(
                 modifier = Modifier

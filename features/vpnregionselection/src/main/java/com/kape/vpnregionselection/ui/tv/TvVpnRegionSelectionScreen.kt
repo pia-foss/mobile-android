@@ -114,6 +114,9 @@ fun TvVpnRegionSelectionScreen() = Screen {
                 onVpnSelected = {
                     viewModel.navigateBack()
                 },
+                onSettingsSelected = {
+                    viewModel.navigateToSettings()
+                },
             )
             Row(
                 modifier = Modifier

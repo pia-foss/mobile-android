@@ -56,11 +56,12 @@ import com.kape.router.TvLogin
 import com.kape.router.TvWelcome
 import com.kape.router.VpnRegionSelection
 import com.kape.router.WebContent
-import com.kape.settings.ui.screens.AutomationSettingsScreen
-import com.kape.settings.ui.screens.KillSwitchSettingScreen
-import com.kape.settings.ui.screens.PerAppSettingsScreen
-import com.kape.settings.ui.screens.ProtocolSettingsScreen
-import com.kape.settings.utils.SettingsFlow
+import com.kape.settings.ui.screens.mobile.AutomationSettingsScreen
+import com.kape.settings.ui.screens.mobile.KillSwitchSettingScreen
+import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
+import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
+import com.kape.settings.ui.screens.mobile.SettingsFlow
+import com.kape.settings.ui.screens.tv.TvSettingsFlow
 import com.kape.signup.ui.mobile.SignupScreensFlow
 import com.kape.signup.ui.tv.TvSignupScreensFlow
 import com.kape.splash.ui.SplashScreen
@@ -191,6 +192,7 @@ class MainActivity : ComponentActivity() {
 //            composable(WebContent.Privacy) {
 //                InAppBrowser(url = getString(com.kape.ui.R.string.url_privacy_policy))
 //            }
+//            composable(Settings.Route) { TvSettingsFlow() }
 //        } else {
         loginNavigation(navController)
         composable(Settings.Route) { SettingsFlow() }

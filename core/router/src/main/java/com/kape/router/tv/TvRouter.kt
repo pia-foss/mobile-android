@@ -11,6 +11,7 @@ import com.kape.router.NavigateBack
 import com.kape.router.NavigateOut
 import com.kape.router.Permissions
 import com.kape.router.Router
+import com.kape.router.Settings
 import com.kape.router.Splash
 import com.kape.router.Subscribe
 import com.kape.router.TvLogin
@@ -51,7 +52,7 @@ class TvRouter : Router {
             EnterFlow.Subscribe -> navigation.value = Subscribe.Main
             EnterFlow.PrivacyPolicy -> navigation.value = WebContent.Privacy
             EnterFlow.TermsOfService -> navigation.value = WebContent.Terms
-            EnterFlow.Settings -> TODO("To be implemented")
+            EnterFlow.Settings -> navigation.value = Settings.Route
             EnterFlow.AutomationSettings -> TODO("To be implemented")
             EnterFlow.PerAppSettings -> TODO("To be implemented")
             EnterFlow.KillSwitchSettings -> TODO("To be implemented")

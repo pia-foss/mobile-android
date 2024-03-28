@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalTvMaterial3Api::class)
+@file:OptIn(ExperimentalTvMaterial3Api::class, ExperimentalTvMaterial3Api::class)
 
 package com.kape.ui.tv.elements
 
@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
@@ -46,6 +47,7 @@ fun PrimaryButton(
 @Composable
 fun SecondaryButton(
     text: String,
+    textAlign: TextAlign = TextAlign.Center,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
@@ -64,6 +66,7 @@ fun SecondaryButton(
     ) {
         SecondaryButtonText(
             content = text.uppercase(),
+            textAlign = textAlign,
         )
     }
 }

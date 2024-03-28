@@ -101,7 +101,7 @@ fun TvColumnSelectionItem(
                     modifier = Modifier.fillMaxWidth(),
                     text = buttonDetails.title,
                     textAlign = TextAlign.Start,
-                    style = PiaTypography.subtitle1,
+                    style = PiaTypography.button1,
                 )
             }
         }

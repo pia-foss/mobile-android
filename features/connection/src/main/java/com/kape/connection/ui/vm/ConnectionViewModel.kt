@@ -85,6 +85,10 @@ class ConnectionViewModel(
         renewDedicatedIps()
     }
 
+    fun navigateToSettings() {
+        router.handleFlow(EnterFlow.Settings)
+    }
+
     fun navigateToKillSwitch() {
         router.handleFlow(EnterFlow.KillSwitchSettings)
     }

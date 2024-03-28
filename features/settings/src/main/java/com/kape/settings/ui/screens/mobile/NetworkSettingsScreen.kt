@@ -1,4 +1,4 @@
-package com.kape.settings.ui.screens
+package com.kape.settings.ui.screens.mobile
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column

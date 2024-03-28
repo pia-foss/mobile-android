@@ -4,6 +4,7 @@ import Dependencies.implementConstraintLayout
 import Dependencies.implementDrawablePainter
 import Dependencies.implementFeatureModule
 import Dependencies.implementSerialization
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
@@ -69,6 +70,7 @@ dependencies {
     implementation(project(":features:vpnregionselection"))
 
     implementFeatureModule()
+    implementVpnManager()
     implementSerialization()
     implementDrawablePainter()
     implementConstraintLayout()

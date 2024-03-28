@@ -1,4 +1,4 @@
-package com.kape.settings.ui.screens
+package com.kape.settings.ui.screens.mobile
 
 import android.graphics.drawable.Drawable
 import androidx.activity.compose.BackHandler
@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,20 +32,20 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Search
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ExternalProxyAppList() {
+fun PerAppSettingsScreen() = Screen {
     val packageManager = LocalContext.current.packageManager
     val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
         getInstalledApplications(packageManager)
     }
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.proxy_selection_title))
+        appBarText(stringResource(id = R.string.per_app_settings))
     }
-
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
 
     BackHandler {
@@ -66,7 +65,7 @@ fun ExternalProxyAppList() {
         Column(
             Modifier
                 .padding(it)
-                .fillMaxHeight()
+                .fillMaxWidth()
                 .background(LocalColors.current.background),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -83,18 +82,17 @@ fun ExternalProxyAppList() {
                     val items = viewModel.appList.value
                     items(items.size) { index ->
                         val item = items[index]
-                        val isSelected =
-                            viewModel.externalProxyAppPackageName.value == item.packageName
+                        val isExcluded =
+                            viewModel.vpnExcludedApps.value.contains(item.packageName)
                         ApplicationRow(
                             icon = item.loadIcon(packageManager),
                             name = item.loadLabel(packageManager).toString(),
-                            isSelected = isSelected,
+                            isExcluded = isExcluded,
                             onClick = { name, isChecked ->
                                 if (isChecked) {
-                                    viewModel.setExternalProxyAppPackageName(item.packageName)
-                                    viewModel.showExternalProxyTcpDialogIfNeeded()
+                                    viewModel.addToVpnExcludedApps(item.packageName)
                                 } else {
-                                    viewModel.setExternalProxyAppPackageName("")
+                                    viewModel.removeFromVpnExcludedApps(item.packageName)
                                 }
                             },
                         )
@@ -122,15 +120,15 @@ fun ExternalProxyAppList() {
 private fun ApplicationRow(
     icon: Drawable,
     name: String,
-    isSelected: Boolean,
-    onClick: (name: String, isSelected: Boolean) -> Unit,
+    isExcluded: Boolean,
+    onClick: (name: String, isExcluded: Boolean) -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp)
             .clickable {
-                onClick(name, !isSelected)
+                onClick(name, !isExcluded)
             },
     ) {
         val (image, text, button) = createRefs()
@@ -162,7 +160,7 @@ private fun ApplicationRow(
         )
 
         SelectedCheckBox(
-            checked = isSelected,
+            checked = isExcluded,
             modifier = Modifier.constrainAs(button) {
                 end.linkTo(parent.end, margin = 16.dp)
                 top.linkTo(parent.top)
@@ -175,9 +173,15 @@ private fun ApplicationRow(
 @Composable
 private fun SelectedCheckBox(checked: Boolean, modifier: Modifier) {
     Icon(
-        painter = painterResource(id = com.kape.settings.R.drawable.ic_check),
+        painter = if (checked) {
+            painterResource(id = com.kape.settings.R.drawable.ic_locket_open)
+        } else {
+            painterResource(
+                id = com.kape.settings.R.drawable.ic_locket_closed,
+            )
+        },
         contentDescription = null,
-        tint = if (checked) LocalColors.current.primary else Color.Transparent,
+        tint = Color.Unspecified,
         modifier = modifier.size(24.dp),
     )
 }

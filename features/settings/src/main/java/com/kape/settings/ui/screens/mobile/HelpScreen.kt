@@ -1,4 +1,4 @@
-package com.kape.settings.ui.screens
+package com.kape.settings.ui.screens.mobile
 
 import android.content.Intent
 import android.net.Uri

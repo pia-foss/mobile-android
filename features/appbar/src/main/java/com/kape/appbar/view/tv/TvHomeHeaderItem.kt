@@ -45,6 +45,8 @@ fun TvHomeHeaderItem(
     defaultSelectedTabIndex: Int,
     onVpnSelected: () -> Unit = { },
     onLocationsSelected: () -> Unit = { },
+    onSettingsSelected: () -> Unit = { },
+    onHelpSelected: () -> Unit = { },
 ) {
     val tabs = listOf(
         stringResource(id = R.string.app_name),
@@ -143,13 +145,13 @@ fun TvHomeHeaderItem(
                 modifier = Modifier.padding(horizontal = 4.dp),
                 painterId = R.drawable.ic_settings,
             ) {
-                // Route to settings
+                onSettingsSelected()
             }
             RoundIconButton(
                 modifier = Modifier.padding(horizontal = 4.dp),
                 painterId = R.drawable.ic_help,
             ) {
-                // Route to help
+                onHelpSelected()
             }
         }
     }

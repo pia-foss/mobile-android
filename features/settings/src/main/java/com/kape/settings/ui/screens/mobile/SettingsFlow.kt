@@ -1,22 +1,11 @@
-package com.kape.settings.utils
+package com.kape.settings.ui.screens.mobile
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import com.kape.settings.ui.screens.AutomationSettingsScreen
-import com.kape.settings.ui.screens.ConnectionStatsScreen
-import com.kape.settings.ui.screens.ExternalProxyAppList
-import com.kape.settings.ui.screens.GeneralSettingsScreen
-import com.kape.settings.ui.screens.HelpScreen
-import com.kape.settings.ui.screens.KillSwitchSettingScreen
-import com.kape.settings.ui.screens.NetworkSettingsScreen
-import com.kape.settings.ui.screens.ObfuscationSettingsScreen
-import com.kape.settings.ui.screens.PrivacySettingsScreen
-import com.kape.settings.ui.screens.ProtocolSettingsScreen
-import com.kape.settings.ui.screens.SettingsScreen
-import com.kape.settings.ui.screens.VpnLogScreen
 import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.utils.SettingsStep
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

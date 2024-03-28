@@ -1,4 +1,4 @@
-package com.kape.settings.ui.screens
+package com.kape.settings.ui.screens.mobile
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,10 +24,10 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun VpnLogScreen() = Screen {
+fun ConnectionStatsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.debug_logs_title))
+        appBarText(stringResource(id = R.string.connection_stats_title))
     }
 
     BackHandler {
@@ -43,25 +42,36 @@ fun VpnLogScreen() = Screen {
             )
         },
     ) {
+        viewModel.getRecentEvents()
         Column(
             modifier = Modifier
                 .padding(it)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            LaunchedEffect(key1 = Unit) {
-                viewModel.getDebugLogs()
-            }
-            LazyColumn(modifier = Modifier.widthIn(max = 520.dp)) {
-                items(viewModel.debugLogs.value) {
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                if (viewModel.eventList.value.isEmpty()) {
                     Text(
-                        text = it,
+                        text = stringResource(id = R.string.connection_stats_no_events),
                         color = LocalColors.current.outlineVariant,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp),
-                        textAlign = TextAlign.Start,
+                        textAlign = TextAlign.Center,
                     )
+                } else {
+                    LazyColumn {
+                        items(viewModel.eventList.value) {
+                            Text(
+                                text = it,
+                                color = LocalColors.current.outlineVariant,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp),
+                                textAlign = TextAlign.Start,
+                            )
+                        }
+                    }
                 }
             }
         }
