@@ -30,6 +30,7 @@ import com.kape.vpn.provider.CsiDataProvider
 import com.kape.vpn.provider.CsiEndpointProvider
 import com.kape.vpn.provider.KPI_PREFS_NAME
 import com.kape.vpn.provider.KpiModuleStateProvider
+import com.kape.vpn.provider.MetaEndpointsProvider
 import com.kape.vpn.provider.PlatformProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.vpn.provider.VpnManagerProvider
@@ -66,10 +67,11 @@ private const val AUTOMATION_SERVICE_INTENT = "automation-service-intent"
 val appModule = module {
     single { provideCertificate(get()) }
     single(named(PARAM_USER_AGENT)) { USER_AGENT }
-    single { AccountModuleStateProvider(get()) }
+    single { MetaEndpointsProvider() }
+    single { AccountModuleStateProvider(get(), get()) }
     single { PlatformProvider(get()) }
     single { VpnManagerProvider() }
-    single { RegionsModuleStateProvider(get()) }
+    single { RegionsModuleStateProvider(get(), get()) }
     single { KpiModuleStateProvider(get(), get()) }
     single { NetworkManager(get(), get(), get(), get()) }
     single {

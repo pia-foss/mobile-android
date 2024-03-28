@@ -3,17 +3,20 @@ package com.kape.vpn.provider
 import com.privateinternetaccess.account.AccountEndpoint
 import com.privateinternetaccess.account.IAccountEndpointProvider
 
-class AccountModuleStateProvider(val certificate: String) : IAccountEndpointProvider {
+class AccountModuleStateProvider(
+    val certificate: String,
+    private val metaEndpointsProvider: MetaEndpointsProvider,
+) : IAccountEndpointProvider {
     override fun accountEndpoints(): List<AccountEndpoint> {
         val endpoints = mutableListOf<AccountEndpoint>()
-        for (metaEndpoint in metaEndpoints()) {
+        for (metaEndpoint in metaEndpointsProvider.metaEndpoints()) {
             endpoints.add(
                 AccountEndpoint(
                     metaEndpoint.endpoint,
                     metaEndpoint.isProxy,
                     metaEndpoint.usePinnedCertificate,
-                    metaEndpoint.certificateCommonName
-                )
+                    metaEndpoint.certificateCommonName,
+                ),
             )
         }
         endpoints.add(
@@ -21,16 +24,16 @@ class AccountModuleStateProvider(val certificate: String) : IAccountEndpointProv
                 ACCOUNT_BASE_ROOT_DOMAIN,
                 isProxy = false,
                 usePinnedCertificate = false,
-                certificateCommonName = null
-            )
+                certificateCommonName = null,
+            ),
         )
         endpoints.add(
             AccountEndpoint(
                 ACCOUNT_PROXY_ROOT_DOMAIN,
                 isProxy = true,
                 usePinnedCertificate = false,
-                certificateCommonName = null
-            )
+                certificateCommonName = null,
+            ),
         )
 
 //        if (PiaPrefHandler.useStaging(context)) {
@@ -51,12 +54,4 @@ class AccountModuleStateProvider(val certificate: String) : IAccountEndpointProv
 //        }
         return endpoints
     }
-
-    private fun metaEndpoints(): List<GenericEndpoint> {
-        // TODO: implement
-        return mutableListOf()
-    }
-
-
-
 }

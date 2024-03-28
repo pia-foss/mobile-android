@@ -5,16 +5,21 @@ import com.privateinternetaccess.regions.RegionEndpoint
 
 private const val REGION_BASE_ENDPOINT = "serverlist.piaservers.net"
 
-class RegionsModuleStateProvider(val certificate: String) : IRegionEndpointProvider {
+class RegionsModuleStateProvider(
+    val certificate: String,
+    private val metaEndpointsProvider: MetaEndpointsProvider,
+) : IRegionEndpointProvider {
 
     override fun regionEndpoints(): List<RegionEndpoint> {
         val endpoints = mutableListOf<RegionEndpoint>()
-        for (metaEndpoint in metaEndpoints()) {
-            endpoints.add(RegionEndpoint(
-                metaEndpoint.endpoint,
-                metaEndpoint.isProxy,
-                metaEndpoint.usePinnedCertificate,
-                metaEndpoint.certificateCommonName)
+        for (metaEndpoint in metaEndpointsProvider.metaEndpoints()) {
+            endpoints.add(
+                RegionEndpoint(
+                    metaEndpoint.endpoint,
+                    metaEndpoint.isProxy,
+                    metaEndpoint.usePinnedCertificate,
+                    metaEndpoint.certificateCommonName,
+                ),
             )
         }
         endpoints.add(
@@ -22,14 +27,9 @@ class RegionsModuleStateProvider(val certificate: String) : IRegionEndpointProvi
                 REGION_BASE_ENDPOINT,
                 isProxy = false,
                 usePinnedCertificate = false,
-                certificateCommonName = null
-            )
+                certificateCommonName = null,
+            ),
         )
         return endpoints
-    }
-
-    private fun metaEndpoints(): List<GenericEndpoint> {
-        // TODO: implement
-        return mutableListOf()
     }
 }
