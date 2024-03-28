@@ -1,7 +1,6 @@
 package com.kape.profile.domain
 
 import app.cash.turbine.test
-import com.kape.profile.data.models.Profile
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
@@ -14,26 +13,23 @@ import org.koin.test.KoinTest
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
-class GetProfileUseCaseTest : KoinTest {
+class DeleteAccountUseCaseTest : KoinTest {
 
     private val dataSource: ProfileDatasource = mockk()
 
-    lateinit var useCase: GetProfileUseCase
+    lateinit var useCase: DeleteAccountUseCase
 
     @BeforeEach
     fun setUp() {
-        useCase = GetProfileUseCase(dataSource)
+        useCase = DeleteAccountUseCase(dataSource)
     }
 
     @ParameterizedTest(name = "result: {0}, expected: {1}")
     @MethodSource("data")
-    fun getProfile(
-        result: Profile?,
-        expected: Profile?,
-    ) = runTest {
-        every { dataSource.accountDetails() } returns flow { emit(result) }
+    fun deleteAccount(result: Boolean, expected: Boolean) = runTest {
+        every { dataSource.deleteAccount() } returns flow { emit(result) }
 
-        useCase.getProfile().test {
+        useCase.deleteAccount().test {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)
@@ -41,12 +37,10 @@ class GetProfileUseCaseTest : KoinTest {
     }
 
     companion object {
-        private val result = Profile(username = "username", subscription = mockk())
-
         @JvmStatic
         fun data() = Stream.of(
-            Arguments.of(null, null),
-            Arguments.of(result, result),
+            Arguments.of(true, true),
+            Arguments.of(false, false),
         )
     }
 }

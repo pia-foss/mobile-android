@@ -15,7 +15,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.koin.core.context.startKoin
@@ -98,35 +97,25 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
             }
         }
 
-    @Test
-    fun `isUserLoggedIn with apiToken = null and vpnToken = null returns false`() = runTest {
-        every { api.apiToken() } returns null
-        every { api.vpnToken() } returns null
+    @ParameterizedTest(name = "apiToken: {0}, vpnToken: {1}, expected: {2}")
+    @MethodSource("tokens")
+    fun isUserLoggedIn(apiToken: String?, vpnToken: String?, expected: Boolean) = runTest {
+        every { api.apiToken() } returns apiToken
+        every { api.vpnToken() } returns vpnToken
 
-        assertEquals(false, source.isUserLoggedIn())
+        assertEquals(expected, source.isUserLoggedIn())
     }
 
-    @Test
-    fun `isUserLoggedIn with apiToken = token and vpnToken = null returns false`() = runTest {
-        every { api.apiToken() } returns "apiToken"
-        every { api.vpnToken() } returns null
+    @ParameterizedTest(name = "api: {0}, expected: {1}")
+    @MethodSource("accountApiResults")
+    fun migrateToken(errorList: List<AccountRequestError>, expected: ApiResult) = runTest {
+        coEvery { api.migrateApiToken(any(), any()) } answers {
+            lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
+        }
 
-        assertEquals(false, source.isUserLoggedIn())
-    }
-
-    @Test
-    fun `isUserLoggedIn with apiToken = null and vpnToken = token returns false`() = runTest {
-        every { api.apiToken() } returns null
-        every { api.vpnToken() } returns "vpnToken"
-
-        assertEquals(false, source.isUserLoggedIn())
-    }
-
-    @Test
-    fun `isUserLoggedIn with apiToken != null and vpnToken != null returns true`() = runTest {
-        every { api.apiToken() } returns "api"
-        every { api.vpnToken() } returns "vpn"
-
-        assertEquals(true, source.isUserLoggedIn())
+        source.migrateToken("apiToken").test {
+            val actual = awaitItem()
+            assertEquals(expected, actual)
+        }
     }
 }

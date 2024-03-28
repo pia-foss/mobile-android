@@ -16,6 +16,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
@@ -24,6 +25,7 @@ import org.koin.dsl.module
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class ProfileDatasourceImplTest {
@@ -97,6 +99,30 @@ internal class ProfileDatasourceImplTest {
         dataSource.accountDetails().test {
             val actual = awaitItem()
             assertNull(actual)
+        }
+    }
+
+    @Test
+    fun `deleteAccount - success`() = runTest {
+        coEvery { api.deleteAccount(any()) } answers {
+            lastArg<(List<AccountRequestError>) -> Unit>().invoke(emptyList())
+        }
+
+        dataSource.deleteAccount().test {
+            val actual = awaitItem()
+            assertTrue(actual)
+        }
+    }
+
+    @Test
+    fun `deleteAccount - failute`() = runTest {
+        coEvery { api.deleteAccount(any()) } answers {
+            lastArg<(List<AccountRequestError>) -> Unit>().invoke(listOf(mockk()))
+        }
+
+        dataSource.deleteAccount().test {
+            val actual = awaitItem()
+            assertFalse(actual)
         }
     }
 }
