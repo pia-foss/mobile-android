@@ -359,4 +359,17 @@
     <string name="port_forwarding">port forwarding</string>
     <string name="geo">geo</string>
     <string name="dedicated_ip">DEDICATED IP</string>
+
+    <string name="account_deletion_title">Account Deletion</string>
+    <string name="account_deletion_description">You can permanently delete your Private Internet Access account. This will automatically cancel your subscription.</string>
+    <string name="account_deletion_action">Delete My Account</string>
+
+    <string name="account_deletion_dialog_title">Are you sure?</string>
+    <string name="account_deletion_dialog_message">This action will permanently delete your account, and cannot be reversed.</string>
+    <string name="account_deletion_dialog_positive_action">Yes, Delete</string>
+    <string name="account_deletion_dialog_negative_action">No, I changed my mind</string>
+
+    <string name="account_deletion_confirmation_title">Your account was successfully deleted</string>
+    <string name="account_deletion_confirmation_message">You can log in again if you have another account, or resubscribe at any time.</string>
+    <string name="subscribe">Subscribe</string>
 </resources>

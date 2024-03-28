@@ -73,6 +73,10 @@ object Customization {
     const val Route = "customization"
 }
 
+object AccountDeleted {
+    const val Route = "account-deleted"
+}
+
 object WebContent {
     // Please note these values are links within the signup module's strings file.
     const val Terms = "web-screen-terms"

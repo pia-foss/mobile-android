@@ -23,6 +23,7 @@ sealed class EnterFlow : AppFlow {
     data object Automation : EnterFlow()
     data object About : EnterFlow()
     data object Customization : EnterFlow()
+    data object AccountDeleted : EnterFlow()
     data object TvWelcome : EnterFlow()
     data object TvLoginUsername : EnterFlow()
 }
@@ -44,6 +45,7 @@ sealed class ExitFlow : AppFlow {
     data object Automation : ExitFlow()
     data object About : ExitFlow()
     data object Customization : ExitFlow()
+    data object AccountDeleted : ExitFlow()
 }
 
 object Back : AppFlow

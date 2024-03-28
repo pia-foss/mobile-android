@@ -1,6 +1,7 @@
 package com.kape.router.mobile
 
 import com.kape.router.About
+import com.kape.router.AccountDeleted
 import com.kape.router.AppFlow
 import com.kape.router.Automation
 import com.kape.router.Back
@@ -56,6 +57,7 @@ class MobileRouter : Router {
             EnterFlow.ShadowsocksRegionSelection ->
                 navigation.value =
                     ShadowsocksRegionSelection.Main
+
             EnterFlow.Profile -> navigation.value = Profile.Main
             EnterFlow.Subscribe -> navigation.value = Subscribe.Main
             EnterFlow.PrivacyPolicy -> navigation.value = WebContent.Privacy
@@ -72,6 +74,7 @@ class MobileRouter : Router {
             EnterFlow.Customization -> navigation.value = Customization.Route
             EnterFlow.TvWelcome -> TODO()
             EnterFlow.TvLoginUsername -> TODO()
+            EnterFlow.AccountDeleted -> navigation.value = AccountDeleted.Route
         }
     }
 
@@ -93,6 +96,7 @@ class MobileRouter : Router {
             ExitFlow.ProtocolSettings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.About -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.Customization -> handleEnterFlow(EnterFlow.Connection)
+            ExitFlow.AccountDeleted -> handleEnterFlow(EnterFlow.Splash)
         }
     }
 

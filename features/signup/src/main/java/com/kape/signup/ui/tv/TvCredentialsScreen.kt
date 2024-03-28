@@ -86,7 +86,7 @@ fun TvCredentialsScreen(credentials: Credentials) = Screen {
                     ),
                 ) {
                     Image(
-                        painter = painterResource(id = com.kape.signup.R.drawable.ic_tv_signup_success),
+                        painter = painterResource(id = R.drawable.img_success),
                         contentScale = ContentScale.Fit,
                         contentDescription = null,
                         modifier = Modifier

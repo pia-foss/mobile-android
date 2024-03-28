@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.kape.ui.theme.PiaTypography
@@ -357,6 +358,17 @@ fun Hyperlink(content: String, modifier: Modifier) {
         text = content,
         color = LocalColors.current.primary,
         style = PiaTypography.subtitle3,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun HyperlinkRed(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.error,
+        style = PiaTypography.subtitle3,
+        textDecoration = TextDecoration.Underline,
         modifier = modifier,
     )
 }

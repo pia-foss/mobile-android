@@ -2,20 +2,29 @@ package com.kape.profile.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.profile.data.models.Profile
+import com.kape.profile.domain.DeleteAccountUseCase
 import com.kape.profile.domain.GetProfileUseCase
 import com.kape.profile.ui.IDLE
 import com.kape.profile.ui.LOADING
 import com.kape.profile.ui.ProfileScreenState
 import com.kape.profile.ui.createSuccessState
 import com.kape.router.Back
+import com.kape.router.EnterFlow
+import com.kape.router.Exit
 import com.kape.router.Router
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
-class ProfileViewModel(private val useCase: GetProfileUseCase, private val router: Router) :
+class ProfileViewModel(
+    private val useCase: GetProfileUseCase,
+    private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val logoutUseCase: LogoutUseCase,
+    private val router: Router,
+) :
     ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(IDLE)
@@ -27,6 +36,27 @@ class ProfileViewModel(private val useCase: GetProfileUseCase, private val route
 
     fun navigateBack() {
         router.handleFlow(Back)
+    }
+
+    fun navigateToLogin() {
+        router.handleFlow(EnterFlow.Login)
+    }
+
+    fun navigateToSignUp() {
+        router.handleFlow(EnterFlow.Splash)
+    }
+
+    fun exitApp() {
+        router.handleFlow(Exit)
+    }
+
+    fun deleteAccount() = viewModelScope.launch {
+        _state.emit(LOADING)
+        deleteAccountUseCase.deleteAccount().collect {
+            logoutUseCase.logout().collect {
+                router.handleFlow(EnterFlow.AccountDeleted)
+            }
+        }
     }
 
     private fun loadProfile() = viewModelScope.launch {

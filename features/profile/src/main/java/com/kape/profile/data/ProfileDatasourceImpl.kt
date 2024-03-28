@@ -23,4 +23,11 @@ class ProfileDatasourceImpl(private val api: AndroidAccountAPI) : ProfileDatasou
         }
         awaitClose { channel.close() }
     }
+
+    override fun deleteAccount(): Flow<Boolean> = callbackFlow {
+        api.deleteAccount {
+            trySend(it.isEmpty())
+        }
+        awaitClose { channel.close() }
+    }
 }

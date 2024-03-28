@@ -58,6 +58,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
+    implementation(project(":features:login"))
 
     implementFeatureModule()
 }

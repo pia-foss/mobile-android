@@ -63,6 +63,7 @@ class TvRouter : Router {
             EnterFlow.Customization -> TODO("To be implemented")
             EnterFlow.TvWelcome -> navigation.value = TvWelcome.Main
             EnterFlow.TvLoginUsername -> navigation.value = TvLogin.Username
+            EnterFlow.AccountDeleted -> TODO("To be implemented")
         }
     }
 
@@ -84,6 +85,7 @@ class TvRouter : Router {
             ExitFlow.ProtocolSettings -> TODO("To be implemented")
             ExitFlow.About -> TODO("To be implemented")
             ExitFlow.Customization -> TODO("To be implemented")
+            ExitFlow.AccountDeleted -> TODO("To be implemented")
         }
     }
 
