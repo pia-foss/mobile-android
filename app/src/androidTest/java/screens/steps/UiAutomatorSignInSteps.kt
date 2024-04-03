@@ -48,9 +48,7 @@ class UiAutomatorSignInSteps : SignInSteps {
     }
 
     override fun navigateToSignUpScreen() {
-        if (LoginUiObjects.loginButton.exists())
-            UiAutomatorStepsHelper.device.pressBack()
-        else if (MainScreenObjects.connectButton.exists()) {
+        if (MainScreenObjects.connectButton.exists()) {
             MainScreenObjects.sideMenu.clickAndWaitForNewWindow(defaultTimeout)
             SideMenuObjects.logoutButton.clickAndWaitForNewWindow(defaultTimeout)
             SideMenuObjects.logoutDialogueConfirmButton.clickAndWaitForNewWindow(defaultTimeout)
