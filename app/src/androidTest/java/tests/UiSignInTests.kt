@@ -4,6 +4,7 @@ import com.kape.vpn.BuildConfig
 import org.junit.Test
 import screens.objects.LoginUiObjects
 import screens.objects.MainScreenObjects
+import kotlin.test.Ignore
 
 class UiSignInTests : UiTest() {
 

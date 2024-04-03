@@ -17,4 +17,7 @@ class UiAutomatorSideMenuSteps : SideMenuSteps {
     override fun clickOnLogoutButton() {
         SideMenuObjects.logoutButton.clickAndWaitForNewWindow(defaultTimeout)
     }
-}
+
+    override fun clickOnLogoutDialogueConfirmButton() {
+        SideMenuObjects.logoutDialogueConfirmButton.clickAndWaitForNewWindow(defaultTimeout)
+    }}

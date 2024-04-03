@@ -20,7 +20,6 @@ import com.kape.signup.utils.EMAIL
 import com.kape.signup.utils.ERROR_EMAIL_INVALID
 import com.kape.signup.utils.ERROR_REGISTRATION
 import com.kape.signup.utils.IN_PROCESS
-import com.kape.signup.utils.LOADING
 import com.kape.signup.utils.Plan
 import com.kape.signup.utils.PriceFormatter
 import com.kape.signup.utils.SUBSCRIPTIONS
@@ -146,7 +145,6 @@ class SignupViewModel(
     }
 
     fun loadPrices() = viewModelScope.launch {
-        _state.emit(LOADING)
         paymentProvider.loadProducts()
     }
 

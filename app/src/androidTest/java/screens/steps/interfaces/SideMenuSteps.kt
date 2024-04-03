@@ -4,4 +4,5 @@ interface SideMenuSteps {
     fun clickOnSideMenu()
     fun clickOnSettingsButton()
     fun clickOnLogoutButton()
+    fun clickOnLogoutDialogueConfirmButton()
 }

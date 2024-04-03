@@ -11,5 +11,6 @@ class UiLogoutAction(
         commonSteps.navigateToMainScreen()
         sideMenuSteps.clickOnSideMenu()
         sideMenuSteps.clickOnLogoutButton()
+        sideMenuSteps.clickOnLogoutDialogueConfirmButton()
     }
 }
