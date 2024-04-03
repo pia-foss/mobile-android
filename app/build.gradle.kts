@@ -39,6 +39,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        testInstrumentationRunnerArguments += mapOf(
+            "PclearPackageData" to "true",
+        )
     }
 
     buildTypes {
