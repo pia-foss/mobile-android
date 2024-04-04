@@ -80,6 +80,10 @@ class VpnRegionSelectionViewModel(
         router.handleFlow(EnterFlow.Settings)
     }
 
+    fun navigateToVpn() {
+        router.handleFlow(EnterFlow.Connection)
+    }
+
     fun navigateBack() {
         router.handleFlow(Back)
     }

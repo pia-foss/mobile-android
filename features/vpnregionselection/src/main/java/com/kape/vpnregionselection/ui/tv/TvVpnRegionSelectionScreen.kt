@@ -112,7 +112,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
                 connectionStatus = connectionStatus,
                 defaultSelectedTabIndex = 1,
                 onVpnSelected = {
-                    viewModel.navigateBack()
+                    viewModel.navigateToVpn()
                 },
                 onSettingsSelected = {
                     viewModel.navigateToSettings()

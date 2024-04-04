@@ -87,7 +87,7 @@ fun TvProtocolSettingsScreen() = Screen {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 AppBarTitleText(
-                    content = stringResource(id = R.string.general),
+                    content = stringResource(id = R.string.protocols),
                     textColor = LocalColors.current.onSurface,
                     isError = false,
                     modifier = Modifier.fillMaxWidth(),
