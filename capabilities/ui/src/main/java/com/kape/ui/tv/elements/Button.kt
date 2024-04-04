@@ -17,6 +17,7 @@ import androidx.tv.material3.Icon
 import androidx.tv.material3.IconButton
 import com.kape.ui.tv.text.PrimaryButtonText
 import com.kape.ui.tv.text.SecondaryButtonText
+import com.kape.ui.tv.text.TertiaryButtonText
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -65,6 +66,33 @@ fun SecondaryButton(
         onClick = onClick,
     ) {
         SecondaryButtonText(
+            content = text.uppercase(),
+            textAlign = textAlign,
+        )
+    }
+}
+
+@Composable
+fun TertiaryButton(
+    text: String,
+    textAlign: TextAlign = TextAlign.Center,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    Button(
+        modifier = modifier.fillMaxWidth(),
+        shape = ButtonDefaults.shape(
+            shape = RoundedCornerShape(12.dp),
+        ),
+        colors = ButtonDefaults.colors(
+            containerColor = LocalColors.current.background,
+            contentColor = LocalColors.current.onSurfaceVariant,
+            focusedContainerColor = LocalColors.current.primary,
+            focusedContentColor = LocalColors.current.onPrimary,
+        ),
+        onClick = onClick,
+    ) {
+        TertiaryButtonText(
             content = text.uppercase(),
             textAlign = textAlign,
         )

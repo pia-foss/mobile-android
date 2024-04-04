@@ -38,6 +38,19 @@ fun SecondaryButtonText(
 }
 
 @Composable
+fun TertiaryButtonText(
+    content: String,
+    textAlign: TextAlign = TextAlign.Center,
+) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = content,
+        textAlign = textAlign,
+        style = PiaTypography.button2,
+    )
+}
+
+@Composable
 fun PrimaryTabText(content: String, color: Color = LocalColors.current.onPrimary) {
     Text(
         modifier = Modifier.fillMaxWidth(),
@@ -294,5 +307,21 @@ fun RegionSelectionGridSectionText(content: String, modifier: Modifier = Modifie
         color = LocalColors.current.onSurfaceVariant,
         style = PiaTypography.subtitle1,
         modifier = modifier,
+    )
+}
+
+@Composable
+fun SettingsL2Text(content: String) {
+    Text(
+        text = content,
+        style = PiaTypography.subtitle1,
+    )
+}
+
+@Composable
+fun SettingsL2TextDescription(content: String) {
+    Text(
+        text = content,
+        style = PiaTypography.caption2,
     )
 }

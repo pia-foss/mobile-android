@@ -1,20 +1,21 @@
 package com.kape.settings.ui.screens.tv
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -22,12 +23,13 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kape.settings.data.DnsOptions
+import com.kape.settings.ui.elements.tv.TvSettingsToggle
+import com.kape.settings.ui.screens.mobile.WarningDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.tv.elements.SecondaryButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionManager
@@ -36,14 +38,19 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvSettingsScreen() = Screen {
+fun TvPrivacySettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val initialFocusRequester = FocusRequester()
+    val showWarning = remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
+    }
+
+    BackHandler {
+        viewModel.navigateUp()
     }
 
     Box(
@@ -71,7 +78,7 @@ fun TvSettingsScreen() = Screen {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 AppBarTitleText(
-                    content = stringResource(id = R.string.settings),
+                    content = stringResource(id = R.string.privacy),
                     textColor = LocalColors.current.onSurface,
                     isError = false,
                     modifier = Modifier.fillMaxWidth(),
@@ -89,34 +96,20 @@ fun TvSettingsScreen() = Screen {
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top,
                 ) {
-                    SecondaryButton(
-                        text = stringResource(id = R.string.general),
-                        textAlign = TextAlign.Start,
+                    TvSettingsToggle(
                         modifier = Modifier.focusRequester(initialFocusRequester),
-                    ) {
-                        viewModel.navigateToGeneralSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.protocols),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToProtocolSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.networks),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToNetworkSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.privacy),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToPrivacySettings()
-                    }
+                        titleId = R.string.mace_title,
+                        subtitleId = R.string.mace_description,
+                        enabled = viewModel.maceEnabled.value,
+                        toggle = {
+                            // MACE requires using PIA DNS
+                            if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !viewModel.maceEnabled.value) {
+                                showWarning.value = true
+                            }
+                            viewModel.toggleMace(it)
+                            viewModel.showReconnectDialogIfVpnConnected()
+                        },
+                    )
                 }
                 Column(
                     modifier = Modifier.weight(1.0f),
@@ -131,5 +124,13 @@ fun TvSettingsScreen() = Screen {
                 }
             }
         }
+    }
+    if (showWarning.value) {
+        WarningDialog(
+            onConfirm = {
+                viewModel.setSelectedDnsOption(DnsOptions.PIA)
+                showWarning.value = false
+            },
+        )
     }
 }

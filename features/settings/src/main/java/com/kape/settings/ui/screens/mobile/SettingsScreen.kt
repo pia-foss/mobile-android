@@ -19,7 +19,7 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.data.VpnProtocols
-import com.kape.settings.ui.elements.SettingsItem
+import com.kape.settings.ui.elements.mobile.SettingsItem
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.mobile.elements.Screen
 import org.koin.androidx.compose.koinViewModel

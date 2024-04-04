@@ -21,8 +21,8 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.ReconnectDialog
-import com.kape.settings.ui.elements.SettingsItem
-import com.kape.settings.ui.elements.SettingsToggle
+import com.kape.settings.ui.elements.mobile.SettingsItem
+import com.kape.settings.ui.elements.mobile.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen

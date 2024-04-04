@@ -14,17 +14,23 @@ fun TvSettingsFlow() {
     val state by remember(viewModel) { viewModel.state }.collectAsState()
 
     when (state) {
-        SettingsStep.Automation, SettingsStep.ShortcutAutomation -> TODO()
-        SettingsStep.Obfuscation -> TODO()
-        SettingsStep.ConnectionStats -> TODO()
-        SettingsStep.DebugLogs -> TODO()
-        SettingsStep.General -> TODO()
+        SettingsStep.Automation,
+        SettingsStep.ShortcutAutomation,
+        -> throw IllegalStateException("Unsupported on TV")
+        SettingsStep.Obfuscation -> throw IllegalStateException("Unsupported on TV")
+        SettingsStep.ConnectionStats -> throw IllegalStateException("Unsupported on TV")
+        SettingsStep.DebugLogs -> throw IllegalStateException("Unsupported on TV")
+        SettingsStep.General -> TvGeneralSettingsScreen()
         SettingsStep.Help -> TODO()
-        SettingsStep.KillSwitch, SettingsStep.ShortcutKillSwitch -> TODO()
+        SettingsStep.KillSwitch,
+        SettingsStep.ShortcutKillSwitch,
+        -> throw IllegalStateException("Unsupported on TV")
         SettingsStep.Main -> TvSettingsScreen()
-        SettingsStep.Network -> TODO()
-        SettingsStep.Privacy -> TODO()
-        SettingsStep.Protocol, SettingsStep.ShortcutProtocol -> TODO()
-        SettingsStep.ExternalProxyAppList -> TODO()
+        SettingsStep.Network -> TvNetworkSettingsScreen()
+        SettingsStep.Privacy -> TvPrivacySettingsScreen()
+        SettingsStep.Protocol,
+        SettingsStep.ShortcutProtocol,
+        -> TvProtocolSettingsScreen()
+        SettingsStep.ExternalProxyAppList -> throw IllegalStateException("Unsupported on TV")
     }
 }

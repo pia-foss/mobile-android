@@ -1,5 +1,6 @@
 package com.kape.settings.ui.screens.tv
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,12 +23,11 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kape.settings.ui.elements.tv.TvSettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.tv.elements.SecondaryButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionManager
@@ -36,7 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvSettingsScreen() = Screen {
+fun TvGeneralSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
@@ -44,6 +44,10 @@ fun TvSettingsScreen() = Screen {
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
+    }
+
+    BackHandler {
+        viewModel.navigateUp()
     }
 
     Box(
@@ -71,7 +75,7 @@ fun TvSettingsScreen() = Screen {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 AppBarTitleText(
-                    content = stringResource(id = R.string.settings),
+                    content = stringResource(id = R.string.general),
                     textColor = LocalColors.current.onSurface,
                     isError = false,
                     modifier = Modifier.fillMaxWidth(),
@@ -89,34 +93,33 @@ fun TvSettingsScreen() = Screen {
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top,
                 ) {
-                    SecondaryButton(
-                        text = stringResource(id = R.string.general),
-                        textAlign = TextAlign.Start,
+                    TvSettingsToggle(
                         modifier = Modifier.focusRequester(initialFocusRequester),
-                    ) {
-                        viewModel.navigateToGeneralSettings()
-                    }
+                        titleId = R.string.connect_on_boot_title,
+                        subtitleId = R.string.connect_on_boot_description,
+                        enabled = viewModel.launchOnBootEnabled.value,
+                        toggle = {
+                            viewModel.toggleLaunchOnBoot(it)
+                        },
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.protocols),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToProtocolSettings()
-                    }
+                    TvSettingsToggle(
+                        titleId = R.string.connect_on_launch_title,
+                        subtitleId = R.string.connect_on_launch_description,
+                        enabled = viewModel.connectOnStart.value,
+                        toggle = {
+                            viewModel.toggleConnectOnStart(it)
+                        },
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.networks),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToNetworkSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.privacy),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToPrivacySettings()
-                    }
+                    TvSettingsToggle(
+                        titleId = R.string.connect_on_update_title,
+                        subtitleId = R.string.connect_on_update_description,
+                        enabled = viewModel.connectOnUpdate.value,
+                        toggle = {
+                            viewModel.toggleConnectOnUpdate(it)
+                        },
+                    )
                 }
                 Column(
                     modifier = Modifier.weight(1.0f),

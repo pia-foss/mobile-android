@@ -24,8 +24,8 @@ import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.ui.elements.OptionsDialog
 import com.kape.settings.ui.elements.ReconnectDialog
-import com.kape.settings.ui.elements.SettingsItem
-import com.kape.settings.ui.elements.SettingsToggle
+import com.kape.settings.ui.elements.mobile.SettingsItem
+import com.kape.settings.ui.elements.mobile.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.settings.utils.getDefaultButtons
 import com.kape.ui.R

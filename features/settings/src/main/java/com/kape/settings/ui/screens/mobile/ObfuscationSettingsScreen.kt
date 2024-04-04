@@ -21,9 +21,9 @@ import com.kape.settings.ui.elements.CustomObfuscationDialog
 import com.kape.settings.ui.elements.ObfuscationSelectionDialog
 import com.kape.settings.ui.elements.ProxyPortDialog
 import com.kape.settings.ui.elements.ReconnectDialog
-import com.kape.settings.ui.elements.SettingsItem
-import com.kape.settings.ui.elements.SettingsToggle
 import com.kape.settings.ui.elements.TextDialog
+import com.kape.settings.ui.elements.mobile.SettingsItem
+import com.kape.settings.ui.elements.mobile.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen

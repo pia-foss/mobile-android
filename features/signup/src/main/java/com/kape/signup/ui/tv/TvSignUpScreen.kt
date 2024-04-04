@@ -31,7 +31,7 @@ import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.elements.MonthlySubscriptionCard
 import com.kape.ui.tv.elements.PrimaryButton
-import com.kape.ui.tv.elements.SecondaryButton
+import com.kape.ui.tv.elements.TertiaryButton
 import com.kape.ui.tv.elements.YearlySubscriptionCard
 import com.kape.ui.tv.text.OnboardingDescriptionText
 import com.kape.ui.tv.text.OnboardingTitleText
@@ -150,14 +150,14 @@ fun TvSignUpScreen() = Screen {
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth()) {
-                SecondaryButton(
+                TertiaryButton(
                     modifier = Modifier.weight(1f),
                     text = stringResource(id = R.string.drawer_item_title_privacy_policy),
                 ) {
                     viewModel.navigateToPrivacyPolicy()
                 }
                 Spacer(modifier = Modifier.width(16.dp))
-                SecondaryButton(
+                TertiaryButton(
                     modifier = Modifier.weight(1f),
                     text = stringResource(id = R.string.terms_of_service),
                 ) {

@@ -1,4 +1,4 @@
-package com.kape.settings.ui.elements
+package com.kape.settings.ui.elements.mobile
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

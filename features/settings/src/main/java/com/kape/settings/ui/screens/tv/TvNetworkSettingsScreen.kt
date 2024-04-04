@@ -1,40 +1,57 @@
-package com.kape.settings.ui.screens.mobile
+package com.kape.settings.ui.screens.tv
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.appbar.view.mobile.AppBar
-import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.data.CustomDns
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.CustomDnsDialog
 import com.kape.settings.ui.elements.DnsSelectionDialog
 import com.kape.settings.ui.elements.ReconnectDialog
-import com.kape.settings.ui.elements.TextDialog
-import com.kape.settings.ui.elements.mobile.SettingsItem
-import com.kape.settings.ui.elements.mobile.SettingsToggle
+import com.kape.settings.ui.elements.tv.TvSettingsItem
+import com.kape.settings.ui.elements.tv.TvSettingsToggle
+import com.kape.settings.ui.screens.mobile.AllowLanDialog
+import com.kape.settings.ui.screens.mobile.UnsafeDnsWarningDialog
+import com.kape.settings.ui.screens.mobile.getCustomDnsInfo
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.tv.text.AppBarTitleText
+import com.kape.ui.utils.LocalColors
+import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnregionselection.ui.tv.getTopBarConnectionColor
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 @Composable
-fun NetworkSettingsScreen() = Screen {
+fun TvNetworkSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.networks))
-    }
+    val connectionManager: ConnectionManager = koinInject()
+    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val initialFocusRequester = FocusRequester()
+
     val dnsOptions = mutableMapOf(
         DnsOptions.PIA to stringResource(id = R.string.pia),
         DnsOptions.SYSTEM to stringResource(id = R.string.network_dns_selection_system),
@@ -59,45 +76,96 @@ fun NetworkSettingsScreen() = Screen {
         viewModel.navigateUp()
     }
 
-    Scaffold(
-        topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
-            )
-        },
+    LaunchedEffect(key1 = Unit) {
+        initialFocusRequester.requestFocus()
+    }
+
+    BackHandler {
+        viewModel.navigateUp()
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
     ) {
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            thickness = 4.dp,
+            color = getTopBarConnectionColor(
+                status = connectionStatus.value,
+                scheme = LocalColors.current,
+            ),
+        )
         Column(
             modifier = Modifier
-                .padding(it)
-                .fillMaxWidth(),
+                .fillMaxSize()
+                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                .background(LocalColors.current.background),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                SettingsItem(
-                    titleId = R.string.network_dns_title,
-                    subtitle = dnsOptions[viewModel.getSelectedDnsOption()],
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                AppBarTitleText(
+                    content = stringResource(id = R.string.networks),
+                    textColor = LocalColors.current.onSurface,
+                    isError = false,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .weight(1.0f)
+                        .padding(end = 64.dp),
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Top,
                 ) {
-                    dnsDialogVisible.value = !dnsDialogVisible.value
+                    TvSettingsItem(
+                        modifier = Modifier.focusRequester(initialFocusRequester),
+                        titleId = R.string.network_dns_title,
+                        subtitle = dnsOptions[viewModel.getSelectedDnsOption()],
+                    ) {
+                        dnsDialogVisible.value = !dnsDialogVisible.value
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TvSettingsToggle(
+                        titleId = R.string.network_port_forwarding_title,
+                        subtitleId = R.string.network_port_forwarding_description,
+                        enabled = viewModel.isPortForwardingEnabled(),
+                        toggle = {
+                            viewModel.toggleEnablePortForwarding(it)
+                            viewModel.showReconnectDialogIfVpnConnected()
+                        },
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TvSettingsToggle(
+                        titleId = R.string.network_allow_lan_traffic_title,
+                        subtitleId = R.string.network_allow_lan_traffic_description,
+                        stateEnabled = viewModel.isAllowLocalTrafficEnabled,
+                        toggle = {
+                            viewModel.toggleAllowLocalNetwork(it)
+                            viewModel.showReconnectDialogIfVpnConnected()
+                        },
+                    )
                 }
-                SettingsToggle(
-                    titleId = R.string.network_port_forwarding_title,
-                    subtitleId = R.string.network_port_forwarding_description,
-                    enabled = viewModel.isPortForwardingEnabled(),
-                    toggle = {
-                        viewModel.toggleEnablePortForwarding(it)
-                        viewModel.showReconnectDialogIfVpnConnected()
-                    },
-                )
-                SettingsToggle(
-                    titleId = R.string.network_allow_lan_traffic_title,
-                    subtitleId = R.string.network_allow_lan_traffic_description,
-                    stateEnabled = viewModel.isAllowLocalTrafficEnabled,
-                    toggle = { checked ->
-                        viewModel.toggleAllowLocalNetwork(checked)
-                        viewModel.showReconnectDialogIfVpnConnected()
-                    },
-                )
+                Column(
+                    modifier = Modifier.weight(1.0f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Image(
+                        painter = painterResource(id = com.kape.settings.R.drawable.ic_tv_settings),
+                        contentScale = ContentScale.Fit,
+                        contentDescription = null,
+                    )
+                }
             }
         }
     }
@@ -196,70 +264,5 @@ fun NetworkSettingsScreen() = Screen {
             dnsWarningDialogVisible = dnsWarningDialogVisible,
             allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
         )
-    }
-}
-
-@Composable
-fun UnsafeDnsWarningDialog(
-    viewModel: SettingsViewModel,
-    dnsWarningDialogVisible: MutableState<Boolean>,
-    allowLocalTrafficDialogVisible: MutableState<Boolean>,
-) {
-    val titleId = if (viewModel.getSelectedDnsOption() == DnsOptions.SYSTEM) {
-        R.string.network_dns_selection_system
-    } else {
-        R.string.network_dns_selection_custom
-    }
-    TextDialog(
-        titleId = titleId,
-        descriptionId = R.string.network_dns_selection_unsafe_warning,
-        onDismiss = {
-            viewModel.setSelectedDnsOption(DnsOptions.PIA)
-            dnsWarningDialogVisible.value = false
-            allowLocalTrafficDialogVisible.value = false
-            viewModel.reconnectDialogVisible.value = false
-        },
-        onConfirm = {
-            dnsWarningDialogVisible.value = false
-            if (!allowLocalTrafficDialogVisible.value) {
-                viewModel.showReconnectDialogIfVpnConnected()
-            }
-        },
-    )
-}
-
-@Composable
-fun AllowLanDialog(
-    titleId: Int,
-    descriptionId: Int,
-    viewModel: SettingsViewModel,
-    allowLocalTrafficDialogVisible: MutableState<Boolean>,
-    onDismiss: () -> Unit = {},
-    onConfirm: () -> Unit = {},
-) {
-    TextDialog(
-        titleId = titleId,
-        descriptionId = descriptionId,
-        onDismiss = {
-            allowLocalTrafficDialogVisible.value = false
-            viewModel.reconnectDialogVisible.value = false
-            onDismiss()
-        },
-        onConfirm = {
-            viewModel.toggleAllowLocalNetwork(true)
-            allowLocalTrafficDialogVisible.value = false
-            viewModel.showReconnectDialogIfVpnConnected()
-            onConfirm()
-        },
-    )
-}
-
-fun getCustomDnsInfo(customDns: CustomDns): String {
-    return if (customDns.primaryDns.isEmpty()) {
-        ""
-    } else if (customDns.secondaryDns.isEmpty()) {
-        "(${customDns.primaryDns})"
-    } else {
-        "(${customDns.primaryDns}/${customDns.secondaryDns})"
     }
 }
