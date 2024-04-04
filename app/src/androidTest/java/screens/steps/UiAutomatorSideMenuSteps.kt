@@ -2,7 +2,9 @@ package screens.steps
 
 import screens.objects.MainScreenObjects
 import screens.objects.SideMenuObjects
+import screens.objects.SignUpUiObjects
 import screens.steps.helpers.UiAutomatorStepsHelper.defaultTimeout
+import screens.steps.helpers.UiAutomatorStepsHelper.waitUntilFound
 import screens.steps.interfaces.SideMenuSteps
 
 class UiAutomatorSideMenuSteps : SideMenuSteps {
@@ -20,4 +22,5 @@ class UiAutomatorSideMenuSteps : SideMenuSteps {
 
     override fun clickOnLogoutDialogueConfirmButton() {
         SideMenuObjects.logoutDialogueConfirmButton.clickAndWaitForNewWindow(defaultTimeout)
+        waitUntilFound(SignUpUiObjects.loginButton)
     }}
