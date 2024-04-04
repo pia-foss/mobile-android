@@ -69,7 +69,7 @@ import com.kape.tvwelcome.ui.TvWelcomeScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
-import com.kape.vpn.utils.PlatformUtils
+import com.kape.utils.PlatformUtils
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
 import org.koin.android.ext.android.inject
 
@@ -245,7 +245,7 @@ class MainActivity : ComponentActivity() {
             composable(AccountDeleted.Route) {
                 AccountDeletedScreen()
             }
-        }
-//    }
+//        }
+    }
     // endregion
 }
