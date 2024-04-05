@@ -20,10 +20,7 @@ class MetaEndpointsProvider : KoinComponent {
         val selectedRegion = connectionPrefs.getSelectedVpnServer()
 
         // Get the list of known regions sorted by latency.
-        val sortedLatencyRegions = regionsListProvider.servers.value.filter { it.latency != null }
-        if (sortedLatencyRegions.isEmpty()) {
-            return endpoints
-        }
+        val sortedLatencyRegions = regionsListProvider.servers.value
 
         // Filter out invalid latencies. e.g. nil, zero, etc.
         val regionsWithValidLatency = sortedLatencyRegions.filterNot {
@@ -32,8 +29,7 @@ class MetaEndpointsProvider : KoinComponent {
 
         // If there were no regions with valid latencies yet or less than what we need to. Pick random.
         if (regionsWithValidLatency.isEmpty() || regionsWithValidLatency.size < MAX_META_ENDPOINTS) {
-            // Starting from 2 because the automatic/selected region occupies one slot of the max.
-            for (i in 2..MAX_META_ENDPOINTS) {
+            for (i in 1..MAX_META_ENDPOINTS) {
                 val region = sortedLatencyRegions[Random.nextInt(0, sortedLatencyRegions.size)]
                 regionsWithValidLatency.add(region)
             }

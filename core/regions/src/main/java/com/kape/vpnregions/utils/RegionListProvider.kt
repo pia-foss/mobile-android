@@ -21,7 +21,23 @@ class RegionListProvider(
         _servers.value = readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
     }
 
-    fun updateServerList(locale: String, isConnected: Boolean) = flow {
+    fun updateServerLatencies(locale: String, isConnected: Boolean, isUserInitiated: Boolean) =
+        flow {
+            if (isUserInitiated) {
+                updateServerLatencies(locale, isConnected).collect {
+                    emit(servers.value)
+                }
+            }
+            if (_servers.value.none { it.latency != null }) {
+                updateServerLatencies(locale, isConnected).collect {
+                    emit(servers.value)
+                }
+            } else {
+                emit(servers.value)
+            }
+        }
+
+    private fun updateServerLatencies(locale: String, isConnected: Boolean) = flow {
         getVpnRegionsUseCase.loadVpnServers(locale).collect {
             updateLatencyUseCase.updateLatencies(isConnected)
                 .collect { updatedServers ->

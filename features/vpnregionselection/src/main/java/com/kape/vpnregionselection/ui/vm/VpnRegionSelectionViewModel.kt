@@ -42,7 +42,11 @@ class VpnRegionSelectionViewModel(
             if (displayLoading) {
                 isLoading.value = true
             }
-            regionListProvider.updateServerList(locale, connectionUseCase.isConnected()).collect {
+            regionListProvider.updateServerLatencies(
+                locale,
+                connectionUseCase.isConnected(),
+                displayLoading,
+            ).collect {
                 arrangeVpnServers(it)
                 isLoading.value = false
             }

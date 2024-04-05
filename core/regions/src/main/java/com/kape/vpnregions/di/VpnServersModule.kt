@@ -9,7 +9,6 @@ import com.kape.vpnregions.domain.GetVpnRegionsUseCase
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.domain.UpdateLatencyUseCase
 import com.kape.vpnregions.domain.VpnRegionDataSource
-import com.kape.vpnregions.utils.RegionListProvider
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -26,5 +25,4 @@ val localVpnRegionsModule = module {
     single { GetVpnRegionsUseCase(get()) }
     single { ReadVpnRegionsDetailsUseCase(get(), get()) }
     single { UpdateLatencyUseCase(get()) }
-    single { RegionListProvider(get(), get(), get()) }
 }

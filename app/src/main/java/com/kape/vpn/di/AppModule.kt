@@ -17,7 +17,6 @@ import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
 import com.kape.router.Router
 import com.kape.router.mobile.MobileRouter
-import com.kape.router.tv.TvRouter
 import com.kape.settings.SettingsPrefs
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
@@ -39,11 +38,11 @@ import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.service.AutomationService
 import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.NetworkManager
-import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
+import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
@@ -67,6 +66,7 @@ private const val AUTOMATION_SERVICE_INTENT = "automation-service-intent"
 val appModule = module {
     single { provideCertificate(get()) }
     single(named(PARAM_USER_AGENT)) { USER_AGENT }
+    single { RegionListProvider(get(), get(), get()) }
     single { MetaEndpointsProvider() }
     single { AccountModuleStateProvider(get(), get()) }
     single { PlatformProvider(get()) }
