@@ -13,8 +13,7 @@ class UiAutomatorCommonSteps : CommonSteps {
             waitUntilFound(MainScreenObjects.connectButton)
         } catch (e: Exception) {
             UiAutomatorStepsHelper.device.pressBack()
+            navigateToMainScreen()
         }
-
-        assertNotNull(waitUntilFound(MainScreenObjects.connectButton))
     }
 }

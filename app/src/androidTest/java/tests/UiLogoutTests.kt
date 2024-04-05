@@ -4,7 +4,6 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.vpn.BuildConfig
 import org.junit.Test
 import screens.objects.SignUpUiObjects
-import kotlin.test.Ignore
 import kotlin.test.assertEquals
 
 class UiLogoutTests : UiTest() {
@@ -18,7 +17,6 @@ class UiLogoutTests : UiTest() {
         assert(SignUpUiObjects.loginButton.exists())
     }
 
-    @Ignore ("Ignoring because the app will perpetually load as the emulator is not signed in in google playstore ")
     @Test
     fun persistence_layer_wiped_after_sign_out() {
         uiSignInAction.signIn(
@@ -28,14 +26,13 @@ class UiLogoutTests : UiTest() {
         uiSettingsAction.openSideMenu()
         uiSettingsAction.selectOpenVpnProtocol()
         uiLogoutAction.logout()
-
         uiSignInAction.signIn(
             BuildConfig.PIA_VALID_USERNAME,
             BuildConfig.PIA_VALID_PASSWORD,
         )
         uiSettingsAction.openSideMenu()
         // WireGuard is the default protocol. On logout we clear all settings
-        // If the protocol is set back to WireGuard it means that the persistance layer
+        // If the protocol is set back to WireGuard it means that the persistence layer
         // was successfully cleared
         assertEquals(VpnProtocols.WireGuard.name, uiSettingsAction.selectedProtocol())
     }
