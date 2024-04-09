@@ -1,6 +1,5 @@
 package com.kape.vpnconnect.domain
 
-import android.app.AlarmManager
 import android.app.Notification
 import android.app.PendingIntent
 import androidx.compose.runtime.mutableStateOf
@@ -55,8 +54,6 @@ class ConnectionUseCase(
     private val startObfuscatorProcess: StartObfuscatorProcess,
     private val stopObfuscatorProcess: StopObfuscatorProcess,
     private val portForwardingUseCase: PortForwardingUseCase,
-    private val alarmManager: AlarmManager,
-    private val portForwardingIntent: PendingIntent,
 ) : KoinComponent {
 
     val portForwardingStatus = portForwardingUseCase.portForwardingStatus
@@ -76,9 +73,7 @@ class ConnectionUseCase(
 
             startVpnConnection(server = server).collect { connected ->
                 emit(connected)
-                if (connected) {
-                    startPortForwarding().collect()
-                } else {
+                if (!connected) {
                     stopShadowsocksConnection().collect()
                 }
             }
@@ -195,12 +190,7 @@ class ConnectionUseCase(
     private fun startPortForwarding(): Flow<Boolean> = flow {
         if (settingsPrefs.isPortForwardingEnabled()) {
             portForwardingUseCase.bindPort(getVpnToken())
-            alarmManager.setRepeating(
-                AlarmManager.RTC_WAKEUP,
-                0,
-                AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                portForwardingIntent,
-            )
+            connectionSource.startPortForwarding()
             emit(true)
         } else {
             emit(false)
@@ -210,7 +200,6 @@ class ConnectionUseCase(
     private fun stopPortForwarding() {
         connectionSource.stopPortForwarding()
         portForwardingUseCase.clearBindPort()
-        alarmManager.cancel(portForwardingIntent)
     }
 
     fun getClientStatus(): Flow<Boolean> = flow {

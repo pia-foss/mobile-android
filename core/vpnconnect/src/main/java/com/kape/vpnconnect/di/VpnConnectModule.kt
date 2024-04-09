@@ -28,14 +28,13 @@ private val localVpnConnectModule = module {
             get(),
             get(),
             get(),
-            get(),
+            get(named("port-forwarding-pending-intent")),
         )
     }
     single {
         ConnectionUseCase(
             get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
-            get(), get(), get(), get(),
-            get(named("port-forwarding-pending-intent")),
+            get(), get(), get(),
         )
     }
     single { provideConnectionStatusValues(get()) }

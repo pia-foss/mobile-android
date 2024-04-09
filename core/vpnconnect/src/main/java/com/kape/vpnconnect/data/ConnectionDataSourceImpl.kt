@@ -23,10 +23,10 @@ class ConnectionDataSourceImpl(
     private val accountApi: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
     private val alarmManager: AlarmManager,
-    private val portForwardingIntent: PendingIntent,
     private val settingsPrefs: SettingsPrefs,
     private val kpiDataSource: KpiDataSource,
     private val usageProvider: UsageProvider,
+    private val portForwardingIntent: PendingIntent,
 ) : ConnectionDataSource, KoinComponent {
 
     override fun startConnection(
@@ -43,7 +43,6 @@ class ConnectionDataSourceImpl(
             connectionApi.startConnection(clientConfiguration) {
                 it.getOrNull()?.let { serverPeerInfo ->
                     connectionPrefs.setGateway(serverPeerInfo.gateway)
-                    startPortForwarding()
                 }
                 trySend(it.isSuccess)
             }
