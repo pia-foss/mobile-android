@@ -72,10 +72,10 @@ internal class ConnectionDataSourceImplTest {
             authenticationApi,
             connectionPrefs,
             alarmManager,
-            portForwardingIntent,
             settingsPrefs,
             kpiDataSource,
             usageProvider,
+            portForwardingIntent,
         )
     }
 

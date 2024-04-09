@@ -116,7 +116,7 @@ internal class ConnectionUseCaseTest {
             getActiveInterfaceDnsUseCase,
             startObfuscatorProcess,
             stopObfuscatorProcess,
-            portForwardingUseCase, alarmManager, portForwardingIntent,
+            portForwardingUseCase,
         )
         every { connectionManager.setConnectedServerName(any(), any()) } returns Unit
     }
