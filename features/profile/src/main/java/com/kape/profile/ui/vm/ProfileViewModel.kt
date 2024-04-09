@@ -6,10 +6,10 @@ import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.profile.data.models.Profile
 import com.kape.profile.domain.DeleteAccountUseCase
 import com.kape.profile.domain.GetProfileUseCase
-import com.kape.profile.ui.IDLE
-import com.kape.profile.ui.LOADING
-import com.kape.profile.ui.ProfileScreenState
-import com.kape.profile.ui.createSuccessState
+import com.kape.profile.ui.screens.mobile.IDLE
+import com.kape.profile.ui.screens.mobile.LOADING
+import com.kape.profile.ui.screens.mobile.ProfileScreenState
+import com.kape.profile.ui.screens.mobile.createSuccessState
 import com.kape.router.Back
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
@@ -56,6 +56,12 @@ class ProfileViewModel(
             logoutUseCase.logout().collect {
                 router.handleFlow(EnterFlow.AccountDeleted)
             }
+        }
+    }
+
+    fun logout() = viewModelScope.launch {
+        logoutUseCase.logout().collect {
+            router.handleFlow(EnterFlow.Splash)
         }
     }
 

@@ -15,11 +15,14 @@ import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun PrimaryButtonText(content: String) {
+fun PrimaryButtonText(
+    content: String,
+    textAlign: TextAlign = TextAlign.Center,
+) {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = content,
-        textAlign = TextAlign.Center,
+        textAlign = textAlign,
         style = PiaTypography.button1,
     )
 }

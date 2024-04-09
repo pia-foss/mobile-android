@@ -1,4 +1,4 @@
-package com.kape.profile.ui
+package com.kape.profile.ui.screens.mobile
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image

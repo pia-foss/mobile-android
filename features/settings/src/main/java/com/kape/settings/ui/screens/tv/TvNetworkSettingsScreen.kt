@@ -41,7 +41,6 @@ import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionManager
-import com.kape.vpnregionselection.ui.tv.getTopBarConnectionColor
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -161,7 +160,7 @@ fun TvNetworkSettingsScreen() = Screen {
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Image(
-                        painter = painterResource(id = com.kape.settings.R.drawable.ic_tv_settings),
+                        painter = painterResource(id = R.drawable.ic_tv_settings),
                         contentScale = ContentScale.Fit,
                         contentDescription = null,
                     )

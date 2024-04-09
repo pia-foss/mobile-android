@@ -23,6 +23,7 @@ import com.kape.ui.utils.LocalColors
 @Composable
 fun PrimaryButton(
     text: String,
+    textAlign: TextAlign = TextAlign.Center,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
@@ -41,6 +42,7 @@ fun PrimaryButton(
     ) {
         PrimaryButtonText(
             content = text.uppercase(),
+            textAlign = textAlign,
         )
     }
 }

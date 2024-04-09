@@ -223,16 +223,11 @@ fun TvVpnRegionSelectionScreen() = Screen {
 }
 
 @Composable
-fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
+private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
     return when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
-            scheme,
-        )
-
-        ConnectionStatus.RECONNECTING,
-        ConnectionStatus.CONNECTING,
-        -> scheme.statusBarConnecting()
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
+        ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }

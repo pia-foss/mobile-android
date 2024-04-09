@@ -41,6 +41,10 @@ class SideMenuViewModel(
         }
     }
 
+    fun navigateToVpnConnect() {
+        router.handleFlow(EnterFlow.Connection)
+    }
+
     fun navigateToProfile() {
         router.handleFlow(EnterFlow.Profile)
     }

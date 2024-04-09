@@ -75,6 +75,7 @@ class MobileRouter : Router {
             EnterFlow.TvWelcome -> TODO()
             EnterFlow.TvLoginUsername -> TODO()
             EnterFlow.AccountDeleted -> navigation.value = AccountDeleted.Route
+            EnterFlow.TvSideMenu -> TODO()
         }
     }
 

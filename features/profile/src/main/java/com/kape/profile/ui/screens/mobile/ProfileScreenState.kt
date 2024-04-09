@@ -1,4 +1,4 @@
-package com.kape.profile.ui
+package com.kape.profile.ui.screens.mobile
 
 data class ProfileScreenState(
     val loading: Boolean,

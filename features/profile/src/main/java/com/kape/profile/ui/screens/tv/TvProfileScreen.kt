@@ -1,4 +1,6 @@
-package com.kape.settings.ui.screens.tv
+@file:OptIn(ExperimentalTvMaterial3Api::class)
+
+package com.kape.profile.ui.screens.tv
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,30 +13,38 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.kape.settings.ui.vm.SettingsViewModel
+import androidx.tv.material3.Button
+import androidx.tv.material3.ButtonDefaults
+import androidx.tv.material3.ExperimentalTvMaterial3Api
+import com.kape.profile.ui.vm.ProfileViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.theme.statusBarError
-import com.kape.ui.tv.elements.SecondaryButton
+import com.kape.ui.tiles.LogoutDialog
+import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.text.AppBarTitleText
+import com.kape.ui.tv.text.SettingsL2Text
+import com.kape.ui.tv.text.SettingsL2TextDescription
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
@@ -42,15 +52,13 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvSettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
+fun TvProfileScreen() = Screen {
+    val viewModel: ProfileViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val initialFocusRequester = FocusRequester()
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
+    val state by remember(viewModel) { viewModel.screenState }.collectAsState()
+    val logoutDialogVisible = remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -77,7 +85,7 @@ fun TvSettingsScreen() = Screen {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 AppBarTitleText(
-                    content = stringResource(id = R.string.general_settings),
+                    content = stringResource(id = R.string.account),
                     textColor = LocalColors.current.onSurface,
                     isError = false,
                     modifier = Modifier.fillMaxWidth(),
@@ -95,33 +103,29 @@ fun TvSettingsScreen() = Screen {
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top,
                 ) {
-                    SecondaryButton(
-                        text = stringResource(id = R.string.general),
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier.focusRequester(initialFocusRequester),
-                    ) {
-                        viewModel.navigateToGeneralSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.protocols),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToProtocolSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.networks),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToNetworkSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.privacy),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToPrivacySettings()
+                    if (state.loading) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        }
+                    } else {
+                        TvProfileItem(
+                            title = stringResource(id = R.string.username),
+                            subtitle = state.username,
+                            onClick = { },
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TvProfileItem(
+                            title = stringResource(id = R.string.message_expiration),
+                            subtitle = if (state.expired) stringResource(id = R.string.subscription_status_expired) else state.expirationDate,
+                            onClick = { },
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        PrimaryButton(
+                            text = stringResource(id = R.string.drawer_item_title_logout),
+                            textAlign = TextAlign.Start,
+                        ) {
+                            logoutDialogVisible.value = true
+                        }
                     }
                 }
                 Column(
@@ -138,10 +142,51 @@ fun TvSettingsScreen() = Screen {
             }
         }
     }
+
+    if (logoutDialogVisible.value) {
+        LogoutDialog(
+            onDismiss = {
+                logoutDialogVisible.value = false
+            },
+            onConfirm = {
+                viewModel.logout()
+                logoutDialogVisible.value = false
+            },
+        )
+    }
 }
 
 @Composable
-internal fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
+fun TvProfileItem(
+    modifier: Modifier = Modifier,
+    title: String,
+    subtitle: String?,
+    onClick: (() -> Unit),
+) {
+    Button(
+        modifier = modifier.fillMaxWidth(),
+        shape = ButtonDefaults.shape(
+            shape = RoundedCornerShape(12.dp),
+        ),
+        colors = ButtonDefaults.colors(
+            containerColor = LocalColors.current.background,
+            contentColor = LocalColors.current.onSurfaceVariant,
+            focusedContainerColor = LocalColors.current.primary,
+            focusedContentColor = LocalColors.current.onPrimary,
+        ),
+        onClick = onClick,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            SettingsL2Text(content = title)
+            subtitle?.let {
+                SettingsL2TextDescription(content = it)
+            }
+        }
+    }
+}
+
+@Composable
+private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
     return when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()

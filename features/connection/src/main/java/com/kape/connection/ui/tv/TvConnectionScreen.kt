@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.connection.ui.ConnectButton
@@ -30,13 +32,16 @@ import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.customization.data.Element
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.tiles.ShadowsocksLocationPicker
+import com.kape.ui.theme.statusBarConnected
+import com.kape.ui.theme.statusBarConnecting
+import com.kape.ui.theme.statusBarDefault
+import com.kape.ui.theme.statusBarError
 import com.kape.ui.tv.tiles.QuickConnect
 import com.kape.ui.tv.tiles.VpnLocationPicker
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
-import com.kape.vpnregionselection.ui.tv.getTopBarConnectionColor
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.util.Locale
@@ -90,7 +95,7 @@ fun TvConnectionScreen() = Screen {
                     viewModel.showVpnRegionSelection()
                 },
                 onSettingsSelected = {
-                    viewModel.navigateToSettings()
+                    viewModel.navigateToSideMenu()
                 },
             )
             Column(
@@ -172,5 +177,15 @@ private fun DisplayComponent(
         -> {
             // Continue. Not showing them on TV.
         }
+    }
+}
+
+@Composable
+private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
+    return when (status) {
+        ConnectionStatus.ERROR -> scheme.statusBarError()
+        ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
+        ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }

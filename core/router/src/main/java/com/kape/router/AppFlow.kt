@@ -26,6 +26,7 @@ sealed class EnterFlow : AppFlow {
     data object AccountDeleted : EnterFlow()
     data object TvWelcome : EnterFlow()
     data object TvLoginUsername : EnterFlow()
+    data object TvSideMenu : EnterFlow()
 }
 
 sealed class ExitFlow : AppFlow {

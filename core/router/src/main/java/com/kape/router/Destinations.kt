@@ -25,6 +25,10 @@ object TvWelcome {
     const val Main = "tv-welcome-screen"
 }
 
+object TvSideMenu {
+    const val Main = "tv-side-menu-screen"
+}
+
 object Connection {
     const val Main = "connection-screen"
 }

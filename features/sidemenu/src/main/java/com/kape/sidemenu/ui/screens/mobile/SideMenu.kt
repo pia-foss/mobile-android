@@ -1,4 +1,4 @@
-package com.kape.sidemenu.ui
+package com.kape.sidemenu.ui.screens.mobile
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -19,11 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerState
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +42,7 @@ import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.mobile.text.SideMenuUsernameText
 import com.kape.ui.mobile.text.SideMenuVersionText
 import com.kape.ui.theme.PiaScreen
+import com.kape.ui.tiles.LogoutDialog
 import com.kape.ui.utils.LocalColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -250,58 +247,6 @@ private fun SideMenuItem(
             modifier = Modifier.align(CenterVertically),
         )
     }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
-fun LogoutDialog(
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-) {
-    AlertDialog(
-        modifier = Modifier.semantics { testTagsAsResourceId = true },
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(
-                onClick = onConfirm,
-                modifier = Modifier.testTag(
-                    ":SideMenu:ConfirmButton",
-                ),
-            ) {
-                Text(text = stringResource(id = com.kape.ui.R.string.drawer_item_title_logout))
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onDismiss,
-                modifier = Modifier.testTag(
-                    ":SideMenu:DismissButton",
-                ),
-            ) {
-                Text(text = stringResource(id = com.kape.ui.R.string.cancel))
-            }
-        },
-        title = {
-            Text(
-                text = stringResource(id = com.kape.ui.R.string.logout_confirmation),
-                style = MaterialTheme.typography.titleMedium,
-            )
-        },
-        text = {
-            Column(
-                Modifier.fillMaxWidth(),
-            ) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    verticalAlignment = CenterVertically,
-                ) {
-                    Text(text = stringResource(id = com.kape.ui.R.string.logout_confirmation_text))
-                }
-            }
-        },
-    )
 }
 
 @Preview

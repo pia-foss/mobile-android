@@ -32,8 +32,9 @@ import com.kape.obfuscationregionselection.ui.ShadowsocksRegionSelectionScreen
 import com.kape.payments.ui.PaymentProvider
 import com.kape.permissions.utils.mobile.PermissionsFlow
 import com.kape.permissions.utils.tv.TvPermissionsFlow
-import com.kape.profile.ui.AccountDeletedScreen
-import com.kape.profile.ui.ProfileScreen
+import com.kape.profile.ui.screens.mobile.AccountDeletedScreen
+import com.kape.profile.ui.screens.mobile.ProfileScreen
+import com.kape.profile.ui.screens.tv.TvProfileScreen
 import com.kape.router.About
 import com.kape.router.AccountDeleted
 import com.kape.router.Automation
@@ -53,6 +54,7 @@ import com.kape.router.ShadowsocksRegionSelection
 import com.kape.router.Splash
 import com.kape.router.Subscribe
 import com.kape.router.TvLogin
+import com.kape.router.TvSideMenu
 import com.kape.router.TvWelcome
 import com.kape.router.VpnRegionSelection
 import com.kape.router.WebContent
@@ -62,6 +64,7 @@ import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
 import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.mobile.SettingsFlow
 import com.kape.settings.ui.screens.tv.TvSettingsFlow
+import com.kape.sidemenu.ui.screens.tv.TvSideMenuScreen
 import com.kape.signup.ui.mobile.SignupScreensFlow
 import com.kape.signup.ui.tv.TvSignupScreensFlow
 import com.kape.splash.ui.SplashScreen
@@ -193,6 +196,8 @@ class MainActivity : ComponentActivity() {
 //                InAppBrowser(url = getString(com.kape.ui.R.string.url_privacy_policy))
 //            }
 //            composable(Settings.Route) { TvSettingsFlow() }
+//            composable(TvSideMenu.Main) { TvSideMenuScreen() }
+//            composable(Profile.Main) { TvProfileScreen() }
 //        } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }
