@@ -1,6 +1,5 @@
 package com.kape.vpnconnect.domain
 
-import android.app.AlarmManager
 import android.app.Notification
 import android.app.PendingIntent
 import androidx.compose.runtime.mutableStateOf
@@ -86,8 +85,7 @@ internal class ConnectionUseCaseTest {
             every { port } returns mutableStateOf("")
             every { clearBindPort() } returns Unit
         }
-    private val alarmManager: AlarmManager = mockk(relaxed = true)
-    private val portForwardingIntent: PendingIntent = mockk()
+
     private lateinit var useCase: ConnectionUseCase
     private val getActiveInterfaceDnsUseCase = mockk<GetActiveInterfaceDnsUseCase>()
     private val startObfuscatorProcess: StartObfuscatorProcess = mockk(relaxed = true)
