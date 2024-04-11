@@ -84,7 +84,7 @@ fun TvWelcomeScreen() = Screen {
         Spacer(modifier = Modifier.width(64.dp))
         Column(modifier = Modifier.weight(1f)) {
             Image(
-                painter = painterResource(id = com.kape.tvwelcome.R.drawable.tv_welcome),
+                painter = painterResource(id = R.drawable.tv_welcome),
                 contentDescription = null,
             )
         }

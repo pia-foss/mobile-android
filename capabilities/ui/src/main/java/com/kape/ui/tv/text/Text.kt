@@ -328,3 +328,47 @@ fun SettingsL2TextDescription(content: String) {
         style = PiaTypography.caption2,
     )
 }
+
+@Composable
+fun DedicatedIpTitle(content: String, modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier,
+        text = content,
+        textAlign = TextAlign.Start,
+        style = PiaTypography.h2,
+        color = LocalColors.current.onSurfaceVariant,
+    )
+}
+
+@Composable
+fun DedicatedIpDescription(content: String, modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier,
+        text = content,
+        textAlign = TextAlign.Start,
+        style = PiaTypography.body2,
+        color = LocalColors.current.onSurfaceVariant,
+    )
+}
+
+@Composable
+fun DedicatedIpAddressDetailsTitle(content: String, modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier,
+        text = content,
+        textAlign = TextAlign.Start,
+        style = PiaTypography.subtitle2,
+        color = LocalColors.current.onSurfaceVariant,
+    )
+}
+
+@Composable
+fun DedicatedIpAddressDetailsSubtitle(content: String, modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier,
+        text = content,
+        textAlign = TextAlign.Start,
+        style = PiaTypography.body2,
+        color = LocalColors.current.onSurfaceVariant,
+    )
+}

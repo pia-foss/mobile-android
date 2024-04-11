@@ -43,6 +43,7 @@
     <string name="current_vpn_region">CURRENT VPN LOCATION</string>
     <string name="optimal_vpn_region">Optimal Location</string>
     <string name="location">Location</string>
+    <string name="ip_address">IP Address</string>
     <string name="optimal_location_hint">We\'re trying to find the best server for you. Once we found it, you\'ll access the Optimal Location feature.</string>
 
     <string name="automatic">Automatic</string>
@@ -119,6 +120,15 @@
     <string name="dialog_title">Rule for Network</string>
     <string name="add_rule_title">Choose a WiFi network to add new rule.</string>
 
+    <string name="you_are_all_set">You\'re all set!</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="try_again">Try Again</string>
+
+    <string name="remove_dedicated_ip">Remove Dedicated IP</string>
+    <string name="tv_dedicated_ip_title">Activate Your Dedicated IP</string>
+    <string name="tv_dedicated_ip_description">Activate your Dedicated IP by typing your token in the field below. You can purchase a Dedicated IP from your Client Control Panel on the PIA website.</string>
+    <string name="tv_dedicated_ip_textfield">Enter your Dedicated IP token</string>
+    <string name="your_dedicated_ip_is_now_active">Your Dedicated IP is now active.</string>
     <string name="dedicated_ip_title">Dedicated IP</string>
     <string name="dedicated_ip_description">Activate your Dedicated IP by pasting your token in the form below. If you\'ve recently purchased a dedicated IP, you can generate the token by going to the PIA website.</string>
     <string name="activate">ACTIVATE</string>

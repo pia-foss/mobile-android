@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.kape.ui.tiles
 
 import androidx.compose.foundation.layout.Column
@@ -19,7 +21,69 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 
-@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun Dialog(
+    title: String,
+    text: String,
+    onConfirmButtonText: String,
+    onDismissButtonText: String? = null,
+    onConfirm: () -> Unit,
+    onDismiss: (() -> Unit)? = null,
+) {
+    val onDismissRequest = onDismiss?.let { onDismiss } ?: onConfirm
+    AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
+        onDismissRequest = onDismissRequest,
+        confirmButton = {
+            TextButton(
+                onClick = onConfirm,
+                modifier = Modifier.testTag(
+                    ":SideMenu:ConfirmButton",
+                ),
+            ) {
+                Text(text = onConfirmButtonText)
+            }
+        },
+        dismissButton = {
+            if (onDismiss == null) {
+                return@AlertDialog
+            }
+            if (onDismissButtonText == null) {
+                return@AlertDialog
+            }
+
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.testTag(
+                    ":SideMenu:DismissButton",
+                ),
+            ) {
+                Text(text = onDismissButtonText)
+            }
+        },
+        title = {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+            )
+        },
+        text = {
+            Column(
+                Modifier.fillMaxWidth(),
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(text = text)
+                }
+            }
+        },
+    )
+}
+
 @Composable
 fun LogoutDialog(
     onDismiss: () -> Unit,

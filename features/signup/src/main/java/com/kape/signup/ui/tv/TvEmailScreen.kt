@@ -32,8 +32,8 @@ import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.unit.dp
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.text.Input
 import com.kape.ui.tv.text.EnterEmailScreenTitleText
+import com.kape.ui.tv.text.Input
 import com.kape.ui.tv.text.SignUpTitleText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel

@@ -1,4 +1,4 @@
-package com.kape.dedicatedip.ui
+package com.kape.dedicatedip.ui.screens.mobile
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke

@@ -22,7 +22,8 @@ import com.kape.automation.ui.AutomationFlow
 import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
-import com.kape.dedicatedip.ui.DedicatedIpScreen
+import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpScreen
+import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
 import com.kape.inappbrowser.ui.InAppBrowser
 import com.kape.login.ui.mobile.loginNavigation
 import com.kape.login.ui.tv.LoginPasswordScreen
@@ -198,6 +199,7 @@ class MainActivity : ComponentActivity() {
 //            composable(Settings.Route) { TvSettingsFlow() }
 //            composable(TvSideMenu.Main) { TvSideMenuScreen() }
 //            composable(Profile.Main) { TvProfileScreen() }
+//            composable(DedicatedIp.Main) { TvDedicatedIpScreen() }
 //        } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }

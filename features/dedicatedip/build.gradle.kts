@@ -4,6 +4,7 @@ import Dependencies.implementAccount
 import Dependencies.implementConstraintLayout
 import Dependencies.implementFeatureModule
 import Dependencies.implementRegions
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
@@ -49,6 +50,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:router"))
     implementation(project(":core:regions"))
+    implementation(project(":core:vpnconnect"))
     implementation(project(":core:localprefs:dip"))
     implementation(project(":features:appbar"))
     implementation(project(":capabilities:ui"))
@@ -56,4 +58,5 @@ dependencies {
     implementRegions()
     implementFeatureModule()
     implementConstraintLayout()
+    implementVpnManager()
 }

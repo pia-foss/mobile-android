@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,8 @@ fun PrimaryButton(
     text: String,
     textAlign: TextAlign = TextAlign.Center,
     modifier: Modifier = Modifier,
+    focusedContainerColor: Color = LocalColors.current.primary,
+    focusedContentColor: Color = LocalColors.current.onPrimary,
     onClick: () -> Unit,
 ) {
     Button(
@@ -35,8 +38,8 @@ fun PrimaryButton(
         colors = ButtonDefaults.colors(
             containerColor = LocalColors.current.primaryContainer,
             contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = LocalColors.current.primary,
-            focusedContentColor = LocalColors.current.onPrimary,
+            focusedContainerColor = focusedContainerColor,
+            focusedContentColor = focusedContentColor,
         ),
         onClick = onClick,
     ) {

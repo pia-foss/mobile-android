@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import com.kape.login.ui.vm.tv.LoginUsernameViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.mobile.text.Input
 import com.kape.ui.tv.text.EnterUsernameScreenTitleText
+import com.kape.ui.tv.text.Input
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 

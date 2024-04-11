@@ -3,6 +3,7 @@ package com.kape.router.tv
 import com.kape.router.AppFlow
 import com.kape.router.Back
 import com.kape.router.Connection
+import com.kape.router.DedicatedIp
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
 import com.kape.router.ExitFlow
@@ -58,7 +59,7 @@ class TvRouter : Router {
             EnterFlow.AutomationSettings -> TODO("To be implemented")
             EnterFlow.PerAppSettings -> TODO("To be implemented")
             EnterFlow.KillSwitchSettings -> TODO("To be implemented")
-            EnterFlow.DedicatedIp -> TODO("To be implemented")
+            EnterFlow.DedicatedIp -> navigation.value = DedicatedIp.Main
             EnterFlow.Support -> TODO("To be implemented")
             EnterFlow.Automation -> TODO("To be implemented")
             EnterFlow.ProtocolSettings -> TODO("To be implemented")
@@ -81,7 +82,7 @@ class TvRouter : Router {
             ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.Permissions)
             ExitFlow.Settings -> TODO("To be implemented")
             ExitFlow.PerAppSettings -> TODO("To be implemented")
-            ExitFlow.DedicatedIp -> TODO("To be implemented")
+            ExitFlow.DedicatedIp -> handleEnterFlow(EnterFlow.TvSideMenu)
             ExitFlow.AutomationSettings -> TODO("To be implemented")
             ExitFlow.KillSwitchSettings -> TODO("To be implemented")
             ExitFlow.Permissions -> handleEnterFlow(EnterFlow.Connection)
