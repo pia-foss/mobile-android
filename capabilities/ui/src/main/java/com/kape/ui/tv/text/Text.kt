@@ -29,11 +29,12 @@ fun PrimaryButtonText(
 
 @Composable
 fun SecondaryButtonText(
+    modifier: Modifier = Modifier,
     content: String,
     textAlign: TextAlign = TextAlign.Center,
 ) {
     Text(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         text = content,
         textAlign = textAlign,
         style = PiaTypography.button1,

@@ -64,6 +64,7 @@ import com.kape.settings.ui.screens.mobile.KillSwitchSettingScreen
 import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
 import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.mobile.SettingsFlow
+import com.kape.settings.ui.screens.tv.TvPerAppSettingsScreen
 import com.kape.settings.ui.screens.tv.TvSettingsFlow
 import com.kape.sidemenu.ui.screens.tv.TvSideMenuScreen
 import com.kape.signup.ui.mobile.SignupScreensFlow
@@ -200,6 +201,7 @@ class MainActivity : ComponentActivity() {
 //            composable(TvSideMenu.Main) { TvSideMenuScreen() }
 //            composable(Profile.Main) { TvProfileScreen() }
 //            composable(DedicatedIp.Main) { TvDedicatedIpScreen() }
+//            composable(PerAppSettings.Main) { TvPerAppSettingsScreen() }
 //        } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }

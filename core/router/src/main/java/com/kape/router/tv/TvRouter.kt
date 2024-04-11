@@ -10,6 +10,7 @@ import com.kape.router.ExitFlow
 import com.kape.router.Login
 import com.kape.router.NavigateBack
 import com.kape.router.NavigateOut
+import com.kape.router.PerAppSettings
 import com.kape.router.Permissions
 import com.kape.router.Profile
 import com.kape.router.Router
@@ -57,7 +58,7 @@ class TvRouter : Router {
             EnterFlow.TermsOfService -> navigation.value = WebContent.Terms
             EnterFlow.Settings -> navigation.value = Settings.Route
             EnterFlow.AutomationSettings -> TODO("To be implemented")
-            EnterFlow.PerAppSettings -> TODO("To be implemented")
+            EnterFlow.PerAppSettings -> navigation.value = PerAppSettings.Main
             EnterFlow.KillSwitchSettings -> TODO("To be implemented")
             EnterFlow.DedicatedIp -> navigation.value = DedicatedIp.Main
             EnterFlow.Support -> TODO("To be implemented")

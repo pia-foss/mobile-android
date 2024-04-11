@@ -54,6 +54,7 @@ import com.kape.vpnregionselection.util.ItemType
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TvVpnRegionSelectionScreen() = Screen {
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
