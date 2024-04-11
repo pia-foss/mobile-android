@@ -88,7 +88,7 @@ fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
         SideMenuItem(
             iconId = R.drawable.ic_ip,
             titleId = com.kape.ui.R.string.drawer_item_title_dedicated_ip,
-            ":SideMenu:DedicatedIp",
+            ":SideMenu:DedicatedIP",
         ) {
             scope.launch {
                 state.close()

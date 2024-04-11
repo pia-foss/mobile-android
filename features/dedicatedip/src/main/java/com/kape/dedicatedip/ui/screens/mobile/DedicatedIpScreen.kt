@@ -36,11 +36,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.TopEnd
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -61,6 +65,7 @@ import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import org.koin.androidx.compose.koinViewModel
 import java.util.Locale
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
@@ -86,7 +91,10 @@ fun DedicatedIpScreen() = Screen {
         Column(
             modifier = Modifier
                 .padding(it)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .semantics {
+                    testTagsAsResourceId = true
+                },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(
@@ -129,7 +137,8 @@ fun DedicatedIpScreen() = Screen {
                                 },
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .weight(6.0f),
+                                    .weight(6.0f)
+                                    .testTag(":DedicatedIPScreen:dip_text_field"),
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
                                     unfocusedTextColor = LocalColors.current.onSurface,
@@ -153,7 +162,8 @@ fun DedicatedIpScreen() = Screen {
                                     modifier = Modifier
                                         .padding(end = 8.dp)
                                         .align(CenterVertically)
-                                        .weight(4.0f),
+                                        .weight(4.0f)
+                                        .testTag(":DedicatedIPScreen:activate_button"),
                                     shape = RoundedCornerShape(4.dp),
                                 ) {
                                     Text(
@@ -259,7 +269,8 @@ fun DipItem(
                     .align(Center)
                     .padding(4.dp)
                     .width(32.dp)
-                    .height(22.dp),
+                    .height(22.dp)
+                    .testTag(":DedicatedIPScreen:dip_flag"),
             )
             Icon(
                 painter = painterResource(id = com.kape.ui.R.drawable.ic_dip_badge),
@@ -278,7 +289,8 @@ fun DipItem(
                 start.linkTo(icon.end, margin = 8.dp)
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom)
-            },
+            }
+                .testTag(":DedicatedIPScreen:dip_server_name"),
         )
 
         IconButton(
@@ -290,7 +302,8 @@ fun DipItem(
                 end.linkTo(parent.end)
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom)
-            },
+            }
+                .testTag(":DedicatedIPScreen:dip_remove_button"),
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_close),
@@ -362,6 +375,8 @@ fun DeleteDipDialog(
                     server.dedicatedIp?.let(onRemoveClicked)
                     showDialog.value = false
                 },
+                modifier = Modifier
+                    .testTag(":DedicatedIPScreen:dip_remove_confirm_button"),
             ) {
                 Text(
                     text = stringResource(id = android.R.string.ok),
@@ -376,6 +391,8 @@ fun DeleteDipDialog(
                     showDialog.value = false
                     onCancelClicked()
                 },
+                modifier = Modifier
+                    .testTag(":DedicatedIPScreen:dip_remove_cancel_button"),
             ) {
                 Text(
                     text = stringResource(id = android.R.string.cancel),
