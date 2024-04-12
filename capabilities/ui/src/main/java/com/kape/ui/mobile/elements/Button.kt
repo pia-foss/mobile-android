@@ -89,7 +89,7 @@ fun OptionButton(selected: Boolean, modifier: Modifier) {
 @Composable
 fun Toggle(
     isOn: Boolean,
-    onCheckedChange: ((checked: Boolean) -> Unit)? = null
+    onCheckedChange: ((checked: Boolean) -> Unit)? = null,
 ) {
     Switch(
         checked = isOn,
