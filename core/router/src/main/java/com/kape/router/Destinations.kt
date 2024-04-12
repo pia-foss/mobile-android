@@ -3,6 +3,10 @@ package com.kape.router
 const val NavigateBack = "back"
 const val NavigateOut = "exit"
 
+object Default {
+    const val Route = "default"
+}
+
 object Login {
     const val Route = "login"
     const val WithCredentials = "login-with-credentials"

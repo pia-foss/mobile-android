@@ -4,6 +4,7 @@ import com.kape.router.AppFlow
 import com.kape.router.Back
 import com.kape.router.Connection
 import com.kape.router.DedicatedIp
+import com.kape.router.Default
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
 import com.kape.router.ExitFlow
@@ -27,7 +28,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class TvRouter : Router {
 
-    private val navigation = MutableStateFlow(Splash.Main)
+    private val navigation = MutableStateFlow(Default.Route)
     override fun handleFlow(flow: AppFlow) {
         when (flow) {
             is EnterFlow -> handleEnterFlow(flow)
@@ -38,7 +39,7 @@ class TvRouter : Router {
     }
 
     override fun resetNavigation() {
-        navigation.value = Splash.Main
+        navigation.value = Default.Route
     }
 
     override fun getNavigation(): StateFlow<String> =

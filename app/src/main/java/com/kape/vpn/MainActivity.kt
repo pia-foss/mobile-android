@@ -42,6 +42,7 @@ import com.kape.router.Automation
 import com.kape.router.Connection
 import com.kape.router.Customization
 import com.kape.router.DedicatedIp
+import com.kape.router.Default
 import com.kape.router.EnterFlow
 import com.kape.router.Login
 import com.kape.router.NavigateBack
@@ -120,6 +121,9 @@ class MainActivity : ComponentActivity() {
                             NavigateOut -> {
                                 finishAndRemoveTask()
                                 router.resetNavigation()
+                            }
+                            Default.Route -> {
+                                // default state, don't do anything
                             }
 
                             else -> {
