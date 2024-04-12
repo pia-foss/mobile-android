@@ -33,6 +33,10 @@ object TvSideMenu {
     const val Main = "tv-side-menu-screen"
 }
 
+object TvHelp {
+    const val Main = "tv-help-screen"
+}
+
 object Connection {
     const val Main = "connection-screen"
 }

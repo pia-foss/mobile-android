@@ -80,8 +80,12 @@ class VpnRegionSelectionViewModel(
             }
         }
 
-    fun navigateToSettings() {
-        router.handleFlow(EnterFlow.Settings)
+    fun navigateToHelp() {
+        router.handleFlow(EnterFlow.TvHelp)
+    }
+
+    fun navigateToSideMenu() {
+        router.handleFlow(EnterFlow.TvSideMenu)
     }
 
     fun navigateToVpn() {

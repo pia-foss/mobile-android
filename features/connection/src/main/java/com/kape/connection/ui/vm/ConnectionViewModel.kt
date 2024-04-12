@@ -85,6 +85,10 @@ class ConnectionViewModel(
         renewDedicatedIps()
     }
 
+    fun navigateToHelp() {
+        router.handleFlow(EnterFlow.TvHelp)
+    }
+
     fun navigateToSideMenu() {
         router.handleFlow(EnterFlow.TvSideMenu)
     }

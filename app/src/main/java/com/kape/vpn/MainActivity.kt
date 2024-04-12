@@ -55,6 +55,7 @@ import com.kape.router.Settings
 import com.kape.router.ShadowsocksRegionSelection
 import com.kape.router.Splash
 import com.kape.router.Subscribe
+import com.kape.router.TvHelp
 import com.kape.router.TvLogin
 import com.kape.router.TvSideMenu
 import com.kape.router.TvWelcome
@@ -67,6 +68,7 @@ import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.mobile.SettingsFlow
 import com.kape.settings.ui.screens.tv.TvPerAppSettingsScreen
 import com.kape.settings.ui.screens.tv.TvSettingsFlow
+import com.kape.settings.utils.SettingsStep
 import com.kape.sidemenu.ui.screens.tv.TvSideMenuScreen
 import com.kape.signup.ui.mobile.SignupScreensFlow
 import com.kape.signup.ui.tv.TvSignupScreensFlow
@@ -201,11 +203,12 @@ class MainActivity : ComponentActivity() {
 //            composable(WebContent.Privacy) {
 //                InAppBrowser(url = getString(com.kape.ui.R.string.url_privacy_policy))
 //            }
-//            composable(Settings.Route) { TvSettingsFlow() }
+//            composable(Settings.Route) { TvSettingsFlow(initialStep = SettingsStep.Main) }
 //            composable(TvSideMenu.Main) { TvSideMenuScreen() }
 //            composable(Profile.Main) { TvProfileScreen() }
 //            composable(DedicatedIp.Main) { TvDedicatedIpScreen() }
 //            composable(PerAppSettings.Main) { TvPerAppSettingsScreen() }
+//            composable(TvHelp.Main) { TvSettingsFlow(initialStep = SettingsStep.Help) }
 //        } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }

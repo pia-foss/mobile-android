@@ -116,7 +116,10 @@ fun TvVpnRegionSelectionScreen() = Screen {
                     viewModel.navigateToVpn()
                 },
                 onSettingsSelected = {
-                    viewModel.navigateToSettings()
+                    viewModel.navigateToSideMenu()
+                },
+                onHelpSelected = {
+                    viewModel.navigateToHelp()
                 },
             )
             Row(

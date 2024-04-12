@@ -18,6 +18,7 @@ import com.kape.router.Router
 import com.kape.router.Settings
 import com.kape.router.Splash
 import com.kape.router.Subscribe
+import com.kape.router.TvHelp
 import com.kape.router.TvLogin
 import com.kape.router.TvSideMenu
 import com.kape.router.TvWelcome
@@ -71,6 +72,7 @@ class TvRouter : Router {
             EnterFlow.TvLoginUsername -> navigation.value = TvLogin.Username
             EnterFlow.AccountDeleted -> TODO("To be implemented")
             EnterFlow.TvSideMenu -> navigation.value = TvSideMenu.Main
+            EnterFlow.TvHelp -> navigation.value = TvHelp.Main
         }
     }
 

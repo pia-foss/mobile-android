@@ -97,6 +97,9 @@ fun TvConnectionScreen() = Screen {
                 onSettingsSelected = {
                     viewModel.navigateToSideMenu()
                 },
+                onHelpSelected = {
+                    viewModel.navigateToHelp()
+                },
             )
             Column(
                 modifier = Modifier

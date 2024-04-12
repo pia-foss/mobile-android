@@ -147,12 +147,12 @@ fun TvHomeHeaderItem(
             ) {
                 onSettingsSelected()
             }
-//            RoundIconButton(
-//                modifier = Modifier.padding(horizontal = 4.dp),
-//                painterId = R.drawable.ic_help,
-//            ) {
-//                onHelpSelected()
-//            }
+            RoundIconButton(
+                modifier = Modifier.padding(horizontal = 4.dp),
+                painterId = R.drawable.ic_help,
+            ) {
+                onHelpSelected()
+            }
         }
     }
 }
