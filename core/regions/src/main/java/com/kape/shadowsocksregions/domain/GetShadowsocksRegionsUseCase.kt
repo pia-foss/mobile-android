@@ -10,6 +10,7 @@ class GetShadowsocksRegionsUseCase(
     private val shadowsocksRegionRepository: ShadowsocksRegionRepository,
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
     private val readShadowsocksRegionsDetailsUseCase: ReadShadowsocksRegionsDetailsUseCase,
+    private val setShadowsocksRegionsUseCase: SetShadowsocksRegionsUseCase,
 ) {
 
     fun fetchShadowsocksServers(locale: String): Flow<List<ShadowsocksServer>> = flow {
@@ -20,7 +21,11 @@ class GetShadowsocksRegionsUseCase(
     fun getSelectedShadowsocksServer(): ShadowsocksServer =
         getShadowsocksServers().firstOrNull {
             it.host == shadowsocksRegionPrefs.getSelectedShadowsocksServer()?.host
-        } ?: getShadowsocksServers().first()
+        } ?: run {
+            val defaultShadowsocksServer = getShadowsocksServers().first()
+            setShadowsocksRegionsUseCase.setSelectShadowsocksServer(defaultShadowsocksServer)
+            defaultShadowsocksServer
+        }
 
     fun getShadowsocksServers(): List<ShadowsocksServer> =
         // If there are no servers persisted. Let's use the initial set of servers we are

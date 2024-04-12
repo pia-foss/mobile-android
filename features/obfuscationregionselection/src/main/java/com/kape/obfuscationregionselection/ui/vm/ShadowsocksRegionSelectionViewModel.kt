@@ -24,8 +24,6 @@ class ShadowsocksRegionSelectionViewModel(
     val servers = mutableStateOf(emptyList<ShadowsocksServerItem>())
     val sorted = mutableStateOf(emptyList<ShadowsocksServerItem>())
 
-    val sortBySelectedOption: MutableState<SortByOption> = mutableStateOf(SortByOption.NONE)
-
     fun getShadowsocksRegions() =
         arrangeShadowsocksServers(getShadowsocksRegionsUseCase.getShadowsocksServers())
 
@@ -63,29 +61,6 @@ class ShadowsocksRegionSelectionViewModel(
                 isSearchEnabled.value = false
             }
         }
-
-    fun sortBy(option: SortByOption) = viewModelScope.launch {
-        servers.value = when (option) {
-            SortByOption.NONE -> servers.value
-            SortByOption.NAME -> servers.value.filter { it.type is ItemType.Content }
-                .sortedBy { (it.type as ItemType.Content).server.region }
-
-            SortByOption.FAVORITE -> {
-                servers.value.filter { it.type is ItemType.Content }
-                    .sortedWith(compareBy<ShadowsocksServerItem> { (it.type as ItemType.Content).isFavorite }.thenBy { (it.type as ItemType.Content).server.region })
-                    .sortedByDescending { isShadowsocksServerFavorite((it.type as ItemType.Content).server.region) }
-            }
-        }.toList()
-    }
-
-    fun getSortingOption(selected: Int): SortByOption {
-        return when (selected) {
-            SortByOption.NONE.index -> SortByOption.NONE
-            SortByOption.NAME.index -> SortByOption.NAME
-            SortByOption.FAVORITE.index -> SortByOption.FAVORITE
-            else -> throw Exception("Sorting option not defined")
-        }
-    }
 
     fun navigateBack() {
         router.handleFlow(Back)
@@ -152,11 +127,5 @@ class ShadowsocksRegionSelectionViewModel(
         }
         list.addAll(all)
         servers.value = list
-    }
-
-    sealed class SortByOption(val index: Int) {
-        data object NONE : SortByOption(-1)
-        data object NAME : SortByOption(0)
-        data object FAVORITE : SortByOption(1)
     }
 }
