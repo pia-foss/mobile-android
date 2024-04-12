@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -19,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.ui.mobile.elements.Separator
@@ -44,7 +47,14 @@ fun SettingsToggle(
         Row(
             modifier = Modifier
                 .defaultMinSize(minHeight = 56.dp)
-                .padding(end = 16.dp),
+                .padding(end = 16.dp)
+                .selectable(
+                    selected = isChecked.value,
+                    onClick = {
+                        isChecked.value = !isChecked.value
+                        toggle(isChecked.value)
+                    },
+                ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             iconId?.let {
@@ -69,10 +79,7 @@ fun SettingsToggle(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
-            Toggle(isOn = isChecked.value) {
-                isChecked.value = it
-                toggle(it)
-            }
+            Toggle(isOn = isChecked.value)
         }
         Spacer(modifier = Modifier.height(8.dp))
         Separator()
