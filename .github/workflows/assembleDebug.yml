@@ -102,6 +102,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
           PIA_VALID_USERNAME: ${{ secrets.PIA_VALID_USERNAME }}
           PIA_VALID_PASSWORD: ${{ secrets.PIA_VALID_PASSWORD }}
+          PIA_VALID_DIP_TOKEN: ${{ secrets.PIA_VALID_DIP_TOKEN }}
         with:
           api-level: 30
           arch: x86_64

@@ -6,10 +6,12 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.kape.vpn.BuildConfig
 import org.junit.Before
 import screens.steps.UiAutomatorCommonSteps
+import screens.steps.UiAutomatorDedicatedIPSteps
 import screens.steps.UiAutomatorProtocolsSteps
 import screens.steps.UiAutomatorSettingsSteps
 import screens.steps.UiAutomatorSideMenuSteps
 import screens.steps.UiAutomatorSignInSteps
+import tests.actions.UiDedicatedIPAction
 import tests.actions.UiLogoutAction
 import tests.actions.UiSettingsAction
 import tests.actions.UiSignInAction
@@ -24,6 +26,10 @@ open class UiTest(
         UiAutomatorSideMenuSteps(),
         UiAutomatorSettingsSteps(),
         UiAutomatorProtocolsSteps(),
+    ),
+    val uiDedicatedIPAction: UiDedicatedIPAction = UiDedicatedIPAction(
+        UiAutomatorSideMenuSteps(),
+        UiAutomatorDedicatedIPSteps(),
     ),
 ) {
     private var context: Context = InstrumentationRegistry.getInstrumentation().targetContext

@@ -16,6 +16,10 @@ class UiAutomatorSideMenuSteps : SideMenuSteps {
         SideMenuObjects.settingsButton.clickAndWaitForNewWindow(defaultTimeout)
     }
 
+    override fun clickOnDedicatedIP() {
+        SideMenuObjects.dedicatedIP.clickAndWaitForNewWindow(defaultTimeout)
+    }
+
     override fun clickOnLogoutButton() {
         SideMenuObjects.logoutButton.clickAndWaitForNewWindow(defaultTimeout)
     }
