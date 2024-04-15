@@ -7,30 +7,20 @@ import com.kape.vpn.BuildConfig
 import org.junit.Before
 import screens.objects.LoginUiObjects
 import screens.objects.MainScreenObjects
+import screens.objects.ProtocolsObjects
+import screens.objects.SettingsObjects
 import screens.objects.SideMenuObjects
 import screens.objects.SignUpUiObjects
-import screens.steps.UiAutomatorCommonSteps
 import screens.steps.UiAutomatorDedicatedIPSteps
-import screens.steps.UiAutomatorProtocolsSteps
-import screens.steps.UiAutomatorSettingsSteps
-import screens.steps.UiAutomatorSideMenuSteps
 import tests.actions.UiDedicatedIPAction
-import tests.actions.UiSettingsAction
 
 open class UiTest(
     val loginUiObjects: LoginUiObjects = LoginUiObjects,
     val signUpUiObjects: SignUpUiObjects = SignUpUiObjects,
     val mainScreenUiObjects: MainScreenObjects = MainScreenObjects,
     val sideMenuUiObjects: SideMenuObjects = SideMenuObjects,
-    val uiSettingsAction: UiSettingsAction = UiSettingsAction(
-        UiAutomatorSideMenuSteps(),
-        UiAutomatorSettingsSteps(),
-        UiAutomatorProtocolsSteps(),
-    ),
-    val uiDedicatedIPAction: UiDedicatedIPAction = UiDedicatedIPAction(
-        UiAutomatorSideMenuSteps(),
-        UiAutomatorDedicatedIPSteps(),
-    ),
+    val settingsUiObjects: SettingsObjects = SettingsObjects,
+    val protocolUiObjects: ProtocolsObjects = ProtocolsObjects,
 ) {
     private var context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private var intent: Intent? =

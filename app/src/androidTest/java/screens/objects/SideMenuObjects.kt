@@ -13,9 +13,7 @@ object SideMenuObjects {
     val logoutDialogueConfirmButton =
         UiAutomatorObjectFinder.findByResourceId(":SideMenu:ConfirmButton")
 
-    fun logOut()
-    {
-        MainScreenObjects.sideMenu.click()
+    fun logOut() {
         logoutButton.click()
         logoutDialogueConfirmButton.clickAndWaitForNewWindow()
         UiAutomatorStepsHelper.waitUntilFound(SignUpUiObjects.loginButton)
