@@ -7,7 +7,6 @@ import Dependencies.implementCompose
 import Dependencies.implementComposeNavigation
 import Dependencies.implementCoroutines
 import Dependencies.implementCsi
-import Dependencies.implementGlance
 import Dependencies.implementKoin
 import Dependencies.implementKpi
 import Dependencies.implementMultiplatformSettings
@@ -29,6 +28,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
+        testInstrumentationRunnerArguments += mapOf("PclearPackageData" to "true")
         applicationId = "com.kape.vpn"
         minSdk = 24
         targetSdk = 34
@@ -39,9 +39,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        testInstrumentationRunnerArguments += mapOf(
-            "PclearPackageData" to "true",
-        )
     }
 
     buildTypes {

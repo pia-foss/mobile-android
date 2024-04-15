@@ -8,13 +8,13 @@ object Dependencies {
     private const val DEBUG_IMPLEMENTATION = "debugImplementation"
     private const val GOOGLE_IMPLEMENTATION = "googleImplementation"
     private const val AMAZON_IMPLEMENTATION = "amazonImplementation"
-    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2024.01.00"
+    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2024.04.00"
     private const val COMPOSE_TV = "1.0.0-alpha10"
-    private const val COMPOSE_NAVIGATION = "2.7.6"
+    private const val COMPOSE_NAVIGATION = "2.7.7"
     private const val JETPACK = "2.7.0"
-    private const val ACCOMPANIST = "0.32.0"
-    private const val KOIN = "3.5.3"
-    const val KOTLIN_COMPILER_EXTENSION = "1.5.8"
+    private const val ACCOMPANIST = "0.34.0"
+    private const val KOIN = "3.5.6"
+    const val KOTLIN_COMPILER_EXTENSION = "1.5.11"
 
     const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.0.4"
 
@@ -87,8 +87,8 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementKtor() {
-        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:2.3.7")
-        add(IMPLEMENTATION, "io.ktor:ktor-client-core:2.3.7")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:2.3.10")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-core:2.3.10")
     }
 
     fun DependencyHandler.implementPayments() {
@@ -113,8 +113,8 @@ object Dependencies {
 
     fun DependencyHandler.implementTest() {
         add(TEST_IMPLEMENTATION, "junit:junit:4.13.2")
-        add(TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.13.9")
-        add(TEST_IMPLEMENTATION, "app.cash.turbine:turbine:1.0.0")
+        add(TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.13.10")
+        add(TEST_IMPLEMENTATION, "app.cash.turbine:turbine:1.1.0")
         add(TEST_IMPLEMENTATION, "org.junit.jupiter:junit-jupiter-params:5.10.1")
     }
 
@@ -129,10 +129,10 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementCoroutines() {
-        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-        add(TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+        add(TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     }
 
     fun DependencyHandler.implementAccount() {
@@ -160,7 +160,7 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementDrawablePainter() {
-        add(IMPLEMENTATION, "com.google.accompanist:accompanist-drawablepainter:0.33.1-alpha")
+        add(IMPLEMENTATION, "com.google.accompanist:accompanist-drawablepainter:$ACCOMPANIST")
     }
 
     fun DependencyHandler.implementGlance() {
@@ -182,7 +182,7 @@ object Dependencies {
     }
 
     private fun DependencyHandler.implementMaterial3() {
-        add(IMPLEMENTATION, "androidx.compose.material3:material3:1.2.0-beta02")
+        add(IMPLEMENTATION, "androidx.compose.material3:material3:1.2.1")
     }
 
     fun isNonStable(version: String): Boolean {
