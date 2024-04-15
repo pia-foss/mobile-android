@@ -3,7 +3,6 @@ package com.kape.settings.ui.screens.mobile
 import android.graphics.drawable.Drawable
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -77,7 +77,7 @@ fun PerAppSettingsScreen() = Screen {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    hint = "",
+                    hint = stringResource(id = R.string.search),
                 ) {
                     viewModel.filterAppsByName(it, packageManager)
                 }
@@ -135,9 +135,13 @@ private fun ApplicationRow(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp)
-            .clickable {
-                onClick(name, !isExcluded)
-            },
+            .selectable(
+                selected = !isExcluded,
+                onClick = {
+                    onClick(name, !isExcluded)
+                },
+            ),
+
     ) {
         val (image, text, button) = createRefs()
 
