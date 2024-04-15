@@ -46,6 +46,7 @@ fun SettingsToggle(
             modifier = Modifier
                 .defaultMinSize(minHeight = 56.dp)
                 .padding(end = 16.dp)
+                .semantics(mergeDescendants = true) { }
                 .selectable(
                     selected = isChecked.value,
                     onClick = {
@@ -67,8 +68,7 @@ fun SettingsToggle(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(horizontal = 16.dp)
-                    .semantics(mergeDescendants = true) { },
+                    .padding(horizontal = 16.dp),
             ) {
                 SettingsL2Text(content = stringResource(id = titleId))
 
