@@ -250,7 +250,10 @@ fun NetworkCard(
     onClick: () -> Unit,
 ) {
     Card(
-        modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp),
+        modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp)
+            .clickable {
+                onClick()
+            },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = LocalColors.current.surfaceVariant,
@@ -275,9 +278,6 @@ fun NetworkCard(
                     painter = painterResource(id = R.drawable.ic_more_horizontal),
                     contentDescription = null,
                     tint = LocalColors.current.onSurface,
-                    modifier = Modifier.clickable {
-                        onClick()
-                    },
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
