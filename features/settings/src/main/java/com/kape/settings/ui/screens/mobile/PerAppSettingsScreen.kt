@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -135,9 +136,13 @@ private fun ApplicationRow(
         modifier = Modifier
             .fillMaxWidth()
             .defaultMinSize(minHeight = 56.dp)
-            .clickable {
-                onClick(name, !isExcluded)
-            },
+            .selectable(
+                selected = !isExcluded,
+                onClick = {
+                    onClick(name, !isExcluded)
+                }
+            )
+
     ) {
         val (image, text, button) = createRefs()
 
