@@ -1,4 +1,4 @@
-package screens.steps.helpers
+package screens.helpers
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By

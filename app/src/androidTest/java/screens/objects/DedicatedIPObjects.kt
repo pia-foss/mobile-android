@@ -1,6 +1,6 @@
 package screens.objects
 
-import screens.objects.helpers.UiAutomatorObjectFinder
+import screens.helpers.UiAutomatorObjectFinder
 
 object DedicatedIPObjects {
 

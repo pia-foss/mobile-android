@@ -1,8 +1,8 @@
 package screens.steps
 
 import screens.objects.DedicatedIPObjects
-import screens.steps.helpers.UiAutomatorStepsHelper.defaultTimeout
-import screens.steps.helpers.UiAutomatorStepsHelper.inputTextInField
+import screens.helpers.UiAutomatorStepsHelper.defaultTimeout
+import screens.helpers.UiAutomatorStepsHelper.inputTextInField
 import screens.steps.interfaces.DedicatedIPSteps
 
 class UiAutomatorDedicatedIPSteps : DedicatedIPSteps  {

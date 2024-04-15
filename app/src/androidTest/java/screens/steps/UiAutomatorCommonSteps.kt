@@ -1,10 +1,9 @@
 package screens.steps
 
 import screens.objects.MainScreenObjects
-import screens.steps.helpers.UiAutomatorStepsHelper
-import screens.steps.helpers.UiAutomatorStepsHelper.waitUntilFound
+import screens.helpers.UiAutomatorStepsHelper
+import screens.helpers.UiAutomatorStepsHelper.waitUntilFound
 import screens.steps.interfaces.CommonSteps
-import kotlin.test.assertNotNull
 
 class UiAutomatorCommonSteps : CommonSteps {
 

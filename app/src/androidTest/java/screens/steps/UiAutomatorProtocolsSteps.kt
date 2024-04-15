@@ -4,9 +4,9 @@ import com.kape.settings.data.VpnProtocols
 import screens.objects.ProtocolOptionsDialogObjects
 import screens.objects.ProtocolsObjects
 import screens.objects.SettingsObjects.protocolsButton
-import screens.objects.helpers.UiAutomatorObjectFinder.findByText
-import screens.steps.helpers.UiAutomatorStepsHelper.longTimeout
-import screens.steps.helpers.UiAutomatorStepsHelper.waitUntilFound
+import screens.helpers.UiAutomatorObjectFinder.findByText
+import screens.helpers.UiAutomatorStepsHelper.longTimeout
+import screens.helpers.UiAutomatorStepsHelper.waitUntilFound
 import screens.steps.interfaces.ProtocolsSteps
 
 class UiAutomatorProtocolsSteps : ProtocolsSteps {

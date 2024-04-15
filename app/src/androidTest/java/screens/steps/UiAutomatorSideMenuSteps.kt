@@ -3,8 +3,8 @@ package screens.steps
 import screens.objects.MainScreenObjects
 import screens.objects.SideMenuObjects
 import screens.objects.SignUpUiObjects
-import screens.steps.helpers.UiAutomatorStepsHelper.defaultTimeout
-import screens.steps.helpers.UiAutomatorStepsHelper.waitUntilFound
+import screens.helpers.UiAutomatorStepsHelper.defaultTimeout
+import screens.helpers.UiAutomatorStepsHelper.waitUntilFound
 import screens.steps.interfaces.SideMenuSteps
 
 class UiAutomatorSideMenuSteps : SideMenuSteps {
