@@ -6,6 +6,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.kape.vpn.BuildConfig
 import org.junit.Before
 import screens.objects.LoginUiObjects
+import screens.objects.MainScreenObjects
+import screens.objects.SideMenuObjects
 import screens.objects.SignUpUiObjects
 import screens.steps.UiAutomatorCommonSteps
 import screens.steps.UiAutomatorDedicatedIPSteps
@@ -13,16 +15,13 @@ import screens.steps.UiAutomatorProtocolsSteps
 import screens.steps.UiAutomatorSettingsSteps
 import screens.steps.UiAutomatorSideMenuSteps
 import tests.actions.UiDedicatedIPAction
-import tests.actions.UiLogoutAction
 import tests.actions.UiSettingsAction
 
 open class UiTest(
     val loginUiObjects: LoginUiObjects = LoginUiObjects,
     val signUpUiObjects: SignUpUiObjects = SignUpUiObjects,
-    val uiLogoutAction: UiLogoutAction = UiLogoutAction(
-        UiAutomatorCommonSteps(),
-        UiAutomatorSideMenuSteps(),
-    ),
+    val mainScreenUiObjects: MainScreenObjects = MainScreenObjects,
+    val sideMenuUiObjects: SideMenuObjects = SideMenuObjects,
     val uiSettingsAction: UiSettingsAction = UiSettingsAction(
         UiAutomatorSideMenuSteps(),
         UiAutomatorSettingsSteps(),

@@ -1,6 +1,7 @@
 package screens.objects
 
 import screens.helpers.UiAutomatorObjectFinder
+import screens.helpers.UiAutomatorStepsHelper
 
 object SideMenuObjects {
     val settingsButton =
@@ -11,4 +12,12 @@ object SideMenuObjects {
         UiAutomatorObjectFinder.findByResourceId(":SideMenu:Logout")
     val logoutDialogueConfirmButton =
         UiAutomatorObjectFinder.findByResourceId(":SideMenu:ConfirmButton")
+
+    fun logOut()
+    {
+        MainScreenObjects.sideMenu.click()
+        logoutButton.click()
+        logoutDialogueConfirmButton.clickAndWaitForNewWindow()
+        UiAutomatorStepsHelper.waitUntilFound(SignUpUiObjects.loginButton)
+    }
 }
