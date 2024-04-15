@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.mobile.text.DialogActionText
@@ -79,14 +80,13 @@ fun BehaviorDialog(
                             onClick = {
                                 selectedOption.value = text
                             },
+                            role = Role.RadioButton,
                         )
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = 14.dp, horizontal = 10.dp),
                 ) {
                     RadioButton(
                         selected = (text == selectedOption.value),
-                        onClick = {
-                            selectedOption.value = text
-                        },
+                        onClick = null,
                     )
                     Text(
                         text = text,
