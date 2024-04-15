@@ -1,7 +1,6 @@
 package com.kape.settings.ui.screens.tv
 
-import android.content.Intent
-import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,21 +10,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.kape.settings.ui.elements.tv.TvSettingsItem
-import com.kape.settings.ui.elements.tv.TvSettingsToggle
+import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.tv.material3.Text
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -35,17 +33,17 @@ import com.kape.vpnconnect.utils.ConnectionManager
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
+@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun TvHelpScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
+fun TvConnectionStatsScreen() = Screen {
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val initialFocusRequester = FocusRequester()
+    val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
+        getRecentEvents()
+    }
 
-    val context = LocalContext.current
-
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
+    BackHandler {
+        viewModel.navigateUp()
     }
 
     Box(
@@ -73,7 +71,7 @@ fun TvHelpScreen() = Screen {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 AppBarTitleText(
-                    content = stringResource(id = R.string.help),
+                    content = stringResource(id = R.string.connection_stats_title),
                     textColor = LocalColors.current.onSurface,
                     isError = false,
                     modifier = Modifier.fillMaxWidth(),
@@ -91,31 +89,28 @@ fun TvHelpScreen() = Screen {
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top,
                 ) {
-                    val appUrl = stringResource(id = R.string.app_url)
-                    TvSettingsItem(
-                        modifier = Modifier.focusRequester(initialFocusRequester),
-                        titleId = R.string.help_version_title,
-                        subtitle = viewModel.version,
-                    ) {
-                        context.startActivity(
-                            Intent(Intent.ACTION_VIEW).apply {
-                                data = Uri.parse(appUrl)
-                            },
+                    val events = viewModel.eventList.value
+                    if (events.isEmpty()) {
+                        Text(
+                            text = stringResource(id = R.string.connection_stats_no_events),
+                            color = LocalColors.current.outlineVariant,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            textAlign = TextAlign.Center,
                         )
-                    }
-                    TvSettingsToggle(
-                        titleId = R.string.help_improve_pia_title,
-                        subtitleId = R.string.help_improve_pia_description,
-                        enabled = viewModel.improvePiaEnabled.value,
-                        toggle = {
-                            viewModel.toggleImprovePia(it)
-                        },
-                    )
-                    if (viewModel.improvePiaEnabled.value) {
-                        TvSettingsItem(
-                            titleId = R.string.help_view_shared_data_title,
-                        ) {
-                            viewModel.navigateToConnectionStats()
+                    } else {
+                        LazyColumn {
+                            items(events) { event ->
+                                Text(
+                                    text = event,
+                                    color = LocalColors.current.outlineVariant,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.dp),
+                                    textAlign = TextAlign.Start,
+                                )
+                            }
                         }
                     }
                 }

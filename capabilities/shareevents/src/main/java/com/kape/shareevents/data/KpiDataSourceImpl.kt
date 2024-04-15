@@ -1,5 +1,6 @@
 package com.kape.shareevents.data
 
+import android.os.SystemClock
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.data.models.KpiConnectionEvent
@@ -28,27 +29,34 @@ class KpiDataSourceImpl(
     }
 
     override fun stop() {
-        api.stop {
-        }
+        api.stop { }
     }
 
     override fun submit(
         connectionEvent: KpiConnectionEvent,
         connectionSource: KpiConnectionSource,
     ) {
-        val event =
-            KPIClientEvent(
-                eventName = connectionEvent.value,
-                eventProperties = getEventProperties(connectionEvent, connectionSource),
-                eventInstant = Clock.System.now(),
-            )
-        api.submit(event) {
+        when (connectionEvent) {
+            KpiConnectionEvent.ConnectionAttempt ->
+                connectionInitiatedTime = SystemClock.elapsedRealtime()
+            KpiConnectionEvent.ConnectionEstablished ->
+                connectionEstablishedTime = SystemClock.elapsedRealtime()
+            KpiConnectionEvent.ConnectionCancelled -> {
+                connectionInitiatedTime = 0
+                connectionEstablishedTime = 0
+            }
         }
+
+        val event = KPIClientEvent(
+            eventName = connectionEvent.value,
+            eventProperties = getEventProperties(connectionEvent, connectionSource),
+            eventInstant = Clock.System.now(),
+        )
+        api.submit(event) { }
     }
 
     override fun flush() {
-        api.flush {
-        }
+        api.flush { }
     }
 
     override fun recentEvents(): Flow<List<String>> = callbackFlow {

@@ -57,7 +57,7 @@ internal class KpiDataSourceImplTest {
     @Test
     fun `verify submit calls api`() = runTest {
         every { prefs.getSelectedProtocol() } returns VpnProtocols.OpenVPN
-        source.submit(KpiConnectionEvent.ConnectionEstablished, KpiConnectionSource.Automatic)
+        source.submit(KpiConnectionEvent.ConnectionCancelled, KpiConnectionSource.Automatic)
         verify(exactly = 1) { api.submit(any(), any()) }
     }
 

@@ -21,7 +21,7 @@ import com.kape.ui.utils.LocalColors
 fun TvSettingsItem(
     modifier: Modifier = Modifier,
     @StringRes titleId: Int,
-    subtitle: String?,
+    subtitle: String? = null,
     onClick: (() -> Unit),
 ) {
     Button(
