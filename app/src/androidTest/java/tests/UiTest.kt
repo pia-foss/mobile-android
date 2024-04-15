@@ -5,14 +5,13 @@ import android.content.Intent
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kape.vpn.BuildConfig
 import org.junit.Before
+import screens.objects.DedicatedIPObjects
 import screens.objects.LoginUiObjects
 import screens.objects.MainScreenObjects
 import screens.objects.ProtocolsObjects
 import screens.objects.SettingsObjects
 import screens.objects.SideMenuObjects
 import screens.objects.SignUpUiObjects
-import screens.steps.UiAutomatorDedicatedIPSteps
-import tests.actions.UiDedicatedIPAction
 
 open class UiTest(
     val loginUiObjects: LoginUiObjects = LoginUiObjects,
@@ -21,6 +20,7 @@ open class UiTest(
     val sideMenuUiObjects: SideMenuObjects = SideMenuObjects,
     val settingsUiObjects: SettingsObjects = SettingsObjects,
     val protocolUiObjects: ProtocolsObjects = ProtocolsObjects,
+    val dedicateIPObjects: DedicatedIPObjects = DedicatedIPObjects,
 ) {
     private var context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private var intent: Intent? =
