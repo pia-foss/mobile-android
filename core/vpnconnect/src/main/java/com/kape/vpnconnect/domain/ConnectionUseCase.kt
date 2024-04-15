@@ -82,9 +82,10 @@ class ConnectionUseCase(
 
     fun stopConnection(): Flow<Boolean> = flow {
         stopVpnConnection().collect {
-            emit(it)
-            stopShadowsocksConnection().collect()
-            stopPortForwarding()
+            stopShadowsocksConnection().collect {
+                stopPortForwarding()
+                emit(it)
+            }
         }
     }
 

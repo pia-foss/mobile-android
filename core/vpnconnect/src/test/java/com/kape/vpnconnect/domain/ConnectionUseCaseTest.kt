@@ -155,6 +155,9 @@ internal class ConnectionUseCaseTest {
         every { connectionDataSource.stopConnection() } returns flow {
             emit(expected)
         }
+        every { stopObfuscatorProcess.invoke() } returns flow {
+            emit(Result.success(Unit))
+        }
         every { connectionDataSource.getVpnToken() } returns "username:password"
 
         useCase.stopConnection().test {
@@ -169,6 +172,9 @@ internal class ConnectionUseCaseTest {
         val expected = false
         every { connectionDataSource.stopConnection() } returns flow {
             emit(expected)
+        }
+        every { stopObfuscatorProcess.invoke() } returns flow {
+            emit(Result.failure(IllegalStateException("Failure")))
         }
         every { connectionDataSource.getVpnToken() } returns "username:password"
 
