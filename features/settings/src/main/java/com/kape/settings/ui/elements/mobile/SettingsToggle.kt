@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -44,7 +45,14 @@ fun SettingsToggle(
         Row(
             modifier = Modifier
                 .defaultMinSize(minHeight = 56.dp)
-                .padding(end = 16.dp),
+                .padding(end = 16.dp)
+                .selectable(
+                    selected = isChecked.value,
+                    onClick = {
+                        isChecked.value = !isChecked.value
+                        toggle(isChecked.value)
+                    },
+                ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             iconId?.let {
@@ -69,10 +77,7 @@ fun SettingsToggle(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
-            Toggle(isOn = isChecked.value) {
-                isChecked.value = it
-                toggle(it)
-            }
+            Toggle(isOn = isChecked.value)
         }
         Spacer(modifier = Modifier.height(8.dp))
         Separator()
