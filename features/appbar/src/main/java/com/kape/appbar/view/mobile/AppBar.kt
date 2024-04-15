@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
@@ -94,8 +95,8 @@ private fun AppBarContent(
             },
 
     ) {
-        val menuContentDescription = stringResource(id = com.kape.ui.R.string.menu)
-        val backContentDescription = stringResource(id = com.kape.ui.R.string.back)
+        val menuContentDescription = stringResource(id = R.string.menu)
+        val backContentDescription = stringResource(id = R.string.back)
         IconButton(
             onClick = { onLeftIconClick() },
             modifier = Modifier
@@ -136,7 +137,7 @@ private fun AppBarContent(
 
             AppBarType.InAppBrowser -> {
                 Icon(
-                    painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_medium),
+                    painter = painterResource(id = R.drawable.ic_logo_medium),
                     contentDescription = null,
                     tint = Color.Unspecified,
                     modifier = Modifier
@@ -161,11 +162,11 @@ private fun AppBarContent(
 
 private fun getAppBarLeftIcon(type: AppBarType): Int {
     return when (type) {
-        AppBarType.Connection -> com.kape.ui.R.drawable.ic_menu
+        AppBarType.Connection -> R.drawable.ic_menu
         AppBarType.Customization,
         AppBarType.InAppBrowser,
         AppBarType.Navigation,
-        -> com.kape.ui.R.drawable.ic_back
+        -> R.drawable.ic_back
     }
 }
 
@@ -197,6 +198,7 @@ private fun getStatusBarColor(status: ConnectionStatus, scheme: ColorScheme): Co
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun AppBarConnectionStatus(
     status: ConnectionStatus,
@@ -209,7 +211,7 @@ private fun AppBarConnectionStatus(
         ) {
             if (status == ConnectionStatus.DISCONNECTED) {
                 Icon(
-                    painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_small),
+                    painter = painterResource(id = R.drawable.ic_logo_small),
                     contentDescription = null,
                     modifier = Modifier
                         .size(24.dp)
@@ -218,7 +220,7 @@ private fun AppBarConnectionStatus(
                     tint = Color.Unspecified,
                 )
             }
-            val statusPrefix = stringResource(id = com.kape.ui.R.string.vpn_status)
+            val statusPrefix = stringResource(id = R.string.vpn_status)
             AppBarConnectionTextDefault(
                 content = title ?: "",
                 isError = (status == ConnectionStatus.ERROR),
@@ -231,17 +233,16 @@ private fun AppBarConnectionStatus(
         }
 
         onRightIconClick?.let {
-            val customizeContentDescription = stringResource(id = com.kape.ui.R.string.customize)
             IconButton(
                 onClick = { it() },
                 modifier = Modifier
                     .align(CenterEnd)
                     .semantics {
-                        contentDescription = customizeContentDescription
+                        invisibleToUser()
                     },
             ) {
                 Icon(
-                    painter = painterResource(id = com.kape.ui.R.drawable.ic_reorder),
+                    painter = painterResource(id = R.drawable.ic_reorder),
                     contentDescription = null,
                     tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
                     modifier = Modifier.size(24.dp),
