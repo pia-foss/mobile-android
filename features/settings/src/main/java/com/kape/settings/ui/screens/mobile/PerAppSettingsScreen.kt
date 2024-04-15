@@ -3,7 +3,6 @@ package com.kape.settings.ui.screens.mobile
 import android.graphics.drawable.Drawable
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.defaultMinSize
@@ -140,8 +139,8 @@ private fun ApplicationRow(
                 selected = !isExcluded,
                 onClick = {
                     onClick(name, !isExcluded)
-                }
-            )
+                },
+            ),
 
     ) {
         val (image, text, button) = createRefs()
