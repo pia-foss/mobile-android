@@ -60,22 +60,24 @@ class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
     }
 
     private fun updateTile() {
-        if (connectionManager.isConnected()) {
-            qsTile.state = Tile.STATE_ACTIVE
-            qsTile.label = if (connectionManager.serverName.value.isEmpty()) {
-                getString(R.string.qs_disconnect_nolocation)
+        qsTile?.let {
+            if (connectionManager.isConnected()) {
+                qsTile.state = Tile.STATE_ACTIVE
+                qsTile.label = if (connectionManager.serverName.value.isEmpty()) {
+                    getString(R.string.qs_disconnect_nolocation)
+                } else {
+                    getString(R.string.qs_disconnect, connectionManager.serverName.value)
+                }
             } else {
-                getString(R.string.qs_disconnect, connectionManager.serverName.value)
+                if (!getUserLoggedInUseCase.isUserLoggedIn()) {
+                    qsTile.state = Tile.STATE_UNAVAILABLE
+                    qsTile.label = getString(R.string.not_logged_in)
+                } else {
+                    qsTile.state = Tile.STATE_INACTIVE
+                    qsTile.label = getString(R.string.qs_title)
+                }
             }
-        } else {
-            if (!getUserLoggedInUseCase.isUserLoggedIn()) {
-                qsTile.state = Tile.STATE_UNAVAILABLE
-                qsTile.label = getString(R.string.not_logged_in)
-            } else {
-                qsTile.state = Tile.STATE_INACTIVE
-                qsTile.label = getString(R.string.qs_title)
-            }
+            qsTile.updateTile()
         }
-        qsTile.updateTile()
     }
 }
