@@ -20,6 +20,7 @@ import com.kape.signup.utils.EMAIL
 import com.kape.signup.utils.ERROR_EMAIL_INVALID
 import com.kape.signup.utils.ERROR_REGISTRATION
 import com.kape.signup.utils.IN_PROCESS
+import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
 import com.kape.signup.utils.Plan
 import com.kape.signup.utils.PriceFormatter
 import com.kape.signup.utils.SUBSCRIPTIONS
@@ -138,6 +139,10 @@ class SignupViewModel(
                                 }
                             }
                         }
+
+                        PurchaseState.NoInAppPurchase -> {
+                            _state.emit(NO_IN_APP_SUBSCRIPTIONS)
+                        }
                     }
                 }
             }
@@ -206,6 +211,6 @@ class SignupViewModel(
     }
 
     private fun onProductsFailedToLoad() = viewModelScope.launch {
-        _state.emit(SignupScreenState(false, SignupStep.Subscriptions))
+        _state.emit(SignupScreenState(false, SignupStep.Subscriptions(true)))
     }
 }
