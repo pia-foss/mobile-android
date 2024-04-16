@@ -1,6 +1,7 @@
 import Dependencies.KOTLIN_COMPILER_EXTENSION
 import Dependencies.desugarJdkLibs
 import Dependencies.implementFeatureModule
+import Dependencies.implementVpnManager
 
 plugins {
     id("com.android.library")
@@ -53,8 +54,10 @@ dependencies {
 
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
+    implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
 
     implementFeatureModule()
+    implementVpnManager()
 }

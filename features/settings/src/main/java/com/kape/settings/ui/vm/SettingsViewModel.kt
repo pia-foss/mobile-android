@@ -148,6 +148,10 @@ class SettingsViewModel(
 
     fun navigateToAutomation() = router.handleFlow(EnterFlow.Automation)
 
+    fun navigateToPrivacyPolicy() = router.handleFlow(EnterFlow.PrivacyPolicy)
+
+    fun navigateToAbout() = router.handleFlow(EnterFlow.About)
+
     fun navigateToExternalAppList() = viewModelScope.launch {
         _state.emit(SettingsStep.ExternalProxyAppList)
     }

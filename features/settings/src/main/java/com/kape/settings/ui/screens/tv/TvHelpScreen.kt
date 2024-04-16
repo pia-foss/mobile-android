@@ -2,19 +2,27 @@ package com.kape.settings.ui.screens.tv
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -26,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.settings.ui.elements.tv.TvSettingsItem
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
+import com.kape.settings.ui.screens.mobile.SuccessDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -43,9 +52,33 @@ fun TvHelpScreen() = Screen {
     val initialFocusRequester = FocusRequester()
 
     val context = LocalContext.current
+    val showDialog = remember { mutableStateOf(false) }
+    val showToast = remember { mutableStateOf(false) }
+    val showSpinner = remember { mutableStateOf(false) }
+
+    with(viewModel.requestId.value) {
+        when {
+            this == null -> {
+                showDialog.value = false
+                showToast.value = false
+            }
+
+            this.isEmpty() -> {
+                showToast.value = true
+            }
+
+            this.isNotEmpty() -> {
+                showDialog.value = true
+            }
+        }
+    }
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
+    }
+
+    BackHandler {
+        viewModel.navigateToConnection()
     }
 
     Box(
@@ -91,31 +124,63 @@ fun TvHelpScreen() = Screen {
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top,
                 ) {
-                    val appUrl = stringResource(id = R.string.app_url)
-                    TvSettingsItem(
-                        modifier = Modifier.focusRequester(initialFocusRequester),
-                        titleId = R.string.help_version_title,
-                        subtitle = viewModel.version,
-                    ) {
-                        context.startActivity(
-                            Intent(Intent.ACTION_VIEW).apply {
-                                data = Uri.parse(appUrl)
+                    if (showSpinner.value) {
+                        Spacer(modifier = Modifier.height(32.dp))
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .fillMaxSize()
+                                .align(Alignment.CenterHorizontally),
+                            color = LocalColors.current.primary,
+                        )
+                    } else {
+                        val appUrl = stringResource(id = R.string.app_url)
+                        TvSettingsItem(
+                            modifier = Modifier.focusRequester(initialFocusRequester),
+                            titleId = R.string.help_version_title,
+                            subtitle = viewModel.version,
+                        ) {
+                            context.startActivity(
+                                Intent(Intent.ACTION_VIEW).apply {
+                                    data = Uri.parse(appUrl)
+                                },
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TvSettingsToggle(
+                            titleId = R.string.help_improve_pia_title,
+                            subtitleId = R.string.help_improve_pia_description,
+                            enabled = viewModel.improvePiaEnabled.value,
+                            toggle = {
+                                viewModel.toggleImprovePia(it)
                             },
                         )
-                    }
-                    TvSettingsToggle(
-                        titleId = R.string.help_improve_pia_title,
-                        subtitleId = R.string.help_improve_pia_description,
-                        enabled = viewModel.improvePiaEnabled.value,
-                        toggle = {
-                            viewModel.toggleImprovePia(it)
-                        },
-                    )
-                    if (viewModel.improvePiaEnabled.value) {
+                        if (viewModel.improvePiaEnabled.value) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            TvSettingsItem(
+                                titleId = R.string.help_view_shared_data_title,
+                            ) {
+                                viewModel.navigateToConnectionStats()
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
                         TvSettingsItem(
-                            titleId = R.string.help_view_shared_data_title,
+                            titleId = R.string.about,
                         ) {
-                            viewModel.navigateToConnectionStats()
+                            viewModel.navigateToAbout()
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TvSettingsItem(
+                            titleId = R.string.drawer_item_title_privacy_policy,
+                        ) {
+                            viewModel.navigateToPrivacyPolicy()
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TvSettingsItem(
+                            titleId = R.string.help_send_log_title,
+                        ) {
+                            showSpinner.value = true
+                            viewModel.sendLogs()
                         }
                     }
                 }
@@ -132,6 +197,21 @@ fun TvHelpScreen() = Screen {
                     )
                 }
             }
+        }
+
+        if (showDialog.value) {
+            showSpinner.value = false
+            SuccessDialog(
+                requestId = viewModel.requestId.value ?: "",
+                showDialog = showDialog,
+            ) { viewModel.resetRequestId() }
+        }
+
+        if (showToast.value) {
+            Toast.makeText(context, R.string.failure_sending_log, Toast.LENGTH_LONG).show()
+            viewModel.resetRequestId()
+            showSpinner.value = false
+            showToast.value = false
         }
     }
 }

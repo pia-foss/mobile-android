@@ -1,4 +1,4 @@
-package com.kape.about
+package com.kape.about.vm
 
 import androidx.lifecycle.ViewModel
 import com.kape.router.ExitFlow

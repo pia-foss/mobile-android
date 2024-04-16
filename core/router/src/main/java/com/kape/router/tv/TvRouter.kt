@@ -1,5 +1,6 @@
 package com.kape.router.tv
 
+import com.kape.router.About
 import com.kape.router.AppFlow
 import com.kape.router.Back
 import com.kape.router.Connection
@@ -53,26 +54,27 @@ class TvRouter : Router {
             EnterFlow.Splash -> navigation.value = Splash.Main
             EnterFlow.Connection -> navigation.value = Connection.Main
             EnterFlow.VpnRegionSelection -> navigation.value = VpnRegionSelection.Main
-            EnterFlow.ShadowsocksRegionSelection -> TODO("To be implemented")
             EnterFlow.Profile -> navigation.value = Profile.Main
             EnterFlow.Subscribe -> navigation.value = Subscribe.Main
             EnterFlow.PrivacyPolicy -> navigation.value = WebContent.Privacy
             EnterFlow.TermsOfService -> navigation.value = WebContent.Terms
             EnterFlow.Settings -> navigation.value = Settings.Route
-            EnterFlow.AutomationSettings -> TODO("To be implemented")
             EnterFlow.PerAppSettings -> navigation.value = PerAppSettings.Main
-            EnterFlow.KillSwitchSettings -> TODO("To be implemented")
             EnterFlow.DedicatedIp -> navigation.value = DedicatedIp.Main
-            EnterFlow.Support -> TODO("To be implemented")
-            EnterFlow.Automation -> TODO("To be implemented")
-            EnterFlow.ProtocolSettings -> TODO("To be implemented")
-            EnterFlow.About -> TODO("To be implemented")
-            EnterFlow.Customization -> TODO("To be implemented")
+            EnterFlow.About -> navigation.value = About.Main
             EnterFlow.TvWelcome -> navigation.value = TvWelcome.Main
             EnterFlow.TvLoginUsername -> navigation.value = TvLogin.Username
-            EnterFlow.AccountDeleted -> TODO("To be implemented")
             EnterFlow.TvSideMenu -> navigation.value = TvSideMenu.Main
             EnterFlow.TvHelp -> navigation.value = TvHelp.Main
+            EnterFlow.ShadowsocksRegionSelection,
+            EnterFlow.AutomationSettings,
+            EnterFlow.KillSwitchSettings,
+            EnterFlow.Support,
+            EnterFlow.Automation,
+            EnterFlow.ProtocolSettings,
+            EnterFlow.Customization,
+            EnterFlow.AccountDeleted,
+            -> throw IllegalStateException("Unsupported on TV")
         }
     }
 
@@ -80,21 +82,22 @@ class TvRouter : Router {
         when (flow) {
             ExitFlow.Login -> handleEnterFlow(EnterFlow.Permissions)
             ExitFlow.Splash -> handleEnterFlow(EnterFlow.TvWelcome)
-            ExitFlow.Connection -> TODO("To be implemented")
             ExitFlow.RegionSelection -> handleBack()
-            ExitFlow.Profile -> TODO("To be implemented")
             ExitFlow.Subscribe -> handleEnterFlow(EnterFlow.Permissions)
-            ExitFlow.Settings -> TODO("To be implemented")
-            ExitFlow.PerAppSettings -> TODO("To be implemented")
+            ExitFlow.Settings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.DedicatedIp -> handleEnterFlow(EnterFlow.TvSideMenu)
-            ExitFlow.AutomationSettings -> TODO("To be implemented")
-            ExitFlow.KillSwitchSettings -> TODO("To be implemented")
             ExitFlow.Permissions -> handleEnterFlow(EnterFlow.Connection)
-            ExitFlow.Automation -> TODO("To be implemented")
-            ExitFlow.ProtocolSettings -> TODO("To be implemented")
-            ExitFlow.About -> TODO("To be implemented")
-            ExitFlow.Customization -> TODO("To be implemented")
-            ExitFlow.AccountDeleted -> TODO("To be implemented")
+            ExitFlow.Connection,
+            ExitFlow.Profile,
+            ExitFlow.PerAppSettings,
+            ExitFlow.AutomationSettings,
+            ExitFlow.KillSwitchSettings,
+            ExitFlow.Automation,
+            ExitFlow.ProtocolSettings,
+            ExitFlow.About,
+            ExitFlow.Customization,
+            ExitFlow.AccountDeleted,
+            -> throw IllegalStateException("Unsupported on TV")
         }
     }
 

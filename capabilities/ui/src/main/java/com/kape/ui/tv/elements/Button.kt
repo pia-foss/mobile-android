@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
+import androidx.tv.material3.ButtonScale
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import androidx.tv.material3.IconButton
@@ -144,6 +145,31 @@ fun TileButton(
             contentColor = LocalColors.current.onSurface,
             focusedContainerColor = LocalColors.current.primary,
             focusedContentColor = LocalColors.current.onPrimaryContainer,
+        ),
+        onClick = onClick,
+        onLongClick = onLongClick,
+        content = content,
+    )
+}
+
+@Composable
+fun AboutButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = { },
+    onLongClick: () -> Unit = { },
+    content: @Composable RowScope.() -> Unit,
+) {
+    Button(
+        modifier = modifier,
+        scale = ButtonScale.None,
+        shape = ButtonDefaults.shape(
+            shape = RoundedCornerShape(4.dp),
+        ),
+        colors = ButtonDefaults.colors(
+            containerColor = LocalColors.current.background,
+            contentColor = LocalColors.current.onSurfaceVariant,
+            focusedContainerColor = LocalColors.current.primary,
+            focusedContentColor = LocalColors.current.onPrimary,
         ),
         onClick = onClick,
         onLongClick = onLongClick,

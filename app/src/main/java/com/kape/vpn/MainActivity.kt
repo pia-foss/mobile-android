@@ -17,7 +17,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kape.about.AboutScreen
+import com.kape.about.screens.mobile.AboutScreen
+import com.kape.about.screens.tv.TvAboutScreen
 import com.kape.automation.ui.AutomationFlow
 import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
@@ -209,6 +210,7 @@ class MainActivity : ComponentActivity() {
 //            composable(DedicatedIp.Main) { TvDedicatedIpScreen() }
 //            composable(PerAppSettings.Main) { TvPerAppSettingsScreen() }
 //            composable(TvHelp.Main) { TvSettingsFlow(initialStep = SettingsStep.Help) }
+//            composable(About.Main) { TvAboutScreen() }
 //        } else {
             loginNavigation(navController)
             composable(Settings.Route) { SettingsFlow() }
