@@ -1,9 +1,9 @@
-package screens.objects
+package screens.steps
 
 import screens.helpers.UiAutomatorObjectFinder
 import screens.helpers.UiAutomatorStepsHelper
 
-object SideMenuObjects {
+object SideMenuSteps {
     val settingsButton =
         UiAutomatorObjectFinder.findByResourceId(":SideMenu:Settings")
     val dedicatedIP =
@@ -14,8 +14,13 @@ object SideMenuObjects {
         UiAutomatorObjectFinder.findByResourceId(":SideMenu:ConfirmButton")
 
     fun logOut() {
-        logoutButton.click()
+        logoutButton.clickAndWaitForNewWindow()
         logoutDialogueConfirmButton.clickAndWaitForNewWindow()
-        UiAutomatorStepsHelper.waitUntilFound(SignUpUiObjects.loginButton)
+        UiAutomatorStepsHelper.waitUntilFound(SignUpSteps.loginButton)
+    }
+
+    fun navigateToSideMenu() {
+        MainScreenSteps.navigateToMainScreen()
+        MainScreenSteps.sideMenu.click()
     }
 }

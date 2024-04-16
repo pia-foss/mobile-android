@@ -1,10 +1,10 @@
-package screens.objects
+package screens.steps
 
 import screens.helpers.UiAutomatorObjectFinder
 import screens.helpers.UiAutomatorStepsHelper
 import screens.helpers.UiAutomatorStepsHelper.defaultTimeout
 
-object LoginUiObjects {
+object LoginSteps {
     val usernameField = UiAutomatorObjectFinder.findByResourceId(":LoginScreen:enter_username")
     val passwordField = UiAutomatorObjectFinder.findByResourceId(":LoginScreen:enter_password")
     val loginButton = UiAutomatorObjectFinder.findByResourceId(":LoginScreen:login_button")
@@ -17,7 +17,7 @@ object LoginUiObjects {
 
 
     fun navigateToLoginScreen(){
-        SignUpUiObjects.loginButton.click()
+        SignUpSteps.loginButton.click()
         UiAutomatorStepsHelper.waitUntilFound(usernameField)
     }
     fun logIn(username: String, password: String) {

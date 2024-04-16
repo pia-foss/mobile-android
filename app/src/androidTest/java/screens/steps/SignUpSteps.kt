@@ -1,9 +1,9 @@
-package screens.objects
+package screens.steps
 
 import screens.helpers.UiAutomatorObjectFinder
 import screens.helpers.UiAutomatorStepsHelper
 
-object SignUpUiObjects {
+object SignUpSteps {
     val loginButton = UiAutomatorObjectFinder.findByResourceId(":SignUpScreen:Login")
 
     fun navigateToSignUpScreen() {
@@ -11,10 +11,10 @@ object SignUpUiObjects {
             UiAutomatorStepsHelper.waitUntilFound(loginButton)
         }
         catch (e: Exception) {
-            UiAutomatorStepsHelper.waitUntilFound(MainScreenObjects.connectButton)
-            MainScreenObjects.sideMenu.clickAndWaitForNewWindow(UiAutomatorStepsHelper.defaultTimeout)
-            SideMenuObjects.logoutButton.clickAndWaitForNewWindow(UiAutomatorStepsHelper.defaultTimeout)
-            SideMenuObjects.logoutDialogueConfirmButton.clickAndWaitForNewWindow(
+            UiAutomatorStepsHelper.waitUntilFound(MainScreenSteps.connectButton)
+            MainScreenSteps.sideMenu.clickAndWaitForNewWindow(UiAutomatorStepsHelper.defaultTimeout)
+            SideMenuSteps.logoutButton.clickAndWaitForNewWindow(UiAutomatorStepsHelper.defaultTimeout)
+            SideMenuSteps.logoutDialogueConfirmButton.clickAndWaitForNewWindow(
                 UiAutomatorStepsHelper.defaultTimeout
             )
             UiAutomatorStepsHelper.waitUntilFound(loginButton)

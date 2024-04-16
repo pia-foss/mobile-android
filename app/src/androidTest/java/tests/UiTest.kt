@@ -5,22 +5,22 @@ import android.content.Intent
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kape.vpn.BuildConfig
 import org.junit.Before
-import screens.objects.DedicatedIPObjects
-import screens.objects.LoginUiObjects
-import screens.objects.MainScreenObjects
-import screens.objects.ProtocolsObjects
-import screens.objects.SettingsObjects
-import screens.objects.SideMenuObjects
-import screens.objects.SignUpUiObjects
+import screens.steps.DedicatedIPSteps
+import screens.steps.LoginSteps
+import screens.steps.MainScreenSteps
+import screens.steps.ProtocolsSteps
+import screens.steps.SettingsSteps
+import screens.steps.SideMenuSteps
+import screens.steps.SignUpSteps
 
 open class UiTest(
-    val loginUiObjects: LoginUiObjects = LoginUiObjects,
-    val signUpUiObjects: SignUpUiObjects = SignUpUiObjects,
-    val mainScreenUiObjects: MainScreenObjects = MainScreenObjects,
-    val sideMenuUiObjects: SideMenuObjects = SideMenuObjects,
-    val settingsUiObjects: SettingsObjects = SettingsObjects,
-    val protocolUiObjects: ProtocolsObjects = ProtocolsObjects,
-    val dedicateIPObjects: DedicatedIPObjects = DedicatedIPObjects,
+    val loginSteps: LoginSteps = LoginSteps,
+    val signUpSteps: SignUpSteps = SignUpSteps,
+    val mainScreenSteps: MainScreenSteps = MainScreenSteps,
+    val sideMenuSteps: SideMenuSteps = SideMenuSteps,
+    val settingsSteps: SettingsSteps = SettingsSteps,
+    val protocolSteps: ProtocolsSteps = ProtocolsSteps,
+    val dedicatedIPSteps: DedicatedIPSteps = DedicatedIPSteps,
 ) {
     private var context: Context = InstrumentationRegistry.getInstrumentation().targetContext
     private var intent: Intent? =

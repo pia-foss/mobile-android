@@ -1,10 +1,10 @@
-package screens.objects
+package screens.steps
 
 import com.kape.settings.data.VpnProtocols
 import screens.helpers.UiAutomatorObjectFinder
 import screens.helpers.UiAutomatorStepsHelper
 
-object ProtocolsObjects {
+object ProtocolsSteps {
     val protocolSelectionButton =
         UiAutomatorObjectFinder.findByResourceId(":ProtocolSettingsScreen:protocol_selection")
     val openVpnButton =
@@ -13,14 +13,14 @@ object ProtocolsObjects {
     val androidOkButton = UiAutomatorObjectFinder.findByResourceId(":OptionsDialog:Ok")
 
     fun selectOpenVPNProtocol(){
-        SettingsObjects.protocolsButton.click()
+        SettingsSteps.protocolsButton.click()
         protocolSelectionButton.clickAndWaitForNewWindow()
         openVpnButton.clickAndWaitForNewWindow()
         androidOkButton.clickAndWaitForNewWindow()
     }
 
     fun getSelectedProtocol(): String {
-        UiAutomatorStepsHelper.waitUntilFound(SettingsObjects.protocolsButton)
+        UiAutomatorStepsHelper.waitUntilFound(SettingsSteps.protocolsButton)
         return if (UiAutomatorObjectFinder.findByText(VpnProtocols.OpenVPN.name).exists())
             VpnProtocols.OpenVPN.name
         else if (UiAutomatorObjectFinder.findByText(VpnProtocols.WireGuard.name).exists())

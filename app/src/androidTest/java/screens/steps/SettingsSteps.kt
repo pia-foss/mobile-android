@@ -1,14 +1,14 @@
-package screens.objects
+package screens.steps
 
 import screens.helpers.UiAutomatorObjectFinder
 
-object SettingsObjects {
+object SettingsSteps {
     val protocolsButton =
         UiAutomatorObjectFinder.findByResourceId(":SettingsScreen:Protocols")
 
     fun navigateToSettingsPage()
     {
-        MainScreenObjects.sideMenu.click()
-        SideMenuObjects.settingsButton.click()
+        MainScreenSteps.sideMenu.click()
+        SideMenuSteps.settingsButton.click()
     }
 }

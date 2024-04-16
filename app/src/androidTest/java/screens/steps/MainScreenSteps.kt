@@ -1,9 +1,9 @@
-package screens.objects
+package screens.steps
 
 import screens.helpers.UiAutomatorObjectFinder
 import screens.helpers.UiAutomatorStepsHelper
 
-object MainScreenObjects {
+object MainScreenSteps {
     val connectButton =
         UiAutomatorObjectFinder.findByResourceId(":ConnectionScreen:connection_button")
     val sideMenu =
