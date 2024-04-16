@@ -2,12 +2,17 @@
 
 package com.kape.ui.tv.text
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
@@ -311,6 +316,19 @@ fun RegionSelectionGridSectionText(content: String, modifier: Modifier = Modifie
         color = LocalColors.current.onSurfaceVariant,
         style = PiaTypography.subtitle1,
         modifier = modifier,
+    )
+}
+
+@Composable
+fun RegionSelectionDipText(content: String) {
+    Text(
+        text = content,
+        style = PiaTypography.caption1,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        modifier = Modifier
+            .border(BorderStroke(1.dp, LocalColors.current.outline), RoundedCornerShape(12.dp))
+            .padding(horizontal = 8.dp, vertical = 4.dp),
     )
 }
 

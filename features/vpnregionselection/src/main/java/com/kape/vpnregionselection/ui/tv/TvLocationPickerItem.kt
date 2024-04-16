@@ -19,10 +19,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kape.ui.R
 import com.kape.ui.mobile.elements.FavoriteIcon
 import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.tv.elements.TileButton
+import com.kape.ui.tv.text.RegionSelectionDipText
 import com.kape.ui.tv.text.RegionSelectionLatencyText
 import com.kape.ui.tv.text.RegionSelectionNameText
 import com.kape.ui.utils.LocalColors
@@ -36,6 +39,7 @@ fun TvLocationPickerItem(
     vpnServerLatencyTimeout: String,
     enableFavorite: Boolean,
     isFavorite: Boolean,
+    isDedicatedIp: Boolean,
     onClick: () -> Unit,
     onLongClick: () -> Unit = { },
 ) {
@@ -83,6 +87,11 @@ fun TvLocationPickerItem(
                         RegionSelectionLatencyText(content = "${latency}ms")
                     } else {
                         RegionSelectionLatencyText(content = "")
+                    }
+
+                    if (isDedicatedIp) {
+                        Spacer(modifier = Modifier.weight(1.0f))
+                        RegionSelectionDipText(content = stringResource(id = R.string.dedicated_ip))
                     }
                 }
             }

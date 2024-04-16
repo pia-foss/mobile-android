@@ -3,6 +3,7 @@ package com.kape.ui.tv.tiles
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +25,7 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import com.kape.ui.R
 import com.kape.ui.tv.elements.TileButton
+import com.kape.ui.tv.text.RegionSelectionDipText
 import com.kape.ui.tv.text.SelectedRegionServerText
 import com.kape.ui.tv.text.SelectedRegionTitleText
 import com.kape.ui.utils.getFlagResource
@@ -40,7 +43,6 @@ fun VpnLocationPicker(
     TileButton(
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp)
             .padding(
                 paddingValues = PaddingValues(horizontal = 16.dp),
             ),
@@ -75,14 +77,24 @@ fun VpnLocationPicker(
                 if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region
             }
             SelectedRegionTitleText(content = stringResource(id = heading).uppercase())
-
             Spacer(modifier = Modifier.height(4.dp))
-            val name = if (isOptimal && !isConnected) {
-                stringResource(id = R.string.automatic)
-            } else {
-                server.name
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                SelectedRegionServerText(
+                    content = if (isOptimal && !isConnected) {
+                        stringResource(id = R.string.automatic)
+                    } else {
+                        server.name
+                    },
+                )
+
+                if (server.isDedicatedIp) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    RegionSelectionDipText(content = stringResource(id = R.string.dedicated_ip))
+                }
             }
-            SelectedRegionServerText(content = name)
         }
         Spacer(modifier = Modifier.weight(1f))
         Icon(

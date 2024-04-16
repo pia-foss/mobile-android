@@ -199,6 +199,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
                                         vpnServerLatencyTimeout = VPN_REGIONS_PING_TIMEOUT.toString(),
                                         enableFavorite = serverItem.type.enableFavorite,
                                         isFavorite = serverItem.type.isFavorite,
+                                        isDedicatedIp = serverItem.type.server.isDedicatedIp,
                                         onClick = {
                                             viewModel.onVpnRegionSelected(serverItem.type.server)
                                         },
