@@ -23,6 +23,10 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
+val googleAmazonAppVersionCode = 659
+val noInAppVersionCode = googleAmazonAppVersionCode.plus(10000)
+val appVersionName = "4.0.0"
+
 android {
     namespace = "com.kape.vpn"
     compileSdk = 34
@@ -32,8 +36,7 @@ android {
         applicationId = "com.kape.vpn"
         minSdk = 24
         targetSdk = 34
-        versionCode = 659
-        versionName = "4.0.0"
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -74,10 +77,17 @@ android {
         create("amazon") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
+            versionCode = googleAmazonAppVersionCode
         }
         create("google") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
+            versionCode = googleAmazonAppVersionCode
+        }
+        create("noinapp") {
+            dimension = "provider"
+            applicationId = "com.privateinternetaccess.android"
+            versionCode = noInAppVersionCode
         }
     }
 
@@ -87,6 +97,9 @@ android {
         }
         getByName("google") {
             manifest.srcFile("google/AndroidManifest.xml")
+        }
+        getByName("noinapp") {
+            manifest.srcFile("noinapp/AndroidManifest.xml")
         }
     }
 
