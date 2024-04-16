@@ -148,6 +148,8 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                 ) {
                     subscriptionData?.let {
                         viewModel.purchase(subscriptionData.selected.value.id)
+                    } ?: run {
+                        viewModel.navigateToWebsite()
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))

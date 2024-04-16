@@ -177,6 +177,10 @@ class SignupViewModel(
         router.handleFlow(EnterFlow.TermsOfService)
     }
 
+    fun navigateToWebsite() {
+        router.handleFlow(EnterFlow.NoInAppRegistration)
+    }
+
     fun allowEventSharing(allow: Boolean) = viewModelScope.launch {
         // TODO: VPN-3101 - add kpi start/stop
         consentUseCase.setConsent(allow)
