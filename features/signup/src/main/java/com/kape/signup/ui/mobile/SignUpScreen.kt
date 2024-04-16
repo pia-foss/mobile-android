@@ -16,9 +16,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -28,6 +31,8 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.signup.ui.vm.SignupViewModel
+import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
+import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.HtmlText
@@ -46,6 +51,7 @@ import com.kape.ui.utils.LocalColors
 fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?) = Screen {
     val scheme = LocalColors.current
     val systemUiController = rememberSystemUiController()
+    val screenState by viewModel.state.collectAsState()
     SideEffect {
         systemUiController.setStatusBarColor(scheme.statusBarDefault(scheme))
     }
@@ -107,28 +113,30 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                YearlySubscriptionCard(
-                    selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
-                    price = subscriptionData?.yearly?.mainPrice ?: "",
-                    perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                ) {
-                    subscriptionData?.let {
-                        subscriptionData.selected.value = subscriptionData.yearly
+                Column(modifier = Modifier.alpha(determineAlpha(screenState))) {
+                    YearlySubscriptionCard(
+                        selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
+                        price = subscriptionData?.yearly?.mainPrice ?: "",
+                        perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                    ) {
+                        subscriptionData?.let {
+                            subscriptionData.selected.value = subscriptionData.yearly
+                        }
                     }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                MonthlySubscriptionCard(
-                    selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
-                    price = subscriptionData?.monthly?.mainPrice ?: "",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                ) {
-                    subscriptionData?.let {
-                        subscriptionData.selected.value = subscriptionData.monthly
+                    Spacer(modifier = Modifier.height(16.dp))
+                    MonthlySubscriptionCard(
+                        selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
+                        price = subscriptionData?.monthly?.mainPrice ?: "",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                    ) {
+                        subscriptionData?.let {
+                            subscriptionData.selected.value = subscriptionData.monthly
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(24.dp))
@@ -162,5 +170,13 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                 )
             }
         }
+    }
+}
+
+private fun determineAlpha(state: SignupScreenState): Float {
+    return if (state == NO_IN_APP_SUBSCRIPTIONS) {
+        0f
+    } else {
+        1f
     }
 }
