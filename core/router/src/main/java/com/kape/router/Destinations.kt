@@ -94,4 +94,5 @@ object WebContent {
     const val Terms = "web-screen-terms"
     const val Privacy = "web-screen-privacy"
     const val Support = "web-screen-support"
+    const val NoInAppRegistration = "web-screen-registration"
 }

@@ -75,6 +75,7 @@ class TvRouter : Router {
             EnterFlow.Customization,
             EnterFlow.AccountDeleted,
             -> throw IllegalStateException("Unsupported on TV")
+            EnterFlow.NoInAppRegistration -> TODO()
         }
     }
 
@@ -87,6 +88,7 @@ class TvRouter : Router {
             ExitFlow.Settings -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.DedicatedIp -> handleEnterFlow(EnterFlow.TvSideMenu)
             ExitFlow.Permissions -> handleEnterFlow(EnterFlow.Connection)
+            ExitFlow.NoInAppRegistration -> TODO()
             ExitFlow.Connection,
             ExitFlow.Profile,
             ExitFlow.PerAppSettings,

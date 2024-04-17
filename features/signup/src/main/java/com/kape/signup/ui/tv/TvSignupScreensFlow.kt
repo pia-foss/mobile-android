@@ -51,7 +51,7 @@ fun TvSignupScreensFlow() {
         -> {
             TvLoadingScreen()
         }
-        SignupStep.Subscriptions -> {
+        is SignupStep.Subscriptions -> {
             TvSignUpScreen()
         }
     }

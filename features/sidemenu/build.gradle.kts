@@ -25,6 +25,9 @@ android {
         create("google") {
             dimension = "provider"
         }
+        create("noinapp") {
+            dimension = "provider"
+        }
     }
 
     compileOptions {

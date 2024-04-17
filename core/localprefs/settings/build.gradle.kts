@@ -1,3 +1,4 @@
+import Dependencies.desugarJdkLibs
 import Dependencies.implementSerialization
 
 plugins {
@@ -15,6 +16,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -25,6 +27,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring(desugarJdkLibs)
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:settings:data"))
     implementSerialization()

@@ -75,6 +75,7 @@ class MobileRouter : Router {
             EnterFlow.About -> navigation.value = About.Main
             EnterFlow.Customization -> navigation.value = Customization.Route
             EnterFlow.AccountDeleted -> navigation.value = AccountDeleted.Route
+            EnterFlow.NoInAppRegistration -> navigation.value = WebContent.NoInAppRegistration
             EnterFlow.TvWelcome,
             EnterFlow.TvLoginUsername,
             EnterFlow.TvSideMenu,
@@ -102,6 +103,7 @@ class MobileRouter : Router {
             ExitFlow.About -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.Customization -> handleEnterFlow(EnterFlow.Connection)
             ExitFlow.AccountDeleted -> handleEnterFlow(EnterFlow.Splash)
+            ExitFlow.NoInAppRegistration -> handleEnterFlow(EnterFlow.Subscribe)
         }
     }
 
