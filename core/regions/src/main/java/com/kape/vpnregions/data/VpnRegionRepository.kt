@@ -66,6 +66,8 @@ class VpnRegionRepository(
 
     fun getTcpPorts() = serverInfo.tcpPorts ?: emptyList()
 
+    fun getServers(): List<VpnServer> = addDipToServerList(serverMap.values.toList())
+
     private fun addDipToServerList(servers: List<VpnServer>): List<VpnServer> {
         val updatedList = mutableListOf<VpnServer>()
         updatedList.addAll(servers)

@@ -5,9 +5,7 @@ import com.kape.data.RegionInputStream
 import com.kape.data.RegionSerialization
 import com.kape.vpnregions.VpnRegionPrefs
 import com.kape.vpnregions.data.VpnRegionRepository
-import com.kape.vpnregions.domain.GetVpnRegionsUseCase
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
-import com.kape.vpnregions.domain.UpdateLatencyUseCase
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -22,7 +20,5 @@ val localVpnRegionsModule = module {
     single { VpnRegionRepository(get(), get()) }
     single { RegionInputStream(get()) }
     single { RegionSerialization() }
-    single { GetVpnRegionsUseCase(get()) }
     single { ReadVpnRegionsDetailsUseCase(get(), get()) }
-    single { UpdateLatencyUseCase(get()) }
 }
