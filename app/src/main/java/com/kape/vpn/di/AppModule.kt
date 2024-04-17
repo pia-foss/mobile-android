@@ -68,7 +68,7 @@ private const val AUTOMATION_SERVICE_INTENT = "automation-service-intent"
 val appModule = module {
     single { provideCertificate(get()) }
     single(named(PARAM_USER_AGENT)) { USER_AGENT }
-    single { RegionListProvider(get(), get(), get()) }
+    single { RegionListProvider(get(), get()) }
     single { MetaEndpointsProvider() }
     single { AccountModuleStateProvider(get(), get()) }
     single { PlatformProvider(get()) }
