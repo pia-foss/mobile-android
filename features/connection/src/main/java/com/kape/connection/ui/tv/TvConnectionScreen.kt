@@ -109,6 +109,7 @@ fun TvConnectionScreen() = Screen {
                 Spacer(modifier = Modifier.height(32.dp))
                 ConnectButton(
                     status = if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
+                    onTvLayout = true,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
                 ) {

@@ -14,10 +14,12 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -32,13 +34,50 @@ import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionStatus
 
 @Composable
-fun ConnectButton(status: ConnectionStatus, modifier: Modifier, onClick: () -> Unit) {
+fun ConnectButton(
+    status: ConnectionStatus,
+    onTvLayout: Boolean,
+    modifier: Modifier,
+    onClick: () -> Unit,
+) {
+    val colorScheme = LocalColors.current
+    val hasFocus = remember { mutableStateOf(false) }
+
+    var backgroundColor = colorScheme.surface
+    val color = when (status) {
+        ConnectionStatus.ERROR,
+        -> colorScheme.connectionError()
+        ConnectionStatus.CONNECTED,
+        -> colorScheme.primary
+        ConnectionStatus.DISCONNECTED,
+        ConnectionStatus.DISCONNECTING,
+        ConnectionStatus.CONNECTING,
+        ConnectionStatus.RECONNECTING,
+        -> colorScheme.connectionDefault()
+    }
+
+    // If it's focused. We want to invert them.
+    val targetColor = if (hasFocus.value) {
+        val updatedColor = backgroundColor
+        backgroundColor = color
+        updatedColor
+    } else {
+        color
+    }
+
     Box(
         modifier = modifier
             .clip(CircleShape)
+            .onFocusChanged {
+                if (onTvLayout) {
+                    hasFocus.value = it.hasFocus
+                }
+            }
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(color = getStatusColor(status = status)),
+                indication = rememberRipple(
+                    color = targetColor,
+                ),
             ) { onClick() },
     ) {
         when (status) {
@@ -46,61 +85,56 @@ fun ConnectButton(status: ConnectionStatus, modifier: Modifier, onClick: () -> U
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
             ConnectionStatus.ERROR,
-            -> ButtonBackground(color = getStatusColor(status = status))
+            -> ButtonBackground(
+                loadingColor = color, // Intentional. The arc color stays the same on all scenarios.
+                backgroundColor = backgroundColor,
+            )
 
             ConnectionStatus.CONNECTING,
             ConnectionStatus.RECONNECTING,
-            -> LoadingButtonBackground(color = getStatusColor(status = status))
+            -> LoadingButtonBackground(
+                loadingColor = color, // Intentional. The arc color stays the same on all scenarios.
+                backgroundColor = backgroundColor,
+            )
         }
         Icon(
             painter = painterResource(id = R.drawable.ic_power),
             contentDescription = null,
-            tint = getStatusColor(status),
+            tint = targetColor,
             modifier = Modifier.align(Alignment.Center),
         )
     }
 }
 
 @Composable
-private fun getStatusColor(status: ConnectionStatus): Color {
-    return when (status) {
-        ConnectionStatus.CONNECTED -> LocalColors.current.primary
-        ConnectionStatus.DISCONNECTED,
-        ConnectionStatus.DISCONNECTING,
-        ConnectionStatus.CONNECTING,
-        ConnectionStatus.RECONNECTING,
-        -> LocalColors.current.connectionDefault()
-
-        ConnectionStatus.ERROR -> LocalColors.current.connectionError()
-    }
-}
-
-@Composable
-private fun ButtonBackground(color: Color, progress: Float = 360f) {
-    val surfaceColor = LocalColors.current.surface
-
+private fun ButtonBackground(
+    loadingColor: Color,
+    backgroundColor: Color,
+    progress: Float = 360f,
+) {
     Canvas(
         modifier = Modifier.size(160.dp),
         onDraw = {
-            drawCircle(color = color.copy(alpha = 0.1f))
+            drawCircle(color = loadingColor.copy(alpha = 0.1f))
             drawArc(
                 startAngle = 270f, // 270 is 0 degree
                 sweepAngle = progress,
                 useCenter = false,
-                color = color,
+                color = loadingColor,
                 style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round),
                 size = Size(140.dp.toPx(), 140.dp.toPx()),
                 topLeft = Offset(10.dp.toPx(), 10.dp.toPx()),
             )
-            drawCircle(surfaceColor, radius = 67.dp.toPx(), center)
+            drawCircle(backgroundColor, radius = 69.dp.toPx(), center)
         },
     )
 }
 
 @Composable
-private fun LoadingButtonBackground(color: Color) {
-    val surfaceColor = LocalColors.current.surface
-
+private fun LoadingButtonBackground(
+    loadingColor: Color,
+    backgroundColor: Color,
+) {
     val endAnimation by rememberInfiniteTransition().animateFloat(
         initialValue = 0f,
         targetValue = 360f,
@@ -118,17 +152,17 @@ private fun LoadingButtonBackground(color: Color) {
     Canvas(
         modifier = Modifier.size(160.dp),
         onDraw = {
-            drawCircle(color = color.copy(alpha = 0.1f))
+            drawCircle(color = loadingColor.copy(alpha = 0.1f))
             drawArc(
                 startAngle = startAnimation, // 270 is 0 degree
                 sweepAngle = endAnimation,
                 useCenter = false,
-                color = color,
+                color = loadingColor,
                 style = Stroke(width = 4.dp.toPx(), cap = StrokeCap.Round),
                 size = Size(140.dp.toPx(), 140.dp.toPx()),
                 topLeft = Offset(10.dp.toPx(), 10.dp.toPx()),
             )
-            drawCircle(surfaceColor, radius = 67.dp.toPx(), center)
+            drawCircle(backgroundColor, radius = 69.dp.toPx(), center)
         },
     )
 }

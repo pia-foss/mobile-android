@@ -125,8 +125,9 @@ fun ConnectionScreen() = Screen {
                     val connection = stringResource(id = R.string.connection)
                     Spacer(modifier = Modifier.height(16.dp))
                     ConnectButton(
-                        if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
-                        Modifier
+                        status = if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
+                        onTvLayout = false,
+                        modifier = Modifier
                             .align(CenterHorizontally)
                             .testTag(":ConnectionScreen:connection_button")
                             .semantics(mergeDescendants = true) {
