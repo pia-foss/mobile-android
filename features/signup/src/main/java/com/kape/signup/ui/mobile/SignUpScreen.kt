@@ -104,9 +104,13 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                             .align(CenterHorizontally),
                     )
                     OnboardingDescriptionText(
-                        content = stringResource(id = R.string.subscribe_screen_description).format(
-                            subscriptionData?.yearly?.mainPrice,
-                        ),
+                        content = if (screenState == NO_IN_APP_SUBSCRIPTIONS) {
+                            stringResource(id = R.string.subscribe_screen_description_no_in_app)
+                        } else {
+                            stringResource(id = R.string.subscribe_screen_description).format(
+                                subscriptionData?.yearly?.mainPrice,
+                            )
+                        },
                         modifier = Modifier
                             .align(CenterHorizontally)
                             .padding(horizontal = 20.dp, vertical = 8.dp),
