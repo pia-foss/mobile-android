@@ -24,14 +24,15 @@ val ERROR_REGISTRATION = SignupScreenState(
     SignupStep.Default,
     error = SignupError.RegistrationFailed,
 )
-val SUBSCRIPTIONS = SignupScreenState(loading = false, SignupStep.Subscriptions)
+val SUBSCRIPTIONS = SignupScreenState(loading = false, SignupStep.Subscriptions(true))
+val NO_IN_APP_SUBSCRIPTIONS = SignupScreenState(loading = false, SignupStep.Subscriptions(false))
 
 fun signedUp(credentials: Credentials) =
     SignupScreenState(loading = false, SignupStep.SignedUp(credentials))
 
 sealed class SignupStep {
     data object Default : SignupStep()
-    data object Subscriptions : SignupStep()
+    data class Subscriptions(val supportsSubscription: Boolean) : SignupStep()
     data object Consent : SignupStep()
     data object Email : SignupStep()
     data object InProcess : SignupStep()
