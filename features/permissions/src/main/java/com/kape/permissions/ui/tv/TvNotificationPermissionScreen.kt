@@ -8,10 +8,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -55,27 +58,45 @@ fun TvNotificationPermissionScreen() = Screen {
                 .weight(1f)
                 .padding(64.dp),
         ) {
-            Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .semantics(mergeDescendants = true) { },
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_logo_large),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(40.dp),
+                )
+                Spacer(modifier = Modifier.height(32.dp))
                 OnboardingTitleText(
                     content = stringResource(id = R.string.notifications_title),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                        .fillMaxWidth(),
                 )
                 OnboardingDescriptionText(
                     content = stringResource(id = R.string.notifications_description),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                        .fillMaxWidth(),
                 )
             }
             PrimaryButton(
-                text = stringResource(id = R.string.notifications_action),
+                text = stringResource(id = R.string.accept),
                 modifier = Modifier
                     .focusRequester(initialFocusRequester)
                     .padding(16.dp),
             ) {
                 launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            PrimaryButton(
+                text = stringResource(id = R.string.logjn_continue),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp),
+            ) {
+                viewModel.exitOnboarding()
             }
         }
         Column(
@@ -86,18 +107,11 @@ fun TvNotificationPermissionScreen() = Screen {
             verticalArrangement = Arrangement.Center,
         ) {
             Image(
-                painter = painterResource(id = R.drawable.pia_medium),
-                contentScale = ContentScale.Fit,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(128.dp),
-            )
-            Image(
                 painter = painterResource(id = com.kape.permissions.R.drawable.image_bell),
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
                 modifier = Modifier
-                    .size(140.dp),
+                    .size(256.dp),
             )
         }
     }

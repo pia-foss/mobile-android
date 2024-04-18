@@ -91,7 +91,7 @@ fun TvCredentialsScreen(credentials: Credentials) = Screen {
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 8.dp, vertical = 16.dp),
+                            .padding(32.dp),
                     )
                 }
             }
