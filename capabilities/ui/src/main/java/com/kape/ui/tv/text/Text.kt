@@ -251,6 +251,8 @@ fun AppBarTitleText(
 @Composable
 fun QuickConnectText(content: String, modifier: Modifier) {
     Text(
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         text = content,
         textAlign = TextAlign.Center,
         style = PiaTypography.caption1,
@@ -268,22 +270,24 @@ fun TileTitleText(content: String) {
 }
 
 @Composable
-fun SelectedRegionTitleText(content: String) {
+fun SelectedRegionTitleText(content: String, modifier: Modifier = Modifier) {
     Text(
         text = content,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         style = PiaTypography.caption2,
+        modifier = modifier.padding(vertical = 4.dp),
     )
 }
 
 @Composable
-fun SelectedRegionServerText(content: String) {
+fun SelectedRegionServerText(content: String, modifier: Modifier = Modifier) {
     Text(
         text = content,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         style = PiaTypography.subtitle3,
+        modifier = modifier.padding(vertical = 4.dp),
     )
 }
 

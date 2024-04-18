@@ -6,13 +6,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,7 +63,7 @@ fun VpnLocationPicker(
             modifier = Modifier
                 .padding(start = 16.dp)
                 .clip(CircleShape)
-                .size(24.dp)
+                .size(32.dp)
                 .align(CenterVertically),
         )
 
@@ -77,11 +75,7 @@ fun VpnLocationPicker(
                 if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region
             }
             SelectedRegionTitleText(content = stringResource(id = heading).uppercase())
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+            Row {
                 SelectedRegionServerText(
                     content = if (isOptimal && !isConnected) {
                         stringResource(id = R.string.automatic)
@@ -91,7 +85,7 @@ fun VpnLocationPicker(
                 )
 
                 if (server.isDedicatedIp) {
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     RegionSelectionDipText(content = stringResource(id = R.string.dedicated_ip))
                 }
             }

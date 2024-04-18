@@ -1,10 +1,12 @@
 package com.kape.ui.tv.tiles
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -89,7 +91,9 @@ private fun QuickConnectItem(
     ) {
         Box {
             Column(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxSize(),
                 horizontalAlignment = CenterHorizontally,
             ) {
                 Image(
@@ -111,27 +115,28 @@ private fun QuickConnectItem(
                     modifier = Modifier,
                     content = serverText,
                 )
-            }
-            server?.let {
-                if (it.isDedicatedIp) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_dip_badge),
-                        contentDescription = null,
-                        tint = Color.Unspecified,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .size(16.dp),
-                    )
-                }
-                if (isFavorite) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_heart_selected),
-                        contentDescription = null,
-                        tint = Color.Unspecified,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .size(16.dp),
-                    )
+                Row(
+                    modifier = Modifier.fillMaxWidth().height(16.dp),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    server?.let {
+                        if (it.isDedicatedIp) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_dip_badge),
+                                contentDescription = null,
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(16.dp),
+                            )
+                        }
+                        if (isFavorite) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_heart_selected),
+                                contentDescription = null,
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(16.dp),
+                            )
+                        }
+                    }
                 }
             }
         }
