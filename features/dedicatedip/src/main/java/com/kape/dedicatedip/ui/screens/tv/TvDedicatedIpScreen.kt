@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -139,74 +140,86 @@ fun TvDedicatedIpScreen() = Screen {
 
     showActivationDialog.value = viewModel.activationState.value != null
     if (showActivationDialog.value) {
-        when (viewModel.activationState.value) {
-            DipApiResult.Active -> {
-                Dialog(
-                    title = stringResource(id = R.string.you_are_all_set),
-                    text = stringResource(id = R.string.your_dedicated_ip_is_now_active),
-                    onConfirmButtonText = stringResource(id = R.string.ok),
-                    onConfirm = {
-                        viewModel.resetActivationState()
-                    },
-                )
-            }
-            DipApiResult.Expired -> {
-                Dialog(
-                    title = stringResource(id = R.string.something_went_wrong),
-                    text = stringResource(id = R.string.dip_expired_warning),
-                    onConfirmButtonText = stringResource(id = R.string.try_again),
-                    onDismissButtonText = stringResource(id = R.string.cancel),
-                    onConfirm = {
-                        viewModel.resetActivationState()
-                    },
-                    onDismiss = {
-                        viewModel.resetActivationState()
-                        viewModel.navigateBack()
-                    },
-                )
-            }
-            DipApiResult.Error,
-            DipApiResult.Invalid,
-            null,
-            -> {
-                Dialog(
-                    title = stringResource(id = R.string.something_went_wrong),
-                    text = stringResource(id = R.string.dip_invalid),
-                    onConfirmButtonText = stringResource(id = R.string.try_again),
-                    onDismissButtonText = stringResource(id = R.string.cancel),
-                    onConfirm = {
-                        viewModel.resetActivationState()
-                    },
-                    onDismiss = {
-                        viewModel.resetActivationState()
-                        viewModel.navigateBack()
-                    },
-                )
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.Black.copy(alpha = 0.6f),
+        ) {
+            when (viewModel.activationState.value) {
+                DipApiResult.Active -> {
+                    Dialog(
+                        title = stringResource(id = R.string.you_are_all_set),
+                        text = stringResource(id = R.string.your_dedicated_ip_is_now_active),
+                        onConfirmButtonText = stringResource(id = R.string.ok),
+                        onConfirm = {
+                            viewModel.resetActivationState()
+                        },
+                    )
+                }
+
+                DipApiResult.Expired -> {
+                    Dialog(
+                        title = stringResource(id = R.string.something_went_wrong),
+                        text = stringResource(id = R.string.dip_expired_warning),
+                        onConfirmButtonText = stringResource(id = R.string.try_again),
+                        onDismissButtonText = stringResource(id = R.string.cancel),
+                        onConfirm = {
+                            viewModel.resetActivationState()
+                        },
+                        onDismiss = {
+                            viewModel.resetActivationState()
+                            viewModel.navigateBack()
+                        },
+                    )
+                }
+
+                DipApiResult.Error,
+                DipApiResult.Invalid,
+                null,
+                -> {
+                    Dialog(
+                        title = stringResource(id = R.string.something_went_wrong),
+                        text = stringResource(id = R.string.dip_invalid),
+                        onConfirmButtonText = stringResource(id = R.string.try_again),
+                        onDismissButtonText = stringResource(id = R.string.cancel),
+                        onConfirm = {
+                            viewModel.resetActivationState()
+                        },
+                        onDismiss = {
+                            viewModel.resetActivationState()
+                            viewModel.navigateBack()
+                        },
+                    )
+                }
             }
         }
     }
 
     if (showDeletionDialog.value) {
         val server = viewModel.dipList.toList().first()
-        Dialog(
-            title = stringResource(id = R.string.account_deletion_dialog_title),
-            text = String.format(
-                stringResource(id = R.string.dip_remove_description),
-                server.name,
-                server.dedicatedIp,
-            ),
-            onConfirmButtonText = stringResource(id = R.string.account_deletion_dialog_positive_action),
-            onDismissButtonText = stringResource(id = R.string.cancel),
-            onConfirm = {
-                showDeletionDialog.value = false
-                server.dipToken?.let {
-                    viewModel.removeDip(it)
-                }
-            },
-            onDismiss = {
-                showDeletionDialog.value = false
-            },
-        )
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.Black.copy(alpha = 0.6f),
+        ) {
+            Dialog(
+                title = stringResource(id = R.string.account_deletion_dialog_title),
+                text = String.format(
+                    stringResource(id = R.string.dip_remove_description),
+                    server.name,
+                    server.dedicatedIp,
+                ),
+                onConfirmButtonText = stringResource(id = R.string.account_deletion_dialog_positive_action),
+                onDismissButtonText = stringResource(id = R.string.cancel),
+                onConfirm = {
+                    showDeletionDialog.value = false
+                    server.dipToken?.let {
+                        viewModel.removeDip(it)
+                    }
+                },
+                onDismiss = {
+                    showDeletionDialog.value = false
+                },
+            )
+        }
     }
 }
 

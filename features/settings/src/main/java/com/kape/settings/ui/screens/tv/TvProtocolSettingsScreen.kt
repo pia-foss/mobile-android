@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,7 +53,11 @@ fun TvProtocolSettingsScreen() = Screen {
     val initialFocusRequester = FocusRequester()
 
     val protocolDialogVisible = remember { mutableStateOf(false) }
+    val transportDialogVisible = remember { mutableStateOf(false) }
+    val encryptionDialogVisible = remember { mutableStateOf(false) }
+    val portDialogVisible = remember { mutableStateOf(false) }
     val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
+    val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
@@ -116,41 +122,10 @@ fun TvProtocolSettingsScreen() = Screen {
                                 viewModel = viewModel,
                                 initialFocusRequester = initialFocusRequester,
                                 protocolDialogVisible = protocolDialogVisible,
+                                transportDialogVisible = transportDialogVisible,
+                                encryptionDialogVisible = encryptionDialogVisible,
+                                portDialogVisible = portDialogVisible,
                             )
-                    }
-
-                    if (protocolDialogVisible.value) {
-                        OptionsDialog(
-                            titleId = R.string.protocol_selection_title,
-                            options = mapOf(
-                                VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
-                                VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
-                            ),
-                            buttons = getDefaultButtons(),
-                            onDismiss = { protocolDialogVisible.value = false },
-                            onConfirm = {
-                                val hasProtocolChanged = protocolSelection.value != it
-                                viewModel.selectProtocol(it)
-                                protocolSelection.value = it
-                                protocolDialogVisible.value = false
-
-                                if (hasProtocolChanged) {
-                                    viewModel.showReconnectDialogIfVpnConnected()
-                                }
-                            },
-                            selection = protocolSelection.value,
-                        )
-                    }
-                    if (viewModel.reconnectDialogVisible.value) {
-                        ReconnectDialog(
-                            onReconnect = {
-                                viewModel.reconnect()
-                                viewModel.reconnectDialogVisible.value = false
-                            },
-                            onLater = {
-                                viewModel.reconnectDialogVisible.value = false
-                            },
-                        )
                     }
                 }
                 Column(
@@ -166,6 +141,89 @@ fun TvProtocolSettingsScreen() = Screen {
                 }
             }
         }
+        if (protocolDialogVisible.value) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black.copy(alpha = 0.6f),
+            ) {
+                OptionsDialog(
+                    titleId = R.string.protocol_selection_title,
+                    options = mapOf(
+                        VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
+                        VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
+                    ),
+                    buttons = getDefaultButtons(),
+                    onDismiss = { protocolDialogVisible.value = false },
+                    onConfirm = {
+                        val hasProtocolChanged = protocolSelection.value != it
+                        viewModel.selectProtocol(it)
+                        protocolSelection.value = it
+                        protocolDialogVisible.value = false
+
+                        if (hasProtocolChanged) {
+                            viewModel.showReconnectDialogIfVpnConnected()
+                        }
+                    },
+                    selection = protocolSelection.value,
+                )
+            }
+        }
+        if (viewModel.reconnectDialogVisible.value) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black.copy(alpha = 0.6f),
+            ) {
+                ReconnectDialog(
+                    onReconnect = {
+                        viewModel.reconnect()
+                        viewModel.reconnectDialogVisible.value = false
+                    },
+                    onLater = {
+                        viewModel.reconnectDialogVisible.value = false
+                    },
+                )
+            }
+        }
+
+        if (transportDialogVisible.value) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black.copy(alpha = 0.6f),
+            ) {
+                TransportSelectionDialog(
+                    viewModel = viewModel,
+                    transportDialogVisible = transportDialogVisible,
+                    transportSelection = viewModel.getOpenVpnSettings().transport,
+                    portSelection = portSelection,
+                )
+            }
+        }
+
+        if (encryptionDialogVisible.value) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black.copy(alpha = 0.6f),
+            ) {
+                EncryptionSelectionDialog(
+                    viewModel = viewModel,
+                    encryptionDialogVisible = encryptionDialogVisible,
+                    encryptionSelection = viewModel.getOpenVpnSettings().dataEncryption,
+                )
+            }
+        }
+
+        if (portDialogVisible.value) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black.copy(alpha = 0.6f),
+            ) {
+                PortSelectionDialog(
+                    viewModel = viewModel,
+                    portDialogVisible = portDialogVisible,
+                    portSelection = viewModel.getOpenVpnSettings().port,
+                )
+            }
+        }
     }
 }
 
@@ -174,12 +232,10 @@ private fun TvOpenVpnProtocolSettingsScreen(
     viewModel: SettingsViewModel,
     initialFocusRequester: FocusRequester,
     protocolDialogVisible: MutableState<Boolean>,
+    transportDialogVisible: MutableState<Boolean>,
+    encryptionDialogVisible: MutableState<Boolean>,
+    portDialogVisible: MutableState<Boolean>,
 ) {
-    val transportDialogVisible = remember { mutableStateOf(false) }
-    val encryptionDialogVisible = remember { mutableStateOf(false) }
-    val portDialogVisible = remember { mutableStateOf(false) }
-    val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
-
     TvSettingsItem(
         modifier = Modifier.focusRequester(initialFocusRequester),
         titleId = R.string.protocol_selection_title,
@@ -217,31 +273,6 @@ private fun TvOpenVpnProtocolSettingsScreen(
         titleId = R.string.protocol_handshake_title,
         subtitle = viewModel.getOpenVpnSettings().handshake,
     ) { }
-
-    if (transportDialogVisible.value) {
-        TransportSelectionDialog(
-            viewModel = viewModel,
-            transportDialogVisible = transportDialogVisible,
-            transportSelection = viewModel.getOpenVpnSettings().transport,
-            portSelection = portSelection,
-        )
-    }
-
-    if (encryptionDialogVisible.value) {
-        EncryptionSelectionDialog(
-            viewModel = viewModel,
-            encryptionDialogVisible = encryptionDialogVisible,
-            encryptionSelection = viewModel.getOpenVpnSettings().dataEncryption,
-        )
-    }
-
-    if (portDialogVisible.value) {
-        PortSelectionDialog(
-            viewModel = viewModel,
-            portDialogVisible = portDialogVisible,
-            portSelection = viewModel.getOpenVpnSettings().port,
-        )
-    }
 }
 
 @Composable

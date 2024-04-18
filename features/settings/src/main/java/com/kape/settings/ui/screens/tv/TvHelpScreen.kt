@@ -15,9 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -125,14 +126,9 @@ fun TvHelpScreen() = Screen {
                     verticalArrangement = Arrangement.Top,
                 ) {
                     if (showSpinner.value) {
-                        Spacer(modifier = Modifier.height(32.dp))
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(48.dp)
-                                .fillMaxSize()
-                                .align(Alignment.CenterHorizontally),
-                            color = LocalColors.current.primary,
-                        )
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        }
                     } else {
                         val appUrl = stringResource(id = R.string.app_url)
                         TvSettingsItem(
@@ -190,7 +186,9 @@ fun TvHelpScreen() = Screen {
                     verticalArrangement = Arrangement.Center,
                 ) {
                     Image(
-                        modifier = Modifier.fillMaxSize().padding(64.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(64.dp),
                         painter = painterResource(id = com.kape.settings.R.drawable.tv_help),
                         contentScale = ContentScale.Fit,
                         contentDescription = null,
@@ -201,10 +199,17 @@ fun TvHelpScreen() = Screen {
 
         if (showDialog.value) {
             showSpinner.value = false
-            SuccessDialog(
-                requestId = viewModel.requestId.value ?: "",
-                showDialog = showDialog,
-            ) { viewModel.resetRequestId() }
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black.copy(alpha = 0.6f),
+            ) {
+                SuccessDialog(
+                    requestId = viewModel.requestId.value ?: "",
+                    showDialog = showDialog,
+                ) {
+                    viewModel.resetRequestId()
+                }
+            }
         }
 
         if (showToast.value) {

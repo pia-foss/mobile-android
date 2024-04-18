@@ -19,11 +19,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -159,17 +161,22 @@ fun TvPerAppSettingsScreen() = Screen {
     }
 
     if (viewModel.reconnectDialogVisible.value) {
-        ReconnectDialog(
-            onReconnect = {
-                viewModel.reconnect()
-                viewModel.reconnectDialogVisible.value = false
-                viewModel.navigateUp()
-            },
-            onLater = {
-                viewModel.reconnectDialogVisible.value = false
-                viewModel.navigateUp()
-            },
-        )
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.Black.copy(alpha = 0.6f),
+        ) {
+            ReconnectDialog(
+                onReconnect = {
+                    viewModel.reconnect()
+                    viewModel.reconnectDialogVisible.value = false
+                    viewModel.navigateUp()
+                },
+                onLater = {
+                    viewModel.reconnectDialogVisible.value = false
+                    viewModel.navigateUp()
+                },
+            )
+        }
     }
 }
 
