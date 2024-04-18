@@ -209,11 +209,12 @@ class ConnectionViewModel(
             }
             val previousConnections = prefs.getQuickConnectServers().reversed()
             for (server in previousConnections) {
-                regionListProvider.servers.value.firstOrNull { it.key == server }?.let {
-                    if (orderedServers.firstOrNull { it.key == server } == null) {
-                        orderedServers.add(it)
+                regionListProvider.servers.value.firstOrNull { it.key == server.serverKey && it.isDedicatedIp == server.isDip }
+                    ?.let {
+                        if (orderedServers.firstOrNull { it.key == server.serverKey && it.isDedicatedIp == server.isDip } == null) {
+                            orderedServers.add(it)
+                        }
                     }
-                }
             }
         }
         return orderedServers
@@ -257,7 +258,7 @@ class ConnectionViewModel(
 
     private fun connect() = viewModelScope.launch {
         prefs.setSelectedVpnServer(state.value.server)
-        prefs.addToQuickConnect(state.value.server.key)
+        prefs.addToQuickConnect(state.value.server.key, state.value.server.isDedicatedIp)
         updateState(state.value.server, false)
         snoozeHandler.cancelSnooze()
         connectionUseCase.startConnection(
@@ -295,7 +296,7 @@ class ConnectionViewModel(
                     if (vpnRegionPrefs.needsVpnReconnect()) {
                         vpnRegionPrefs.setVpnReconnect(false)
                         prefs.setSelectedVpnServer(serverToConnect)
-                        prefs.addToQuickConnect(serverToConnect.key)
+                        prefs.addToQuickConnect(serverToConnect.key, serverToConnect.isDedicatedIp)
                         _state.emit(
                             ConnectionScreenState(
                                 serverToConnect,
