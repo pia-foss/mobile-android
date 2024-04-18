@@ -77,7 +77,6 @@ fun PerAppSettingsScreen() = Screen {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    hint = stringResource(id = R.string.search),
                 ) {
                     viewModel.filterAppsByName(it, packageManager)
                 }

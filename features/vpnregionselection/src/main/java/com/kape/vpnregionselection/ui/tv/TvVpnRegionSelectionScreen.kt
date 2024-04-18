@@ -154,7 +154,6 @@ fun TvVpnRegionSelectionScreen() = Screen {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
-                            hint = stringResource(id = R.string.search),
                         ) {
                             viewModel.filterByName(it, isSearchEnabled)
                         }
