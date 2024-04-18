@@ -71,6 +71,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         run: ./gradlew assemble${{ matrix.config }}
 
+  build-playstore-version:
+    uses: ./.github/workflows/build-playstore-android.yaml
+    secrets: inherit
+
   e2e-testing:
     name: Run end to end instrumentation tests
     runs-on: ubuntu-4core-runners
