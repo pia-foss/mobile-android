@@ -61,8 +61,7 @@ fun ProfileScreen() = Screen {
         } else {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics(mergeDescendants = true) { },
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(
@@ -72,15 +71,17 @@ fun ProfileScreen() = Screen {
                         .padding(horizontal = 16.dp),
                 ) {
                     Spacer(modifier = Modifier.height(24.dp))
-                    SettingsL2Text(content = stringResource(id = R.string.username))
-                    Text(
-                        color = LocalColors.current.onSurfaceVariant,
-                        text = state.username,
-                    )
+                    Column(modifier = Modifier.semantics(mergeDescendants = true) {}) {
+                        SettingsL2Text(content = stringResource(id = R.string.username))
+                        Text(
+                            color = LocalColors.current.onSurfaceVariant,
+                            text = state.username,
+                        )
+                    }
                     Spacer(modifier = Modifier.height(24.dp))
                     SettingsL2TextDescription(content = stringResource(id = R.string.message_other_devices))
                     Spacer(modifier = Modifier.height(16.dp))
-                    Row {
+                    Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
                         Text(
                             color = LocalColors.current.outlineVariant,
                             text = stringResource(id = if (state.expired) R.string.message_expired else R.string.message_expiration),
