@@ -2,12 +2,13 @@ package com.kape.connection
 
 import android.content.Context
 import com.kape.connection.model.PortBindInformation
+import com.kape.connection.model.QuickConnectServer
 import com.kape.utils.Prefs
 import com.kape.utils.vpnserver.VpnServer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-private const val QUICK_CONNECT = "quick-connect-list"
+private const val QUICK_CONNECT = "quick-connect-server-list"
 private const val CLIENT_IP = "client-ip"
 private const val VPN_IP = "vpn-ip"
 private const val SELECTED_VPN_SERVER = "selected-vpn-server"
@@ -21,16 +22,18 @@ const val NO_IP = "---"
 
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
-    fun addToQuickConnect(serverKey: String) {
+    fun addToQuickConnect(serverKey: String, isDip: Boolean) {
         val quickConnectList = getQuickConnectServers().toMutableList()
-        if (quickConnectList.contains(serverKey)) {
-            quickConnectList.remove(serverKey)
+        val server = quickConnectList.firstOrNull { it.serverKey == serverKey && it.isDip == isDip }
+        server?.let {
+            quickConnectList.remove(it)
+        } ?: run {
+            quickConnectList.add(QuickConnectServer(serverKey, isDip))
         }
-        quickConnectList.add(serverKey)
         prefs.edit().putString(QUICK_CONNECT, Json.encodeToString(quickConnectList)).apply()
     }
 
-    fun getQuickConnectServers(): List<String> {
+    fun getQuickConnectServers(): List<QuickConnectServer> {
         return prefs.getString(QUICK_CONNECT, null)?.let {
             Json.decodeFromString(it)
         } ?: emptyList()
