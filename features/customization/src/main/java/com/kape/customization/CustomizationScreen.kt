@@ -61,6 +61,7 @@ fun CustomizationScreen() = Screen {
                 viewModel = appBarViewModel,
                 type = AppBarType.Customization,
                 onLeftIconClick = { viewModel.exitCustomization() },
+                onRightIconClick = { viewModel.saveOrder() },
             )
         },
     ) {
