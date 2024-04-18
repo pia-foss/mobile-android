@@ -25,7 +25,11 @@ class CustomizationViewModel(private val prefs: CustomizationPrefs, private val 
         items = items.toMutableList().apply {
             add(to.index, removeAt(from.index))
         }
+    }
+
+    fun saveOrder() {
         prefs.setOrderedElements(items)
+        exitCustomization()
     }
 
     fun toggleVisibility(element: Element, isVisible: Boolean) {

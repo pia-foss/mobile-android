@@ -125,6 +125,7 @@ private fun AppBarContent(
                     status = status,
                     title = title,
                     onRightIconClick = onRightIconClick,
+                    R.drawable.ic_reorder,
                 )
             }
 
@@ -132,6 +133,8 @@ private fun AppBarContent(
                 AppBarConnectionStatus(
                     status = status,
                     title = title,
+                    onRightIconClick = onRightIconClick,
+                    R.drawable.ic_save,
                 )
             }
 
@@ -204,6 +207,7 @@ private fun AppBarConnectionStatus(
     status: ConnectionStatus,
     title: String? = null,
     onRightIconClick: (() -> Unit)? = null,
+    rightIconId: Int? = null,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -241,12 +245,14 @@ private fun AppBarConnectionStatus(
                         invisibleToUser()
                     },
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_reorder),
-                    contentDescription = null,
-                    tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
-                    modifier = Modifier.size(24.dp),
-                )
+                rightIconId?.let {
+                    Icon(
+                        painter = painterResource(id = it),
+                        contentDescription = null,
+                        tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
             }
         }
     }
