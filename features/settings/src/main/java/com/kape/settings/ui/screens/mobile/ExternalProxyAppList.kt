@@ -75,7 +75,6 @@ fun ExternalProxyAppList() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    hint = "",
                 ) {
                     viewModel.filterAppsByName(it, packageManager)
                 }

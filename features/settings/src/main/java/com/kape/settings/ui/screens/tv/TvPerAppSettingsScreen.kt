@@ -111,7 +111,6 @@ fun TvPerAppSettingsScreen() = Screen {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp),
-                        hint = stringResource(id = R.string.search),
                     ) {
                         viewModel.filterAppsByName(it, packageManager)
                     }

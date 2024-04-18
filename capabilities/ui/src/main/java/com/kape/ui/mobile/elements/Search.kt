@@ -11,13 +11,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.mobile.text.SearchInputLabelText
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun Search(modifier: Modifier, hint: String, onTextChanged: (text: String) -> Unit) {
+fun Search(modifier: Modifier, onTextChanged: (text: String) -> Unit) {
     val query = remember { mutableStateOf("") }
 
     OutlinedTextField(
@@ -28,7 +29,7 @@ fun Search(modifier: Modifier, hint: String, onTextChanged: (text: String) -> Un
             onTextChanged(it)
         },
         placeholder = {
-            SearchInputLabelText(content = hint)
+            SearchInputLabelText(content = stringResource(id = R.string.search))
         },
         shape = RoundedCornerShape(12.dp),
         leadingIcon = {
