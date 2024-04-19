@@ -50,8 +50,8 @@ internal class KpiDataSourceImplTest {
 
     @Test
     fun `verify stop calls api`() = runTest {
-        source.start()
-        verify(exactly = 1) { api.start() }
+        source.stop()
+        verify(exactly = 1) { api.stop(any()) }
     }
 
     @Test
