@@ -3,6 +3,9 @@ on: [workflow_call]
 jobs:
   build:
     name: Generate App Bundle
+    env:
+      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
