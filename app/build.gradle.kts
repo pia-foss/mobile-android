@@ -51,7 +51,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            signingConfig = signingConfigs.getByName("debug")
         }
         debug {
             buildConfigField(
@@ -102,7 +101,6 @@ android {
             manifest.srcFile("noinapp/AndroidManifest.xml")
         }
     }
-
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
