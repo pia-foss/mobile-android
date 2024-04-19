@@ -23,7 +23,7 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
-val googleAmazonAppVersionCode = 659
+val googleAmazonAppVersionCode = 660
 val noInAppVersionCode = googleAmazonAppVersionCode.plus(10000)
 val appVersionName = "4.0.0"
 
