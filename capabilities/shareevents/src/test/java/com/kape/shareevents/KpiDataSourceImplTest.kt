@@ -5,7 +5,6 @@ import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.data.KpiDataSourceImpl
 import com.kape.shareevents.data.models.KpiConnectionEvent
-import com.kape.shareevents.data.models.KpiConnectionSource
 import com.kape.shareevents.di.kpiModule
 import com.kape.shareevents.domain.KpiDataSource
 import com.privateinternetaccess.kpi.KPIAPI
@@ -50,14 +49,14 @@ internal class KpiDataSourceImplTest {
 
     @Test
     fun `verify stop calls api`() = runTest {
-        source.start()
-        verify(exactly = 1) { api.start() }
+        source.stop()
+        verify(exactly = 1) { api.stop(any()) }
     }
 
     @Test
     fun `verify submit calls api`() = runTest {
         every { prefs.getSelectedProtocol() } returns VpnProtocols.OpenVPN
-        source.submit(KpiConnectionEvent.ConnectionCancelled, KpiConnectionSource.Automatic)
+        source.submit(KpiConnectionEvent.ConnectionCancelled)
         verify(exactly = 1) { api.submit(any(), any()) }
     }
 

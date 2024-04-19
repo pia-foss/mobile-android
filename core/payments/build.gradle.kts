@@ -14,6 +14,7 @@ plugins {
     id("kotlinx-serialization")
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jetbrains.kotlinx.kover")
+    id("de.mannodermaus.android-junit5") version "1.10.0.0"
 }
 
 android {

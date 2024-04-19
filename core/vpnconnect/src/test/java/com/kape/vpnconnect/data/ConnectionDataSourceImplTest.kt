@@ -186,4 +186,10 @@ internal class ConnectionDataSourceImplTest {
             assertEquals(0, actual.size)
         }
     }
+
+    @Test
+    fun `startPortForwarding() sets an alarm`() = runTest {
+        source.startPortForwarding()
+        verify(exactly = 1) { alarmManager.setRepeating(any(), any(), any(), any()) }
+    }
 }

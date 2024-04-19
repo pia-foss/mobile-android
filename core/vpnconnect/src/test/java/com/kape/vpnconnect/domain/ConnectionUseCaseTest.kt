@@ -37,12 +37,13 @@ internal class ConnectionUseCaseTest {
     private val connectionDataSource: ConnectionDataSource = mockk<ConnectionDataSource>().apply {
         every { stopPortForwarding() } returns Unit
     }
-    private val clientStateDataSource: ClientStateDataSource = mockk<ClientStateDataSource>().apply {
-        every { getClientStatus() } returns flow {
-            emit(true)
+    private val clientStateDataSource: ClientStateDataSource =
+        mockk<ClientStateDataSource>().apply {
+            every { getClientStatus() } returns flow {
+                emit(true)
+            }
+            every { resetVpnIp() } just Runs
         }
-        every { resetVpnIp() } just Runs
-    }
     private val server: VpnServer = mockk<VpnServer>(relaxed = true).apply {
         every { endpoints } returns emptyMap()
         every { latency } returns "0"
@@ -197,6 +198,37 @@ internal class ConnectionUseCaseTest {
             awaitItem()
             awaitComplete()
             verify(exactly = 1) { clientStateDataSource.resetVpnIp() }
+        }
+    }
+
+    @Test
+    fun `reconnect - when connected - disconnect`() = runTest {
+        every { connectionManager.isConnected() } returns true
+        every { connectionDataSource.stopConnection() } returns flow {
+            emit(true)
+        }
+        every { connectionDataSource.stopPortForwarding() } returns Unit
+
+        useCase.reconnect(server).test {
+            awaitComplete()
+            verify(exactly = 1) { connectionDataSource.stopConnection() }
+            verify(exactly = 1) { connectionDataSource.stopPortForwarding() }
+        }
+    }
+
+    @Test
+    fun `reconnect - when NOT connected - connect`() = runTest {
+        every { connectionManager.isConnected() } returns false
+        every { connectionDataSource.getVpnToken() } returns "username:password"
+        every { connectionDataSource.startConnection(any(), any()) } returns flow {
+            emit(true)
+        }
+        every { connectionDataSource.stopPortForwarding() } returns Unit
+
+        useCase.reconnect(server).test {
+            awaitItem()
+            awaitComplete()
+            verify(exactly = 1) { connectionDataSource.startConnection(any(), any()) }
         }
     }
 }
