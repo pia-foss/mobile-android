@@ -75,6 +75,10 @@ jobs:
     uses: ./.github/workflows/build-playstore-android.yaml
     secrets: inherit
 
+  build-website-version:
+    uses: ./.github/workflows/build-website-android.yaml
+    secrets: inherit
+
   e2e-testing:
     name: Run end to end instrumentation tests
     runs-on: ubuntu-4core-runners
