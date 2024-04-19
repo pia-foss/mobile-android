@@ -285,7 +285,7 @@ class ConnectionViewModel(
         viewModelScope.launch {
             val existingServer = vpnRegionPrefs.getSelectedServer()
             existingServer?.let {
-                if (server.key != existingServer.key) {
+                if (server != existingServer) {
                     val serverToConnect =
                         if (existingServer.key == AUTO_KEY) {
                             regionListProvider.servers.value.sortedBy { it.latency?.toInt() }

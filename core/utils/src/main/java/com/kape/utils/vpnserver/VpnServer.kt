@@ -50,4 +50,24 @@ data class VpnServer(
             }
         },
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) {
+            return false
+        }
+
+        if (other !is VpnServer) {
+            return false
+        }
+
+        if (this === other) {
+            return true
+        }
+
+        if (key != other.key || isDedicatedIp != other.isDedicatedIp || iso != other.iso) {
+            return false
+        }
+
+        return true
+    }
 }
