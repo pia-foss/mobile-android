@@ -19,7 +19,6 @@ import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.utils.ConnectionManager
 import io.mockk.Runs
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
