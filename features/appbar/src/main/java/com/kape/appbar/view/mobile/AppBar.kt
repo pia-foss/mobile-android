@@ -231,7 +231,7 @@ private fun AppBarConnectionStatus(
                 modifier = Modifier
                     .align(CenterVertically)
                     .semantics {
-                        contentDescription = "$statusPrefix $status"
+                        contentDescription = "$statusPrefix $title"
                     },
             )
         }
