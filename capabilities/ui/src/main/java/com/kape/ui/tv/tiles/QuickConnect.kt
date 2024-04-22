@@ -20,7 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +41,7 @@ const val MAX_SERVERS = 5
 @Composable
 fun QuickConnect(
     modifier: Modifier = Modifier,
+    startQuickConnectFocusRequester: FocusRequester,
     servers: Map<VpnServer?, Boolean>,
     onClick: (server: VpnServer) -> Unit,
 ) {
@@ -53,6 +56,11 @@ fun QuickConnect(
             for (index in 0 until MAX_SERVERS) {
                 val server = servers.keys.toList().getOrNull(index)
                 server?.let { current ->
+                    val itemModifier = if (index == 0) {
+                        Modifier.focusRequester(startQuickConnectFocusRequester)
+                    } else {
+                        Modifier
+                    }
                     QuickConnectItem(
                         server = current,
                         isFavorite = servers[current] ?: false,
@@ -61,7 +69,7 @@ fun QuickConnect(
                                 onClick(it)
                             }
                         },
-                        modifier = Modifier.weight(1f),
+                        modifier = itemModifier.weight(1f),
                     )
                 } ?: run {
                     QuickConnectItem(

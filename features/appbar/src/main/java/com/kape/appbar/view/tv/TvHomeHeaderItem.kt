@@ -39,10 +39,12 @@ import com.kape.vpnconnect.utils.ConnectionStatus
 
 @Composable
 fun TvHomeHeaderItem(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     title: String? = null,
     connectionStatus: State<ConnectionStatus>,
     defaultSelectedTabIndex: Int,
+    topStartHeaderFocusRequester: FocusRequester = FocusRequester(),
+    topEndHeaderFocusRequester: FocusRequester = FocusRequester(),
     onVpnSelected: () -> Unit = { },
     onLocationsSelected: () -> Unit = { },
     onSettingsSelected: () -> Unit = { },
@@ -71,6 +73,7 @@ fun TvHomeHeaderItem(
         ) {
             TabRow(
                 modifier = modifier
+                    .focusRequester(topStartHeaderFocusRequester)
                     .background(
                         color = LocalColors.current.primaryContainer,
                         shape = CircleShape,
@@ -79,7 +82,7 @@ fun TvHomeHeaderItem(
                         if (it.hasFocus) {
                             tabPillActiveColor.value = colorScheme.primary
                             tabPillActiveTextColor.value = colorScheme.onPrimary
-                            tabPillInactiveColor.value = colorScheme.onPrimaryContainer
+                            tabPillInactiveColor.value = colorScheme.primaryContainer
                             focusRequesters[selectedTabIndex.intValue].requestFocus()
                         } else {
                             tabPillActiveColor.value = colorScheme.onPrimaryContainer
@@ -142,13 +145,16 @@ fun TvHomeHeaderItem(
             horizontalArrangement = Arrangement.End,
         ) {
             RoundIconButton(
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier
+                    .focusRequester(topEndHeaderFocusRequester)
+                    .padding(horizontal = 4.dp),
                 painterId = R.drawable.ic_settings,
             ) {
                 onSettingsSelected()
             }
             RoundIconButton(
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier
+                    .padding(horizontal = 4.dp),
                 painterId = R.drawable.ic_help,
             ) {
                 onHelpSelected()

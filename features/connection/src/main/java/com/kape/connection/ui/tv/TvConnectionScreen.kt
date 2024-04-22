@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.kape.connection.ui.tv
 
 import androidx.activity.compose.BackHandler
@@ -21,9 +23,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.tv.TvHomeHeaderItem
@@ -31,7 +34,6 @@ import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.customization.data.Element
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.mobile.tiles.ShadowsocksLocationPicker
 import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarDefault
@@ -52,7 +54,9 @@ fun TvConnectionScreen() = Screen {
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val isConnected = viewModel.isConnected.collectAsState()
-    val initialFocusRequester = remember { FocusRequester() }
+    val topStartHeaderFocusRequester = remember { FocusRequester() }
+    val topEndHeaderFocusRequester = remember { FocusRequester() }
+    val startQuickConnectFocusRequester = remember { FocusRequester() }
     val locale = Locale.getDefault().language
 
     BackHandler {
@@ -60,7 +64,7 @@ fun TvConnectionScreen() = Screen {
     }
 
     LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
+        topStartHeaderFocusRequester.requestFocus()
         viewModel.loadVpnServers(locale)
         viewModel.loadShadowsocksServers(locale)
         viewModel.autoConnect()
@@ -88,9 +92,10 @@ fun TvConnectionScreen() = Screen {
             verticalArrangement = Arrangement.Center,
         ) {
             TvHomeHeaderItem(
-                modifier = Modifier.focusRequester(initialFocusRequester),
                 connectionStatus = connectionStatus,
                 defaultSelectedTabIndex = 0,
+                topStartHeaderFocusRequester = topStartHeaderFocusRequester,
+                topEndHeaderFocusRequester = topEndHeaderFocusRequester,
                 onLocationsSelected = {
                     viewModel.showVpnRegionSelection()
                 },
@@ -111,7 +116,11 @@ fun TvConnectionScreen() = Screen {
                     status = if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
                     onTvLayout = true,
                     modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
+                        .align(Alignment.CenterHorizontally)
+                        .focusProperties {
+                            start = topStartHeaderFocusRequester
+                            end = topEndHeaderFocusRequester
+                        },
                 ) {
                     viewModel.onConnectionButtonClicked()
                 }
@@ -121,6 +130,7 @@ fun TvConnectionScreen() = Screen {
                         screenElement = it.element,
                         isVisible = viewModel.isScreenElementVisible(it),
                         viewModel = viewModel,
+                        startQuickConnectFocusRequester = startQuickConnectFocusRequester,
                     )
                 }
             }
@@ -133,6 +143,7 @@ private fun DisplayComponent(
     screenElement: Element,
     isVisible: Boolean,
     viewModel: ConnectionViewModel,
+    startQuickConnectFocusRequester: FocusRequester,
 ) {
     if (isVisible.not()) {
         return
@@ -143,20 +154,14 @@ private fun DisplayComponent(
     when (screenElement) {
         Element.VpnRegionSelection -> {
             VpnLocationPicker(
+                modifier = Modifier.focusProperties {
+                    down = startQuickConnectFocusRequester
+                },
                 server = state.value.server,
                 isConnected = viewModel.isConnectionActive(),
                 isOptimal = state.value.isCurrentServerOptimal,
             ) {
                 viewModel.showVpnRegionSelection()
-            }
-        }
-
-        Element.ShadowsocksRegionSelection -> {
-            ShadowsocksLocationPicker(
-                server = viewModel.getSelectedShadowsocksServer(),
-                isConnected = viewModel.isConnectionActive(),
-            ) {
-                viewModel.showShadowsocksRegionSelection()
             }
         }
 
@@ -166,6 +171,7 @@ private fun DisplayComponent(
                 quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
             }
             QuickConnect(
+                startQuickConnectFocusRequester = startQuickConnectFocusRequester,
                 servers = quickConnectMap,
                 onClick = {
                     viewModel.quickConnect(it)
@@ -173,6 +179,7 @@ private fun DisplayComponent(
             )
         }
 
+        Element.ShadowsocksRegionSelection,
         Element.ConnectionInfo,
         Element.IpInfo,
         Element.QuickSettings,

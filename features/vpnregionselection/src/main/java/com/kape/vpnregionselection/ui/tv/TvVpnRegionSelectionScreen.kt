@@ -22,8 +22,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection.Companion.Left
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
@@ -54,11 +57,14 @@ import com.kape.vpnregionselection.util.ItemType
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalTvMaterial3Api::class)
+@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun TvVpnRegionSelectionScreen() = Screen {
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
     val initialFocusRequester = remember { FocusRequester() }
+    val allButtonFocusRequester = remember { FocusRequester() }
+    val favoriteButtonFocusRequester = remember { FocusRequester() }
+    val searchButtonFocusRequester = remember { FocusRequester() }
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val isFavoriteSelected = remember { mutableStateOf(false) }
@@ -127,27 +133,48 @@ fun TvVpnRegionSelectionScreen() = Screen {
                     .fillMaxSize()
                     .padding(top = 32.dp),
             ) {
-                Column(modifier = Modifier.weight(0.25f)) {
+                Column(
+                    modifier = Modifier.weight(0.25f),
+                ) {
                     TvColumnSelectionItem(
                         modifier = Modifier.padding(top = 16.dp),
                         onAllSelected = {
                             isFavoriteSelected.value = false
                             isSearchEnabled.value = false
                         },
+                        onAllFocusRequester = allButtonFocusRequester,
                         onFavoriteSelected = {
                             isFavoriteSelected.value = true
                             isSearchEnabled.value = false
                         },
+                        onFavoriteFocusRequester = favoriteButtonFocusRequester,
                         onSearchSelected = {
                             isFavoriteSelected.value = false
                             isSearchEnabled.value = true
                         },
+                        onSearchFocusRequester = searchButtonFocusRequester,
                     )
                 }
                 Column(
                     modifier = Modifier
                         .padding(start = 16.dp)
-                        .weight(0.75f),
+                        .weight(0.75f)
+                        .focusProperties {
+                            exit = { focusDirection ->
+                                when (focusDirection) {
+                                    Left -> {
+                                        if (isFavoriteSelected.value) {
+                                            favoriteButtonFocusRequester
+                                        } else if (isSearchEnabled.value) {
+                                            searchButtonFocusRequester
+                                        } else {
+                                            allButtonFocusRequester
+                                        }
+                                    }
+                                    else -> FocusRequester.Default
+                                }
+                            }
+                        },
                 ) {
                     if (isSearchEnabled.value) {
                         Search(

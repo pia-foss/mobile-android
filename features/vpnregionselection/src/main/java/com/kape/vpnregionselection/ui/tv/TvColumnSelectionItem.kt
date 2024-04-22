@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.kape.vpnregionselection.ui.tv
 
 import androidx.compose.foundation.layout.Column
@@ -8,7 +10,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -26,8 +31,11 @@ import com.kape.ui.utils.LocalColors
 fun TvColumnSelectionItem(
     modifier: Modifier,
     onAllSelected: () -> Unit = { },
+    onAllFocusRequester: FocusRequester,
     onFavoriteSelected: () -> Unit = { },
+    onFavoriteFocusRequester: FocusRequester,
     onSearchSelected: () -> Unit = { },
+    onSearchFocusRequester: FocusRequester,
 ) {
     val colorScheme = LocalColors.current
     val selectedIndex = remember { mutableIntStateOf(0) }
@@ -36,6 +44,7 @@ fun TvColumnSelectionItem(
         val title: String,
         val contentColor: MutableState<Color>,
         val containerColor: MutableState<Color>,
+        val focusRequester: FocusRequester,
     )
 
     val buttons = listOf(
@@ -43,16 +52,19 @@ fun TvColumnSelectionItem(
             title = stringResource(id = com.kape.ui.R.string.all),
             contentColor = remember { mutableStateOf(colorScheme.onSurface) },
             containerColor = remember { mutableStateOf(colorScheme.background) },
+            focusRequester = onAllFocusRequester,
         ),
         ButtonDetails(
             title = stringResource(id = com.kape.ui.R.string.favorite),
             contentColor = remember { mutableStateOf(colorScheme.onSurface) },
             containerColor = remember { mutableStateOf(colorScheme.background) },
+            focusRequester = onFavoriteFocusRequester,
         ),
         ButtonDetails(
             title = stringResource(id = com.kape.ui.R.string.search),
             contentColor = remember { mutableStateOf(colorScheme.onSurface) },
             containerColor = remember { mutableStateOf(colorScheme.background) },
+            focusRequester = onSearchFocusRequester,
         ),
     )
 
@@ -63,10 +75,10 @@ fun TvColumnSelectionItem(
                     if (it.hasFocus.not() && selectedIndex.intValue == index) {
                         buttonDetails.containerColor.value = colorScheme.onPrimaryContainer
                         buttonDetails.contentColor.value = colorScheme.onSurface
-                        return@forEachIndexed
+                    } else {
+                        buttonDetails.containerColor.value = colorScheme.background
+                        buttonDetails.contentColor.value = colorScheme.onSurface
                     }
-                    buttonDetails.containerColor.value = colorScheme.background
-                    buttonDetails.contentColor.value = colorScheme.onSurface
                 }
             },
     ) {
@@ -74,6 +86,7 @@ fun TvColumnSelectionItem(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .focusRequester(buttonDetails.focusRequester)
                     .onFocusChanged {
                         if (it.hasFocus) {
                             selectedIndex.intValue = index
@@ -81,14 +94,13 @@ fun TvColumnSelectionItem(
                                 0 -> onAllSelected()
                                 1 -> onFavoriteSelected()
                                 2 -> onSearchSelected()
-                                else -> throw IllegalStateException("Unsupported TV Header State")
+                                else -> throw IllegalStateException("Unsupported TV State")
                             }
                         }
                     },
                 shape = ButtonDefaults.shape(
                     shape = RoundedCornerShape(12.dp),
                 ),
-
                 colors = ButtonDefaults.colors(
                     containerColor = buttonDetails.containerColor.value,
                     contentColor = buttonDetails.contentColor.value,

@@ -21,13 +21,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -58,7 +63,13 @@ fun TvPerAppSettingsScreen() = Screen {
     }
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val initialFocusRequester = FocusRequester()
+    val keyboardController = LocalSoftwareKeyboardController.current
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
+
+    LaunchedEffect(key1 = Unit) {
+        initialFocusRequester.requestFocus()
+    }
 
     BackHandler {
         onBackPressed(viewModel, lastExcludedApps)
@@ -110,7 +121,12 @@ fun TvPerAppSettingsScreen() = Screen {
                     Search(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
+                            .padding(8.dp)
+                            .onFocusChanged {
+                                if (it.hasFocus) {
+                                    keyboardController?.hide()
+                                }
+                            },
                     ) {
                         viewModel.filterAppsByName(it, packageManager)
                     }
@@ -126,7 +142,13 @@ fun TvPerAppSettingsScreen() = Screen {
                             val excludedFromTunnel = viewModel.vpnExcludedApps.value.contains(
                                 applicationPackage.packageName,
                             )
+                            val focusRequester = if (index == 0) {
+                                initialFocusRequester
+                            } else {
+                                FocusRequester.Default
+                            }
                             PerAppSettingPackageItem(
+                                modifier = Modifier.focusRequester(focusRequester),
                                 icon = icon,
                                 name = name,
                                 excludedFromTunnel = excludedFromTunnel,
@@ -181,13 +203,14 @@ fun TvPerAppSettingsScreen() = Screen {
 
 @Composable
 private fun PerAppSettingPackageItem(
+    modifier: Modifier = Modifier,
     icon: Drawable,
     name: String,
     excludedFromTunnel: Boolean,
     onClick: () -> Unit,
 ) {
     Button(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = ButtonDefaults.shape(
             shape = RoundedCornerShape(12.dp),
         ),
