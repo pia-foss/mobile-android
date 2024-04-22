@@ -1,10 +1,16 @@
 package com.kape.vpn
 
+import android.app.UiModeManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -77,12 +83,12 @@ import com.kape.splash.ui.SplashScreen
 import com.kape.tvwelcome.ui.TvWelcomeScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
-import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.utils.PlatformUtils
+import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
 import org.koin.android.ext.android.inject
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val router: Router by inject()
     private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
@@ -102,9 +108,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         paymentProvider.register(this)
         defineScreenOrientation()
-
         deepLinkLogin(intent)
-
         intent.action?.let {
             when (it) {
                 Settings.Route -> router.handleFlow(EnterFlow.Settings)

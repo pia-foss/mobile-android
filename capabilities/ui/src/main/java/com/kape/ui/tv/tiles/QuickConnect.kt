@@ -54,14 +54,15 @@ fun QuickConnect(
         Spacer(modifier = Modifier.height(8.dp))
         Row {
             for (index in 0 until MAX_SERVERS) {
+                val itemModifier = if (index == 0) {
+                    Modifier.focusRequester(startQuickConnectFocusRequester)
+                } else {
+                    Modifier
+                }
                 val server = servers.keys.toList().getOrNull(index)
                 server?.let { current ->
-                    val itemModifier = if (index == 0) {
-                        Modifier.focusRequester(startQuickConnectFocusRequester)
-                    } else {
-                        Modifier
-                    }
                     QuickConnectItem(
+                        modifier = itemModifier.weight(1f),
                         server = current,
                         isFavorite = servers[current] ?: false,
                         onClick = {
@@ -69,11 +70,10 @@ fun QuickConnect(
                                 onClick(it)
                             }
                         },
-                        modifier = itemModifier.weight(1f),
                     )
                 } ?: run {
                     QuickConnectItem(
-                        modifier = Modifier
+                        modifier = itemModifier
                             .weight(1f)
                             .focusProperties { canFocus = false },
                     )

@@ -3,6 +3,7 @@ package com.kape.ui.theme
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -73,6 +74,7 @@ fun PiaScreen(
 @Composable
 private fun isDarkTheme(context: Context) =
     if (PlatformUtils.isTv(context = context)) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         true
     } else {
         isSystemInDarkTheme()
