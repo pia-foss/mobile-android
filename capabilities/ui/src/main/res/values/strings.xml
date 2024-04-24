@@ -124,6 +124,7 @@
     <string name="you_are_all_set">You\'re all set!</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="try_again">Try Again</string>
+    <string name="yes_i_want">Yes, I want</string>
 
     <string name="remove_dedicated_ip">Remove Dedicated IP</string>
     <string name="tv_dedicated_ip_title">Activate Your Dedicated IP</string>
@@ -141,6 +142,7 @@
     <string name="dip_remove_title">Remove Dedicated IP</string>
     <string name="dip_remove_description">Remove %s - %s?</string>
     <string name="dip_summary">Secure your remote connections to any asset with a dedicated IP from a country of your choice. During your subscription, this IP will be yours and yours alone, protecting your data transfers with the strongest encryption out there.</string>
+    <string name="dip_banner_description">Would you like to add a Dedicated IP to your subscription?</string>
 
     <string name="enter_username">Enter username</string>
     <string name="enter_password">Enter password</string>

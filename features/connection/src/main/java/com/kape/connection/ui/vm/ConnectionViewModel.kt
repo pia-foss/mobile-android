@@ -167,6 +167,9 @@ class ConnectionViewModel(
             -> screenElement.isVisible
         }
 
+    fun showDedicatedIpHomeBanner() =
+        dipPrefs.isDipSignupEnabled() && dipPrefs.showDedicatedIpHomeBanner()
+
     fun snooze(interval: Int) = snoozeHandler.setSnooze(interval)
 
     fun isAlarmPermissionGranted() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

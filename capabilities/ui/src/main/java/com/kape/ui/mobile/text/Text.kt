@@ -151,6 +151,14 @@ fun SecondaryButtonText(content: String) {
 }
 
 @Composable
+fun TertiaryButtonText(content: String) {
+    Text(
+        text = content,
+        style = PiaTypography.button2,
+    )
+}
+
+@Composable
 fun ErrorText(content: String, modifier: Modifier) {
     Text(
         text = content,
@@ -400,5 +408,16 @@ fun DialogActionText(content: String, modifier: Modifier) {
         color = LocalColors.current.primary,
         style = PiaTypography.subtitle3,
         modifier = modifier,
+    )
+}
+
+@Composable
+fun DedicatedIpHomeBannerText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        modifier = modifier,
+        text = content,
+        color = LocalColors.current.surfaceVariant,
+        style = PiaTypography.caption1,
+        textAlign = TextAlign.Start,
     )
 }

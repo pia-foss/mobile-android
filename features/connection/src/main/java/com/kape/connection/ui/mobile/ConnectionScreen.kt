@@ -4,12 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -23,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -49,6 +53,8 @@ import com.kape.ui.R
 import com.kape.ui.mobile.elements.InfoCard
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Separator
+import com.kape.ui.mobile.elements.TertiaryButton
+import com.kape.ui.mobile.text.DedicatedIpHomeBannerText
 import com.kape.ui.mobile.tiles.ConnectionInfo
 import com.kape.ui.mobile.tiles.IPTile
 import com.kape.ui.mobile.tiles.QuickConnect
@@ -57,6 +63,7 @@ import com.kape.ui.mobile.tiles.ShadowsocksLocationPicker
 import com.kape.ui.mobile.tiles.Snooze
 import com.kape.ui.mobile.tiles.Traffic
 import com.kape.ui.mobile.tiles.VpnLocationPicker
+import com.kape.ui.utils.LocalColors
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
@@ -124,6 +131,11 @@ fun ConnectionScreen() = Screen {
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {
                     val connection = stringResource(id = R.string.connection)
                     Spacer(modifier = Modifier.height(16.dp))
+                    if (viewModel.showDedicatedIpHomeBanner()) {
+                        DedicatedIpBanner {
+                            TODO("To be implemented")
+                        }
+                    }
                     ConnectButton(
                         status = if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
                         onTvLayout = false,
@@ -138,11 +150,10 @@ fun ConnectionScreen() = Screen {
                         viewModel.onConnectionButtonClicked()
                     }
                     Spacer(modifier = Modifier.height(36.dp))
-
-                    viewModel.getOrderedElements().forEach {
+                    viewModel.getOrderedElements().forEach { screenElement ->
                         DisplayComponent(
-                            screenElement = it,
-                            isVisible = viewModel.isScreenElementVisible(it),
+                            screenElement = screenElement,
+                            isVisible = viewModel.isScreenElementVisible(screenElement),
                             viewModel = viewModel,
                             state = state.value,
                         )
@@ -290,4 +301,27 @@ private fun DisplayComponent(
             }
         }
     }
+}
+
+@Composable
+private fun DedicatedIpBanner(onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .background(LocalColors.current.primary)
+            .padding(horizontal = 16.dp)
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        DedicatedIpHomeBannerText(
+            modifier = Modifier.weight(1.0f),
+            content = stringResource(id = R.string.dip_banner_description),
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        TertiaryButton(
+            modifier = Modifier.padding(4.dp),
+            text = stringResource(id = R.string.yes_i_want),
+            onClick = onClick,
+        )
+    }
+    Spacer(modifier = Modifier.height(16.dp))
 }

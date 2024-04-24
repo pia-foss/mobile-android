@@ -7,6 +7,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private const val DEDICATED_IPS = "dedicated-ips"
+private const val DIP_SIGNUP_ENABLED = "dip-signup-enabled"
+private const val DIP_SIGNUP_HOME_BANNER_VISIBLE = "dip-signup-home-banner-visible"
 
 class DipPrefs(context: Context) : Prefs(context, "dip") {
 
@@ -31,10 +33,12 @@ class DipPrefs(context: Context) : Prefs(context, "dip") {
         saveDedicatedIps(newDips.toSet())
     }
 
-    fun clearDedicatedIps() = prefs.edit().putStringSet(DEDICATED_IPS, emptySet())
-
     private fun getDips() = prefs.getStringSet(DEDICATED_IPS, emptySet()) ?: emptySet()
 
     private fun saveDedicatedIps(dips: Set<String>) =
         prefs.edit().putStringSet(DEDICATED_IPS, dips).apply()
+
+    fun isDipSignupEnabled() = prefs.getBoolean(DIP_SIGNUP_ENABLED, false)
+
+    fun showDedicatedIpHomeBanner() = prefs.getBoolean(DIP_SIGNUP_HOME_BANNER_VISIBLE, false)
 }

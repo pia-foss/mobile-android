@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.mobile.text.PrimaryButtonText
 import com.kape.ui.mobile.text.SecondaryButtonText
+import com.kape.ui.mobile.text.TertiaryButtonText
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -73,6 +74,26 @@ fun SecondaryButton(
         } else {
             SecondaryButtonText(content = text.uppercase())
         }
+    }
+}
+
+@Composable
+fun TertiaryButton(
+    text: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    OutlinedButton(
+        modifier = modifier,
+        onClick = onClick,
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, LocalColors.current.surfaceVariant),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = LocalColors.current.surfaceVariant,
+            contentColor = LocalColors.current.inverseSurface,
+        ),
+    ) {
+        TertiaryButtonText(content = text)
     }
 }
 
