@@ -34,13 +34,15 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {
                         val purchase = purchases.first()
-                        prefs.storePurchaseData(
-                            PurchaseData(
-                                purchase.purchaseToken,
-                                purchase.products.first(),
-                                purchase.orderId,
-                            ),
-                        )
+                        purchase.orderId?.let {
+                            prefs.storePurchaseData(
+                                PurchaseData(
+                                    purchase.purchaseToken,
+                                    purchase.products.first(),
+                                    it,
+                                ),
+                            )
+                        }
                         purchaseState.value = PurchaseState.PurchaseSuccess
                     }
 
