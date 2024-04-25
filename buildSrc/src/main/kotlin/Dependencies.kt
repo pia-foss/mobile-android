@@ -6,6 +6,7 @@ object Dependencies {
     private const val TEST_IMPLEMENTATION = "testImplementation"
     private const val ANDROID_TEST_IMPLEMENTATION = "androidTestImplementation"
     private const val DEBUG_IMPLEMENTATION = "debugImplementation"
+    private const val ANDROID_TEST_UTIL = "androidTestUtil"
     private const val GOOGLE_IMPLEMENTATION = "googleImplementation"
     private const val AMAZON_IMPLEMENTATION = "amazonImplementation"
     private const val COMPOSE_BOM = "androidx.compose:compose-bom:2024.04.00"
@@ -126,6 +127,8 @@ object Dependencies {
 
     fun DependencyHandler.implementAndroidUiTest() {
         add(ANDROID_TEST_IMPLEMENTATION, "androidx.test.uiautomator:uiautomator:2.2.0")
+        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test:runner:1.5.2")
+        add(ANDROID_TEST_UTIL, "androidx.test:orchestrator:1.4.2")
     }
 
     fun DependencyHandler.implementCoroutines() {

@@ -32,7 +32,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        testInstrumentationRunnerArguments += mapOf("PclearPackageData" to "true")
+        testInstrumentationRunnerArguments += mapOf("clearPackageData" to "true")
         applicationId = "com.kape.vpn"
         minSdk = 24
         targetSdk = 34
@@ -42,6 +42,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+    }
+    testOptions {
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     buildTypes {

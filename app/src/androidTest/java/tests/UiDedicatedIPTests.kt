@@ -8,10 +8,6 @@ class UiDedicatedIPTests : UiTest() {
 
     @Test
     fun accept_valid_dedicated_ip_token() {
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
-        loginSteps.giveAppPermissions()
         dedicatedIPSteps.navigateToDedicatedIPPage()
         dedicatedIPSteps.activateDedicatedIPToken(BuildConfig.PIA_VALID_DIP_TOKEN)
         assert(DedicatedIPSteps.dedicatedIPServerName.exists()
@@ -21,10 +17,6 @@ class UiDedicatedIPTests : UiTest() {
 
     @Test
     fun reject_invalid_dedicated_ip_token() {
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
-        loginSteps.giveAppPermissions()
         dedicatedIPSteps.navigateToDedicatedIPPage()
         dedicatedIPSteps.activateDedicatedIPToken("InvalidToken")
         assert(DedicatedIPSteps.dedicatedIPField.exists())
@@ -32,10 +24,6 @@ class UiDedicatedIPTests : UiTest() {
 
     @Test
     fun reject_empty_dedicated_ip_token() {
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
-        loginSteps.giveAppPermissions()
         dedicatedIPSteps.navigateToDedicatedIPPage()
         dedicatedIPSteps.activateDedicatedIPToken("")
         assert(DedicatedIPSteps.dedicatedIPField.exists())

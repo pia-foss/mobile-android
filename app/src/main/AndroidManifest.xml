@@ -16,6 +16,7 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
         </intent>
+        <package android:name="androidx.test.orchestrator.OrchestratorService" />
     </queries>
 
     <uses-permission android:name="android.permission.INTERNET" />
