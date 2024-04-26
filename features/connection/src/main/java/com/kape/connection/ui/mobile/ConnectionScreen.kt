@@ -51,6 +51,7 @@ import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.sidemenu.ui.screens.mobile.SideMenuContent
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.InfoCard
+import com.kape.ui.mobile.elements.RoundIconButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.elements.TertiaryButton
@@ -132,9 +133,14 @@ fun ConnectionScreen() = Screen {
                     val connection = stringResource(id = R.string.connection)
                     Spacer(modifier = Modifier.height(16.dp))
                     if (viewModel.showDedicatedIpHomeBanner()) {
-                        DedicatedIpBanner {
-                            TODO("To be implemented")
-                        }
+                        DedicatedIpBanner(
+                            onAcceptClick = {
+                                TODO("To be implemented")
+                            },
+                            onCancelClick = {
+                                TODO("To be implemented")
+                            },
+                        )
                     }
                     ConnectButton(
                         status = if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
@@ -304,11 +310,14 @@ private fun DisplayComponent(
 }
 
 @Composable
-private fun DedicatedIpBanner(onClick: () -> Unit) {
+private fun DedicatedIpBanner(
+    onAcceptClick: () -> Unit,
+    onCancelClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .background(LocalColors.current.primary)
-            .padding(horizontal = 16.dp)
+            .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -318,9 +327,12 @@ private fun DedicatedIpBanner(onClick: () -> Unit) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         TertiaryButton(
-            modifier = Modifier.padding(4.dp),
             text = stringResource(id = R.string.yes_i_want),
-            onClick = onClick,
+            onClick = onAcceptClick,
+        )
+        RoundIconButton(
+            painterId = R.drawable.ic_close,
+            onClick = onCancelClick,
         )
     }
     Spacer(modifier = Modifier.height(16.dp))
