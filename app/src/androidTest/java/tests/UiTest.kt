@@ -34,11 +34,16 @@ open class UiTest(
     }
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         context.startActivity(intent)
         UiAutomatorStepsHelper.waitUntilFound(signUpSteps.loginButton)
         signUpSteps.loginButton.clickAndWaitForNewWindow()
         loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
         loginSteps.giveAppPermissions()
+    }
+
+    @Before
+    fun setupWithoutLogin() {
+        context.startActivity(intent)
     }
 }

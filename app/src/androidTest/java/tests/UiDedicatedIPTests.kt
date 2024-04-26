@@ -2,6 +2,7 @@ package tests
 
 import com.kape.vpn.BuildConfig
 import org.junit.Test
+import screens.helpers.UiAutomatorStepsHelper.waitUntilFound
 import screens.steps.DedicatedIPSteps
 
 class UiDedicatedIPTests : UiTest() {
@@ -10,6 +11,7 @@ class UiDedicatedIPTests : UiTest() {
     fun accept_valid_dedicated_ip_token() {
         dedicatedIPSteps.navigateToDedicatedIPPage()
         dedicatedIPSteps.activateDedicatedIPToken(BuildConfig.PIA_VALID_DIP_TOKEN)
+        waitUntilFound(DedicatedIPSteps.dedicatedIPServerName)
         assert(DedicatedIPSteps.dedicatedIPServerName.exists()
                 && DedicatedIPSteps.dedicatedIPFlag.exists()
                 && !DedicatedIPSteps.dedicatedIPField.exists())

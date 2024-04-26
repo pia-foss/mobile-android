@@ -1,11 +1,19 @@
 package tests
 
 import com.kape.vpn.BuildConfig
+import org.junit.Before
 import org.junit.Test
+import screens.helpers.UiAutomatorStepsHelper.waitUntilFound
 import screens.steps.LoginSteps
 import screens.steps.MainScreenSteps
 
 class UiSignInTests : UiTest() {
+
+    @Before
+    override fun setUp() {
+        setupWithoutLogin()
+    }
+
     @Test
     fun sign_in_with_valid_credentials_reaches_connect_screen() {
         signUpSteps.navigateToSignUpScreen()
@@ -20,7 +28,7 @@ class UiSignInTests : UiTest() {
         signUpSteps.navigateToSignUpScreen()
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn("InvalidUser", "InvalidPassword")
-        loginSteps.giveAppPermissions()
+        waitUntilFound(LoginSteps.loginButton)
         assert(LoginSteps.loginButton.exists())
     }
 
@@ -29,7 +37,7 @@ class UiSignInTests : UiTest() {
         signUpSteps.navigateToSignUpScreen()
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn("", "")
-        loginSteps.giveAppPermissions()
+        waitUntilFound(LoginSteps.loginButton)
         assert(LoginSteps.loginButton.exists())
     }
 
@@ -38,7 +46,7 @@ class UiSignInTests : UiTest() {
         signUpSteps.navigateToSignUpScreen()
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, "")
-        loginSteps.giveAppPermissions()
+        waitUntilFound(LoginSteps.loginButton)
         assert(LoginSteps.loginButton.exists())
     }
 
@@ -48,6 +56,7 @@ class UiSignInTests : UiTest() {
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn("", BuildConfig.PIA_VALID_PASSWORD)
         loginSteps.giveAppPermissions()
+        waitUntilFound(LoginSteps.loginButton)
         assert(LoginSteps.loginButton.exists())
     }
 }
