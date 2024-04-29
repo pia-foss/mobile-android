@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
+import com.kape.payments.SubscriptionPrefs
+import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.ui.PaymentProvider
 import com.kape.payments.utils.PurchaseState
 import com.kape.router.EnterFlow
@@ -42,6 +44,8 @@ class SignupViewModel(
     private val useCase: SignupUseCase,
     private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
     private val router: Router,
+    private val subscriptionPrefs: SubscriptionPrefs,
+    private val subscriptionsUseCase: GetSubscriptionsUseCase,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
@@ -150,7 +154,13 @@ class SignupViewModel(
     }
 
     fun loadPrices() = viewModelScope.launch {
-        paymentProvider.loadProducts()
+        if (subscriptionPrefs.getSubscriptions().isEmpty()) {
+            subscriptionsUseCase.getSubscriptions().collect {
+                paymentProvider.loadProducts()
+            }
+        } else {
+            paymentProvider.loadProducts()
+        }
     }
 
     fun loadEmptyPrices() = viewModelScope.launch {

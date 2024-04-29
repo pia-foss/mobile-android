@@ -23,6 +23,9 @@ class SplashViewModel(
                 isConnected = false,
                 isUserInitiated = false,
             ).collect {
+                if (it.isEmpty()) {
+                    regionListProvider.setRegionsListToDefault()
+                }
                 router.handleFlow(ExitFlow.Splash)
             }
         }
