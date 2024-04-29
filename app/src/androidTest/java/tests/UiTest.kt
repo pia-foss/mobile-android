@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kape.vpn.BuildConfig
 import org.junit.Before
+import screens.helpers.UiAutomatorStepsHelper
 import screens.steps.DedicatedIPSteps
 import screens.steps.LoginSteps
 import screens.steps.MainScreenSteps
@@ -22,8 +23,9 @@ open class UiTest(
     val protocolSteps: ProtocolsSteps = ProtocolsSteps,
     val dedicatedIPSteps: DedicatedIPSteps = DedicatedIPSteps,
 ) {
-    private var context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    private var intent: Intent? =
+
+    var context: Context = InstrumentationRegistry.getInstrumentation().targetContext
+    var intent: Intent? =
         context.packageManager.getLaunchIntentForPackage(BuildConfig.APPLICATION_ID)
 
     init {
@@ -32,7 +34,16 @@ open class UiTest(
     }
 
     @Before
-    fun setUp() {
+    open fun setUp() {
+        context.startActivity(intent)
+        UiAutomatorStepsHelper.waitUntilFound(signUpSteps.loginButton)
+        signUpSteps.loginButton.clickAndWaitForNewWindow()
+        loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
+        loginSteps.giveAppPermissions()
+    }
+
+    @Before
+    fun setupWithoutLogin() {
         context.startActivity(intent)
     }
 }

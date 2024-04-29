@@ -8,10 +8,6 @@ import kotlin.test.assertEquals
 class UiLogoutTests : UiTest() {
     @Test
     fun sign_out_from_connect_screen_reaches_signup_screen() {
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
-        loginSteps.giveAppPermissions()
         sideMenuSteps.navigateToSideMenu()
         sideMenuSteps.logOut()
         assert(signUpSteps.loginButton.exists())
@@ -19,10 +15,6 @@ class UiLogoutTests : UiTest() {
 
     @Test
     fun persistence_layer_wiped_after_sign_out() {
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
-        loginSteps.giveAppPermissions()
         settingsSteps.navigateToSettingsPage()
         protocolSteps.selectOpenVPNProtocol()
         mainScreenSteps.navigateToMainScreen()
