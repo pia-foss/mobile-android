@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
+import com.kape.payments.ui.PaymentProvider
+import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
@@ -19,12 +21,14 @@ import org.koin.core.component.KoinComponent
 class DipViewModel(
     private val regionRepository: VpnRegionRepository,
     private val activateDipUseCase: ActivateDipUseCase,
+    private val paymentProvider: PaymentProvider,
     private val dipPrefs: DipPrefs,
     private val router: Router,
 ) : ViewModel(), KoinComponent {
 
     val dipList = mutableStateListOf<VpnServer>()
     val activationState = mutableStateOf<DipApiResult?>(null)
+    val hasAnActivePlaystoreSubscription = mutableStateOf(false)
     private lateinit var userLocale: String
 
     fun navigateBack() {
@@ -74,5 +78,24 @@ class DipViewModel(
                 loadDedicatedIps(userLocale)
             }
         }
+    }
+
+    fun getActivePlaystoreSubscription() {
+        viewModelScope.launch {
+            paymentProvider.purchaseHistoryState.collect {
+                when (it) {
+                    is PurchaseHistoryState.PurchaseHistorySuccess -> {
+                        hasAnActivePlaystoreSubscription.value = true
+                    }
+                    PurchaseHistoryState.Default -> {
+                        // no=op
+                    }
+                    PurchaseHistoryState.PurchaseHistoryFailed -> {
+                        hasAnActivePlaystoreSubscription.value = false
+                    }
+                }
+            }
+        }
+        paymentProvider.getPurchaseHistory()
     }
 }

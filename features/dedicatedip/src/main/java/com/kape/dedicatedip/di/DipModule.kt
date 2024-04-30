@@ -19,5 +19,5 @@ val localDipModule = module {
     single<DipDataSource> { DipDataSourceImpl(get(), get()) }
     single { ActivateDipUseCase(get()) }
     single { RenewDipUseCase(get()) }
-    viewModel { DipViewModel(get(), get(), get(), get()) }
+    viewModel { DipViewModel(get(), get(), get(), get(), get()) }
 }

@@ -60,7 +60,7 @@ class TvRouter : Router {
             EnterFlow.TermsOfService -> navigation.value = WebContent.Terms
             EnterFlow.Settings -> navigation.value = Settings.Route
             EnterFlow.PerAppSettings -> navigation.value = PerAppSettings.Main
-            EnterFlow.DedicatedIp -> navigation.value = DedicatedIp.Main
+            EnterFlow.DedicatedIpActivate -> navigation.value = DedicatedIp.ActivateToken
             EnterFlow.About -> navigation.value = About.Main
             EnterFlow.TvWelcome -> navigation.value = TvWelcome.Main
             EnterFlow.TvLoginUsername -> navigation.value = TvLogin.Username
@@ -74,6 +74,7 @@ class TvRouter : Router {
             EnterFlow.ProtocolSettings,
             EnterFlow.Customization,
             EnterFlow.AccountDeleted,
+            EnterFlow.DedicatedIpPlans,
             -> throw IllegalStateException("Unsupported on TV")
             EnterFlow.NoInAppRegistration -> TODO()
         }

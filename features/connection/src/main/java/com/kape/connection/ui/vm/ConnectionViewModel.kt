@@ -109,6 +109,10 @@ class ConnectionViewModel(
         router.handleFlow(EnterFlow.Customization)
     }
 
+    fun navigateToDedicatedIpPlans() {
+        router.handleFlow(EnterFlow.DedicatedIpPlans)
+    }
+
     fun exitApp() {
         router.handleFlow(Exit)
     }

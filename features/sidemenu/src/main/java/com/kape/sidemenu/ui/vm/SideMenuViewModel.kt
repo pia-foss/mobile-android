@@ -58,7 +58,7 @@ class SideMenuViewModel(
     }
 
     fun navigateToDedicatedIp() {
-        router.handleFlow(EnterFlow.DedicatedIp)
+        router.handleFlow(EnterFlow.DedicatedIpActivate)
     }
 
     fun navigateToPrivacyPolicy() {

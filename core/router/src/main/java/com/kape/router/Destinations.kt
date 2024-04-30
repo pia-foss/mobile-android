@@ -74,7 +74,8 @@ object PerAppSettings {
 }
 
 object DedicatedIp {
-    const val Main = "dedicated-ip"
+    const val ActivateToken = "dedicated-ip"
+    const val SignupPlans = "dedicated-ip-signup"
 }
 
 object Automation {

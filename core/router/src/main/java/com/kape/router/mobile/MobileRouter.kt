@@ -68,7 +68,8 @@ class MobileRouter : Router {
             EnterFlow.AutomationSettings -> navigation.value = Settings.Automation
             EnterFlow.PerAppSettings -> navigation.value = PerAppSettings.Main
             EnterFlow.KillSwitchSettings -> navigation.value = Settings.KillSwitch
-            EnterFlow.DedicatedIp -> navigation.value = DedicatedIp.Main
+            EnterFlow.DedicatedIpActivate -> navigation.value = DedicatedIp.ActivateToken
+            EnterFlow.DedicatedIpPlans -> navigation.value = DedicatedIp.SignupPlans
             EnterFlow.Support -> navigation.value = WebContent.Support
             EnterFlow.Automation -> navigation.value = Automation.Route
             EnterFlow.ProtocolSettings -> navigation.value = Settings.Protocols

@@ -53,6 +53,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:router"))
     implementation(project(":core:regions"))
+    implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:localprefs:dip"))
     implementation(project(":features:appbar"))

@@ -135,7 +135,7 @@ fun ConnectionScreen() = Screen {
                     if (viewModel.showDedicatedIpHomeBanner()) {
                         DedicatedIpBanner(
                             onAcceptClick = {
-                                TODO("To be implemented")
+                                viewModel.navigateToDedicatedIpPlans()
                             },
                             onCancelClick = {
                                 TODO("To be implemented")
