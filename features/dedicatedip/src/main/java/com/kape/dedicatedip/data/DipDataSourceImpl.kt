@@ -1,5 +1,7 @@
 package com.kape.dedicatedip.data
 
+import com.kape.dedicatedip.data.models.MOCKED_RESPONSE
+import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
@@ -8,6 +10,7 @@ import com.privateinternetaccess.account.model.response.DedicatedIPInformationRe
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.serialization.json.Json
 
 class DipDataSourceImpl(
     private val accountApi: AndroidAccountAPI,
@@ -56,6 +59,11 @@ class DipDataSourceImpl(
             // todo: update if needed once implemented
             trySend(DipApiResult.Active)
         }
+        awaitClose { channel.close() }
+    }
+
+    override fun supportedCountries(): Flow<SupportedCountries> = callbackFlow {
+        trySend(Json.decodeFromString(MOCKED_RESPONSE))
         awaitClose { channel.close() }
     }
 }

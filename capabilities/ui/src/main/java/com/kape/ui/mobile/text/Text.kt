@@ -421,3 +421,21 @@ fun DedicatedIpHomeBannerText(content: String, modifier: Modifier = Modifier) {
         textAlign = TextAlign.Start,
     )
 }
+
+@Composable
+fun SupportedDipRegions(content: String) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle3,
+    )
+}
+
+@Composable
+fun SupportedDipRegionsInCountry(content: String) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.caption2,
+    )
+}

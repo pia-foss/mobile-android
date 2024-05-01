@@ -6,7 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.domain.ActivateDipUseCase
+import com.kape.dedicatedip.domain.GetDipSupportedCountries
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
 import com.kape.payments.ui.PaymentProvider
@@ -21,6 +23,7 @@ import org.koin.core.component.KoinComponent
 class DipViewModel(
     private val regionRepository: VpnRegionRepository,
     private val activateDipUseCase: ActivateDipUseCase,
+    private val getDipSupportedCountries: GetDipSupportedCountries,
     private val paymentProvider: PaymentProvider,
     private val dipPrefs: DipPrefs,
     private val router: Router,
@@ -29,6 +32,7 @@ class DipViewModel(
     val dipList = mutableStateListOf<VpnServer>()
     val activationState = mutableStateOf<DipApiResult?>(null)
     val hasAnActivePlaystoreSubscription = mutableStateOf(false)
+    val supportedDipCountriesList = mutableStateOf<SupportedCountries?>(null)
     private lateinit var userLocale: String
 
     fun navigateBack() {
@@ -77,6 +81,12 @@ class DipViewModel(
                 dipPrefs.removeDedicatedIp(dip)
                 loadDedicatedIps(userLocale)
             }
+        }
+    }
+
+    fun getSupportedDipCountries() = viewModelScope.launch {
+        getDipSupportedCountries.invoke().collect {
+            supportedDipCountriesList.value = it
         }
     }
 
