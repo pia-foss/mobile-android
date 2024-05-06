@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalComposeUiApi::class)
 
 package com.kape.connection.ui.tv
 
@@ -23,7 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
@@ -66,7 +64,6 @@ fun TvConnectionScreen() = Screen {
     LaunchedEffect(key1 = Unit) {
         topStartHeaderFocusRequester.requestFocus()
         viewModel.loadVpnServers(locale)
-        viewModel.loadShadowsocksServers(locale)
         viewModel.autoConnect()
     }
 
@@ -158,6 +155,7 @@ private fun DisplayComponent(
                     down = startQuickConnectFocusRequester
                 },
                 server = state.value.server,
+                vpnIp = viewModel.vpnIp.value,
                 isConnected = viewModel.isConnectionActive(),
                 isOptimal = state.value.isCurrentServerOptimal,
             ) {

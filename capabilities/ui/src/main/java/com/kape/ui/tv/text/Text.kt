@@ -337,6 +337,10 @@ fun RegionSelectionDipText(content: String) {
 }
 
 @Composable
+fun RegionSelectionVpnIpText(content: String) =
+    RegionSelectionDipText(content = content)
+
+@Composable
 fun SettingsL2Text(content: String) {
     Text(
         text = content,

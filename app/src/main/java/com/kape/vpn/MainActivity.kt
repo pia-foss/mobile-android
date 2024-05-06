@@ -1,16 +1,10 @@
 package com.kape.vpn
 
-import android.app.UiModeManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -195,87 +189,87 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun NavGraphBuilder.defineNavigationGraph(navController: NavController) {
-//        if (PlatformUtils.isTv(context = this@MainActivity)) {
-//            composable(Splash.Main) { SplashScreen() }
-//            composable(TvWelcome.Main) { TvWelcomeScreen() }
-//            composable(Subscribe.Main) { TvSignupScreensFlow() }
-//            composable(TvLogin.Username) { LoginUsernameScreen() }
-//            composable(Login.WithCredentials) { LoginPasswordScreen() }
-//            composable(Permissions.Route) { TvPermissionsFlow() }
-//            composable(Connection.Main) { TvConnectionScreen() }
-//            composable(VpnRegionSelection.Main) { TvVpnRegionSelectionScreen() }
-//            composable(WebContent.Terms) {
-//                InAppBrowser(url = getString(com.kape.ui.R.string.url_terms_of_service))
-//            }
-//            composable(WebContent.Privacy) {
-//                InAppBrowser(url = getString(com.kape.ui.R.string.url_privacy_policy))
-//            }
-//            composable(Settings.Route) { TvSettingsFlow(initialStep = SettingsStep.Main) }
-//            composable(TvSideMenu.Main) { TvSideMenuScreen() }
-//            composable(Profile.Main) { TvProfileScreen() }
-//            composable(DedicatedIp.Main) { TvDedicatedIpScreen() }
-//            composable(PerAppSettings.Main) { TvPerAppSettingsScreen() }
-//            composable(TvHelp.Main) { TvSettingsFlow(initialStep = SettingsStep.Help) }
-//            composable(About.Main) { TvAboutScreen() }
-//        } else {
-        loginNavigation(navController)
-        composable(Settings.Route) { SettingsFlow() }
-        composable(Permissions.Route) { PermissionsFlow() }
-        composable(Automation.Route) { AutomationFlow() }
-        composable(Splash.Main) { SplashScreen() }
-        composable(Connection.Main) { ConnectionScreen() }
-        composable(Profile.Main) { ProfileScreen() }
-        composable(Subscribe.Main) { SignupScreensFlow() }
-        composable(VpnRegionSelection.Main) { VpnRegionSelectionScreen() }
-        composable(ShadowsocksRegionSelection.Main) {
-            ShadowsocksRegionSelectionScreen()
+        if (PlatformUtils.isTv(context = this@MainActivity)) {
+            composable(Splash.Main) { SplashScreen() }
+            composable(TvWelcome.Main) { TvWelcomeScreen() }
+            composable(Subscribe.Main) { TvSignupScreensFlow() }
+            composable(TvLogin.Username) { LoginUsernameScreen() }
+            composable(Login.WithCredentials) { LoginPasswordScreen() }
+            composable(Permissions.Route) { TvPermissionsFlow() }
+            composable(Connection.Main) { TvConnectionScreen() }
+            composable(VpnRegionSelection.Main) { TvVpnRegionSelectionScreen() }
+            composable(WebContent.Terms) {
+                InAppBrowser(url = getString(com.kape.ui.R.string.url_terms_of_service))
+            }
+            composable(WebContent.Privacy) {
+                InAppBrowser(url = getString(com.kape.ui.R.string.url_privacy_policy))
+            }
+            composable(Settings.Route) { TvSettingsFlow(initialStep = SettingsStep.Main) }
+            composable(TvSideMenu.Main) { TvSideMenuScreen() }
+            composable(Profile.Main) { TvProfileScreen() }
+            composable(DedicatedIp.ActivateToken) { TvDedicatedIpScreen() }
+            composable(PerAppSettings.Main) { TvPerAppSettingsScreen() }
+            composable(TvHelp.Main) { TvSettingsFlow(initialStep = SettingsStep.Help) }
+            composable(About.Main) { TvAboutScreen() }
+        } else {
+            loginNavigation(navController)
+            composable(Settings.Route) { SettingsFlow() }
+            composable(Permissions.Route) { PermissionsFlow() }
+            composable(Automation.Route) { AutomationFlow() }
+            composable(Splash.Main) { SplashScreen() }
+            composable(Connection.Main) { ConnectionScreen() }
+            composable(Profile.Main) { ProfileScreen() }
+            composable(Subscribe.Main) { SignupScreensFlow() }
+            composable(VpnRegionSelection.Main) { VpnRegionSelectionScreen() }
+            composable(ShadowsocksRegionSelection.Main) {
+                ShadowsocksRegionSelectionScreen()
+            }
+            composable(WebContent.Terms) {
+                InAppBrowser(
+                    url = getString(com.kape.ui.R.string.url_terms_of_service),
+                )
+            }
+            composable(WebContent.Privacy) {
+                InAppBrowser(
+                    url = getString(com.kape.ui.R.string.url_privacy_policy),
+                )
+            }
+            composable(WebContent.Support) {
+                InAppBrowser(
+                    url = getString(com.kape.ui.R.string.url_support),
+                )
+            }
+            composable(WebContent.NoInAppRegistration) {
+                InAppBrowser(url = getString(com.kape.ui.R.string.url_registration))
+            }
+            composable(PerAppSettings.Main) {
+                PerAppSettingsScreen()
+            }
+            composable(DedicatedIp.ActivateToken) {
+                DedicatedIpScreen()
+            }
+            composable(DedicatedIp.SignupPlans) {
+                SignupDedicatedIpScreen()
+            }
+            composable(Settings.Automation) {
+                AutomationSettingsScreen()
+            }
+            composable(Settings.KillSwitch) {
+                KillSwitchSettingScreen()
+            }
+            composable(Settings.Protocols) {
+                ProtocolSettingsScreen()
+            }
+            composable(About.Main) {
+                AboutScreen()
+            }
+            composable(Customization.Route) {
+                CustomizationScreen()
+            }
+            composable(AccountDeleted.Route) {
+                AccountDeletedScreen()
+            }
         }
-        composable(WebContent.Terms) {
-            InAppBrowser(
-                url = getString(com.kape.ui.R.string.url_terms_of_service),
-            )
-        }
-        composable(WebContent.Privacy) {
-            InAppBrowser(
-                url = getString(com.kape.ui.R.string.url_privacy_policy),
-            )
-        }
-        composable(WebContent.Support) {
-            InAppBrowser(
-                url = getString(com.kape.ui.R.string.url_support),
-            )
-        }
-        composable(WebContent.NoInAppRegistration) {
-            InAppBrowser(url = getString(com.kape.ui.R.string.url_registration))
-        }
-        composable(PerAppSettings.Main) {
-            PerAppSettingsScreen()
-        }
-        composable(DedicatedIp.ActivateToken) {
-            DedicatedIpScreen()
-        }
-        composable(DedicatedIp.SignupPlans) {
-            SignupDedicatedIpScreen()
-        }
-        composable(Settings.Automation) {
-            AutomationSettingsScreen()
-        }
-        composable(Settings.KillSwitch) {
-            KillSwitchSettingScreen()
-        }
-        composable(Settings.Protocols) {
-            ProtocolSettingsScreen()
-        }
-        composable(About.Main) {
-            AboutScreen()
-        }
-        composable(Customization.Route) {
-            CustomizationScreen()
-        }
-        composable(AccountDeleted.Route) {
-            AccountDeletedScreen()
-        }
-//        }
     }
     // endregion
 }

@@ -284,8 +284,7 @@ private fun provideLicences(context: Context): List<String> =
     context.assets.open("acknowledgements.txt").bufferedReader().use(BufferedReader::readLines)
 
 private fun providerRouter(context: Context): Router =
-    MobileRouter()
-//    when (PlatformUtils.isTv(context = context)) {
-//        true -> TvRouter()
-//        false -> MobileRouter()
-//    }
+    when (PlatformUtils.isTv(context = context)) {
+        true -> TvRouter()
+        false -> MobileRouter()
+    }

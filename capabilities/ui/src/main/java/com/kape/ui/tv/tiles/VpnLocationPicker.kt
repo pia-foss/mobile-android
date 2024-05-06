@@ -24,6 +24,7 @@ import androidx.tv.material3.Icon
 import com.kape.ui.R
 import com.kape.ui.tv.elements.TileButton
 import com.kape.ui.tv.text.RegionSelectionDipText
+import com.kape.ui.tv.text.RegionSelectionVpnIpText
 import com.kape.ui.tv.text.SelectedRegionServerText
 import com.kape.ui.tv.text.SelectedRegionTitleText
 import com.kape.ui.utils.getFlagResource
@@ -34,6 +35,7 @@ import com.kape.utils.vpnserver.VpnServer
 fun VpnLocationPicker(
     modifier: Modifier = Modifier,
     server: VpnServer,
+    vpnIp: String,
     isConnected: Boolean,
     isOptimal: Boolean,
     onClick: () -> Unit,
@@ -75,7 +77,9 @@ fun VpnLocationPicker(
                 if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region
             }
             SelectedRegionTitleText(content = stringResource(id = heading).uppercase())
-            Row {
+            Row(
+                verticalAlignment = CenterVertically,
+            ) {
                 SelectedRegionServerText(
                     content = if (isOptimal && !isConnected) {
                         stringResource(id = R.string.automatic)
@@ -87,6 +91,11 @@ fun VpnLocationPicker(
                 if (server.isDedicatedIp) {
                     Spacer(modifier = Modifier.width(4.dp))
                     RegionSelectionDipText(content = stringResource(id = R.string.dedicated_ip))
+                }
+
+                if (vpnIp.isEmpty().not()) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    RegionSelectionVpnIpText(content = vpnIp)
                 }
             }
         }
