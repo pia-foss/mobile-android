@@ -26,8 +26,8 @@ import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
 import com.kape.signup.utils.Plan
 import com.kape.signup.utils.PriceFormatter
 import com.kape.signup.utils.SUBSCRIPTIONS
+import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
-import com.kape.signup.utils.SignupStep
 import com.kape.signup.utils.SubscriptionData
 import com.kape.signup.utils.signedUp
 import com.kape.utils.NetworkConnectionListener
@@ -225,6 +225,6 @@ class SignupViewModel(
     }
 
     private fun onProductsFailedToLoad() = viewModelScope.launch {
-        _state.emit(SignupScreenState(false, SignupStep.Subscriptions(true)))
+        _state.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
     }
 }
