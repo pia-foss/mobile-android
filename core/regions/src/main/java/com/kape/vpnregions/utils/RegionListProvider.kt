@@ -9,13 +9,17 @@ import kotlinx.coroutines.flow.flow
 
 class RegionListProvider(
     private val regionRepository: VpnRegionRepository,
-    readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
+    private val readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
 ) {
 
     private val _servers: MutableStateFlow<List<VpnServer>> = MutableStateFlow(emptyList())
     val servers: StateFlow<List<VpnServer>> = _servers
 
     init {
+        setRegionsListToDefault()
+    }
+
+    fun setRegionsListToDefault() {
         _servers.value = readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
     }
 

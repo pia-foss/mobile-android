@@ -61,6 +61,7 @@ dependencies {
     implementation(project(":core:payments"))
     implementation(project(":core:localprefs:signup"))
     implementation(project(":core:localprefs:payments:data"))
+    implementation(project(":core:localprefs:payments"))
     implementation(project(":core:utils"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:login"))
