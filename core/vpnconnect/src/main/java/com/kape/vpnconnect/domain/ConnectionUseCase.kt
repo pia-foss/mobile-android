@@ -223,7 +223,16 @@ class ConnectionUseCase(
         }
 
     private fun generateConnectionConfiguration(server: VpnServer): ClientConfiguration {
-        val index = connectionSource.getVpnToken().indexOf(":")
+        var username = ""
+        var password = ""
+
+        connectionSource.getVpnToken().indexOf(":").let { index ->
+            if (index != -1) {
+                username = connectionSource.getVpnToken().substring(0, index)
+                password = connectionSource.getVpnToken().substring(index + 1)
+            }
+        }
+
         val details = server.endpoints[getServerGroup()]
 
         val ip: String
@@ -323,8 +332,8 @@ class ConnectionUseCase(
             ),
             openVpnClientConfiguration = OpenVpnClientConfiguration(
                 caCertificate = certificate,
-                username = connectionSource.getVpnToken().substring(0, index),
-                password = connectionSource.getVpnToken().substring(index + 1),
+                username = username,
+                password = password,
                 socksProxy = getProxyDetails(),
             ),
             wireguardClientConfiguration = WireguardClientConfiguration(
