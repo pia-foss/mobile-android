@@ -1,5 +1,6 @@
 package com.kape.appbar.view.mobile
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -211,7 +212,8 @@ private fun AppBarConnectionStatus(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
-            modifier = Modifier.align(Center),
+            modifier = Modifier.align(Center)
+                .testTag(":AppBar:connection_status"),
         ) {
             if (status == ConnectionStatus.DISCONNECTED) {
                 Icon(
@@ -232,7 +234,8 @@ private fun AppBarConnectionStatus(
                     .align(CenterVertically)
                     .semantics {
                         contentDescription = "$statusPrefix $title"
-                    },
+                    }
+                    .testTag(":AppBar:connection_text_default"),
             )
         }
 

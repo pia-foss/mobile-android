@@ -9,13 +9,22 @@ object ProtocolsSteps {
         UiAutomatorObjectFinder.findByResourceId(":ProtocolSettingsScreen:protocol_selection")
     val openVpnButton =
         UiAutomatorObjectFinder.findByResourceId(":OptionsDialog:OpenVPN")
-
+    val wireGuardButton = UiAutomatorObjectFinder.findByResourceId(":OptionsDialog:WireGuard")
     val androidOkButton = UiAutomatorObjectFinder.findByResourceId(":OptionsDialog:Ok")
+    val smallPacketsToggle = UiAutomatorObjectFinder.findByResourceId(":ProtocolSettingsScreen:use_small_packets")
 
-    fun selectOpenVPNProtocol(){
+    fun selectProtocol(){
         SettingsSteps.protocolsButton.click()
         protocolSelectionButton.clickAndWaitForNewWindow()
+    }
+
+    fun selectOpenVPN() {
         openVpnButton.clickAndWaitForNewWindow()
+        androidOkButton.clickAndWaitForNewWindow()
+    }
+
+    fun selectWireGuard() {
+        wireGuardButton.clickAndWaitForNewWindow()
         androidOkButton.clickAndWaitForNewWindow()
     }
 

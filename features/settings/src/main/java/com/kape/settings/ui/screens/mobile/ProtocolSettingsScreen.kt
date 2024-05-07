@@ -217,6 +217,7 @@ fun UseSmallPacketsLine(enabled: Boolean, onClick: (enabled: Boolean) -> Unit) {
         subtitleId = R.string.protocol_use_small_packets_description,
         enabled = enabled,
         toggle = onClick,
+        testTag = ":ProtocolSettingsScreen:use_small_packets",
     )
 }
 

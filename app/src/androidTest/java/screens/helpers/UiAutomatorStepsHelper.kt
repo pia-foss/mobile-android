@@ -20,6 +20,11 @@ object UiAutomatorStepsHelper {
         device.wait((Until.findObject(By.res(uiObject.text))), defaultTimeout)
     }
 
+    fun waitUntilTextFound(string: String) {
+        device.wait(Until.hasObject(By.textContains(string)), defaultTimeout)
+
+    }
+
     const val defaultTimeout = 5000L
     const val longTimeout = 10000L
 }
