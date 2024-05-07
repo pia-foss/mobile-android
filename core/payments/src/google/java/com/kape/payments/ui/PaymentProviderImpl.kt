@@ -88,6 +88,14 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
     }
 
     override fun loadProducts() {
+        if (prefs.getSubscriptions().isEmpty()) {
+            purchaseState.value = PurchaseState.ProductsLoadedFailed
+        } else {
+            loadProviderProducts()
+        }
+    }
+
+    private fun loadProviderProducts() {
         val queryProductDetailsParams =
             QueryProductDetailsParams.newBuilder()
                 .setProductList(createProductsListForQuery())

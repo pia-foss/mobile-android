@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
+import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
@@ -104,7 +105,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                             .align(CenterHorizontally),
                     )
                     OnboardingDescriptionText(
-                        content = if (screenState == NO_IN_APP_SUBSCRIPTIONS) {
+                        content = if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
                             stringResource(id = R.string.subscribe_screen_description_no_in_app)
                         } else {
                             stringResource(id = R.string.subscribe_screen_description).format(
@@ -117,7 +118,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                Column(modifier = Modifier.alpha(determineAlpha(screenState))) {
+                Column(modifier = Modifier.alpha(determineProductsAlpha(screenState))) {
                     YearlySubscriptionCard(
                         selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
                         price = subscriptionData?.yearly?.mainPrice ?: "",
@@ -148,7 +149,8 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                     text = stringResource(id = R.string.subscribe_now),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp)
+                        .alpha(determineSubscribeButtonAlpha(screenState)),
                 ) {
                     subscriptionData?.let {
                         viewModel.purchase(subscriptionData.selected.value.id)
@@ -179,8 +181,16 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
     }
 }
 
-private fun determineAlpha(state: SignupScreenState): Float {
-    return if (state == NO_IN_APP_SUBSCRIPTIONS) {
+private fun determineProductsAlpha(state: SignupScreenState): Float {
+    return if (state == NO_IN_APP_SUBSCRIPTIONS || state == SUBSCRIPTIONS_FAILED_TO_LOAD) {
+        0f
+    } else {
+        1f
+    }
+}
+
+private fun determineSubscribeButtonAlpha(state: SignupScreenState): Float {
+    return if (state == SUBSCRIPTIONS_FAILED_TO_LOAD) {
         0f
     } else {
         1f
