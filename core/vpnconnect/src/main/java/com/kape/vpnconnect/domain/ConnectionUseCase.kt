@@ -226,7 +226,7 @@ class ConnectionUseCase(
         var username = ""
         var password = ""
 
-        connectionSource.getVpnToken().indexOf(":").let {index ->
+        connectionSource.getVpnToken().indexOf(":").let { index ->
             if (index != -1) {
                 username = connectionSource.getVpnToken().substring(0, index)
                 password = connectionSource.getVpnToken().substring(index + 1)
