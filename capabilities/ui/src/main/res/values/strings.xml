@@ -133,6 +133,7 @@
     <string name="tv_dedicated_ip_description">Activate your Dedicated IP by typing your token in the field below. You can purchase a Dedicated IP from your Client Control Panel on the PIA website.</string>
     <string name="tv_dedicated_ip_textfield">Enter your Dedicated IP token</string>
     <string name="your_dedicated_ip_is_now_active">Your Dedicated IP is now active.</string>
+    <string name="get_dedicated_ip">Get dedicated IP</string>
     <string name="dedicated_ip_title">Dedicated IP</string>
     <string name="dedicated_ip_description">Activate your Dedicated IP by pasting your token in the form below. If you\'ve recently purchased a dedicated IP, you can generate the token by going to the PIA website.</string>
     <string name="activate">ACTIVATE</string>
@@ -144,9 +145,13 @@
     <string name="dip_remove_title">Remove Dedicated IP</string>
     <string name="dip_remove_description">Remove %s - %s?</string>
     <string name="dip_summary">Secure your remote connections to any asset with a dedicated IP from a country of your choice. During your subscription, this IP will be yours and yours alone, protecting your data transfers with the strongest encryption out there.</string>
-    <string name="dip_banner_description">Would you like to add a Dedicated IP to your subscription?</string>
+    <string name="dip_signup_banner_home_description">Would you like to add a Dedicated IP to your subscription?</string>
+    <string name="dip_signup_banner_activate_description">Don\'t have a Dedicated IP token yet?</string>
     <string name="dip_signup_error">It looks like you subscribed on the PIA website and you cannot buy the add-on directly from here. Please return to the website and purchase your Dedicated IP add-on.</string>
     <string name="dip_signup_supported_countries_title">You\'ll be able to select only one of the available locations below</string>
+    <string name="dip_signup_banner_activate_benefit_one">Avoid CAPTCHAs</string>
+    <string name="dip_signup_banner_activate_benefit_two">Avoid blocklists</string>
+    <string name="dip_signup_banner_activate_benefit_three">Access IP-sensitive websites securely</string>
 
     <string name="enter_username">Enter username</string>
     <string name="enter_password">Enter password</string>

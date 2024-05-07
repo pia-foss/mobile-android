@@ -23,6 +23,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -39,6 +40,7 @@ import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -46,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,8 +58,11 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.R
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
+import com.kape.ui.mobile.elements.RoundIconButton
 import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.Separator
+import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
@@ -176,11 +182,20 @@ fun DedicatedIpScreen() = Screen {
                             }
                         }
                     }
+
+                    if (viewModel.showDedicatedIpSignupBanner()) {
+                        DedicatedIpSignupBanner(
+                            onAcceptTapped = {
+                                viewModel.navigateToDedicatedIpPlans()
+                            },
+                            onDismissTapped = {
+                                TODO("To be implemented")
+                            },
+                        )
+                    }
                 }
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             if (viewModel.dipList.isNotEmpty()) {
                 Text(
                     text = stringResource(id = com.kape.ui.R.string.owned_dedicated_ips),
@@ -285,11 +300,12 @@ fun DipItem(
         Text(
             text = server.name,
             fontSize = 14.sp,
-            modifier = Modifier.constrainAs(name) {
-                start.linkTo(icon.end, margin = 8.dp)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            }
+            modifier = Modifier
+                .constrainAs(name) {
+                    start.linkTo(icon.end, margin = 8.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
                 .testTag(":DedicatedIPScreen:dip_server_name"),
         )
 
@@ -298,11 +314,12 @@ fun DipItem(
                 serverForDeletion.value = server
                 showDialog.value = true
             },
-            modifier = Modifier.constrainAs(removeButton) {
-                end.linkTo(parent.end)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            }
+            modifier = Modifier
+                .constrainAs(removeButton) {
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                }
                 .testTag(":DedicatedIPScreen:dip_remove_button"),
         ) {
             Image(
@@ -402,4 +419,101 @@ fun DeleteDipDialog(
             }
         },
     )
+}
+
+@Composable
+fun DedicatedIpSignupBanner(
+    onAcceptTapped: () -> Unit,
+    onDismissTapped: () -> Unit,
+) {
+    Spacer(modifier = Modifier.height(16.dp))
+    Card(
+        border = BorderStroke(1.dp, color = LocalColors.current.onPrimaryContainer),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 8.dp),
+                verticalAlignment = CenterVertically,
+            ) {
+                Image(
+                    modifier = Modifier.size(48.dp),
+                    painter = painterResource(
+                        id = com.kape.ui.R.drawable.dedicated_ip,
+                    ),
+                    contentScale = ContentScale.Fit,
+                    contentDescription = null,
+                )
+                Spacer(modifier = Modifier.weight(1.0f))
+                RoundIconButton(
+                    painterId = com.kape.ui.R.drawable.ic_close,
+                    iconButtonColors = IconButtonDefaults.iconButtonColors(
+                        contentColor = LocalColors.current.onSurface,
+                    ),
+                    onClick = onDismissTapped,
+                )
+            }
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                text = stringResource(id = com.kape.ui.R.string.dip_signup_banner_activate_description),
+                color = LocalColors.current.onSurface,
+                style = PiaTypography.subtitle2,
+                textAlign = TextAlign.Start,
+            )
+            DedicatedIpSignupBenefitItem(
+                text = stringResource(
+                    id = com.kape.ui.R.string.dip_signup_banner_activate_benefit_one,
+                ),
+            )
+            DedicatedIpSignupBenefitItem(
+                text = stringResource(
+                    id = com.kape.ui.R.string.dip_signup_banner_activate_benefit_two,
+                ),
+            )
+            DedicatedIpSignupBenefitItem(
+                text = stringResource(
+                    id = com.kape.ui.R.string.dip_signup_banner_activate_benefit_three,
+                ),
+            )
+            SecondaryButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                text = stringResource(id = com.kape.ui.R.string.get_dedicated_ip),
+                onClick = onAcceptTapped,
+            )
+        }
+    }
+}
+
+@Composable
+fun DedicatedIpSignupBenefitItem(text: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = CenterVertically,
+    ) {
+        Image(
+            modifier = Modifier.size(16.dp),
+            painter = painterResource(
+                id = com.kape.ui.R.drawable.checkmark,
+            ),
+            contentScale = ContentScale.Fit,
+            contentDescription = null,
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            text = text,
+            color = LocalColors.current.onSurface,
+            style = PiaTypography.body1,
+            textAlign = TextAlign.Start,
+        )
+    }
 }

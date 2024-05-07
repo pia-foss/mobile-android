@@ -13,6 +13,7 @@ import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
 import com.kape.payments.ui.PaymentProvider
 import com.kape.payments.utils.PurchaseHistoryState
+import com.kape.router.EnterFlow
 import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
@@ -37,6 +38,10 @@ class DipViewModel(
 
     fun navigateBack() {
         router.handleFlow(ExitFlow.DedicatedIp)
+    }
+
+    fun navigateToDedicatedIpPlans() {
+        router.handleFlow(EnterFlow.DedicatedIpPlans)
     }
 
     fun loadDedicatedIps(locale: String) = viewModelScope.launch {
@@ -108,4 +113,7 @@ class DipViewModel(
         }
         paymentProvider.getPurchaseHistory()
     }
+
+    fun showDedicatedIpSignupBanner() =
+        dipPrefs.isDipSignupEnabled() && dipPrefs.showDedicatedIpHomeBanner()
 }

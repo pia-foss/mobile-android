@@ -132,7 +132,7 @@ fun ConnectionScreen() = Screen {
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {
                     val connection = stringResource(id = R.string.connection)
                     Spacer(modifier = Modifier.height(16.dp))
-                    if (viewModel.showDedicatedIpHomeBanner()) {
+                    if (viewModel.showDedicatedIpSignupBanner()) {
                         DedicatedIpBanner(
                             onAcceptClick = {
                                 viewModel.navigateToDedicatedIpPlans()
@@ -323,7 +323,7 @@ private fun DedicatedIpBanner(
     ) {
         DedicatedIpHomeBannerText(
             modifier = Modifier.weight(1.0f),
-            content = stringResource(id = R.string.dip_banner_description),
+            content = stringResource(id = R.string.dip_signup_banner_home_description),
         )
         Spacer(modifier = Modifier.width(8.dp))
         TertiaryButton(

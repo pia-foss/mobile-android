@@ -9,6 +9,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Switch
@@ -55,8 +56,8 @@ fun PrimaryButton(
 
 @Composable
 fun SecondaryButton(
-    text: String,
     modifier: Modifier,
+    text: String,
     isLoading: Boolean = false,
     onClick: () -> Unit,
 ) {
@@ -101,15 +102,16 @@ fun TertiaryButton(
 
 @Composable
 fun RoundIconButton(
-    painterId: Int,
     modifier: Modifier = Modifier,
+    painterId: Int,
+    iconButtonColors: IconButtonColors = IconButtonDefaults.iconButtonColors(
+        contentColor = LocalColors.current.surfaceVariant,
+    ),
     onClick: () -> Unit,
 ) {
     IconButton(
         modifier = modifier,
-        colors = IconButtonDefaults.iconButtonColors(
-            contentColor = LocalColors.current.surfaceVariant,
-        ),
+        colors = iconButtonColors,
         onClick = onClick,
     ) {
         Icon(
