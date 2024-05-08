@@ -36,7 +36,7 @@ fun SettingsToggle(
     enabled: Boolean = false,
     stateEnabled: MutableState<Boolean> = mutableStateOf(enabled),
     toggle: (checked: Boolean) -> Unit,
-    testTag : String = ""
+    testTag: String = "",
 ) {
     val isChecked = remember { stateEnabled }
     Column(

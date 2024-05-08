@@ -3,19 +3,17 @@ package screens.steps
 import screens.helpers.UiAutomatorObjectFinder
 import screens.helpers.UiAutomatorStepsHelper
 import screens.helpers.UiAutomatorStepsHelper.waitUntilFound
+import screens.helpers.UiAutomatorStepsHelper.waitUntilVpnIpIsPopulated
 
 object MainScreenSteps {
     val connectButton =
         UiAutomatorObjectFinder.findByResourceId(":ConnectionScreen:connection_button")
     val sideMenu =
         UiAutomatorObjectFinder.findByResourceId(":AppBar:side_menu")
-    val vpnIp = UiAutomatorObjectFinder.findByResourceId(":IpInfo:vpnIp")
-    val connectionStatus = UiAutomatorObjectFinder.findByResourceId(":AppBar:connection_status")
-    val connectionText = UiAutomatorObjectFinder.findByResourceId(":AppBar:connection_text_default")
-    val IPText = UiAutomatorObjectFinder.findByResourceId(":Text:IPText")
+    val appBarConnectionStatus = UiAutomatorObjectFinder.findByResourceId(":AppBar:connection_text_default")
+    val vpnIp = UiAutomatorObjectFinder.findByResourceId(":Text:vpnIp")
 
-    fun navigateToMainScreen()
-    {
+    fun navigateToMainScreen() {
         try {
             waitUntilFound(connectButton)
         } catch (e: Exception) {
@@ -24,11 +22,9 @@ object MainScreenSteps {
         }
     }
 
-    fun connectToVPN() {
+    fun establishAndVerifyVPNConnection() {
         connectButton.click()
-        //I added this delay to wait for the vpn to connect and to show the vpn ip to show up in the UI.
-        //however, i do feel that we don't really "wait" for the vpnip to show but instead
-        //we check the value of the variable.
-        Thread.sleep(5000L)
+        val ipRegEx = "^((\\d{1,3})\\.){3}(\\d{1,3})\$"
+        waitUntilVpnIpIsPopulated(":Text:vpnIp", ipRegEx)
     }
 }

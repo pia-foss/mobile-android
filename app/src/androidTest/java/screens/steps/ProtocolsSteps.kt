@@ -13,7 +13,7 @@ object ProtocolsSteps {
     val androidOkButton = UiAutomatorObjectFinder.findByResourceId(":OptionsDialog:Ok")
     val smallPacketsToggle = UiAutomatorObjectFinder.findByResourceId(":ProtocolSettingsScreen:use_small_packets")
 
-    fun selectProtocol(){
+    fun selectProtocol() {
         SettingsSteps.protocolsButton.click()
         protocolSelectionButton.clickAndWaitForNewWindow()
     }
@@ -36,5 +36,12 @@ object ProtocolsSteps {
             VpnProtocols.WireGuard.name
         else
             "Unknown protocol"
+    }
+
+    fun smallPacketToggleChecked(desiredState: Boolean) {
+        val currentToggleState = smallPacketsToggle.isChecked
+        if(currentToggleState != desiredState) {
+            smallPacketsToggle.click()
+        }
     }
 }
