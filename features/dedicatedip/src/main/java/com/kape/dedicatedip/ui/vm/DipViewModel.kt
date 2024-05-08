@@ -6,9 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
+import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
 import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.domain.ActivateDipUseCase
+import com.kape.dedicatedip.domain.GetDipMonthlyPlan
 import com.kape.dedicatedip.domain.GetDipSupportedCountries
+import com.kape.dedicatedip.domain.GetDipYearlyPlan
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
 import com.kape.payments.ui.PaymentProvider
@@ -18,6 +22,7 @@ import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.data.VpnRegionRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -25,6 +30,8 @@ class DipViewModel(
     private val regionRepository: VpnRegionRepository,
     private val activateDipUseCase: ActivateDipUseCase,
     private val getDipSupportedCountries: GetDipSupportedCountries,
+    private val getDipMonthlyPlan: GetDipMonthlyPlan,
+    private val getDipYearlyPlan: GetDipYearlyPlan,
     private val paymentProvider: PaymentProvider,
     private val dipPrefs: DipPrefs,
     private val router: Router,
@@ -34,6 +41,8 @@ class DipViewModel(
     val activationState = mutableStateOf<DipApiResult?>(null)
     val hasAnActivePlaystoreSubscription = mutableStateOf(false)
     val supportedDipCountriesList = mutableStateOf<SupportedCountries?>(null)
+    val dipMonthlyPlan = mutableStateOf<DedicatedIpMonthlyPlan?>(null)
+    val dipYearlyPlan = mutableStateOf<DedicatedIpYearlyPlan?>(null)
     private lateinit var userLocale: String
 
     fun navigateBack() {
@@ -92,6 +101,18 @@ class DipViewModel(
     fun getSupportedDipCountries() = viewModelScope.launch {
         getDipSupportedCountries.invoke().collect {
             supportedDipCountriesList.value = it
+        }
+    }
+
+    fun getDipMonthlyPlan() = viewModelScope.launch {
+        getDipMonthlyPlan.invoke().collect {
+            dipMonthlyPlan.value = it
+        }
+    }
+
+    fun getDipYearlyPlan() = viewModelScope.launch {
+        getDipYearlyPlan.invoke().collect {
+            dipYearlyPlan.value = it
         }
     }
 

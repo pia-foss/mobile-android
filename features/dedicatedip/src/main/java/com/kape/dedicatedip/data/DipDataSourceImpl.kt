@@ -1,5 +1,7 @@
 package com.kape.dedicatedip.data
 
+import com.kape.dedicatedip.data.models.DIP_SIGNUP_MOCKED_RESPONSE
+import com.kape.dedicatedip.data.models.DedicatedIpSignupPlans
 import com.kape.dedicatedip.data.models.MOCKED_RESPONSE
 import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.domain.DipDataSource
@@ -64,6 +66,11 @@ class DipDataSourceImpl(
 
     override fun supportedCountries(): Flow<SupportedCountries> = callbackFlow {
         trySend(Json.decodeFromString(MOCKED_RESPONSE))
+        awaitClose { channel.close() }
+    }
+
+    override fun signupPlans(): Flow<DedicatedIpSignupPlans> = callbackFlow {
+        trySend(Json.decodeFromString(DIP_SIGNUP_MOCKED_RESPONSE))
         awaitClose { channel.close() }
     }
 }

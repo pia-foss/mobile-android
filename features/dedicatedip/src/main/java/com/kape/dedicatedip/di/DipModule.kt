@@ -3,7 +3,9 @@ package com.kape.dedicatedip.di
 import com.kape.dedicatedip.data.DipDataSourceImpl
 import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.domain.DipDataSource
+import com.kape.dedicatedip.domain.GetDipMonthlyPlan
 import com.kape.dedicatedip.domain.GetDipSupportedCountries
+import com.kape.dedicatedip.domain.GetDipYearlyPlan
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dip.DipPrefs
@@ -21,5 +23,7 @@ val localDipModule = module {
     single { ActivateDipUseCase(get()) }
     single { RenewDipUseCase(get()) }
     single { GetDipSupportedCountries(get()) }
-    viewModel { DipViewModel(get(), get(), get(), get(), get(), get()) }
+    single { GetDipMonthlyPlan(get()) }
+    single { GetDipYearlyPlan(get()) }
+    viewModel { DipViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
 }

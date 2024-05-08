@@ -15,30 +15,32 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kape.appbar.view.mobile.AppBar
-import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.HtmlText
+import com.kape.ui.mobile.elements.MonthlySubscriptionCard
+import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.elements.SecondaryButton
+import com.kape.ui.mobile.elements.YearlySubscriptionCard
+import com.kape.ui.mobile.text.DedicatedIpSignupDescriptionText
+import com.kape.ui.mobile.text.DedicatedIpSignupTitleText
 import com.kape.ui.mobile.text.SupportedDipRegions
 import com.kape.ui.mobile.text.SupportedDipRegionsInCountry
 import com.kape.ui.theme.connectionError
@@ -46,36 +48,95 @@ import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignupDedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
         getActivePlaystoreSubscription()
         getSupportedDipCountries()
-    }
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.dedicated_ip_title))
+        getDipMonthlyPlan()
+        getDipYearlyPlan()
     }
     val showSupportedCountriesDialog = remember { mutableStateOf(true) }
 
-    Scaffold(
-        topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateBack() },
-            )
-        },
+    Column(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Column(
+        Icon(
+            painter = painterResource(id = R.drawable.ic_dip),
+            tint = LocalColors.current.primary,
+            contentDescription = null,
             modifier = Modifier
-                .padding(it)
-                .fillMaxWidth()
-                .semantics {
-                    testTagsAsResourceId = true
-                },
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+                .padding(16.dp)
+                .height(40.dp)
+                .fillMaxWidth(),
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Column {
+            DedicatedIpSignupTitleText(
+                content = stringResource(id = R.string.dip_signup_addon_title),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 16.dp),
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DedicatedIpSignupDescriptionText(
+                content = stringResource(id = R.string.dip_signup_addon_description),
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(horizontal = 16.dp),
+            )
         }
+        Spacer(modifier = Modifier.height(32.dp))
+        YearlySubscriptionCard(
+            selected = true,
+            price = viewModel.dipYearlyPlan.value?.yearlyPrice.toString(),
+            perMonthPrice = viewModel.dipYearlyPlan.value?.monthlyPrice.toString(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        ) {
+            TODO()
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        MonthlySubscriptionCard(
+            selected = false,
+            price = viewModel.dipMonthlyPlan.value?.monthlyPrice.toString(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        ) {
+            TODO()
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        PrimaryButton(
+            text = stringResource(id = R.string.logjn_continue),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        ) {
+            TODO()
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        SecondaryButton(
+            text = stringResource(id = R.string.cancel),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+        ) {
+            viewModel.navigateBack()
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.weight(1f))
+        HtmlText(
+            textId = R.string.footer,
+            modifier = Modifier
+                .padding(16.dp)
+                .align(Alignment.CenterHorizontally),
+        )
+        Spacer(modifier = Modifier.height(16.dp))
     }
 
     if (viewModel.hasAnActivePlaystoreSubscription.value) {

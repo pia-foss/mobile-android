@@ -152,6 +152,8 @@
     <string name="dip_signup_banner_activate_benefit_one">Avoid CAPTCHAs</string>
     <string name="dip_signup_banner_activate_benefit_two">Avoid blocklists</string>
     <string name="dip_signup_banner_activate_benefit_three">Access IP-sensitive websites securely</string>
+    <string name="dip_signup_addon_title">Choose your Dedicated IP addon plan</string>
+    <string name="dip_signup_addon_description">Avoid CAPTCHAs and blocklists with your very own Dedicated IP from a country of your choice.</string>
 
     <string name="enter_username">Enter username</string>
     <string name="enter_password">Enter password</string>
