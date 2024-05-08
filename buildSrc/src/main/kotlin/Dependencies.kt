@@ -95,7 +95,7 @@ object Dependencies {
 
     fun DependencyHandler.implementPayments() {
         add(GOOGLE_IMPLEMENTATION, "com.android.billingclient:billing-ktx:6.2.1")
-        add(AMAZON_IMPLEMENTATION, "com.amazon.device:amazon-appstore-sdk:3.0.2")
+        add(AMAZON_IMPLEMENTATION, "com.amazon.device:amazon-appstore-sdk:3.0.4")
     }
 
     fun DependencyHandler.implementSpongyCastle() {
