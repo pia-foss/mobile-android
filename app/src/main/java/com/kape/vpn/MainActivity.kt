@@ -23,9 +23,11 @@ import com.kape.automation.ui.AutomationFlow
 import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
+import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpFlow
 import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpScreen
 import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpScreen
 import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
+import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.inappbrowser.ui.InAppBrowser
 import com.kape.login.ui.mobile.loginNavigation
 import com.kape.login.ui.tv.LoginPasswordScreen
@@ -246,10 +248,10 @@ class MainActivity : AppCompatActivity() {
                 PerAppSettingsScreen()
             }
             composable(DedicatedIp.ActivateToken) {
-                DedicatedIpScreen()
+                DedicatedIpFlow(initialStep = DedicatedIpStep.ActivateToken)
             }
             composable(DedicatedIp.SignupPlans) {
-                SignupDedicatedIpScreen()
+                DedicatedIpFlow(initialStep = DedicatedIpStep.SignupPlans)
             }
             composable(Settings.Automation) {
                 AutomationSettingsScreen()

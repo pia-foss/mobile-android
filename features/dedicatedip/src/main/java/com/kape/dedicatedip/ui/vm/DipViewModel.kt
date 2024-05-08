@@ -13,16 +13,17 @@ import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.domain.GetDipMonthlyPlan
 import com.kape.dedicatedip.domain.GetDipSupportedCountries
 import com.kape.dedicatedip.domain.GetDipYearlyPlan
+import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
 import com.kape.payments.ui.PaymentProvider
 import com.kape.payments.utils.PurchaseHistoryState
-import com.kape.router.EnterFlow
-import com.kape.router.ExitFlow
+import com.kape.router.Back
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.data.VpnRegionRepository
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -37,6 +38,9 @@ class DipViewModel(
     private val router: Router,
 ) : ViewModel(), KoinComponent {
 
+    private val _state = MutableStateFlow<DedicatedIpStep?>(null)
+    val state: StateFlow<DedicatedIpStep?> = _state
+
     val dipList = mutableStateListOf<VpnServer>()
     val activationState = mutableStateOf<DipApiResult?>(null)
     val hasAnActivePlaystoreSubscription = mutableStateOf(false)
@@ -46,11 +50,17 @@ class DipViewModel(
     private lateinit var userLocale: String
 
     fun navigateBack() {
-        router.handleFlow(ExitFlow.DedicatedIp)
+        _state.value?.let {
+            when (it) {
+                DedicatedIpStep.ActivateToken,
+                DedicatedIpStep.SignupPlans,
+                -> router.handleFlow(Back)
+            }
+        }
     }
 
-    fun navigateToDedicatedIpPlans() {
-        router.handleFlow(EnterFlow.DedicatedIpPlans)
+    fun navigateToDedicatedIpPlans() = viewModelScope.launch {
+        _state.emit(DedicatedIpStep.SignupPlans)
     }
 
     fun loadDedicatedIps(locale: String) = viewModelScope.launch {
