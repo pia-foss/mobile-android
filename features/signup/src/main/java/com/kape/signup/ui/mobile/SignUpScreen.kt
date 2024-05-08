@@ -36,7 +36,7 @@ import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.HtmlText
+import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.MonthlySubscriptionCard
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -180,10 +180,9 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Spacer(modifier = Modifier.weight(1f))
-                HtmlText(
-                    textId = R.string.footer,
+                Footer(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(8.dp)
                         .align(CenterHorizontally),
                 )
             }

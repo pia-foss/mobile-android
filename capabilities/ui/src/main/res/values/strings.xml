@@ -347,6 +347,8 @@
     <string name="tv_subscribe_screen_description">Start your 7 days free trial then %s.</string>
     <string name="subscribe_now">Subscribe now</string>
     <string name="footer"><a href="web-screen-privacy">Privacy Policy</a> and <a href="web-screen-terms">Terms of Service</a></string>
+    <string name="privacy_policy"><a href="web-screen-privacy">Privacy Policy</a></string>
+    <string name="and">and</string>
     <string name="terms_of_service">Terms of Service</string>
     <string name="monthly_ending">%1$s/mo</string>
     <string name="yearly_month_ending">%2$s%1$s/mo</string>
