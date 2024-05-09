@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
@@ -55,8 +58,9 @@ fun YearlySubscriptionCard(
     onClick: () -> Unit,
 ) {
     Card(
-        modifier = modifier.semantics(mergeDescendants = true) { },
-        onClick = onClick,
+        modifier = modifier
+            .semantics(mergeDescendants = true) { }
+            .selectable(selected = selected, role = Role.RadioButton, onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (selected) LocalColors.current.surface else Color.Transparent,
@@ -117,8 +121,9 @@ fun MonthlySubscriptionCard(
     onClick: () -> Unit,
 ) {
     Card(
-        modifier = modifier.semantics(mergeDescendants = true) { },
-        onClick = onClick,
+        modifier = modifier
+            .semantics(mergeDescendants = true) { }
+            .selectable(selected = selected, enabled = true, role = Role.RadioButton, onClick = onClick),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (selected) LocalColors.current.surface else Color.Transparent,
