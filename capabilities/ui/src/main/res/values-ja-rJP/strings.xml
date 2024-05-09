@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">ストリーミング向けの高速&amp;セキュアなVPN</string>
     <string name="subscribe_screen_title">どの地域にも簡単に接続</string>
     <string name="subscribe_screen_description">世界中のサーバーを利用して、常に保護を維持できます。7日間の無料トライアルを開始しましょう。その後年間%sでご利用いただけます。</string>
+    <string name="subscribe_screen_description_cancel_anytime">制限はありません。無料トライアル期間中はいつでもキャンセル可能です。</string>
+    <string name="subscribe_screen_description_payment">お支払いはトライアル終了時にアカウントに請求されます。</string>
     <string name="subscribe_screen_description_no_in_app">世界中にサーバがあるので、常に保護されています。</string>
     <string name="tv_subscribe_screen_description">7日間無料トライアルを開始、その後%s。</string>
     <string name="subscribe_now">今すぐ登録</string>

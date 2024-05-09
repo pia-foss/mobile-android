@@ -338,7 +338,9 @@
 
     <string name="fast_and_secure_streaming">Fast &amp; Secure VPN for Streaming</string>
     <string name="subscribe_screen_title">Connect to any region easily</string>
-    <string name="subscribe_screen_description">With servers around the globe, you are always under protection. Start your 7 days free trial then %s .</string>
+    <string name="subscribe_screen_description">With servers around the globe, you are always under protection. Start your 7 days free trial then %s.</string>
+    <string name="subscribe_screen_description_cancel_anytime">No commitment. Cancel anytime during the free trial.</string>
+    <string name="subscribe_screen_description_payment">Payment will only be charged to your account at the end of your trial.</string>
     <string name="subscribe_screen_description_no_in_app">With servers around the globe, you are always under protection.</string>
     <string name="tv_subscribe_screen_description">Start your 7 days free trial then %s.</string>
     <string name="subscribe_now">Subscribe now</string>

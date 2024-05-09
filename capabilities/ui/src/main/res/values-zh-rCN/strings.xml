@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">适用于流媒体的快速且安全的 VPN</string>
     <string name="subscribe_screen_title">轻松连接至任何地区</string>
     <string name="subscribe_screen_description">我们遍布全球的服务器始终守护您的安全。即刻开启 7 天免费试用，此后%s。</string>
+    <string name="subscribe_screen_description_cancel_anytime">无需承诺。免费试用期间可随时取消。</string>
+    <string name="subscribe_screen_description_payment">只有在试用期结束时，才会从您的账户中扣款。</string>
     <string name="subscribe_screen_description_no_in_app">我们遍布全球的服务器始终守护您的安全。</string>
     <string name="tv_subscribe_screen_description">请开始您的 7 天免费试用，然后仅需 %s。</string>
     <string name="subscribe_now">立即订阅</string>

@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">Video İzlemek için Hızlı ve Güvenli VPN</string>
     <string name="subscribe_screen_title">Herhangi bir bölgeye kolayca bağlanın</string>
     <string name="subscribe_screen_description">Dünyanın dört bir yanındaki sunucularla, her zaman koruma altındasınız. 7 günlük ücretsiz denemenizi başlatın. Sonrasında %s.</string>
+    <string name="subscribe_screen_description_cancel_anytime">Taahhüt yok. Ücretsiz deneme sırasında istediğiniz zaman iptal edin.</string>
+    <string name="subscribe_screen_description_payment">Ödeme yalnızca deneme sürenizin sonunda hesabınızdan tahsil edilecektir.</string>
     <string name="subscribe_screen_description_no_in_app">Dünyanın dört bir yanındaki sunucularla her zaman koruma altındasınız.</string>
     <string name="tv_subscribe_screen_description">Sonrasında %s ile 7 gün ücretsiz denemenizi başlatın.</string>
     <string name="subscribe_now">Şimdi abone olun</string>

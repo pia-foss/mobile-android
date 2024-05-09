@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">適用於串流媒體的快速且安全的 VPN</string>
     <string name="subscribe_screen_title">輕易就能連線到任何地區</string>
     <string name="subscribe_screen_description">我們的伺服器遍佈全球，能為您提供全面保護。開始 7 天免費試用，之後收費 %s。</string>
+    <string name="subscribe_screen_description_cancel_anytime">沒有承諾。 免費試用期間隨時取消。</string>
+    <string name="subscribe_screen_description_payment">付款只會在試用結束時從您的帳戶中扣除。</string>
     <string name="subscribe_screen_description_no_in_app">我們的伺服器遍佈全球，能為您提供全面保護。</string>
     <string name="tv_subscribe_screen_description">開始 7 天免費試用，之後收費 %s。</string>
     <string name="subscribe_now">即刻訂閱</string>

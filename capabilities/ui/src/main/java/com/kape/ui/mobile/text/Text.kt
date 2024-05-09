@@ -201,6 +201,17 @@ fun OnboardingDescriptionText(content: String, modifier: Modifier) {
 }
 
 @Composable
+fun OnboardingDescriptionPaymentText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.body3,
+        textAlign = TextAlign.Center,
+        modifier = modifier,
+    )
+}
+
+@Composable
 fun OnboardingFooterText(content: String, modifier: Modifier) {
     Text(
         text = content,

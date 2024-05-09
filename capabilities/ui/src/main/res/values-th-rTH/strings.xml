@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">VPN เร็ว &amp; ปลอดภัยสำหรับการสตรีมมิง</string>
     <string name="subscribe_screen_title">เชื่อมต่อกับภูมิภาคต่าง ๆ อย่างง่ายดาย</string>
     <string name="subscribe_screen_description">ด้วยเซิร์ฟเวอร์ทั่วโลก คุณจะอยู่ภายใต้การคุ้มครองเสมอ เริ่มทดลองใช้ฟรี 7 วัน จากนั้น%s</string>
+    <string name="subscribe_screen_description_cancel_anytime">ไม่มีความรับผิดชอบ. ยกเลิกได้ตลอดเวลาระหว่างช่วงทดลองใช้ฟรี</string>
+    <string name="subscribe_screen_description_payment">การชำระเงินจะถูกหักออกจากบัญชีของคุณเมื่อสิ้นสุดการทดลองใช้เท่านั้น</string>
     <string name="subscribe_screen_description_no_in_app">ด้วยเซิร์ฟเวอร์ที่มีอยู่ทั่วโลก คุณจะได้รับความคุ้มครองตลอดเวลา</string>
     <string name="tv_subscribe_screen_description">เริ่มทดลองใช้ฟรี 7 วัน จากนั้น%s</string>
     <string name="subscribe_now">สมัครสมาชิกตอนนี้</string>

@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">Быстрая и надежная VPN-сеть для онлайн-трансляций</string>
     <string name="subscribe_screen_title">Легкое подключение к любому региону</string>
     <string name="subscribe_screen_description">Благодаря серверам по всему миру вы всегда под защитой. Попробуйте наш сервис бесплатно в течение 7 дней, затем %s.</string>
+    <string name="subscribe_screen_description_cancel_anytime">Никаких обязательств. Отмена в любой момент бесплатного пробного периода.</string>
+    <string name="subscribe_screen_description_payment">Оплата будет списана с Вашего счета только по окончании пробного периода.</string>
     <string name="subscribe_screen_description_no_in_app">Благодаря серверам по всему миру вы всегда под защитой.</string>
     <string name="tv_subscribe_screen_description">Начните 7-дневный бесплатный пробный период, а затем %s.</string>
     <string name="subscribe_now">Купить подписку сейчас</string>

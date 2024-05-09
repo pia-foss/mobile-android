@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">Szybki i bezpieczny VPN do streamingu</string>
     <string name="subscribe_screen_title">Połącz łatwo z dowolnym regionem</string>
     <string name="subscribe_screen_description">Dzięki serwerom na całym świecie jesteś zawsze pod ochroną. Rozpocznij 7-dniowy darmowy okres próbny, a następnie %s .</string>
+    <string name="subscribe_screen_description_cancel_anytime">Brak zobowiązań. Bezpłatny okres próbny można anulować w dowolnym momencie.</string>
+    <string name="subscribe_screen_description_payment">Płatność zostanie pobrana z Państwa konta dopiero po zakończeniu okresu próbnego.</string>
     <string name="subscribe_screen_description_no_in_app">Dzięki serwerom na całym świecie, zawsze jesteś pod ochroną.</string>
     <string name="tv_subscribe_screen_description">Rozpocznij 7-dniowy darmowy okres próbny, a następnie %s.</string>
     <string name="subscribe_now">Subskrybuj teraz</string>

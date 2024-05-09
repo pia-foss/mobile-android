@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">Raskt og sikkert VPN for strømming</string>
     <string name="subscribe_screen_title">Du kan enkelt koble deg til hvilken som helst region</string>
     <string name="subscribe_screen_description">Med servere over hele verden er du alltid beskyttet. Start en 7-dagers gratis prøveperiode og deretter %s.</string>
+    <string name="subscribe_screen_description_cancel_anytime">Ingen forpliktelser. Avslutt når som helst i løpet av prøveperioden.</string>
+    <string name="subscribe_screen_description_payment">Betalingen belastes kontoen din først når prøveperioden er avsluttet.</string>
     <string name="subscribe_screen_description_no_in_app">Med servere over hele verden, er du alltid beskyttet.</string>
     <string name="tv_subscribe_screen_description">Start din 7-dagers gratis prøveperiode og %s.</string>
     <string name="subscribe_now">Abonner nå</string>

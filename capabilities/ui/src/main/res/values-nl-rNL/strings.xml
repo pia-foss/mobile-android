@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">Snelle &amp; veilige VPN voor streaming</string>
     <string name="subscribe_screen_title">Maak eenvoudig verbinding met elke regio</string>
     <string name="subscribe_screen_description">Met servers over de hele wereld ben je altijd beschermd. Start je gratis proefabonnement van 7 dagen nu. Daarna betaal je %s per jaar. </string>
+    <string name="subscribe_screen_description_cancel_anytime">Geen verplichting. Op elk moment opzeggen tijdens de gratis proefperiode.</string>
+    <string name="subscribe_screen_description_payment">De betaling wordt pas aan het einde van uw proefperiode van uw rekening afgeschreven.</string>
     <string name="subscribe_screen_description_no_in_app">Met servers over de hele wereld ben je altijd beschermd.</string>
     <string name="tv_subscribe_screen_description">Begin je gratis proefperiode van 7 dagen %s.</string>
     <string name="subscribe_now">Nu abonneren</string>

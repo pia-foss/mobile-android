@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">VPN سريع وآمن لمشاهدة الأفلام</string>
     <string name="subscribe_screen_title">الاتصال بأي موقع بسهولة</string>
     <string name="subscribe_screen_description">ستكون دائما محميا بفضل خوادمنا الواقعة في كل أنحاء العالم. احصل على الإصدار التجريبي المجاني لمدة 7 أيام، ثم %s.</string>
+    <string name="subscribe_screen_description_cancel_anytime">لا التزام. يمكنك الإلغاء في أي وقت خلال الفترة التجريبية المجانية.</string>
+    <string name="subscribe_screen_description_payment">سيتم فرض الدفع على حسابك فقط في نهاية الفترة التجريبية.</string>
     <string name="subscribe_screen_description_no_in_app">ستكون دائما محميا مع خوادم في جميع أنحاء العالم.</string>
     <string name="tv_subscribe_screen_description">ابدأ تجربتك المجانية لمدة 7 أيام ثم %s.</string>
     <string name="subscribe_now">اشترك الآن</string>

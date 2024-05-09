@@ -284,6 +284,8 @@
     <string name="fast_and_secure_streaming">VPN rápida&amp; segura para streaming</string>
     <string name="subscribe_screen_title">Conecte-se a qualquer região facilmente</string>
     <string name="subscribe_screen_description">Com servidores no mundo todo, você está sempre protegido. Comece seu teste grátis de 7 dias e, depois, %s por ano.</string>
+    <string name="subscribe_screen_description_cancel_anytime">Sem compromisso. Cancele a qualquer momento durante o período de avaliação gratuita.</string>
+    <string name="subscribe_screen_description_payment">O pagamento só será cobrado de sua conta no final do período de teste.</string>
     <string name="subscribe_screen_description_no_in_app">Com servidores ao redor do mundo, você está sempre protegido.</string>
     <string name="tv_subscribe_screen_description">Comece o seu teste gratuito de 7 dias e depois %s.</string>
     <string name="subscribe_now">Assine agora</string>

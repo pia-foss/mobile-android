@@ -42,6 +42,7 @@ import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.YearlySubscriptionCard
+import com.kape.ui.mobile.text.OnboardingDescriptionPaymentText
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
 import com.kape.ui.theme.statusBarDefault
@@ -108,9 +109,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                         content = if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
                             stringResource(id = R.string.subscribe_screen_description_no_in_app)
                         } else {
-                            stringResource(id = R.string.subscribe_screen_description).format(
-                                subscriptionData?.yearly?.mainPrice,
-                            )
+                            "${stringResource(id = R.string.subscribe_screen_description).format(subscriptionData?.yearly?.mainPrice)} ${stringResource(id = R.string.subscribe_screen_description_cancel_anytime)}"
                         },
                         modifier = Modifier
                             .align(CenterHorizontally)
@@ -144,7 +143,18 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(24.dp))
+                if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                } else {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OnboardingDescriptionPaymentText(
+                        modifier = Modifier
+                            .align(CenterHorizontally)
+                            .padding(horizontal = 20.dp),
+                        content = stringResource(id = R.string.subscribe_screen_description_payment),
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
                 PrimaryButton(
                     text = stringResource(id = R.string.subscribe_now),
                     modifier = Modifier
