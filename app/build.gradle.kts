@@ -23,9 +23,9 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
-val googleAmazonAppVersionCode = 665
+val googleAmazonAppVersionCode = 666
 val noInAppVersionCode = googleAmazonAppVersionCode.plus(10000)
-val appVersionName = "4.0.2"
+val appVersionName = "4.0.3"
 
 android {
     namespace = "com.kape.vpn"
