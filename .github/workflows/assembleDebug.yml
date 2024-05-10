@@ -79,6 +79,10 @@ jobs:
     uses: ./.github/workflows/build-website-android.yaml
     secrets: inherit
 
+  build-amazon-version:
+    uses: ./.github/workflows/build-amazon-android.yaml
+    secrets: inherit
+
   e2e-testing:
     name: Run end to end instrumentation tests
     runs-on: ubuntu-4core-runners
