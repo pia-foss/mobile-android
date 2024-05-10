@@ -11,6 +11,7 @@ import Dependencies.implementKoin
 import Dependencies.implementKpi
 import Dependencies.implementMultiplatformSettings
 import Dependencies.implementObfuscator
+import Dependencies.implementPayments
 import Dependencies.implementRegions
 import Dependencies.implementViewModel
 import Dependencies.implementVpnManager
@@ -23,8 +24,9 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
-val googleAmazonAppVersionCode = 666
-val noInAppVersionCode = googleAmazonAppVersionCode.plus(10000)
+val googleAppVersionCode = 666
+val amazonAppVersionCode = googleAppVersionCode.plus(10000)
+val noInAppVersionCode = googleAppVersionCode.plus(10000)
 val appVersionName = "4.0.3"
 
 android {
@@ -79,12 +81,12 @@ android {
         create("amazon") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
-            versionCode = googleAmazonAppVersionCode
+            versionCode = amazonAppVersionCode
         }
         create("google") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
-            versionCode = googleAmazonAppVersionCode
+            versionCode = googleAppVersionCode
         }
         create("noinapp") {
             dimension = "provider"
@@ -188,6 +190,8 @@ dependencies {
     implementMultiplatformSettings()
     implementVpnManager()
     implementCoroutines()
+
+    implementPayments()
 
     implementAndroidUiTest()
 

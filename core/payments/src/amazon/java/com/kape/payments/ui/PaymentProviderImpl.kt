@@ -47,8 +47,8 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
 
                 override fun onProductDataResponse(productData: ProductDataResponse?) {
                     if (productData != null) {
-                        val perMonth = productData.productData[monthlySubscription]
-                        val perYear = productData.productData[yearlySubscription]
+                        val perMonth = productData.productData[M1]
+                        val perYear = productData.productData[Y1]
 
                         if (perMonth != null && perYear != null) {
                             availableProducts.clear()
@@ -99,16 +99,9 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
     }
 
     override fun purchaseSelectedProduct(id: String) {
-        val productId = when (id) {
-            M1 -> monthlySubscription
-            Y1 -> yearlySubscription
-            else -> {
-                ""
-            }
-        }
-        selectedProduct = availableProducts.firstOrNull { it.sku == productId }
+        selectedProduct = availableProducts.firstOrNull { it.sku == id }
         selectedProduct?.let {
-            PurchasingService.purchase(productId)
+            PurchasingService.purchase(id)
         }
     }
 
