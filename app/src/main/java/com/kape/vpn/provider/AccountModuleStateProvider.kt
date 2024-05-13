@@ -3,9 +3,12 @@ package com.kape.vpn.provider
 import com.privateinternetaccess.account.AccountEndpoint
 import com.privateinternetaccess.account.IAccountEndpointProvider
 
+private const val STAGING = "https://staging-3-77b8e3a311bcb6ec5e96.privateinternetaccess.com"
+
 class AccountModuleStateProvider(
     val certificate: String,
     private val metaEndpointsProvider: MetaEndpointsProvider,
+    private val useStaging: Boolean,
 ) : IAccountEndpointProvider {
     override fun accountEndpoints(): List<AccountEndpoint> {
         val endpoints = mutableListOf<AccountEndpoint>()
@@ -36,22 +39,17 @@ class AccountModuleStateProvider(
             ),
         )
 
-//        if (PiaPrefHandler.useStaging(context)) {
-//            val stagingHost = if (PiaPrefHandler.getStagingServer(context).isNullOrEmpty()) {
-//                BuildConfig.STAGEINGHOST
-//            } else {
-//                PiaPrefHandler.getStagingServer(context)
-//            }
-//            endpoints.clear()
-//            endpoints.add(
-//                AccountEndpoint(
-//                    stagingHost.replace("https://", "").replace("http://", ""),
-//                    isProxy = false,
-//                    usePinnedCertificate = false,
-//                    certificateCommonName = null
-//                )
-//            )
-//        }
+        if (useStaging) {
+            endpoints.clear()
+            endpoints.add(
+                AccountEndpoint(
+                    STAGING.replace("https://", "").replace("http://", ""),
+                    isProxy = false,
+                    usePinnedCertificate = false,
+                    certificateCommonName = null,
+                ),
+            )
+        }
         return endpoints
     }
 }

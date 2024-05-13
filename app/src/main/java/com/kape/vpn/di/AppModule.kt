@@ -64,13 +64,14 @@ import java.io.BufferedReader
 
 const val PARAM_USER_AGENT = "user-agent"
 private const val AUTOMATION_SERVICE_INTENT = "automation-service-intent"
+private const val USE_STAGING = false
 
 val appModule = module {
     single { provideCertificate(get()) }
     single(named(PARAM_USER_AGENT)) { USER_AGENT }
     single { RegionListProvider(get(), get()) }
     single { MetaEndpointsProvider() }
-    single { AccountModuleStateProvider(get(), get()) }
+    single { AccountModuleStateProvider(get(), get(), USE_STAGING) }
     single { PlatformProvider(get()) }
     single { VpnManagerProvider() }
     single { RegionsModuleStateProvider(get(), get()) }
