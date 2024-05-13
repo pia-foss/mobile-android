@@ -22,6 +22,9 @@
     <string name="upload">Upload</string>
 
     <string name="connection">CONNECTION</string>
+    <string name="toggle_connection_button">Toggle connection button:</string>
+    <string name="connect_to_vpn">Connect to VPN</string>
+    <string name="disconnect_from_vpn">Disconnect from VPN</string>
     <string name="public_ip">Public IP</string>
     <string name="vpn_ip">VPN IP</string>
     <string name="no_ip">---</string>
