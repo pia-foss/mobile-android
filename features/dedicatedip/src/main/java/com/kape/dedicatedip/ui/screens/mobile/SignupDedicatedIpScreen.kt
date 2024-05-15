@@ -117,7 +117,7 @@ fun SignupDedicatedIpScreen() = Screen {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            TODO()
+            viewModel.navigateToDedicatedIpLocationSelection()
         }
         Spacer(modifier = Modifier.height(8.dp))
         SecondaryButton(

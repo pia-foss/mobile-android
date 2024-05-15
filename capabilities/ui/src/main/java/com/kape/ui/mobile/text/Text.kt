@@ -452,6 +452,15 @@ fun SupportedDipRegionsInCountry(content: String) {
 }
 
 @Composable
+fun SupportedDipCountryOnly(content: String) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.body2,
+    )
+}
+
+@Composable
 fun DedicatedIpSignupTitleText(content: String, modifier: Modifier) {
     Text(
         text = content,
@@ -469,6 +478,28 @@ fun DedicatedIpSignupDescriptionText(content: String, modifier: Modifier) {
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
         textAlign = TextAlign.Center,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun DedicatedIpSignupCountryTitleText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle1,
+        textAlign = TextAlign.Left,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun DedicatedIpSignupCountryDisclaimerText(content: String, modifier: Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.error,
+        style = PiaTypography.body3,
+        textAlign = TextAlign.Left,
         modifier = modifier,
     )
 }
