@@ -255,6 +255,7 @@ class ConnectionViewModel(
     fun quickConnect(server: VpnServer) {
         vpnRegionPrefs.selectVpnServer(server)
         updateState(state.value.server, false)
+        connect()
     }
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
