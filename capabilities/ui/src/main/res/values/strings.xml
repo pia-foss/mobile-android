@@ -154,6 +154,8 @@
     <string name="dip_signup_banner_activate_benefit_three">Access IP-sensitive websites securely</string>
     <string name="dip_signup_addon_title">Choose your Dedicated IP addon plan</string>
     <string name="dip_signup_addon_description">Avoid CAPTCHAs and blocklists with your very own Dedicated IP from a country of your choice.</string>
+    <string name="dip_signup_country_title">Choose your desired Dedicated IP location:</string>
+    <string name="dip_signup_country_disclaimer">Your decision is permanent. You cannot change your Dedicated IP location for the remainder of your subscription.</string>
 
     <string name="enter_username">Enter username</string>
     <string name="enter_password">Enter password</string>

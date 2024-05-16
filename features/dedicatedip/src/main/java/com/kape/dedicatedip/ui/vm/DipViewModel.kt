@@ -47,6 +47,8 @@ class DipViewModel(
     val supportedDipCountriesList = mutableStateOf<SupportedCountries?>(null)
     val dipMonthlyPlan = mutableStateOf<DedicatedIpMonthlyPlan?>(null)
     val dipYearlyPlan = mutableStateOf<DedicatedIpYearlyPlan?>(null)
+    val dipSelectedCountry =
+        mutableStateOf<SupportedCountries.DedicatedIpCountriesAvailable?>(null)
     private lateinit var userLocale: String
 
     fun navigateBack() {
@@ -55,12 +57,18 @@ class DipViewModel(
                 DedicatedIpStep.ActivateToken,
                 DedicatedIpStep.SignupPlans,
                 -> router.handleFlow(Back)
+
+                DedicatedIpStep.LocationSelection -> _state.value = DedicatedIpStep.SignupPlans
             }
         }
     }
 
     fun navigateToDedicatedIpPlans() = viewModelScope.launch {
         _state.emit(DedicatedIpStep.SignupPlans)
+    }
+
+    fun navigateToDedicatedIpLocationSelection() = viewModelScope.launch {
+        _state.emit(DedicatedIpStep.LocationSelection)
     }
 
     fun loadDedicatedIps(locale: String) = viewModelScope.launch {
@@ -111,6 +119,7 @@ class DipViewModel(
     fun getSupportedDipCountries() = viewModelScope.launch {
         getDipSupportedCountries.invoke().collect {
             supportedDipCountriesList.value = it
+            selectDipCountry(it.dedicatedIpCountriesAvailable[0])
         }
     }
 
@@ -133,9 +142,11 @@ class DipViewModel(
                     is PurchaseHistoryState.PurchaseHistorySuccess -> {
                         hasAnActivePlaystoreSubscription.value = true
                     }
+
                     PurchaseHistoryState.Default -> {
                         // no=op
                     }
+
                     PurchaseHistoryState.PurchaseHistoryFailed -> {
                         hasAnActivePlaystoreSubscription.value = false
                     }
@@ -147,4 +158,8 @@ class DipViewModel(
 
     fun showDedicatedIpSignupBanner() =
         dipPrefs.isDipSignupEnabled() && dipPrefs.showDedicatedIpHomeBanner()
+
+    fun selectDipCountry(selected: SupportedCountries.DedicatedIpCountriesAvailable?) {
+        dipSelectedCountry.value = selected
+    }
 }
