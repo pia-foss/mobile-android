@@ -1,9 +1,8 @@
 package com.kape.vpn.provider
 
+import com.kape.vpn.utils.STAGING
 import com.privateinternetaccess.account.AccountEndpoint
 import com.privateinternetaccess.account.IAccountEndpointProvider
-
-private const val STAGING = "https://staging-3-77b8e3a311bcb6ec5e96.privateinternetaccess.com"
 
 class AccountModuleStateProvider(
     val certificate: String,

@@ -40,6 +40,7 @@ import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.service.AutomationService
 import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.NetworkManager
+import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -64,7 +65,6 @@ import java.io.BufferedReader
 
 const val PARAM_USER_AGENT = "user-agent"
 private const val AUTOMATION_SERVICE_INTENT = "automation-service-intent"
-private const val USE_STAGING = false
 
 val appModule = module {
     single { provideCertificate(get()) }
@@ -74,8 +74,8 @@ val appModule = module {
     single { AccountModuleStateProvider(get(), get(), USE_STAGING) }
     single { PlatformProvider(get()) }
     single { VpnManagerProvider() }
-    single { RegionsModuleStateProvider(get(), get()) }
-    single { KpiModuleStateProvider(get(), get()) }
+    single { RegionsModuleStateProvider(get(), get(), USE_STAGING) }
+    single { KpiModuleStateProvider(get(), get(), USE_STAGING) }
     single { NetworkManager(get(), get(), get(), get()) }
     single {
         NetworkConnectionListener(
