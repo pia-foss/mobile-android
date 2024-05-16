@@ -107,7 +107,7 @@ val appModule = module {
             get(named("port-forwarding-intent")),
         )
     }
-    single { CsiEndpointProvider() }
+    single { CsiEndpointProvider(USE_STAGING) }
     single { CsiPrefs(get()) }
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
     single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
