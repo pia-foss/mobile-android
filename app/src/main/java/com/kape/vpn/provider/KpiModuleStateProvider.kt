@@ -1,6 +1,6 @@
 package com.kape.vpn.provider
 
-import com.kape.vpn.BuildConfig
+import com.kape.vpn.utils.STAGING
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.kpi.KPIClientStateProvider
 import com.privateinternetaccess.kpi.KPIEndpoint
@@ -11,7 +11,11 @@ private const val STAGING_EVENT_TOKEN = "3bd9fa1b7d7ae30b6d119e335afdcfa7"
 
 const val KPI_PREFS_NAME = "kpi-prefs"
 
-class KpiModuleStateProvider(val certificate: String, private val accountAPI: AndroidAccountAPI) :
+class KpiModuleStateProvider(
+    val certificate: String,
+    private val accountAPI: AndroidAccountAPI,
+    private val useStaging: Boolean,
+) :
     KPIClientStateProvider {
 
     override fun kpiAuthToken(): String? {
@@ -24,28 +28,35 @@ class KpiModuleStateProvider(val certificate: String, private val accountAPI: An
             KPIEndpoint(
                 ACCOUNT_BASE_ROOT_DOMAIN + KPI_ENDPOINT_PATH,
                 usePinnedCertificate = false,
-                certificateCommonName = null
-            )
+                certificateCommonName = null,
+            ),
         )
         endpoints.add(
             KPIEndpoint(
                 ACCOUNT_PROXY_ROOT_DOMAIN + KPI_ENDPOINT_PATH,
                 usePinnedCertificate = false,
-                certificateCommonName = null
-            )
+                certificateCommonName = null,
+            ),
         )
 
-        // TODO: handle staging when introduced
-
+        if (useStaging) {
+            endpoints.clear()
+            endpoints.add(
+                KPIEndpoint(
+                    STAGING.replace("https://", "").replace("http://", "") + KPI_ENDPOINT_PATH,
+                    usePinnedCertificate = false,
+                    certificateCommonName = null,
+                ),
+            )
+        }
         return endpoints
     }
 
     override fun projectToken(): String {
-        // TODO: handle staging vs prod, currently we use debug vs release
-        return if (BuildConfig.DEBUG) {
-            PRODUCTION_EVENT_TOKEN
-        } else {
+        return if (useStaging) {
             STAGING_EVENT_TOKEN
+        } else {
+            PRODUCTION_EVENT_TOKEN
         }
     }
 }
