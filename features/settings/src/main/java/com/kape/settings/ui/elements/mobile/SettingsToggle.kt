@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -35,6 +36,7 @@ fun SettingsToggle(
     enabled: Boolean = false,
     stateEnabled: MutableState<Boolean> = mutableStateOf(enabled),
     toggle: (checked: Boolean) -> Unit,
+    testTag: String = "",
 ) {
     val isChecked = remember { stateEnabled }
     Column(
@@ -47,6 +49,7 @@ fun SettingsToggle(
                 .defaultMinSize(minHeight = 56.dp)
                 .padding(end = 16.dp)
                 .semantics(mergeDescendants = true) { }
+                .testTag(testTag)
                 .selectable(
                     selected = isChecked.value,
                     onClick = {

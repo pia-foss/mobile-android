@@ -211,7 +211,8 @@ private fun AppBarConnectionStatus(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
-            modifier = Modifier.align(Center),
+            modifier = Modifier.align(Center)
+                .testTag(":AppBar:connection_status"),
         ) {
             if (status == ConnectionStatus.DISCONNECTED) {
                 Icon(
@@ -232,7 +233,8 @@ private fun AppBarConnectionStatus(
                     .align(CenterVertically)
                     .semantics {
                         contentDescription = "$statusPrefix $title"
-                    },
+                    }
+                    .testTag(":AppBar:connection_text_default"),
             )
         }
 

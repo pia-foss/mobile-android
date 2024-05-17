@@ -58,7 +58,7 @@ fun IPTile(
         ) {
             TileTitleText(content = stringResource(id = R.string.vpn_ip).uppercase())
             Spacer(modifier = Modifier.height(4.dp))
-            IPText(content = vpnIp)
+            IPText(content = vpnIp, ":Text:vpnIp")
             if (isPortForwardingEnabled) {
                 Row {
                     Icon(

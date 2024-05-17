@@ -16,7 +16,8 @@ class UiLogoutTests : UiTest() {
     @Test
     fun persistence_layer_wiped_after_sign_out() {
         settingsSteps.navigateToSettingsPage()
-        protocolSteps.selectOpenVPNProtocol()
+        protocolSteps.selectProtocol()
+        protocolSteps.selectOpenVPN()
         mainScreenSteps.navigateToMainScreen()
         sideMenuSteps.navigateToSideMenu()
         sideMenuSteps.logOut()
