@@ -12,6 +12,8 @@ object MainScreenSteps {
         UiAutomatorObjectFinder.findByResourceId(":AppBar:side_menu")
     val appBarConnectionStatus = UiAutomatorObjectFinder.findByResourceId(":AppBar:connection_text_default")
     val vpnIp = UiAutomatorObjectFinder.findByResourceId(":Text:vpnIp")
+    val quickConnectServerText = UiAutomatorObjectFinder.findByResourceId(":QuickConnect:serverText")
+    val quickConnectServer = UiAutomatorObjectFinder.findByResourceId(":QuickConnect:Server")
 
     fun navigateToMainScreen() {
         try {
