@@ -60,6 +60,8 @@ class DipViewModel(
 
                 DedicatedIpStep.LocationSelection -> _state.value = DedicatedIpStep.SignupPlans
             }
+        } ?: run {
+            router.handleFlow(Back)
         }
     }
 
