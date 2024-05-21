@@ -14,4 +14,8 @@ interface DipDataSource {
     fun supportedCountries(): Flow<SupportedCountries>
 
     fun signupPlans(): Flow<DedicatedIpSignupPlans>
+
+    // Parameters to be replaced by data class with the information needed by the coming API.
+    // We are mocking for now.
+    fun signup(receipt: String = ""): Flow<Result<String>>
 }

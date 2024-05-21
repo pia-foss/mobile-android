@@ -156,6 +156,16 @@
     <string name="dip_signup_addon_description">Avoid CAPTCHAs and blocklists with your very own Dedicated IP from a country of your choice.</string>
     <string name="dip_signup_country_title">Choose your desired Dedicated IP location:</string>
     <string name="dip_signup_country_disclaimer">Your decision is permanent. You cannot change your Dedicated IP location for the remainder of your subscription.</string>
+    <string name="dip_signup_purchase_success_title">Your payment was successful</string>
+    <string name="dip_signup_purchase_success_description">You can now activate your Dedicated IP with the generated token at the next screen.</string>
+    <string name="dip_signup_generate_your_token">Generate your token</string>
+    <string name="dip_signup_save_your_token_title">Save your token</string>
+    <string name="dip_signup_save_your_token_description">This is your only one-time show token to activate your Dedicated IP.</string>
+    <string name="dip_signup_save_your_token_footer_start">Screenshot or save your token for use on other devices.</string>
+    <string name="dip_signup_save_your_token_footer_end">If you lose your token, you will need to repurchase a Dedicated IP.</string>
+    <string name="dip_signup_save_your_token_as_pdf">Save token as PDF</string>
+    <string name="dip_signup_token_copied">Token copied to your clipboard</string>
+    <string name="dip_signup_activate_token">Activate token</string>
 
     <string name="enter_username">Enter username</string>
     <string name="enter_password">Enter password</string>

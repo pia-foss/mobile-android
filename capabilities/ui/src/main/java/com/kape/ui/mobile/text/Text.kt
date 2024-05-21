@@ -7,7 +7,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -463,7 +465,7 @@ fun SupportedDipCountryOnly(content: String) {
 }
 
 @Composable
-fun DedicatedIpSignupTitleText(content: String, modifier: Modifier) {
+fun DedicatedIpSignupTitleText(content: String, modifier: Modifier = Modifier) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -474,12 +476,38 @@ fun DedicatedIpSignupTitleText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun DedicatedIpSignupDescriptionText(content: String, modifier: Modifier) {
+fun DedicatedIpSignupDescriptionText(content: String, modifier: Modifier = Modifier) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
         textAlign = TextAlign.Center,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun DedicatedIpSignupActivateTokenTitleText(content: String, modifier: Modifier = Modifier) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSurface,
+        style = PiaTypography.subtitle1,
+        textAlign = TextAlign.Center,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun DedicatedIpSignupActivateTokenDescriptionText(
+    modifier: Modifier = Modifier,
+    content: AnnotatedString,
+    color: Color = LocalColors.current.onSurface,
+) {
+    Text(
+        text = content,
+        color = color,
+        style = PiaTypography.body3,
+        textAlign = TextAlign.Start,
         modifier = modifier,
     )
 }

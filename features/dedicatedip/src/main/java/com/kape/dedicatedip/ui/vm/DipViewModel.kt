@@ -13,6 +13,8 @@ import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.domain.GetDipMonthlyPlan
 import com.kape.dedicatedip.domain.GetDipSupportedCountries
 import com.kape.dedicatedip.domain.GetDipYearlyPlan
+import com.kape.dedicatedip.domain.GetSignupDipToken
+import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
@@ -33,6 +35,8 @@ class DipViewModel(
     private val getDipSupportedCountries: GetDipSupportedCountries,
     private val getDipMonthlyPlan: GetDipMonthlyPlan,
     private val getDipYearlyPlan: GetDipYearlyPlan,
+    private val validateDipSignup: ValidateDipSignup,
+    private val getSignupDipToken: GetSignupDipToken,
     private val paymentProvider: PaymentProvider,
     private val dipPrefs: DipPrefs,
     private val router: Router,
@@ -40,6 +44,7 @@ class DipViewModel(
 
     private val _state = MutableStateFlow<DedicatedIpStep?>(null)
     val state: StateFlow<DedicatedIpStep?> = _state
+    val activateTokenButtonState = mutableStateOf(false)
 
     val dipList = mutableStateListOf<VpnServer>()
     val activationState = mutableStateOf<DipApiResult?>(null)
@@ -57,8 +62,13 @@ class DipViewModel(
                 DedicatedIpStep.ActivateToken,
                 DedicatedIpStep.SignupPlans,
                 -> router.handleFlow(Back)
-
-                DedicatedIpStep.LocationSelection -> _state.value = DedicatedIpStep.SignupPlans
+                DedicatedIpStep.LocationSelection,
+                -> _state.value = DedicatedIpStep.SignupPlans
+                DedicatedIpStep.SignupSuccess,
+                DedicatedIpStep.SignupTokenDetails,
+                -> {
+                    // No-op
+                }
             }
         } ?: run {
             router.handleFlow(Back)
@@ -71,6 +81,10 @@ class DipViewModel(
 
     fun navigateToDedicatedIpLocationSelection() = viewModelScope.launch {
         _state.emit(DedicatedIpStep.LocationSelection)
+    }
+
+    fun navigateToDedicatedIpTokenDetails() = viewModelScope.launch {
+        _state.emit(DedicatedIpStep.SignupTokenDetails)
     }
 
     fun loadDedicatedIps(locale: String) = viewModelScope.launch {
@@ -163,5 +177,29 @@ class DipViewModel(
 
     fun selectDipCountry(selected: SupportedCountries.DedicatedIpCountriesAvailable?) {
         dipSelectedCountry.value = selected
+    }
+
+    fun enableActivateTokenButton() {
+        activateTokenButtonState.value = true
+    }
+
+    fun getSignupDipToken(): String =
+        getSignupDipToken.invoke()
+
+    fun signup() = viewModelScope.launch {
+        validateDipSignup.signup().collect { result ->
+            result.fold(
+                onSuccess = {
+                    navigateToDedicatedIpPurchaseSuccess()
+                },
+                onFailure = {
+                    TODO()
+                },
+            )
+        }
+    }
+
+    private fun navigateToDedicatedIpPurchaseSuccess() = viewModelScope.launch {
+        _state.emit(DedicatedIpStep.SignupSuccess)
     }
 }

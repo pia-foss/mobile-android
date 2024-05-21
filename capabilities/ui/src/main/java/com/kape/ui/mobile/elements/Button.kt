@@ -30,6 +30,7 @@ import com.kape.ui.utils.LocalColors
 fun PrimaryButton(
     text: String,
     modifier: Modifier,
+    enabled: Boolean = true,
     isLoading: Boolean = false,
     onClick: () -> Unit,
 ) {
@@ -37,6 +38,7 @@ fun PrimaryButton(
         onClick = onClick,
         modifier = modifier.heightIn(min = 48.dp),
         shape = RoundedCornerShape(12.dp),
+        enabled = enabled,
         colors = ButtonDefaults.textButtonColors(
             containerColor = LocalColors.current.primary,
             contentColor = LocalColors.current.onPrimary,

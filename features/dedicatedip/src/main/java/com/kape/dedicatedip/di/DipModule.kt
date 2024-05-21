@@ -6,7 +6,9 @@ import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.domain.GetDipMonthlyPlan
 import com.kape.dedicatedip.domain.GetDipSupportedCountries
 import com.kape.dedicatedip.domain.GetDipYearlyPlan
+import com.kape.dedicatedip.domain.GetSignupDipToken
 import com.kape.dedicatedip.domain.RenewDipUseCase
+import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dip.DipPrefs
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -25,5 +27,7 @@ val localDipModule = module {
     single { GetDipSupportedCountries(get()) }
     single { GetDipMonthlyPlan(get()) }
     single { GetDipYearlyPlan(get()) }
-    viewModel { DipViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    single { ValidateDipSignup(get(), get()) }
+    single { GetSignupDipToken(get()) }
+    viewModel { DipViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 }

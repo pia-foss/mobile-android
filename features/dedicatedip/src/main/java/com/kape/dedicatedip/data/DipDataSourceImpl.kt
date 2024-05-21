@@ -73,4 +73,9 @@ class DipDataSourceImpl(
         trySend(Json.decodeFromString(DIP_SIGNUP_MOCKED_RESPONSE))
         awaitClose { channel.close() }
     }
+
+    override fun signup(receipt: String): Flow<Result<String>> = callbackFlow {
+        trySend(Result.success("DIP_123456789"))
+        awaitClose { channel.close() }
+    }
 }

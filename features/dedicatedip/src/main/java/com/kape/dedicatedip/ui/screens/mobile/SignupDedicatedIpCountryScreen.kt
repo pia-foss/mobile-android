@@ -166,7 +166,10 @@ fun SignupDedicatedIpCountryScreen() = Screen {
 
 @Composable
 fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel) {
-    Column {
+    Column(
+        modifier = Modifier
+            .padding(8.dp),
+    ) {
         if (!showAllLocations) {
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -177,7 +180,7 @@ fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            TODO()
+            viewModel.signup()
         }
         Spacer(modifier = Modifier.height(8.dp))
         SecondaryButton(
