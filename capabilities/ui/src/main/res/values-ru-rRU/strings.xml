@@ -18,6 +18,9 @@
     <string name="download">Загрузить</string>
     <string name="upload">Отправить</string>
     <string name="connection">СОЕДИНЕНИЕ</string>
+    <string name="toggle_connection_button">Нажмите кнопку подключения:</string>
+    <string name="connect_to_vpn">подключитесь к VPN</string>
+    <string name="disconnect_from_vpn">отключитесь от VPN</string>
     <string name="public_ip">Публичный IP-адрес</string>
     <string name="vpn_ip">IP-адрес VPN</string>
     <string name="no_ip">---</string>
@@ -90,11 +93,15 @@
     <string name="you_are_all_set">Готово!</string>
     <string name="something_went_wrong">Что-то пошло не так</string>
     <string name="try_again">Повторить</string>
+    <string name="yes_i_want">Да, хочу</string>
+    <string name="take_me_back">Вернуться</string>
+    <string name="i_acknowledge">Понятно</string>
     <string name="remove_dedicated_ip">Удалить выделенный IP</string>
     <string name="tv_dedicated_ip_title">Активировать выделенный IP-адрес</string>
     <string name="tv_dedicated_ip_description">Активируйте выделенный IP-адрес, введя свой токен в поле ниже. Вы можете купить выделенный IP-адрес через свою панель управления на сайте PIA.</string>
     <string name="tv_dedicated_ip_textfield">Введите свой токен для доступа к выделенному IP-адресу</string>
     <string name="your_dedicated_ip_is_now_active">Ваш выделенный IP-адрес активирован.</string>
+    <string name="get_dedicated_ip">Получить выделенный IP</string>
     <string name="dedicated_ip_title">Выделенный IP</string>
     <string name="dedicated_ip_description">Активируйте выделенный IP, вставив свой токен в форму ниже. Если вы недавно купили выделенный IP, то можете создать токен на сайте PIA.</string>
     <string name="activate">ВКЛЮЧИТЬ</string>
@@ -106,6 +113,15 @@
     <string name="dip_remove_title">Удалить выделенный IP</string>
     <string name="dip_remove_description">Удалить %s – %s?</string>
     <string name="dip_summary">Защитите свои подключения с помощью выделенного IP-адреса из страны на ваш выбор. Пока действует подписка, этот адрес будет только вашим – это лучшая защита передачи данных из всех возможных.</string>
+    <string name="dip_signup_banner_home_description">Хотите добавить выделенный IP к своей подписке?</string>
+    <string name="dip_signup_banner_activate_description">У вас еще нет токена для получения выделенного IP?</string>
+    <string name="dip_signup_error">Похоже, вы оформили подписку через сайт PIA, поэтому не можете купить дополнение здесь. Пожалуйста, вернитесь на сайт и купите дополнение с выделенным IP там.</string>
+    <string name="dip_signup_supported_countries_title">Вы сможете выбрать только одну из перечисленных ниже локаций</string>
+    <string name="dip_signup_banner_activate_benefit_one">Забудьте о проверках CAPTCHA</string>
+    <string name="dip_signup_banner_activate_benefit_two">Забудьте о чёрных списках</string>
+    <string name="dip_signup_banner_activate_benefit_three">Безопасно открывайте сайты, защищенные геоблоками</string>
+    <string name="dip_signup_addon_title">Выберите тарифный план дополнения с выделенным IP</string>
+    <string name="dip_signup_addon_description">Забудьте о проверках CAPTCHA и чёрных списках с выделенным IP-адресом страны на свой выбор.</string>
     <string name="enter_username">Введите имя пользователя</string>
     <string name="enter_password">Введите пароль</string>
     <string name="tv_enter_username">Введите имя пользователя</string>
@@ -281,6 +297,7 @@
     <string name="duration_one_minute">одна минута</string>
     <string name="logout_confirmation">Подтверждение выхода</string>
     <string name="logout_confirmation_text">Если выполнить выход, будет прервано активное VPN-подключение, и вы останетесь без защиты</string>
+    <string name="pia_signup">Регистрация аккаунта Private Internet Access VPN</string>
     <string name="fast_and_secure_streaming">Быстрая и надежная VPN-сеть для онлайн-трансляций</string>
     <string name="subscribe_screen_title">Легкое подключение к любому региону</string>
     <string name="subscribe_screen_description">Благодаря серверам по всему миру вы всегда под защитой. Попробуйте наш сервис бесплатно в течение 7 дней, затем %s.</string>
@@ -288,8 +305,11 @@
     <string name="subscribe_screen_description_payment">Оплата будет списана с Вашего счета только по окончании пробного периода.</string>
     <string name="subscribe_screen_description_no_in_app">Благодаря серверам по всему миру вы всегда под защитой.</string>
     <string name="tv_subscribe_screen_description">Начните 7-дневный бесплатный пробный период, а затем %s.</string>
+    <string name="subscription_option">Продолжительность подписки</string>
     <string name="subscribe_now">Купить подписку сейчас</string>
     <string name="footer"><a href="web-screen-privacy">Политика конфиденциальности</a> и <a href="web-screen-terms">Условия использования</a></string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="and">и</string>
     <string name="terms_of_service">Условия использования</string>
     <string name="monthly_ending">%1$s/мес.</string>
     <string name="yearly_month_ending">%2$s%1$s/мес.</string>
