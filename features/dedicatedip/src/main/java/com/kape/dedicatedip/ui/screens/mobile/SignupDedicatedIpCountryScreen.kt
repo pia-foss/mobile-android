@@ -41,7 +41,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.HtmlText
+import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
@@ -189,10 +189,9 @@ fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel) {
             viewModel.navigateBack()
         }
         Spacer(modifier = Modifier.height(16.dp))
-        HtmlText(
-            textId = R.string.footer,
+        Footer(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(8.dp)
                 .align(Alignment.CenterHorizontally),
         )
         Spacer(modifier = Modifier.height(16.dp))
