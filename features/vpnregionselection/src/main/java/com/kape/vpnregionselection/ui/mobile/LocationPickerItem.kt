@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.FavoriteIcon
@@ -41,15 +43,23 @@ fun LocationPickerItem(
     isFavorite: Boolean,
     enableFavorite: Boolean,
     isPortForwardingEnabled: Boolean,
+    isOffline: Boolean,
     onClick: ((server: VpnServer) -> Unit),
     onFavoriteVpnClick: ((vpnServerName: String) -> Unit),
 ) {
     Column {
         Row(
             modifier = Modifier
-                .clickable {
-                    onClick(server)
-                }
+                .then(
+                    if (!isOffline) {
+                        Modifier.clickable { onClick(server) }
+                    } else {
+                        val offlineDescription = stringResource(id = R.string.offline)
+                        Modifier.semantics(mergeDescendants = true) {
+                            contentDescription = offlineDescription
+                        }
+                    },
+                )
                 .alpha(if (!server.allowsPortForwarding && isPortForwardingEnabled) 0.5f else 1f)
                 .defaultMinSize(minHeight = 56.dp)
                 .padding(16.dp),
@@ -70,7 +80,7 @@ fun LocationPickerItem(
                     .weight(12f),
             ) {
                 Row {
-                    RegionSelectionText(content = server.name)
+                    RegionSelectionText(content = server.name, isOffline = server.isOffline)
                     if (!server.allowsPortForwarding && isPortForwardingEnabled) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
@@ -101,22 +111,31 @@ fun LocationPickerItem(
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-            server.latency?.let {
-                if (it.toInt() < VPN_REGIONS_PING_TIMEOUT) {
-                    Box(
-                        modifier = Modifier
-                            .align(CenterVertically)
-                            .size(8.dp)
-                            .background(
-                                LocalColors.current.getLatencyColor(server.latency),
-                                shape = CircleShape,
-                            ),
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    RegionSelectionLatencyText(
-                        "${server.latency}ms",
-                        Modifier.align(CenterVertically),
-                    )
+            if (isOffline) {
+                Icon(
+                    painter = painterResource(id = com.kape.vpnregionselection.R.drawable.ic_offline),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(16.dp),
+                )
+            } else {
+                server.latency?.let {
+                    if (it.toInt() < VPN_REGIONS_PING_TIMEOUT) {
+                        Box(
+                            modifier = Modifier
+                                .align(CenterVertically)
+                                .size(8.dp)
+                                .background(
+                                    LocalColors.current.getLatencyColor(server.latency),
+                                    shape = CircleShape,
+                                ),
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        RegionSelectionLatencyText(
+                            "${server.latency}ms",
+                            Modifier.align(CenterVertically),
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.width(16.dp))
