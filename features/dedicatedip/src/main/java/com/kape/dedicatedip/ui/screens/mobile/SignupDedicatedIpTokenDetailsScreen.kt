@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -31,8 +32,8 @@ import com.kape.ui.R
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
-import com.kape.ui.mobile.elements.toAnnotatedString
 import com.kape.ui.mobile.text.DedicatedIpSignupActivateTokenDescriptionText
+import com.kape.ui.mobile.text.DedicatedIpSignupActivateTokenFooter
 import com.kape.ui.mobile.text.DedicatedIpSignupActivateTokenTitleText
 import com.kape.ui.theme.connectionError
 import com.kape.ui.theme.infoBackground
@@ -100,7 +101,7 @@ fun SignupDedicatedIpTokenDetailsScreen() = Screen {
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 DedicatedIpSignupActivateTokenDescriptionText(
-                    content = stringResource(id = R.string.dip_signup_save_your_token_description).toAnnotatedString(),
+                    content = stringResource(id = R.string.dip_signup_save_your_token_description),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Card(
@@ -111,7 +112,7 @@ fun SignupDedicatedIpTokenDetailsScreen() = Screen {
                     border = BorderStroke(1.dp, color = LocalColors.current.infoOutline()),
                     shape = RoundedCornerShape(12.dp),
                     onClick = {
-                        clipboardManager.setText(viewModel.getSignupDipToken().toAnnotatedString())
+                        clipboardManager.setText(AnnotatedString(viewModel.getSignupDipToken()))
                         Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
                         viewModel.enableActivateTokenButton()
                     },
@@ -124,7 +125,7 @@ fun SignupDedicatedIpTokenDetailsScreen() = Screen {
                     ) {
                         DedicatedIpSignupActivateTokenDescriptionText(
                             modifier = Modifier.weight(1.0f),
-                            content = viewModel.getSignupDipToken().toAnnotatedString(),
+                            content = viewModel.getSignupDipToken(),
                             color = LocalColors.current.infoBlue(),
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -143,7 +144,7 @@ fun SignupDedicatedIpTokenDetailsScreen() = Screen {
                     viewModel.enableActivateTokenButton()
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                DedicatedIpSignupActivateTokenDescriptionText(
+                DedicatedIpSignupActivateTokenFooter(
                     content = footerText,
                 )
             }
