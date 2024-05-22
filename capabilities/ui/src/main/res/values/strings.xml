@@ -22,6 +22,9 @@
     <string name="upload">Upload</string>
 
     <string name="connection">CONNECTION</string>
+    <string name="toggle_connection_button">Toggle connection button:</string>
+    <string name="connect_to_vpn">Connect to VPN</string>
+    <string name="disconnect_from_vpn">Disconnect from VPN</string>
     <string name="public_ip">Public IP</string>
     <string name="vpn_ip">VPN IP</string>
     <string name="no_ip">---</string>
@@ -348,6 +351,7 @@
     <string name="logout_confirmation">Logout Confirmation</string>
     <string name="logout_confirmation_text">Logging out will terminate an active VPN connection and leave you unprotected</string>
 
+    <string name="pia_signup">Sign up for Private Internet Access VPN</string>
     <string name="fast_and_secure_streaming">Fast &amp; Secure VPN for Streaming</string>
     <string name="subscribe_screen_title">Connect to any region easily</string>
     <string name="subscribe_screen_description">With servers around the globe, you are always under protection. Start your 7 days free trial then %s.</string>
@@ -355,8 +359,11 @@
     <string name="subscribe_screen_description_payment">Payment will only be charged to your account at the end of your trial.</string>
     <string name="subscribe_screen_description_no_in_app">With servers around the globe, you are always under protection.</string>
     <string name="tv_subscribe_screen_description">Start your 7 days free trial then %s.</string>
+    <string name="subscription_option">Subscription option</string>
     <string name="subscribe_now">Subscribe now</string>
     <string name="footer"><a href="web-screen-privacy">Privacy Policy</a> and <a href="web-screen-terms">Terms of Service</a></string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="and">and</string>
     <string name="terms_of_service">Terms of Service</string>
     <string name="monthly_ending">%1$s/mo</string>
     <string name="yearly_month_ending">%2$s%1$s/mo</string>

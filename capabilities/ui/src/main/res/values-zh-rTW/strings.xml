@@ -18,6 +18,9 @@
     <string name="download">下載</string>
     <string name="upload">上載</string>
     <string name="connection">連線</string>
+    <string name="toggle_connection_button">切換連線按鈕：</string>
+    <string name="connect_to_vpn">連線至 VPN</string>
+    <string name="disconnect_from_vpn">中斷 VPN 連線</string>
     <string name="public_ip">公開 IP</string>
     <string name="vpn_ip">VPN IP</string>
     <string name="no_ip">---</string>
@@ -90,11 +93,15 @@
     <string name="you_are_all_set">一切都已設定好了！</string>
     <string name="something_went_wrong">發生錯誤了</string>
     <string name="try_again">重試</string>
+    <string name="yes_i_want">是，我需要</string>
+    <string name="take_me_back">帶我返回</string>
+    <string name="i_acknowledge">我明白</string>
     <string name="remove_dedicated_ip">移除專屬 IP</string>
     <string name="tv_dedicated_ip_title">啟用您的專屬 IP</string>
     <string name="tv_dedicated_ip_description">請在下方欄位輸入權杖以啟用專屬 IP。您可以在 PIA 網站上的客戶控制台中購買專屬 IP。</string>
     <string name="tv_dedicated_ip_textfield">輸入您的專屬 IP 權杖</string>
     <string name="your_dedicated_ip_is_now_active">您的專屬 IP 現已啟用。</string>
+    <string name="get_dedicated_ip">獲取專用 IP</string>
     <string name="dedicated_ip_title">專屬 IP</string>
     <string name="dedicated_ip_description">請在下方貼上權杖以啟用專屬 IP。若您近期有購買專屬 IP，即可前往 PIA 網站產生權杖。</string>
     <string name="activate">啟用</string>
@@ -106,6 +113,15 @@
     <string name="dip_remove_title">移除專屬 IP</string>
     <string name="dip_remove_description">要移除 %s - %s 嗎？</string>
     <string name="dip_summary">只要您使用了任何自選國家的專屬 IP，即可保障您與任何內容的遠端連線安全。在您訂閱期間，此 IP 只供您本人使用，我們會採用最強大的加密功能來保護您的資料傳輸。</string>
+    <string name="dip_signup_banner_home_description">您是否需要新增專用 IP 到您的訂閱？</string>
+    <string name="dip_signup_banner_activate_description">還沒有專用 IP 權杖？</string>
+    <string name="dip_signup_error">似乎您已經在 PIA 網站訂閱了，您將無法直接從這裡購買附加元件。請返回網站並購買您的專用 IP 附加元件。</string>
+    <string name="dip_signup_supported_countries_title">您只能夠選擇以下可用位置中的一個</string>
+    <string name="dip_signup_banner_activate_benefit_one">避開 CAPTCHA</string>
+    <string name="dip_signup_banner_activate_benefit_two">避開封鎖名單</string>
+    <string name="dip_signup_banner_activate_benefit_three">安全地訪問 IP 敏感網站</string>
+    <string name="dip_signup_addon_title">選擇您的專用 IP 附加元件套餐</string>
+    <string name="dip_signup_addon_description">使用來自您所選擇國家的屬於您自己的專用 IP 避開 CAPTCHA 和封鎖名單。</string>
     <string name="enter_username">輸入使用者名稱</string>
     <string name="enter_password">輸入密碼</string>
     <string name="tv_enter_username">輸入使用者名稱</string>
@@ -281,6 +297,7 @@
     <string name="duration_one_minute">1 分鐘</string>
     <string name="logout_confirmation">登出確認</string>
     <string name="logout_confirmation_text">登出將終止目前使用中的 VPN 連線並令您不再受保護。</string>
+    <string name="pia_signup">註冊 Private Internet Access VPN</string>
     <string name="fast_and_secure_streaming">適用於串流媒體的快速且安全的 VPN</string>
     <string name="subscribe_screen_title">輕易就能連線到任何地區</string>
     <string name="subscribe_screen_description">我們的伺服器遍佈全球，能為您提供全面保護。開始 7 天免費試用，之後收費 %s。</string>
@@ -288,8 +305,11 @@
     <string name="subscribe_screen_description_payment">付款只會在試用結束時從您的帳戶中扣除。</string>
     <string name="subscribe_screen_description_no_in_app">我們的伺服器遍佈全球，能為您提供全面保護。</string>
     <string name="tv_subscribe_screen_description">開始 7 天免費試用，之後收費 %s。</string>
+    <string name="subscription_option">訂閱選項</string>
     <string name="subscribe_now">即刻訂閱</string>
     <string name="footer"><a href="web-screen-privacy">隱私權政策</a> 和 <a href="web-screen-terms">服務條款</a></string>
+    <string name="privacy_policy">隱私權政策</string>
+    <string name="and">和</string>
     <string name="terms_of_service">服務條款</string>
     <string name="monthly_ending">每月 %1$s</string>
     <string name="yearly_month_ending">%2$s%1$s/月</string>

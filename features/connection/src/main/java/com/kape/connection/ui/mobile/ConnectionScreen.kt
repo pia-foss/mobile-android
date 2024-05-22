@@ -130,7 +130,13 @@ fun ConnectionScreen() = Screen {
                 horizontalAlignment = CenterHorizontally,
             ) {
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                    val connection = stringResource(id = R.string.connection)
+                    var connectButtonDescription = stringResource(id = R.string.toggle_connection_button)
+
+                    connectButtonDescription += when (connectionStatus.value) {
+                        ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> stringResource(id = R.string.disconnect_from_vpn)
+                        else -> stringResource(id = R.string.connect_to_vpn)
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
                     if (viewModel.showDedicatedIpSignupBanner()) {
                         DedicatedIpBanner(
@@ -150,7 +156,7 @@ fun ConnectionScreen() = Screen {
                             .testTag(":ConnectionScreen:connection_button")
                             .semantics(mergeDescendants = true) {
                                 role = Role.Button
-                                contentDescription = connection
+                                contentDescription = connectButtonDescription
                             },
                     ) {
                         viewModel.onConnectionButtonClicked()

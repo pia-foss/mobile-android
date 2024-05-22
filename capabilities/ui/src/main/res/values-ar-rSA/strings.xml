@@ -18,6 +18,9 @@
     <string name="download">التنزيل</string>
     <string name="upload">التحميل</string>
     <string name="connection">الاتصال</string>
+    <string name="toggle_connection_button">تبديل زر الاتصال:</string>
+    <string name="connect_to_vpn">الاتصال بشبكة VPN</string>
+    <string name="disconnect_from_vpn">قطع اتصال VPN</string>
     <string name="public_ip">عنوان IP عمومي</string>
     <string name="vpn_ip">عنوان IP شبكة VPN</string>
     <string name="no_ip">---</string>
@@ -90,11 +93,15 @@
     <string name="you_are_all_set">تمت العملية بنجاح!</string>
     <string name="something_went_wrong">حدث خطأ ما</string>
     <string name="try_again">أعد المحاولة</string>
+    <string name="yes_i_want">نعم، أريد ذلك</string>
+    <string name="take_me_back">العودة</string>
+    <string name="i_acknowledge">نعم، لقد فهمت</string>
     <string name="remove_dedicated_ip">إزالة عنوان IP المخصّص</string>
     <string name="tv_dedicated_ip_title">تفعيل عنوان IP المخصص</string>
     <string name="tv_dedicated_ip_description">يمكنك تفعيل عنوان IP المخصص عبر كتابة الرمز المميز في الحقل أدناه. يمكنك شراء عنوان IP مخصص من لوحة تحكم العملاء على موقع PIA.</string>
     <string name="tv_dedicated_ip_textfield">أدخل الرمز المميز لعنوان IP المخصص</string>
     <string name="your_dedicated_ip_is_now_active">عنوان IP المخصص نشط الآن.</string>
+    <string name="get_dedicated_ip">احصل على IP مخصص</string>
     <string name="dedicated_ip_title">عنوان IP مخصّص</string>
     <string name="dedicated_ip_description">قم بتنشيط عنوان IP المخصّص عن طريق لصق الرمز في النموذج أدناه. يمكنك إنشاء الرمز في موقع PIA الإلكتروني إذا اشتريت عنوان IP مخصص مؤخرا.</string>
     <string name="activate">تنشيط</string>
@@ -106,6 +113,15 @@
     <string name="dip_remove_title">إزالة عنوان IP المخصّص</string>
     <string name="dip_remove_description">إزالة %s - %s؟</string>
     <string name="dip_summary">أمّن اتصالاتك عن بُعد باستخدام عنوان IP مخصّص يقع في بلد من اختيارك. سيكون هذا العنوان ملكا لك وحدك طوال مدة اشتراكك، وسيساعدك على حماية عمليات نقل بياناتك الشخصية بفضل أحدث تكنولوجيات التشفير.</string>
+    <string name="dip_signup_banner_home_description">هل ترغب في إضافة IP مخصص لاشتراكك؟</string>
+    <string name="dip_signup_banner_activate_description">ليس لديك رمز للحصول على IP مخصص حتى الآن؟</string>
+    <string name="dip_signup_error">يبدو أنك اشتركت على موقع PIA ولا يمكنك شراء الإضافة مباشرة من هنا. يرجى العودة إلى الموقع وشراء إضافة عنوان IP المخصص.</string>
+    <string name="dip_signup_supported_countries_title">يمكنك تحديد موقع واحد فقط من المواقع المتاحة أدناه</string>
+    <string name="dip_signup_banner_activate_benefit_one">تجنب CAPTCHA</string>
+    <string name="dip_signup_banner_activate_benefit_two">تجنب قوائم الحظر</string>
+    <string name="dip_signup_banner_activate_benefit_three">الوصول إلى المواقع المتعقبة بأمان</string>
+    <string name="dip_signup_addon_title">اختر خطة إضافة عنوان IP مخصص</string>
+    <string name="dip_signup_addon_description">تجنب CAPTCHA وقوائم الحظر مع عنوان IP مخصص من بلدك المفضل.</string>
     <string name="enter_username">أدخل اسم المستخدم</string>
     <string name="enter_password">أدخل كلمة المرور</string>
     <string name="tv_enter_username">أدخل اسم المستخدم</string>
@@ -281,6 +297,7 @@
     <string name="duration_one_minute">دقيقة واحدة</string>
     <string name="logout_confirmation">تأكيد تسجيل الخروج</string>
     <string name="logout_confirmation_text">سيؤدي تسجيل الخروج إلى إنهاء اتصال VPN نشط، ويتركك بدون حماية</string>
+    <string name="pia_signup">إنشاء حساب للاشتراك في Private Internet Access VPN</string>
     <string name="fast_and_secure_streaming">VPN سريع وآمن لمشاهدة الأفلام</string>
     <string name="subscribe_screen_title">الاتصال بأي موقع بسهولة</string>
     <string name="subscribe_screen_description">ستكون دائما محميا بفضل خوادمنا الواقعة في كل أنحاء العالم. احصل على الإصدار التجريبي المجاني لمدة 7 أيام، ثم %s.</string>
@@ -288,8 +305,11 @@
     <string name="subscribe_screen_description_payment">سيتم فرض الدفع على حسابك فقط في نهاية الفترة التجريبية.</string>
     <string name="subscribe_screen_description_no_in_app">ستكون دائما محميا مع خوادم في جميع أنحاء العالم.</string>
     <string name="tv_subscribe_screen_description">ابدأ تجربتك المجانية لمدة 7 أيام ثم %s.</string>
+    <string name="subscription_option">خطة الاشتراك</string>
     <string name="subscribe_now">اشترك الآن</string>
     <string name="footer"><a href="web-screen-privacy">سياسة الخصوصية</a> و<a href="web-screen-terms">شروط الخدمة</a></string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="and">-</string>
     <string name="terms_of_service">شروط الخدمة</string>
     <string name="monthly_ending">%1$s/شهر</string>
     <string name="yearly_month_ending">%2$s%1$s/شهر</string>

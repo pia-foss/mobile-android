@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
@@ -40,7 +41,7 @@ import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.HtmlText
+import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.MonthlySubscriptionCard
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -95,7 +96,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
                 Image(
                     painter = painterResource(id = R.drawable.pia_medium),
-                    contentDescription = null,
+                    contentDescription = stringResource(id = R.string.pia_signup),
                     modifier = Modifier
                         .padding(16.dp)
                         .height(40.dp)
@@ -132,13 +133,15 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Column(modifier = Modifier.alpha(determineProductsAlpha(screenState))) {
+                    val subscriptionOptions = stringResource(id = R.string.subscription_option)
                     YearlySubscriptionCard(
                         selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
                         price = subscriptionData?.yearly?.mainPrice ?: "",
                         perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 16.dp)
+                            .semantics { contentDescription = subscriptionOptions },
                     ) {
                         subscriptionData?.let {
                             subscriptionData.selected.value = subscriptionData.yearly
@@ -150,7 +153,8 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                         price = subscriptionData?.monthly?.mainPrice ?: "",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 16.dp)
+                            .semantics { contentDescription = subscriptionOptions },
                     ) {
                         subscriptionData?.let {
                             subscriptionData.selected.value = subscriptionData.monthly
@@ -194,10 +198,9 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Spacer(modifier = Modifier.weight(1f))
-                HtmlText(
-                    textId = R.string.footer,
+                Footer(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(8.dp)
                         .align(CenterHorizontally),
                 )
             }

@@ -18,6 +18,9 @@
     <string name="download">Herunterladen</string>
     <string name="upload">Upload</string>
     <string name="connection">VERBINDUNG</string>
+    <string name="toggle_connection_button">Verbindungsbutton:</string>
+    <string name="connect_to_vpn">VPN-Verbindung herstellen</string>
+    <string name="disconnect_from_vpn">VPN-Verbindung trennen</string>
     <string name="public_ip">Öffentliche IP</string>
     <string name="vpn_ip">VPN-IP</string>
     <string name="no_ip">---</string>
@@ -90,11 +93,15 @@
     <string name="you_are_all_set">Fertig!</string>
     <string name="something_went_wrong">Es ist ein Fehler aufgetreten</string>
     <string name="try_again">Erneut versuchen</string>
+    <string name="yes_i_want">Ja, bitte</string>
+    <string name="take_me_back">Zurück</string>
+    <string name="i_acknowledge">OK</string>
     <string name="remove_dedicated_ip">Dedizierte IP entfernen</string>
     <string name="tv_dedicated_ip_title">Aktivieren Sie Ihre dedizierte IP-Adresse</string>
     <string name="tv_dedicated_ip_description">Aktivieren Sie Ihre dedizierte IP-Adresse, indem Sie Ihren Token in das Feld unten eingeben. Sie können eine dedizierte IP-Adresse über Ihre Kundenübersicht auf der PIA-Website erwerben.</string>
     <string name="tv_dedicated_ip_textfield">Geben Sie Ihren dedizierten IP-Token ein</string>
     <string name="your_dedicated_ip_is_now_active">Ihre dedizierte IP ist jetzt aktiv.</string>
+    <string name="get_dedicated_ip">Zur dedizierten IP</string>
     <string name="dedicated_ip_title">Dedizierte IP</string>
     <string name="dedicated_ip_description">Aktivieren Sie Ihre dedizierte IP, indem Sie Ihr Token in das unten stehende Formular einfügen. Wenn Sie kürzlich eine dedizierte IP erworben haben, können Sie das Token generieren, indem Sie die PIA-Website aufrufen.</string>
     <string name="activate">AKTIVIEREN</string>
@@ -106,6 +113,15 @@
     <string name="dip_remove_title">Dedizierte IP entfernen</string>
     <string name="dip_remove_description">%s - %s entfernen?</string>
     <string name="dip_summary">Sichern Sie Ihre Remoteverbindungen zu einer beliebigen Ressource mit einer dedizierten IP aus einem Land Ihrer Wahl. Während der Laufzeit Ihres Abonnements gehört diese IP Ihnen ganz alleine und schützt Ihre Datenübertragungen mit der stärksten Verschlüsselung.</string>
+    <string name="dip_signup_banner_home_description">Möchten Sie eine dedizierte IP zu Ihrem Abo hinzufügen?</string>
+    <string name="dip_signup_banner_activate_description">Sie haben noch keinen dedizierten IP-Token?</string>
+    <string name="dip_signup_error">Sie scheinen Ihr Abonnement auf der PIA-Website abgeschlossen zu haben und können das Add-on nicht direkt von hier aus hinzufügen. Bitte kehren Sie auf die Website zurück und erwerben Sie dort Ihr Add-on für eine dedizierte IP.</string>
+    <string name="dip_signup_supported_countries_title">Sie können nur einen der unten aufgeführten Standorte auswählen</string>
+    <string name="dip_signup_banner_activate_benefit_one">Vermeiden Sie CAPTCHAs</string>
+    <string name="dip_signup_banner_activate_benefit_two">Vermeiden Sie Blocklisten</string>
+    <string name="dip_signup_banner_activate_benefit_three">Greifen Sie sicher auf IP-sensible Websites zu</string>
+    <string name="dip_signup_addon_title">Wählen Sie einen Tarif für Ihre dedizierte IP</string>
+    <string name="dip_signup_addon_description">Umgehen Sie CAPTCHAs und Blocklisten mit Ihrer eigenen dedizierten IP aus einem Land Ihrer Wahl.</string>
     <string name="enter_username">Nutzername eingeben</string>
     <string name="enter_password">Passwort eingeben</string>
     <string name="tv_enter_username">Nutzername eingeben</string>
@@ -281,6 +297,7 @@
     <string name="duration_one_minute">1 Minute</string>
     <string name="logout_confirmation">Abmeldebestätigung</string>
     <string name="logout_confirmation_text">Wenn du dich abmeldest, wird die aktive VPN-Verbindung abgebrochen und du bist ungeschützt.</string>
+    <string name="pia_signup">Abonnieren Sie Private Internet Access VPN</string>
     <string name="fast_and_secure_streaming">Schnelles &amp; sicheres VPN fürs Streaming</string>
     <string name="subscribe_screen_title">Schnell und einfach mit jeder beliebigen Region verbinden</string>
     <string name="subscribe_screen_description">Mit Servern auf der ganzen Welt sind Sie immer geschützt. Starten Sie Ihre 7-tägige kostenlose Testphase, danach %s.</string>
@@ -288,8 +305,11 @@
     <string name="subscribe_screen_description_payment">Die Zahlung wird Ihrem Konto erst am Ende der Testphase belastet.</string>
     <string name="subscribe_screen_description_no_in_app">Mit Servern auf der ganzen Welt sind Sie immer geschützt.</string>
     <string name="tv_subscribe_screen_description">Starten Sie Ihre kostenlose 7-Tage-Testversion dann %s.</string>
+    <string name="subscription_option">Abo-Option</string>
     <string name="subscribe_now">Jetzt abonnieren</string>
     <string name="footer"><a href="web-screen-privacy">Datenschutzerklärung</a> und <a href="web-screen-terms">Servicebedingungen</a></string>
+    <string name="privacy_policy">Datenschutzrichtlinie</string>
+    <string name="and">und</string>
     <string name="terms_of_service">Nutzungsbedingungen</string>
     <string name="monthly_ending">%1$s/Monat</string>
     <string name="yearly_month_ending">%2$s%1$s/Monat</string>

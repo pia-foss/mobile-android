@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.HtmlText
+import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.MonthlySubscriptionCard
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -130,8 +130,7 @@ fun SignupDedicatedIpScreen() = Screen {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Spacer(modifier = Modifier.weight(1f))
-        HtmlText(
-            textId = R.string.footer,
+        Footer(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.CenterHorizontally),

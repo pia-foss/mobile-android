@@ -18,6 +18,9 @@
     <string name="download">İndir</string>
     <string name="upload">Yükle</string>
     <string name="connection">BAĞLANTI</string>
+    <string name="toggle_connection_button">Bağlan butonunu açın:</string>
+    <string name="connect_to_vpn">VPN\'e bağlanın</string>
+    <string name="disconnect_from_vpn">VPN bağlantısını sonlandırın</string>
     <string name="public_ip">Herkese Açık IP</string>
     <string name="vpn_ip">VPN IP</string>
     <string name="no_ip">---</string>
@@ -90,11 +93,15 @@
     <string name="you_are_all_set">Hazırsınız!</string>
     <string name="something_went_wrong">Bir şey ters gitti</string>
     <string name="try_again">Tekrar Deneyin</string>
+    <string name="yes_i_want">Evet istiyorum</string>
+    <string name="take_me_back">Geri dön</string>
+    <string name="i_acknowledge">Kabul ediyorum</string>
     <string name="remove_dedicated_ip">Özel IP\'yi Kaldır</string>
     <string name="tv_dedicated_ip_title">Özel IP Adresinizi Etkinleştirin</string>
     <string name="tv_dedicated_ip_description">Aşağıdaki alana belirtecinizi yazarak Özel IP adresinizi etkinleştirin. PIA web sitesinde İstemci Kontrol Paneli\'nden bir Özel IP satın alabilirsiniz.</string>
     <string name="tv_dedicated_ip_textfield">Özel IP belirtecinizi girin</string>
     <string name="your_dedicated_ip_is_now_active">Özel IP adresiniz şimdi hazır.</string>
+    <string name="get_dedicated_ip">Özel IP alın</string>
     <string name="dedicated_ip_title">Özel IP</string>
     <string name="dedicated_ip_description">Belirtecinizi aşağıdaki forma yapıştırarak Özel IP\'nizi etkinleştirin. Kısa süre önce bir özel IP satın aldıysanız belirteci PIA web sitesine giderek oluşturabilirsiniz.</string>
     <string name="activate">ETKİNLEŞTİR</string>
@@ -106,6 +113,15 @@
     <string name="dip_remove_title">Özel IP\'yi Kaldır</string>
     <string name="dip_remove_description">%s - %s kaldırılsın mı?</string>
     <string name="dip_summary">Herhangi bir  varlıkla olan uzaktan bağlantılarınızı, seçtiğiniz bir ülkeden özel bir IP ile  sabitleyin. Aboneliğiniz sırasında bu IP sadece size ait olacak ve veri transferleriniz en güçlü şifrelemeyle koruyacaktır.</string>
+    <string name="dip_signup_banner_home_description">Aboneliğinize Özel IP eklemek ister misiniz?</string>
+    <string name="dip_signup_banner_activate_description">Henüz Özel bir IP tokeniniz yok mu?</string>
+    <string name="dip_signup_error">Görünüşe göre PIA web sitesine abone olmuşsunuz; eklentiyi doğrudan buradan satın alamazsınız. Lütfen web sitesine dönün ve Özel IP eklentinizi satın alın.</string>
+    <string name="dip_signup_supported_countries_title">Aşağıdaki mevcut konumlardan yalnızca birini seçebileceksiniz</string>
+    <string name="dip_signup_banner_activate_benefit_one">CAPTCHA\'lardan kaçının</string>
+    <string name="dip_signup_banner_activate_benefit_two">Engellenenler listelerinden kaçının</string>
+    <string name="dip_signup_banner_activate_benefit_three">IP\'ye duyarlı web sitelerine güvenli bir şekilde erişin</string>
+    <string name="dip_signup_addon_title">Özel IP eklenti planınızı seçin</string>
+    <string name="dip_signup_addon_description">Seçtiğiniz bir ülkeden size ait Özel IP\'nizle CAPTCHA\'lardan ve engellenenler listelerinden kaçının.</string>
     <string name="enter_username">Kullanıcı adı girin</string>
     <string name="enter_password">Şifre girin</string>
     <string name="tv_enter_username">Kullanıcı adınızı girin</string>
@@ -281,6 +297,7 @@
     <string name="duration_one_minute">bir dakika</string>
     <string name="logout_confirmation">Çıkış Onayı</string>
     <string name="logout_confirmation_text">Çıkış yaptığınızda etkin olan bir VPN bağlantısı sonlanacak ve korunmasız kalacaksınız</string>
+    <string name="pia_signup">Private Internet Access VPN için kaydolun</string>
     <string name="fast_and_secure_streaming">Video İzlemek için Hızlı ve Güvenli VPN</string>
     <string name="subscribe_screen_title">Herhangi bir bölgeye kolayca bağlanın</string>
     <string name="subscribe_screen_description">Dünyanın dört bir yanındaki sunucularla, her zaman koruma altındasınız. 7 günlük ücretsiz denemenizi başlatın. Sonrasında %s.</string>
@@ -288,8 +305,11 @@
     <string name="subscribe_screen_description_payment">Ödeme yalnızca deneme sürenizin sonunda hesabınızdan tahsil edilecektir.</string>
     <string name="subscribe_screen_description_no_in_app">Dünyanın dört bir yanındaki sunucularla her zaman koruma altındasınız.</string>
     <string name="tv_subscribe_screen_description">Sonrasında %s ile 7 gün ücretsiz denemenizi başlatın.</string>
+    <string name="subscription_option">Abonelik seçeneği</string>
     <string name="subscribe_now">Şimdi abone olun</string>
     <string name="footer"><a href="web-screen-privacy">Gizlilik Politikası</a> ve <a href="web-screen-terms">Hizmet Şartları</a></string>
+    <string name="privacy_policy">Gizlilik Politikası</string>
+    <string name="and">ve</string>
     <string name="terms_of_service">Hizmet Koşulları</string>
     <string name="monthly_ending">Ayda %1$s</string>
     <string name="yearly_month_ending">Ayda %2$s%1$s</string>
