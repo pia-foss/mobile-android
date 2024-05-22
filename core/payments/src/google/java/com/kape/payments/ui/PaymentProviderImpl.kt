@@ -73,7 +73,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                 }
 
                 override fun onBillingServiceDisconnected() {
-                    purchaseState.value = PurchaseState.InitFailed
+                    purchaseState.value = PurchaseState.Disconnected
                 }
             },
         )
@@ -184,6 +184,10 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
             }
         }
         billingClient.queryPurchaseHistoryAsync(params, purchaseHistoryListener)
+    }
+
+    override fun isClientRegistered(): Boolean {
+        return billingClient.isReady
     }
 
     private fun createProductsListForQuery(): List<QueryProductDetailsParams.Product> {

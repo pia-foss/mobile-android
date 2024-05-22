@@ -26,6 +26,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
 
     private val products = hashSetOf(monthlySubscription, yearlySubscription, M1, Y1)
     private var selectedProduct: Product? = null
+    private var isClientRegistered = false
 
     var availableProducts = mutableListOf<Product>()
     override val purchaseState: MutableStateFlow<PurchaseState> =
@@ -47,6 +48,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
 
                 override fun onProductDataResponse(productData: ProductDataResponse?) {
                     if (productData != null) {
+                        isClientRegistered = true
                         val perMonth = productData.productData[M1]
                         val perYear = productData.productData[Y1]
 
@@ -111,6 +113,10 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
 
     override fun getPurchaseHistory() {
         // no-op
+    }
+
+    override fun isClientRegistered(): Boolean {
+        return isClientRegistered
     }
 
     private fun handlePurchaseResponse(purchase: PurchaseResponse?) {

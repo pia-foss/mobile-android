@@ -43,4 +43,8 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
     override fun getPurchaseHistory() {
         // no-op
     }
+
+    override fun isClientRegistered(): Boolean {
+        return false
+    }
 }

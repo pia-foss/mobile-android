@@ -57,6 +57,7 @@ object Dependencies {
     fun DependencyHandler.implementAndroidBase() {
         add(IMPLEMENTATION, "androidx.core:core-ktx:1.12.0")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-runtime-ktx:$JETPACK")
+        add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-runtime-compose:$JETPACK")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-viewmodel-ktx:$JETPACK")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-process:$JETPACK")
         add(IMPLEMENTATION, "androidx.activity:activity-compose:1.8.2")
@@ -109,7 +110,7 @@ object Dependencies {
         implementViewModel()
         implementKoin()
         implementCoroutines()
-
+        implementAndroidBase()
         implementTest()
     }
 

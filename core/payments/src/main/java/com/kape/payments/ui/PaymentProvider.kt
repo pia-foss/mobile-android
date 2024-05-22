@@ -25,4 +25,6 @@ interface PaymentProvider {
     fun getPurchaseUpdates()
 
     fun getPurchaseHistory()
+
+    fun isClientRegistered(): Boolean
 }

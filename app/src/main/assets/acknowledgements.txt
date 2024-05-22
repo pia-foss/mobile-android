@@ -86,10 +86,11 @@ androidx.lifecycle:lifecycle-common, androidx.lifecycle:lifecycle-common-java8,
 androidx.lifecycle:lifecycle-livedata, androidx.lifecycle:lifecycle-livedata-
 core, androidx.lifecycle:lifecycle-livedata-core-ktx,
 androidx.lifecycle:lifecycle-process, androidx.lifecycle:lifecycle-runtime,
-androidx.lifecycle:lifecycle-runtime-ktx, androidx.lifecycle:lifecycle-service,
-androidx.lifecycle:lifecycle-viewmodel, androidx.lifecycle:lifecycle-viewmodel-
-compose, androidx.lifecycle:lifecycle-viewmodel-ktx,
-androidx.lifecycle:lifecycle-viewmodel-savedstate
+androidx.lifecycle:lifecycle-runtime-compose, androidx.lifecycle:lifecycle-
+runtime-ktx, androidx.lifecycle:lifecycle-service, androidx.lifecycle:lifecycle-
+viewmodel, androidx.lifecycle:lifecycle-viewmodel-compose,
+androidx.lifecycle:lifecycle-viewmodel-ktx, androidx.lifecycle:lifecycle-
+viewmodel-savedstate
 androidx.navigation:navigation-common, androidx.navigation:navigation-common-
 ktx, androidx.navigation:navigation-compose, androidx.navigation:navigation-
 fragment, androidx.navigation:navigation-fragment-ktx,
@@ -5147,10 +5148,11 @@ androidx.lifecycle:lifecycle-common, androidx.lifecycle:lifecycle-common-java8,
 androidx.lifecycle:lifecycle-livedata, androidx.lifecycle:lifecycle-livedata-
 core, androidx.lifecycle:lifecycle-livedata-core-ktx,
 androidx.lifecycle:lifecycle-process, androidx.lifecycle:lifecycle-runtime,
-androidx.lifecycle:lifecycle-runtime-ktx, androidx.lifecycle:lifecycle-service,
-androidx.lifecycle:lifecycle-viewmodel, androidx.lifecycle:lifecycle-viewmodel-
-compose, androidx.lifecycle:lifecycle-viewmodel-ktx,
-androidx.lifecycle:lifecycle-viewmodel-savedstate
+androidx.lifecycle:lifecycle-runtime-compose, androidx.lifecycle:lifecycle-
+runtime-ktx, androidx.lifecycle:lifecycle-service, androidx.lifecycle:lifecycle-
+viewmodel, androidx.lifecycle:lifecycle-viewmodel-compose,
+androidx.lifecycle:lifecycle-viewmodel-ktx, androidx.lifecycle:lifecycle-
+viewmodel-savedstate
 
 
                                  Apache License

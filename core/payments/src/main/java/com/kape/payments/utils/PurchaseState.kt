@@ -9,4 +9,5 @@ sealed class PurchaseState {
     data object PurchaseSuccess : PurchaseState()
     data object PurchaseFailed : PurchaseState()
     data object NoInAppPurchase : PurchaseState()
+    data object Disconnected : PurchaseState()
 }

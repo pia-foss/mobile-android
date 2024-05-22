@@ -1,5 +1,6 @@
 package com.kape.signup.ui.vm
 
+import android.app.Activity
 import android.util.Patterns
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -147,6 +148,10 @@ class SignupViewModel(
                         PurchaseState.NoInAppPurchase -> {
                             _state.emit(NO_IN_APP_SUBSCRIPTIONS)
                         }
+
+                        PurchaseState.Disconnected -> {
+                            // no-op
+                        }
                     }
                 }
             }
@@ -222,6 +227,12 @@ class SignupViewModel(
 
     fun exitApp() {
         router.handleFlow(Exit)
+    }
+
+    fun registerClientIfNeeded(activity: Activity) {
+        if (!paymentProvider.isClientRegistered()) {
+            paymentProvider.register(activity)
+        }
     }
 
     private fun onProductsFailedToLoad() = viewModelScope.launch {

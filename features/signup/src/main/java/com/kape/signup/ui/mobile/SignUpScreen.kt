@@ -1,5 +1,6 @@
 package com.kape.signup.ui.mobile
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,12 +24,15 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
@@ -54,8 +58,14 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
     val scheme = LocalColors.current
     val systemUiController = rememberSystemUiController()
     val screenState by viewModel.state.collectAsState()
+    val context = LocalContext.current
+
     SideEffect {
         systemUiController.setStatusBarColor(scheme.statusBarDefault(scheme))
+    }
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.registerClientIfNeeded(context as Activity)
     }
 
     BackHandler {
@@ -109,7 +119,11 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                         content = if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
                             stringResource(id = R.string.subscribe_screen_description_no_in_app)
                         } else {
-                            "${stringResource(id = R.string.subscribe_screen_description).format(subscriptionData?.yearly?.mainPrice)} ${stringResource(id = R.string.subscribe_screen_description_cancel_anytime)}"
+                            "${
+                            stringResource(id = R.string.subscribe_screen_description).format(
+                                subscriptionData?.yearly?.mainPrice,
+                            )
+                            } ${stringResource(id = R.string.subscribe_screen_description_cancel_anytime)}"
                         },
                         modifier = Modifier
                             .align(CenterHorizontally)
