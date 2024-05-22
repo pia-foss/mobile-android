@@ -66,6 +66,7 @@ class DipViewModel(
                 -> _state.value = DedicatedIpStep.SignupPlans
                 DedicatedIpStep.SignupSuccess,
                 DedicatedIpStep.SignupTokenDetails,
+                DedicatedIpStep.SignupTokenActivate,
                 -> {
                     // No-op
                 }
@@ -73,6 +74,10 @@ class DipViewModel(
         } ?: run {
             router.handleFlow(Back)
         }
+    }
+
+    fun navigateToActivateToken() = viewModelScope.launch {
+        _state.emit(DedicatedIpStep.ActivateToken)
     }
 
     fun navigateToDedicatedIpPlans() = viewModelScope.launch {
@@ -85,6 +90,10 @@ class DipViewModel(
 
     fun navigateToDedicatedIpTokenDetails() = viewModelScope.launch {
         _state.emit(DedicatedIpStep.SignupTokenDetails)
+    }
+
+    fun navigateToDedicatedIpTokenActivate() = viewModelScope.launch {
+        _state.emit(DedicatedIpStep.SignupTokenActivate)
     }
 
     fun loadDedicatedIps(locale: String) = viewModelScope.launch {

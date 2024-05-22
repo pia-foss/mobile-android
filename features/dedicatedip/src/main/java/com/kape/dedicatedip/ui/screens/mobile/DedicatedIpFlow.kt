@@ -27,6 +27,7 @@ fun DedicatedIpFlow(initialStep: DedicatedIpStep) {
             DedicatedIpStep.LocationSelection -> SignupDedicatedIpCountryScreen()
             DedicatedIpStep.SignupSuccess -> SignupDedicatedIpPurchaseSuccessScreen()
             DedicatedIpStep.SignupTokenDetails -> SignupDedicatedIpTokenDetailsScreen()
+            DedicatedIpStep.SignupTokenActivate -> SignupDedicatedIpTokenActivateScreen()
         }
     }
 }

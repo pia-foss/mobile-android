@@ -157,7 +157,7 @@ fun SignupDedicatedIpTokenDetailsScreen() = Screen {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            TODO()
+            viewModel.navigateToDedicatedIpTokenActivate()
         }
         Spacer(modifier = Modifier.height(64.dp))
     }

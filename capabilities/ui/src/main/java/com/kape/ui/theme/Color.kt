@@ -121,6 +121,7 @@ fun ColorScheme.errorBackground() = error50
 
 fun ColorScheme.warningOutline() = warning30
 fun ColorScheme.warningBackground() = warning50
+fun ColorScheme.warningOrange() = warning10
 
 fun ColorScheme.infoOutline() = info30
 fun ColorScheme.infoBackground() = info50

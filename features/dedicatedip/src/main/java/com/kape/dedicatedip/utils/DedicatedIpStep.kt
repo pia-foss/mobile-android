@@ -6,4 +6,5 @@ sealed class DedicatedIpStep {
     data object LocationSelection : DedicatedIpStep()
     data object SignupSuccess : DedicatedIpStep()
     data object SignupTokenDetails : DedicatedIpStep()
+    data object SignupTokenActivate : DedicatedIpStep()
 }

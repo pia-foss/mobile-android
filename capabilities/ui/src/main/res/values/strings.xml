@@ -169,6 +169,8 @@
     <string name="dip_signup_save_your_token_as_pdf">Save token as PDF</string>
     <string name="dip_signup_token_copied">Token copied to your clipboard</string>
     <string name="dip_signup_activate_token">Activate token</string>
+    <string name="dip_signup_activate_token_description">Activate your Dedicated IP by pasting your token in the form below. If you\'ve recently purchased a Dedicated IP, you can generate the token by going to the PIA website.</string>
+    <string name="dip_signup_activate_token_description_warning">Please make sure you save your token and keep it somewhere safe and private. This token can be used on other devices.</string>
 
     <string name="enter_username">Enter username</string>
     <string name="enter_password">Enter password</string>

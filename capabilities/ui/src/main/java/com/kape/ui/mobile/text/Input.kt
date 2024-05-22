@@ -28,6 +28,7 @@ fun Input(
     modifier: Modifier,
     label: String? = null,
     maskInput: Boolean,
+    singleLine: Boolean = false,
     keyboard: KeyboardType,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     imeAction: ImeAction = ImeAction.Default,
@@ -35,6 +36,15 @@ fun Input(
     content: MutableState<String>,
     errorMessage: String? = null,
 ) {
+    val trailingIcon: @Composable (() -> Unit)? = errorMessage?.let {
+        @Composable {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_error),
+                contentDescription = null,
+                tint = Color.Unspecified,
+            )
+        }
+    }
     Column(modifier = modifier) {
         OutlinedTextField(
             modifier = Modifier
@@ -48,16 +58,9 @@ fun Input(
                     InputLabelText(content = label)
                 }
             },
+            singleLine = singleLine,
             shape = RoundedCornerShape(12.dp),
-            trailingIcon = {
-                errorMessage?.let {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_error),
-                        contentDescription = null,
-                        tint = Color.Unspecified,
-                    )
-                }
-            },
+            trailingIcon = trailingIcon,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedContainerColor = LocalColors.current.onPrimary,
                 unfocusedContainerColor = LocalColors.current.onPrimary,
