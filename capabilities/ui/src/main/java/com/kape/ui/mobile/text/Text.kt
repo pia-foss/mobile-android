@@ -498,9 +498,24 @@ fun DedicatedIpSignupActivateTokenTitleText(content: String, modifier: Modifier 
 }
 
 @Composable
-fun DedicatedIpSignupActivateTokenDescriptionText(
+fun DedicatedIpSignupActivateTokenFooter(
     modifier: Modifier = Modifier,
     content: AnnotatedString,
+    color: Color = LocalColors.current.onSurface,
+) {
+    Text(
+        text = content,
+        color = color,
+        style = PiaTypography.body3,
+        textAlign = TextAlign.Start,
+        modifier = modifier,
+    )
+}
+
+@Composable
+fun DedicatedIpSignupActivateTokenDescriptionText(
+    modifier: Modifier = Modifier,
+    content: String,
     color: Color = LocalColors.current.onSurface,
 ) {
     Text(
