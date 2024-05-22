@@ -30,7 +30,6 @@ import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.mobile.elements.toAnnotatedString
 import com.kape.ui.mobile.text.DedicatedIpSignupActivateTokenDescriptionText
 import com.kape.ui.mobile.text.Input
 import com.kape.ui.theme.warningBackground
@@ -66,7 +65,7 @@ fun SignupDedicatedIpTokenActivateScreen() = Screen {
             modifier = Modifier.padding(16.dp),
         ) {
             DedicatedIpSignupActivateTokenDescriptionText(
-                content = stringResource(id = R.string.dip_signup_activate_token_description).toAnnotatedString(),
+                content = stringResource(id = R.string.dip_signup_activate_token_description),
             )
             Spacer(modifier = Modifier.height(16.dp))
             Input(
@@ -99,7 +98,7 @@ fun SignupDedicatedIpTokenActivateScreen() = Screen {
                     Spacer(modifier = Modifier.width(8.dp))
                     DedicatedIpSignupActivateTokenDescriptionText(
                         modifier = Modifier.fillMaxWidth(),
-                        content = stringResource(id = R.string.dip_signup_activate_token_description_warning).toAnnotatedString(),
+                        content = stringResource(id = R.string.dip_signup_activate_token_description_warning),
                         color = LocalColors.current.warningOrange(),
                     )
                 }
