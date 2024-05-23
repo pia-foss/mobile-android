@@ -65,8 +65,7 @@ fun QuickConnect(
                                     servers.keys.toList()[index]?.let {
                                         onClick(it)
                                     }
-                                }
-                                .testTag(":QuickConnect:Server"),
+                                }.testTag(":QuickConnect:server_$index"),
                         )
                     } ?: run {
                         QuickConnectItem(modifier = Modifier.weight(1f))
@@ -131,8 +130,7 @@ private fun QuickConnectItem(
         val serverText = server?.let { if (it.isDedicatedIp) "DIP - ${it.iso}" else it.iso } ?: ""
         QuickConnectText(
             content = serverText,
-            modifier = Modifier.align(CenterHorizontally)
-                .testTag(":QuickConnect:serverText"),
+            modifier = Modifier.align(CenterHorizontally),
         )
     }
 }

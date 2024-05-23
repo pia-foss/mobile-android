@@ -114,6 +114,7 @@ fun VpnRegionSelectionScreen() = Screen {
                                             ),
                                         )
                                     },
+                                    testTag = ":VpnRegionSelectionScreen:locationItem_$index",
                                 )
                             }
 

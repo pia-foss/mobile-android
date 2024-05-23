@@ -15,14 +15,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.FavoriteIcon
@@ -37,6 +40,7 @@ import com.kape.ui.utils.getFlagResource
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LocationPickerItem(
     server: VpnServer,
@@ -46,8 +50,9 @@ fun LocationPickerItem(
     isOffline: Boolean,
     onClick: ((server: VpnServer) -> Unit),
     onFavoriteVpnClick: ((vpnServerName: String) -> Unit),
+    testTag: String,
 ) {
-    Column {
+    Column(Modifier.semantics { testTagsAsResourceId = true }) {
         Row(
             modifier = Modifier
                 .then(
@@ -62,7 +67,9 @@ fun LocationPickerItem(
                 )
                 .alpha(if (!server.allowsPortForwarding && isPortForwardingEnabled) 0.5f else 1f)
                 .defaultMinSize(minHeight = 56.dp)
-                .padding(16.dp),
+                .padding(16.dp)
+                .testTag(testTag),
+
         ) {
             Icon(
                 painter = painterResource(
