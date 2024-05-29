@@ -37,7 +37,7 @@ class RegionListProvider(
                     emit(servers.value)
                 }
             } else {
-                _servers.value = regionRepository.getServers()
+                _servers.value = regionRepository.getServers(isConnected)
                 emit(servers.value)
             }
         }

@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">تم حذف حسابك بنجاح</string>
     <string name="account_deletion_confirmation_message">يمكنك تسجيل الدخول مرة أخرى إذا كان لديك حساب آخر، أو إعادة الاشتراك في أي وقت.</string>
     <string name="subscribe">اشترك</string>
+
+    <string name="error_pinging_while_connected">يتعذر تحديث زمن الانتقال أثناء الاتصال بشبكة VPN</string>
 </resources>

@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">Hesabınız başarıyla silindi</string>
     <string name="account_deletion_confirmation_message">Başka bir hesabınız varsa tekrar giriş yapabilir veya dilediğiniz zaman tekrar abone olabilirsiniz.</string>
     <string name="subscribe">Abone Ol</string>
+
+    <string name="error_pinging_while_connected">VPN\'e bağlıyken gecikme süresi güncellenemiyor</string>
 </resources>

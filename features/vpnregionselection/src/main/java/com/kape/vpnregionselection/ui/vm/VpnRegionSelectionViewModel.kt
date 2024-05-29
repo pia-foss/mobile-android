@@ -44,7 +44,7 @@ class VpnRegionSelectionViewModel(
             }
             regionListProvider.updateServerLatencies(
                 locale,
-                connectionUseCase.isConnected(),
+                isVpnConnectionActive(),
                 displayLoading,
             ).collect {
                 arrangeVpnServers(it)
@@ -121,6 +121,8 @@ class VpnRegionSelectionViewModel(
         }
         return mutableStateOf(sorted.value.subList(autoRegionIndex, sorted.value.size))
     }
+
+    fun isVpnConnectionActive(): Boolean = connectionUseCase.isConnected()
 
     private fun isVpnServerFavorite(serverData: ServerData): Boolean {
         return vpnRegionPrefs.isFavorite(serverData)

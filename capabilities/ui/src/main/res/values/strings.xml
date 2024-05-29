@@ -421,4 +421,6 @@
     <string name="account_deletion_confirmation_title">Your account was successfully deleted</string>
     <string name="account_deletion_confirmation_message">You can log in again if you have another account, or resubscribe at any time.</string>
     <string name="subscribe">Subscribe</string>
+
+    <string name="error_pinging_while_connected">Unable to update latency while being connected to the VPN</string>
 </resources>

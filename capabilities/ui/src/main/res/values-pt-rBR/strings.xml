@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">Sua conta foi excluída com sucesso</string>
     <string name="account_deletion_confirmation_message">Você pode entrar novamente se tiver outra conta, ou se inscrever novamente a qualquer momento.</string>
     <string name="subscribe">Inscrever-se</string>
+
+    <string name="error_pinging_while_connected">Não é possível atualizar a latência quando conectado à VPN</string>
 </resources>

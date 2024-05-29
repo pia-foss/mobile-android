@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">Votre compte a été supprimé</string>
     <string name="account_deletion_confirmation_message">Vous pouvez vous connecter à nouveau si vous avez un autre compte, ou vous abonner à tout moment.</string>
     <string name="subscribe">S\'abonner</string>
+
+    <string name="error_pinging_while_connected">Impossible de mettre à jour la latence lors de la connexion au VPN</string>
 </resources>

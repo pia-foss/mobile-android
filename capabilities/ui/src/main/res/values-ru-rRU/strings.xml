@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">Ваш аккаунт был успешно удален</string>
     <string name="account_deletion_confirmation_message">Если у вас есть другой аккаунт, вы можете войти снова или оформить новую подписку в любое время.</string>
     <string name="subscribe">Оформить подписку</string>
+
+    <string name="error_pinging_while_connected">Нельзя обновить задержку при подключении к VPN</string>
 </resources>

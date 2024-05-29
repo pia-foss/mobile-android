@@ -45,9 +45,9 @@ class VpnRegionRepository(
         }
     }
 
-    fun fetchLatencies(useCachedLatencies: Boolean): Flow<List<VpnServer>> = flow {
-        if (useCachedLatencies) {
-            populateLatencies()
+    fun fetchLatencies(isConnected: Boolean): Flow<List<VpnServer>> = flow {
+        if (isConnected) {
+            populateLatencies(isConnected)
             emit(addDipToServerList(serverMap.values.toList()))
         } else {
             source.pingRequests().collect {
@@ -55,7 +55,7 @@ class VpnRegionRepository(
                     emit(emptyList())
                 } else {
                     latencyInfo = it
-                    populateLatencies()
+                    populateLatencies(isConnected)
                     emit(addDipToServerList(serverMap.values.toList()))
                 }
             }
@@ -66,7 +66,10 @@ class VpnRegionRepository(
 
     fun getTcpPorts() = serverInfo.tcpPorts ?: emptyList()
 
-    fun getServers(): List<VpnServer> = addDipToServerList(serverMap.values.toList())
+    fun getServers(isConnected: Boolean): List<VpnServer> {
+        populateLatencies(isConnected)
+        return addDipToServerList(serverMap.values.toList())
+    }
 
     private fun addDipToServerList(servers: List<VpnServer>): List<VpnServer> {
         val updatedList = mutableListOf<VpnServer>()
@@ -79,9 +82,9 @@ class VpnRegionRepository(
         return updatedList
     }
 
-    private fun populateLatencies() {
+    private fun populateLatencies(isConnected: Boolean) {
         for (info in latencyInfo) {
-            serverMap[info.region]?.latency = info.latency.toString()
+            serverMap[info.region]?.latency = if (isConnected) null else info.latency.toString()
         }
     }
 }

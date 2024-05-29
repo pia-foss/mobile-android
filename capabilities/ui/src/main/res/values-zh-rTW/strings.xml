@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">您的賬戶已成功刪除</string>
     <string name="account_deletion_confirmation_message">如果您還有其他帳戶，您可以再次登入，或者隨時重新訂閱。</string>
     <string name="subscribe">訂閱</string>
+
+    <string name="error_pinging_while_connected">連線到 VPN 時，無法更新延遲</string>
 </resources>

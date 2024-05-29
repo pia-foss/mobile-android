@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">Has eliminado la cuenta correctamente</string>
     <string name="account_deletion_confirmation_message">Puedes iniciar sesión de nuevo si tienes otra cuenta o volver a suscribirte en cualquier momento.</string>
     <string name="subscribe">Suscribirse</string>
+
+    <string name="error_pinging_while_connected">No se pudo actualizar la latencia mientras estabas conectado a la VPN</string>
 </resources>

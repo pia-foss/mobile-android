@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">Je account is succesvol verwijderd</string>
     <string name="account_deletion_confirmation_message">Je kunt opnieuw inloggen met een ander account of op elk moment opnieuw een abonnement nemen.</string>
     <string name="subscribe">Abonneren</string>
+
+    <string name="error_pinging_while_connected">De latentie kon niet worden bijgewerkt tijdens de VPN-verbinding.</string>
 </resources>

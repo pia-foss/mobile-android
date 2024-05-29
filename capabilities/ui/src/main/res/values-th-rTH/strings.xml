@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">บัญชีของคุณถูกลบเรียบร้อยแล้ว</string>
     <string name="account_deletion_confirmation_message">คุณสามารถเข้าสู่ระบบได้อีกครั้งหากคุณมีบัญชีอื่น หรือสมัครใหม่ได้ตลอดเวลา</string>
     <string name="subscribe">ติดตามข่าวสาร</string>
+
+    <string name="error_pinging_while_connected">ไม่สามารถอัปเดตเวลาแฝงขณะเชื่อมต่อ VPN</string>
 </resources>

@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">アカウントを削除できました</string>
     <string name="account_deletion_confirmation_message">別のアカウントをお持ちの場合は、再度ログインするか、いつでもサブスクリプションを再購入できます。</string>
     <string name="subscribe">サブスクリプションを購入する</string>
+
+    <string name="error_pinging_while_connected">VPNに接続中はレイテンシを更新できません</string>
 </resources>

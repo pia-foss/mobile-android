@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">Il tuo account è stato eliminato con successo</string>
     <string name="account_deletion_confirmation_message">Puoi effettuare nuovamente l\'accesso se disponi di un altro account o ti abboni di nuovo in qualsiasi momento.</string>
     <string name="subscribe">Abbonati</string>
+
+    <string name="error_pinging_while_connected">Impossibile aggiornare la latenza mentre si è connessi alla VPN</string>
 </resources>

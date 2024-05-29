@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">Din konto blev slettet</string>
     <string name="account_deletion_confirmation_message">Du kan logge ind igen, hvis du har en anden konto, eller tilmelde dig igen når som helst.</string>
     <string name="subscribe">Abonnér</string>
+
+    <string name="error_pinging_while_connected">Kunne ikke opdatere forsinkelse, mens der er forbindelse til VPN</string>
 </resources>

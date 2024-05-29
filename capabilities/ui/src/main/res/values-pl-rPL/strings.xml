@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">Twoje konto zostało pomyślnie usunięte</string>
     <string name="account_deletion_confirmation_message">Możesz zalogować się ponownie, jeśli masz inne konto lub zasubskrybujesz ponownie w przyszłości.</string>
     <string name="subscribe">Subskrybuj</string>
+
+    <string name="error_pinging_while_connected">Nie można zaktualizować opóźnienia podczas połączenia z VPN</string>
 </resources>

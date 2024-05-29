@@ -1,5 +1,7 @@
 package com.kape.vpnregionselection.ui.mobile
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
@@ -48,6 +51,7 @@ fun VpnRegionSelectionScreen() = Screen {
         appBarText(stringResource(id = R.string.location_selection_title))
     }
     val isSearchEnabled = remember { mutableStateOf(false) }
+    val showToast = remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -65,11 +69,23 @@ fun VpnRegionSelectionScreen() = Screen {
                 viewModel.filterByName(it, isSearchEnabled)
             }
 
+            val context: Context = LocalContext.current
+            val message = stringResource(id = R.string.error_pinging_while_connected)
+
             SwipeRefresh(
                 state = rememberSwipeRefreshState(isLoading.value),
                 onRefresh = {
-                    locale?.let {
-                        viewModel.loadVpnRegions(locale, isLoading, true)
+                    showToast.value = viewModel.isVpnConnectionActive()
+                    if (showToast.value) {
+                        Toast.makeText(
+                            context,
+                            message,
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    } else {
+                        locale?.let {
+                            viewModel.loadVpnRegions(locale, isLoading, true)
+                        }
                     }
                 },
             ) {

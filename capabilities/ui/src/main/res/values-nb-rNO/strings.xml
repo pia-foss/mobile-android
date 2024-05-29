@@ -360,4 +360,6 @@ Du beholder alltid kontrollen. Du kan se hvilke data vi har hentet inn fra Innst
     <string name="account_deletion_confirmation_title">Kontoen din ble slettet</string>
     <string name="account_deletion_confirmation_message">Du kan logge inn på nytt hvis du har en annen konto, eller abonnere på nytt når som helst.</string>
     <string name="subscribe">Abonner</string>
+
+    <string name="error_pinging_while_connected">Kunne ikke oppdatere latens mens tilkoblet VPN.</string>
 </resources>

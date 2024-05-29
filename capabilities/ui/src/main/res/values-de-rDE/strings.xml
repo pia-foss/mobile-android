@@ -360,4 +360,6 @@
     <string name="account_deletion_confirmation_title">Ihr Konto wurde erfolgreich gelöscht</string>
     <string name="account_deletion_confirmation_message">Sie können sich jederzeit wieder anmelden, wenn Sie ein anderes Konto haben oder sich neu registrieren.</string>
     <string name="subscribe">Abonnieren</string>
+
+    <string name="error_pinging_while_connected">Die Latenz kann nicht aktualisiert werden, während eine Verbindung zum VPN besteht.</string>
 </resources>
