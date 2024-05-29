@@ -86,6 +86,7 @@ fun adaptVpnServers(vpnRegionsResponse: VpnRegionsResponse): Map<String, VpnServ
             region.geo,
             region.offline,
             region.portForward,
+            region.autoRegion,
             null,
             null,
         )
@@ -164,6 +165,7 @@ fun getServerForDip(
         server.isGeo,
         server.isOffline,
         server.allowsPortForwarding,
+        server.autoRegion,
         dip.dipToken,
         dip.ip,
     )

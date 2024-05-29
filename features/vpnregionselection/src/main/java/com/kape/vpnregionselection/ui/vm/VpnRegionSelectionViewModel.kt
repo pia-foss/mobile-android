@@ -212,6 +212,7 @@ class VpnRegionSelectionViewModel(
                     isGeo = false,
                     allowsPortForwarding = false,
                     isOffline = false,
+                    autoRegion = true,
                     dipToken = null,
                     dedicatedIp = null,
                 ),

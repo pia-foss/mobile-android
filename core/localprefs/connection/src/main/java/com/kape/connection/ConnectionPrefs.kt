@@ -11,7 +11,7 @@ import kotlinx.serialization.json.Json
 private const val QUICK_CONNECT = "quick-connect-server-list"
 private const val CLIENT_IP = "client-ip"
 private const val VPN_IP = "vpn-ip"
-private const val SELECTED_VPN_SERVER = "selected-vpn-server"
+private const val PRE_SELECTED_VPN_SERVER = "pre-selected-vpn-server"
 private const val LAST_SNOOZE_END_TIME = "last-snooze-end-time"
 private const val GATEWAY = "gateway"
 private const val PORT_BINDING_INFO = "port-binding-info"
@@ -45,9 +45,9 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
     fun getVpnIp() = prefs.getString(VPN_IP, NO_IP) ?: NO_IP
 
     fun setSelectedVpnServer(server: VpnServer) =
-        prefs.edit().putString(SELECTED_VPN_SERVER, Json.encodeToString(server)).apply()
+        prefs.edit().putString(PRE_SELECTED_VPN_SERVER, Json.encodeToString(server)).apply()
 
-    fun getSelectedVpnServer(): VpnServer? = prefs.getString(SELECTED_VPN_SERVER, null)?.let {
+    fun getSelectedVpnServer(): VpnServer? = prefs.getString(PRE_SELECTED_VPN_SERVER, null)?.let {
         Json.decodeFromString(it)
     }
 

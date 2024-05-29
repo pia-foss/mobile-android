@@ -56,7 +56,9 @@ class ConnectionViewModel(
 ) : ViewModel(), KoinComponent {
 
     private val defaultState = ConnectionScreenState(
-        server = prefs.getSelectedVpnServer() ?: regionListProvider.servers.value.first(),
+        server = prefs.getSelectedVpnServer()
+            ?: regionListProvider.servers.value.filter { it.autoRegion }.sortedBy { it.latency }
+                .first(),
         quickConnectServers = getQuickConnectVpnServers(),
         isCurrentServerOptimal = false,
         showOptimalLocationInfo = prefs.getSelectedVpnServer() == null,

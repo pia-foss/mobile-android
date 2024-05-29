@@ -17,6 +17,7 @@ data class VpnServer(
     val isOffline: Boolean,
     @SerialName("isAllowsPF")
     val allowsPortForwarding: Boolean,
+    val autoRegion: Boolean,
     val dipToken: String?,
     val dedicatedIp: String?,
     val isDedicatedIp: Boolean = !dedicatedIp.isNullOrEmpty(),
