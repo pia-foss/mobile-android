@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -64,7 +65,7 @@ fun QuickConnect(
                                     servers.keys.toList()[index]?.let {
                                         onClick(it)
                                     }
-                                },
+                                }.testTag(":QuickConnect:server_$index"),
                         )
                     } ?: run {
                         QuickConnectItem(modifier = Modifier.weight(1f))

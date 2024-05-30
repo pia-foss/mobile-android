@@ -20,9 +20,10 @@ object UiAutomatorStepsHelper {
         device.wait((Until.findObject(By.res(uiObject.text))), defaultTimeout)
     }
 
-    fun waitUntilVpnIpIsPopulated(resourceName: String, regex: String) : Boolean {
-        val vpnIp = device.findObject(By.res(resourceName))
-        return vpnIp.wait(Until.textMatches(regex), defaultTimeout)
+    fun waitUntilConnectionIsEstablished() : Boolean {
+        val vpnIpRegEx = "^((\\d{1,3})\\.){3}(\\d{1,3})\$"
+        val vpnIp = device.findObject(By.res(":Text:vpnIp"))
+        return vpnIp.wait(Until.textMatches(vpnIpRegEx), defaultTimeout)
     }
 
     const val defaultTimeout = 5000L
