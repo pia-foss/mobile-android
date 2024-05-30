@@ -65,17 +65,20 @@ import java.io.BufferedReader
 
 const val PARAM_USER_AGENT = "user-agent"
 private const val AUTOMATION_SERVICE_INTENT = "automation-service-intent"
+private const val CERTIFICATE = "certificate"
 
 val appModule = module {
-    single { provideCertificate(get()) }
+    single(named(CERTIFICATE)) { provideCertificate(get()) }
     single(named(PARAM_USER_AGENT)) { USER_AGENT }
+    single { SettingsPrefs(get()) }
+    single { ConnectionPrefs(get()) }
     single { RegionListProvider(get(), get()) }
     single { MetaEndpointsProvider() }
-    single { AccountModuleStateProvider(get(), get(), USE_STAGING) }
+    single { AccountModuleStateProvider(get(named(CERTIFICATE)), get(), USE_STAGING) }
     single { PlatformProvider(get()) }
-    single { VpnManagerProvider() }
-    single { RegionsModuleStateProvider(get(), get(), USE_STAGING) }
-    single { KpiModuleStateProvider(get(), get(), USE_STAGING) }
+    single { VpnManagerProvider(get(), get()) }
+    single { RegionsModuleStateProvider(get(named(CERTIFICATE)), get(), USE_STAGING) }
+    single { KpiModuleStateProvider(get(named(CERTIFICATE)), get(), USE_STAGING) }
     single { NetworkManager(get(), get(), get(), get()) }
     single {
         NetworkConnectionListener(
@@ -96,8 +99,6 @@ val appModule = module {
     single { UsageProvider(get()) }
     single { provideVpnManagerApi(get(), get(), get()) }
     single { providerRouter(get()) }
-    single { SettingsPrefs(get()) }
-    single { ConnectionPrefs(get()) }
     single { VpnLauncher(get(), get(), get(), get(), get()) }
     single { provideAlarmManager(get()) }
     single(named("port-forwarding-intent")) { providePortForwardingReceiverIntent(get()) }
@@ -110,7 +111,7 @@ val appModule = module {
     single { CsiEndpointProvider(USE_STAGING) }
     single { CsiPrefs(get()) }
     single { CsiDataProvider(get(), get(), get(named(PARAM_USER_AGENT))) }
-    single { provideCsiApi(get(), get(named(PARAM_USER_AGENT)), get(), get()) }
+    single { provideCsiApi(get(named(CERTIFICATE)), get(named(PARAM_USER_AGENT)), get(), get()) }
     single { provideObfuscatorApi(get()) }
     single(named("rules-updated-intent")) { provideRulesUpdatedIntent(get()) }
     single(named("licences")) { provideLicences(get()) }
@@ -184,6 +185,7 @@ private fun provideCsiApi(
             csiDataProvider.regionInformationProvider,
             csiDataProvider.userSettingsProvider,
             csiDataProvider.protocolDebugLogsProvider,
+            csiDataProvider.debugLogProvider,
         )
         .build()
 }

@@ -102,6 +102,14 @@ fun HelpScreen() = Screen {
                         viewModel.navigateToDebugLogs()
                     },
                 )
+                SettingsToggle(
+                    titleId = R.string.help_enable_debug_logging_title,
+                    subtitleId = R.string.help_enable_debug_logging_description,
+                    enabled = viewModel.debugLoggingEnabled.value,
+                    toggle = {
+                        viewModel.toggleDebugLogging(it)
+                    },
+                )
                 SettingsItem(
                     titleId = R.string.help_send_log_title,
                     onClick = {

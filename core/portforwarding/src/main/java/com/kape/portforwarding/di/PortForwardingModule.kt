@@ -15,7 +15,7 @@ fun portForwardingModule(appModule: Module) = module {
 
 private val localPortForwardingModule = module {
     single<CertificatePinningClient> {
-        CertificatePinningClientImpl(get())
+        CertificatePinningClientImpl(get(named("certificate")))
     }
     single<PortForwardingApi> { PortForwardingApiImpl(get(), get(named("user-agent"))) }
     single { PortForwardingUseCase(get(), get(), get()) }

@@ -298,6 +298,8 @@
     <string name="help_send_log_title">Send Debug Log to Support</string>
     <string name="help_improve_pia_title">Help improve PIA</string>
     <string name="help_improve_pia_description">Help us improve by sharing VPN connection statistics. These reports never contain personally identifiable information.</string>
+    <string name="help_enable_debug_logging_title">Enable Debug Logging</string>
+    <string name="help_enable_debug_logging_description">Save debug logs which can be submitted to technical support to help troubleshoot problems.</string>
     <string name="help_latest_news_title">Latest News</string>
     <string name="help_view_shared_data_title">View Shared Data</string>
     <string name="per_app_settings">Per App Settings</string>

@@ -5,6 +5,7 @@ import com.kape.utils.Prefs
 
 private const val LAST_KNOWN_EXCEPTION = "last-known-exception"
 private const val PROTOCOL_DEBUG_LOGS = "protocol-debug-logs"
+private const val DEBUG_LOGS = "debug-logs"
 
 class CsiPrefs(context: Context) : Prefs(context, "csi") {
 
@@ -17,4 +18,16 @@ class CsiPrefs(context: Context) : Prefs(context, "csi") {
         prefs.edit().putString(PROTOCOL_DEBUG_LOGS, value).apply()
 
     fun getProtocolDebugLogs() = prefs.getString(PROTOCOL_DEBUG_LOGS, "") ?: ""
+
+    fun addCustomDebugLogs(value: String, isDebugLoggingEnabled: Boolean) {
+        if (isDebugLoggingEnabled) {
+            var current = prefs.getString(DEBUG_LOGS, "")
+            current += value + "\n"
+            prefs.edit().putString(DEBUG_LOGS, current).apply()
+        }
+    }
+
+    fun getCustomDebugLogs() = prefs.getString(DEBUG_LOGS, "") ?: ""
+
+    fun clearCustomDebugLogs() = prefs.edit().putString(DEBUG_LOGS, "").apply()
 }

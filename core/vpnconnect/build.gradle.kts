@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))
     implementation(project(":core:localprefs:connection"))
+    implementation(project(":core:localprefs:csi"))
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:ui"))
     implementVpnManager()

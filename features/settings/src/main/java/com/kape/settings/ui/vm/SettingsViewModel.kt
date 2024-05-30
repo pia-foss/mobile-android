@@ -61,6 +61,7 @@ class SettingsViewModel(
     val connectOnStart = mutableStateOf(prefs.isConnectOnLaunchEnabled())
     val connectOnUpdate = mutableStateOf(prefs.isConnectOnAppUpdateEnabled())
     val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
+    val debugLoggingEnabled = mutableStateOf(prefs.isDebugLoggingEnabled())
     val shadowsocksObfuscationEnabled = mutableStateOf(prefs.isShadowsocksObfuscationEnabled())
     val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
     val isAllowLocalTrafficEnabled = mutableStateOf(prefs.isAllowLocalTrafficEnabled())
@@ -174,6 +175,14 @@ class SettingsViewModel(
     fun toggleImprovePia(enable: Boolean) {
         prefs.setHelpImprovePiaEnabled(enable)
         improvePiaEnabled.value = enable
+    }
+
+    fun toggleDebugLogging(enable: Boolean) {
+        prefs.setDebugLoggingEnabled(enable)
+        if (enable.not()) {
+            csiPrefs.clearCustomDebugLogs()
+        }
+        debugLoggingEnabled.value = enable
     }
 
     fun toggleMace(enable: Boolean) {
@@ -386,7 +395,8 @@ class SettingsViewModel(
 
     fun filterAppsByName(value: String, packageManager: PackageManager) {
         if (value.isEmpty()) {
-            appList.value = installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
+            appList.value =
+                installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
         } else {
             appList.value = installedApps.filter {
                 packageManager.getApplicationLabel(it).toString().lowercase()
@@ -412,6 +422,7 @@ class SettingsViewModel(
             csiPrefs.setProtocolDebugLogs(it.joinToString(separator = "\n"))
             sendLogUseCase.sendLog().collect {
                 requestId.value = it
+                csiPrefs.clearCustomDebugLogs()
             }
         }
     }

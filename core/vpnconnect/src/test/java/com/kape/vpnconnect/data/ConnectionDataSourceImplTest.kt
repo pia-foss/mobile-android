@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import app.cash.turbine.test
 import com.kape.connection.ConnectionPrefs
+import com.kape.csi.CsiPrefs
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.domain.KpiDataSource
@@ -44,6 +45,7 @@ internal class ConnectionDataSourceImplTest {
     private val settingsPrefs: SettingsPrefs = mockk<SettingsPrefs>().apply {
         every { isHelpImprovePiaEnabled() } returns false
         every { getSelectedProtocol() } returns VpnProtocols.WireGuard
+        every { isDebugLoggingEnabled() } returns false
     }
     private val kpiDataSource: KpiDataSource = mockk<KpiDataSource>().apply {
         every { stop() } returns Unit
@@ -53,6 +55,9 @@ internal class ConnectionDataSourceImplTest {
     private val connectionListener: VPNManagerConnectionListener = mockk()
     private val usageProvider: UsageProvider = mockk<UsageProvider>().apply {
         every { reset() } returns Unit
+    }
+    private val csiPrefs: CsiPrefs = mockk<CsiPrefs>().apply {
+        every { addCustomDebugLogs(any(), any()) } returns Unit
     }
     private lateinit var source: ConnectionDataSource
 
@@ -76,6 +81,7 @@ internal class ConnectionDataSourceImplTest {
             kpiDataSource,
             usageProvider,
             portForwardingIntent,
+            csiPrefs,
         )
     }
 

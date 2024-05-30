@@ -12,7 +12,7 @@ fun connectionModule(appModule: Module) = module {
 }
 
 private val localConnectionModule = module {
-    single<ClientStateDataSource> { ClientStateDataSourceImpl(get(), get()) }
+    single<ClientStateDataSource> { ClientStateDataSourceImpl(get(), get(), get(), get()) }
     viewModel {
         ConnectionViewModel(
             get(),

@@ -29,11 +29,12 @@ private val localVpnConnectModule = module {
             get(),
             get(),
             get(named("port-forwarding-pending-intent")),
+            get(),
         )
     }
     single {
         ConnectionUseCase(
-            get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
+            get(), get(), get(named("certificate")), get(), get(), get(), get(), get(), get(), get(),
             get(), get(), get(),
         )
     }

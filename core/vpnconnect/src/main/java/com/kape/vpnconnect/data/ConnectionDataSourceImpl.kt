@@ -3,6 +3,7 @@ package com.kape.vpnconnect.data
 import android.app.AlarmManager
 import android.app.PendingIntent
 import com.kape.connection.ConnectionPrefs
+import com.kape.csi.CsiPrefs
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.domain.KpiDataSource
@@ -27,6 +28,7 @@ class ConnectionDataSourceImpl(
     private val kpiDataSource: KpiDataSource,
     private val usageProvider: UsageProvider,
     private val portForwardingIntent: PendingIntent,
+    private val csiPrefs: CsiPrefs,
 ) : ConnectionDataSource, KoinComponent {
 
     override fun startConnection(
@@ -43,6 +45,11 @@ class ConnectionDataSourceImpl(
             connectionApi.startConnection(clientConfiguration) {
                 it.getOrNull()?.let { serverPeerInfo ->
                     connectionPrefs.setGateway(serverPeerInfo.gateway)
+                } ?: run {
+                    csiPrefs.addCustomDebugLogs(
+                        "startConnection failed: $it",
+                        settingsPrefs.isDebugLoggingEnabled(),
+                    )
                 }
                 trySend(it.isSuccess)
             }
@@ -54,6 +61,12 @@ class ConnectionDataSourceImpl(
             usageProvider.reset()
             stopPortForwarding()
             trySend(it.isSuccess)
+            if (it.isFailure) {
+                csiPrefs.addCustomDebugLogs(
+                    "stop connection failed: ${it.exceptionOrNull()}",
+                    settingsPrefs.isDebugLoggingEnabled(),
+                )
+            }
         }
         awaitClose { channel.close() }
     }

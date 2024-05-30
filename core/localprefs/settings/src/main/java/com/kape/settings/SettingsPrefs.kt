@@ -26,6 +26,7 @@ private const val SHADOWSOCKS_OBFUSCATION_ENABLED = "shadowsocks-obfuscation-ena
 private const val EXTERNAL_PROXY_APP_ENABLED = "external-proxy-app-enabled"
 private const val EXTERNAL_PROXY_APP_PACKAGE_NAME = "external-proxy-app-package-name"
 private const val HELP_IMPROVE_PIA = "help-improve-pia"
+private const val DEBUG_LOGGING = "debug-logging"
 private const val VPN_EXCLUDED_APPS = "vpn-excluded-apps"
 private const val PORT_FORWARDING = "port-forwarding"
 private const val ALLOW_LOCAL_TRAFFIC = "allow-local-traffic"
@@ -176,6 +177,11 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         prefs.edit().putBoolean(HELP_IMPROVE_PIA, enable).apply()
 
     fun isHelpImprovePiaEnabled() = prefs.getBoolean(HELP_IMPROVE_PIA, false)
+
+    fun setDebugLoggingEnabled(enable: Boolean) =
+        prefs.edit().putBoolean(DEBUG_LOGGING, enable).apply()
+
+    fun isDebugLoggingEnabled() = prefs.getBoolean(DEBUG_LOGGING, false)
 
     fun setVpnExcludedApps(apps: List<String>) =
         prefs.edit().putStringSet(VPN_EXCLUDED_APPS, apps.toSet()).apply()

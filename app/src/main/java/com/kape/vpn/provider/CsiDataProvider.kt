@@ -16,6 +16,7 @@ private const val CSI_PROTOCOL_INFORMATION_FILENAME = "protocol_information"
 private const val CSI_REGION_INFORMATION_FILENAME = "regions_information"
 private const val CSI_USER_SETTINGS_FILENAME = "user_settings"
 private const val CSI_PROTOCOL_DEBUG_LOGS_FILENAME = "protocol_debug_logs"
+private const val CSI_DEBUG_LOGS_FILENAME = "debug_logs"
 
 class CsiDataProvider(
     private val csiPrefs: CsiPrefs,
@@ -120,6 +121,19 @@ class CsiDataProvider(
             get() = redactIPsFromString(csiPrefs.getProtocolDebugLogs())
     }
 
+    val debugLogProvider = object: ICSIProvider {
+        override val filename: String?
+            get() = CSI_DEBUG_LOGS_FILENAME
+        override val isPersistedData: Boolean
+            get() = false
+        override val providerType: ProviderType
+            get() = ProviderType.EXPERIMENTS_INFORMATION
+        override val reportType: ReportType
+            get() = ReportType.DIAGNOSTIC
+        override val value: String
+            get() = redactIPsFromString(getDebugLogs())
+    }
+
     // region private
     private fun getProtocolInformation(): String {
         val activeProtocol = settingsPrefs.getSelectedProtocol()
@@ -193,6 +207,10 @@ class CsiDataProvider(
         sb.append("Product: ${Build.PRODUCT}").append("\n")
         sb.append("Model: ${Build.MODEL}").append("\n")
         return sb.toString()
+    }
+
+    private fun getDebugLogs(): String {
+        return csiPrefs.getCustomDebugLogs()
     }
 
     private fun redactIPsFromString(redact: String): String {

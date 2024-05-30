@@ -2,6 +2,8 @@ package com.kape.vpnconnect.data
 
 import com.kape.connection.ConnectionPrefs
 import com.kape.connection.NO_IP
+import com.kape.csi.CsiPrefs
+import com.kape.settings.SettingsPrefs
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -13,10 +15,19 @@ import kotlinx.coroutines.flow.callbackFlow
 class ClientStateDataSourceImpl(
     private val accountAPI: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
+    private val csiPrefs: CsiPrefs,
+    private val settingsPrefs: SettingsPrefs,
 ) : ClientStateDataSource {
 
     override fun getClientStatus(): Flow<Boolean> = callbackFlow {
-        fun processClientStatus(status: ClientStatusInformation?, error: List<AccountRequestError>) {
+        fun processClientStatus(
+            status: ClientStatusInformation?,
+            error: List<AccountRequestError>,
+        ) {
+            csiPrefs.addCustomDebugLogs(
+                "getClientStatusErrors: $error",
+                settingsPrefs.isDebugLoggingEnabled(),
+            )
             status?.let {
                 if (status.connected) {
                     connectionPrefs.setVpnIp(status.ip)
