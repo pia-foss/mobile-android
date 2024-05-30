@@ -35,39 +35,6 @@ This will pull the main repository as well as the required dependencies.
 
 >Once the project is cloned, the project will build once opened in Android Studio. This will require building the binaries for the underlying modules and configurations. This can take a while for certain computers and is only done on complete clean and rebuilds. You can see progress in the gradle console. Once completed, the app will be able to be run on a device connected to the computer or an emulator running on your computer.
 
-*Please note that Android 4.x emulators are broken with VPNs and will not connect.*
-
-While waiting for the application to build, set up a personal token in github.
-1. In Github, click on your profile and click on `Settings`
-2. Then, Click on `Developer settings`
-3. In the side menu click on `Personal access tokens` > `Tokens (classic)`
-4. Then, `Generate new token` > `Generate new token (classic)`
-5. You will be ask to enter two-factor authentication code from Okta 
-6. Name the token, select the expiration date to 90 days and 
-   - delete: packages
-   - write: packages
-7. Finally, click on `Generate token`
-8. Copy the generated token
-
-On your computer, go to your root folder,
-1. Press this command on your keyboard, `cmd` + `shift` + `.`, this will show the hidden files on your root folder
-2. Open `.zshenv` file, if it doesn't exist create one.
-3. Paste the code 
-   - export **GITHUB_USERNAME** = *your git hub username*
-   - export **GITHUB_TOKEN** = *your generated token*
-
-By this time, the build should had been completed,
-1. Go to Android Studio, click on `local.properties`
-2. In the file, add the following:
-   - **GITHUB_USERNAME** = *your git hub username*
-   - **GITHUB_TOKEN** = *your generated token*
-3. Save
-4. Sync the project with Gradle files
-5. Build the application
-6. You should be able to run the application with no issue
-
-Note: We are doing this because the repository is not in public yet. Once it goes to public, these steps are not necessary.
-
 ## Documentation
 
 #### Architecture
@@ -75,30 +42,47 @@ Code structure via packages:
 
 * `app` - the main application module. It acts as a proxy to all features implemented within the `features` module.
 * `buildSrc` - holds a list of dependencies used within the app.
-* `capabilities` - holds modules `notifications`, `shareevents` and `ui` used across the app.
-  * `ui` - defines shared UI elements, themes, fonts, styling, etc.
+* `capabilities` - holds modules for various app capabilities.
+  * `csi` - contains customer support capabilities, responsible for collecting and sending logs.
+  * `location` - checks for location permissions.
+  * `networkmanagement` - provides the ability to set, change and remove network rules.
+  * `notifications` 
+  * `shareevents` - used to record connection status and speeds.
+  * `snooze` - contains snooze-related code.
+  * `ui` - defines shared UI elements, themes, fonts, styling, etc. It also contains all string resources.
 * `core` - contains core functionality modules.
+  * `httpclient`
   * `localprefs` - a module containing more functionality specific modules. It holds the shared preferences and the respective data objects.
+  * `obfuscator`
   * `payments` - implements payments flow for both Google and Amazon. This is defined by a `product` flavor within the `build.gradle` file.
+  * `portforwarding`
+  * `regions`
   * `router` - our own implementation of navigation.
+  * `utils`
   * `vpnconnect` - logic for establishing a VPN connection.
+  * `vpnlauncher`
 * `features` - contains modules for single features, such as region selection, connection, signup, etc.
 
 #### Coding Style
 
 #### Significant Classes and files
 
-### Contributing 
+### Contributing
 
-### Authors
+By contributing to this project you are agreeing to the terms stated in the Contributor License Agreement (CLA) [here](/CLA.rst).
 
- * Iva Nedeleva - kp-iva-nedeleva
- * Ruth Ondrada - kp-ruth-o
+For more details please see [CONTRIBUTING](/CONTRIBUTING.md).
+
+Issues and Pull Requests should use these templates: [ISSUE](/.github/ISSUE_TEMPLATE.md) and [PULL REQUEST](/.github/PULL_REQUEST_TEMPLATE.md).
+
+### Testing
+
+In order to run the instrumented test we need to set environment variables containing valid credentials.
+They need to have the format `PIA_VALID_USERNAME`, `PIA_VALID_PASSWORD` and `PIA_VALID_DIP_TOKEN`.
 
 ### License
 
-NEED TO FILL THIS OUT!!!
-This project is licensed under the MIT (Expat) license, which can be found here.
+This project is licensed under the [MIT (Expat) license](https://choosealicense.com/licenses/mit/), which can be found [here](/LICENSE).
 
 ### Acknowledgements
 
