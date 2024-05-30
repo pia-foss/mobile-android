@@ -1,6 +1,7 @@
 package com.kape.dip
 
 import android.content.Context
+import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.utils.Prefs
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import kotlinx.serialization.encodeToString
@@ -9,6 +10,7 @@ import kotlinx.serialization.json.Json
 private const val DEDICATED_IPS = "dedicated-ips"
 private const val DIP_SIGNUP_ENABLED = "dip-signup-enabled"
 private const val DIP_SIGNUP_HOME_BANNER_VISIBLE = "dip-signup-home-banner-visible"
+private const val DIP_SIGNUP_PLANS = "dip-signup-plans"
 private const val DIP_SIGNUP_PURCHASED_TOKEN = "dip-signup-purchased-token"
 
 class DipPrefs(context: Context) : Prefs(context, "dip") {
@@ -52,6 +54,15 @@ class DipPrefs(context: Context) : Prefs(context, "dip") {
     fun hideDedicatedIpHomeBanner() {
         prefs.edit().putBoolean(DIP_SIGNUP_HOME_BANNER_VISIBLE, false).apply()
     }
+
+    fun setDedicatedIpSignupPlans(dedicatedIpSignupPlans: DedicatedIpSignupPlans) {
+        prefs.edit().putString(DIP_SIGNUP_PLANS, Json.encodeToString(dedicatedIpSignupPlans)).apply()
+    }
+
+    fun getDedicatedIpSignupPlans(): DedicatedIpSignupPlans? =
+        prefs.getString(DIP_SIGNUP_PLANS, null)?.let {
+            Json.decodeFromString(it)
+        }
 
     private fun getDips() = prefs.getStringSet(DEDICATED_IPS, emptySet()) ?: emptySet()
 

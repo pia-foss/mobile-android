@@ -1,14 +1,15 @@
 package com.kape.dedicatedip.domain
 
+import com.kape.dedicatedip.data.DipSignupRepository
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
 import com.kape.payments.utils.monthlySubscription
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetDipMonthlyPlan(private val dataSource: DipDataSource) {
+class GetDipMonthlyPlan(private val dipSignupRepository: DipSignupRepository) {
 
     operator fun invoke(): Flow<DedicatedIpMonthlyPlan> = flow {
-        dataSource.signupPlans().collect { plans ->
+        dipSignupRepository.signupPlans().collect { plans ->
             val monthlyPlan = plans.availableProducts.first {
                 it.plan.lowercase() == monthlySubscription.lowercase()
             }

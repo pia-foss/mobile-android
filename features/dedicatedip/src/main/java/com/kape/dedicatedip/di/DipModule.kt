@@ -1,6 +1,7 @@
 package com.kape.dedicatedip.di
 
 import com.kape.dedicatedip.data.DipDataSourceImpl
+import com.kape.dedicatedip.data.DipSignupRepository
 import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.domain.GetDipMonthlyPlan
@@ -22,6 +23,7 @@ fun dedicatedIpModule(appModule: Module) = module {
 val localDipModule = module {
     single { DipPrefs(get()) }
     single<DipDataSource> { DipDataSourceImpl(get(), get()) }
+    single { DipSignupRepository(get(), get()) }
     single { ActivateDipUseCase(get()) }
     single { RenewDipUseCase(get()) }
     single { GetDipSupportedCountries(get()) }
