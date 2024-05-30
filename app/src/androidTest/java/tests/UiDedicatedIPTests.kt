@@ -3,7 +3,6 @@ package tests
 import com.kape.vpn.BuildConfig
 import org.junit.Test
 import screens.helpers.UiAutomatorStepsHelper.waitUntilFound
-import screens.steps.DedicatedIPSteps
 
 class UiDedicatedIPTests : UiTest() {
 
@@ -11,23 +10,23 @@ class UiDedicatedIPTests : UiTest() {
     fun accept_valid_dedicated_ip_token() {
         dedicatedIPSteps.navigateToDedicatedIPPage()
         dedicatedIPSteps.activateDedicatedIPToken(BuildConfig.PIA_VALID_DIP_TOKEN)
-        waitUntilFound(DedicatedIPSteps.dedicatedIPServerName)
-        assert(DedicatedIPSteps.dedicatedIPServerName.exists()
-                && DedicatedIPSteps.dedicatedIPFlag.exists()
-                && !DedicatedIPSteps.dedicatedIPField.exists())
+        waitUntilFound(dedicatedIPSteps.dedicatedIPServerName)
+        assert(dedicatedIPSteps.dedicatedIPServerName.exists()
+                && dedicatedIPSteps.dedicatedIPFlag.exists()
+                && !dedicatedIPSteps.dedicatedIPField.exists())
     }
 
     @Test
     fun reject_invalid_dedicated_ip_token() {
         dedicatedIPSteps.navigateToDedicatedIPPage()
         dedicatedIPSteps.activateDedicatedIPToken("InvalidToken")
-        assert(DedicatedIPSteps.dedicatedIPField.exists())
+        assert(dedicatedIPSteps.dedicatedIPField.exists())
     }
 
     @Test
     fun reject_empty_dedicated_ip_token() {
         dedicatedIPSteps.navigateToDedicatedIPPage()
         dedicatedIPSteps.activateDedicatedIPToken("")
-        assert(DedicatedIPSteps.dedicatedIPField.exists())
+        assert(dedicatedIPSteps.dedicatedIPField.exists())
     }
 }

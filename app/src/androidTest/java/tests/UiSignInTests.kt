@@ -20,7 +20,7 @@ class UiSignInTests : UiTest() {
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
         loginSteps.giveAppPermissions()
-        assert(MainScreenSteps.connectButton.exists())
+        assert(mainScreenSteps.connectButton.exists())
     }
 
     @Test
@@ -28,8 +28,8 @@ class UiSignInTests : UiTest() {
         signUpSteps.navigateToSignUpScreen()
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn("InvalidUser", "InvalidPassword")
-        waitUntilFound(LoginSteps.loginButton)
-        assert(LoginSteps.loginButton.exists())
+        waitUntilFound(loginSteps.loginButton)
+        assert(loginSteps.loginButton.exists())
     }
 
     @Test
@@ -37,8 +37,8 @@ class UiSignInTests : UiTest() {
         signUpSteps.navigateToSignUpScreen()
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn("", "")
-        waitUntilFound(LoginSteps.loginButton)
-        assert(LoginSteps.loginButton.exists())
+        waitUntilFound(loginSteps.loginButton)
+        assert(loginSteps.loginButton.exists())
     }
 
     @Test
@@ -46,8 +46,8 @@ class UiSignInTests : UiTest() {
         signUpSteps.navigateToSignUpScreen()
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, "")
-        waitUntilFound(LoginSteps.loginButton)
-        assert(LoginSteps.loginButton.exists())
+        waitUntilFound(loginSteps.loginButton)
+        assert(loginSteps.loginButton.exists())
     }
 
     @Test
@@ -56,7 +56,7 @@ class UiSignInTests : UiTest() {
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn("", BuildConfig.PIA_VALID_PASSWORD)
         loginSteps.giveAppPermissions()
-        waitUntilFound(LoginSteps.loginButton)
-        assert(LoginSteps.loginButton.exists())
+        waitUntilFound(loginSteps.loginButton)
+        assert(loginSteps.loginButton.exists())
     }
 }
