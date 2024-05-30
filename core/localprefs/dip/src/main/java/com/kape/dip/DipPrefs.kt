@@ -49,6 +49,10 @@ class DipPrefs(context: Context) : Prefs(context, "dip") {
 
     fun showDedicatedIpHomeBanner() = prefs.getBoolean(DIP_SIGNUP_HOME_BANNER_VISIBLE, false)
 
+    fun hideDedicatedIpHomeBanner() {
+        prefs.edit().putBoolean(DIP_SIGNUP_HOME_BANNER_VISIBLE, false).apply()
+    }
+
     private fun getDips() = prefs.getStringSet(DEDICATED_IPS, emptySet()) ?: emptySet()
 
     private fun saveDedicatedIps(dips: Set<String>) =

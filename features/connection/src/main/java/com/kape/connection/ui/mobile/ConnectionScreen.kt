@@ -94,6 +94,7 @@ fun ConnectionScreen() = Screen {
     LaunchedEffect(key1 = Unit) {
         viewModel.loadVpnServers(locale)
         viewModel.loadShadowsocksServers(locale)
+        viewModel.shouldShowDedicatedIpSignupBanner()
         viewModel.autoConnect()
     }
 
@@ -138,13 +139,13 @@ fun ConnectionScreen() = Screen {
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    if (viewModel.showDedicatedIpSignupBanner()) {
+                    if (viewModel.showDedicatedIpHomeBanner.value) {
                         DedicatedIpBanner(
                             onAcceptClick = {
                                 viewModel.navigateToDedicatedIpPlans()
                             },
                             onCancelClick = {
-                                TODO("To be implemented")
+                                viewModel.hideDedicatedIpSignupBanner()
                             },
                         )
                     }

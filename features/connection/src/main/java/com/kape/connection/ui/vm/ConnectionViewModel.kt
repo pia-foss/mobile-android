@@ -2,6 +2,7 @@ package com.kape.connection.ui.vm
 
 import android.app.AlarmManager
 import android.os.Build
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
@@ -63,7 +64,6 @@ class ConnectionViewModel(
         isCurrentServerOptimal = false,
         showOptimalLocationInfo = prefs.getSelectedVpnServer() == null,
     )
-
     private val _state: MutableStateFlow<ConnectionScreenState> = MutableStateFlow(defaultState)
     val state: StateFlow<ConnectionScreenState> = _state
 
@@ -79,6 +79,8 @@ class ConnectionViewModel(
     val port = connectionUseCase.port
     val isSnoozeActive = snoozeHandler.isSnoozeActive
     val timeUntilResume = snoozeHandler.timeUntilResume
+
+    val showDedicatedIpHomeBanner = mutableStateOf(false)
 
     init {
         viewModelScope.launch {
@@ -173,8 +175,16 @@ class ConnectionViewModel(
             -> screenElement.isVisible
         }
 
-    fun showDedicatedIpSignupBanner() =
-        dipPrefs.isDipSignupEnabled() && dipPrefs.showDedicatedIpHomeBanner()
+    fun shouldShowDedicatedIpSignupBanner() {
+        if (dipPrefs.isDipSignupEnabled() && dipPrefs.showDedicatedIpHomeBanner()) {
+            showDedicatedIpHomeBanner.value = true
+        }
+    }
+
+    fun hideDedicatedIpSignupBanner() {
+        dipPrefs.hideDedicatedIpHomeBanner()
+        showDedicatedIpHomeBanner.value = false
+    }
 
     fun snooze(interval: Int) = snoozeHandler.setSnooze(interval)
 

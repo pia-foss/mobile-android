@@ -182,7 +182,7 @@ class DipViewModel(
     }
 
     fun showDedicatedIpSignupBanner() =
-        dipPrefs.isDipSignupEnabled() && dipPrefs.showDedicatedIpHomeBanner()
+        dipPrefs.isDipSignupEnabled()
 
     fun selectDipCountry(selected: SupportedCountries.DedicatedIpCountriesAvailable?) {
         dipSelectedCountry.value = selected
