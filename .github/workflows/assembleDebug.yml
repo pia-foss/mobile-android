@@ -1,0 +1,135 @@
+name: Build APKs
+
+on:
+  push:
+
+jobs:
+  ktlintCheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4.1.0
+
+      - name: Setup JAVA 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Run Ktlint Check
+        run: ./gradlew ktlintCheck
+
+      - name: Check Java version
+        run: java -version
+
+  check-licenses:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup JAVA 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - uses: actions/checkout@v4.1.0
+      - name: Check licenses
+        uses: ./.github/actions/check-licenses
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          ssh-key: ${{ secrets.SVC_GH_ACTIONS_CLIENT_BUILDBOT_PAT }}
+          path-repo: ${{ runner.temp }}
+
+  assemble-apks:
+    needs: ktlintCheck
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [Debug, Release]
+
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4.1.0
+
+      - name: Setup JAVA 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Cache Gradle and wrapper
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+
+      - name: Run assemble ${{ matrix.config }} APKs
+        env:
+          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+        run: ./gradlew assemble${{ matrix.config }}
+
+  build-playstore-version:
+    uses: ./.github/workflows/build-playstore-android.yaml
+    secrets: inherit
+
+  build-website-version:
+    uses: ./.github/workflows/build-website-android.yaml
+    secrets: inherit
+
+  build-amazon-version:
+    uses: ./.github/workflows/build-amazon-android.yaml
+    secrets: inherit
+
+  e2e-testing:
+    name: Run end to end instrumentation tests
+    runs-on: ubuntu-4core-runners
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v4.1.0
+
+      - name: Setup JAVA 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'gradle'
+          cache-dependency-path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+
+      - name: Enable Hardware Acceleration (Add KVM group perms)
+        run: |
+          sudo modprobe kvm
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run end to end instrumentation tests on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          PIA_VALID_USERNAME: ${{ secrets.PIA_VALID_USERNAME }}
+          PIA_VALID_PASSWORD: ${{ secrets.PIA_VALID_PASSWORD }}
+          PIA_VALID_DIP_TOKEN: ${{ secrets.PIA_VALID_DIP_TOKEN }}
+        with:
+          api-level: 30
+          arch: x86_64
+          cores: 4
+          profile: pixel_6
+          ram-size: 12G
+          disk-size: 40G
+          heap-size: 8192M
+          emulator-boot-timeout: 480
+          disable-animations: true
+          disable-spellchecker: true
+          script: ./gradlew :app:connectedGoogleDebugAndroidTest
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: e2e-report
+          path: ${{github.workspace}}/app/build/reports/androidTests/connected/debug/flavors/google/*

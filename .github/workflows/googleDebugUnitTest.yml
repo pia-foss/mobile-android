@@ -1,0 +1,38 @@
+name: Google Debug Unit Tests
+
+on:
+  push:
+
+jobs:
+  #1
+  unit-tests:
+    #2
+    runs-on: ubuntu-latest
+    #3
+    steps:
+      #4
+      - name: Checkout the code
+        uses: actions/checkout@v4.1.0
+        env:
+          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+      #5
+      - name: Setup JAVA 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      #6
+      - name: Cache Gradle and wrapper
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+      #7
+      - name: Run GoogleDebugUnitTests
+        env:
+          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+        run: ./gradlew testGoogleDebugUnitTest
