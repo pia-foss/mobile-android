@@ -141,15 +141,15 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementAccount() {
-        add(IMPLEMENTATION, "com.kape.android:account-android:1.4.0")
+        add(IMPLEMENTATION, "com.kape.android:account-android:1.4.6")
     }
 
     fun DependencyHandler.implementKpi() {
-        add(IMPLEMENTATION, "com.kape.android:kpi-android:1.2.1-rc01")
+        add(IMPLEMENTATION, "com.kape.android:kpi-android:1.2.2")
     }
 
     fun DependencyHandler.implementCsi() {
-        add(IMPLEMENTATION, "com.kape.android:csi-android:1.3.0")
+        add(IMPLEMENTATION, "com.kape.android:csi-android:1.3.2")
     }
 
     fun DependencyHandler.implementRegions() {

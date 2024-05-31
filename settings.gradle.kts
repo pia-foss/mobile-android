@@ -13,7 +13,7 @@ dependencyResolutionManagement {
         mavenLocal()
         mavenCentral()
         maven {
-            url = uri("https://maven.pkg.github.com/xvpn/kp_android_vpn_manager")
+            url = uri("https://maven.pkg.github.com/pia-foss/mobile-android-vpn-manager")
             credentials {
                 username = System.getenv("GITHUB_USERNAME")
                 password = System.getenv("GITHUB_TOKEN")
@@ -21,6 +21,27 @@ dependencyResolutionManagement {
         }
         maven {
             url = uri("https://maven.pkg.github.com/pia-foss/mobile-shared-regions")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven {
+            url = uri("https://maven.pkg.github.com/pia-foss/mobile-shared-account")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven {
+            url = uri("https://maven.pkg.github.com/pia-foss/mobile-shared-csi")
+            credentials {
+                username = System.getenv("GITHUB_USERNAME")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven {
+            url = uri("https://maven.pkg.github.com/pia-foss/mobile-shared-kpi")
             credentials {
                 username = System.getenv("GITHUB_USERNAME")
                 password = System.getenv("GITHUB_TOKEN")
