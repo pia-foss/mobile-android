@@ -23,6 +23,14 @@ class RegionListProvider(
         _servers.value = readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
     }
 
+    fun getOptimalServer(): VpnServer {
+        return if (_servers.value.none { it.latency != null }) {
+            return getAutoServer()
+        } else {
+            _servers.value.sortedBy { it.latency?.toInt() }.first()
+        }
+    }
+
     fun updateServerLatencies(locale: String, isConnected: Boolean, isUserInitiated: Boolean) =
         flow {
             if (isUserInitiated) {
@@ -54,5 +62,9 @@ class RegionListProvider(
                     emit(updatedServers)
                 }
         }
+    }
+
+    private fun getAutoServer(): VpnServer {
+        return _servers.value.filter { it.autoRegion && it.isGeo.not() }.random()
     }
 }
