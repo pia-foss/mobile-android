@@ -24,10 +24,11 @@ class RegionListProvider(
     }
 
     fun getOptimalServer(): VpnServer {
-        return if (_servers.value.none { it.latency != null }) {
-            return getAutoServer()
+        val optimalServerOptions = _servers.value.filter { it.autoRegion && it.isGeo.not() }
+        return if (optimalServerOptions.none { it.latency != null }) {
+            optimalServerOptions.random()
         } else {
-            _servers.value.sortedBy { it.latency?.toInt() }.first()
+            optimalServerOptions.sortedBy { it.latency?.toInt() }.first()
         }
     }
 
@@ -62,9 +63,5 @@ class RegionListProvider(
                     emit(updatedServers)
                 }
         }
-    }
-
-    private fun getAutoServer(): VpnServer {
-        return _servers.value.filter { it.autoRegion && it.isGeo.not() }.random()
     }
 }
