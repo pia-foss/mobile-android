@@ -57,9 +57,7 @@ class ConnectionViewModel(
 ) : ViewModel(), KoinComponent {
 
     private val defaultState = ConnectionScreenState(
-        server = prefs.getSelectedVpnServer()
-            ?: regionListProvider.servers.value.filter { it.autoRegion }.sortedBy { it.latency }
-                .first(),
+        server = prefs.getSelectedVpnServer() ?: regionListProvider.getOptimalServer(),
         quickConnectServers = getQuickConnectVpnServers(),
         isCurrentServerOptimal = false,
         showOptimalLocationInfo = prefs.getSelectedVpnServer() == null,
@@ -140,8 +138,7 @@ class ConnectionViewModel(
             } ?: run {
                 if (!connectionUseCase.isConnected() || !connectionUseCase.isConnecting()) {
                     updateState(
-                        regionListProvider.servers.value.sortedBy { it.latency?.toInt() }
-                            .first(),
+                        regionListProvider.getOptimalServer(),
                         false,
                     )
                 }
@@ -297,8 +294,7 @@ class ConnectionViewModel(
     }
 
     private fun isOptimalLocation(serverKey: String): Boolean {
-        return regionListProvider.servers.value.sortedBy { it.latency?.toInt() }
-            .first().key == serverKey
+        return regionListProvider.getOptimalServer().key == serverKey
     }
 
     private fun updateState(server: VpnServer, showOptimalLocationInfo: Boolean) =
@@ -308,8 +304,7 @@ class ConnectionViewModel(
                 if (server != existingServer) {
                     val serverToConnect =
                         if (existingServer.key == AUTO_KEY) {
-                            regionListProvider.servers.value.sortedBy { it.latency?.toInt() }
-                                .first()
+                            regionListProvider.getOptimalServer()
                         } else {
                             it
                         }

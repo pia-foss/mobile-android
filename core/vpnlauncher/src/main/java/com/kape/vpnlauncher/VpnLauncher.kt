@@ -38,7 +38,7 @@ class VpnLauncher(
                 return
             } else {
                 val server: VpnServer = connectionPrefs.getSelectedVpnServer()
-                    ?: regionListProvider.servers.value.first { it.autoRegion }
+                    ?: regionListProvider.getOptimalServer()
                 if (!connectionUseCase.isConnected()) {
                     launch {
                         connectionUseCase.startConnection(server, false).collect()
