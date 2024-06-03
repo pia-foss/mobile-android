@@ -85,7 +85,7 @@ jobs:
 
   e2e-testing:
     name: Run end to end instrumentation tests
-    runs-on: ubuntu-4core-runners
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4.1.0
