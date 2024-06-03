@@ -67,16 +67,17 @@ class VpnRegionSelectionViewModel(
         updateVpnServers()
     }
 
-    fun filterByName(value: String, isSearchEnabled: MutableState<Boolean>) =
+    fun filterByName(value: String, isSearchEnabled: MutableState<Boolean>? = null) =
         viewModelScope.launch {
             if (value.isNotEmpty()) {
-                isSearchEnabled.value = true
+                isSearchEnabled?.value = true
                 sorted.value = servers.value.filter {
                     it.type is ItemType.Content && it.type.server.name.lowercase()
                         .contains(value.lowercase())
                 }
             } else {
-                isSearchEnabled.value = false
+                sorted.value = emptyList()
+                isSearchEnabled?.value = false
             }
         }
 
