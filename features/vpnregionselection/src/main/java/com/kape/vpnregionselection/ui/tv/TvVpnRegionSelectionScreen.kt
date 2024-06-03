@@ -42,11 +42,11 @@ import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.regions.data.ServerData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.mobile.elements.Search
 import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.theme.statusBarError
+import com.kape.ui.tv.elements.Search
 import com.kape.ui.tv.text.RegionSelectionGridSectionText
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionManager
@@ -182,7 +182,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
                         ) {
-                            viewModel.filterByName(it, isSearchEnabled)
+                            viewModel.filterByName(it)
                         }
                     }
                     if (isFavoriteSelected.value) {
