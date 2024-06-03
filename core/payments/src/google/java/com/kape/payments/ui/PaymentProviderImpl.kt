@@ -6,11 +6,14 @@ import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchaseHistoryRecord
 import com.android.billingclient.api.PurchaseHistoryResponseListener
+import com.android.billingclient.api.PurchasesResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchaseHistoryParams
+import com.android.billingclient.api.QueryPurchasesParams
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
@@ -18,7 +21,10 @@ import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
 import com.kape.payments.utils.monthlySubscription
 import com.kape.payments.utils.yearlySubscription
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 
 class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
     PaymentProvider {
@@ -184,6 +190,28 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
             }
         }
         billingClient.queryPurchaseHistoryAsync(params, purchaseHistoryListener)
+    }
+
+    override fun hasActiveSubscription(): Flow<Boolean> = callbackFlow {
+        val params = QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build()
+        val purchasesListener = PurchasesResponseListener { billingResult: BillingResult, purchases: List<Purchase> ->
+            if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+                trySend(false)
+                return@PurchasesResponseListener
+            }
+
+            if (purchases.isEmpty()) {
+                trySend(false)
+                return@PurchasesResponseListener
+            }
+
+            val hasActiveSubscription = purchases.any { purchase ->
+                purchase.isAutoRenewing && purchase.purchaseState == Purchase.PurchaseState.PURCHASED
+            }
+            trySend(hasActiveSubscription)
+        }
+        billingClient.queryPurchasesAsync(params, purchasesListener)
+        awaitClose { channel.close() }
     }
 
     override fun isClientRegistered(): Boolean {

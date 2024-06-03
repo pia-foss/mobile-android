@@ -7,7 +7,10 @@ import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
 import com.kape.payments.utils.monthlySubscription
 import com.kape.payments.utils.yearlySubscription
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.callbackFlow
 
 class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
     PaymentProvider {
@@ -42,6 +45,11 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
 
     override fun getPurchaseHistory() {
         // no-op
+    }
+
+    override fun hasActiveSubscription(): Flow<Boolean> = callbackFlow {
+        trySend(false)
+        awaitClose { channel.close() }
     }
 
     override fun isClientRegistered(): Boolean {

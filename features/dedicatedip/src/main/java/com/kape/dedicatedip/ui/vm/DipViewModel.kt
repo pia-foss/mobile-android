@@ -19,7 +19,6 @@ import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
 import com.kape.payments.ui.PaymentProvider
-import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.router.Back
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
@@ -48,7 +47,7 @@ class DipViewModel(
 
     val dipList = mutableStateListOf<VpnServer>()
     val activationState = mutableStateOf<DipApiResult?>(null)
-    val hasAnActivePlaystoreSubscription = mutableStateOf(false)
+    val hasAnActivePlaystoreSubscription = mutableStateOf(true)
     val supportedDipCountriesList = mutableStateOf<SupportedCountries?>(null)
     val dipMonthlyPlan = mutableStateOf<DedicatedIpMonthlyPlan?>(null)
     val dipYearlyPlan = mutableStateOf<DedicatedIpYearlyPlan?>(null)
@@ -160,25 +159,10 @@ class DipViewModel(
         }
     }
 
-    fun getActivePlaystoreSubscription() {
-        viewModelScope.launch {
-            paymentProvider.purchaseHistoryState.collect {
-                when (it) {
-                    is PurchaseHistoryState.PurchaseHistorySuccess -> {
-                        hasAnActivePlaystoreSubscription.value = true
-                    }
-
-                    PurchaseHistoryState.Default -> {
-                        // no=op
-                    }
-
-                    PurchaseHistoryState.PurchaseHistoryFailed -> {
-                        hasAnActivePlaystoreSubscription.value = false
-                    }
-                }
-            }
+    fun hasActivePlaystoreSubscription() = viewModelScope.launch {
+        paymentProvider.hasActiveSubscription().collect {
+            hasAnActivePlaystoreSubscription.value = it
         }
-        paymentProvider.getPurchaseHistory()
     }
 
     fun showDedicatedIpSignupBanner() =
