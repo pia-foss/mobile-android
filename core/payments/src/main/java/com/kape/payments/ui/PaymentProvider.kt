@@ -4,6 +4,7 @@ import android.app.Activity
 import com.kape.payments.data.Subscription
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 interface PaymentProvider {
@@ -25,6 +26,8 @@ interface PaymentProvider {
     fun getPurchaseUpdates()
 
     fun getPurchaseHistory()
+
+    fun hasActiveSubscription(): Flow<Boolean>
 
     fun isClientRegistered(): Boolean
 }

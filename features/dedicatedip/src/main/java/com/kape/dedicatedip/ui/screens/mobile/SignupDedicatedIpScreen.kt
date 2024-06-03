@@ -51,7 +51,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SignupDedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
-        getActivePlaystoreSubscription()
+        hasActivePlaystoreSubscription()
         getSupportedDipCountries()
         getDipMonthlyPlan()
         getDipYearlyPlan()
