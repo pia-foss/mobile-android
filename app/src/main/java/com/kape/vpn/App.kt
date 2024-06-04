@@ -7,6 +7,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.kape.about.di.aboutModule
 import com.kape.appbar.di.appBarModule
 import com.kape.automation.di.automationModule
+import com.kape.buildconfig.di.buildConfigModule
 import com.kape.connection.di.connectionModule
 import com.kape.csi.di.csiModule
 import com.kape.customization.di.customizationModule
@@ -68,6 +69,7 @@ class App : Application() {
                 add(vpnConnectModule(appModule))
                 add(appBarModule(appModule))
                 add(notificationModule)
+                add(buildConfigModule(BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE))
                 add(paymentsModule(appModule))
                 add(loginModule(appModule))
                 add(permissionsModule(appModule))
