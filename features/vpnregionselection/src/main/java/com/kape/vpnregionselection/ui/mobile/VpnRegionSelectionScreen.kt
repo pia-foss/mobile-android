@@ -13,10 +13,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -33,6 +37,7 @@ import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
 import com.kape.vpnregionselection.util.ItemType
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VpnRegionSelectionScreen() = Screen {
     val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
@@ -56,7 +61,8 @@ fun VpnRegionSelectionScreen() = Screen {
     Column(
         modifier = Modifier
             .background(LocalColors.current.surfaceVariant)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .semantics { testTagsAsResourceId = true },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AppBar(appBarViewModel, onLeftIconClick = { viewModel.navigateBack() })
@@ -64,7 +70,8 @@ fun VpnRegionSelectionScreen() = Screen {
             Search(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .testTag(":VpnRegionSelectionScreen:searchBar"),
             ) {
                 viewModel.filterByName(it, isSearchEnabled)
             }
