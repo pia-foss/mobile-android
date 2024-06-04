@@ -85,7 +85,7 @@ jobs:
 
   e2e-testing:
     name: Run end to end instrumentation tests
-    runs-on: ubuntu-4core-runners
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4.1.0
@@ -121,7 +121,7 @@ jobs:
           cores: 4
           profile: pixel_6
           ram-size: 12G
-          disk-size: 40G
+          disk-size: 10G
           heap-size: 8192M
           emulator-boot-timeout: 480
           disable-animations: true
