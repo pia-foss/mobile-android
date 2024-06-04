@@ -20,7 +20,7 @@ class MetaEndpointsProvider : KoinComponent {
         val selectedRegion = connectionPrefs.getSelectedVpnServer()
 
         // Get the list of known regions sorted by latency.
-        val sortedLatencyRegions = regionsListProvider.servers.value
+        val sortedLatencyRegions = regionsListProvider.servers.value.sortedBy { it.latency?.toInt() }
 
         // Filter out invalid latencies. e.g. nil, zero, etc.
         val regionsWithValidLatency = sortedLatencyRegions.filterNot {
