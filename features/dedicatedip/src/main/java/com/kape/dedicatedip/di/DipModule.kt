@@ -21,7 +21,7 @@ fun dedicatedIpModule(appModule: Module) = module {
 }
 
 val localDipModule = module {
-    single { DipPrefs(get()) }
+    single { DipPrefs(get(), get()) }
     single<DipDataSource> { DipDataSourceImpl(get(), get()) }
     single { DipSignupRepository(get(), get()) }
     single { ActivateDipUseCase(get()) }

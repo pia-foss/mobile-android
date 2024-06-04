@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":core:localprefs:dip"))
     implementation(project(":features:appbar"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":capabilities:buildconfig"))
     implementAccount()
     implementRegions()
     implementFeatureModule()

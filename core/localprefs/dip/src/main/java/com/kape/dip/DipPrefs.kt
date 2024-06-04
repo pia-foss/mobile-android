@@ -1,6 +1,7 @@
 package com.kape.dip
 
 import android.content.Context
+import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.utils.Prefs
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
@@ -13,7 +14,10 @@ private const val DIP_SIGNUP_HOME_BANNER_VISIBLE = "dip-signup-home-banner-visib
 private const val DIP_SIGNUP_PLANS = "dip-signup-plans"
 private const val DIP_SIGNUP_PURCHASED_TOKEN = "dip-signup-purchased-token"
 
-class DipPrefs(context: Context) : Prefs(context, "dip") {
+class DipPrefs(
+    context: Context,
+    private val buildConfigProvider: BuildConfigProvider,
+) : Prefs(context, "dip") {
 
     fun getDedicatedIps(): List<DedicatedIPInformationResponse.DedicatedIPInformation> {
         val dips = mutableListOf<DedicatedIPInformationResponse.DedicatedIPInformation>()
@@ -47,7 +51,11 @@ class DipPrefs(context: Context) : Prefs(context, "dip") {
         prefs.edit().remove(DIP_SIGNUP_PURCHASED_TOKEN).apply()
     }
 
-    fun isDipSignupEnabled() = prefs.getBoolean(DIP_SIGNUP_ENABLED, false)
+    fun isDipSignupEnabled() = if (buildConfigProvider.isGoogleFlavor()) {
+        prefs.getBoolean(DIP_SIGNUP_ENABLED, false)
+    } else {
+        false
+    }
 
     fun showDedicatedIpHomeBanner() = prefs.getBoolean(DIP_SIGNUP_HOME_BANNER_VISIBLE, false)
 

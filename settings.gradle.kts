@@ -61,6 +61,7 @@ include(":capabilities:csi")
 include(":capabilities:location")
 include(":capabilities:networkmanagement")
 include(":capabilities:snooze")
+include(":capabilities:buildconfig")
 
 include(":core")
 include(":core:router")
