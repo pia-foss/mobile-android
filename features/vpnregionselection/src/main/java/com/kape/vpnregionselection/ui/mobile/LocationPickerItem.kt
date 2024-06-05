@@ -87,7 +87,7 @@ fun LocationPickerItem(
                     .weight(12f),
             ) {
                 Row {
-                    RegionSelectionText(content = server.name, isOffline = server.isOffline)
+                    RegionSelectionText(content = server.name, isOffline = server.isOffline, testTag = "$testTag:regionName")
                     if (!server.allowsPortForwarding && isPortForwardingEnabled) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(

@@ -291,13 +291,14 @@ fun ConnectionInfoText(content: String) {
 }
 
 @Composable
-fun RegionSelectionText(content: String, isOffline: Boolean = false) {
+fun RegionSelectionText(content: String, isOffline: Boolean = false, testTag: String = "") {
     Text(
         text = content,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         color = if (isOffline) LocalColors.current.inverseOnSurface else LocalColors.current.onSurface,
         style = PiaTypography.body3,
+        modifier = Modifier.testTag(testTag),
     )
 }
 

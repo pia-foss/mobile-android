@@ -2,6 +2,7 @@ package tests
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Region
 import androidx.test.platform.app.InstrumentationRegistry
 import com.kape.vpn.BuildConfig
 import org.junit.Before
@@ -10,6 +11,7 @@ import screens.steps.DedicatedIPSteps
 import screens.steps.LoginSteps
 import screens.steps.MainScreenSteps
 import screens.steps.ProtocolsSteps
+import screens.steps.RegionSelectionSteps
 import screens.steps.SettingsSteps
 import screens.steps.SideMenuSteps
 import screens.steps.SignUpSteps
@@ -22,6 +24,7 @@ open class UiTest(
     val settingsSteps: SettingsSteps = SettingsSteps,
     val protocolSteps: ProtocolsSteps = ProtocolsSteps,
     val dedicatedIPSteps: DedicatedIPSteps = DedicatedIPSteps,
+    val regionSelectionSteps: RegionSelectionSteps = RegionSelectionSteps
 ) {
 
     var context: Context = InstrumentationRegistry.getInstrumentation().targetContext
