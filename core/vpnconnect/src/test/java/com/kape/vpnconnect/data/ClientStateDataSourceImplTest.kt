@@ -39,7 +39,7 @@ class ClientStateDataSourceImplTest {
     fun `getClientStatus - connected - vpn ip is set`() = runTest {
         val info = ClientStatusInformation(connected = true, ip = "100.100.100.100")
         every { connectionPrefs.setVpnIp(any()) } returns Unit
-        coEvery { accountAPI.clientStatus(any()) } answers {
+        coEvery { accountAPI.clientStatus(any(), any()) } answers {
             lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(
                 info,
                 emptyList(),
@@ -57,7 +57,7 @@ class ClientStateDataSourceImplTest {
         val info = ClientStatusInformation(connected = false, ip = "100.100.100.100")
         every { connectionPrefs.setClientIp(any()) } returns Unit
         every { connectionPrefs.setVpnIp(any()) } returns Unit
-        coEvery { accountAPI.clientStatus(any()) } answers {
+        coEvery { accountAPI.clientStatus(any(), any()) } answers {
             lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(
                 info,
                 emptyList(),
@@ -75,7 +75,7 @@ class ClientStateDataSourceImplTest {
     fun `getClientStatus - fails - ip is set to empty`() = runTest {
         every { connectionPrefs.setClientIp(any()) } returns Unit
         every { connectionPrefs.setVpnIp(any()) } returns Unit
-        coEvery { accountAPI.clientStatus(any()) } answers {
+        coEvery { accountAPI.clientStatus(any(), any()) } answers {
             lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(
                 null,
                 listOf(AccountRequestError(-1, null, 0)),
@@ -98,7 +98,7 @@ class ClientStateDataSourceImplTest {
             every { connectionPrefs.setClientIp(any()) } returns Unit
             every { connectionPrefs.setVpnIp(any()) } returns Unit
             var callCount = 0
-            coEvery { accountAPI.clientStatus(any()) } answers {
+            coEvery { accountAPI.clientStatus(any(), any()) } answers {
                 when (++callCount) {
                     1 -> {
                         lastArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>().invoke(

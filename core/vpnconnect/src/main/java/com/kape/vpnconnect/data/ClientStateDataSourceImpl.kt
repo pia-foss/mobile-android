@@ -5,6 +5,7 @@ import com.kape.connection.NO_IP
 import com.kape.csi.CsiPrefs
 import com.kape.settings.SettingsPrefs
 import com.kape.vpnconnect.domain.ClientStateDataSource
+import com.kape.vpnconnect.utils.STATUS_REQUEST_LONG_TIMEOUT
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.ClientStatusInformation
@@ -46,7 +47,7 @@ class ClientStateDataSourceImpl(
             processClientStatus(status, error)
             // Sometimes the API will timeout while the tunnel is being started. If that happens we retry once
             if (error.isNotEmpty()) {
-                accountAPI.clientStatus { status: ClientStatusInformation?, error: List<AccountRequestError> ->
+                accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT) { status: ClientStatusInformation?, error: List<AccountRequestError> ->
                     processClientStatus(status, error)
                 }
             }
