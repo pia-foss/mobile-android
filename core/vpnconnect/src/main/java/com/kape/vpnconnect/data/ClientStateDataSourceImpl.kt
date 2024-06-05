@@ -9,7 +9,6 @@ import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.ClientStatusInformation
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -43,26 +42,15 @@ class ClientStateDataSourceImpl(
             }
         }
 
-        var hasErrors: Boolean = false
-        var apiCallFinished: Boolean
-        var requestTimeoutMillis: Long = 3000
-        do {
-            apiCallFinished = false
-            accountAPI.clientStatus(requestTimeoutMillis) { status: ClientStatusInformation?, error: List<AccountRequestError> ->
-                processClientStatus(status, error)
-                hasErrors = error.isNotEmpty()
-                apiCallFinished = true
-                if (!hasErrors) {
-                    trySend(true)
+        accountAPI.clientStatus { status: ClientStatusInformation?, error: List<AccountRequestError> ->
+            processClientStatus(status, error)
+            // Sometimes the API will timeout while the tunnel is being started. If that happens we retry once
+            if (error.isNotEmpty()) {
+                accountAPI.clientStatus(20000) { status: ClientStatusInformation?, error: List<AccountRequestError> ->
+                    processClientStatus(status, error)
                 }
             }
-
-            while (!apiCallFinished) {
-                delay(1000)
-            }
-
-            requestTimeoutMillis *= 2
-        } while (hasErrors)
+        }
 
         awaitClose { channel.close() }
     }
