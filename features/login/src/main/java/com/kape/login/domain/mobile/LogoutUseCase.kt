@@ -6,6 +6,7 @@ import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.dip.DipPrefs
 import com.kape.networkmanagement.NetworkManagementPrefs
 import com.kape.payments.SubscriptionPrefs
+import com.kape.rating.prefs.RatingPrefs
 import com.kape.settings.SettingsPrefs
 import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.shareevents.KpiPrefs
@@ -30,6 +31,7 @@ class LogoutUseCase(
     private val settingsPrefs: SettingsPrefs,
     private val kpiPrefs: KpiPrefs,
     private val consentPrefs: ConsentPrefs,
+    private val ratingPrefs: RatingPrefs,
 ) {
 
     fun logout(): Flow<Boolean> = flow {
@@ -71,5 +73,6 @@ class LogoutUseCase(
         settingsPrefs.clear()
         kpiPrefs.clear()
         consentPrefs.clear()
+        ratingPrefs.clear()
     }
 }

@@ -39,6 +39,7 @@ private val localLoginModule = module {
             get(),
             get(),
             get(),
+            get(),
         )
     }
     single { GetUserLoggedInUseCase(get()) }

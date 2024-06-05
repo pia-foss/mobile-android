@@ -36,41 +36,42 @@ class RatingTool(private val connectionManager: ConnectionManager, private val p
         get() = Dispatchers.Main
 
     fun start() {
-        job.start()
+        if (prefs.getRatingState().active) {
+            job.start()
 
-        launch {
-            connectionManager.connectionStatus.collectLatest {
-                when (it) {
-                    ConnectionStatus.CONNECTED -> {
-                        if (prefs.getRatingState().active && shouldCountConnectedEvent) {
-                            shouldCountConnectedEvent = true
-                            handleConnectedEvent(prefs)
+            launch {
+                connectionManager.connectionStatus.collectLatest {
+                    when (it) {
+                        ConnectionStatus.CONNECTED -> {
+                            if (prefs.getRatingState().active && shouldCountConnectedEvent) {
+                                shouldCountConnectedEvent = true
+                                handleConnectedEvent(prefs)
+                            }
                         }
-                    }
 
-                    ConnectionStatus.DISCONNECTED -> {
-                        shouldCountConnectedEvent = true
-                    }
+                        ConnectionStatus.DISCONNECTED -> {
+                            shouldCountConnectedEvent = true
+                        }
 
-                    ConnectionStatus.CONNECTING,
-                    ConnectionStatus.DISCONNECTING,
-                    ConnectionStatus.ERROR,
-                    ConnectionStatus.RECONNECTING,
-                    -> {
-                        // no-op
+                        ConnectionStatus.CONNECTING,
+                        ConnectionStatus.DISCONNECTING,
+                        ConnectionStatus.ERROR,
+                        ConnectionStatus.RECONNECTING,
+                        -> {
+                            // no-op
+                        }
                     }
                 }
             }
+        } else {
+            job.cancel()
         }
-    }
-
-    fun stop() {
-        job.cancel()
     }
 
     fun setRatingInactive() {
         val updatedState = prefs.getRatingState().copy(active = false)
         prefs.setRatingState(updatedState)
+        _showRating.value = null
     }
 
     fun updateRatingDate() {
@@ -78,6 +79,7 @@ class RatingTool(private val connectionManager: ConnectionManager, private val p
         val dateString = dateFormat.format(Date())
         val updatedState = prefs.getRatingState().copy(notEnjoyingDate = dateString)
         prefs.setRatingState(updatedState)
+        _showRating.value = null
     }
 
     private fun handleConnectedEvent(prefs: RatingPrefs) {

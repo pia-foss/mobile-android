@@ -20,8 +20,8 @@ fun RatingDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
 @Composable
 fun RatingFeedbackDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     Dialog(
-        title = stringResource(id = R.string.rating_review_title),
-        text = stringResource(id = R.string.rating_review_message),
+        title = stringResource(id = R.string.rating_feedback_title),
+        text = stringResource(id = R.string.rating_feedback_message),
         onConfirmButtonText = stringResource(id = R.string.yes),
         onConfirm = onConfirm,
         onDismissButtonText = stringResource(id = R.string.no),
@@ -32,8 +32,8 @@ fun RatingFeedbackDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
 @Composable
 fun RatingReviewDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     Dialog(
-        title = stringResource(id = R.string.rating_feedback_title),
-        text = stringResource(id = R.string.rating_feedback_message),
+        title = stringResource(id = R.string.rating_review_title),
+        text = stringResource(id = R.string.rating_review_message),
         onConfirmButtonText = stringResource(id = R.string.yes),
         onConfirm = onConfirm,
         onDismissButtonText = stringResource(id = R.string.no),
