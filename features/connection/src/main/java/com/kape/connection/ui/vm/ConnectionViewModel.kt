@@ -13,6 +13,7 @@ import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
 import com.kape.portforwarding.data.model.PortForwardingStatus
+import com.kape.rating.utils.RatingTool
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
 import com.kape.router.Router
@@ -53,6 +54,7 @@ class ConnectionViewModel(
     private val customizationPrefs: CustomizationPrefs,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val alarmManager: AlarmManager,
+    private val ratingTool: RatingTool,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
@@ -84,6 +86,7 @@ class ConnectionViewModel(
         viewModelScope.launch {
             connectionUseCase.getClientStatus().collect()
         }
+        ratingTool.start()
         renewDedicatedIps()
     }
 

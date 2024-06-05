@@ -184,6 +184,7 @@ dependencies {
     implementation(project(":features:about"))
     implementation(project(":features:customization"))
     implementation(project(":features:inappbrowser"))
+    implementation(project(":features:rating"))
 
     implementAndroidBase()
     implementViewModel()

@@ -15,6 +15,8 @@ import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.notifications.data.NotificationChannelManager
 import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
+import com.kape.rating.prefs.RatingPrefs
+import com.kape.rating.utils.RatingTool
 import com.kape.router.Router
 import com.kape.router.mobile.MobileRouter
 import com.kape.router.tv.TvRouter
@@ -72,7 +74,8 @@ val appModule = module {
     single(named(PARAM_USER_AGENT)) { USER_AGENT }
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
-    single { RatingPrefs(context) }
+    single { RatingPrefs(get()) }
+    single { RatingTool(get(), get()) }
     single { RegionListProvider(get(), get()) }
     single { MetaEndpointsProvider() }
     single { AccountModuleStateProvider(get(named(CERTIFICATE)), get(), USE_STAGING) }

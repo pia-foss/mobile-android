@@ -82,6 +82,7 @@ dependencies {
     implementation(project(":features:sidemenu"))
     implementation(project(":features:vpnregionselection"))
     implementation(project(":features:dedicatedip"))
+    implementation(project(":features:rating"))
 
     implementFeatureModule()
     implementVpnManager()
