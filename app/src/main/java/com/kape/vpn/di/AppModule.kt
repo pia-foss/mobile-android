@@ -72,6 +72,7 @@ val appModule = module {
     single(named(PARAM_USER_AGENT)) { USER_AGENT }
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
+    single { RatingPrefs(context) }
     single { RegionListProvider(get(), get()) }
     single { MetaEndpointsProvider() }
     single { AccountModuleStateProvider(get(named(CERTIFICATE)), get(), USE_STAGING) }
