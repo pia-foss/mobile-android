@@ -4,6 +4,9 @@ import android.content.Context
 import com.kape.regions.data.ServerData
 import com.kape.utils.Prefs
 import com.kape.utils.vpnserver.VpnServer
+import com.kape.utils.vpnserver.VpnServerOutdated
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -47,8 +50,17 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
         setVpnReconnect(true)
     }
 
-    fun getSelectedServer(): VpnServer? = prefs.getString(VPN_SELECTED_SERVER, null)?.let {
-        Json.decodeFromString(it)
+    @OptIn(ExperimentalSerializationApi::class)
+    fun getSelectedServer(): VpnServer? {
+        return try {
+            prefs.getString(VPN_SELECTED_SERVER, null)?.let {
+                Json.decodeFromString<VpnServer>(it)
+            }
+        } catch (exception: MissingFieldException) {
+            prefs.getString(VPN_SELECTED_SERVER, null)?.let {
+                Json.decodeFromString<VpnServerOutdated>(it).toVpnServer()
+            }
+        }
     }
 
     fun needsVpnReconnect() = prefs.getBoolean(VPN_RECONNECT, false)
