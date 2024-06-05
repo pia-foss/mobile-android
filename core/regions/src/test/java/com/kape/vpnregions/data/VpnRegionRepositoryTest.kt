@@ -99,7 +99,7 @@ class VpnRegionRepositoryTest : KoinTest {
             Arguments.of(null, emptyList<VpnServer>()),
         )
 
-        private val latencyInfo = RegionLowerLatencyInformation("id", "endpoint", 0)
+        private val latencyInfo = RegionLowerLatencyInformation("id", 0)
 
         @JvmStatic
         fun latencies() = Stream.of(
