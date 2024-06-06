@@ -13,6 +13,8 @@ import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dip.DipPrefs
 import com.kape.portforwarding.data.model.PortForwardingStatus
+import com.kape.rating.data.RatingDialogType
+import com.kape.rating.utils.RatingTool
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
 import com.kape.router.Router
@@ -53,6 +55,7 @@ class ConnectionViewModel(
     private val customizationPrefs: CustomizationPrefs,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val alarmManager: AlarmManager,
+    private val ratingTool: RatingTool,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
@@ -61,6 +64,7 @@ class ConnectionViewModel(
         quickConnectServers = getQuickConnectVpnServers(),
         isCurrentServerOptimal = false,
         showOptimalLocationInfo = prefs.getSelectedVpnServer() == null,
+        ratingDialogType = ratingTool.showRating.value,
     )
     private val _state: MutableStateFlow<ConnectionScreenState> = MutableStateFlow(defaultState)
     val state: StateFlow<ConnectionScreenState> = _state
@@ -84,6 +88,7 @@ class ConnectionViewModel(
         viewModelScope.launch {
             connectionUseCase.getClientStatus().collect()
         }
+        ratingTool.start()
         renewDedicatedIps()
     }
 
@@ -318,6 +323,7 @@ class ConnectionViewModel(
                                 getQuickConnectVpnServers(),
                                 isOptimalLocation(serverToConnect.key),
                                 showOptimalLocationInfo,
+                                ratingTool.showRating.value,
                             ),
                         )
                         connectionUseCase.reconnect(serverToConnect).collect()
@@ -330,8 +336,27 @@ class ConnectionViewModel(
                         getQuickConnectVpnServers(),
                         isOptimalLocation(server.key),
                         showOptimalLocationInfo,
+                        ratingTool.showRating.value,
                     ),
                 )
             }
         }
+
+    fun showReviewPrompt() {
+        _state.value = state.value.copy(ratingDialogType = RatingDialogType.Review)
+    }
+
+    fun showFeedbackPrompt() {
+        _state.value = state.value.copy(ratingDialogType = RatingDialogType.Feedback)
+    }
+
+    fun setRatingStateInactive() {
+        ratingTool.setRatingInactive()
+        _state.value = state.value.copy(ratingDialogType = null)
+    }
+
+    fun updateRatingDate() {
+        ratingTool.updateRatingDate()
+        _state.value = state.value.copy(ratingDialogType = null)
+    }
 }

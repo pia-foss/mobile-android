@@ -2,6 +2,7 @@ package com.kape.connection.ui.mobile
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -25,6 +26,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -39,6 +42,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -48,6 +52,10 @@ import com.kape.connection.utils.ConnectionScreenState
 import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
+import com.kape.rating.data.RatingDialogType
+import com.kape.rating.ui.RatingDialog
+import com.kape.rating.ui.RatingFeedbackDialog
+import com.kape.rating.ui.RatingReviewDialog
 import com.kape.sidemenu.ui.screens.mobile.SideMenuContent
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.InfoCard
@@ -86,6 +94,9 @@ fun ConnectionScreen() = Screen {
     val scope: CoroutineScope = rememberCoroutineScope()
     val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
     val state = viewModel.state.collectAsState()
+    val showRatingGeneralDialog = remember { mutableStateOf(false) }
+    val showRatingReviewDialog = remember { mutableStateOf(false) }
+    val showRatingFeedbackDialog = remember { mutableStateOf(false) }
 
     BackHandler {
         viewModel.exitApp()
@@ -131,10 +142,14 @@ fun ConnectionScreen() = Screen {
                 horizontalAlignment = CenterHorizontally,
             ) {
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                    var connectButtonDescription = stringResource(id = R.string.toggle_connection_button)
+                    var connectButtonDescription =
+                        stringResource(id = R.string.toggle_connection_button)
 
                     connectButtonDescription += when (connectionStatus.value) {
-                        ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> stringResource(id = R.string.disconnect_from_vpn)
+                        ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> stringResource(
+                            id = R.string.disconnect_from_vpn,
+                        )
+
                         else -> stringResource(id = R.string.connect_to_vpn)
                     }
 
@@ -169,6 +184,66 @@ fun ConnectionScreen() = Screen {
                             isVisible = viewModel.isScreenElementVisible(screenElement),
                             viewModel = viewModel,
                             state = state.value,
+                        )
+                    }
+                    showRatingGeneralDialog.value =
+                        state.value.ratingDialogType is RatingDialogType.General
+                    showRatingReviewDialog.value =
+                        state.value.ratingDialogType is RatingDialogType.Review
+                    showRatingFeedbackDialog.value =
+                        state.value.ratingDialogType is RatingDialogType.Feedback
+
+                    if (showRatingGeneralDialog.value) {
+                        RatingDialog(
+                            onConfirm = {
+                                viewModel.showReviewPrompt()
+                            },
+                            onDismiss = {
+                                viewModel.showFeedbackPrompt()
+                            },
+                        )
+                    }
+
+                    if (showRatingReviewDialog.value) {
+                        val url = stringResource(id = R.string.app_url)
+                        val context = LocalContext.current
+
+                        RatingReviewDialog(
+                            onConfirm = {
+                                val launchIntent = Intent(Intent.ACTION_VIEW)
+                                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                launchIntent.data = Uri.parse(url)
+
+                                // Silently fail if Google Play Store isn't installed.
+                                if (launchIntent.resolveActivity(context.packageManager) != null) {
+                                    context.startActivity(launchIntent)
+                                }
+                                viewModel.setRatingStateInactive()
+                            },
+                            onDismiss = {
+                                viewModel.setRatingStateInactive()
+                            },
+                        )
+                    }
+
+                    if (showRatingFeedbackDialog.value) {
+                        val url = stringResource(id = R.string.url_support_new_ticket)
+                        val context = LocalContext.current
+
+                        RatingFeedbackDialog(
+                            onConfirm = {
+                                val launchIntent = Intent(Intent.ACTION_VIEW)
+                                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                launchIntent.data = Uri.parse(url)
+
+                                // Silently fail if Google Play Store isn't installed.
+                                if (launchIntent.resolveActivity(context.packageManager) != null) {
+                                    context.startActivity(launchIntent)
+                                }
+                            },
+                            onDismiss = {
+                                viewModel.updateRatingDate()
+                            },
                         )
                     }
                 }

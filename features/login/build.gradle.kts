@@ -74,6 +74,7 @@ dependencies {
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:shareevents"))
     implementation(project(":core:localprefs:signup"))
+    implementation(project(":core:localprefs:rating"))
 
     implementFeatureModule()
 }

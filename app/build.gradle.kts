@@ -144,6 +144,8 @@ dependencies {
     implementation(project(":core:localprefs:networkmanagement:data"))
     implementation(project(":core:localprefs:customization"))
     implementation(project(":core:localprefs:customization:data"))
+    implementation(project(":core:localprefs:rating:data"))
+    implementation(project(":core:localprefs:rating"))
     implementAccount()
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))
@@ -182,6 +184,7 @@ dependencies {
     implementation(project(":features:about"))
     implementation(project(":features:customization"))
     implementation(project(":features:inappbrowser"))
+    implementation(project(":features:rating"))
 
     implementAndroidBase()
     implementViewModel()

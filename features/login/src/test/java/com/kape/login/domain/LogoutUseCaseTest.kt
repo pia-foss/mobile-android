@@ -10,6 +10,7 @@ import com.kape.login.domain.mobile.AuthenticationDataSource
 import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.networkmanagement.NetworkManagementPrefs
 import com.kape.payments.SubscriptionPrefs
+import com.kape.rating.prefs.RatingPrefs
 import com.kape.settings.SettingsPrefs
 import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.shareevents.KpiPrefs
@@ -44,6 +45,7 @@ internal class LogoutUseCaseTest : BaseTest() {
     private val settingsPrefs = mockk<SettingsPrefs>()
     private val kpiPrefs = mockk<KpiPrefs>()
     private val consentPrefs = mockk<ConsentPrefs>()
+    private val ratingPrefs = mockk<RatingPrefs>()
 
     private lateinit var useCase: LogoutUseCase
 
@@ -63,6 +65,7 @@ internal class LogoutUseCaseTest : BaseTest() {
             settingsPrefs,
             kpiPrefs,
             consentPrefs,
+            ratingPrefs,
         )
     }
 
@@ -92,6 +95,7 @@ internal class LogoutUseCaseTest : BaseTest() {
         every { settingsPrefs.clear() } returns Unit
         every { kpiPrefs.clear() } returns Unit
         every { consentPrefs.clear() } returns Unit
+        every { ratingPrefs.clear() } returns Unit
         every { settingsPrefs.isAutomationEnabled() } returns isAutomationEnabled
         every { connectionPrefs.disconnectedByUser(any()) } returns Unit
 

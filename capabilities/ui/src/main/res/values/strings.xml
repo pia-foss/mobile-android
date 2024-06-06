@@ -77,6 +77,7 @@
     <string name="url_privacy_policy" translatable="false">https://www.privateinternetaccess.com/pages/privacy-policy/</string>
     <string name="url_support" translatable="false">https://www.privateinternetaccess.com/helpdesk/</string>
     <string name="url_registration" translatable="false">https://www.privateinternetaccess.com/account/client-sign-in#subscription-overview</string>
+    <string name="url_support_new_ticket" translatable="false">https://www.privateinternetaccess.com/helpdesk/new-ticket</string>
 
     <string name="qs_title">Connect to PIA</string>
     <string name="change_server">Change Server</string>
@@ -425,4 +426,14 @@
     <string name="subscribe">Subscribe</string>
 
     <string name="error_pinging_while_connected">Unable to update latency while being connected to the VPN</string>
+
+    <!-- Rating -->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="rating_enjoy_title">Are you enjoying PIA VPN?</string>
+    <string name="rating_enjoy_message">We hope our VPN product is meeting your expectations</string>
+    <string name="rating_review_title">How about a review in Google Play?</string>
+    <string name="rating_review_message">We appreciate you sharing your experience</string>
+    <string name="rating_feedback_title">What went wrong?</string>
+    <string name="rating_feedback_message">Do you want to give feedback? We can help you to improve your experience using PIA</string>
 </resources>
