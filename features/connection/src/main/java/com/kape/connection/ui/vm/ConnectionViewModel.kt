@@ -352,6 +352,7 @@ class ConnectionViewModel(
 
     fun setRatingStateInactive() {
         ratingTool.setRatingInactive()
+        _state.value = state.value.copy(ratingDialogType = null)
     }
 
     fun updateRatingDate() {
