@@ -32,6 +32,10 @@ class RegionListProvider(
         }
     }
 
+    fun reflectDedicatedIpAction() {
+        _servers.value = regionRepository.getServers(false)
+    }
+
     fun updateServerLatencies(locale: String, isConnected: Boolean, isUserInitiated: Boolean) =
         flow {
             if (isUserInitiated) {

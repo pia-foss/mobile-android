@@ -22,7 +22,6 @@ import com.kape.payments.ui.PaymentProvider
 import com.kape.router.Back
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnregions.data.VpnRegionRepository
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -125,6 +124,7 @@ class DipViewModel(
                     // no-op
                 }
             }
+            regionListProvider.reflectDedicatedIpAction()
         }
     }
 
