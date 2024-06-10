@@ -129,7 +129,7 @@ class ConnectionViewModel(
             if (settingsPrefs.isConnectOnLaunchEnabled()) {
                 prefs.getSelectedVpnServer()?.let {
                     connectionUseCase.startConnection(it, false).collect()
-                }?: run {
+                } ?: run {
                     connectionUseCase.startConnection(regionListProvider.getOptimalServer(), false).collect()
                 }
             }
