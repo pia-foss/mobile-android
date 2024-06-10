@@ -30,7 +30,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
@@ -46,6 +45,7 @@ import com.kape.ui.mobile.text.SupportedDipRegionsInCountry
 import com.kape.ui.theme.connectionError
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
+import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -173,7 +173,7 @@ private fun DipSignupSupportedCountriesDialog(
                     LazyColumn {
                         val items = it.dedicatedIpCountriesAvailable
                         items(items.size) { index ->
-                            val item: SupportedCountries.DedicatedIpCountriesAvailable = items[index]
+                            val item: DipCountriesResponse.DedicatedIpCountriesAvailable = items[index]
                             SupportedCountryItem(country = item)
                         }
                     }
@@ -229,7 +229,7 @@ private fun DipSignupErrorDialog(onDismiss: () -> Unit) {
 
 @Composable
 fun SupportedCountryItem(
-    country: SupportedCountries.DedicatedIpCountriesAvailable,
+    country: DipCountriesResponse.DedicatedIpCountriesAvailable,
 ) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Image(

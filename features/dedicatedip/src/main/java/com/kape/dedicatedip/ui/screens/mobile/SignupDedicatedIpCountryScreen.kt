@@ -38,7 +38,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
@@ -52,6 +51,7 @@ import com.kape.ui.mobile.text.SupportedDipRegions
 import com.kape.ui.mobile.text.SupportedDipRegionsInCountry
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
+import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -202,7 +202,7 @@ fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel) {
 
 @Composable
 fun DipCountryItem(
-    country: SupportedCountries.DedicatedIpCountriesAvailable,
+    country: DipCountriesResponse.DedicatedIpCountriesAvailable,
     showDetails: Boolean,
     onClick: () -> Unit,
 ) {

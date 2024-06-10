@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
-import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.domain.GetDipMonthlyPlan
 import com.kape.dedicatedip.domain.GetDipSupportedCountries
@@ -23,6 +22,7 @@ import com.kape.router.Back
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.utils.RegionListProvider
+import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -48,11 +48,11 @@ class DipViewModel(
     val dipList = mutableStateListOf<VpnServer>()
     val activationState = mutableStateOf<DipApiResult?>(null)
     val hasAnActivePlaystoreSubscription = mutableStateOf(true)
-    val supportedDipCountriesList = mutableStateOf<SupportedCountries?>(null)
+    val supportedDipCountriesList = mutableStateOf<DipCountriesResponse?>(null)
     val dipMonthlyPlan = mutableStateOf<DedicatedIpMonthlyPlan?>(null)
     val dipYearlyPlan = mutableStateOf<DedicatedIpYearlyPlan?>(null)
     val dipSelectedCountry =
-        mutableStateOf<SupportedCountries.DedicatedIpCountriesAvailable?>(null)
+        mutableStateOf<DipCountriesResponse.DedicatedIpCountriesAvailable?>(null)
     private lateinit var userLocale: String
 
     fun navigateBack() {
@@ -143,8 +143,10 @@ class DipViewModel(
 
     fun getSupportedDipCountries() = viewModelScope.launch {
         getDipSupportedCountries.invoke().collect {
-            supportedDipCountriesList.value = it
-            selectDipCountry(it.dedicatedIpCountriesAvailable[0])
+            it?.let {
+                supportedDipCountriesList.value = it
+                selectDipCountry(it.dedicatedIpCountriesAvailable.first())
+            }
         }
     }
 
@@ -169,7 +171,7 @@ class DipViewModel(
     fun showDedicatedIpSignupBanner() =
         dipPrefs.isDipSignupEnabled()
 
-    fun selectDipCountry(selected: SupportedCountries.DedicatedIpCountriesAvailable?) {
+    fun selectDipCountry(selected: DipCountriesResponse.DedicatedIpCountriesAvailable) {
         dipSelectedCountry.value = selected
     }
 
