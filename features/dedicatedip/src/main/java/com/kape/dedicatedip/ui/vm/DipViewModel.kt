@@ -22,14 +22,14 @@ import com.kape.payments.ui.PaymentProvider
 import com.kape.router.Back
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnregions.data.VpnRegionRepository
+import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class DipViewModel(
-    private val regionRepository: VpnRegionRepository,
+    private val regionListProvider: RegionListProvider,
     private val activateDipUseCase: ActivateDipUseCase,
     private val getDipSupportedCountries: GetDipSupportedCountries,
     private val getDipMonthlyPlan: GetDipMonthlyPlan,
@@ -61,8 +61,10 @@ class DipViewModel(
                 DedicatedIpStep.ActivateToken,
                 DedicatedIpStep.SignupPlans,
                 -> router.handleFlow(Back)
+
                 DedicatedIpStep.LocationSelection,
                 -> _state.value = DedicatedIpStep.SignupPlans
+
                 DedicatedIpStep.SignupSuccess,
                 DedicatedIpStep.SignupTokenDetails,
                 DedicatedIpStep.SignupTokenActivate,
@@ -99,9 +101,7 @@ class DipViewModel(
         userLocale = locale
         dipList.clear()
         for (dip in dipPrefs.getDedicatedIps()) {
-            regionRepository.fetchVpnRegions(userLocale).collect {
-                dipList.addAll(it.filter { it.isDedicatedIp })
-            }
+            dipList.addAll(regionListProvider.servers.value.filter { it.isDedicatedIp })
         }
     }
 
@@ -124,6 +124,7 @@ class DipViewModel(
                     // no-op
                 }
             }
+            regionListProvider.reflectDedicatedIpAction()
         }
     }
 
