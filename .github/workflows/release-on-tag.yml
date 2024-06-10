@@ -14,7 +14,7 @@ jobs:
       - name: setup jdk
         uses: actions/setup-java@v1
         with:
-          java-version: 11
+          java-version: 17
       - name: Make Gradle executable
         run: chmod +x ./gradlew
       - name: Build Release APK
@@ -31,5 +31,5 @@ jobs:
       - name: Releasing using Hub
         uses: kyze8439690/action-release-releaseapk@master
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
           APP_FOLDER: app
