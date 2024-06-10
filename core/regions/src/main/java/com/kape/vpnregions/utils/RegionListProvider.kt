@@ -26,7 +26,12 @@ class RegionListProvider(
     fun getOptimalServer(): VpnServer {
         val optimalServerOptions = _servers.value.filter { it.autoRegion && it.isGeo.not() }
         return if (optimalServerOptions.none { it.latency != null }) {
-            optimalServerOptions.random()
+            if (optimalServerOptions.isEmpty()) {
+                setRegionsListToDefault()
+                _servers.value.filter { it.isGeo.not() }.random()
+            } else {
+                optimalServerOptions.random()
+            }
         } else {
             optimalServerOptions.sortedBy { it.latency?.toInt() }.first()
         }
