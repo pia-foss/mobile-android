@@ -11,5 +11,5 @@ private const val STORE = "noinapp"
 
 class SignupDataSourceImpl(private val api: AndroidAccountAPI) : SignupDataSource, KoinComponent {
 
-    override fun signup(vararg data: String): Flow<Credentials?> = flow { emit(null) }
+    override fun vpnSignup(vararg data: String): Flow<Credentials?> = flow { emit(null) }
 }

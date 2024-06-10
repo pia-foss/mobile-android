@@ -6,7 +6,7 @@ import com.kape.payments.di.paymentsModule
 import com.kape.payments.domain.SubscriptionDataSource
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
-import com.privateinternetaccess.account.model.response.AndroidSubscriptionsInformation
+import com.privateinternetaccess.account.model.response.AndroidVpnSubscriptionsInformation
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -59,11 +59,11 @@ internal class SubscriptionDataSourceImplTest {
     @ParameterizedTest(name = "api: {0}")
     @MethodSource("accountApiResults")
     fun `getAvailableSubscriptions() - unsuccessful`(errorList: List<AccountRequestError>) = runTest {
-        coEvery { api.subscriptions(any()) } answers {
-            lastArg<(AndroidSubscriptionsInformation?, List<AccountRequestError>) -> Unit>().invoke(null, errorList)
+        coEvery { api.vpnSubscriptions(any()) } answers {
+            lastArg<(AndroidVpnSubscriptionsInformation?, List<AccountRequestError>) -> Unit>().invoke(null, errorList)
         }
 
-        source.getAvailableSubscriptions().test {
+        source.getAvailableVpnSubscriptions().test {
             val actual = awaitItem()
             kotlin.test.assertEquals(emptyList(), actual)
         }
@@ -72,15 +72,15 @@ internal class SubscriptionDataSourceImplTest {
     @Test
     fun `getAvailableSubscriptions - successful`() = runTest {
         val data =
-            AndroidSubscriptionsInformation(listOf(AndroidSubscriptionsInformation.AvailableProduct("id", false, "monthly", "3.99")), "ok")
+            AndroidVpnSubscriptionsInformation(listOf(AndroidVpnSubscriptionsInformation.AvailableProduct("id", false, "monthly", "3.99")), "ok")
         val expected = listOf(Subscription("id", false, "monthly", "3.99", "$ 3.99"))
-        coEvery { api.subscriptions(any()) } answers {
-            lastArg<(AndroidSubscriptionsInformation?, List<AccountRequestError>) -> Unit>().invoke(data, emptyList())
+        coEvery { api.vpnSubscriptions(any()) } answers {
+            lastArg<(AndroidVpnSubscriptionsInformation?, List<AccountRequestError>) -> Unit>().invoke(data, emptyList())
         }
-        every { prefs.storeSubscriptions(any()) } returns Unit
-        every { prefs.getSubscriptions() } returns expected
+        every { prefs.storeVpnSubscriptions(any()) } returns Unit
+        every { prefs.getVpnSubscriptions() } returns expected
 
-        source.getAvailableSubscriptions().test {
+        source.getAvailableVpnSubscriptions().test {
             val actual = awaitItem()
             kotlin.test.assertEquals(expected, actual)
         }

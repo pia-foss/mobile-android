@@ -56,7 +56,7 @@ class DipDataSourceImplTest {
                 status = DedicatedIPInformationResponse.Status.active,
             )
             every { prefs.addDedicatedIp(any()) } returns Unit
-            coEvery { api.dedicatedIPs(any(), any()) } answers {
+            coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
                 lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
                     listOf(dipInfo),
                     emptyList(),
@@ -74,7 +74,7 @@ class DipDataSourceImplTest {
     @MethodSource("accountApiResults")
     fun activateFail(errorList: List<AccountRequestError>, expected: DipApiResult) =
         runTest {
-            coEvery { api.dedicatedIPs(any(), any()) } answers {
+            coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
                 lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
                     emptyList(),
                     errorList,

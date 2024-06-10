@@ -23,11 +23,11 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
         this.activity = activity
     }
 
-    override fun getMonthlySubscription(): Subscription = prefs.getSubscriptions().first {
+    override fun getMonthlySubscription(): Subscription = prefs.getVpnSubscriptions().first {
         it.plan.lowercase() == monthlySubscription.lowercase()
     }
 
-    override fun getYearlySubscription(): Subscription = prefs.getSubscriptions().first {
+    override fun getYearlySubscription(): Subscription = prefs.getVpnSubscriptions().first {
         it.plan.lowercase() == yearlySubscription.lowercase()
     }
 

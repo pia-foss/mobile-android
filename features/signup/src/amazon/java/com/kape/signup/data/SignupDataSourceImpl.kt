@@ -11,7 +11,7 @@ import org.koin.core.component.KoinComponent
 
 class SignupDataSourceImpl(private val api: AndroidAccountAPI) : SignupDataSource, KoinComponent {
 
-    override fun signup(vararg data: String): Flow<Credentials?> = callbackFlow {
+    override fun vpnSignup(vararg data: String): Flow<Credentials?> = callbackFlow {
         api.amazonSignUp(AmazonSignupInformation(data[0], data[1], data[2])) { details, error ->
             if (error.isNotEmpty() || details == null) {
                 trySend(null)

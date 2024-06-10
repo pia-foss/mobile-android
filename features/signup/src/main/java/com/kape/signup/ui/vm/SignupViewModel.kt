@@ -159,8 +159,8 @@ class SignupViewModel(
     }
 
     fun loadPrices() = viewModelScope.launch {
-        if (subscriptionPrefs.getSubscriptions().isEmpty()) {
-            subscriptionsUseCase.getSubscriptions().collect {
+        if (subscriptionPrefs.getVpnSubscriptions().isEmpty()) {
+            subscriptionsUseCase.getVpnSubscriptions().collect {
                 paymentProvider.loadProducts()
             }
         } else {
@@ -211,7 +211,7 @@ class SignupViewModel(
             return@launch
         }
         _state.emit(IN_PROCESS)
-        useCase.signup(email).collect {
+        useCase.vpnSignup(email).collect {
             if (it == null) {
                 _state.emit(ERROR_REGISTRATION)
             } else {

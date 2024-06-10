@@ -24,7 +24,7 @@ class GetPurchaseDetailsUseCaseTest {
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("prefsValues")
     fun `test getPurchaseDetails`(expected: PurchaseData?) = runTest {
-        every { prefs.getPurchaseData() } returns expected
+        every { prefs.getVpnPurchaseData() } returns expected
 
         val result = useCase.getPurchaseDetails()
         assertEquals(expected, result)

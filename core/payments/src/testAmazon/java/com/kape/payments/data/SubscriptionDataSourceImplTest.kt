@@ -64,7 +64,7 @@ internal class SubscriptionDataSourceImplTest {
             lastArg<(AmazonSubscriptionsInformation?, List<AccountRequestError>) -> Unit>().invoke(null, errorList)
         }
 
-        source.getAvailableSubscriptions().test {
+        source.getAvailableVpnSubscriptions().test {
             val actual = awaitItem()
             assertEquals(emptyList(), actual)
         }
@@ -78,10 +78,10 @@ internal class SubscriptionDataSourceImplTest {
         coEvery { api.amazonSubscriptions(any()) } answers {
             lastArg<(AmazonSubscriptionsInformation?, List<AccountRequestError>) -> Unit>().invoke(data, emptyList())
         }
-        every { prefs.storeSubscriptions(any()) } returns Unit
-        every { prefs.getSubscriptions() } returns expected
+        every { prefs.storeVpnSubscriptions(any()) } returns Unit
+        every { prefs.getVpnSubscriptions() } returns expected
 
-        source.getAvailableSubscriptions().test {
+        source.getAvailableVpnSubscriptions().test {
             val actual = awaitItem()
             assertEquals(expected, actual)
         }

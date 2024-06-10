@@ -12,7 +12,7 @@ class SubscriptionDataSourceImpl(
     private val api: AndroidAccountAPI,
 ) : SubscriptionDataSource, KoinComponent {
 
-    override fun getAvailableSubscriptions(): Flow<List<Subscription>> = flow {
+    override fun getAvailableVpnSubscriptions(): Flow<List<Subscription>> = flow {
         emit(emptyList())
     }
 }

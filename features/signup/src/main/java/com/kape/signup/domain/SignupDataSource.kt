@@ -10,5 +10,5 @@ interface SignupDataSource {
      * vararg for Google: orderId, token, productId
      */
 
-    fun signup(vararg data: String): Flow<Credentials?>
+    fun vpnSignup(vararg data: String): Flow<Credentials?>
 }
