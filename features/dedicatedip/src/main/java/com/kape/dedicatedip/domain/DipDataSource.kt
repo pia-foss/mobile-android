@@ -1,8 +1,8 @@
 package com.kape.dedicatedip.domain
 
-import com.kape.dedicatedip.data.models.SupportedCountries
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.data.FetchedDedicatedIpSignupPlansMock
+import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.flow.Flow
 
 interface DipDataSource {
@@ -11,7 +11,7 @@ interface DipDataSource {
 
     fun renew(ipToken: String): Flow<DipApiResult>
 
-    fun supportedCountries(): Flow<SupportedCountries>
+    fun supportedCountries(): Flow<DipCountriesResponse?>
 
     fun signupPlans(): Flow<FetchedDedicatedIpSignupPlansMock>
 
