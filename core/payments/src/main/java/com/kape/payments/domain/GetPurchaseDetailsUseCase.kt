@@ -5,5 +5,5 @@ import com.kape.payments.data.PurchaseData
 
 class GetPurchaseDetailsUseCase(private val prefs: SubscriptionPrefs) {
 
-    fun getPurchaseDetails(): PurchaseData? = prefs.getPurchaseData()
+    fun getPurchaseDetails(): PurchaseData? = prefs.getVpnPurchaseData()
 }

@@ -14,13 +14,13 @@ class SignupUseCase(
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
 ) {
 
-    suspend fun signup(email: String): Flow<Credentials?> = flow {
+    suspend fun vpnSignup(email: String): Flow<Credentials?> = flow {
         val purchaseData = purchaseDetailsUseCase.getPurchaseDetails()
         if (purchaseData == null) {
             emit(null)
             return@flow
         }
-        signupDataSource.signup(purchaseData.orderId, purchaseData.token, purchaseData.productId)
+        signupDataSource.vpnSignup(purchaseData.orderId, purchaseData.token, purchaseData.productId)
             .collect { credentials ->
                 credentials?.let { data ->
                     loginUseCase.login(data.username, data.password).collect { loginState ->

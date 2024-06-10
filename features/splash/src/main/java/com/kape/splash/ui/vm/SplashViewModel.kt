@@ -14,7 +14,7 @@ class SplashViewModel(
 ) : ViewModel(), KoinComponent {
 
     fun load() = viewModelScope.launch {
-        useCase.getSubscriptions().collect {
+        useCase.getVpnSubscriptions().collect {
             router.handleFlow(ExitFlow.Splash)
         }
     }

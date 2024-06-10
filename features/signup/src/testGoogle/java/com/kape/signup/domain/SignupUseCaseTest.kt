@@ -43,11 +43,11 @@ internal class SignupUseCaseTest : KoinTest {
         every { emailDataSource.setEmail(any()) } returns flow {
             emit(true)
         }
-        coEvery { signupDataSource.signup(any(), any(), any()) } returns flow {
+        coEvery { signupDataSource.vpnSignup(any(), any(), any()) } returns flow {
             emit(expected)
         }
 
-        useCase.signup("email").test {
+        useCase.vpnSignup("email").test {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)

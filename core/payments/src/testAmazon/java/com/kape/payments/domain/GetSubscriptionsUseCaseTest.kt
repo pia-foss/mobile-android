@@ -27,10 +27,10 @@ internal class GetSubscriptionsUseCaseTest {
             Subscription("id", false, "monthly", 3.99),
             Subscription("id", false, "yearly", 49.99),
         )
-        every { source.getAvailableSubscriptions() } returns flow {
+        every { source.getAvailableVpnSubscriptions() } returns flow {
             emit(expected)
         }
-        useCase.getSubscriptions().test {
+        useCase.getVpnSubscriptions().test {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)
@@ -40,10 +40,10 @@ internal class GetSubscriptionsUseCaseTest {
     @Test
     fun `getSubscriptions() - failed`() = runTest {
         val expected = emptyList<Subscription>()
-        every { source.getAvailableSubscriptions() } returns flow {
+        every { source.getAvailableVpnSubscriptions() } returns flow {
             emit(expected)
         }
-        useCase.getSubscriptions().test {
+        useCase.getVpnSubscriptions().test {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)

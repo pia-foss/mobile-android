@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.flow
 
 class GetSubscriptionsUseCase(private val source: SubscriptionDataSource) {
 
-    fun getSubscriptions(): Flow<List<Subscription>> = flow {
+    fun getVpnSubscriptions(): Flow<List<Subscription>> = flow {
         emit(emptyList())
     }
 }

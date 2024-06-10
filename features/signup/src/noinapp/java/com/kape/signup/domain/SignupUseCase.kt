@@ -13,7 +13,7 @@ class SignupUseCase(
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
 ) {
 
-    fun signup(email: String): Flow<Credentials?> = flow {
+    fun vpnSignup(email: String): Flow<Credentials?> = flow {
         emit(null)
     }
 }

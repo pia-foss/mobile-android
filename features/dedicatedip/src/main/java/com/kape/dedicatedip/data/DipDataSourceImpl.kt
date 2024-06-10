@@ -20,10 +20,10 @@ class DipDataSourceImpl(
 ) : DipDataSource {
 
     override fun activate(ipToken: String): Flow<DipApiResult> = callbackFlow {
-        accountApi.dedicatedIPs(listOf(ipToken)) { details, errors ->
+        accountApi.redeemDedicatedIPs(listOf(ipToken)) { details, errors ->
             if (errors.isNotEmpty()) {
                 trySend(DipApiResult.Error)
-                return@dedicatedIPs
+                return@redeemDedicatedIPs
             }
             val activated = details.firstOrNull { it.dipToken == ipToken }
             activated?.let {

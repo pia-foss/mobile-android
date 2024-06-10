@@ -64,7 +64,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                             yearly.formattedPrice = perYear.price
                             val monthly = getMonthlySubscription()
                             monthly.formattedPrice = perMonth.price
-                            prefs.storeSubscriptions(listOf(yearly, monthly))
+                            prefs.storeVpnSubscriptions(listOf(yearly, monthly))
                             purchaseState.value = PurchaseState.ProductsLoadedSuccess
                         } else {
                             purchaseState.value = PurchaseState.ProductsLoadedFailed
@@ -80,7 +80,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
 
                 override fun onPurchaseUpdatesResponse(purchaseUpdate: PurchaseUpdatesResponse?) {
                     purchaseUpdate?.let {
-                        prefs.storePurchaseData(
+                        prefs.storeVpnPurchaseData(
                             PurchaseData(
                                 it.userData.userId,
                                 it.receipts.first().receiptId,
@@ -94,10 +94,10 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
     }
 
     override fun getMonthlySubscription(): Subscription =
-        prefs.getSubscriptions().first { plan -> plan.id == M1 }
+        prefs.getVpnSubscriptions().first { plan -> plan.id == M1 }
 
     override fun getYearlySubscription(): Subscription =
-        prefs.getSubscriptions().first { plan -> plan.id == Y1 }
+        prefs.getVpnSubscriptions().first { plan -> plan.id == Y1 }
 
     override fun loadProducts() {
         PurchasingService.getProductData(products)
@@ -131,7 +131,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
         if (purchase != null) {
             when (purchase.requestStatus) {
                 PurchaseResponse.RequestStatus.SUCCESSFUL -> {
-                    prefs.storePurchaseData(
+                    prefs.storeVpnPurchaseData(
                         PurchaseData(
                             purchase.userData.userId,
                             purchase.receipt.receiptId,

@@ -13,7 +13,7 @@ class SubscriptionDataSourceImpl(
     private val api: AndroidAccountAPI,
 ) : SubscriptionDataSource, KoinComponent {
 
-    override fun getAvailableSubscriptions(): Flow<List<Subscription>> = callbackFlow {
+    override fun getAvailableVpnSubscriptions(): Flow<List<Subscription>> = callbackFlow {
         api.amazonSubscriptions { details, error ->
             if (error.isNotEmpty() || details == null) {
                 trySend(emptyList())
@@ -23,8 +23,8 @@ class SubscriptionDataSourceImpl(
             for (item in details.availableProducts) {
                 data.add(Subscription(item.id, item.legacy, item.plan, item.price))
             }
-            prefs.storeSubscriptions(data)
-            trySend(prefs.getSubscriptions())
+            prefs.storeVpnSubscriptions(data)
+            trySend(prefs.getVpnSubscriptions())
         }
         awaitClose { channel.close() }
     }

@@ -41,7 +41,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                     BillingClient.BillingResponseCode.OK -> {
                         val purchase = purchases.first()
                         purchase.orderId?.let {
-                            prefs.storePurchaseData(
+                            prefs.storeVpnPurchaseData(
                                 PurchaseData(
                                     purchase.purchaseToken,
                                     purchase.products.first(),
@@ -85,16 +85,16 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
         )
     }
 
-    override fun getMonthlySubscription(): Subscription = prefs.getSubscriptions().first {
+    override fun getMonthlySubscription(): Subscription = prefs.getVpnSubscriptions().first {
         it.plan.lowercase() == monthlySubscription.lowercase()
     }
 
-    override fun getYearlySubscription(): Subscription = prefs.getSubscriptions().first {
+    override fun getYearlySubscription(): Subscription = prefs.getVpnSubscriptions().first {
         it.plan.lowercase() == yearlySubscription.lowercase()
     }
 
     override fun loadProducts() {
-        if (prefs.getSubscriptions().isEmpty()) {
+        if (prefs.getVpnSubscriptions().isEmpty()) {
             purchaseState.value = PurchaseState.ProductsLoadedFailed
         } else {
             loadProviderProducts()
@@ -112,7 +112,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                 productDetailsList,
             ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                val data = prefs.getSubscriptions()
+                val data = prefs.getVpnSubscriptions()
                 for (item in productDetailsList) {
                     if (data.any { it.id == item.productId }) {
                         item.subscriptionOfferDetails?.let {
@@ -131,7 +131,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                         }
                     }
                 }
-                prefs.storeSubscriptions(data)
+                prefs.storeVpnSubscriptions(data)
                 availableProducts.clear()
                 availableProducts.addAll(productDetailsList)
                 purchaseState.value = PurchaseState.ProductsLoadedSuccess
@@ -220,7 +220,7 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
 
     private fun createProductsListForQuery(): List<QueryProductDetailsParams.Product> {
         val result = mutableListOf<QueryProductDetailsParams.Product>()
-        for (product in prefs.getSubscriptions()) {
+        for (product in prefs.getVpnSubscriptions()) {
             result.add(
                 QueryProductDetailsParams.Product.newBuilder()
                     .setProductId(product.id)
