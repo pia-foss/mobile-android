@@ -95,7 +95,6 @@ class Widget(
                     modifier = GlanceModifier.width(40.dp),
                 )
                 Spacer(modifier = GlanceModifier.height(4.dp))
-                // TODO: proper implementation to follow: https://polymoon.atlassian.net/browse/PIA-1014
                 WidgetConnectButton(status)
             }
         }
@@ -116,12 +115,18 @@ class Widget(
                     modifier = GlanceModifier.width(40.dp),
                 )
                 Spacer(modifier = GlanceModifier.height(4.dp))
-                // TODO: proper implementation to follow: https://polymoon.atlassian.net/browse/PIA-1014
                 Row(
                     modifier = GlanceModifier.width(128.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
-                    Text(text = name, modifier = GlanceModifier.width(80.dp))
+                    Text(
+                        text = name,
+                        style = TextStyle(
+                            color = GlanceTheme.colors.onSurface,
+                            fontSize = 14.sp,
+                        ),
+                        modifier = GlanceModifier.width(80.dp),
+                    )
                     WidgetConnectButton(status)
                 }
             }
@@ -148,12 +153,18 @@ class Widget(
                     modifier = GlanceModifier.width(40.dp),
                 )
                 Spacer(modifier = GlanceModifier.height(4.dp))
-                // TODO: proper implementation to follow: https://polymoon.atlassian.net/browse/PIA-1014
                 Row(
                     modifier = GlanceModifier.width(128.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
-                    Text(text = name, modifier = GlanceModifier.width(80.dp))
+                    Text(
+                        text = name,
+                        style = TextStyle(
+                            color = GlanceTheme.colors.onSurface,
+                            fontSize = 14.sp,
+                        ),
+                        modifier = GlanceModifier.width(80.dp),
+                    )
                     WidgetConnectButton(status)
                 }
                 Spacer(modifier = GlanceModifier.height(16.dp))
@@ -223,13 +234,16 @@ class Widget(
                     modifier = GlanceModifier.width(40.dp),
                 )
                 Spacer(modifier = GlanceModifier.height(4.dp))
-                // TODO: proper implementation to follow: https://polymoon.atlassian.net/browse/PIA-1014
                 Row(
                     modifier = GlanceModifier.width(240.dp),
                     verticalAlignment = Alignment.Vertical.CenterVertically,
                 ) {
                     Text(
                         text = name,
+                        style = TextStyle(
+                            color = GlanceTheme.colors.onSurface,
+                            fontSize = 14.sp,
+                        ),
                         modifier = GlanceModifier.width(120.dp).padding(start = 16.dp),
                     )
                     Row(
