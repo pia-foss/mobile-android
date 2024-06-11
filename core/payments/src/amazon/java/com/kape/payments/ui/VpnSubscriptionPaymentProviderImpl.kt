@@ -24,8 +24,8 @@ import kotlinx.coroutines.flow.callbackFlow
 private const val M1 = "PIA-M1"
 private const val Y1 = "PIA-Y1"
 
-class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
-    PaymentProvider {
+class VpnSubscriptionPaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
+    VpnSubscriptionPaymentProvider {
 
     private val products = hashSetOf(monthlySubscription, yearlySubscription, M1, Y1)
     private var selectedProduct: Product? = null

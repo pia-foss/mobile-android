@@ -17,7 +17,7 @@ import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
-import com.kape.payments.ui.PaymentProvider
+import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.router.Back
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
@@ -36,7 +36,7 @@ class DipViewModel(
     private val getDipYearlyPlan: GetDipYearlyPlan,
     private val validateDipSignup: ValidateDipSignup,
     private val getSignupDipToken: GetSignupDipToken,
-    private val paymentProvider: PaymentProvider,
+    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val dipPrefs: DipPrefs,
     private val router: Router,
 ) : ViewModel(), KoinComponent {
@@ -145,7 +145,9 @@ class DipViewModel(
         getDipSupportedCountries.invoke().collect {
             it?.let {
                 supportedDipCountriesList.value = it
-                selectDipCountry(it.dedicatedIpCountriesAvailable.first())
+                if (it.dedicatedIpCountriesAvailable.isEmpty().not()) {
+                    selectDipCountry(it.dedicatedIpCountriesAvailable.first())
+                }
             }
         }
     }
@@ -163,7 +165,7 @@ class DipViewModel(
     }
 
     fun hasActivePlaystoreSubscription() = viewModelScope.launch {
-        paymentProvider.hasActiveSubscription().collect {
+        vpnSubscriptionPaymentProvider.hasActiveSubscription().collect {
             hasAnActivePlaystoreSubscription.value = it
         }
     }

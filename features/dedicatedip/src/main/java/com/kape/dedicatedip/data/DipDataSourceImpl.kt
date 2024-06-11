@@ -3,15 +3,13 @@ package com.kape.dedicatedip.data
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
-import com.kape.dip.data.DIP_SIGNUP_MOCKED_RESPONSE
-import com.kape.dip.data.FetchedDedicatedIpSignupPlansMock
 import com.privateinternetaccess.account.AndroidAccountAPI
+import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.serialization.json.Json
 
 class DipDataSourceImpl(
     private val accountApi: AndroidAccountAPI,
@@ -74,8 +72,14 @@ class DipDataSourceImpl(
         awaitClose { channel.close() }
     }
 
-    override fun signupPlans(): Flow<FetchedDedicatedIpSignupPlansMock> = callbackFlow {
-        trySend(Json.decodeFromString(DIP_SIGNUP_MOCKED_RESPONSE))
+    override fun signupPlans(): Flow<AndroidAddonsSubscriptionsInformation?> = callbackFlow {
+        accountApi.addonsSubscriptions { details, errors ->
+            if (errors.isNotEmpty()) {
+                trySend(null)
+                return@addonsSubscriptions
+            }
+            trySend(details)
+        }
         awaitClose { channel.close() }
     }
 

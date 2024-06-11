@@ -7,7 +7,7 @@ import com.kape.payments.utils.PurchaseState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-interface PaymentProvider {
+interface VpnSubscriptionPaymentProvider {
 
     val purchaseState: MutableStateFlow<PurchaseState>
 

@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dip.DipPrefs
 import com.kape.dip.data.DedicatedIpSignupPlans
-import com.kape.dip.data.FetchedDedicatedIpSignupPlansMock
+import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.flow
@@ -31,7 +31,7 @@ class DipSignupRepositoryTest {
     @Test
     fun `If there are no persisted signup plans - Fetch it`() = runTest {
         // given
-        val fetchedDedicatedIpSignupPlansMock = FetchedDedicatedIpSignupPlansMock(
+        val fetchedDedicatedIpSignupPlansMock = AndroidAddonsSubscriptionsInformation(
             availableProducts = emptyList(),
             status = "fetched",
         )
@@ -50,14 +50,14 @@ class DipSignupRepositoryTest {
     }
 
     @Test
-    fun `If there are persisted signup plans only 30 days old - Return it`() = runTest {
+    fun `If there are persisted signup plans only 12 hours old - Return it`() = runTest {
         // given
-        val fetchedDedicatedIpSignupPlansMock = FetchedDedicatedIpSignupPlansMock(
+        val fetchedDedicatedIpSignupPlansMock = AndroidAddonsSubscriptionsInformation(
             availableProducts = emptyList(),
-            status = "30days",
+            status = "0.5days",
         )
         val dedicatedIpSignupPlans = DedicatedIpSignupPlans(
-            persistedTimestamp = System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000),
+            persistedTimestamp = System.currentTimeMillis() - (1L * 12 * 60 * 60 * 1000),
             signupPlans = fetchedDedicatedIpSignupPlansMock,
         )
         every { dipPrefs.getDedicatedIpSignupPlans() } returns dedicatedIpSignupPlans
@@ -72,18 +72,18 @@ class DipSignupRepositoryTest {
     }
 
     @Test
-    fun `If there are persisted signup plans 190 days old - Fetch it`() = runTest {
+    fun `If there are persisted signup plans 2 days old - Fetch it`() = runTest {
         // given
-        val outdatedFetchedDedicatedIpSignupPlansMock = FetchedDedicatedIpSignupPlansMock(
+        val outdatedFetchedDedicatedIpSignupPlansMock = AndroidAddonsSubscriptionsInformation(
             availableProducts = emptyList(),
-            status = "190days",
+            status = "2days",
         )
-        val updatedFetchedDedicatedIpSignupPlansMock = FetchedDedicatedIpSignupPlansMock(
+        val updatedFetchedDedicatedIpSignupPlansMock = AndroidAddonsSubscriptionsInformation(
             availableProducts = emptyList(),
             status = "fetched",
         )
         val dedicatedIpSignupPlans = DedicatedIpSignupPlans(
-            persistedTimestamp = System.currentTimeMillis() - (190L * 24 * 60 * 60 * 1000),
+            persistedTimestamp = System.currentTimeMillis() - (2L * 24 * 60 * 60 * 1000),
             signupPlans = outdatedFetchedDedicatedIpSignupPlansMock,
         )
         every { dipPrefs.getDedicatedIpSignupPlans() } returns dedicatedIpSignupPlans

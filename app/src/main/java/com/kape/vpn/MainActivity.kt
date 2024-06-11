@@ -24,8 +24,6 @@ import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
 import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpFlow
-import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpScreen
-import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpScreen
 import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
 import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.inappbrowser.ui.InAppBrowser
@@ -34,7 +32,7 @@ import com.kape.login.ui.tv.LoginPasswordScreen
 import com.kape.login.ui.tv.LoginUsernameScreen
 import com.kape.login.utils.TokenAuthenticationUtil
 import com.kape.obfuscationregionselection.ui.ShadowsocksRegionSelectionScreen
-import com.kape.payments.ui.PaymentProvider
+import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.permissions.utils.mobile.PermissionsFlow
 import com.kape.permissions.utils.tv.TvPermissionsFlow
 import com.kape.profile.ui.screens.mobile.AccountDeletedScreen
@@ -90,7 +88,7 @@ class MainActivity : AppCompatActivity() {
     private val router: Router by inject()
     private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
 
-    private val paymentProvider: PaymentProvider by inject()
+    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
     private var currentDestination: String = ""
     private val destinationsForClearBackStack =
         listOf(
@@ -103,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        paymentProvider.register(this)
+        vpnSubscriptionPaymentProvider.register(this)
         defineScreenOrientation()
         deepLinkLogin(intent)
         intent.action?.let {
@@ -163,7 +161,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (currentDestination == Subscribe.Main) {
-            paymentProvider.getPurchaseUpdates()
+            vpnSubscriptionPaymentProvider.getPurchaseUpdates()
         }
     }
 

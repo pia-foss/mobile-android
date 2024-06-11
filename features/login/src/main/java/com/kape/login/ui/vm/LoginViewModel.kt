@@ -11,7 +11,7 @@ import com.kape.login.utils.LOADING
 import com.kape.login.utils.LoginScreenState
 import com.kape.login.utils.LoginState
 import com.kape.login.utils.getScreenState
-import com.kape.payments.ui.PaymentProvider
+import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.router.ExitFlow
 import com.kape.router.Router
@@ -24,7 +24,7 @@ import org.koin.core.component.KoinComponent
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
     private val userLoggedInUseCase: GetUserLoggedInUseCase,
-    private val paymentProvider: PaymentProvider,
+    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val router: Router,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
@@ -60,13 +60,13 @@ class LoginViewModel(
         this.packageName = packageName
         viewModelScope.launch {
             collectPurchaseHistory()
-            paymentProvider.getPurchaseHistory()
+            vpnSubscriptionPaymentProvider.getPurchaseHistory()
         }
     }
 
     private fun collectPurchaseHistory() {
         viewModelScope.launch {
-            paymentProvider.purchaseHistoryState.collect {
+            vpnSubscriptionPaymentProvider.purchaseHistoryState.collect {
                 _state.emit(LOADING)
                 when (it) {
                     is PurchaseHistoryState.PurchaseHistorySuccess -> loginUseCase.loginWithReceipt(
