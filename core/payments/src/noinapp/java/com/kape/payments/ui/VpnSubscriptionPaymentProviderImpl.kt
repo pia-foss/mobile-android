@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 
-class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
-    PaymentProvider {
+class VpnSubscriptionPaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
+    VpnSubscriptionPaymentProvider {
 
     override val purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.NoInAppPurchase)
     override val purchaseHistoryState =

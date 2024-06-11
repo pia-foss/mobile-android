@@ -1,10 +1,8 @@
-
 import Dependencies.KOTLIN_COMPILER_EXTENSION
 import Dependencies.implementAccount
 import Dependencies.implementConstraintLayout
 import Dependencies.implementFeatureModule
 import Dependencies.implementRegions
-import Dependencies.implementSerialization
 import Dependencies.implementVpnManager
 
 plugins {
@@ -13,7 +11,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
     id("de.mannodermaus.android-junit5") version "1.10.0.0"
     id("org.jetbrains.kotlinx.kover")
-    id("kotlinx-serialization")
 }
 
 android {
@@ -66,5 +63,4 @@ dependencies {
     implementFeatureModule()
     implementConstraintLayout()
     implementVpnManager()
-    implementSerialization()
 }

@@ -26,8 +26,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 
-class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
-    PaymentProvider {
+class VpnSubscriptionPaymentProviderImpl(
+    private val prefs: SubscriptionPrefs,
+    private var activity: Activity? = null,
+) : VpnSubscriptionPaymentProvider {
 
     private lateinit var billingClient: BillingClient
     private var selectedProduct: ProductDetails? = null
@@ -40,16 +42,20 @@ class PaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Ac
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {
                         val purchase = purchases.first()
-                        purchase.orderId?.let {
-                            prefs.storeVpnPurchaseData(
-                                PurchaseData(
-                                    purchase.purchaseToken,
-                                    purchase.products.first(),
-                                    it,
-                                ),
-                            )
+                        purchase.products.firstOrNull {
+                            it == selectedProduct?.productId
+                        }?.let { productId ->
+                            purchase.orderId?.let { orderId ->
+                                prefs.storeVpnPurchaseData(
+                                    PurchaseData(
+                                        purchase.purchaseToken,
+                                        productId,
+                                        orderId,
+                                    ),
+                                )
+                            }
+                            purchaseState.value = PurchaseState.PurchaseSuccess
                         }
-                        purchaseState.value = PurchaseState.PurchaseSuccess
                     }
 
                     else -> purchaseState.value = PurchaseState.PurchaseFailed

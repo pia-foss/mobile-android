@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.domain.GetSubscriptionsUseCase
-import com.kape.payments.ui.PaymentProvider
+import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseState
 import com.kape.router.EnterFlow
 import com.kape.router.Exit
@@ -25,12 +25,12 @@ import com.kape.signup.utils.ERROR_REGISTRATION
 import com.kape.signup.utils.IN_PROCESS
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
 import com.kape.signup.utils.Plan
-import com.kape.signup.utils.PriceFormatter
 import com.kape.signup.utils.SUBSCRIPTIONS
 import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.signup.utils.signedUp
+import com.kape.ui.utils.PriceFormatter
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +39,7 @@ import org.koin.core.component.KoinComponent
 import java.util.Locale
 
 class SignupViewModel(
-    private val paymentProvider: PaymentProvider,
+    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val formatter: PriceFormatter,
     private val consentUseCase: ConsentUseCase,
     private val useCase: SignupUseCase,
@@ -61,7 +61,7 @@ class SignupViewModel(
             if (getUserLoggedInUseCase.isUserLoggedIn()) {
                 router.handleFlow(ExitFlow.Subscribe)
             } else {
-                paymentProvider.purchaseState.collect {
+                vpnSubscriptionPaymentProvider.purchaseState.collect {
                     when (it) {
                         PurchaseState.Default -> {
                             // no op
@@ -80,8 +80,8 @@ class SignupViewModel(
                         }
 
                         PurchaseState.ProductsLoadedSuccess -> {
-                            val yearlyPlan = paymentProvider.getYearlySubscription()
-                            val monthlyPlan = paymentProvider.getMonthlySubscription()
+                            val yearlyPlan = vpnSubscriptionPaymentProvider.getYearlySubscription()
+                            val monthlyPlan = vpnSubscriptionPaymentProvider.getMonthlySubscription()
                             val yearly =
                                 Plan(
                                     yearlyPlan.id,
@@ -161,10 +161,10 @@ class SignupViewModel(
     fun loadPrices() = viewModelScope.launch {
         if (subscriptionPrefs.getVpnSubscriptions().isEmpty()) {
             subscriptionsUseCase.getVpnSubscriptions().collect {
-                paymentProvider.loadProducts()
+                vpnSubscriptionPaymentProvider.loadProducts()
             }
         } else {
-            paymentProvider.loadProducts()
+            vpnSubscriptionPaymentProvider.loadProducts()
         }
     }
 
@@ -173,7 +173,7 @@ class SignupViewModel(
     }
 
     fun purchase(id: String) = viewModelScope.launch {
-        paymentProvider.purchaseSelectedProduct(id)
+        vpnSubscriptionPaymentProvider.purchaseSelectedProduct(id)
     }
 
     fun navigateToLogin() {
@@ -222,7 +222,7 @@ class SignupViewModel(
 
     fun completeSubscription() {
         router.handleFlow(ExitFlow.Subscribe)
-        paymentProvider.purchaseState.value = PurchaseState.Default
+        vpnSubscriptionPaymentProvider.purchaseState.value = PurchaseState.Default
     }
 
     fun exitApp() {
@@ -230,8 +230,8 @@ class SignupViewModel(
     }
 
     fun registerClientIfNeeded(activity: Activity) {
-        if (!paymentProvider.isClientRegistered()) {
-            paymentProvider.register(activity)
+        if (!vpnSubscriptionPaymentProvider.isClientRegistered()) {
+            vpnSubscriptionPaymentProvider.register(activity)
         }
     }
 

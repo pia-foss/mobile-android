@@ -9,7 +9,7 @@ import com.kape.signup.domain.SetEmailUseCase
 import com.kape.signup.domain.SignupDataSource
 import com.kape.signup.domain.SignupUseCase
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.signup.utils.PriceFormatter
+import com.kape.ui.utils.PriceFormatter
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
