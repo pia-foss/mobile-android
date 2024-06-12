@@ -1,6 +1,7 @@
 package com.kape.appbar.view.mobile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -56,6 +57,7 @@ fun AppBar(
     val scheme = LocalColors.current
     val systemUiController = rememberSystemUiController()
     val isConnected = viewModel.isConnected.collectAsState()
+    val isDarkTheme = isSystemInDarkTheme()
 
     SideEffect {
         systemUiController.setStatusBarColor(
@@ -63,7 +65,7 @@ fun AppBar(
                 if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
                 scheme,
             ),
-            shouldShowDarkIcons(connectionState = if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR),
+            isDarkTheme.not(),
         )
     }
 
@@ -211,7 +213,8 @@ private fun AppBarConnectionStatus(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
-            modifier = Modifier.align(Center)
+            modifier = Modifier
+                .align(Center)
                 .testTag(":AppBar:connection_status"),
         ) {
             if (status == ConnectionStatus.DISCONNECTED) {
@@ -257,20 +260,6 @@ private fun AppBarConnectionStatus(
                 }
             }
         }
-    }
-}
-
-private fun shouldShowDarkIcons(connectionState: ConnectionStatus): Boolean {
-    return when (connectionState) {
-        ConnectionStatus.DISCONNECTED,
-        ConnectionStatus.DISCONNECTING,
-        ConnectionStatus.RECONNECTING,
-        ConnectionStatus.CONNECTED,
-        ConnectionStatus.CONNECTING,
-        -> true
-
-        ConnectionStatus.ERROR,
-        -> false
     }
 }
 
