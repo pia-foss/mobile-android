@@ -1,6 +1,7 @@
 package com.kape.payments.ui
 
-import com.kape.payments.data.PurchaseData
+import android.app.Activity
+import com.kape.payments.data.DipPurchaseData
 
 interface DipSubscriptionPaymentProvider {
 
@@ -22,11 +23,13 @@ interface DipSubscriptionPaymentProvider {
     /**
      * It triggers the purchase flow for given product id.
      *
+     * @param activity
      * @param productId
      * @param callback
      */
     fun purchaseProduct(
+        activity: Activity,
         productId: String,
-        callback: (result: Result<PurchaseData>) -> Unit,
+        callback: (result: Result<DipPurchaseData>) -> Unit,
     )
 }

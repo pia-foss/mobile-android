@@ -1,9 +1,12 @@
 package com.kape.dedicatedip.data
 
+import android.content.Context
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
+import com.kape.payments.data.DipPurchaseData
 import com.privateinternetaccess.account.AndroidAccountAPI
+import com.privateinternetaccess.account.model.request.AndroidAddonSignupInformation
 import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
@@ -12,9 +15,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 class DipDataSourceImpl(
+    private val context: Context,
     private val accountApi: AndroidAccountAPI,
     private val dipPrefs: DipPrefs,
 ) : DipDataSource {
+
+    companion object {
+        private const val STORE = "google_play"
+    }
 
     override fun activate(ipToken: String): Flow<DipApiResult> = callbackFlow {
         accountApi.redeemDedicatedIPs(listOf(ipToken)) { details, errors ->
@@ -83,8 +91,24 @@ class DipDataSourceImpl(
         awaitClose { channel.close() }
     }
 
-    override fun signup(receipt: String): Flow<Result<String>> = callbackFlow {
-        trySend(Result.success("DIP_123456789"))
+    override fun signup(dipPurchaseData: DipPurchaseData): Flow<Result<Unit>> = callbackFlow {
+        accountApi.addonSignUp(
+            AndroidAddonSignupInformation(
+                receipt = AndroidAddonSignupInformation.Receipt(
+                    applicationPackage = context.packageName,
+                    productId = dipPurchaseData.productId,
+                    orderId = dipPurchaseData.orderId,
+                    token = dipPurchaseData.token,
+                ),
+                store = STORE,
+            ),
+        ) { errors ->
+            if (errors.isNotEmpty()) {
+                trySend(Result.failure(IllegalStateException("Signup validation failed")))
+                return@addonSignUp
+            }
+            trySend(Result.success(Unit))
+        }
         awaitClose { channel.close() }
     }
 }

@@ -9,7 +9,7 @@ import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
-import com.kape.payments.data.PurchaseData
+import com.kape.payments.data.DipPurchaseData
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
@@ -21,8 +21,8 @@ class DipSubscriptionPaymentProviderImpl(
     private val context: Context,
 ) : DipSubscriptionPaymentProvider, CoroutineScope {
 
-    private var availableProducts: List<ProductDetails> = listOf()
-    private var purchaseCompletableDeferred: CompletableDeferred<Result<PurchaseData>>? = null
+    private val availableProducts: MutableList<ProductDetails> = mutableListOf()
+    private var purchaseCompletableDeferred: CompletableDeferred<Result<DipPurchaseData>>? = null
     private val purchasesUpdatedListener = PurchasesUpdatedListener { result, purchases ->
         if (purchases == null || result.responseCode != BillingClient.BillingResponseCode.OK) {
             purchaseCompletableDeferred?.complete(Result.failure(IllegalStateException("Billing failed")))
@@ -47,7 +47,7 @@ class DipSubscriptionPaymentProviderImpl(
 
             purchaseCompletableDeferred?.complete(
                 Result.success(
-                    PurchaseData(
+                    DipPurchaseData(
                         token = knownPurchase.purchaseToken,
                         productId = knownProduct,
                         orderId = orderId,
@@ -104,10 +104,12 @@ class DipSubscriptionPaymentProviderImpl(
                 queryProductDetailsParams,
             ) { billingResult, productDetailsList ->
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                    availableProducts = productDetailsList
-
                     val result = mutableListOf<Pair<String, String>>()
                     for (product in productDetailsList) {
+                        if (availableProducts.any { it.productId == product.productId }.not()) {
+                            availableProducts.add(product)
+                        }
+
                         product.subscriptionOfferDetails?.let {
                             result.add(
                                 Pair(
@@ -126,8 +128,9 @@ class DipSubscriptionPaymentProviderImpl(
     }
 
     override fun purchaseProduct(
+        activity: Activity,
         productId: String,
-        callback: (result: Result<PurchaseData>) -> Unit,
+        callback: (result: Result<DipPurchaseData>) -> Unit,
     ) {
         launch {
             if (billingClient.isReady.not()) {
@@ -153,7 +156,7 @@ class DipSubscriptionPaymentProviderImpl(
                 .setProductDetailsParamsList(productList)
                 .build()
 
-            billingClient.launchBillingFlow(context as Activity, billingFlowParams)
+            billingClient.launchBillingFlow(activity, billingFlowParams)
 
             val result = purchaseCompletableDeferred!!.await()
             purchaseCompletableDeferred = null

@@ -1,7 +1,8 @@
 package com.kape.payments.ui
 
+import android.app.Activity
 import android.content.Context
-import com.kape.payments.data.PurchaseData
+import com.kape.payments.data.DipPurchaseData
 
 class DipSubscriptionPaymentProviderImpl(
     private val context: Context,
@@ -16,8 +17,9 @@ class DipSubscriptionPaymentProviderImpl(
     }
 
     override fun purchaseProduct(
+        activity: Activity,
         productId: String,
-        callback: (result: Result<PurchaseData>) -> Unit,
+        callback: (result: Result<DipPurchaseData>) -> Unit,
     ) {
         callback(Result.failure(IllegalStateException("Unsupported")))
     }

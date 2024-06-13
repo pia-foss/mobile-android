@@ -179,7 +179,7 @@ fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            viewModel.signup()
+            viewModel.navigateToDedicatedIpTokenDetails()
         }
         Spacer(modifier = Modifier.height(8.dp))
         SecondaryButton(

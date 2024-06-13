@@ -55,6 +55,8 @@ dependencies {
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:localprefs:dip"))
+    implementation(project(":core:localprefs:payments:data"))
+    implementation(project(":core:localprefs:payments"))
     implementation(project(":features:appbar"))
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:buildconfig"))

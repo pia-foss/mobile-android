@@ -1,5 +1,6 @@
 package com.kape.dedicatedip.ui.screens.mobile
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -57,6 +58,7 @@ fun SignupDedicatedIpScreen() = Screen {
         getDipYearlyPlan()
     }
     val showSupportedCountriesDialog = remember { mutableStateOf(true) }
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -91,24 +93,28 @@ fun SignupDedicatedIpScreen() = Screen {
         }
         Spacer(modifier = Modifier.height(32.dp))
         YearlySubscriptionCard(
-            selected = true,
+            selected = viewModel.selectedPlanProductId.value == viewModel.dipYearlyPlan.value?.id,
             price = viewModel.dipYearlyPlan.value?.yearlyPrice.toString(),
             perMonthPrice = viewModel.dipYearlyPlan.value?.monthlyPrice.toString(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            TODO()
+            viewModel.dipYearlyPlan.value?.let {
+                viewModel.selectedPlanProductId.value = it.id
+            }
         }
         Spacer(modifier = Modifier.height(16.dp))
         MonthlySubscriptionCard(
-            selected = false,
+            selected = viewModel.selectedPlanProductId.value == viewModel.dipMonthlyPlan.value?.id,
             price = viewModel.dipMonthlyPlan.value?.monthlyPrice.toString(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            TODO()
+            viewModel.dipMonthlyPlan.value?.let {
+                viewModel.selectedPlanProductId.value = it.id
+            }
         }
         Spacer(modifier = Modifier.height(24.dp))
         PrimaryButton(
@@ -117,7 +123,7 @@ fun SignupDedicatedIpScreen() = Screen {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            viewModel.navigateToDedicatedIpLocationSelection()
+            viewModel.purchaseSubscription(activity = context as Activity)
         }
         Spacer(modifier = Modifier.height(8.dp))
         SecondaryButton(

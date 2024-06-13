@@ -23,7 +23,7 @@ fun dedicatedIpModule(appModule: Module) = module {
 
 val localDipModule = module {
     single { DipPrefs(get(), get()) }
-    single<DipDataSource> { DipDataSourceImpl(get(), get()) }
+    single<DipDataSource> { DipDataSourceImpl(get(), get(), get()) }
     single { PriceFormatter(get()) }
     single { DipSignupRepository(get(), get()) }
     single { ActivateDipUseCase(get()) }
@@ -33,5 +33,7 @@ val localDipModule = module {
     single { GetDipYearlyPlan(get(), get(), get()) }
     single { ValidateDipSignup(get(), get()) }
     single { GetSignupDipToken(get()) }
-    viewModel { DipViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel {
+        DipViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+    }
 }
