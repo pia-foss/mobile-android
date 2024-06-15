@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,8 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,11 +52,10 @@ import org.koin.androidx.compose.koinViewModel
 fun SignupDedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
         hasActivePlaystoreSubscription()
-        getSupportedDipCountries()
+        getDipSupportedCountries()
         getDipMonthlyPlan()
         getDipYearlyPlan()
     }
-    val showSupportedCountriesDialog = remember { mutableStateOf(true) }
     val context = LocalContext.current
 
     Column(
@@ -76,84 +74,122 @@ fun SignupDedicatedIpScreen() = Screen {
                 .fillMaxWidth(),
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Column {
-            DedicatedIpSignupTitleText(
-                content = stringResource(id = R.string.dip_signup_addon_title),
+        if (viewModel.showFetchingPlansSpinner.value || viewModel.showValidatingPurchaseSpinner.value) {
+            Column(
                 modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
+                    .fillMaxSize()
+                    .padding(bottom = 64.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                CircularProgressIndicator(modifier = Modifier.padding(8.dp))
+            }
+        } else {
+            Column {
+                DedicatedIpSignupTitleText(
+                    content = stringResource(id = R.string.dip_signup_addon_title),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(horizontal = 16.dp),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                DedicatedIpSignupDescriptionText(
+                    content = stringResource(id = R.string.dip_signup_addon_description),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(horizontal = 16.dp),
+                )
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+            YearlySubscriptionCard(
+                selected = viewModel.selectedPlanProductId.value == viewModel.dipYearlyPlan.value?.id,
+                price = viewModel.dipYearlyPlan.value?.yearlyPrice.toString(),
+                perMonthPrice = viewModel.dipYearlyPlan.value?.monthlyPrice.toString(),
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = 16.dp),
+            ) {
+                viewModel.dipYearlyPlan.value?.let {
+                    viewModel.selectedPlanProductId.value = it.id
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            MonthlySubscriptionCard(
+                selected = viewModel.selectedPlanProductId.value == viewModel.dipMonthlyPlan.value?.id,
+                price = viewModel.dipMonthlyPlan.value?.monthlyPrice.toString(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+            ) {
+                viewModel.dipMonthlyPlan.value?.let {
+                    viewModel.selectedPlanProductId.value = it.id
+                }
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            PrimaryButton(
+                text = stringResource(id = R.string.logjn_continue),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+            ) {
+                viewModel.purchaseSubscription(activity = context as Activity)
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            SecondaryButton(
+                text = stringResource(id = R.string.cancel),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+            ) {
+                viewModel.navigateBack()
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Footer(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(16.dp))
-            DedicatedIpSignupDescriptionText(
-                content = stringResource(id = R.string.dip_signup_addon_description),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(horizontal = 16.dp),
-            )
         }
-        Spacer(modifier = Modifier.height(32.dp))
-        YearlySubscriptionCard(
-            selected = viewModel.selectedPlanProductId.value == viewModel.dipYearlyPlan.value?.id,
-            price = viewModel.dipYearlyPlan.value?.yearlyPrice.toString(),
-            perMonthPrice = viewModel.dipYearlyPlan.value?.monthlyPrice.toString(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
-            viewModel.dipYearlyPlan.value?.let {
-                viewModel.selectedPlanProductId.value = it.id
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        MonthlySubscriptionCard(
-            selected = viewModel.selectedPlanProductId.value == viewModel.dipMonthlyPlan.value?.id,
-            price = viewModel.dipMonthlyPlan.value?.monthlyPrice.toString(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
-            viewModel.dipMonthlyPlan.value?.let {
-                viewModel.selectedPlanProductId.value = it.id
-            }
-        }
-        Spacer(modifier = Modifier.height(24.dp))
-        PrimaryButton(
-            text = stringResource(id = R.string.logjn_continue),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
-            viewModel.purchaseSubscription(activity = context as Activity)
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        SecondaryButton(
-            text = stringResource(id = R.string.cancel),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
-            viewModel.navigateBack()
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Spacer(modifier = Modifier.weight(1f))
-        Footer(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.CenterHorizontally),
-        )
-        Spacer(modifier = Modifier.height(16.dp))
     }
 
     if (viewModel.hasAnActivePlaystoreSubscription.value) {
-        if (showSupportedCountriesDialog.value) {
+        if (viewModel.showSupportedCountriesDialog.value) {
             DipSignupSupportedCountriesDialog(viewModel = viewModel) {
-                showSupportedCountriesDialog.value = false
+                viewModel.showSupportedCountriesDialog.value = false
+            }
+        } else {
+            if (viewModel.showFetchingNeededInformationError.value) {
+                DipSignupErrorDialog(
+                    message = stringResource(id = R.string.dip_signup_required_information_missing_error),
+                    confirmButtonMessage = stringResource(id = R.string.take_me_back),
+                    onConfirmCallback = {
+                        viewModel.navigateBack()
+                    },
+                )
             }
         }
     } else {
-        DipSignupErrorDialog() {
-            viewModel.navigateBack()
-        }
+        DipSignupErrorDialog(
+            message = stringResource(id = R.string.dip_signup_error),
+            confirmButtonMessage = stringResource(id = R.string.take_me_back),
+            onConfirmCallback = {
+                viewModel.navigateBack()
+            },
+        )
+    }
+
+    if (viewModel.showPurchaseValidationError.value) {
+        DipSignupErrorDialog(
+            message = stringResource(id = R.string.dip_signup_purchase_validation_error),
+            confirmButtonMessage = stringResource(id = R.string.try_again),
+            onConfirmCallback = {
+                viewModel.validateSubscriptionPurchase()
+            },
+            onDismissCallback = {
+                viewModel.navigateBack()
+            },
+        )
     }
 }
 
@@ -205,9 +241,14 @@ private fun DipSignupSupportedCountriesDialog(
 }
 
 @Composable
-private fun DipSignupErrorDialog(onDismiss: () -> Unit) {
+fun DipSignupErrorDialog(
+    message: String,
+    confirmButtonMessage: String,
+    onConfirmCallback: () -> Unit,
+    onDismissCallback: (() -> Unit)? = null,
+) {
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = onConfirmCallback,
         title = {
             Text(
                 text = stringResource(id = R.string.something_went_wrong),
@@ -217,17 +258,28 @@ private fun DipSignupErrorDialog(onDismiss: () -> Unit) {
         },
         text = {
             Text(
-                text = stringResource(id = R.string.dip_signup_error),
+                text = message,
                 fontSize = 14.sp,
             )
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = onConfirmCallback) {
                 Text(
-                    text = stringResource(id = R.string.take_me_back),
+                    text = confirmButtonMessage,
                     fontSize = 14.sp,
                     color = LocalColors.current.primary,
                 )
+            }
+        },
+        dismissButton = {
+            onDismissCallback?.let {
+                TextButton(onClick = it) {
+                    Text(
+                        text = stringResource(id = R.string.take_me_back),
+                        fontSize = 14.sp,
+                        color = LocalColors.current.primary,
+                    )
+                }
             }
         },
     )

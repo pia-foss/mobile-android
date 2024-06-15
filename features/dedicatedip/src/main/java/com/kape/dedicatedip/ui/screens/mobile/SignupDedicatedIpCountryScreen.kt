@@ -61,7 +61,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
         appBarText(stringResource(id = R.string.dedicated_ip_title))
     }
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
-        getSupportedDipCountries()
+        getDipSupportedCountries()
         getDipMonthlyPlan()
         getDipYearlyPlan()
     }
