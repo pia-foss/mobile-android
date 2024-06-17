@@ -18,6 +18,7 @@ import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
+import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.router.Back
@@ -47,6 +48,7 @@ class DipViewModel(
     private val _state = MutableStateFlow<DedicatedIpStep?>(null)
     val state: StateFlow<DedicatedIpStep?> = _state
     val activateTokenButtonState = mutableStateOf(false)
+    private lateinit var userLocale: String
 
     val dipList = mutableStateListOf<VpnServer>()
     val activationState = mutableStateOf<DipApiResult?>(null)
@@ -57,7 +59,11 @@ class DipViewModel(
     val selectedPlanProductId = mutableStateOf("")
     val dipSelectedCountry =
         mutableStateOf<DipCountriesResponse.DedicatedIpCountriesAvailable?>(null)
-    private lateinit var userLocale: String
+    val showSupportedCountriesDialog = mutableStateOf(true)
+    val showFetchingNeededInformationError = mutableStateOf(false)
+    val showPurchaseValidationError = mutableStateOf(false)
+    val showValidatingPurchaseSpinner = mutableStateOf(false)
+    val showFetchingPlansSpinner = mutableStateOf(true)
 
     fun navigateBack() {
         _state.value?.let {
@@ -141,32 +147,40 @@ class DipViewModel(
         }
     }
 
-    fun getSupportedDipCountries() = viewModelScope.launch {
-        getDipSupportedCountries.invoke().collect {
-            it?.let {
-                supportedDipCountriesList.value = it
-                if (it.dedicatedIpCountriesAvailable.isEmpty().not()) {
-                    selectDipCountry(it.dedicatedIpCountriesAvailable.first())
-                }
+    fun getDipSupportedCountries() = viewModelScope.launch {
+        getDipSupportedCountries.invoke().collect { response ->
+            if (response == null || response.dedicatedIpCountriesAvailable.isEmpty()) {
+                showSupportedCountriesDialog.value = false
+                showFetchingNeededInformationError.value = true
+                return@collect
             }
+
+            supportedDipCountriesList.value = response
+            selectDipCountry(response.dedicatedIpCountriesAvailable.first())
         }
     }
 
     fun getDipMonthlyPlan() = viewModelScope.launch {
         getDipMonthlyPlan.invoke().collect { monthlyPlan ->
+            showFetchingNeededInformationError.value =
+                dipYearlyPlan.value == null && monthlyPlan == null
             monthlyPlan?.let {
                 dipMonthlyPlan.value = it
+                showFetchingPlansSpinner.value = false
             }
         }
     }
 
     fun getDipYearlyPlan() = viewModelScope.launch {
         getDipYearlyPlan.invoke().collect { yearlyPlan ->
+            showFetchingNeededInformationError.value =
+                dipMonthlyPlan.value == null && yearlyPlan == null
             yearlyPlan?.let {
                 if (selectedPlanProductId.value.isEmpty()) {
                     selectedPlanProductId.value = it.id
                 }
                 dipYearlyPlan.value = it
+                showFetchingPlansSpinner.value = false
             }
         }
     }
@@ -202,21 +216,25 @@ class DipViewModel(
         ) { result ->
             result.fold(
                 onSuccess = {
-                    viewModelScope.launch {
-                        validateDipSignup.invoke(dipPurchaseData = it).collect { result ->
-                            result.fold(
-                                onSuccess = {
-                                    navigateToDedicatedIpLocationSelection()
-                                },
-                                onFailure = {
-                                    TODO()
-                                },
-                            )
-                        }
-                    }
+                    validateSubscriptionPurchase(dipPurchaseData = it)
                 },
                 onFailure = {
-                    TODO()
+                    // Do nothing. The billing library shows the payment error to the users.
+                },
+            )
+        }
+    }
+
+    fun validateSubscriptionPurchase(dipPurchaseData: DipPurchaseData? = null) = viewModelScope.launch {
+        showValidatingPurchaseSpinner.value = true
+        validateDipSignup.invoke(dipPurchaseData = dipPurchaseData).collect { result ->
+            result.fold(
+                onSuccess = {
+                    showValidatingPurchaseSpinner.value = false
+                    navigateToDedicatedIpLocationSelection()
+                },
+                onFailure = {
+                    showPurchaseValidationError.value = true
                 },
             )
         }

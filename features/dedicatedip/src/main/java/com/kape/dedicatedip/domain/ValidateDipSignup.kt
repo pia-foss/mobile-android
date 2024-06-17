@@ -10,9 +10,22 @@ class ValidateDipSignup(
     private val dataSource: DipDataSource,
 ) {
 
-    operator fun invoke(dipPurchaseData: DipPurchaseData): Flow<Result<Unit>> = flow {
-        subscriptionPrefs.storeDipPurchaseData(dipPurchaseData)
-        dataSource.signup(dipPurchaseData = dipPurchaseData).collect { result ->
+    operator fun invoke(
+        dipPurchaseData: DipPurchaseData?,
+    ): Flow<Result<Unit>> = flow {
+        val unwrappedDipPurchaseData = dipPurchaseData?.let {
+            it
+        } ?: run {
+            subscriptionPrefs.getDipPurchaseData()
+        }
+
+        if (unwrappedDipPurchaseData == null) {
+            emit(Result.failure(IllegalStateException("Unknown purchase data")))
+            return@flow
+        }
+
+        subscriptionPrefs.storeDipPurchaseData(unwrappedDipPurchaseData)
+        dataSource.signup(dipPurchaseData = unwrappedDipPurchaseData).collect { result ->
             result.fold(
                 onSuccess = {
                     subscriptionPrefs.removeDipPurchaseData()
