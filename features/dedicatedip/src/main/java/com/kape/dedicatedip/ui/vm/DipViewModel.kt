@@ -8,6 +8,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
+import com.kape.dedicatedip.data.models.DedicatedIpSelectedCountry
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
 import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.domain.GetDipMonthlyPlan
@@ -57,8 +58,7 @@ class DipViewModel(
     val dipMonthlyPlan = mutableStateOf<DedicatedIpMonthlyPlan?>(null)
     val dipYearlyPlan = mutableStateOf<DedicatedIpYearlyPlan?>(null)
     val selectedPlanProductId = mutableStateOf("")
-    val dipSelectedCountry =
-        mutableStateOf<DipCountriesResponse.DedicatedIpCountriesAvailable?>(null)
+    val dipSelectedCountry = mutableStateOf<DedicatedIpSelectedCountry?>(null)
     val showSupportedCountriesDialog = mutableStateOf(true)
     val showFetchingNeededInformationError = mutableStateOf(false)
     val showPurchaseValidationError = mutableStateOf(false)
@@ -101,6 +101,10 @@ class DipViewModel(
 
     fun navigateToDedicatedIpTokenActivate() = viewModelScope.launch {
         _state.emit(DedicatedIpStep.SignupTokenActivate)
+    }
+
+    fun navigateToDedicatedIpLocationSelection() = viewModelScope.launch {
+        _state.emit(DedicatedIpStep.LocationSelection)
     }
 
     fun loadDedicatedIps(locale: String) = viewModelScope.launch {
@@ -156,7 +160,13 @@ class DipViewModel(
             }
 
             supportedDipCountriesList.value = response
-            selectDipCountry(response.dedicatedIpCountriesAvailable.first())
+            selectDipCountry(
+                DedicatedIpSelectedCountry(
+                    countryCode = response.dedicatedIpCountriesAvailable.first().countryCode,
+                    countryName = response.dedicatedIpCountriesAvailable.first().name,
+                    regionName = response.dedicatedIpCountriesAvailable.first().regions.first(),
+                ),
+            )
         }
     }
 
@@ -194,7 +204,7 @@ class DipViewModel(
     fun showDedicatedIpSignupBanner() =
         dipPrefs.isDipSignupEnabled()
 
-    fun selectDipCountry(selected: DipCountriesResponse.DedicatedIpCountriesAvailable) {
+    fun selectDipCountry(selected: DedicatedIpSelectedCountry) {
         dipSelectedCountry.value = selected
     }
 
@@ -231,17 +241,13 @@ class DipViewModel(
             result.fold(
                 onSuccess = {
                     showValidatingPurchaseSpinner.value = false
-                    navigateToDedicatedIpLocationSelection()
+                    navigateToDedicatedIpPurchaseSuccess()
                 },
                 onFailure = {
                     showPurchaseValidationError.value = true
                 },
             )
         }
-    }
-
-    private fun navigateToDedicatedIpLocationSelection() = viewModelScope.launch {
-        _state.emit(DedicatedIpStep.LocationSelection)
     }
 
     private fun navigateToDedicatedIpPurchaseSuccess() = viewModelScope.launch {
