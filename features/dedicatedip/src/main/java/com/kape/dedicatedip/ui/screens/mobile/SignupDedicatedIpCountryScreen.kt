@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.dedicatedip.data.models.DedicatedIpSelectedCountry
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
@@ -102,8 +103,8 @@ fun SignupDedicatedIpCountryScreen() = Screen {
                         shape = RoundedCornerShape(12.dp),
                     ),
             ) {
-                viewModel.dipSelectedCountry.value?.let {
-                    DipCountryItem(it, false) {
+                viewModel.dipSelectedCountry.value?.let { dedicatedIpSelectedCountry ->
+                    DipCountryItem(dedicatedIpSelectedCountry) {
                         showAllLocations.value = !showAllLocations.value
                     }
                 }
@@ -127,17 +128,11 @@ fun SignupDedicatedIpCountryScreen() = Screen {
                 ) {
                     viewModel.supportedDipCountriesList.value?.let {
                         FlowColumn {
-                            it.dedicatedIpCountriesAvailable.forEach {
-                                DipCountryItem(country = it, showDetails = true) {
-                                    viewModel.selectDipCountry(it)
+                            it.dedicatedIpCountriesAvailable.forEach { country ->
+                                DipCountryItem(country = country) { dedicatedIpSelectedCountry ->
+                                    viewModel.selectDipCountry(dedicatedIpSelectedCountry)
                                     showAllLocations.value = !showAllLocations.value
                                 }
-                                HorizontalDivider(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(0.5.dp),
-                                    color = LocalColors.current.outline,
-                                )
                             }
                         }
                     }
@@ -202,8 +197,7 @@ fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel) {
 
 @Composable
 fun DipCountryItem(
-    country: DipCountriesResponse.DedicatedIpCountriesAvailable,
-    showDetails: Boolean,
+    dedicatedIpSelectedCountry: DedicatedIpSelectedCountry,
     onClick: () -> Unit,
 ) {
     Row(
@@ -220,7 +214,7 @@ fun DipCountryItem(
             painter = painterResource(
                 id = getFlagResource(
                     LocalContext.current,
-                    country.countryCode,
+                    dedicatedIpSelectedCountry.countryCode,
                 ),
             ),
             contentScale = ContentScale.Crop,
@@ -236,14 +230,93 @@ fun DipCountryItem(
                 .align(Alignment.CenterVertically)
                 .padding(vertical = 8.dp),
         ) {
-            if (showDetails) {
-                SupportedDipRegions(content = country.name)
-                Spacer(modifier = Modifier.height(4.dp))
-                val regions = country.regions + country.newRegions
-                SupportedDipRegionsInCountry(content = regions.joinToString(", "))
-            } else {
-                SupportedDipCountryOnly(content = country.name)
+            SupportedDipRegions(content = dedicatedIpSelectedCountry.countryName)
+            Spacer(modifier = Modifier.height(4.dp))
+            SupportedDipRegionsInCountry(content = dedicatedIpSelectedCountry.regionName)
+        }
+    }
+}
+
+@Composable
+fun DipCountryItem(
+    country: DipCountriesResponse.DedicatedIpCountriesAvailable,
+    onClick: (dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) -> Unit,
+) {
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .height(48.dp),
+        ) {
+            Image(
+                painter = painterResource(
+                    id = getFlagResource(
+                        LocalContext.current,
+                        country.countryCode,
+                    ),
+                ),
+                contentScale = ContentScale.Crop,
+                contentDescription = null,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(24.dp)
+                    .align(Alignment.CenterVertically),
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            SupportedDipCountryOnly(content = country.name)
+        }
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(0.5.dp),
+            color = LocalColors.current.outline,
+        )
+        val regions = country.regions + country.newRegions
+        regions.forEach {
+            Row(
+                modifier = Modifier.clickable {
+                    onClick(
+                        DedicatedIpSelectedCountry(
+                            countryCode = country.countryCode,
+                            countryName = country.name,
+                            regionName = it,
+                        ),
+                    )
+                },
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp, vertical = 8.dp)
+                        .height(32.dp),
+                ) {
+                    Image(
+                        painter = painterResource(
+                            id = getFlagResource(
+                                LocalContext.current,
+                                country.countryCode,
+                            ),
+                        ),
+                        contentScale = ContentScale.Crop,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(16.dp)
+                            .align(Alignment.CenterVertically),
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    SupportedDipRegionsInCountry(content = it)
+                }
             }
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(0.5.dp),
+                color = LocalColors.current.outline,
+            )
         }
     }
 }
