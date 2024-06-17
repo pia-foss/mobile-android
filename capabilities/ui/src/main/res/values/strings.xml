@@ -152,6 +152,8 @@
     <string name="dip_signup_banner_home_description">Would you like to add a Dedicated IP to your subscription?</string>
     <string name="dip_signup_banner_activate_description">Don\'t have a Dedicated IP token yet?</string>
     <string name="dip_signup_error">It looks like you subscribed on the PIA website and you cannot buy the add-on directly from here. Please return to the website and purchase your Dedicated IP add-on.</string>
+    <string name="dip_signup_required_information_missing_error">An error occurred when retrieving the required information. Please try again later.</string>
+    <string name="dip_signup_purchase_validation_error">An error occurred validating the purchase. You will not be charged until the validation is successful. Please try again.</string>
     <string name="dip_signup_supported_countries_title">You\'ll be able to select only one of the available locations below</string>
     <string name="dip_signup_banner_activate_benefit_one">Avoid CAPTCHAs</string>
     <string name="dip_signup_banner_activate_benefit_two">Avoid blocklists</string>

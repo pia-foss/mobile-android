@@ -3,6 +3,7 @@ package com.kape.dip
 import android.content.Context
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.dip.data.DedicatedIpSignupPlans
+import com.kape.dip.data.DedicatedIpSupportedCountries
 import com.kape.utils.Prefs
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import kotlinx.serialization.encodeToString
@@ -12,6 +13,7 @@ private const val DEDICATED_IPS = "dedicated-ips"
 private const val DIP_SIGNUP_ENABLED = "dip-signup-enabled"
 private const val DIP_SIGNUP_HOME_BANNER_VISIBLE = "dip-signup-home-banner-visible"
 private const val DIP_SIGNUP_PLANS = "dip-signup-plans"
+private const val DIP_SUPPORTED_COUNTRIES = "dip-supported-countries"
 private const val DIP_SIGNUP_PURCHASED_TOKEN = "dip-signup-purchased-token"
 
 class DipPrefs(
@@ -69,6 +71,20 @@ class DipPrefs(
 
     fun getDedicatedIpSignupPlans(): DedicatedIpSignupPlans? =
         prefs.getString(DIP_SIGNUP_PLANS, null)?.let {
+            Json.decodeFromString(it)
+        }
+
+    fun setDedicatedIpSupportedCountries(
+        dedicatedIpSupportedCountries: DedicatedIpSupportedCountries,
+    ) {
+        prefs.edit().putString(
+            DIP_SUPPORTED_COUNTRIES,
+            Json.encodeToString(dedicatedIpSupportedCountries),
+        ).apply()
+    }
+
+    fun getDedicatedIpSupportedCountries(): DedicatedIpSupportedCountries? =
+        prefs.getString(DIP_SUPPORTED_COUNTRIES, null)?.let {
             Json.decodeFromString(it)
         }
 

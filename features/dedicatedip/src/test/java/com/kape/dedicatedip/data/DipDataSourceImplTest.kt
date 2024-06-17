@@ -27,6 +27,7 @@ class DipDataSourceImplTest {
 
     private val api: AndroidAccountAPI = mockk(relaxed = true)
     private val prefs: DipPrefs = mockk()
+    private val context: android.content.Context = mockk()
 
     private lateinit var source: DipDataSource
 
@@ -40,7 +41,7 @@ class DipDataSourceImplTest {
         startKoin {
             modules(appModule, dedicatedIpModule(appModule))
         }
-        source = DipDataSourceImpl(api, prefs)
+        source = DipDataSourceImpl(context, api, prefs)
     }
 
     @Test

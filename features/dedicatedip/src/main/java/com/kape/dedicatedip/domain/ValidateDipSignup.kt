@@ -1,23 +1,40 @@
 package com.kape.dedicatedip.domain
 
-import com.kape.dip.DipPrefs
+import com.kape.payments.SubscriptionPrefs
+import com.kape.payments.data.DipPurchaseData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class ValidateDipSignup(
-    private val dipPrefs: DipPrefs,
+    private val subscriptionPrefs: SubscriptionPrefs,
     private val dataSource: DipDataSource,
 ) {
 
-    fun signup(): Flow<Result<String>> = flow {
-        dataSource.signup().collect { result ->
+    operator fun invoke(
+        dipPurchaseData: DipPurchaseData?,
+    ): Flow<Result<Unit>> = flow {
+        val unwrappedDipPurchaseData = dipPurchaseData?.let {
+            it
+        } ?: run {
+            subscriptionPrefs.getDipPurchaseData()
+        }
+
+        if (unwrappedDipPurchaseData == null) {
+            emit(Result.failure(IllegalStateException("Unknown purchase data")))
+            return@flow
+        }
+
+        subscriptionPrefs.storeDipPurchaseData(unwrappedDipPurchaseData)
+        dataSource.signup(dipPurchaseData = unwrappedDipPurchaseData).collect { result ->
             result.fold(
                 onSuccess = {
-                    dipPrefs.setPurchasedSignupDipToken(it)
+                    subscriptionPrefs.removeDipPurchaseData()
+                    emit(result)
                 },
-                onFailure = { },
+                onFailure = {
+                    emit(result)
+                },
             )
-            emit(result)
         }
     }
 }

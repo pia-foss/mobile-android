@@ -141,7 +141,7 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementAccount() {
-        add(IMPLEMENTATION, "com.kape.android:account-android:1.5.0")
+        add(IMPLEMENTATION, "com.kape.android:account-android:1.5.1")
     }
 
     fun DependencyHandler.implementKpi() {
