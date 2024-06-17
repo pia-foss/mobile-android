@@ -57,7 +57,7 @@ class DipViewModel(
     val supportedDipCountriesList = mutableStateOf<DipCountriesResponse?>(null)
     val dipMonthlyPlan = mutableStateOf<DedicatedIpMonthlyPlan?>(null)
     val dipYearlyPlan = mutableStateOf<DedicatedIpYearlyPlan?>(null)
-    val selectedPlanProductId = mutableStateOf("")
+    val selectedPlanProductId = mutableStateOf(dipPrefs.getSelectedDipSignupProductId())
     val dipSelectedCountry = mutableStateOf<DedicatedIpSelectedCountry?>(null)
     val showSupportedCountriesDialog = mutableStateOf(true)
     val showFetchingNeededInformationError = mutableStateOf(false)
@@ -186,8 +186,8 @@ class DipViewModel(
             showFetchingNeededInformationError.value =
                 dipMonthlyPlan.value == null && yearlyPlan == null
             yearlyPlan?.let {
-                if (selectedPlanProductId.value.isEmpty()) {
-                    selectedPlanProductId.value = it.id
+                if (dipPrefs.getSelectedDipSignupProductId().isEmpty()) {
+                    selectPlanProductId(it.id)
                 }
                 dipYearlyPlan.value = it
                 showFetchingPlansSpinner.value = false
@@ -208,6 +208,11 @@ class DipViewModel(
         dipSelectedCountry.value = selected
     }
 
+    fun selectPlanProductId(productId: String) {
+        dipPrefs.setSelectedDipSignupProductId(productId)
+        selectedPlanProductId.value = dipPrefs.getSelectedDipSignupProductId()
+    }
+
     fun enableActivateTokenButton() {
         activateTokenButtonState.value = true
     }
@@ -216,13 +221,13 @@ class DipViewModel(
         getSignupDipToken.invoke()
 
     fun purchaseSubscription(activity: Activity) {
-        if (selectedPlanProductId.value.isEmpty()) {
+        if (dipPrefs.getSelectedDipSignupProductId().isEmpty()) {
             return
         }
 
         dipSubscriptionPaymentProvider.purchaseProduct(
             activity = activity,
-            productId = selectedPlanProductId.value,
+            productId = dipPrefs.getSelectedDipSignupProductId(),
         ) { result ->
             result.fold(
                 onSuccess = {

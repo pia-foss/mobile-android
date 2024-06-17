@@ -1,6 +1,5 @@
 package com.kape.dedicatedip.ui.screens.mobile
 
-import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,7 +55,6 @@ fun SignupDedicatedIpScreen() = Screen {
         getDipMonthlyPlan()
         getDipYearlyPlan()
     }
-    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -74,7 +72,7 @@ fun SignupDedicatedIpScreen() = Screen {
                 .fillMaxWidth(),
         )
         Spacer(modifier = Modifier.height(16.dp))
-        if (viewModel.showFetchingPlansSpinner.value || viewModel.showValidatingPurchaseSpinner.value) {
+        if (viewModel.showFetchingPlansSpinner.value) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -110,7 +108,7 @@ fun SignupDedicatedIpScreen() = Screen {
                     .padding(horizontal = 16.dp),
             ) {
                 viewModel.dipYearlyPlan.value?.let {
-                    viewModel.selectedPlanProductId.value = it.id
+                    viewModel.selectPlanProductId(it.id)
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -122,7 +120,7 @@ fun SignupDedicatedIpScreen() = Screen {
                     .padding(horizontal = 16.dp),
             ) {
                 viewModel.dipMonthlyPlan.value?.let {
-                    viewModel.selectedPlanProductId.value = it.id
+                    viewModel.selectPlanProductId(it.id)
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
@@ -132,7 +130,7 @@ fun SignupDedicatedIpScreen() = Screen {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
             ) {
-                viewModel.purchaseSubscription(activity = context as Activity)
+                viewModel.navigateToDedicatedIpLocationSelection()
             }
             Spacer(modifier = Modifier.height(8.dp))
             SecondaryButton(
@@ -174,19 +172,6 @@ fun SignupDedicatedIpScreen() = Screen {
             message = stringResource(id = R.string.dip_signup_error),
             confirmButtonMessage = stringResource(id = R.string.take_me_back),
             onConfirmCallback = {
-                viewModel.navigateBack()
-            },
-        )
-    }
-
-    if (viewModel.showPurchaseValidationError.value) {
-        DipSignupErrorDialog(
-            message = stringResource(id = R.string.dip_signup_purchase_validation_error),
-            confirmButtonMessage = stringResource(id = R.string.try_again),
-            onConfirmCallback = {
-                viewModel.validateSubscriptionPurchase()
-            },
-            onDismissCallback = {
                 viewModel.navigateBack()
             },
         )
