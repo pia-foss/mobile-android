@@ -31,7 +31,6 @@ import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.text.DedicatedIpSignupActivateTokenDescriptionText
 import com.kape.ui.mobile.text.DedicatedIpSignupActivateTokenFooter
 import com.kape.ui.mobile.text.DedicatedIpSignupActivateTokenTitleText
@@ -55,6 +54,10 @@ fun SignupDedicatedIpTokenDetailsScreen() = Screen {
         withStyle(style = SpanStyle(color = LocalColors.current.connectionError())) {
             append(" ${stringResource(id = R.string.dip_signup_save_your_token_footer_end)}")
         }
+    }
+
+    viewModel.registerScreenCaptureCallback {
+        viewModel.enableActivateTokenButton()
     }
 
     Column(
@@ -135,13 +138,6 @@ fun SignupDedicatedIpTokenDetailsScreen() = Screen {
                             tint = LocalColors.current.infoBlue(),
                         )
                     }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                SecondaryButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.dip_signup_save_your_token_as_pdf),
-                ) {
-                    viewModel.enableActivateTokenButton()
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 DedicatedIpSignupActivateTokenFooter(
