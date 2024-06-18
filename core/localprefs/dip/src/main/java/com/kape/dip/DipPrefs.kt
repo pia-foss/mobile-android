@@ -15,6 +15,7 @@ private const val DIP_SIGNUP_HOME_BANNER_VISIBLE = "dip-signup-home-banner-visib
 private const val DIP_SIGNUP_PLANS = "dip-signup-plans"
 private const val DIP_SUPPORTED_COUNTRIES = "dip-supported-countries"
 private const val DIP_SIGNUP_PURCHASED_TOKEN = "dip-signup-purchased-token"
+private const val DIP_SIGNUP_SELECTED_PRODUCT_ID = "dip-signup-selected-product-id"
 
 class DipPrefs(
     context: Context,
@@ -87,6 +88,16 @@ class DipPrefs(
         prefs.getString(DIP_SUPPORTED_COUNTRIES, null)?.let {
             Json.decodeFromString(it)
         }
+
+    fun setSelectedDipSignupProductId(productId: String) {
+        prefs.edit().putString(
+            DIP_SIGNUP_SELECTED_PRODUCT_ID,
+            productId,
+        ).apply()
+    }
+
+    fun getSelectedDipSignupProductId(): String =
+        prefs.getString(DIP_SIGNUP_SELECTED_PRODUCT_ID, "") ?: ""
 
     private fun getDips() = prefs.getStringSet(DEDICATED_IPS, emptySet()) ?: emptySet()
 
