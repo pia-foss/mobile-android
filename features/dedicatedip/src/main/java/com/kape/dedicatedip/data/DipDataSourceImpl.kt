@@ -111,4 +111,21 @@ class DipDataSourceImpl(
         }
         awaitClose { channel.close() }
     }
+
+    override fun fetchToken(
+        countryCode: String,
+        regionName: String,
+    ): Flow<Result<String>> = callbackFlow {
+        accountApi.getDedicatedIP(
+            countryCode = countryCode,
+            regionName = regionName,
+        ) { details, errors ->
+            if (details == null || errors.isNotEmpty()) {
+                trySend(Result.failure(IllegalStateException("Fetch token failed")))
+                return@getDedicatedIP
+            }
+            trySend(Result.success(details.token))
+        }
+        awaitClose { channel.close() }
+    }
 }

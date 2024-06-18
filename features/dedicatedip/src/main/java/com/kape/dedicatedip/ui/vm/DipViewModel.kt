@@ -11,10 +11,10 @@ import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
 import com.kape.dedicatedip.data.models.DedicatedIpSelectedCountry
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
 import com.kape.dedicatedip.domain.ActivateDipUseCase
+import com.kape.dedicatedip.domain.FetchSignupDipToken
 import com.kape.dedicatedip.domain.GetDipMonthlyPlan
 import com.kape.dedicatedip.domain.GetDipSupportedCountries
 import com.kape.dedicatedip.domain.GetDipYearlyPlan
-import com.kape.dedicatedip.domain.GetSignupDipToken
 import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.dedicatedip.utils.DipApiResult
@@ -39,7 +39,7 @@ class DipViewModel(
     private val getDipMonthlyPlan: GetDipMonthlyPlan,
     private val getDipYearlyPlan: GetDipYearlyPlan,
     private val validateDipSignup: ValidateDipSignup,
-    private val getSignupDipToken: GetSignupDipToken,
+    private val fetchSignupDipToken: FetchSignupDipToken,
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
     private val dipPrefs: DipPrefs,
@@ -62,8 +62,9 @@ class DipViewModel(
     val showSupportedCountriesDialog = mutableStateOf(true)
     val showFetchingNeededInformationError = mutableStateOf(false)
     val showPurchaseValidationError = mutableStateOf(false)
-    val showValidatingPurchaseSpinner = mutableStateOf(false)
+    val showTokenRetrievalError = mutableStateOf(false)
     val showFetchingPlansSpinner = mutableStateOf(true)
+    val showSpinner = mutableStateOf(false)
 
     fun navigateBack() {
         _state.value?.let {
@@ -218,7 +219,7 @@ class DipViewModel(
     }
 
     fun getSignupDipToken(): String =
-        getSignupDipToken.invoke()
+        dipPrefs.getPurchasedSignupDipToken()
 
     fun purchaseSubscription(activity: Activity) {
         if (dipPrefs.getSelectedDipSignupProductId().isEmpty()) {
@@ -241,15 +242,42 @@ class DipViewModel(
     }
 
     fun validateSubscriptionPurchase(dipPurchaseData: DipPurchaseData? = null) = viewModelScope.launch {
-        showValidatingPurchaseSpinner.value = true
+        showSpinner.value = true
         validateDipSignup.invoke(dipPurchaseData = dipPurchaseData).collect { result ->
             result.fold(
                 onSuccess = {
-                    showValidatingPurchaseSpinner.value = false
-                    navigateToDedicatedIpPurchaseSuccess()
+                    showSpinner.value = false
+                    showPurchaseValidationError.value = false
+                    fetchPurchasedDedicatedIpToken()
                 },
                 onFailure = {
                     showPurchaseValidationError.value = true
+                },
+            )
+        }
+    }
+
+    fun fetchPurchasedDedicatedIpToken() = viewModelScope.launch {
+        showSpinner.value = true
+        val countryDetails = dipSelectedCountry.value
+        if (countryDetails == null) {
+            showTokenRetrievalError.value = true
+            return@launch
+        }
+
+        fetchSignupDipToken.invoke(
+            countryCode = countryDetails.countryCode,
+            regionName = countryDetails.regionName,
+        ).collect { result ->
+            result.fold(
+                onSuccess = {
+                    showSpinner.value = false
+                    showTokenRetrievalError.value = false
+                    dipPrefs.setPurchasedSignupDipToken(it)
+                    navigateToDedicatedIpPurchaseSuccess()
+                },
+                onFailure = {
+                    showTokenRetrievalError.value = true
                 },
             )
         }
