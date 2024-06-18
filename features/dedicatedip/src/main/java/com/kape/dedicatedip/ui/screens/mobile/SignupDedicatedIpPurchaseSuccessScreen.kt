@@ -65,7 +65,7 @@ fun SignupDedicatedIpPurchaseSuccessScreen() = Screen {
         )
         Spacer(modifier = Modifier.weight(1.0f))
         PrimaryButton(
-            text = stringResource(id = R.string.dip_signup_generate_your_token),
+            text = stringResource(id = R.string.logjn_continue),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),

@@ -17,4 +17,6 @@ interface DipDataSource {
     fun signupPlans(): Flow<AndroidAddonsSubscriptionsInformation?>
 
     fun signup(dipPurchaseData: DipPurchaseData): Flow<Result<Unit>>
+
+    fun fetchToken(countryCode: String, regionName: String): Flow<Result<String>>
 }

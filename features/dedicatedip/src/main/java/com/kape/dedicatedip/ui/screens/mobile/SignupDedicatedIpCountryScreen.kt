@@ -72,7 +72,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
 
     val showAllLocations = remember { mutableStateOf(false) }
 
-    if (viewModel.showValidatingPurchaseSpinner.value) {
+    if (viewModel.showSpinner.value) {
         Column(
             modifier = Modifier
                 .padding(8.dp)
@@ -195,6 +195,19 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             confirmButtonMessage = stringResource(id = R.string.try_again),
             onConfirmCallback = {
                 viewModel.validateSubscriptionPurchase()
+            },
+            onDismissCallback = {
+                viewModel.navigateBack()
+            },
+        )
+    }
+
+    if (viewModel.showTokenRetrievalError.value) {
+        DipSignupErrorDialog(
+            message = stringResource(id = R.string.dip_signup_token_retrieval_error),
+            confirmButtonMessage = stringResource(id = R.string.try_again),
+            onConfirmCallback = {
+                viewModel.fetchPurchasedDedicatedIpToken()
             },
             onDismissCallback = {
                 viewModel.navigateBack()
