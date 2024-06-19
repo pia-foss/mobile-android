@@ -9,6 +9,7 @@ import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchasesParams
 import com.kape.payments.data.DipPurchaseData
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -122,6 +123,38 @@ class DipSubscriptionPaymentProviderImpl(
                     callback(Result.success(result))
                 } else {
                     callback(Result.failure(IllegalStateException("Failed to query products")))
+                }
+            }
+        }
+    }
+
+    override fun unacknowledgedProductIds(
+        productIds: List<String>,
+        callback: (result: Result<List<String>>) -> Unit,
+    ) {
+        launch {
+            if (billingClient.isReady.not()) {
+                connectBilling()
+            }
+
+            val queryPurchasesParams = QueryPurchasesParams.newBuilder()
+                .setProductType(BillingClient.ProductType.SUBS)
+                .build()
+
+            billingClient.queryPurchasesAsync(queryPurchasesParams) { billingResult, purchases ->
+                if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    val result = mutableListOf<String>()
+                    val unacknowledgedPurchases = purchases.filter { it.isAcknowledged.not() }
+                    for (unacknowledgedPurchase in unacknowledgedPurchases) {
+                        for (product in unacknowledgedPurchase.products) {
+                            if (productIds.contains(product)) {
+                                result.add(product)
+                            }
+                        }
+                    }
+                    callback(Result.success(result))
+                } else {
+                    callback(Result.failure(IllegalStateException("Failed to query purchases")))
                 }
             }
         }

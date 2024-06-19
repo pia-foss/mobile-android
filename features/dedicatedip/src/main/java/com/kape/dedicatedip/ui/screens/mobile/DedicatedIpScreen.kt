@@ -23,7 +23,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -58,7 +57,6 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.R
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
-import com.kape.ui.mobile.elements.RoundIconButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.Separator
@@ -187,9 +185,6 @@ fun DedicatedIpScreen() = Screen {
                         DedicatedIpSignupBanner(
                             onAcceptTapped = {
                                 viewModel.navigateToDedicatedIpPlans()
-                            },
-                            onDismissTapped = {
-                                TODO("To be implemented")
                             },
                         )
                     }
@@ -422,10 +417,7 @@ fun DeleteDipDialog(
 }
 
 @Composable
-fun DedicatedIpSignupBanner(
-    onAcceptTapped: () -> Unit,
-    onDismissTapped: () -> Unit,
-) {
+fun DedicatedIpSignupBanner(onAcceptTapped: () -> Unit) {
     Spacer(modifier = Modifier.height(16.dp))
     Card(
         border = BorderStroke(1.dp, color = LocalColors.current.onPrimaryContainer),
@@ -447,13 +439,6 @@ fun DedicatedIpSignupBanner(
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.weight(1.0f))
-                RoundIconButton(
-                    painterId = com.kape.ui.R.drawable.ic_close,
-                    iconButtonColors = IconButtonDefaults.iconButtonColors(
-                        contentColor = LocalColors.current.onSurface,
-                    ),
-                    onClick = onDismissTapped,
-                )
             }
             Text(
                 modifier = Modifier

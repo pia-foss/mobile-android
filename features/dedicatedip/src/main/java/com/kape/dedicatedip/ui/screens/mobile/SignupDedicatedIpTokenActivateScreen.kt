@@ -70,6 +70,7 @@ fun SignupDedicatedIpTokenActivateScreen() = Screen {
             Spacer(modifier = Modifier.height(16.dp))
             Input(
                 modifier = Modifier.fillMaxWidth(),
+                enabled = false,
                 maskInput = false,
                 keyboard = KeyboardType.Text,
                 content = dipToken,
@@ -114,7 +115,9 @@ fun SignupDedicatedIpTokenActivateScreen() = Screen {
                 .padding(horizontal = 16.dp),
         ) {
             showSpinner.value = true
-            viewModel.activateDedicatedIp(mutableStateOf(TextFieldValue(dipToken.value)))
+            viewModel.activateDedicatedIp(
+                mutableStateOf(TextFieldValue(viewModel.getSignupDipToken())),
+            )
         }
         Spacer(modifier = Modifier.height(64.dp))
     }
