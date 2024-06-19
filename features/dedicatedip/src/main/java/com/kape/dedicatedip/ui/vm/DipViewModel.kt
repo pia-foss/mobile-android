@@ -8,7 +8,6 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
-import com.kape.dedicatedip.data.models.DedicatedIpSelectedCountry
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
 import com.kape.dedicatedip.domain.ActivateDipUseCase
 import com.kape.dedicatedip.domain.FetchSignupDipToken
@@ -20,6 +19,7 @@ import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.dip.DipPrefs
+import com.kape.dip.data.DedicatedIpSelectedCountry
 import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
@@ -60,7 +60,6 @@ class DipViewModel(
     val dipMonthlyPlan = mutableStateOf<DedicatedIpMonthlyPlan?>(null)
     val dipYearlyPlan = mutableStateOf<DedicatedIpYearlyPlan?>(null)
     val selectedPlanProductId = mutableStateOf(dipPrefs.getSelectedDipSignupProductId())
-    val dipSelectedCountry = mutableStateOf<DedicatedIpSelectedCountry?>(null)
     val showSupportedCountriesDialog = mutableStateOf(true)
     val showFetchingNeededInformationError = mutableStateOf(false)
     val showPurchaseValidationError = mutableStateOf(false)
@@ -167,13 +166,12 @@ class DipViewModel(
             }
 
             supportedDipCountriesList.value = response
-            selectDipCountry(
-                DedicatedIpSelectedCountry(
-                    countryCode = response.dedicatedIpCountriesAvailable.first().countryCode,
-                    countryName = response.dedicatedIpCountriesAvailable.first().name,
-                    regionName = response.dedicatedIpCountriesAvailable.first().regions.first(),
-                ),
+            val selectedDipCountry = getSelectedDipCountry() ?: DedicatedIpSelectedCountry(
+                countryCode = response.dedicatedIpCountriesAvailable.first().countryCode,
+                countryName = response.dedicatedIpCountriesAvailable.first().name,
+                regionName = response.dedicatedIpCountriesAvailable.first().regions.first(),
             )
+            selectDipCountry(selectedDipCountry)
         }
     }
 
@@ -204,16 +202,19 @@ class DipViewModel(
 
     fun hasActivePlaystoreSubscription() = viewModelScope.launch {
         vpnSubscriptionPaymentProvider.hasActiveSubscription().collect {
-            hasAnActivePlaystoreSubscription.value = true
+            hasAnActivePlaystoreSubscription.value = it
         }
     }
 
     fun showDedicatedIpSignupBanner() =
         dipPrefs.isDipSignupEnabled()
 
-    fun selectDipCountry(selected: DedicatedIpSelectedCountry) {
-        dipSelectedCountry.value = selected
+    fun selectDipCountry(dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) {
+        dipPrefs.setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry = dedicatedIpSelectedCountry)
     }
+
+    fun getSelectedDipCountry(): DedicatedIpSelectedCountry? =
+        dipPrefs.getDedicatedIpSelectedCountry()
 
     fun selectPlanProductId(productId: String) {
         dipPrefs.setSelectedDipSignupProductId(productId)
@@ -249,6 +250,7 @@ class DipViewModel(
 
     fun validateSubscriptionPurchase(dipPurchaseData: DipPurchaseData? = null) = viewModelScope.launch {
         showSpinner.value = true
+        showPurchaseValidationError.value = false
         validateDipSignup.invoke(dipPurchaseData = dipPurchaseData).collect { result ->
             result.fold(
                 onSuccess = {
@@ -265,7 +267,8 @@ class DipViewModel(
 
     fun fetchPurchasedDedicatedIpToken() = viewModelScope.launch {
         showSpinner.value = true
-        val countryDetails = dipSelectedCountry.value
+        showTokenRetrievalError.value = false
+        val countryDetails = getSelectedDipCountry()
         if (countryDetails == null) {
             showTokenRetrievalError.value = true
             return@launch

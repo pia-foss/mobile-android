@@ -41,8 +41,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.dedicatedip.data.models.DedicatedIpSelectedCountry
 import com.kape.dedicatedip.ui.vm.DipViewModel
+import com.kape.dip.data.DedicatedIpSelectedCountry
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.PrimaryButton
@@ -134,7 +134,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
                             shape = RoundedCornerShape(12.dp),
                         ),
                 ) {
-                    viewModel.dipSelectedCountry.value?.let { dedicatedIpSelectedCountry ->
+                    viewModel.getSelectedDipCountry()?.let { dedicatedIpSelectedCountry ->
                         DipCountryItem(dedicatedIpSelectedCountry) {
                             showAllLocations.value = !showAllLocations.value
                         }
