@@ -15,6 +15,7 @@ import com.kape.dedicatedip.domain.FetchSignupDipToken
 import com.kape.dedicatedip.domain.GetDipMonthlyPlan
 import com.kape.dedicatedip.domain.GetDipSupportedCountries
 import com.kape.dedicatedip.domain.GetDipYearlyPlan
+import com.kape.dedicatedip.domain.ObserveScreenCaptureUseCase
 import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.dedicatedip.utils.DipApiResult
@@ -40,6 +41,7 @@ class DipViewModel(
     private val getDipYearlyPlan: GetDipYearlyPlan,
     private val validateDipSignup: ValidateDipSignup,
     private val fetchSignupDipToken: FetchSignupDipToken,
+    private val observeScreenCaptureUseCase: ObserveScreenCaptureUseCase,
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
     private val dipPrefs: DipPrefs,
@@ -106,6 +108,10 @@ class DipViewModel(
 
     fun navigateToDedicatedIpLocationSelection() = viewModelScope.launch {
         _state.emit(DedicatedIpStep.LocationSelection)
+    }
+
+    fun registerScreenCaptureCallback(callback: () -> Unit) {
+        observeScreenCaptureUseCase.registerCallback(callback)
     }
 
     fun loadDedicatedIps(locale: String) = viewModelScope.launch {

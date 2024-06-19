@@ -167,9 +167,8 @@
     <string name="dip_signup_purchase_success_description">You can now activate your Dedicated IP with the generated token at the next screen.</string>
     <string name="dip_signup_save_your_token_title">Save your token</string>
     <string name="dip_signup_save_your_token_description">This is your only one-time show token to activate your Dedicated IP.</string>
-    <string name="dip_signup_save_your_token_footer_start">Screenshot or save your token for use on other devices.</string>
+    <string name="dip_signup_save_your_token_footer_start">Screenshot your token as a backup for use on other devices.</string>
     <string name="dip_signup_save_your_token_footer_end">If you lose your token, you will need to repurchase a Dedicated IP.</string>
-    <string name="dip_signup_save_your_token_as_pdf">Save token as PDF</string>
     <string name="dip_signup_token_copied">Token copied to your clipboard</string>
     <string name="dip_signup_activate_token">Activate token</string>
     <string name="dip_signup_activate_token_description">Activate your Dedicated IP by pasting your token in the form below. If you\'ve recently purchased a Dedicated IP, you can generate the token by going to the PIA website.</string>

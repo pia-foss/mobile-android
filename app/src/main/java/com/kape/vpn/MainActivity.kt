@@ -2,6 +2,7 @@ package com.kape.vpn
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,7 @@ import com.kape.automation.ui.AutomationFlow
 import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
+import com.kape.dedicatedip.domain.ObserveScreenCaptureUseCase
 import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpFlow
 import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
 import com.kape.dedicatedip.utils.DedicatedIpStep
@@ -87,8 +89,9 @@ class MainActivity : AppCompatActivity() {
 
     private val router: Router by inject()
     private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
-
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
+    private val observeScreenCaptureUseCase: ObserveScreenCaptureUseCase by inject()
+    private lateinit var screenCaptureCallback: ScreenCaptureCallback
     private var currentDestination: String = ""
     private val destinationsForClearBackStack =
         listOf(
@@ -98,6 +101,7 @@ class MainActivity : AppCompatActivity() {
             Connection.Main,
             AccountDeleted.Route,
         )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,6 +166,23 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         if (currentDestination == Subscribe.Main) {
             vpnSubscriptionPaymentProvider.getPurchaseUpdates()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            screenCaptureCallback = ScreenCaptureCallback {
+                observeScreenCaptureUseCase.announce()
+            }
+            registerScreenCaptureCallback(mainExecutor, screenCaptureCallback)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            unregisterScreenCaptureCallback(screenCaptureCallback)
         }
     }
 
