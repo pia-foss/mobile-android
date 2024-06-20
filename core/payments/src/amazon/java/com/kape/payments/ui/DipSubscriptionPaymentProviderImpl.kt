@@ -16,6 +16,13 @@ class DipSubscriptionPaymentProviderImpl(
         callback(Result.failure(IllegalStateException("Unsupported")))
     }
 
+    override fun unacknowledgedProductIds(
+        productIds: List<String>,
+        callback: (result: Result<List<String>>) -> Unit,
+    ) {
+        callback(Result.failure(IllegalStateException("Unsupported")))
+    }
+
     override fun purchaseProduct(
         activity: Activity,
         productId: String,

@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,11 +50,13 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SignupDedicatedIpScreen() = Screen {
-    val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
-        hasActivePlaystoreSubscription()
-        getDipSupportedCountries()
-        getDipMonthlyPlan()
-        getDipYearlyPlan()
+    val viewModel: DipViewModel = koinViewModel()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.hasActivePlaystoreSubscription()
+        viewModel.getDipSupportedCountries()
+        viewModel.getDipMonthlyPlan()
+        viewModel.getDipYearlyPlan()
     }
 
     Column(

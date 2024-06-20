@@ -6,7 +6,7 @@ import com.kape.payments.data.DipPurchaseData
 interface DipSubscriptionPaymentProvider {
 
     /**
-     * It queries the productIds against those known by the billing library and returns the known
+     * It queries the productIds against those known by the billing library, and returns the known
      * ones, along with their formatted price.
      *
      * The first parameter of the pair is the product id.
@@ -18,6 +18,22 @@ interface DipSubscriptionPaymentProvider {
     fun productsDetails(
         productIds: List<String>,
         callback: (result: Result<List<Pair<String, String>>>) -> Unit,
+    )
+
+    /**
+     * It queries the productIds against those known by the billing library, and returns those
+     * that are known but have NOT been acknowledged, in order to resume a potentially interrupted
+     * purchase flow.
+     *
+     * The first parameter of the pair is the product id.
+     * The second parameter is the formatted price.
+     *
+     * @param productIds
+     * @param callback
+     */
+    fun unacknowledgedProductIds(
+        productIds: List<String>,
+        callback: (result: Result<List<String>>) -> Unit,
     )
 
     /**

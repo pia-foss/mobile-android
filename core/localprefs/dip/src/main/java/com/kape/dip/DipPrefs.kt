@@ -2,6 +2,7 @@ package com.kape.dip
 
 import android.content.Context
 import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.dip.data.DedicatedIpSelectedCountry
 import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.dip.data.DedicatedIpSupportedCountries
 import com.kape.utils.Prefs
@@ -16,6 +17,7 @@ private const val DIP_SIGNUP_PLANS = "dip-signup-plans"
 private const val DIP_SUPPORTED_COUNTRIES = "dip-supported-countries"
 private const val DIP_SIGNUP_PURCHASED_TOKEN = "dip-signup-purchased-token"
 private const val DIP_SIGNUP_SELECTED_PRODUCT_ID = "dip-signup-selected-product-id"
+private const val DIP_SIGNUP_SELECTED_COUNTRY = "dip-signup-selected-country"
 
 class DipPrefs(
     context: Context,
@@ -95,6 +97,18 @@ class DipPrefs(
             productId,
         ).apply()
     }
+
+    fun setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) {
+        prefs.edit().putString(
+            DIP_SIGNUP_SELECTED_COUNTRY,
+            Json.encodeToString(dedicatedIpSelectedCountry),
+        ).apply()
+    }
+
+    fun getDedicatedIpSelectedCountry(): DedicatedIpSelectedCountry? =
+        prefs.getString(DIP_SIGNUP_SELECTED_COUNTRY, null)?.let {
+            Json.decodeFromString(it)
+        }
 
     fun getSelectedDipSignupProductId(): String =
         prefs.getString(DIP_SIGNUP_SELECTED_PRODUCT_ID, "") ?: ""

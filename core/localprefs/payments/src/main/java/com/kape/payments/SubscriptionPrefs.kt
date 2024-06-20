@@ -5,6 +5,7 @@ import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
 import com.kape.utils.Prefs
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private const val AVAILABLE_VPN_SUBSCRIPTIONS = "available-subscriptions"
@@ -45,7 +46,7 @@ class SubscriptionPrefs(context: Context) : Prefs(context, "subscriptions") {
     }
 
     fun storeDipPurchaseData(purchaseData: DipPurchaseData) {
-        prefs.edit().putString(DIP_PURCHASE_DATA, purchaseData.toString()).apply()
+        prefs.edit().putString(DIP_PURCHASE_DATA, Json.encodeToString(purchaseData)).apply()
     }
 
     fun getDipPurchaseData(): DipPurchaseData? =

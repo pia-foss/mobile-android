@@ -26,6 +26,7 @@ import com.kape.ui.utils.LocalColors
 @Composable
 fun Input(
     modifier: Modifier,
+    enabled: Boolean = true,
     label: String? = null,
     maskInput: Boolean,
     singleLine: Boolean = false,
@@ -49,6 +50,7 @@ fun Input(
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth(),
+            enabled = enabled,
             value = content.value,
             onValueChange = {
                 content.value = it
