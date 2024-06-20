@@ -29,6 +29,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -64,10 +65,13 @@ fun SignupDedicatedIpCountryScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.dedicated_ip_title))
     }
-    val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
-        getDipSupportedCountries()
-        getDipMonthlyPlan()
-        getDipYearlyPlan()
+    val viewModel: DipViewModel = koinViewModel()
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getDipSupportedCountries()
+        viewModel.getDipMonthlyPlan()
+        viewModel.getDipYearlyPlan()
+        viewModel.resumePossibleUnacknowledgedDipPurchases()
     }
 
     val showAllLocations = remember { mutableStateOf(false) }

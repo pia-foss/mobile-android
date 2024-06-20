@@ -60,7 +60,7 @@ class DipViewModel(
     val dipMonthlyPlan = mutableStateOf<DedicatedIpMonthlyPlan?>(null)
     val dipYearlyPlan = mutableStateOf<DedicatedIpYearlyPlan?>(null)
     val selectedPlanProductId = mutableStateOf(dipPrefs.getSelectedDipSignupProductId())
-    val showSupportedCountriesDialog = mutableStateOf(true)
+    val showSupportedCountriesDialog = mutableStateOf(false)
     val showFetchingNeededInformationError = mutableStateOf(false)
     val showPurchaseValidationError = mutableStateOf(false)
     val showTokenRetrievalError = mutableStateOf(false)
@@ -121,17 +121,18 @@ class DipViewModel(
         }
     }
 
-    fun activateDedicatedIp(ipToken: MutableState<TextFieldValue>) = viewModelScope.launch {
-        activateDipUseCase.activate(ipToken.value.text).collect {
+    fun activateDedicatedIp(dipToken: MutableState<TextFieldValue>) = viewModelScope.launch {
+        activateDipUseCase.activate(dipToken.value.text).collect {
             activationState.value = it
             when (it) {
                 DipApiResult.Active -> {
-                    ipToken.value = TextFieldValue("")
+                    dipToken.value = TextFieldValue("")
+                    dipPrefs.removePurchasedSignupDipToken()
                     loadDedicatedIps(userLocale)
                 }
 
                 DipApiResult.Expired -> {
-                    ipToken.value = TextFieldValue("")
+                    dipToken.value = TextFieldValue("")
                 }
 
                 DipApiResult.Error,
@@ -182,6 +183,7 @@ class DipViewModel(
             monthlyPlan?.let {
                 dipMonthlyPlan.value = it
                 showFetchingPlansSpinner.value = false
+                checkForUnacknowledgedDipPurchases(productId = it.id)
             }
         }
     }
@@ -196,6 +198,7 @@ class DipViewModel(
                 }
                 dipYearlyPlan.value = it
                 showFetchingPlansSpinner.value = false
+                checkForUnacknowledgedDipPurchases(productId = it.id)
             }
         }
     }
@@ -287,6 +290,53 @@ class DipViewModel(
                 },
                 onFailure = {
                     showTokenRetrievalError.value = true
+                },
+            )
+        }
+    }
+
+    fun resumePossibleUnacknowledgedDipPurchases() = viewModelScope.launch {
+        getDipMonthlyPlan.invoke().collect { monthlyPlan ->
+            getDipYearlyPlan.invoke().collect { yearlyPlan ->
+                val productIds = mutableListOf<String>()
+                monthlyPlan?.let {
+                    productIds.add(it.id)
+                }
+                yearlyPlan?.let {
+                    productIds.add(it.id)
+                }
+
+                if (productIds.isEmpty().not()) {
+                    dipSubscriptionPaymentProvider.unacknowledgedProductIds(productIds) { result ->
+                        result.fold(
+                            onSuccess = {
+                                if (it.isEmpty().not()) {
+                                    validateSubscriptionPurchase()
+                                }
+                            },
+                            onFailure = {
+                                // Do nothing.
+                            },
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkForUnacknowledgedDipPurchases(productId: String) = viewModelScope.launch {
+        dipSubscriptionPaymentProvider.unacknowledgedProductIds(
+            productIds = listOf(productId),
+        ) { result ->
+            result.fold(
+                onSuccess = {
+                    showSupportedCountriesDialog.value = it.isEmpty()
+                    if (it.isEmpty().not()) {
+                        navigateToDedicatedIpLocationSelection()
+                    }
+                },
+                onFailure = {
+                    // Do nothing.
                 },
             )
         }
