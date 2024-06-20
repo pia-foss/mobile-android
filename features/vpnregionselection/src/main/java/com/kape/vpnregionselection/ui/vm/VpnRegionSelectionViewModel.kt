@@ -43,7 +43,6 @@ class VpnRegionSelectionViewModel(
                 isLoading.value = true
             }
             regionListProvider.updateServerLatencies(
-                locale,
                 isVpnConnectionActive(),
                 displayLoading,
             ).collect {

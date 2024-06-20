@@ -139,7 +139,7 @@ class ConnectionViewModel(
     fun isConnectionActive() = connectionUseCase.isConnected()
 
     fun loadVpnServers(locale: String) = viewModelScope.launch {
-        regionListProvider.updateServerLatencies(locale, isConnectionActive(), false).collect {
+        regionListProvider.updateServerLatencies(isConnectionActive(), false).collect {
             prefs.getSelectedVpnServer()?.let {
                 updateState(it, false)
             } ?: run {

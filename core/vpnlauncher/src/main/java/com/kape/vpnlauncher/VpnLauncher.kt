@@ -21,8 +21,8 @@ class VpnLauncher(
     private val connectionUseCase: ConnectionUseCase,
     private val settingsPrefs: SettingsPrefs,
     private val regionListProvider: RegionListProvider,
-) : CoroutineScope, KoinComponent {
-
+) : CoroutineScope,
+    KoinComponent {
     private val job = Job()
 
     override val coroutineContext: CoroutineContext
@@ -37,11 +37,24 @@ class VpnLauncher(
                 connectionPrefs.disconnectedByUser(false)
                 return
             } else {
-                val server: VpnServer = connectionPrefs.getSelectedVpnServer()
-                    ?: regionListProvider.getOptimalServer()
+                val server: VpnServer? = connectionPrefs.getSelectedVpnServer()
                 if (!connectionUseCase.isConnected()) {
                     launch {
-                        connectionUseCase.startConnection(server, false).collect()
+                        server?.let {
+                            initiateConnection(it)
+                        } ?: run {
+                            if (regionListProvider.isDefaultList().not()) {
+                                initiateConnection(regionListProvider.getOptimalServer())
+                            } else {
+                                regionListProvider
+                                    .updateServerLatencies(
+                                        isConnected = false,
+                                        isUserInitiated = false,
+                                    ).collect {
+                                        initiateConnection(regionListProvider.getOptimalServer())
+                                    }
+                            }
+                        }
                     }
                 }
             }
@@ -50,9 +63,16 @@ class VpnLauncher(
         }
     }
 
-    fun stopVpn() = launch {
-        connectionUseCase.stopConnection().collect()
-    }
+    private suspend fun initiateConnection(server: VpnServer) = connectionUseCase
+        .startConnection(
+            server,
+            false,
+        ).collect()
+
+    fun stopVpn() =
+        launch {
+            connectionUseCase.stopConnection().collect()
+        }
 
     fun isVpnConnected() = connectionUseCase.isConnected()
 }
