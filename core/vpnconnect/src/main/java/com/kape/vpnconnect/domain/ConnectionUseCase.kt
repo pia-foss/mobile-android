@@ -294,6 +294,17 @@ class ConnectionUseCase(
             }
         }
 
+        val cipher = when (settingsPrefs.getOpenVpnSettings().dataEncryption) {
+            DataEncryption.AES_128_GCM -> "AES-128-GCM"
+            DataEncryption.AES_256_GCM -> "AES-256-GCM"
+            DataEncryption.CHA_CHA_20 -> "CHACHA20-POLY1305"
+        }
+
+        var additionalOpenVpnParams = "--cipher $cipher "
+        if (server.isDedicatedIp) {
+            additionalOpenVpnParams += "--ncp-disable --pia-signal-settings"
+        }
+
         notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
         notificationBuilder.setContentIntent(configureIntent)
 
@@ -335,6 +346,7 @@ class ConnectionUseCase(
                 username = username,
                 password = password,
                 socksProxy = getProxyDetails(),
+                additionalParameters = additionalOpenVpnParams,
             ),
             wireguardClientConfiguration = WireguardClientConfiguration(
                 token = connectionSource.getVpnToken(),
