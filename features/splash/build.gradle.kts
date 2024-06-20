@@ -46,7 +46,6 @@ android {
 dependencies {
 
     implementation(project(":core:router"))
-    implementation(project(":core:payments"))
     implementation(project(":core:regions"))
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:notifications"))
