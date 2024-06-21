@@ -60,6 +60,7 @@ class SettingsViewModel(
     val launchOnBootEnabled = mutableStateOf(prefs.isLaunchOnStartupEnabled())
     val connectOnStart = mutableStateOf(prefs.isConnectOnLaunchEnabled())
     val connectOnUpdate = mutableStateOf(prefs.isConnectOnAppUpdateEnabled())
+    val showGeoLocatedServers = mutableStateOf(prefs.isShowGeoLocatedServersEnabled())
     val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
     val debugLoggingEnabled = mutableStateOf(prefs.isDebugLoggingEnabled())
     val shadowsocksObfuscationEnabled = mutableStateOf(prefs.isShadowsocksObfuscationEnabled())
@@ -170,6 +171,11 @@ class SettingsViewModel(
     fun toggleConnectOnUpdate(enable: Boolean) {
         prefs.setEnableConnectOnAppUpdate(enable)
         connectOnUpdate.value = enable
+    }
+
+    fun toggleShowGeoLocatedServers(enable: Boolean) {
+        prefs.setEnabledShowGeoLocatedServers(enable)
+        showGeoLocatedServers.value = enable
     }
 
     fun toggleImprovePia(enable: Boolean) {
