@@ -27,8 +27,8 @@ class VpnRegionSelectionViewModel(
     private val router: Router,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val settingsPrefs: SettingsPrefs,
-) : ViewModel(), KoinComponent {
-
+) : ViewModel(),
+    KoinComponent {
     val servers = mutableStateOf(emptyList<ServerItem>())
     val sorted = mutableStateOf(emptyList<ServerItem>())
     lateinit var autoRegionName: String
@@ -36,20 +36,24 @@ class VpnRegionSelectionViewModel(
 
     val isPortForwardingEnabled = settingsPrefs.isPortForwardingEnabled()
 
-    fun loadVpnRegions(locale: String, isLoading: MutableState<Boolean>, displayLoading: Boolean) =
-        viewModelScope.launch {
-            arrangeVpnServers(regionListProvider.servers.value)
-            if (displayLoading) {
-                isLoading.value = true
-            }
-            regionListProvider.updateServerLatencies(
+    fun loadVpnRegions(
+        locale: String,
+        isLoading: MutableState<Boolean>,
+        displayLoading: Boolean,
+    ) = viewModelScope.launch {
+        arrangeVpnServers(regionListProvider.servers.value)
+        if (displayLoading) {
+            isLoading.value = true
+        }
+        regionListProvider
+            .updateServerLatencies(
                 isVpnConnectionActive(),
                 displayLoading,
             ).collect {
                 arrangeVpnServers(it)
                 isLoading.value = false
             }
-        }
+    }
 
     fun onVpnRegionSelected(server: VpnServer) {
         vpnRegionPrefs.selectVpnServer(server)
@@ -66,19 +70,24 @@ class VpnRegionSelectionViewModel(
         updateVpnServers()
     }
 
-    fun filterByName(value: String, isSearchEnabled: MutableState<Boolean>? = null) =
-        viewModelScope.launch {
-            if (value.isNotEmpty()) {
-                isSearchEnabled?.value = true
-                sorted.value = servers.value.filter {
-                    it.type is ItemType.Content && it.type.server.name.lowercase()
-                        .contains(value.lowercase())
+    fun filterByName(
+        value: String,
+        isSearchEnabled: MutableState<Boolean>? = null,
+    ) = viewModelScope.launch {
+        if (value.isNotEmpty()) {
+            isSearchEnabled?.value = true
+            sorted.value =
+                servers.value.filter {
+                    it.type is ItemType.Content &&
+                        it.type.server.name
+                            .lowercase()
+                            .contains(value.lowercase())
                 }
-            } else {
-                sorted.value = emptyList()
-                isSearchEnabled?.value = false
-            }
+        } else {
+            sorted.value = emptyList()
+            isSearchEnabled?.value = false
         }
+    }
 
     fun navigateToHelp() {
         router.handleFlow(EnterFlow.TvHelp)
@@ -97,11 +106,12 @@ class VpnRegionSelectionViewModel(
     }
 
     fun getTvVpnServers(): MutableState<List<ServerItem>> {
-        var autoRegionIndex = servers.value.indexOfFirst { serverItem: ServerItem ->
-            serverItem.type is ItemType.Content &&
-                serverItem.type.server.iso == autoRegionIso &&
-                serverItem.type.server.name == autoRegionName
-        }
+        var autoRegionIndex =
+            servers.value.indexOfFirst { serverItem: ServerItem ->
+                serverItem.type is ItemType.Content &&
+                    serverItem.type.server.iso == autoRegionIso &&
+                    serverItem.type.server.name == autoRegionName
+            }
         if (autoRegionIndex == -1) {
             autoRegionIndex = 0
         }
@@ -109,11 +119,12 @@ class VpnRegionSelectionViewModel(
     }
 
     fun getTvSearchVpnServers(): MutableState<List<ServerItem>> {
-        var autoRegionIndex = sorted.value.indexOfFirst { serverItem: ServerItem ->
-            serverItem.type is ItemType.Content &&
-                serverItem.type.server.iso == autoRegionIso &&
-                serverItem.type.server.name == autoRegionName
-        }
+        var autoRegionIndex =
+            sorted.value.indexOfFirst { serverItem: ServerItem ->
+                serverItem.type is ItemType.Content &&
+                    serverItem.type.server.iso == autoRegionIso &&
+                    serverItem.type.server.name == autoRegionName
+            }
         if (autoRegionIndex == -1) {
             autoRegionIndex = 0
         } else {
@@ -124,9 +135,7 @@ class VpnRegionSelectionViewModel(
 
     fun isVpnConnectionActive(): Boolean = connectionUseCase.isConnected()
 
-    private fun isVpnServerFavorite(serverData: ServerData): Boolean {
-        return vpnRegionPrefs.isFavorite(serverData)
-    }
+    private fun isVpnServerFavorite(serverData: ServerData): Boolean = vpnRegionPrefs.isFavorite(serverData)
 
     private fun arrangeVpnServers(items: List<VpnServer>? = null) {
         val autoRegion = getAutoRegion(autoRegionName, autoRegionIso)
@@ -135,37 +144,82 @@ class VpnRegionSelectionViewModel(
         val all = mutableListOf<ServerItem>()
         items?.let {
             for (server in it) {
-                all.add(
-                    ServerItem(
-                        type = ItemType.Content(
-                            isFavorite = isVpnServerFavorite(
-                                ServerData(
-                                    server.name,
-                                    server.isDedicatedIp,
+                if (settingsPrefs.isShowGeoLocatedServersEnabled()) {
+                    all.add(
+                        ServerItem(
+                            type =
+                            ItemType.Content(
+                                isFavorite =
+                                isVpnServerFavorite(
+                                    ServerData(
+                                        server.name,
+                                        server.isDedicatedIp,
+                                    ),
+                                ),
+                                server = server,
+                            ),
+                        ),
+                    )
+                } else {
+                    if (server.isGeo.not()) {
+                        all.add(
+                            ServerItem(
+                                type =
+                                ItemType.Content(
+                                    isFavorite =
+                                    isVpnServerFavorite(
+                                        ServerData(
+                                            server.name,
+                                            server.isDedicatedIp,
+                                        ),
+                                    ),
+                                    server = server,
                                 ),
                             ),
-                            server = server,
-                        ),
-                    ),
-                )
+                        )
+                    }
+                }
             }
             all.add(0, autoRegion)
         } ?: run {
             for (item in servers.value.filter { it.type is ItemType.Content }) {
-                all.add(
-                    ServerItem(
-                        type = ItemType.Content(
-                            isFavorite = isVpnServerFavorite(
-                                ServerData(
-                                    (item.type as ItemType.Content).server.name,
-                                    item.type.server.isDedicatedIp,
+                if (settingsPrefs.isShowGeoLocatedServersEnabled()) {
+                    all.add(
+                        ServerItem(
+                            type =
+                            ItemType.Content(
+                                isFavorite =
+                                isVpnServerFavorite(
+                                    ServerData(
+                                        (item.type as ItemType.Content).server.name,
+                                        item.type.server.isDedicatedIp,
+                                    ),
+                                ),
+                                enableFavorite = item.type.enableFavorite,
+                                server = item.type.server,
+                            ),
+                        ),
+                    )
+                } else {
+                    if ((item.type as ItemType.Content).server.isGeo.not()) {
+                        all.add(
+                            ServerItem(
+                                type =
+                                ItemType.Content(
+                                    isFavorite =
+                                    isVpnServerFavorite(
+                                        ServerData(
+                                            (item.type).server.name,
+                                            item.type.server.isDedicatedIp,
+                                        ),
+                                    ),
+                                    enableFavorite = item.type.enableFavorite,
+                                    server = item.type.server,
                                 ),
                             ),
-                            enableFavorite = item.type.enableFavorite,
-                            server = item.type.server,
-                        ),
-                    ),
-                )
+                        )
+                    }
+                }
             }
         }
 
@@ -197,12 +251,17 @@ class VpnRegionSelectionViewModel(
         sorted.value = updatedList
     }
 
-    private fun getAutoRegion(name: String, iso: String): ServerItem {
-        return ServerItem(
-            type = ItemType.Content(
+    private fun getAutoRegion(
+        name: String,
+        iso: String,
+    ): ServerItem =
+        ServerItem(
+            type =
+            ItemType.Content(
                 isFavorite = false,
                 enableFavorite = false,
-                server = VpnServer(
+                server =
+                VpnServer(
                     name = name,
                     iso = iso,
                     dns = "",
@@ -220,5 +279,4 @@ class VpnRegionSelectionViewModel(
                 ),
             ),
         )
-    }
 }
