@@ -23,6 +23,7 @@ import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import com.kape.shadowsocksregions.domain.SetShadowsocksRegionsUseCase
+import com.kape.shortcut.prefs.ShortcutPrefs
 import com.kape.snooze.SnoozeHandler
 import com.kape.ui.mobile.tiles.MAX_SERVERS
 import com.kape.utils.AUTO_KEY
@@ -56,6 +57,7 @@ class ConnectionViewModel(
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val alarmManager: AlarmManager,
     private val ratingTool: RatingTool,
+    private val shortcutPrefs: ShortcutPrefs,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
@@ -90,6 +92,14 @@ class ConnectionViewModel(
         }
         ratingTool.start()
         renewDedicatedIps()
+        if (shortcutPrefs.isShortcutSettings()) {
+            shortcutPrefs.setShortcutSettings(false)
+            router.handleFlow(EnterFlow.Settings)
+        }
+        if (shortcutPrefs.isShortcutChangeServer()) {
+            shortcutPrefs.setShortcutChangeServer(false)
+            showVpnRegionSelection()
+        }
     }
 
     fun navigateToHelp() {
@@ -126,8 +136,8 @@ class ConnectionViewModel(
 
     fun autoConnect() {
         viewModelScope.launch {
-            if (settingsPrefs.isConnectOnLaunchEnabled() || prefs.isShortcutInitConnection()) {
-                prefs.setShortcutInitConnection(false)
+            if (settingsPrefs.isConnectOnLaunchEnabled() || shortcutPrefs.isShortcutConnectToVpn()) {
+                shortcutPrefs.setShortcutConnectToVpn(false)
                 prefs.getSelectedVpnServer()?.let {
                     connectionUseCase.startConnection(it, false).collect()
                 } ?: run {

@@ -21,6 +21,7 @@ import com.kape.router.Router
 import com.kape.router.mobile.MobileRouter
 import com.kape.router.tv.TvRouter
 import com.kape.settings.SettingsPrefs
+import com.kape.shortcut.prefs.ShortcutPrefs
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.PlatformUtils
@@ -75,7 +76,7 @@ val appModule = module {
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
     single { RatingPrefs(get()) }
-    single { ShortcutPrefs(get())}
+    single { ShortcutPrefs(get()) }
     single { RatingTool(get(), get()) }
     single { RegionListProvider(get(), get()) }
     single { MetaEndpointsProvider() }

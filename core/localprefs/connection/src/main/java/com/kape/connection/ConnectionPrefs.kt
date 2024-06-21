@@ -18,7 +18,6 @@ private const val PORT_BINDING_INFO = "port-binding-info"
 private const val DISCONNECTED_BY_USER = "disconnected-by-user"
 private const val PROXY_PORT = "proxy-port"
 private const val DEFAULT_PROXY_PORT_VALUE = "8080"
-private const val SHORTCUT_INIT_CONNECTION = "shortcut-init-connection"
 const val NO_IP = "---"
 
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
@@ -82,11 +81,4 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
     fun getProxyPort(): String =
         prefs.getString(PROXY_PORT, DEFAULT_PROXY_PORT_VALUE) ?: DEFAULT_PROXY_PORT_VALUE
-
-    fun setShortcutInitConnection(initConnection: Boolean) = prefs.edit().putBoolean(
-        SHORTCUT_INIT_CONNECTION,
-        initConnection,
-    ).apply()
-
-    fun isShortcutInitConnection() = prefs.getBoolean(SHORTCUT_INIT_CONNECTION, false)
 }

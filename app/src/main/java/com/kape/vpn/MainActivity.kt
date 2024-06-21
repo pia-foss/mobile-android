@@ -75,6 +75,7 @@ import com.kape.settings.ui.screens.mobile.SettingsFlow
 import com.kape.settings.ui.screens.tv.TvPerAppSettingsScreen
 import com.kape.settings.ui.screens.tv.TvSettingsFlow
 import com.kape.settings.utils.SettingsStep
+import com.kape.shortcut.prefs.ShortcutPrefs
 import com.kape.sidemenu.ui.screens.tv.TvSideMenuScreen
 import com.kape.signup.ui.mobile.SignupScreensFlow
 import com.kape.signup.ui.tv.TvSignupScreensFlow
@@ -92,7 +93,7 @@ class MainActivity : AppCompatActivity() {
     private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
     private val observeScreenCaptureUseCase: ObserveScreenCaptureUseCase by inject()
-    private val connectionPrefs: ConnectionPrefs by inject()
+    private val shortcutPrefs: ShortcutPrefs by inject()
     private lateinit var screenCaptureCallback: ScreenCaptureCallback
     private var currentDestination: String = ""
     private val destinationsForClearBackStack =
@@ -111,11 +112,14 @@ class MainActivity : AppCompatActivity() {
         deepLinkLogin(intent)
         intent.action?.let {
             when (it) {
-                Settings.Route -> router.handleFlow(EnterFlow.Settings)
-                VpnRegionSelection.Main -> router.handleFlow(EnterFlow.VpnRegionSelection)
+                Settings.Route -> {
+                    shortcutPrefs.setShortcutSettings(true)
+                }
+                VpnRegionSelection.Main -> {
+                    shortcutPrefs.setShortcutChangeServer(true)
+                }
                 Connection.Main -> {
-                    connectionPrefs.setShortcutInitConnection(true)
-                    router.handleFlow(EnterFlow.Connection)
+                    shortcutPrefs.setShortcutConnectToVpn(true)
                 }
             }
         }
