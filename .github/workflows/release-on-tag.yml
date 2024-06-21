@@ -7,6 +7,9 @@ on:
 
 jobs:
   Gradle:
+    env:
+      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
