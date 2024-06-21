@@ -75,6 +75,7 @@ val appModule = module {
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
     single { RatingPrefs(get()) }
+    single { ShortcutPrefs(get())}
     single { RatingTool(get(), get()) }
     single { RegionListProvider(get(), get()) }
     single { MetaEndpointsProvider() }
