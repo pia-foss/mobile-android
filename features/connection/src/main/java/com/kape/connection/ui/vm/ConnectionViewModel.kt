@@ -126,7 +126,8 @@ class ConnectionViewModel(
 
     fun autoConnect() {
         viewModelScope.launch {
-            if (settingsPrefs.isConnectOnLaunchEnabled()) {
+            if (settingsPrefs.isConnectOnLaunchEnabled() || prefs.isShortcutInitConnection()) {
+                prefs.setShortcutInitConnection(false)
                 prefs.getSelectedVpnServer()?.let {
                     connectionUseCase.startConnection(it, false).collect()
                 } ?: run {

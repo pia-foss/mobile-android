@@ -1,5 +1,6 @@
 package com.kape.vpn
 
+import android.app.Activity.ScreenCaptureCallback
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
@@ -21,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.kape.about.screens.mobile.AboutScreen
 import com.kape.about.screens.tv.TvAboutScreen
 import com.kape.automation.ui.AutomationFlow
+import com.kape.connection.ConnectionPrefs
 import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
@@ -86,11 +88,11 @@ import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
-
     private val router: Router by inject()
     private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
     private val observeScreenCaptureUseCase: ObserveScreenCaptureUseCase by inject()
+    private val connectionPrefs: ConnectionPrefs by inject()
     private lateinit var screenCaptureCallback: ScreenCaptureCallback
     private var currentDestination: String = ""
     private val destinationsForClearBackStack =
@@ -102,7 +104,6 @@ class MainActivity : AppCompatActivity() {
             AccountDeleted.Route,
         )
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         vpnSubscriptionPaymentProvider.register(this)
@@ -112,7 +113,10 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 Settings.Route -> router.handleFlow(EnterFlow.Settings)
                 VpnRegionSelection.Main -> router.handleFlow(EnterFlow.VpnRegionSelection)
-                Connection.Main -> router.handleFlow(EnterFlow.Connection)
+                Connection.Main -> {
+                    connectionPrefs.setShortcutInitConnection(true)
+                    router.handleFlow(EnterFlow.Connection)
+                }
             }
         }
 
