@@ -51,7 +51,6 @@ import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.text.DedicatedIpSignupCountryDisclaimerText
 import com.kape.ui.mobile.text.DedicatedIpSignupCountryTitleText
-import com.kape.ui.mobile.text.SupportedDipCountryOnly
 import com.kape.ui.mobile.text.SupportedDipRegions
 import com.kape.ui.mobile.text.SupportedDipRegionsInCountry
 import com.kape.ui.utils.LocalColors
@@ -293,9 +292,9 @@ fun DipCountryItem(
                 .align(Alignment.CenterVertically)
                 .padding(vertical = 8.dp),
         ) {
-            SupportedDipRegions(content = dedicatedIpSelectedCountry.countryName)
+            SupportedDipRegions(content = dedicatedIpSelectedCountry.regionName)
             Spacer(modifier = Modifier.height(4.dp))
-            SupportedDipRegionsInCountry(content = dedicatedIpSelectedCountry.regionName)
+            SupportedDipRegionsInCountry(content = dedicatedIpSelectedCountry.countryName)
         }
     }
 }
@@ -306,36 +305,6 @@ fun DipCountryItem(
     onClick: (dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) -> Unit,
 ) {
     Column {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp)
-                .height(48.dp),
-        ) {
-            Image(
-                painter = painterResource(
-                    id = getFlagResource(
-                        LocalContext.current,
-                        country.countryCode,
-                    ),
-                ),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(24.dp)
-                    .align(Alignment.CenterVertically),
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            SupportedDipCountryOnly(content = country.name)
-        }
-        HorizontalDivider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(0.5.dp),
-            color = LocalColors.current.outline,
-        )
         val regions = country.regions + country.newRegions
         regions.forEach {
             Row(
@@ -353,8 +322,7 @@ fun DipCountryItem(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 32.dp, vertical = 8.dp)
-                        .height(32.dp),
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
                 ) {
                     Image(
                         painter = painterResource(
@@ -367,11 +335,19 @@ fun DipCountryItem(
                         contentDescription = null,
                         modifier = Modifier
                             .clip(CircleShape)
-                            .size(16.dp)
+                            .size(24.dp)
                             .align(Alignment.CenterVertically),
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    SupportedDipRegionsInCountry(content = it)
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(vertical = 8.dp),
+                    ) {
+                        SupportedDipRegions(content = it)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        SupportedDipRegionsInCountry(content = country.name)
+                    }
                 }
             }
             HorizontalDivider(
