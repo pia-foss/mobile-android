@@ -144,82 +144,51 @@ class VpnRegionSelectionViewModel(
         val all = mutableListOf<ServerItem>()
         items?.let {
             for (server in it) {
-                if (settingsPrefs.isShowGeoLocatedServersEnabled()) {
-                    all.add(
-                        ServerItem(
-                            type =
-                            ItemType.Content(
-                                isFavorite =
-                                isVpnServerFavorite(
-                                    ServerData(
-                                        server.name,
-                                        server.isDedicatedIp,
-                                    ),
-                                ),
-                                server = server,
-                            ),
-                        ),
-                    )
-                } else {
-                    if (server.isGeo.not()) {
-                        all.add(
-                            ServerItem(
-                                type =
-                                ItemType.Content(
-                                    isFavorite =
-                                    isVpnServerFavorite(
-                                        ServerData(
-                                            server.name,
-                                            server.isDedicatedIp,
-                                        ),
-                                    ),
-                                    server = server,
-                                ),
-                            ),
-                        )
-                    }
+                if (settingsPrefs.isShowGeoLocatedServersEnabled().not() && server.isGeo) {
+                    continue
                 }
+                all.add(
+                    ServerItem(
+                        type =
+                        ItemType.Content(
+                            isFavorite =
+                            isVpnServerFavorite(
+                                ServerData(
+                                    server.name,
+                                    server.isDedicatedIp,
+                                ),
+                            ),
+                            server = server,
+                        ),
+                    ),
+                )
             }
             all.add(0, autoRegion)
         } ?: run {
             for (item in servers.value.filter { it.type is ItemType.Content }) {
-                if (settingsPrefs.isShowGeoLocatedServersEnabled()) {
-                    all.add(
-                        ServerItem(
-                            type =
-                            ItemType.Content(
-                                isFavorite =
-                                isVpnServerFavorite(
-                                    ServerData(
-                                        (item.type as ItemType.Content).server.name,
-                                        item.type.server.isDedicatedIp,
-                                    ),
-                                ),
-                                enableFavorite = item.type.enableFavorite,
-                                server = item.type.server,
-                            ),
-                        ),
-                    )
-                } else {
-                    if ((item.type as ItemType.Content).server.isGeo.not()) {
-                        all.add(
-                            ServerItem(
-                                type =
-                                ItemType.Content(
-                                    isFavorite =
-                                    isVpnServerFavorite(
-                                        ServerData(
-                                            (item.type).server.name,
-                                            item.type.server.isDedicatedIp,
-                                        ),
-                                    ),
-                                    enableFavorite = item.type.enableFavorite,
-                                    server = item.type.server,
-                                ),
-                            ),
-                        )
-                    }
+                if (settingsPrefs
+                    .isShowGeoLocatedServersEnabled()
+                    .not() &&
+                    (item.type as ItemType.Content).server.isGeo
+                ) {
+                    continue
                 }
+                all.add(
+                    ServerItem(
+                        type =
+                        ItemType.Content(
+                            isFavorite =
+                            isVpnServerFavorite(
+                                ServerData(
+                                    (item.type as ItemType.Content).server.name,
+                                    item.type.server.isDedicatedIp,
+                                ),
+                            ),
+                            enableFavorite = item.type.enableFavorite,
+                            server = item.type.server,
+                        ),
+                    ),
+                )
             }
         }
 
