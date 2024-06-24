@@ -83,6 +83,12 @@ class SignupViewModel(
                         PurchaseState.ProductsLoadedSuccess -> {
                             val yearlyPlan = vpnSubscriptionPaymentProvider.getYearlySubscription()
                             val monthlyPlan = vpnSubscriptionPaymentProvider.getMonthlySubscription()
+
+                            if (yearlyPlan == null || monthlyPlan == null) {
+                                onProductsFailedToLoad()
+                                return@collect
+                            }
+
                             val yearly =
                                 Plan(
                                     yearlyPlan.id,
