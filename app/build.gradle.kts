@@ -146,6 +146,7 @@ dependencies {
     implementation(project(":core:localprefs:customization:data"))
     implementation(project(":core:localprefs:rating:data"))
     implementation(project(":core:localprefs:rating"))
+    implementation(project(":core:localprefs:shortcut"))
     implementAccount()
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))

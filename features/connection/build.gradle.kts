@@ -76,6 +76,7 @@ dependencies {
     implementation(project(":core:localprefs:csi"))
     implementation(project(":core:localprefs:regions"))
     implementation(project(":core:localprefs:regions:data"))
+    implementation(project(":core:localprefs:shortcut"))
     implementation(project(":core:utils"))
     implementation(project(":features:appbar"))
     implementation(project(":features:settings"))
