@@ -15,6 +15,7 @@ import kotlinx.serialization.json.Json
 private const val LAUNCH_ON_STARTUP = "launch-on-startup"
 private const val CONNECT_ON_LAUNCH = "connect-on-launch"
 private const val CONNECT_ON_APP_UPDATE = "connect-on-app-update"
+private const val SHOW_GEO_SERVERS = "show-geo-located-servers"
 private const val SELECTED_PROTOCOL = "selected-protocol"
 private const val WIRE_GUARD_SETTINGS = "wireguard-settings"
 private const val OPEN_VPN_SETTINGS = "openvpn-settings"
@@ -33,43 +34,45 @@ private const val ALLOW_LOCAL_TRAFFIC = "allow-local-traffic"
 private const val AUTOMATION = "setting-automation"
 private const val MACE = "setting-mace"
 
-class SettingsPrefs(context: Context) : Prefs(context, "settings") {
-
+class SettingsPrefs(
+    context: Context,
+) : Prefs(context, "settings") {
     fun setEnableLaunchOnStartup(enable: Boolean) {
         prefs.edit().putBoolean(LAUNCH_ON_STARTUP, enable).apply()
     }
 
-    fun isLaunchOnStartupEnabled(): Boolean {
-        return prefs.getBoolean(LAUNCH_ON_STARTUP, false)
-    }
+    fun isLaunchOnStartupEnabled(): Boolean = prefs.getBoolean(LAUNCH_ON_STARTUP, false)
 
     fun setEnableConnectOnLaunch(enable: Boolean) {
         prefs.edit().putBoolean(CONNECT_ON_LAUNCH, enable).apply()
     }
 
-    fun isConnectOnLaunchEnabled(): Boolean {
-        return prefs.getBoolean(CONNECT_ON_LAUNCH, false)
-    }
+    fun isConnectOnLaunchEnabled(): Boolean = prefs.getBoolean(CONNECT_ON_LAUNCH, false)
 
     fun setEnableConnectOnAppUpdate(enable: Boolean) {
         prefs.edit().putBoolean(CONNECT_ON_APP_UPDATE, enable).apply()
     }
 
-    fun isConnectOnAppUpdateEnabled(): Boolean {
-        return prefs.getBoolean(CONNECT_ON_APP_UPDATE, false)
+    fun isConnectOnAppUpdateEnabled(): Boolean = prefs.getBoolean(CONNECT_ON_APP_UPDATE, false)
+
+    fun setEnabledShowGeoLocatedServers(enable: Boolean) {
+        prefs.edit().putBoolean(SHOW_GEO_SERVERS, enable).apply()
     }
+
+    fun isShowGeoLocatedServersEnabled(): Boolean = prefs.getBoolean(SHOW_GEO_SERVERS, true)
 
     fun setSelectedProtocol(protocol: VpnProtocols) {
         prefs.edit().putString(SELECTED_PROTOCOL, Json.encodeToString(protocol)).apply()
     }
 
     fun getSelectedProtocol(): VpnProtocols {
-        prefs.getString(
-            SELECTED_PROTOCOL,
-            Json.encodeToString(VpnProtocols.WireGuard),
-        )?.let {
-            return Json.decodeFromString(it)
-        } ?: run {
+        prefs
+            .getString(
+                SELECTED_PROTOCOL,
+                Json.encodeToString(VpnProtocols.WireGuard),
+            )?.let {
+                return Json.decodeFromString(it)
+            } ?: run {
             return VpnProtocols.WireGuard
         }
     }
@@ -99,7 +102,9 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
     }
 
     fun setSelectedDnsOption(dnsOptions: DnsOptions) {
-        prefs.edit().putString(SELECTED_DNS_OPTION_SETTINGS, Json.encodeToString(dnsOptions))
+        prefs
+            .edit()
+            .putString(SELECTED_DNS_OPTION_SETTINGS, Json.encodeToString(dnsOptions))
             .apply()
     }
 
@@ -127,8 +132,7 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         prefs.edit().putBoolean(SHADOWSOCKS_OBFUSCATION_ENABLED, enabled).apply()
     }
 
-    fun isShadowsocksObfuscationEnabled(): Boolean =
-        prefs.getBoolean(SHADOWSOCKS_OBFUSCATION_ENABLED, false)
+    fun isShadowsocksObfuscationEnabled(): Boolean = prefs.getBoolean(SHADOWSOCKS_OBFUSCATION_ENABLED, false)
 
     fun setExternalProxyAppEnabled(enabled: Boolean) {
         prefs.edit().putBoolean(EXTERNAL_PROXY_APP_ENABLED, enabled).apply()
@@ -136,20 +140,23 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
 
     fun isExternalProxyAppEnabled() = prefs.getBoolean(EXTERNAL_PROXY_APP_ENABLED, false)
 
-    fun setExternalProxyAppPackageName(packageName: String) = prefs.edit().putString(
-        EXTERNAL_PROXY_APP_PACKAGE_NAME,
-        packageName,
-    ).apply()
+    fun setExternalProxyAppPackageName(packageName: String) =
+        prefs
+            .edit()
+            .putString(
+                EXTERNAL_PROXY_APP_PACKAGE_NAME,
+                packageName,
+            ).apply()
 
-    fun getExternalProxyAppPackageName(): String =
-        prefs.getString(EXTERNAL_PROXY_APP_PACKAGE_NAME, "") ?: ""
+    fun getExternalProxyAppPackageName(): String = prefs.getString(EXTERNAL_PROXY_APP_PACKAGE_NAME, "") ?: ""
 
     fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) {
-        prefs.edit().putString(
-            SELECTED_OBFUSCATION_OPTION_SETTINGS,
-            Json.encodeToString(obfuscationOptions),
-        )
-            .apply()
+        prefs
+            .edit()
+            .putString(
+                SELECTED_OBFUSCATION_OPTION_SETTINGS,
+                Json.encodeToString(obfuscationOptions),
+            ).apply()
     }
 
     fun getSelectedObfuscationOption(): ObfuscationOptions {
@@ -161,7 +168,9 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
     }
 
     fun setCustomObfuscation(customObfuscation: CustomObfuscation) {
-        prefs.edit().putString(CUSTOM_OBFUSCATION_SETTINGS, Json.encodeToString(customObfuscation))
+        prefs
+            .edit()
+            .putString(CUSTOM_OBFUSCATION_SETTINGS, Json.encodeToString(customObfuscation))
             .apply()
     }
 
@@ -173,29 +182,23 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         }
     }
 
-    fun setHelpImprovePiaEnabled(enable: Boolean) =
-        prefs.edit().putBoolean(HELP_IMPROVE_PIA, enable).apply()
+    fun setHelpImprovePiaEnabled(enable: Boolean) = prefs.edit().putBoolean(HELP_IMPROVE_PIA, enable).apply()
 
     fun isHelpImprovePiaEnabled() = prefs.getBoolean(HELP_IMPROVE_PIA, false)
 
-    fun setDebugLoggingEnabled(enable: Boolean) =
-        prefs.edit().putBoolean(DEBUG_LOGGING, enable).apply()
+    fun setDebugLoggingEnabled(enable: Boolean) = prefs.edit().putBoolean(DEBUG_LOGGING, enable).apply()
 
     fun isDebugLoggingEnabled() = prefs.getBoolean(DEBUG_LOGGING, false)
 
-    fun setVpnExcludedApps(apps: List<String>) =
-        prefs.edit().putStringSet(VPN_EXCLUDED_APPS, apps.toSet()).apply()
+    fun setVpnExcludedApps(apps: List<String>) = prefs.edit().putStringSet(VPN_EXCLUDED_APPS, apps.toSet()).apply()
 
-    fun getVpnExcludedApps() =
-        prefs.getStringSet(VPN_EXCLUDED_APPS, emptySet())?.toList() ?: emptyList()
+    fun getVpnExcludedApps() = prefs.getStringSet(VPN_EXCLUDED_APPS, emptySet())?.toList() ?: emptyList()
 
-    fun setEnablePortForwarding(enable: Boolean) =
-        prefs.edit().putBoolean(PORT_FORWARDING, enable).apply()
+    fun setEnablePortForwarding(enable: Boolean) = prefs.edit().putBoolean(PORT_FORWARDING, enable).apply()
 
     fun isPortForwardingEnabled() = prefs.getBoolean(PORT_FORWARDING, false)
 
-    fun setAllowLocalTrafficEnabled(enable: Boolean) =
-        prefs.edit().putBoolean(ALLOW_LOCAL_TRAFFIC, enable).apply()
+    fun setAllowLocalTrafficEnabled(enable: Boolean) = prefs.edit().putBoolean(ALLOW_LOCAL_TRAFFIC, enable).apply()
 
     fun isAllowLocalTrafficEnabled() = prefs.getBoolean(ALLOW_LOCAL_TRAFFIC, false)
 
