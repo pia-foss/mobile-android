@@ -51,13 +51,9 @@ class VpnRegionRepository(
             emit(addDipToServerList(serverMap.values.toList()))
         } else {
             source.pingRequests().collect {
-                if (it == null) {
-                    emit(emptyList())
-                } else {
-                    latencyInfo = it
-                    populateLatencies(isConnected)
-                    emit(addDipToServerList(serverMap.values.toList()))
-                }
+                latencyInfo = it ?: emptyList()
+                populateLatencies(isConnected)
+                emit(addDipToServerList(serverMap.values.toList()))
             }
         }
     }
