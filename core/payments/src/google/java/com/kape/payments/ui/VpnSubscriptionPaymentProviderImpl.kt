@@ -91,11 +91,11 @@ class VpnSubscriptionPaymentProviderImpl(
         )
     }
 
-    override fun getMonthlySubscription(): Subscription = prefs.getVpnSubscriptions().first {
+    override fun getMonthlySubscription(): Subscription? = prefs.getVpnSubscriptions().firstOrNull {
         it.plan.lowercase() == monthlySubscription.lowercase()
     }
 
-    override fun getYearlySubscription(): Subscription = prefs.getVpnSubscriptions().first {
+    override fun getYearlySubscription(): Subscription? = prefs.getVpnSubscriptions().firstOrNull {
         it.plan.lowercase() == yearlySubscription.lowercase()
     }
 

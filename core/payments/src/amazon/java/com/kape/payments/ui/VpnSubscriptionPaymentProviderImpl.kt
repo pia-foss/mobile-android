@@ -61,11 +61,16 @@ class VpnSubscriptionPaymentProviderImpl(private val prefs: SubscriptionPrefs, v
                             availableProducts.add(perYear)
 
                             val yearly = getYearlySubscription()
-                            yearly.formattedPrice = perYear.price
                             val monthly = getMonthlySubscription()
-                            monthly.formattedPrice = perMonth.price
-                            prefs.storeVpnSubscriptions(listOf(yearly, monthly))
-                            purchaseState.value = PurchaseState.ProductsLoadedSuccess
+
+                            if (yearly == null || monthly == null) {
+                                purchaseState.value = PurchaseState.ProductsLoadedFailed
+                            } else {
+                                yearly.formattedPrice = perYear.price
+                                monthly.formattedPrice = perMonth.price
+                                prefs.storeVpnSubscriptions(listOf(yearly, monthly))
+                                purchaseState.value = PurchaseState.ProductsLoadedSuccess
+                            }
                         } else {
                             purchaseState.value = PurchaseState.ProductsLoadedFailed
                         }
@@ -93,11 +98,11 @@ class VpnSubscriptionPaymentProviderImpl(private val prefs: SubscriptionPrefs, v
         )
     }
 
-    override fun getMonthlySubscription(): Subscription =
-        prefs.getVpnSubscriptions().first { plan -> plan.id == M1 }
+    override fun getMonthlySubscription(): Subscription? =
+        prefs.getVpnSubscriptions().firstOrNull { plan -> plan.id == M1 }
 
-    override fun getYearlySubscription(): Subscription =
-        prefs.getVpnSubscriptions().first { plan -> plan.id == Y1 }
+    override fun getYearlySubscription(): Subscription? =
+        prefs.getVpnSubscriptions().firstOrNull { plan -> plan.id == Y1 }
 
     override fun loadProducts() {
         PurchasingService.getProductData(products)

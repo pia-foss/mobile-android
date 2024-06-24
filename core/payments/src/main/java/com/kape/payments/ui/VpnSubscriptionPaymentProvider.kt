@@ -15,9 +15,9 @@ interface VpnSubscriptionPaymentProvider {
 
     fun register(activity: Activity)
 
-    fun getMonthlySubscription(): Subscription
+    fun getMonthlySubscription(): Subscription?
 
-    fun getYearlySubscription(): Subscription
+    fun getYearlySubscription(): Subscription?
 
     fun loadProducts()
 
