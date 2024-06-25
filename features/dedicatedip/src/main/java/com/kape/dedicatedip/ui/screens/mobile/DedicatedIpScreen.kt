@@ -67,13 +67,12 @@ import com.kape.ui.utils.getFlagResource
 import com.kape.utils.vpnserver.VpnServer
 import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import org.koin.androidx.compose.koinViewModel
-import java.util.Locale
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
-        loadDedicatedIps(Locale.getDefault().language)
+        loadDedicatedIps()
     }
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = com.kape.ui.R.string.dedicated_ip_title))
