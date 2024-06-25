@@ -51,7 +51,6 @@ class DipViewModel(
     private val _state = MutableStateFlow<DedicatedIpStep?>(null)
     val state: StateFlow<DedicatedIpStep?> = _state
     val activateTokenButtonState = mutableStateOf(false)
-    private lateinit var userLocale: String
 
     val dipList = mutableStateListOf<VpnServer>()
     val activationState = mutableStateOf<DipApiResult?>(null)
@@ -113,8 +112,7 @@ class DipViewModel(
         observeScreenCaptureUseCase.registerCallback(callback)
     }
 
-    fun loadDedicatedIps(locale: String) = viewModelScope.launch {
-        userLocale = locale
+    fun loadDedicatedIps() = viewModelScope.launch {
         dipList.clear()
         for (dip in dipPrefs.getDedicatedIps()) {
             dipList.addAll(regionListProvider.servers.value.filter { it.isDedicatedIp })
@@ -128,7 +126,7 @@ class DipViewModel(
                 DipApiResult.Active -> {
                     dipToken.value = TextFieldValue("")
                     dipPrefs.removePurchasedSignupDipToken()
-                    loadDedicatedIps(userLocale)
+                    loadDedicatedIps()
                 }
 
                 DipApiResult.Expired -> {
@@ -153,7 +151,7 @@ class DipViewModel(
         for (dip in dipPrefs.getDedicatedIps()) {
             if (dip.dipToken == dipToken) {
                 dipPrefs.removeDedicatedIp(dip)
-                loadDedicatedIps(userLocale)
+                loadDedicatedIps()
             }
         }
     }

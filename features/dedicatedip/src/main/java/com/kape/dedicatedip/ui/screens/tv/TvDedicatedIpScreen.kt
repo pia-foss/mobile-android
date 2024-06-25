@@ -54,12 +54,11 @@ import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
-import java.util.Locale
 
 @Composable
 fun TvDedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
-        loadDedicatedIps(Locale.getDefault().language)
+        loadDedicatedIps()
     }
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
