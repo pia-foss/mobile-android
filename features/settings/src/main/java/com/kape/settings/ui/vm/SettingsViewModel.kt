@@ -32,6 +32,7 @@ import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -53,6 +54,10 @@ class SettingsViewModel(
     private val connectionUseCase: ConnectionUseCase,
     private val automationManager: AutomationManager,
 ) : ViewModel(), KoinComponent {
+
+    companion object {
+        private const val GET_INSTALLED_APPS_DELAY_MS = 1000L
+    }
 
     private val _state = MutableStateFlow<SettingsStep>(SettingsStep.Main)
     val state: StateFlow<SettingsStep> = _state
@@ -394,7 +399,12 @@ class SettingsViewModel(
         vpnExcludedApps.value = prefs.getVpnExcludedApps()
     }
 
-    fun getInstalledApplications(packageManager: PackageManager) {
+    fun getInstalledApplications(packageManager: PackageManager) = viewModelScope.launch {
+        // Allow for the transition to take effect. Otherwise the transition and the loading of the
+        // packages will cause a stutter due to the recomposition and the transition happening
+        // at around the same time.
+        delay(GET_INSTALLED_APPS_DELAY_MS)
+
         installedApps = PerAppSettingsUtils.getInstalledApps(packageManager = packageManager)
         appList.value = installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
     }

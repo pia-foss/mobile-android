@@ -5,9 +5,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -18,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,13 +46,15 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun PerAppSettingsScreen() = Screen {
     val packageManager = LocalContext.current.packageManager
-    val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
-        getInstalledApplications(packageManager)
-    }
+    val viewModel: SettingsViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.per_app_settings))
     }
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getInstalledApplications(packageManager)
+    }
 
     BackHandler {
         onBackPressed(viewModel, lastExcludedApps)
@@ -85,6 +90,7 @@ fun PerAppSettingsScreen() = Screen {
                         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
                 LazyColumn {
                     val items = viewModel.appList.value
                     items(items.size) { index ->
