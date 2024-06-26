@@ -305,6 +305,9 @@ class ConnectionUseCase(
             additionalOpenVpnParams += "--ncp-disable --pia-signal-settings"
         }
 
+        // block ipv6
+        additionalOpenVpnParams += "--block-ipv6"
+
         notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
         notificationBuilder.setContentIntent(configureIntent)
 
