@@ -306,8 +306,6 @@ class ConnectionUseCase(
         }
 
         // block ipv6
-        additionalOpenVpnParams += "--ifconfig-ipv6 fd15:53b6:dead::2/64 fd15:53b6:dead::1"
-        additionalOpenVpnParams += "--route-ipv6 ::/0 ::1"
         additionalOpenVpnParams += "--block-ipv6"
 
         notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
