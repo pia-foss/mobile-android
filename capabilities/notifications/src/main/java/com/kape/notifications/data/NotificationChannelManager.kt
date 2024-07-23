@@ -20,7 +20,7 @@ class NotificationChannelManager(
                 NotificationChannel(
                     NOTIFICATION_ID,
                     CHANNEL_ID,
-                    NotificationManager.IMPORTANCE_DEFAULT,
+                    NotificationManager.IMPORTANCE_MIN,
                 )
             notificationChannel.lightColor = Color.BLUE
             notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE

@@ -240,7 +240,7 @@ private fun createNotificationBuilder(context: Context): Notification.Builder {
         NotificationChannel(
             NotificationChannelManager.CHANNEL_ID,
             NotificationChannelManager.CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_DEFAULT,
+            NotificationManager.IMPORTANCE_MIN,
         )
     notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
     val service =
