@@ -63,13 +63,9 @@ fun TvPerAppSettingsScreen() = Screen {
     }
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val initialFocusRequester = FocusRequester()
+    val initialFocusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
-
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
 
     BackHandler {
         onBackPressed(viewModel, lastExcludedApps)
@@ -122,6 +118,7 @@ fun TvPerAppSettingsScreen() = Screen {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
+                            .focusRequester(initialFocusRequester)
                             .onFocusChanged {
                                 if (it.hasFocus) {
                                     keyboardController?.hide()
@@ -198,6 +195,10 @@ fun TvPerAppSettingsScreen() = Screen {
                 },
             )
         }
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        initialFocusRequester.requestFocus()
     }
 }
 
