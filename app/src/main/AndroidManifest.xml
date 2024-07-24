@@ -33,6 +33,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
     <uses-permission android:name="android.permission.DETECT_SCREEN_CAPTURE" />
 
+    <!--  Fix Google Play Ad Id Issue  -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+
     <uses-feature
         android:name="android.software.leanback"
         android:required="false" />
