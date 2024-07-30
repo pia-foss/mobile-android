@@ -23,6 +23,7 @@ import com.kape.router.TvHelp
 import com.kape.router.TvLogin
 import com.kape.router.TvSideMenu
 import com.kape.router.TvWelcome
+import com.kape.router.Update
 import com.kape.router.VpnRegionSelection
 import com.kape.router.WebContent
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,6 +67,7 @@ class TvRouter : Router {
             EnterFlow.TvLoginUsername -> navigation.value = TvLogin.Username
             EnterFlow.TvSideMenu -> navigation.value = TvSideMenu.Main
             EnterFlow.TvHelp -> navigation.value = TvHelp.Main
+            EnterFlow.Update -> navigation.value = Update.Route
             EnterFlow.ShadowsocksRegionSelection,
             EnterFlow.AutomationSettings,
             EnterFlow.KillSwitchSettings,

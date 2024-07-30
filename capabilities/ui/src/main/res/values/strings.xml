@@ -439,4 +439,8 @@
     <string name="rating_feedback_message">Do you want to give feedback? We can help you to improve your experience using PIA</string>
 
     <string name="geo_servers">Show Geo-located Regions</string>
+
+    <string name="update_required_title">Update Required</string>
+    <string name="update_required_message">Your app version is outdated. Please update your app to continue using PIA.</string>
+    <string name="update_required_action">Update Now</string>
 </resources>

@@ -90,6 +90,10 @@ object AccountDeleted {
     const val Route = "account-deleted"
 }
 
+object Update {
+    const val Route = "update-app"
+}
+
 object WebContent {
     // Please note these values are links within the signup module's strings file.
     const val Terms = "web-screen-terms"

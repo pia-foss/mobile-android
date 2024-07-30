@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +23,6 @@ import androidx.navigation.compose.rememberNavController
 import com.kape.about.screens.mobile.AboutScreen
 import com.kape.about.screens.tv.TvAboutScreen
 import com.kape.automation.ui.AutomationFlow
-import com.kape.connection.ConnectionPrefs
 import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
@@ -65,6 +65,7 @@ import com.kape.router.TvHelp
 import com.kape.router.TvLogin
 import com.kape.router.TvSideMenu
 import com.kape.router.TvWelcome
+import com.kape.router.Update
 import com.kape.router.VpnRegionSelection
 import com.kape.router.WebContent
 import com.kape.settings.ui.screens.mobile.AutomationSettingsScreen
@@ -80,6 +81,7 @@ import com.kape.sidemenu.ui.screens.tv.TvSideMenuScreen
 import com.kape.signup.ui.mobile.SignupScreensFlow
 import com.kape.signup.ui.tv.TvSignupScreensFlow
 import com.kape.splash.ui.SplashScreen
+import com.kape.splash.ui.UpdateScreen
 import com.kape.tvwelcome.ui.TvWelcomeScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
@@ -297,6 +299,9 @@ class MainActivity : AppCompatActivity() {
             }
             composable(AccountDeleted.Route) {
                 AccountDeletedScreen()
+            }
+            composable(Update.Route) {
+                UpdateScreen()
             }
         }
     }
