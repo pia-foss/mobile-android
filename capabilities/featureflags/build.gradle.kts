@@ -1,14 +1,18 @@
-import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.implementFeatureModule
+import Dependencies.desugarJdkLibs
+import Dependencies.implementAccount
+import Dependencies.implementKoin
+import Dependencies.implementSerialization
 
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint")
+    id("de.mannodermaus.android-junit5") version "1.10.0.0"
+    id("org.jetbrains.kotlinx.kover")
 }
 
 android {
-    namespace = "com.kape.splash"
+    namespace = "com.kape.featureflags"
     compileSdk = 34
 
     defaultConfig {
@@ -29,27 +33,22 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
-    }
-    buildFeatures {
-        compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = KOTLIN_COMPILER_EXTENSION
     }
 }
 
 dependencies {
+    coreLibraryDesugaring(desugarJdkLibs)
 
-    implementation(project(":core:router"))
-    implementation(project(":core:regions"))
-    implementation(project(":capabilities:ui"))
-    implementation(project(":capabilities:notifications"))
-    implementation(project(":capabilities:featureflags"))
+    implementAccount()
+    implementation(project(":core:utils"))
 
-    implementFeatureModule()
+    implementSerialization()
+    implementKoin()
 }
