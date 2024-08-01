@@ -47,6 +47,7 @@ dependencies {
 
     implementation(project(":core:router"))
     implementation(project(":core:regions"))
+    implementation(project(":core:httpclient"))
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:notifications"))
     implementation(project(":capabilities:featureflags"))

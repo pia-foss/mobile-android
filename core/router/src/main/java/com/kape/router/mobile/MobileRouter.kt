@@ -23,6 +23,7 @@ import com.kape.router.Settings
 import com.kape.router.ShadowsocksRegionSelection
 import com.kape.router.Splash
 import com.kape.router.Subscribe
+import com.kape.router.Update
 import com.kape.router.VpnRegionSelection
 import com.kape.router.WebContent
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -76,6 +77,7 @@ class MobileRouter : Router {
             EnterFlow.Customization -> navigation.value = Customization.Route
             EnterFlow.AccountDeleted -> navigation.value = AccountDeleted.Route
             EnterFlow.NoInAppRegistration -> navigation.value = WebContent.NoInAppRegistration
+            EnterFlow.Update -> navigation.value = Update.Route
             EnterFlow.TvWelcome,
             EnterFlow.TvLoginUsername,
             EnterFlow.TvSideMenu,

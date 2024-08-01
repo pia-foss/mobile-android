@@ -82,16 +82,34 @@ android {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
             versionCode = amazonAppVersionCode
+
+            buildConfigField(
+                "String",
+                "UPDATE_URL",
+                "\"amzn://apps/android?com.privateinternetaccess.android\"",
+            )
         }
         create("google") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
             versionCode = googleAppVersionCode
+
+            buildConfigField(
+                "String",
+                "UPDATE_URL",
+                "\"market://details?id=com.privateinternetaccess.android\"",
+            )
         }
         create("noinapp") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
             versionCode = noInAppVersionCode
+
+            buildConfigField(
+                "String",
+                "UPDATE_URL",
+                "\"\"",
+            )
         }
     }
 
@@ -136,6 +154,7 @@ dependencies {
 
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
+    implementation(project(":core:httpclient"))
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))
     implementation(project(":core:localprefs:connection"))

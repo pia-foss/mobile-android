@@ -12,6 +12,8 @@ import androidx.annotation.RequiresApi
 import com.kape.connection.ConnectionPrefs
 import com.kape.csi.CsiPrefs
 import com.kape.customization.prefs.CustomizationPrefs
+import com.kape.httpclient.data.GetWebsiteDownloadLinkImpl
+import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.notifications.data.NotificationChannelManager
 import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
@@ -73,6 +75,8 @@ private const val CERTIFICATE = "certificate"
 val appModule = module {
     single(named(CERTIFICATE)) { provideCertificate(get()) }
     single(named(PARAM_USER_AGENT)) { USER_AGENT }
+    single(named("update-url")) { provideUpdateUrl() }
+    single { provideUpdateClient() }
     single { SettingsPrefs(get()) }
     single { ConnectionPrefs(get()) }
     single { RatingPrefs(get()) }
@@ -297,3 +301,7 @@ private fun providerRouter(context: Context): Router =
         true -> TvRouter()
         false -> MobileRouter()
     }
+
+private fun provideUpdateClient(): GetWebsiteDownloadLink = GetWebsiteDownloadLinkImpl()
+
+private fun provideUpdateUrl(): String = BuildConfig.UPDATE_URL
