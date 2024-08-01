@@ -166,6 +166,7 @@ dependencies {
     implementation(project(":capabilities:networkmanagement"))
     implementation(project(":capabilities:snooze"))
     implementation(project(":capabilities:buildconfig"))
+    implementation(project(":capabilities:featureflags"))
 
     implementation(project(":features:splash"))
     implementation(project(":features:tvwelcome"))
