@@ -76,9 +76,11 @@ fun TvWelcomeScreen() = Screen {
             ) {
                 welcomeViewModel.login()
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            PrimaryButton(text = stringResource(id = R.string.subscribe_now)) {
-                welcomeViewModel.signup()
+            if (welcomeViewModel.shouldShowSubscribeButton) {
+                Spacer(modifier = Modifier.height(8.dp))
+                PrimaryButton(text = stringResource(id = R.string.subscribe_now)) {
+                    welcomeViewModel.signup()
+                }
             }
         }
         Spacer(modifier = Modifier.width(64.dp))

@@ -5,5 +5,5 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val tvWelcomeModule = module {
-    viewModel { TvWelcomeViewModel(get()) }
+    viewModel { TvWelcomeViewModel(get(), get()) }
 }
