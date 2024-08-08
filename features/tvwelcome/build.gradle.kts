@@ -47,6 +47,7 @@ dependencies {
 
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
+    implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:login"))
 
