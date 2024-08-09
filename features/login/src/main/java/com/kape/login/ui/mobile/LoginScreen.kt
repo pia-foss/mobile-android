@@ -148,18 +148,20 @@ fun LoginScreen(navController: NavController) = Screen {
                 )
             }
 
-            Text(
-                text = stringResource(id = com.kape.ui.R.string.login_with_receipt).toUpperCase(
-                    Locale.current,
-                ),
-                color = LocalColors.current.primary,
-                modifier = Modifier
-                    .align(CenterHorizontally)
-                    .padding(16.dp, 16.dp, 16.dp, 8.dp)
-                    .clickable {
-                        viewModel.loginWithReceipt(currentContext.packageName)
-                    },
-            )
+            if (viewModel.shouldShowLoginWithReceiptButton) {
+                Text(
+                    text = stringResource(id = com.kape.ui.R.string.login_with_receipt).toUpperCase(
+                        Locale.current,
+                    ),
+                    color = LocalColors.current.primary,
+                    modifier = Modifier
+                        .align(CenterHorizontally)
+                        .padding(16.dp, 16.dp, 16.dp, 8.dp)
+                        .clickable {
+                            viewModel.loginWithReceipt(currentContext.packageName)
+                        },
+                )
+            }
             Text(
                 text = stringResource(id = com.kape.ui.R.string.login_with_magic_link).toUpperCase(
                     Locale.current,

@@ -57,10 +57,13 @@ dependencies {
     coreLibraryDesugaring(desugarJdkLibs)
 
     implementAccount()
+
     implementation(project(":core:payments"))
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
     implementation(project(":core:vpnconnect"))
+
+    implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:ui"))
 
     // prefs

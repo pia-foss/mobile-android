@@ -45,6 +45,6 @@ private val localLoginModule = module {
     single { GetUserLoggedInUseCase(get()) }
     viewModel { LoginUsernameViewModel(get(), get()) }
     viewModel { LoginPasswordViewModel(get()) }
-    viewModel { LoginViewModel(get(), get(), get(), get(), get()) }
+    viewModel { LoginViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { LoginWithEmailViewModel(get(), get()) }
 }

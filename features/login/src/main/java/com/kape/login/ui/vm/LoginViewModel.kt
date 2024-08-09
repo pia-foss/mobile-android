@@ -2,6 +2,7 @@ package com.kape.login.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.FAILED
@@ -26,12 +27,14 @@ class LoginViewModel(
     private val userLoggedInUseCase: GetUserLoggedInUseCase,
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val router: Router,
+    private val buildConfigProvider: BuildConfigProvider,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow(IDLE)
     val loginState: StateFlow<LoginScreenState> = _state
     val isConnected = networkConnectionListener.isConnected
+    val shouldShowLoginWithReceiptButton: Boolean = buildConfigProvider.isGoogleFlavor()
 
     private lateinit var packageName: String
 
