@@ -6,6 +6,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.domain.GetSubscriptionsUseCase
@@ -17,6 +18,7 @@ import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.SignupUseCase
+import com.kape.signup.utils.AMAZON_LOGIN
 import com.kape.signup.utils.CONSENT
 import com.kape.signup.utils.DEFAULT
 import com.kape.signup.utils.EMAIL
@@ -48,6 +50,7 @@ class SignupViewModel(
     private val router: Router,
     private val subscriptionPrefs: SubscriptionPrefs,
     private val subscriptionsUseCase: GetSubscriptionsUseCase,
+    private val buildConfigProvider: BuildConfigProvider,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
@@ -166,6 +169,10 @@ class SignupViewModel(
     }
 
     fun loadPrices() = viewModelScope.launch {
+        if (buildConfigProvider.isAmazonFlavor()) {
+            _state.emit(AMAZON_LOGIN)
+            return@launch
+        }
         if (subscriptionPrefs.getVpnSubscriptions().isEmpty()) {
             _state.emit(LOADING)
             subscriptionsUseCase.getVpnSubscriptions().collect {
