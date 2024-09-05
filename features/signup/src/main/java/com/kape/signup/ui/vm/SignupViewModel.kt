@@ -173,6 +173,10 @@ class SignupViewModel(
             _state.emit(AMAZON_LOGIN)
             return@launch
         }
+        if (buildConfigProvider.isWebFlavor()) {
+            _state.emit(NO_IN_APP_SUBSCRIPTIONS)
+            return@launch
+        }
         if (subscriptionPrefs.getVpnSubscriptions().isEmpty()) {
             _state.emit(LOADING)
             subscriptionsUseCase.getVpnSubscriptions().collect {
