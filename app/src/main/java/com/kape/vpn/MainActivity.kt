@@ -117,9 +117,11 @@ class MainActivity : AppCompatActivity() {
                 Settings.Route -> {
                     shortcutPrefs.setShortcutSettings(true)
                 }
+
                 VpnRegionSelection.Main -> {
                     shortcutPrefs.setShortcutChangeServer(true)
                 }
+
                 Connection.Main -> {
                     shortcutPrefs.setShortcutConnectToVpn(true)
                 }
@@ -272,6 +274,9 @@ class MainActivity : AppCompatActivity() {
             }
             composable(WebContent.NoInAppRegistration) {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_registration))
+            }
+            composable(WebContent.DeleteAccount) {
+                InAppBrowser(url = getString(com.kape.ui.R.string.url_delete_account))
             }
             composable(PerAppSettings.Main) {
                 PerAppSettingsScreen()

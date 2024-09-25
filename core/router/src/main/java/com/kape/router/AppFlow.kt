@@ -10,6 +10,7 @@ sealed class EnterFlow : AppFlow {
     data object VpnRegionSelection : EnterFlow()
     data object ShadowsocksRegionSelection : EnterFlow()
     data object Profile : EnterFlow()
+    data object DeleteAccount : EnterFlow()
     data object Subscribe : EnterFlow()
     data object TermsOfService : EnterFlow()
     data object PrivacyPolicy : EnterFlow()

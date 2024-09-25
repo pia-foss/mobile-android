@@ -100,4 +100,5 @@ object WebContent {
     const val Privacy = "web-screen-privacy"
     const val Support = "web-screen-support"
     const val NoInAppRegistration = "web-screen-registration"
+    const val DeleteAccount = "delete-account"
 }

@@ -64,6 +64,7 @@ class MobileRouter : Router {
             EnterFlow.Subscribe -> navigation.value = Subscribe.Main
             EnterFlow.PrivacyPolicy -> navigation.value = WebContent.Privacy
             EnterFlow.TermsOfService -> navigation.value = WebContent.Terms
+            EnterFlow.DeleteAccount -> navigation.value = WebContent.DeleteAccount
             EnterFlow.Settings -> navigation.value = Settings.Route
             EnterFlow.AutomationSettings -> navigation.value = Settings.Automation
             EnterFlow.PerAppSettings -> navigation.value = PerAppSettings.Main
