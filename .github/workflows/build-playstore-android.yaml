@@ -30,7 +30,7 @@ jobs:
           keyPassword: ${{ secrets.SIGNING_PLAYSTORE_KEY_PASSWORD }}
       - run: echo "Build status report=${{ job.status }}."
       - name: Upload App Bundle
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: pia-output
           path: ${{steps.sign_aab.outputs.signedReleaseFile}}

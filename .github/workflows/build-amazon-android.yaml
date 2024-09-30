@@ -33,7 +33,7 @@ jobs:
           BUILD_TOOLS_VERSION: "34.0.0"
       - run: echo "Build status report=${{ job.status }}."
       - name: Upload APK
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: pia-output
           path: ${{steps.sign_apk.outputs.signedReleaseFile}}
