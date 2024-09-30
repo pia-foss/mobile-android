@@ -12,15 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +43,6 @@ fun ProfileScreen() = Screen {
         appBarText(stringResource(id = R.string.account))
     }
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
-    val showDialog = remember { mutableStateOf(false) }
 
     Column {
         AppBar(
@@ -111,57 +106,12 @@ fun ProfileScreen() = Screen {
                     HyperlinkRed(
                         content = stringResource(id = R.string.account_deletion_action),
                         modifier = Modifier.clickable {
-                            showDialog.value = true
+                            viewModel.navigateToDeleteAccount()
                         },
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
-
-            if (showDialog.value) {
-                DeleteAccountConfirmationDialog(
-                    onDismiss = { showDialog.value = false },
-                    onConfirm = {
-                        viewModel.deleteAccount()
-                        showDialog.value = false
-                    },
-                )
-            }
         }
     }
-}
-
-@Composable
-fun DeleteAccountConfirmationDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(
-                    text = stringResource(id = R.string.account_deletion_dialog_positive_action),
-                    color = LocalColors.current.error,
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(
-                    text = stringResource(id = R.string.account_deletion_dialog_negative_action),
-                    color = LocalColors.current.primary,
-                )
-            }
-        },
-        title = {
-            Text(
-                text = stringResource(id = R.string.account_deletion_dialog_title),
-                style = MaterialTheme.typography.titleMedium,
-            )
-        },
-        text = {
-            Text(
-                text = stringResource(id = R.string.account_deletion_dialog_message),
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        },
-    )
 }

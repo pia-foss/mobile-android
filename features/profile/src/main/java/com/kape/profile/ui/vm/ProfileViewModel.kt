@@ -50,14 +50,7 @@ class ProfileViewModel(
         router.handleFlow(Exit)
     }
 
-    fun deleteAccount() = viewModelScope.launch {
-        _state.emit(LOADING)
-        deleteAccountUseCase.deleteAccount().collect {
-            logoutUseCase.logout().collect {
-                router.handleFlow(EnterFlow.AccountDeleted)
-            }
-        }
-    }
+    fun navigateToDeleteAccount() = router.handleFlow(EnterFlow.DeleteAccount)
 
     fun logout() = viewModelScope.launch {
         logoutUseCase.logout().collect {
