@@ -7,6 +7,7 @@ import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.router.EnterFlow
 import com.kape.router.ExitFlow
 import com.kape.router.Router
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -17,6 +18,7 @@ class SplashViewModel(
     private val forceUpdateUseCase: ForceUpdateUseCase,
     private val getWebsiteDownloadLink: GetWebsiteDownloadLink,
     private val appUpdateUrl: String,
+    private val connectionUseCase: ConnectionUseCase,
 ) : ViewModel(), KoinComponent {
 
     private var updateUrl: String = ""
@@ -46,6 +48,11 @@ class SplashViewModel(
     }
 
     fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) {
+        viewModelScope.launch {
+            connectionUseCase.stopConnection().collect {}
+        }
         launchUpdate(appUpdateUrl.ifEmpty { updateUrl })
     }
+
+    fun isConnected(): Boolean = connectionUseCase.isConnected()
 }

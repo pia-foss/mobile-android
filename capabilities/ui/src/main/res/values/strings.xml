@@ -442,6 +442,7 @@
     <string name="geo_servers">Show Geo-located Regions</string>
 
     <string name="update_required_title">Upgrade Your Experience</string>
-    <string name="update_required_message">You\'re using an older version of PIA. Update your app now to enjoy an enhanced experience with all the latest features.</string>
+    <string name="update_required_message">Your app is outdated. Please update to continue using the app.</string>
     <string name="update_required_action">Update Now</string>
+    <string name="update_required_info">Tapping \"Update Now\" will disconnect the VPN.</string>
 </resources>

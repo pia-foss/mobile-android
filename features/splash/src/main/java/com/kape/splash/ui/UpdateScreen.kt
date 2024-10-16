@@ -5,8 +5,10 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +28,7 @@ import com.kape.splash.ui.vm.SplashViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.mobile.text.OnboardingDescriptionPaymentText
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
 import com.kape.ui.utils.LocalColors
@@ -41,53 +44,70 @@ fun UpdateScreen(viewModel: SplashViewModel = koinViewModel()) = Screen {
             .padding(top = 64.dp)
             .background(LocalColors.current.background),
         verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Column(modifier = Modifier.widthIn(max = 520.dp)) {
-            Image(
-                painter = painterResource(id = R.drawable.shield),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(40.dp)
-                    .height(140.dp)
-                    .fillMaxWidth(),
-            )
-            Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                OnboardingTitleText(
-                    content = stringResource(id = R.string.update_required_title),
+        Box(
+            modifier = Modifier
+                .widthIn(max = 520.dp)
+                .fillMaxHeight()
+                .weight(1f, true),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.shield),
+                    contentDescription = null,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(40.dp)
+                        .height(200.dp)
+                        .fillMaxWidth(),
                 )
+                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                    OnboardingTitleText(
+                        content = stringResource(id = R.string.update_required_title),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    )
 
-                OnboardingDescriptionText(
-                    content = stringResource(id = R.string.update_required_message),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                )
+                    OnboardingDescriptionText(
+                        content = stringResource(id = R.string.update_required_message),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Column(modifier = Modifier.align(Alignment.BottomCenter)) {
+                PrimaryButton(
+                    text = stringResource(id = R.string.update_required_action),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
+                        .align(Alignment.CenterHorizontally),
+                ) {
+                    viewModel.onUpdateClicked(
+                        launchUpdate = { url ->
+                            val launchIntent = Intent(Intent.ACTION_VIEW)
+                            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            launchIntent.data = Uri.parse(url)
+                            // Silently fail if Google Play Store isn't installed.
+                            if (launchIntent.resolveActivity(context.packageManager) != null) {
+                                context.startActivity(launchIntent)
+                            }
+                        },
+                    )
+                }
 
-            PrimaryButton(
-                text = stringResource(id = R.string.update_required_action),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
-                    .align(Alignment.CenterHorizontally),
-            ) {
-                viewModel.onUpdateClicked(
-                    launchUpdate = { url ->
-                        val launchIntent = Intent(Intent.ACTION_VIEW)
-                        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        launchIntent.data = Uri.parse(url)
-                        // Silently fail if Google Play Store isn't installed.
-                        if (launchIntent.resolveActivity(context.packageManager) != null) {
-                            context.startActivity(launchIntent)
-                        }
-                    },
-                )
+                if (viewModel.isConnected()) {
+                    OnboardingDescriptionPaymentText(
+                        stringResource(R.string.update_required_info),
+                        Modifier.align(Alignment.CenterHorizontally),
+                    )
+
+                    Spacer(modifier = Modifier.padding(bottom = 40.dp))
+                }
             }
         }
     }
