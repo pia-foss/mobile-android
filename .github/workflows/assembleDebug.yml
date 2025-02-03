@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v4.1.0
 
       - name: Setup JAVA 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup JAVA 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
@@ -52,13 +52,13 @@ jobs:
         uses: actions/checkout@v4.1.0
 
       - name: Setup JAVA 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
 
       - name: Cache Gradle and wrapper
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
@@ -91,14 +91,18 @@ jobs:
         uses: actions/checkout@v4.1.0
 
       - name: Setup JAVA 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 17
-          cache: 'gradle'
-          cache-dependency-path: |
+
+      - name: Cache Gradle and wrapper
+        uses: actions/cache@v4
+        with:
+          path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
 
       - name: Enable Hardware Acceleration (Add KVM group perms)
         run: |
@@ -128,8 +132,9 @@ jobs:
           disable-spellchecker: true
           script: ./gradlew :app:connectedGoogleDebugAndroidTest
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: e2e-report
           path: ${{github.workspace}}/app/build/reports/androidTests/connected/debug/flavors/google/*
+          overwrite: true
