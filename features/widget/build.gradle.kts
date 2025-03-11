@@ -1,5 +1,5 @@
+import Dependencies.DESUGAR_JDK_LIBS
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
 import Dependencies.implementGlance
 import Dependencies.implementKoin
 import Dependencies.implementVpnManager
@@ -55,7 +55,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(DESUGAR_JDK_LIBS)
     implementGlance()
     implementKoin()
     implementVpnManager()

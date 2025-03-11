@@ -1,5 +1,5 @@
+import Dependencies.DESUGAR_JDK_LIBS
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
 import Dependencies.implementFeatureModule
 import Dependencies.implementSerialization
 import Dependencies.implementSwipeToRefresh
@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(DESUGAR_JDK_LIBS)
 
     implementation(project(":core:utils"))
     implementation(project(":core:router"))

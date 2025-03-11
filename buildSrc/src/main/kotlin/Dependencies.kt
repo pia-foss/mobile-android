@@ -4,6 +4,7 @@ object Dependencies {
 
     private const val IMPLEMENTATION = "implementation"
     private const val TEST_IMPLEMENTATION = "testImplementation"
+    private const val TEST_RUNTIME_ONLY = "testRuntimeOnly"
     private const val ANDROID_TEST_IMPLEMENTATION = "androidTestImplementation"
     private const val DEBUG_IMPLEMENTATION = "debugImplementation"
     private const val ANDROID_TEST_UTIL = "androidTestUtil"
@@ -14,10 +15,10 @@ object Dependencies {
     private const val COMPOSE_NAVIGATION = "2.8.8"
     private const val JETPACK = "2.8.7"
     private const val ACCOMPANIST = "0.36.0"
-    private const val KOIN = "3.5.6"
+    private const val KOIN = "4.0.2"
     const val KOTLIN_COMPILER_EXTENSION = "1.5.15"
 
-    const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.0.4"
+    const val DESUGAR_JDK_LIBS = "com.android.tools:desugar_jdk_libs:2.1.5"
 
     fun DependencyHandler.implementCompose() {
         add(IMPLEMENTATION, platform(COMPOSE_BOM))
@@ -116,9 +117,10 @@ object Dependencies {
 
     fun DependencyHandler.implementTest() {
         add(TEST_IMPLEMENTATION, "junit:junit:4.13.2")
-        add(TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.13.10")
-        add(TEST_IMPLEMENTATION, "app.cash.turbine:turbine:1.1.0")
-        add(TEST_IMPLEMENTATION, "org.junit.jupiter:junit-jupiter-params:5.10.1")
+        add(TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.13.17")
+        add(TEST_IMPLEMENTATION, "app.cash.turbine:turbine:1.2.0")
+        add(TEST_IMPLEMENTATION, "org.junit.jupiter:junit-jupiter-params:5.12.0")
+        add(TEST_RUNTIME_ONLY, "org.junit.platform:junit-platform-launcher:1.12.0")
     }
 
     fun DependencyHandler.implementAndroidTest() {
@@ -128,16 +130,16 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementAndroidUiTest() {
-        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test.uiautomator:uiautomator:2.2.0")
-        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test:runner:1.5.2")
-        add(ANDROID_TEST_UTIL, "androidx.test:orchestrator:1.4.2")
+        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test.uiautomator:uiautomator:2.3.0")
+        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test:runner:1.6.2")
+        add(ANDROID_TEST_UTIL, "androidx.test:orchestrator:1.5.1")
     }
 
     fun DependencyHandler.implementCoroutines() {
-        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
-        add(TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
-        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
-        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
+        add(TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
+        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
     }
 
     fun DependencyHandler.implementAccount() {

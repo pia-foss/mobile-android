@@ -1,5 +1,5 @@
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
+import Dependencies.DESUGAR_JDK_LIBS
 import Dependencies.implementAccount
 import Dependencies.implementAndroidBase
 import Dependencies.implementAndroidUiTest
@@ -151,7 +151,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(DESUGAR_JDK_LIBS)
 
     implementation(project(":core:router"))
     implementation(project(":core:utils"))

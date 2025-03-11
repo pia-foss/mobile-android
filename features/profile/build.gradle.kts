@@ -1,5 +1,5 @@
+import Dependencies.DESUGAR_JDK_LIBS
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
 import Dependencies.implementAccount
 import Dependencies.implementFeatureModule
 import Dependencies.implementVpnManager
@@ -56,7 +56,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(DESUGAR_JDK_LIBS)
 
     implementAccount()
     implementation(project(":core:router"))

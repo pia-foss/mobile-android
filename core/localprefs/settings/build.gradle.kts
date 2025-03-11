@@ -1,4 +1,4 @@
-import Dependencies.desugarJdkLibs
+import Dependencies.DESUGAR_JDK_LIBS
 import Dependencies.implementSerialization
 
 plugins {
@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(DESUGAR_JDK_LIBS)
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:settings:data"))
     implementSerialization()

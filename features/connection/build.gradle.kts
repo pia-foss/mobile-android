@@ -1,5 +1,5 @@
+import Dependencies.DESUGAR_JDK_LIBS
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
 import Dependencies.implementAccount
 import Dependencies.implementFeatureModule
 import Dependencies.implementSerialization
@@ -57,7 +57,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(DESUGAR_JDK_LIBS)
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:notifications"))

@@ -1,5 +1,5 @@
+import Dependencies.DESUGAR_JDK_LIBS
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
 import Dependencies.implementAccount
 import Dependencies.implementCoroutines
 import Dependencies.implementCrypto
@@ -14,7 +14,7 @@ plugins {
     id("kotlinx-serialization")
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jetbrains.kotlinx.kover")
-    id("de.mannodermaus.android-junit5") version "1.10.0.0"
+    id("de.mannodermaus.android-junit5") version "1.12.0.0"
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
@@ -60,7 +60,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(DESUGAR_JDK_LIBS)
 
     implementAccount()
     implementation(project(":core:utils"))

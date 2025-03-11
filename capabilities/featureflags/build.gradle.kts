@@ -1,4 +1,4 @@
-import Dependencies.desugarJdkLibs
+import Dependencies.DESUGAR_JDK_LIBS
 import Dependencies.implementAccount
 import Dependencies.implementKoin
 import Dependencies.implementSerialization
@@ -7,7 +7,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.10.0.0"
+    id("de.mannodermaus.android-junit5") version "1.12.0.0"
     id("org.jetbrains.kotlinx.kover")
 }
 
@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(DESUGAR_JDK_LIBS)
 
     implementAccount()
     implementation(project(":core:utils"))

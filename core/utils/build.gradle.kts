@@ -1,4 +1,4 @@
-import Dependencies.desugarJdkLibs
+import Dependencies.DESUGAR_JDK_LIBS
 import Dependencies.implementCoroutines
 import Dependencies.implementCrypto
 import Dependencies.implementSerialization
@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(DESUGAR_JDK_LIBS)
     implementCrypto()
     implementCoroutines()
     implementVpnManager()
