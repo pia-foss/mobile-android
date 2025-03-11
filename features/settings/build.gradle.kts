@@ -12,6 +12,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
     id("kotlinx-serialization")
     id("de.mannodermaus.android-junit5") version "1.10.0.0"
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {

@@ -22,6 +22,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kape.licenses")
     id("org.jetbrains.kotlinx.kover")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 val googleAppVersionCode = 681
