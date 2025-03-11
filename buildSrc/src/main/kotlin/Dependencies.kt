@@ -84,18 +84,18 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementSerialization() {
-        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.2")
-        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.0")
+        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
         add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
     }
 
     fun DependencyHandler.implementKtor() {
-        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:2.3.10")
-        add(IMPLEMENTATION, "io.ktor:ktor-client-core:2.3.10")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:3.1.1")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-core:3.1.1")
     }
 
     fun DependencyHandler.implementPayments() {
-        add(GOOGLE_IMPLEMENTATION, "com.android.billingclient:billing-ktx:7.0.0")
+        add(GOOGLE_IMPLEMENTATION, "com.android.billingclient:billing-ktx:7.1.1")
         add(AMAZON_IMPLEMENTATION, "com.amazon.device:amazon-appstore-sdk:3.0.4")
     }
 
