@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.kape.networkmanagement.prefs"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24

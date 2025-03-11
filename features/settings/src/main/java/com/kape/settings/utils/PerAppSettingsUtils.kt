@@ -6,7 +6,7 @@ import android.content.pm.PackageManager
 
 object PerAppSettingsUtils {
 
-    fun getInstalledApps(packageManager: PackageManager): List<ApplicationInfo> =
+    fun getInstalledApps(packageManager: PackageManager): List<ApplicationInfo?> =
         packageManager.getPackagesHoldingPermissions(
             arrayOf(Manifest.permission.INTERNET),
             0,

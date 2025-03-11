@@ -9,13 +9,13 @@ object Dependencies {
     private const val ANDROID_TEST_UTIL = "androidTestUtil"
     private const val GOOGLE_IMPLEMENTATION = "googleImplementation"
     private const val AMAZON_IMPLEMENTATION = "amazonImplementation"
-    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2024.04.00"
+    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2025.02.00"
     private const val COMPOSE_TV = "1.0.0-alpha10"
-    private const val COMPOSE_NAVIGATION = "2.7.7"
-    private const val JETPACK = "2.7.0"
-    private const val ACCOMPANIST = "0.34.0"
+    private const val COMPOSE_NAVIGATION = "2.8.8"
+    private const val JETPACK = "2.8.7"
+    private const val ACCOMPANIST = "0.36.0"
     private const val KOIN = "3.5.6"
-    const val KOTLIN_COMPILER_EXTENSION = "1.5.11"
+    const val KOTLIN_COMPILER_EXTENSION = "1.5.15"
 
     const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.0.4"
 
@@ -55,13 +55,13 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementAndroidBase() {
-        add(IMPLEMENTATION, "androidx.core:core-ktx:1.12.0")
+        add(IMPLEMENTATION, "androidx.core:core-ktx:1.15.0")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-runtime-ktx:$JETPACK")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-runtime-compose:$JETPACK")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-viewmodel-ktx:$JETPACK")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-process:$JETPACK")
-        add(IMPLEMENTATION, "androidx.activity:activity-compose:1.8.2")
-        add(IMPLEMENTATION, "androidx.appcompat:appcompat:1.6.1")
+        add(IMPLEMENTATION, "androidx.activity:activity-compose:1.10.1")
+        add(IMPLEMENTATION, "androidx.appcompat:appcompat:1.7.0")
     }
 
     fun DependencyHandler.implementKoin() {
@@ -165,12 +165,12 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementDrawablePainter() {
-        add(IMPLEMENTATION, "com.google.accompanist:accompanist-drawablepainter:$ACCOMPANIST")
+        add(IMPLEMENTATION, "com.google.accompanist:accompanist-drawablepainter:0.37.2")
     }
 
     fun DependencyHandler.implementGlance() {
-        add(IMPLEMENTATION, "androidx.glance:glance-appwidget:1.0.0")
-        add(IMPLEMENTATION, "androidx.glance:glance-material3:1.0.0")
+        add(IMPLEMENTATION, "androidx.glance:glance-appwidget:1.1.1")
+        add(IMPLEMENTATION, "androidx.glance:glance-material3:1.1.1")
         implementMaterial3()
     }
 
@@ -183,11 +183,11 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementConstraintLayout() {
-        add(IMPLEMENTATION, "androidx.constraintlayout:constraintlayout-compose:1.0.1")
+        add(IMPLEMENTATION, "androidx.constraintlayout:constraintlayout-compose:1.1.1")
     }
 
     private fun DependencyHandler.implementMaterial3() {
-        add(IMPLEMENTATION, "androidx.compose.material3:material3:1.2.1")
+        add(IMPLEMENTATION, "androidx.compose.material3:material3:1.3.1")
     }
 
     fun isNonStable(version: String): Boolean {

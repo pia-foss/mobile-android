@@ -22,6 +22,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kape.licenses")
     id("org.jetbrains.kotlinx.kover")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 val googleAppVersionCode = 681
@@ -31,7 +32,7 @@ val appVersionName = "4.0.18"
 
 android {
     namespace = "com.kape.vpn"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         testInstrumentationRunnerArguments += mapOf("clearPackageData" to "true")
@@ -248,16 +249,16 @@ task("fetchRegionsInformation"){
         )
 }
 
-koverReport {
-    filters {
-        excludes {
-            // exclusion rules - classes to exclude from report
-            classes("com.kape.*.di.*", "com.kape.*.ui.*")
-            annotatedBy("*.KoverIgnore")
-        }
-        includes {
-            // inclusion rules - classes only those that will be present in reports
-            classes("com.kape.*.data.*", "com.kape.*.domain.*")
-        }
-    }
-}
+//koverReport {
+//    filters {
+//        excludes {
+//            // exclusion rules - classes to exclude from report
+//            classes("com.kape.*.di.*", "com.kape.*.ui.*")
+//            annotatedBy("*.KoverIgnore")
+//        }
+//        includes {
+//            // inclusion rules - classes only those that will be present in reports
+//            classes("com.kape.*.data.*", "com.kape.*.domain.*")
+//        }
+//    }
+//}
