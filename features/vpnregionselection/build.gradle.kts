@@ -10,13 +10,13 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlinx-serialization")
     id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.10.0.0"
+    id("de.mannodermaus.android-junit5") version "1.12.0.0"
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
     namespace = "com.kape.vpnregionselection"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24

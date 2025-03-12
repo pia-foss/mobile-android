@@ -14,13 +14,13 @@ plugins {
     id("kotlinx-serialization")
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jetbrains.kotlinx.kover")
-    id("de.mannodermaus.android-junit5") version "1.10.0.0"
+    id("de.mannodermaus.android-junit5") version "1.12.0.0"
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
     namespace = "com.kape.payments"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24

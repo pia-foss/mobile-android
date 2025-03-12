@@ -32,13 +32,13 @@ val appVersionName = "4.0.18"
 
 android {
     namespace = "com.kape.vpn"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         testInstrumentationRunnerArguments += mapOf("clearPackageData" to "true")
         applicationId = "com.kape.vpn"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
