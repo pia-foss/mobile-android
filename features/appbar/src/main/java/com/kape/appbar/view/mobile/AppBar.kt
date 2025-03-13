@@ -1,5 +1,8 @@
 package com.kape.appbar.view.mobile
 
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -13,7 +16,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
@@ -23,6 +26,8 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,7 +36,6 @@ import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.text.AppBarConnectionTextDefault
@@ -55,18 +59,26 @@ fun AppBar(
     onRightIconClick: () -> Unit = {},
 ) {
     val scheme = LocalColors.current
-    val systemUiController = rememberSystemUiController()
     val isConnected = viewModel.isConnected.collectAsState()
     val isDarkTheme = isSystemInDarkTheme()
+    val context = LocalContext.current as ComponentActivity
+    val color = getStatusBarColor(
+        if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
+        scheme,
+    )
 
-    SideEffect {
-        systemUiController.setStatusBarColor(
-            getStatusBarColor(
-                if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
-                scheme,
+    DisposableEffect(isDarkTheme.not()) {
+        context.enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(
+                lightScrim = color.toArgb(),
+                darkScrim = color.toArgb(),
             ),
-            isDarkTheme.not(),
+            navigationBarStyle = SystemBarStyle.auto(
+                lightScrim = color.toArgb(),
+                darkScrim = color.toArgb(),
+            ),
         )
+        onDispose { }
     }
 
     AppBarContent(
@@ -96,7 +108,7 @@ private fun AppBarContent(
                 testTagsAsResourceId = true
             },
 
-    ) {
+        ) {
         val menuContentDescription = stringResource(id = R.string.menu)
         val backContentDescription = stringResource(id = R.string.back)
         IconButton(
@@ -110,7 +122,7 @@ private fun AppBarContent(
                         AppBarType.Customization,
                         AppBarType.InAppBrowser,
                         AppBarType.Navigation,
-                        -> backContentDescription
+                            -> backContentDescription
                     }
                 },
         ) {
@@ -171,7 +183,7 @@ private fun getAppBarLeftIcon(type: AppBarType): Int {
         AppBarType.Customization,
         AppBarType.InAppBrowser,
         AppBarType.Navigation,
-        -> R.drawable.ic_back
+            -> R.drawable.ic_back
     }
 }
 
@@ -181,11 +193,11 @@ private fun getAppBarBackgroundColor(status: ConnectionStatus, scheme: ColorSche
         ConnectionStatus.CONNECTED -> Brush.verticalGradient(scheme.connectedGradient())
         ConnectionStatus.DISCONNECTING,
         ConnectionStatus.DISCONNECTED,
-        -> Brush.verticalGradient(scheme.defaultGradient(scheme))
+            -> Brush.verticalGradient(scheme.defaultGradient(scheme))
 
         ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
-        -> Brush.verticalGradient(scheme.connectingGradient())
+            -> Brush.verticalGradient(scheme.connectingGradient())
     }
 }
 
@@ -199,7 +211,7 @@ private fun getStatusBarColor(status: ConnectionStatus, scheme: ColorScheme): Co
 
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTING,
-        -> scheme.statusBarConnecting()
+            -> scheme.statusBarConnecting()
     }
 }
 

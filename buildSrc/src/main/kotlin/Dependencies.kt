@@ -25,7 +25,6 @@ object Dependencies {
         add(IMPLEMENTATION, "androidx.compose.ui:ui")
         add(IMPLEMENTATION, "androidx.compose.ui:ui-graphics")
         add(IMPLEMENTATION, "androidx.compose.ui:ui-tooling-preview")
-        add(IMPLEMENTATION, "com.google.accompanist:accompanist-systemuicontroller:$ACCOMPANIST")
         add(ANDROID_TEST_IMPLEMENTATION, platform(COMPOSE_BOM))
         add(ANDROID_TEST_IMPLEMENTATION, "androidx.compose.ui:ui-test-junit4")
         add(DEBUG_IMPLEMENTATION, "androidx.compose.ui:ui-tooling")

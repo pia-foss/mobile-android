@@ -34,7 +34,6 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
 import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
@@ -56,14 +55,8 @@ import com.kape.ui.utils.LocalColors
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?) = Screen {
-    val scheme = LocalColors.current
-    val systemUiController = rememberSystemUiController()
     val screenState by viewModel.state.collectAsState()
     val context = LocalContext.current
-
-    SideEffect {
-        systemUiController.setStatusBarColor(scheme.statusBarDefault(scheme))
-    }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.registerClientIfNeeded(context as Activity)
