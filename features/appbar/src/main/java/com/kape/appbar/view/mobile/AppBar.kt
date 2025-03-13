@@ -100,21 +100,20 @@ private fun AppBarContent(
     onLeftIconClick: () -> Unit,
     onRightIconClick: () -> Unit,
 ) {
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(72.dp)
-            .background(getAppBarBackgroundColor(status, LocalColors.current))
-            .semantics {
-                testTagsAsResourceId = true
-            },
+            .background(getAppBarBackgroundColor(status, LocalColors.current)),
         contentAlignment = BottomCenter,
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(56.dp)
+                .semantics {
+                    testTagsAsResourceId = true
+                },
         ) {
             val menuContentDescription = stringResource(id = R.string.menu)
             val backContentDescription = stringResource(id = R.string.back)
@@ -129,7 +128,7 @@ private fun AppBarContent(
                             AppBarType.Customization,
                             AppBarType.InAppBrowser,
                             AppBarType.Navigation,
-                                -> backContentDescription
+                            -> backContentDescription
                         }
                     },
             ) {
@@ -191,7 +190,7 @@ private fun getAppBarLeftIcon(type: AppBarType): Int {
         AppBarType.Customization,
         AppBarType.InAppBrowser,
         AppBarType.Navigation,
-            -> R.drawable.ic_back
+        -> R.drawable.ic_back
     }
 }
 
@@ -201,11 +200,11 @@ private fun getAppBarBackgroundColor(status: ConnectionStatus, scheme: ColorSche
         ConnectionStatus.CONNECTED -> Brush.verticalGradient(scheme.connectedGradient())
         ConnectionStatus.DISCONNECTING,
         ConnectionStatus.DISCONNECTED,
-            -> Brush.verticalGradient(scheme.defaultGradient(scheme))
+        -> Brush.verticalGradient(scheme.defaultGradient(scheme))
 
         ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
-            -> Brush.verticalGradient(scheme.connectingGradient())
+        -> Brush.verticalGradient(scheme.connectingGradient())
     }
 }
 
@@ -219,7 +218,7 @@ private fun getStatusBarColor(status: ConnectionStatus, scheme: ColorScheme): Co
 
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTING,
-            -> scheme.statusBarConnecting()
+        -> scheme.statusBarConnecting()
     }
 }
 

@@ -122,12 +122,6 @@ object Dependencies {
         add(TEST_RUNTIME_ONLY, "org.junit.platform:junit-platform-launcher:1.12.0")
     }
 
-    fun DependencyHandler.implementAndroidTest() {
-        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test.ext:junit:1.1.5")
-        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test.espresso:espresso-core:3.5.1")
-        add(ANDROID_TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.13.5")
-    }
-
     fun DependencyHandler.implementAndroidUiTest() {
         add(ANDROID_TEST_IMPLEMENTATION, "androidx.test.uiautomator:uiautomator:2.3.0")
         add(ANDROID_TEST_IMPLEMENTATION, "androidx.test:runner:1.6.2")
