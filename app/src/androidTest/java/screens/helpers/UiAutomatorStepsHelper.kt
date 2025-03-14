@@ -13,7 +13,7 @@ object UiAutomatorStepsHelper {
 
     fun <T> inputTextInField(field: UiObject, data: T?) {
         field.click()
-        field.setText(data?.toString() ?: "")
+        field.legacySetText(data?.toString() ?: "")
     }
 
     fun waitUntilFound(uiObject: UiObject) {

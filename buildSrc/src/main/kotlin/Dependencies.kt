@@ -123,9 +123,9 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementAndroidUiTest() {
-        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test.uiautomator:uiautomator:2.3.0")
-        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test:runner:1.6.2")
-        add(ANDROID_TEST_UTIL, "androidx.test:orchestrator:1.5.1")
+        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test.uiautomator:uiautomator:2.2.0")
+        add(ANDROID_TEST_IMPLEMENTATION, "androidx.test:runner:1.5.2")
+        add(ANDROID_TEST_UTIL, "androidx.test:orchestrator:1.4.1")
     }
 
     fun DependencyHandler.implementCoroutines() {
