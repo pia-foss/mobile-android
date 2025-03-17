@@ -8,7 +8,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.kape.automation.ui.screens.AddNewRuleScreen
 import com.kape.automation.ui.screens.AutomationScreen
-import com.kape.automation.ui.screens.BackgroundLocationPermissionScreen
 import com.kape.automation.ui.screens.LocationPermissionScreen
 import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.automation.utils.AutomationStep
@@ -22,7 +21,6 @@ fun AutomationFlow() {
 
     when (state) {
         AutomationStep.LocationPermission -> LocationPermissionScreen()
-        AutomationStep.EnableBackgroundLocation -> BackgroundLocationPermissionScreen()
         AutomationStep.AddRule -> AddNewRuleScreen()
         AutomationStep.MainSet -> AutomationScreen(isSet = true)
         AutomationStep.MainUpdate -> AutomationScreen(isSet = false)
