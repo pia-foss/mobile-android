@@ -101,7 +101,7 @@ class SettingsViewModel(
             SettingsStep.ShortcutAutomation,
             SettingsStep.ShortcutKillSwitch,
             SettingsStep.ShortcutProtocol,
-                -> router.handleFlow(Back)
+            -> router.handleFlow(Back)
         }
     }
 
