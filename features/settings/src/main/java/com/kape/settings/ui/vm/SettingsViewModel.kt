@@ -293,9 +293,8 @@ class SettingsViewModel(
         automationManager.stopAutomationService()
     }
 
-    fun areLocationPermissionsGranted() =
-        locationPermissionManager.isFineLocationPermissionGranted() &&
-            locationPermissionManager.isBackgroundLocationPermissionGranted()
+    fun isLocationPermissionGranted() =
+        locationPermissionManager.isFineLocationPermissionGranted()
 
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()
@@ -405,7 +404,8 @@ class SettingsViewModel(
         // at around the same time.
         delay(GET_INSTALLED_APPS_DELAY_MS)
 
-        installedApps = PerAppSettingsUtils.getInstalledApps(packageManager = packageManager).filterNotNull()
+        installedApps =
+            PerAppSettingsUtils.getInstalledApps(packageManager = packageManager).filterNotNull()
         appList.value = installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
     }
 
