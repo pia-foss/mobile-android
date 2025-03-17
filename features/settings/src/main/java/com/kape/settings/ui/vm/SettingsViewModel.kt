@@ -405,7 +405,7 @@ class SettingsViewModel(
         // at around the same time.
         delay(GET_INSTALLED_APPS_DELAY_MS)
 
-        installedApps = PerAppSettingsUtils.getInstalledApps(packageManager = packageManager)
+        installedApps = PerAppSettingsUtils.getInstalledApps(packageManager = packageManager).filterNotNull()
         appList.value = installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
     }
 

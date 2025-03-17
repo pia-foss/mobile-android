@@ -9,11 +9,12 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("org.jlleitschuh.gradle.ktlint")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
     namespace = "com.kape.appbar"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24

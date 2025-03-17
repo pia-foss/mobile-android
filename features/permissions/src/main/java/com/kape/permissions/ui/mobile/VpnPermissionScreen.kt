@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -31,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.kape.permissions.R
 import com.kape.permissions.ui.vm.PermissionsViewModel
 import com.kape.permissions.utils.GRANTED
@@ -43,7 +41,6 @@ import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingFooterText
 import com.kape.ui.mobile.text.OnboardingTitleText
-import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -56,12 +53,6 @@ fun VpnPermissionScreen() = Screen {
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             viewModel.onVpnProfileStateChange()
         }
-
-    val scheme = LocalColors.current
-    val systemUiController = rememberSystemUiController()
-    SideEffect {
-        systemUiController.setStatusBarColor(scheme.statusBarDefault(scheme))
-    }
 
     when (state) {
         IDLE -> {}
