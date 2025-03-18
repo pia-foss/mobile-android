@@ -61,7 +61,7 @@ fun AutomationSettingsScreen() = Screen {
                         automationEnabled.value = it
                         if (viewModel.isAutomationEnabled()) {
                             viewModel.disableAutomation()
-                        } else if (!viewModel.isLocationPermissionGranted()) {
+                        } else if (!viewModel.areLocationPermissionsGranted()) {
                             viewModel.navigateToAutomation()
                         }
                     },

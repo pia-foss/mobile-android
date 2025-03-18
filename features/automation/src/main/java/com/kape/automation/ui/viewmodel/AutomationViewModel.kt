@@ -43,16 +43,24 @@ class AutomationViewModel(
     fun navigateUp() = router.handleFlow(Back)
 
     fun navigateToNextScreen() = viewModelScope.launch {
-        if (locationPermissionManager.isFineLocationPermissionGranted()) {
-            if (settingsPrefs.isAutomationEnabled().not()) {
-                settingsPrefs.setAutomationEnabled(true)
-                automationManager.startAutomationService()
-                _state.emit(AutomationStep.MainSet)
+        viewModelScope.launch {
+            if (locationPermissionManager.isFineLocationPermissionGranted() &&
+                locationPermissionManager.isBackgroundLocationPermissionGranted()
+            ) {
+                if (settingsPrefs.isAutomationEnabled().not()) {
+                    settingsPrefs.setAutomationEnabled(true)
+                    automationManager.startAutomationService()
+                    _state.emit(AutomationStep.MainSet)
+                } else {
+                    _state.emit(AutomationStep.MainUpdate)
+                }
             } else {
-                _state.emit(AutomationStep.MainUpdate)
+                if (!locationPermissionManager.isFineLocationPermissionGranted()) {
+                    _state.emit(AutomationStep.LocationPermission)
+                } else {
+                    _state.emit(AutomationStep.EnableBackgroundLocation)
+                }
             }
-        } else {
-            _state.emit(AutomationStep.LocationPermission)
         }
     }
 
