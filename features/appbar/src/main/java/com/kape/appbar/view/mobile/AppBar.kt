@@ -1,24 +1,23 @@
 package com.kape.appbar.view.mobile
 
-import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -27,8 +26,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -59,28 +56,7 @@ fun AppBar(
     onLeftIconClick: () -> Unit,
     onRightIconClick: () -> Unit = {},
 ) {
-    val scheme = LocalColors.current
     val isConnected = viewModel.isConnected.collectAsState()
-    val isDarkTheme = isSystemInDarkTheme()
-    val context = LocalContext.current as ComponentActivity
-    val color = getStatusBarColor(
-        if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
-        scheme,
-    )
-
-    DisposableEffect(isDarkTheme.not()) {
-        context.enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.auto(
-                lightScrim = color.toArgb(),
-                darkScrim = color.toArgb(),
-            ),
-            navigationBarStyle = SystemBarStyle.auto(
-                lightScrim = color.toArgb(),
-                darkScrim = color.toArgb(),
-            ),
-        )
-        onDispose { }
-    }
 
     AppBarContent(
         type = type,
@@ -100,17 +76,20 @@ private fun AppBarContent(
     onLeftIconClick: () -> Unit,
     onRightIconClick: () -> Unit,
 ) {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(72.dp)
             .background(getAppBarBackgroundColor(status, LocalColors.current)),
-        contentAlignment = BottomCenter,
     ) {
+        Spacer(
+            Modifier.windowInsetsTopHeight(
+                WindowInsets.statusBars,
+            ),
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(48.dp)
                 .semantics {
                     testTagsAsResourceId = true
                 },
@@ -222,7 +201,6 @@ private fun getStatusBarColor(status: ConnectionStatus, scheme: ColorScheme): Co
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun AppBarConnectionStatus(
     status: ConnectionStatus,
