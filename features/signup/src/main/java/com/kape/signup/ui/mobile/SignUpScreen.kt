@@ -3,8 +3,6 @@ package com.kape.signup.ui.mobile
 import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,17 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
@@ -40,6 +35,7 @@ import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
+import com.kape.ui.mobile.elements.InsetsColumn
 import com.kape.ui.mobile.elements.MonthlySubscriptionCard
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -48,9 +44,7 @@ import com.kape.ui.mobile.elements.YearlySubscriptionCard
 import com.kape.ui.mobile.text.OnboardingDescriptionPaymentText
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
-import com.kape.ui.utils.LocalColors
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?) = Screen {
     val screenState by viewModel.state.collectAsState()
@@ -64,20 +58,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
         viewModel.exitApp()
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalColors.current.background)
-            .semantics {
-                testTagsAsResourceId = true
-            },
-    ) {
-        Image(
-            painter = painterResource(id = com.kape.signup.R.drawable.map),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds,
-        )
+    InsetsColumn(com.kape.signup.R.drawable.map) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
