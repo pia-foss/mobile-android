@@ -1,6 +1,9 @@
 package com.kape.automation.ui.viewmodel
 
 import android.content.Intent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.automation.utils.AutomationStep
@@ -33,6 +36,9 @@ class AutomationViewModel(
     val state: StateFlow<AutomationStep> = _state
 
     val availableNetwork = networkConnectionListener.currentSSID
+
+    var rules by mutableStateOf(getNetworkItems())
+        private set
 
     init {
         navigateToNextScreen()
@@ -70,17 +76,20 @@ class AutomationViewModel(
 
     fun scanNetworks() = networkConnectionListener.triggerUpdate()
 
-    fun getNetworkItems() = networkRulesManager.getRules()
+    private fun getNetworkItems() = networkRulesManager.getRules()
 
     fun updateRule(rule: NetworkItem, behavior: NetworkBehavior) {
         networkRulesManager.updateRule(rule, behavior)
+        rules = getNetworkItems()
     }
 
     fun addRule(ssid: String, behavior: NetworkBehavior) {
         networkRulesManager.addRule(ssid, behavior)
+        rules = getNetworkItems()
     }
 
     fun removeRule(rule: NetworkItem) {
         networkRulesManager.removeRule(rule)
+        rules = getNetworkItems()
     }
 }

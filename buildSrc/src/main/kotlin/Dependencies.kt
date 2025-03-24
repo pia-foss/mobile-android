@@ -10,12 +10,12 @@ object Dependencies {
     private const val ANDROID_TEST_UTIL = "androidTestUtil"
     private const val GOOGLE_IMPLEMENTATION = "googleImplementation"
     private const val AMAZON_IMPLEMENTATION = "amazonImplementation"
-    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2025.03.00"
+    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2025.04.00"
     private const val COMPOSE_TV = "1.0.0-alpha10"
     private const val COMPOSE_NAVIGATION = "2.8.9"
     private const val JETPACK = "2.8.7"
     private const val ACCOMPANIST = "0.36.0"
-    private const val KOIN = "4.0.2"
+    private const val KOIN = "4.0.4"
     const val KOTLIN_COMPILER_EXTENSION = "1.5.15"
 
     const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.1.5"
@@ -55,7 +55,7 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementAndroidBase() {
-        add(IMPLEMENTATION, "androidx.core:core-ktx:1.15.0")
+        add(IMPLEMENTATION, "androidx.core:core-ktx:1.16.0")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-runtime-ktx:$JETPACK")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-runtime-compose:$JETPACK")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-viewmodel-ktx:$JETPACK")
@@ -84,14 +84,14 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementSerialization() {
-        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.0")
-        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-core:1.8.1")
+        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
         add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
     }
 
     fun DependencyHandler.implementKtor() {
-        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:3.1.1")
-        add(IMPLEMENTATION, "io.ktor:ktor-client-core:3.1.1")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:3.1.2")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-core:3.1.2")
     }
 
     fun DependencyHandler.implementPayments() {
@@ -116,10 +116,10 @@ object Dependencies {
 
     fun DependencyHandler.implementTest() {
         add(TEST_IMPLEMENTATION, "junit:junit:4.13.2")
-        add(TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.13.17")
+        add(TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.14.0")
         add(TEST_IMPLEMENTATION, "app.cash.turbine:turbine:1.2.0")
-        add(TEST_IMPLEMENTATION, "org.junit.jupiter:junit-jupiter-params:5.12.0")
-        add(TEST_RUNTIME_ONLY, "org.junit.platform:junit-platform-launcher:1.12.0")
+        add(TEST_IMPLEMENTATION, "org.junit.jupiter:junit-jupiter-params:5.12.2")
+        add(TEST_RUNTIME_ONLY, "org.junit.platform:junit-platform-launcher:1.12.2")
     }
 
     fun DependencyHandler.implementAndroidUiTest() {
@@ -129,10 +129,10 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementCoroutines() {
-        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
-        add(TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
-        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
-        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
+        add(IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+        add(TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+        add(ANDROID_TEST_IMPLEMENTATION, "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     }
 
     fun DependencyHandler.implementAccount() {
@@ -182,7 +182,7 @@ object Dependencies {
     }
 
     private fun DependencyHandler.implementMaterial3() {
-        add(IMPLEMENTATION, "androidx.compose.material3:material3:1.3.1")
+        add(IMPLEMENTATION, "androidx.compose.material3:material3:1.3.2")
     }
 
     fun isNonStable(version: String): Boolean {
