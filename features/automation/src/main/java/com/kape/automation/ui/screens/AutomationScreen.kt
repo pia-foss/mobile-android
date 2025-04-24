@@ -86,7 +86,7 @@ fun AutomationScreen(isSet: Boolean) = Screen {
                 )
 
                 LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                    items(viewModel.getNetworkItems()) { networkItem ->
+                    items(viewModel.getRules()) { networkItem ->
                         val icon: Int
                         val title: String
                         val status = getStatus(behavior = networkItem.networkBehavior)

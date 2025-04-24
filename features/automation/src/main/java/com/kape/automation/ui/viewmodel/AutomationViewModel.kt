@@ -1,6 +1,8 @@
 package com.kape.automation.ui.viewmodel
 
 import android.content.Intent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.automation.utils.AutomationStep
@@ -38,6 +40,8 @@ class AutomationViewModel(
         navigateToNextScreen()
     }
 
+    fun getRules() = networkRulesManager.networkRules
+
     fun exitAutomation() = router.handleFlow(ExitFlow.Automation)
 
     fun navigateUp() = router.handleFlow(Back)
@@ -69,8 +73,6 @@ class AutomationViewModel(
     }
 
     fun scanNetworks() = networkConnectionListener.triggerUpdate()
-
-    fun getNetworkItems() = networkRulesManager.getRules()
 
     fun updateRule(rule: NetworkItem, behavior: NetworkBehavior) {
         networkRulesManager.updateRule(rule, behavior)
