@@ -10,12 +10,12 @@ object Dependencies {
     private const val ANDROID_TEST_UTIL = "androidTestUtil"
     private const val GOOGLE_IMPLEMENTATION = "googleImplementation"
     private const val AMAZON_IMPLEMENTATION = "amazonImplementation"
-    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2025.04.00"
+    private const val COMPOSE_BOM = "androidx.compose:compose-bom:2025.06.01"
     private const val COMPOSE_TV = "1.0.0-alpha10"
-    private const val COMPOSE_NAVIGATION = "2.8.9"
-    private const val JETPACK = "2.8.7"
+    private const val COMPOSE_NAVIGATION = "2.9.0"
+    private const val JETPACK = "2.9.1"
     private const val ACCOMPANIST = "0.36.0"
-    private const val KOIN = "4.0.4"
+    private const val KOIN = "4.1.0"
     const val KOTLIN_COMPILER_EXTENSION = "1.5.15"
 
     const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:2.1.5"
@@ -61,7 +61,7 @@ object Dependencies {
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-viewmodel-ktx:$JETPACK")
         add(IMPLEMENTATION, "androidx.lifecycle:lifecycle-process:$JETPACK")
         add(IMPLEMENTATION, "androidx.activity:activity-compose:1.10.1")
-        add(IMPLEMENTATION, "androidx.appcompat:appcompat:1.7.0")
+        add(IMPLEMENTATION, "androidx.appcompat:appcompat:1.7.1")
     }
 
     fun DependencyHandler.implementKoin() {
@@ -116,8 +116,8 @@ object Dependencies {
 
     fun DependencyHandler.implementTest() {
         add(TEST_IMPLEMENTATION, "junit:junit:4.13.2")
-        add(TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.14.0")
-        add(TEST_IMPLEMENTATION, "app.cash.turbine:turbine:1.2.0")
+        add(TEST_IMPLEMENTATION, "io.mockk:mockk-android:1.14.4")
+        add(TEST_IMPLEMENTATION, "app.cash.turbine:turbine:1.2.1")
         add(TEST_IMPLEMENTATION, "org.junit.jupiter:junit-jupiter-params:5.12.2")
         add(TEST_RUNTIME_ONLY, "org.junit.platform:junit-platform-launcher:1.12.2")
     }
