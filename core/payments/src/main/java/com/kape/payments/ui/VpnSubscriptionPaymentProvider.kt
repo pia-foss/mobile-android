@@ -30,4 +30,6 @@ interface VpnSubscriptionPaymentProvider {
     fun hasActiveSubscription(): Flow<Boolean>
 
     fun isClientRegistered(): Boolean
+
+    fun reset()
 }

@@ -224,6 +224,10 @@ class VpnSubscriptionPaymentProviderImpl(
         return billingClient.isReady
     }
 
+    override fun reset() {
+        purchaseState.value = PurchaseState.Default
+    }
+
     private fun createProductsListForQuery(): List<QueryProductDetailsParams.Product> {
         val result = mutableListOf<QueryProductDetailsParams.Product>()
         for (product in prefs.getVpnSubscriptions()) {
