@@ -194,10 +194,12 @@ class SignupViewModel(
 
     fun purchase(id: String) = viewModelScope.launch {
         vpnSubscriptionPaymentProvider.purchaseSelectedProduct(id)
+        vpnSubscriptionPaymentProvider.reset()
     }
 
     fun navigateToLogin() {
         router.handleFlow(EnterFlow.Login)
+        vpnSubscriptionPaymentProvider.reset()
     }
 
     fun navigateToTvWelcome() {

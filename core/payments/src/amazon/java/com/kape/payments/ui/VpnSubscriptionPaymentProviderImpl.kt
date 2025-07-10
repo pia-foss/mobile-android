@@ -132,6 +132,10 @@ class VpnSubscriptionPaymentProviderImpl(private val prefs: SubscriptionPrefs, v
         return isClientRegistered
     }
 
+    override fun reset() {
+        purchaseState.value = PurchaseState.Default
+    }
+
     private fun handlePurchaseResponse(purchase: PurchaseResponse?) {
         if (purchase != null) {
             when (purchase.requestStatus) {

@@ -55,4 +55,8 @@ class VpnSubscriptionPaymentProviderImpl(private val prefs: SubscriptionPrefs, v
     override fun isClientRegistered(): Boolean {
         return false
     }
+
+    override fun reset() {
+        purchaseState.value = PurchaseState.NoInAppPurchase
+    }
 }
