@@ -38,7 +38,7 @@ import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
 
 private const val MACE_DNS = "10.0.0.241"
-private const val PIA_DNS = "10.0.0.242"
+private const val PIA_DNS = "10.0.0.243"
 
 class ConnectionUseCase(
     private val connectionSource: ConnectionDataSource,
