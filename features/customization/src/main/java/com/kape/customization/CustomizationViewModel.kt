@@ -1,5 +1,6 @@
 package com.kape.customization
 
+import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,7 +10,6 @@ import com.kape.customization.data.ScreenElement
 import com.kape.customization.prefs.CustomizationPrefs
 import com.kape.router.ExitFlow
 import com.kape.router.Router
-import org.burnoutcrew.reorderable.ItemPosition
 import org.koin.core.component.KoinComponent
 
 class CustomizationViewModel(private val prefs: CustomizationPrefs, private val router: Router) :
@@ -21,7 +21,7 @@ class CustomizationViewModel(private val prefs: CustomizationPrefs, private val 
 
     fun getOrderedElements(): List<ScreenElement> = items
 
-    fun onMove(from: ItemPosition, to: ItemPosition) {
+    fun onMove(from: LazyListItemInfo, to: LazyListItemInfo) {
         items = items.toMutableList().apply {
             add(to.index, removeAt(from.index))
         }
@@ -38,6 +38,4 @@ class CustomizationViewModel(private val prefs: CustomizationPrefs, private val 
         }
         prefs.setOrderedElements(items)
     }
-
-    fun isDragEnabled(draggedOver: ItemPosition, dragging: ItemPosition) = true
 }
