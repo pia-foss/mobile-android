@@ -7,15 +7,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -43,17 +45,24 @@ import com.kape.ui.mobile.tiles.Traffic
 import com.kape.ui.mobile.tiles.VpnLocationPicker
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.vpnserver.VpnServer
-import org.burnoutcrew.reorderable.ReorderableItem
-import org.burnoutcrew.reorderable.detectReorderAfterLongPress
-import org.burnoutcrew.reorderable.rememberReorderableLazyListState
-import org.burnoutcrew.reorderable.reorderable
 import org.koin.androidx.compose.koinViewModel
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
 fun CustomizationScreen() = Screen {
     val viewModel: CustomizationViewModel = koinViewModel()
     val connectionViewModel: ConnectionViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
+
+    var list by remember { mutableStateOf(viewModel.getOrderedElements()) }
+    val lazyListState = rememberLazyListState()
+    val reorderableLazyColumnState = rememberReorderableLazyListState(lazyListState) { from, to ->
+        viewModel.onMove(from, to)
+        list = list.toMutableList().apply {
+            add(to.index, removeAt(from.index))
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -65,39 +74,27 @@ fun CustomizationScreen() = Screen {
             )
         },
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(it)
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            state = lazyListState,
         ) {
-            val state =
-                rememberReorderableLazyListState(
-                    onMove = viewModel::onMove,
-                    canDragOver = viewModel::isDragEnabled,
-                )
-            LazyColumn(
-                state = state.listState,
-                modifier = Modifier
-                    .reorderable(state)
-                    .widthIn(max = 520.dp),
-            ) {
-                items(viewModel.getOrderedElements(), { item -> item.name }) { item ->
-                    ReorderableItem(state, item.name) { dragging ->
-                        val elevation = animateDpAsState(if (dragging) 8.dp else 0.dp)
-                        Column(
-                            modifier = Modifier
-                                .detectReorderAfterLongPress(state)
-                                .shadow(elevation.value)
-                                .fillMaxWidth()
-                                .background(LocalColors.current.surface),
-                        ) {
-                            CreateCustomizableElement(
-                                screenElement = item,
-                                connectionViewModel = connectionViewModel,
-                                onVisibilityToggled = viewModel::toggleVisibility,
-                            )
-                        }
+            items(list, key = { it.name }) {
+                ReorderableItem(reorderableLazyColumnState, key = it.name) { dragging ->
+                    val elevation = animateDpAsState(if (dragging) 8.dp else 0.dp)
+                    Column(
+                        modifier = Modifier
+                            .shadow(elevation.value)
+                            .fillMaxWidth()
+                            .background(LocalColors.current.surface),
+                    ) {
+                        CreateCustomizableElement(
+                            screenElement = it,
+                            connectionViewModel = connectionViewModel,
+                            onVisibilityToggled = viewModel::toggleVisibility,
+                            modifier = Modifier.longPressDraggableHandle(),
+                        )
                     }
                 }
             }
@@ -110,10 +107,11 @@ fun CreateCustomizableElement(
     screenElement: ScreenElement,
     connectionViewModel: ConnectionViewModel,
     onVisibilityToggled: (element: Element, isVisible: Boolean) -> Unit,
+    modifier: Modifier,
 ) {
     val visible = remember { mutableStateOf(screenElement.isVisible) }
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(
                 horizontal = 16.dp,
