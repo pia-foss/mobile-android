@@ -11,15 +11,17 @@ class AccountModuleStateProvider(
 ) : IAccountEndpointProvider {
     override fun accountEndpoints(): List<AccountEndpoint> {
         val endpoints = mutableListOf<AccountEndpoint>()
-        for (metaEndpoint in metaEndpointsProvider.metaEndpoints()) {
-            endpoints.add(
-                AccountEndpoint(
-                    metaEndpoint.endpoint,
-                    metaEndpoint.isProxy,
-                    metaEndpoint.usePinnedCertificate,
-                    metaEndpoint.certificateCommonName,
-                ),
-            )
+        if (metaEndpointsProvider.metaEndpoints().isNotEmpty()) {
+            for (metaEndpoint in metaEndpointsProvider.metaEndpoints()) {
+                endpoints.add(
+                    AccountEndpoint(
+                        metaEndpoint.endpoint,
+                        metaEndpoint.isProxy,
+                        metaEndpoint.usePinnedCertificate,
+                        metaEndpoint.certificateCommonName,
+                    ),
+                )
+            }
         }
         endpoints.add(
             AccountEndpoint(

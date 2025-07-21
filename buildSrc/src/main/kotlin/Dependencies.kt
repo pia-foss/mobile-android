@@ -92,8 +92,8 @@ object Dependencies {
     }
 
     fun DependencyHandler.implementKtor() {
-        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:3.1.2")
-        add(IMPLEMENTATION, "io.ktor:ktor-client-core:3.1.2")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-okhttp:3.2.1")
+        add(IMPLEMENTATION, "io.ktor:ktor-client-core:3.2.1")
     }
 
     fun DependencyHandler.implementPayments() {
