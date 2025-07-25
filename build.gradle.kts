@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.compose) apply false
     alias(libs.plugins.jvm) apply false
     alias(libs.plugins.ktlint) apply false
-    alias(libs.plugins.junit5) apply false
 }
 
 subprojects {

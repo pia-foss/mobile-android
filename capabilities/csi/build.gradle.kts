@@ -17,4 +17,5 @@ dependencies {
     testImplementation(libs.bundles.test)
     testImplementation(libs.bundles.kointest)
     testImplementation(libs.coroutines.test)
+    runtimeOnly(libs.launcher)
 }
