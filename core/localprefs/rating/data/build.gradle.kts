@@ -1,16 +1,9 @@
-import Dependencies.implementSerialization
-
 plugins {
     id("java-library")
-    id("org.jetbrains.kotlin.jvm")
-    id("kotlinx-serialization")
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    alias(libs.plugins.jvm)
+    alias(libs.plugins.serialization)
 }
 
 dependencies {
-    implementSerialization()
+    implementation(libs.bundles.serialization)
 }

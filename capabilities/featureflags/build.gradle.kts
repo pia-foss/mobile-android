@@ -1,23 +1,13 @@
-import Dependencies.desugarJdkLibs
-import Dependencies.implementAccount
-import Dependencies.implementKoin
-import Dependencies.implementSerialization
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
-    id("org.jetbrains.kotlinx.kover")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
+    alias(libs.plugins.configuration)
 }
 
 android {
     namespace = "com.kape.featureflags"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
 
     flavorDimensions.add("provider")
     productFlavors {
@@ -31,24 +21,16 @@ android {
             dimension = "provider"
         }
     }
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(libs.desugar)
 
-    implementAccount()
+    implementation(libs.kape.account)
     implementation(project(":core:utils"))
 
-    implementSerialization()
-    implementKoin()
+    implementation(libs.bundles.serialization)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
 }

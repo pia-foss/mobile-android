@@ -1,33 +1,21 @@
-import Dependencies.implementCsi
-import Dependencies.implementFeatureModule
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
-    id("org.jetbrains.kotlinx.kover")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
+    alias(libs.plugins.configuration)
 }
 
 android {
     namespace = "com.kape.csi"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
-    implementCsi()
-    implementFeatureModule()
+    implementation(libs.kape.csi)
+    implementation(libs.bundles.koin)
+    implementation(libs.coroutines)
+    testImplementation(libs.bundles.test)
+    testImplementation(libs.bundles.kointest)
+    testImplementation(libs.coroutines.test)
+    runtimeOnly(libs.launcher)
 }

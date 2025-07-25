@@ -1,21 +1,13 @@
-import Dependencies.implementAndroidBase
-import Dependencies.implementKoin
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
+    alias(libs.plugins.library)
+    alias(libs.plugins.configuration)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
 }
 
 android {
     namespace = "com.kape.snooze"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
-
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -28,20 +20,13 @@ android {
             dimension = "provider"
         }
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
-    implementKoin()
-    implementAndroidBase()
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.bundles.android)
 
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:connection"))

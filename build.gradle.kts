@@ -1,28 +1,19 @@
-import Dependencies.isNonStable
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") version "8.11.1" apply false
-    id("com.android.library") version "8.11.1" apply false
-    id("org.jetbrains.kotlin.android") version "2.1.10" apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.10" apply false
-    id("org.jlleitschuh.gradle.ktlint") version "11.5.1" apply false
-    id("org.jetbrains.kotlin.jvm") version "2.1.10" apply false
-    id("com.github.ben-manes.versions") version "0.52.0"
-    id("org.jetbrains.kotlinx.kover") version "0.7.5"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.1.10"
+    alias(libs.plugins.application) apply false
+    alias(libs.plugins.library) apply false
+    alias(libs.plugins.kotlin) apply false
+    alias(libs.plugins.serialization) apply false
+    alias(libs.plugins.compose) apply false
+    alias(libs.plugins.jvm) apply false
+    alias(libs.plugins.ktlint) apply false
 }
 
-allprojects {
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
+subprojects {
+    plugins.withId("com.android.application") {
+        apply(plugin = "configuration")
     }
-    tasks.withType<DependencyUpdatesTask> {
-        rejectVersionIf {
-            isNonStable(candidate.version)
-        }
+    plugins.withId("com.android.library") {
+        apply(plugin = "configuration")
     }
 }
