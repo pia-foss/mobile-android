@@ -1,28 +1,11 @@
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
-import Dependencies.implementAccount
-import Dependencies.implementAndroidBase
-import Dependencies.implementAndroidUiTest
-import Dependencies.implementCompose
-import Dependencies.implementComposeNavigation
-import Dependencies.implementCoroutines
-import Dependencies.implementCsi
-import Dependencies.implementKoin
-import Dependencies.implementKpi
-import Dependencies.implementMultiplatformSettings
-import Dependencies.implementObfuscator
-import Dependencies.implementPayments
-import Dependencies.implementRegions
-import Dependencies.implementViewModel
-import Dependencies.implementVpnManager
+
 import java.net.URL
 
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("kape.licenses")
-    id("org.jetbrains.kotlinx.kover")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.application)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.compose)
 }
 
 val googleAppVersionCode = 683
@@ -144,6 +127,8 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "/META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
         }
         jniLibs {
             useLegacyPackaging = true
@@ -152,7 +137,11 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(libs.desugar)
+    val composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
 
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
@@ -168,17 +157,18 @@ dependencies {
     implementation(project(":core:localprefs:rating:data"))
     implementation(project(":core:localprefs:rating"))
     implementation(project(":core:localprefs:shortcut"))
-    implementAccount()
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:vpnlauncher"))
     implementation(project(":core:portforwarding"))
     implementation(project(":core:regions"))
     implementation(project(":core:obfuscator"))
-    implementKpi()
-    implementRegions()
-    implementCsi()
-    implementObfuscator()
+    implementation(libs.kape.account)
+    implementation(libs.kape.kpi)
+    implementation(libs.kape.regions)
+    implementation(libs.kape.csi)
+    implementation(libs.kape.obfuscator)
+    implementation(libs.kape.vpnmanager)
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))
@@ -209,57 +199,33 @@ dependencies {
     implementation(project(":features:inappbrowser"))
     implementation(project(":features:rating"))
 
-    implementAndroidBase()
-    implementViewModel()
-    implementCompose()
-    implementComposeNavigation()
-    implementKoin()
-    implementMultiplatformSettings()
-    implementVpnManager()
-    implementCoroutines()
-
-    implementPayments()
-
-    implementAndroidUiTest()
-
-    // Test coverage
-    kover(project(":capabilities:csi"))
-    kover(project(":capabilities:shareevents"))
-    kover(project(":core:payments"))
-    kover(project(":core:regions"))
-    kover(project(":core:vpnconnect"))
-    kover(project(":features:connection"))
-    kover(project(":features:dedicatedip"))
-    kover(project(":features:login"))
-    kover(project(":features:profile"))
-    kover(project(":features:signup"))
+    implementation(libs.bundles.android)
+    implementation(libs.bundles.compose)
+    androidTestImplementation(libs.compose.android.test)
+    debugImplementation(libs.bundles.debugtest)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.multiplatform.settings)
+    implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+    "googleImplementation"(libs.billing.google)
+    "amazonImplementation"(libs.billing.amazon)
+    androidTestImplementation(libs.bundles.androidtest)
+    "androidTestUtil"(libs.orchestrator)
 }
 
-task("fetchRegionsInformation"){
+task("fetchRegionsInformation") {
     File("$rootDir/app/src/main/assets/metadata-regions.json")
         .writeText(
-            URL("https://serverlist.piaservers.net/vpninfo/regions/v2").readText()
+            URL("https://serverlist.piaservers.net/vpninfo/regions/v2").readText(),
         )
     File("$rootDir/app/src/main/assets/vpn-regions.json")
         .writeText(
-            URL("https://serverlist.piaservers.net/vpninfo/servers/v6").readText()
+            URL("https://serverlist.piaservers.net/vpninfo/servers/v6").readText(),
         )
     File("$rootDir/app/src/main/assets/shadowsocks-regions.json")
         .writeText(
-            URL("https://serverlist.piaservers.net/shadow_socks").readText()
+            URL("https://serverlist.piaservers.net/shadow_socks").readText(),
         )
-}
-
-koverReport {
-    filters {
-        excludes {
-            // exclusion rules - classes to exclude from report
-            classes("com.kape.*.di.*", "com.kape.*.ui.*")
-            annotatedBy("*.KoverIgnore")
-        }
-        includes {
-            // inclusion rules - classes only those that will be present in reports
-            classes("com.kape.*.data.*", "com.kape.*.domain.*")
-        }
-    }
 }

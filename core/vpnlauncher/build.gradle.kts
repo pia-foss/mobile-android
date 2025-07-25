@@ -1,9 +1,7 @@
-import Dependencies.implementKoin
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -38,7 +36,9 @@ android {
 }
 
 dependencies {
-    implementKoin()
+implementation(libs.bundles.koin)
+  testImplementation(libs.bundles.kointest)
+  androidTestImplementation(libs.bundles.koinandroidtest)
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:connection"))
     implementation(project(":core:localprefs:settings"))

@@ -1,14 +1,11 @@
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
-import Dependencies.implementFeatureModule
-import Dependencies.implementWebView
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
+    alias(libs.plugins.compose)
 }
 
 android {
@@ -54,13 +51,22 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(libs.desugar)
 
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
-    implementWebView()
-
-    implementFeatureModule()
+    implementation(libs.webview)
+    implementation(libs.bundles.compose)
+    androidTestImplementation(libs.bundles.composeandroidtest)
+    implementation(libs.bundles.android)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.bundles.coroutines.androidtest)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
 }

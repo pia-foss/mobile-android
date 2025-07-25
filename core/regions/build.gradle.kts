@@ -1,17 +1,9 @@
-import Dependencies.implementAccount
-import Dependencies.implementCoroutines
-import Dependencies.implementKoin
-import Dependencies.implementRegions
-import Dependencies.implementSerialization
-import Dependencies.implementTest
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("kotlinx-serialization")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
-    id("org.jetbrains.kotlinx.kover")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
 }
 
 android {
@@ -49,11 +41,16 @@ dependencies {
     implementation(project(":core:localprefs:regions"))
     implementation(project(":core:localprefs:dip"))
 
-    implementSerialization()
-    implementRegions()
-    implementAccount()
+    implementation(libs.bundles.serialization)
+    implementation(libs.kape.regions)
+    implementation(libs.kape.account)
 
-    implementCoroutines()
-    implementKoin()
-    implementTest()
+    implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.bundles.coroutines.androidtest)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
 }

@@ -1,14 +1,8 @@
-import Dependencies.implementCoroutines
-import Dependencies.implementKoin
-import Dependencies.implementKtor
-import Dependencies.implementSerialization
-import Dependencies.implementSpongyCastle
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("kotlinx-serialization")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -46,9 +40,11 @@ dependencies {
     implementation(project(":core:localprefs:connection"))
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))
-    implementCoroutines()
-    implementSerialization()
-    implementKtor()
-    implementKoin()
-    implementSpongyCastle()
+    implementation(libs.coroutines)
+    implementation(libs.bundles.serialization)
+    implementation(libs.bundles.ktor)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.spongycastle)
 }

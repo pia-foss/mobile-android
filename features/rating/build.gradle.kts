@@ -1,12 +1,10 @@
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.implementFeatureModule
-import Dependencies.implementVpnManager
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.compose)
 }
 
 android {
@@ -52,6 +50,16 @@ dependencies {
     implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))
 
-    implementVpnManager()
-    implementFeatureModule()
+    implementation(libs.kape.vpnmanager)
+    implementation(libs.bundles.compose)
+    androidTestImplementation(libs.bundles.composeandroidtest)
+    implementation(libs.bundles.android)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.bundles.coroutines.androidtest)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
 }

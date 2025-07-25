@@ -1,16 +1,10 @@
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
-import Dependencies.implementCompose
-import Dependencies.implementComposeNavigation
-import Dependencies.implementComposeTv
-import Dependencies.implementKoin
-import Dependencies.implementSwipeToRefresh
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.compose)
 }
 
 android {
@@ -40,14 +34,15 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(libs.desugar)
 
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
 
-    implementCompose()
-    implementComposeTv()
-    implementComposeNavigation()
-    implementKoin()
-    implementSwipeToRefresh()
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    androidTestImplementation(libs.bundles.composeandroidtest)
+    implementation(libs.bundles.swipetoreferesh)
 }

@@ -1,14 +1,8 @@
-import Dependencies.desugarJdkLibs
-import Dependencies.implementFeatureModule
-import Dependencies.implementKpi
-import Dependencies.implementSerialization
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
-    id("org.jetbrains.kotlinx.kover")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
 }
 
 android {
@@ -44,14 +38,18 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(libs.desugar)
 
-    implementKpi()
+    implementation(libs.kape.kpi)
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:shareevents"))
     implementation(project(":core:localprefs:settings"))
     implementation(project(":core:localprefs:settings:data"))
 
-    implementSerialization()
-    implementFeatureModule()
+    implementation(libs.bundles.serialization)
+    implementation(libs.bundles.koin)
+    implementation(libs.coroutines)
+    testImplementation(libs.bundles.test)
+    testImplementation(libs.bundles.kointest)
+    testImplementation(libs.coroutines.test)
 }

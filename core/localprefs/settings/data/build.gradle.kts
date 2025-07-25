@@ -1,9 +1,9 @@
-import Dependencies.implementSerialization
+
 
 plugins {
     id("java-library")
     id("org.jetbrains.kotlin.jvm")
-    id("kotlinx-serialization")
+    alias(libs.plugins.serialization)
 }
 
 java {
@@ -12,5 +12,5 @@ java {
 }
 
 dependencies {
-    implementSerialization()
+    implementation(libs.bundles.serialization)
 }

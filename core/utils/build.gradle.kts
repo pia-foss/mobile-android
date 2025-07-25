@@ -1,14 +1,8 @@
-import Dependencies.desugarJdkLibs
-import Dependencies.implementCoroutines
-import Dependencies.implementCrypto
-import Dependencies.implementSerialization
-import Dependencies.implementVpnManager
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("kotlinx-serialization")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -30,9 +24,9 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
-    implementCrypto()
-    implementCoroutines()
-    implementVpnManager()
-    implementSerialization()
+    coreLibraryDesugaring(libs.desugar)
+    implementation(libs.crypto)
+    implementation(libs.coroutines)
+    implementation(libs.kape.vpnmanager)
+    implementation(libs.bundles.serialization)
 }

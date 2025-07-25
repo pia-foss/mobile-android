@@ -1,16 +1,8 @@
-import Dependencies.implementAccount
-import Dependencies.implementCoroutines
-import Dependencies.implementKoin
-import Dependencies.implementSerialization
-import Dependencies.implementTest
-import Dependencies.implementVpnManager
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
-    id("org.jetbrains.kotlinx.kover")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
 }
 
 android {
@@ -55,11 +47,16 @@ dependencies {
     implementation(project(":core:localprefs:csi"))
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:ui"))
-    implementVpnManager()
-    implementKoin()
-    implementAccount()
-    implementSerialization()
-    implementCoroutines()
+    implementation(libs.kape.vpnmanager)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.kape.account)
+    implementation(libs.bundles.serialization)
+    implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.bundles.coroutines.androidtest)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
 
-    implementTest()
 }

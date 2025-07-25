@@ -1,17 +1,14 @@
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
-import Dependencies.implementAccount
-import Dependencies.implementFeatureModule
-import Dependencies.implementSerialization
-import Dependencies.implementVpnManager
+
+
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
-    id("org.jetbrains.kotlinx.kover")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
+
+    alias(libs.plugins.compose)
 }
 
 android {
@@ -57,7 +54,7 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(libs.desugar)
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:notifications"))
@@ -86,8 +83,18 @@ dependencies {
     implementation(project(":features:dedicatedip"))
     implementation(project(":features:rating"))
 
-    implementFeatureModule()
-    implementVpnManager()
-    implementAccount()
-    implementSerialization()
+    implementation(libs.bundles.compose)
+    androidTestImplementation(libs.bundles.composeandroidtest)
+    implementation(libs.bundles.android)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.bundles.coroutines.androidtest)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
+    implementation(libs.kape.vpnmanager)
+    implementation(libs.kape.account)
+    implementation(libs.bundles.serialization)
 }

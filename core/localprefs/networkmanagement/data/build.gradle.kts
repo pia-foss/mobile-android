@@ -1,10 +1,10 @@
-import Dependencies.implementSerialization
+
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("kotlinx-serialization")
-    id("org.jlleitschuh.gradle.ktlint")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -25,5 +25,5 @@ android {
 }
 
 dependencies {
-    implementSerialization()
+    implementation(libs.bundles.serialization)
 }

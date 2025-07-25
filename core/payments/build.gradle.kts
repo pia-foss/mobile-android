@@ -1,21 +1,13 @@
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
-import Dependencies.implementAccount
-import Dependencies.implementCoroutines
-import Dependencies.implementCrypto
-import Dependencies.implementKoin
-import Dependencies.implementPayments
-import Dependencies.implementSerialization
-import Dependencies.implementTest
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("kotlinx-serialization")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("org.jetbrains.kotlinx.kover")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.ktlint)
+
+    alias(libs.plugins.junit5)
+    alias(libs.plugins.compose)
 }
 
 android {
@@ -60,17 +52,23 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(libs.desugar)
 
-    implementAccount()
+    implementation(libs.kape.account)
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:payments"))
     implementation(project(":core:localprefs:payments:data"))
 
-    implementCrypto()
-    implementKoin()
-    implementCoroutines()
-    implementSerialization()
-    implementPayments()
-    implementTest()
+    implementation(libs.crypto)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.bundles.coroutines.androidtest)
+    implementation(libs.bundles.serialization)
+    "googleImplementation"(libs.billing.google)
+    "amazonImplementation"(libs.billing.amazon)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
 }

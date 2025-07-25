@@ -1,11 +1,10 @@
 import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.implementFeatureModule
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.compose)
 }
 
 android {
@@ -45,12 +44,21 @@ android {
 }
 
 dependencies {
-
     implementation(project(":core:router"))
     implementation(project(":core:payments"))
     implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:login"))
 
-    implementFeatureModule()
+    implementation(libs.bundles.compose)
+    androidTestImplementation(libs.bundles.composeandroidtest)
+    implementation(libs.bundles.android)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.bundles.coroutines.androidtest)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
 }

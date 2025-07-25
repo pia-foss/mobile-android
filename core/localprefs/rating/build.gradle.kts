@@ -1,10 +1,10 @@
-import Dependencies.desugarJdkLibs
-import Dependencies.implementSerialization
+
+
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -27,8 +27,8 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(libs.desugar)
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:rating:data"))
-    implementSerialization()
+    implementation(libs.bundles.serialization)
 }

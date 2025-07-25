@@ -1,11 +1,11 @@
-import Dependencies.implementAccount
-import Dependencies.implementSerialization
+
+
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("kotlinx-serialization")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -29,6 +29,6 @@ android {
 dependencies {
     implementation(project(":core:utils"))
     implementation(project(":capabilities:buildconfig"))
-    implementAccount()
-    implementSerialization()
+    implementation(libs.kape.account)
+    implementation(libs.bundles.serialization)
 }
