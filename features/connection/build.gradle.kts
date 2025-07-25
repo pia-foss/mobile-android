@@ -1,24 +1,14 @@
-import Dependencies.KOTLIN_COMPILER_EXTENSION
-
-
-
 plugins {
     alias(libs.plugins.library)
+    alias(libs.plugins.configuration)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
-
     alias(libs.plugins.compose)
 }
 
 android {
     namespace = "com.kape.connection"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
-
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -34,11 +24,6 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
     }
     testOptions {
         unitTests {
@@ -47,9 +32,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = KOTLIN_COMPILER_EXTENSION
     }
 }
 

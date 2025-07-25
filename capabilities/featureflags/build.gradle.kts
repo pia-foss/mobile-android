@@ -3,15 +3,11 @@ plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
+    alias(libs.plugins.configuration)
 }
 
 android {
     namespace = "com.kape.featureflags"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
 
     flavorDimensions.add("provider")
     productFlavors {
@@ -25,16 +21,6 @@ android {
             dimension = "provider"
         }
     }
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
@@ -44,7 +30,7 @@ dependencies {
     implementation(project(":core:utils"))
 
     implementation(libs.bundles.serialization)
-implementation(libs.bundles.koin)
-  testImplementation(libs.bundles.kointest)
-  androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
 }

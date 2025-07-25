@@ -1,11 +1,10 @@
-import Dependencies.KOTLIN_COMPILER_EXTENSION
-
 import java.net.URL
 
 plugins {
     alias(libs.plugins.application)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.compose)
+    alias(libs.plugins.configuration)
 }
 
 val googleAppVersionCode = 683
@@ -15,13 +14,9 @@ val appVersionName = "4.0.19"
 
 android {
     namespace = "com.kape.vpn"
-    compileSdk = 35
-
     defaultConfig {
         testInstrumentationRunnerArguments += mapOf("clearPackageData" to "true")
         applicationId = "com.kape.vpn"
-        minSdk = 24
-        targetSdk = 35
         versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -110,18 +105,10 @@ android {
     }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
     }
     buildFeatures {
         buildConfig = true
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = KOTLIN_COMPILER_EXTENSION
     }
     packaging {
         resources {
@@ -141,7 +128,6 @@ dependencies {
     val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
-
 
     implementation(project(":core:router"))
     implementation(project(":core:utils"))

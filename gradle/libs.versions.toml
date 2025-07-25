@@ -1,6 +1,6 @@
 [versions]
 plugin-gradle = "8.11.1"
-plugin-kotlin = "2.1.10"
+plugin-kotlin = "2.2.0"
 plugin-ktlint = "11.5.1"
 compose-bom = "2025.06.01"
 compose-tv = "1.0.0-alpha10"
@@ -44,6 +44,8 @@ test-orchestrator = "1.4.1"
 junit5 = "1.12.0.0"
 
 [libraries]
+android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "plugin-gradle" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "plugin-kotlin" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
@@ -117,6 +119,7 @@ jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "plugin-kotlin" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "plugin-kotlin" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "plugin-ktlint" }
 junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junit5" }
+configuration = { id = "configuration", version = "1.0" }
 
 [bundles]
 compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-foundation", "compose-runtime", "compose-navigation", "compose-tv-material", "compose-tv-foundation", "material3"]

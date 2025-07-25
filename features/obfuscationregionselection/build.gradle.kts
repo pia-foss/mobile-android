@@ -1,7 +1,6 @@
-import Dependencies.KOTLIN_COMPILER_EXTENSION
-
 plugins {
     alias(libs.plugins.library)
+    alias(libs.plugins.configuration)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.serialization)
     alias(libs.plugins.ktlint)
@@ -11,12 +10,6 @@ plugins {
 
 android {
     namespace = "com.kape.obfuscationregionselection"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
-
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -29,20 +22,8 @@ android {
             dimension = "provider"
         }
     }
-
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = KOTLIN_COMPILER_EXTENSION
     }
 }
 

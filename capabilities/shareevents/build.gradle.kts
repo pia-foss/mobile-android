@@ -3,15 +3,11 @@ plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
+    alias(libs.plugins.configuration)
 }
 
 android {
     namespace = "com.kape.shareevents"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
 
     flavorDimensions.add("provider")
     productFlavors {
@@ -27,13 +23,6 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 

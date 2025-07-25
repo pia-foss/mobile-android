@@ -1,7 +1,6 @@
-import Dependencies.KOTLIN_COMPILER_EXTENSION
-
 plugins {
     alias(libs.plugins.library)
+    alias(libs.plugins.configuration)
     alias(libs.plugins.kotlin)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.compose)
@@ -9,12 +8,6 @@ plugins {
 
 android {
     namespace = "com.kape.tvwelcome"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
-
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -27,19 +20,8 @@ android {
             dimension = "provider"
         }
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = KOTLIN_COMPILER_EXTENSION
     }
 }
 

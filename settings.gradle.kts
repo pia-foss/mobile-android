@@ -52,6 +52,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "PIA"
 include(":app")
+includeBuild("configuration")
 
 include(":capabilities")
 include(":capabilities:ui")
