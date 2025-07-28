@@ -1,19 +1,12 @@
-import Dependencies.implementSerialization
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("kotlinx-serialization")
-    id("org.jlleitschuh.gradle.ktlint")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.ktlint)
 }
 
 android {
     namespace = "com.kape.payments.data"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -26,16 +19,8 @@ android {
             dimension = "provider"
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
-    implementSerialization()
+    implementation(libs.bundles.serialization)
 }

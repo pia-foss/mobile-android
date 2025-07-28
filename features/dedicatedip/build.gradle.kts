@@ -1,26 +1,14 @@
-import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.implementAccount
-import Dependencies.implementConstraintLayout
-import Dependencies.implementFeatureModule
-import Dependencies.implementRegions
-import Dependencies.implementVpnManager
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
-    id("org.jetbrains.kotlinx.kover")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.library)
+    alias(libs.plugins.configuration)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
+    alias(libs.plugins.compose)
 }
 
 android {
     namespace = "com.kape.dedicatedip"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -33,19 +21,8 @@ android {
             dimension = "provider"
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = KOTLIN_COMPILER_EXTENSION
     }
 }
 
@@ -61,9 +38,19 @@ dependencies {
     implementation(project(":features:appbar"))
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:buildconfig"))
-    implementAccount()
-    implementRegions()
-    implementFeatureModule()
-    implementConstraintLayout()
-    implementVpnManager()
+    implementation(libs.kape.account)
+    implementation(libs.kape.regions)
+    implementation(libs.bundles.compose)
+    androidTestImplementation(libs.bundles.composeandroidtest)
+    implementation(libs.bundles.android)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.bundles.coroutines.androidtest)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
+    implementation(libs.constraintlayout)
+    implementation(libs.kape.vpnmanager)
 }

@@ -1,33 +1,17 @@
-
-import Dependencies.implementSerialization
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("kotlinx-serialization")
+    alias(libs.plugins.library)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.configuration)
 }
 
 android {
     namespace = "com.kape.networkmanagement.prefs"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:networkmanagement:data"))
-    implementSerialization()
+    implementation(libs.bundles.serialization)
 }

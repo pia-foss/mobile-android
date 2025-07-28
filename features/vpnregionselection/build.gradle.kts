@@ -1,27 +1,15 @@
-import Dependencies.KOTLIN_COMPILER_EXTENSION
-import Dependencies.desugarJdkLibs
-import Dependencies.implementFeatureModule
-import Dependencies.implementSerialization
-import Dependencies.implementSwipeToRefresh
-import Dependencies.implementVpnManager
-
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("kotlinx-serialization")
-    id("org.jlleitschuh.gradle.ktlint")
-    id("de.mannodermaus.android-junit5") version "1.12.0.0"
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.library)
+    alias(libs.plugins.configuration)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.serialization)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
+    alias(libs.plugins.compose)
 }
 
 android {
     namespace = "com.kape.vpnregionselection"
-    compileSdk = 35
-
-    defaultConfig {
-        minSdk = 24
-    }
-
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -35,24 +23,13 @@ android {
         }
     }
 
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = KOTLIN_COMPILER_EXTENSION
     }
 }
 
 dependencies {
-    coreLibraryDesugaring(desugarJdkLibs)
+    coreLibraryDesugaring(libs.desugar)
 
     implementation(project(":core:utils"))
     implementation(project(":core:router"))
@@ -65,8 +42,18 @@ dependencies {
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
 
-    implementFeatureModule()
-    implementVpnManager()
-    implementSerialization()
-    implementSwipeToRefresh()
+    implementation(libs.bundles.compose)
+    androidTestImplementation(libs.bundles.composeandroidtest)
+    implementation(libs.bundles.android)
+    implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+    androidTestImplementation(libs.bundles.coroutines.androidtest)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
+    implementation(libs.kape.vpnmanager)
+    implementation(libs.bundles.serialization)
+    implementation(libs.bundles.swipetoreferesh)
 }
