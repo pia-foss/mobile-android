@@ -21,20 +21,19 @@ jobs:
         run: ./gradlew assembleAmazonRelease
       - name: Sign APK
         id: sign_apk
-        uses: r0adkll/sign-android-release@v1
+        uses: ilharp/sign-android-release@v2
         with:
-          releaseDirectory: app/build/outputs/apk/amazon/release
-          signingKeyBase64: ${{ secrets.SIGNING_WEB_KEYSTORE }}
-          alias: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
+          releaseDir: app/build/outputs/apk/amazon/release
+          signingKey: ${{ secrets.SIGNING_WEB_KEYSTORE }}
+          keyAlias: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
           keyPassword: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
         env:
-          # override default build-tools version (33.0.0) -- optional
           BUILD_TOOLS_VERSION: "34.0.0"
       - run: echo "Build status report=${{ job.status }}."
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: pia-output-amazon
-          path: ${{steps.sign_apk.outputs.signedReleaseFile}}
+          path: ${{steps.sign_apk.outputs.signedFile}}
           if-no-files-found: error

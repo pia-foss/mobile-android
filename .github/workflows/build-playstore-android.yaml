@@ -21,17 +21,19 @@ jobs:
         run: ./gradlew bundleGoogleRelease
       - name: Sign AAB
         id: sign_aab
-        uses: r0adkll/sign-android-release@v1
+        uses: ilharp/sign-android-release@v2
         with:
-          releaseDirectory: app/build/outputs/bundle/googleRelease
-          signingKeyBase64: ${{ secrets.SIGNING_PLAYSTORE_KEYSTORE }}
-          alias: ${{ secrets.SIGNING_PLAYSTORE_KEY_ALIAS }}
+          releaseDir: app/build/outputs/bundle/googleRelease
+          signingKey: ${{ secrets.SIGNING_PLAYSTORE_KEYSTORE }}
+          keyAlias: ${{ secrets.SIGNING_PLAYSTORE_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.SIGNING_PLAYSTORE_STORE_PASSWORD }}
           keyPassword: ${{ secrets.SIGNING_PLAYSTORE_KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
       - run: echo "Build status report=${{ job.status }}."
       - name: Upload App Bundle
         uses: actions/upload-artifact@v4
         with:
           name: pia-output-google-play
-          path: ${{steps.sign_aab.outputs.signedReleaseFile}}
+          path: ${{steps.sign_aab.outputs.signedFile}}
           if-no-files-found: error
