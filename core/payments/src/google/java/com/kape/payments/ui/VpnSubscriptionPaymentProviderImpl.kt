@@ -5,14 +5,12 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
-import com.android.billingclient.api.PurchaseHistoryRecord
-import com.android.billingclient.api.PurchaseHistoryResponseListener
 import com.android.billingclient.api.PurchasesResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
-import com.android.billingclient.api.QueryPurchaseHistoryParams
 import com.android.billingclient.api.QueryPurchasesParams
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.data.PurchaseData
@@ -71,7 +69,9 @@ class VpnSubscriptionPaymentProviderImpl(
         this.activity = activity
         billingClient = BillingClient.newBuilder(activity)
             .setListener(purchasesUpdatedListener)
-            .enablePendingPurchases()
+            .enablePendingPurchases(
+                PendingPurchasesParams.newBuilder().enableOneTimeProducts().build(),
+            )
             .build()
 
         billingClient.startConnection(
@@ -119,7 +119,7 @@ class VpnSubscriptionPaymentProviderImpl(
             ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 val data = prefs.getVpnSubscriptions()
-                for (item in productDetailsList) {
+                for (item in productDetailsList.productDetailsList) {
                     if (data.any { it.id == item.productId }) {
                         item.subscriptionOfferDetails?.let {
                             // if offers are more than one - there's a free trial
@@ -139,7 +139,7 @@ class VpnSubscriptionPaymentProviderImpl(
                 }
                 prefs.storeVpnSubscriptions(data)
                 availableProducts.clear()
-                availableProducts.addAll(productDetailsList)
+                availableProducts.addAll(productDetailsList.productDetailsList)
                 purchaseState.value = PurchaseState.ProductsLoadedSuccess
             } else {
                 purchaseState.value = PurchaseState.ProductsLoadedFailed
@@ -166,24 +166,24 @@ class VpnSubscriptionPaymentProviderImpl(
 
     override fun getPurchaseHistory() {
         val params =
-            QueryPurchaseHistoryParams.newBuilder().setProductType(BillingClient.ProductType.SUBS)
+            QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS)
                 .build()
 
-        val purchaseHistoryListener = object : PurchaseHistoryResponseListener {
-            override fun onPurchaseHistoryResponse(
+        val purchaseHistoryListener = object : PurchasesResponseListener {
+            override fun onQueryPurchasesResponse(
                 billingResponse: BillingResult,
-                purchases: MutableList<PurchaseHistoryRecord>?,
+                purchases: MutableList<Purchase>,
             ) {
                 if (billingResponse.responseCode != BillingClient.BillingResponseCode.OK) {
                     purchaseHistoryState.value = PurchaseHistoryState.PurchaseHistoryFailed
                     return
                 }
-                if (purchases.isNullOrEmpty()) {
+                if (purchases.isEmpty()) {
                     purchaseHistoryState.value = PurchaseHistoryState.PurchaseHistoryFailed
                     return
                 }
 
-                for (p: PurchaseHistoryRecord in purchases.sortedByDescending { it.purchaseTime }) {
+                for (p: Purchase in purchases.sortedByDescending { it.purchaseTime }) {
                     if (availableProducts.any { it.productId == p.products[0] }) {
                         purchaseHistoryState.value =
                             PurchaseHistoryState.PurchaseHistorySuccess(
@@ -195,27 +195,29 @@ class VpnSubscriptionPaymentProviderImpl(
                 }
             }
         }
-        billingClient.queryPurchaseHistoryAsync(params, purchaseHistoryListener)
+        billingClient.queryPurchasesAsync(params, purchaseHistoryListener)
     }
 
     override fun hasActiveSubscription(): Flow<Boolean> = callbackFlow {
-        val params = QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build()
-        val purchasesListener = PurchasesResponseListener { billingResult: BillingResult, purchases: List<Purchase> ->
-            if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-                trySend(false)
-                return@PurchasesResponseListener
-            }
+        val params =
+            QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build()
+        val purchasesListener =
+            PurchasesResponseListener { billingResult: BillingResult, purchases: List<Purchase> ->
+                if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+                    trySend(false)
+                    return@PurchasesResponseListener
+                }
 
-            if (purchases.isEmpty()) {
-                trySend(false)
-                return@PurchasesResponseListener
-            }
+                if (purchases.isEmpty()) {
+                    trySend(false)
+                    return@PurchasesResponseListener
+                }
 
-            val hasActiveSubscription = purchases.any { purchase ->
-                purchase.isAutoRenewing && purchase.purchaseState == Purchase.PurchaseState.PURCHASED
+                val hasActiveSubscription = purchases.any { purchase ->
+                    purchase.isAutoRenewing && purchase.purchaseState == Purchase.PurchaseState.PURCHASED
+                }
+                trySend(hasActiveSubscription)
             }
-            trySend(hasActiveSubscription)
-        }
         billingClient.queryPurchasesAsync(params, purchasesListener)
         awaitClose { channel.close() }
     }
