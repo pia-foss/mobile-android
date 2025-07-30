@@ -24,11 +24,11 @@ jobs:
         run: ./gradlew assembleNoinappRelease
       - name: Sign APK
         id: sign_apk
-        uses: r0adkll/sign-android-release@v1
+        uses: ilharp/sign-android-release@v2
         with:
-          releaseDirectory: app/build/outputs/apk/noinapp/release
-          signingKeyBase64: ${{ secrets.SIGNING_WEB_KEYSTORE }}
-          alias: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
+          releaseDir: app/build/outputs/apk/noinapp/release
+          signingKey: ${{ secrets.SIGNING_WEB_KEYSTORE }}
+          keyAlias: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
           keyPassword: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
       - name: Releasing using Hub
