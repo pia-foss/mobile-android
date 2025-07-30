@@ -6,6 +6,7 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
@@ -63,7 +64,7 @@ class DipSubscriptionPaymentProviderImpl(
     }
     private val billingClient: BillingClient = BillingClient.newBuilder(context)
         .setListener(purchasesUpdatedListener)
-        .enablePendingPurchases()
+        .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
         .build()
 
     init {
@@ -106,7 +107,7 @@ class DipSubscriptionPaymentProviderImpl(
             ) { billingResult, productDetailsList ->
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     val result = mutableListOf<Pair<String, String>>()
-                    for (product in productDetailsList) {
+                    for (product in productDetailsList.productDetailsList) {
                         if (availableProducts.any { it.productId == product.productId }.not()) {
                             availableProducts.add(product)
                         }
@@ -177,7 +178,8 @@ class DipSubscriptionPaymentProviderImpl(
             }
 
             purchaseCompletableDeferred = CompletableDeferred()
-            val offerToken = productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken ?: ""
+            val offerToken =
+                productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken ?: ""
             val productList: List<BillingFlowParams.ProductDetailsParams> = listOf(
                 BillingFlowParams.ProductDetailsParams.newBuilder()
                     .setProductDetails(productDetails)
@@ -210,6 +212,7 @@ class DipSubscriptionPaymentProviderImpl(
                         deferred.complete(Result.failure(IllegalStateException("Billing setup failed")))
                     }
                 }
+
                 override fun onBillingServiceDisconnected() {
                     deferred.complete(Result.failure(IllegalStateException("Billing disconnected")))
                 }
