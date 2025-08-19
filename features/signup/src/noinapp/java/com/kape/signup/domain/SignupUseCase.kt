@@ -11,6 +11,7 @@ class SignupUseCase(
     private val loginUseCase: LoginUseCase,
     private val emailDataSource: EmailDataSource,
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
+    private val getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase,
 ) {
 
     fun vpnSignup(email: String): Flow<Credentials?> = flow {

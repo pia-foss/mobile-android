@@ -40,7 +40,7 @@ internal class SignupDataSourceImplTest {
         coEvery { api.vpnSignUp(any(), any()) } answers {
             lastArg<(VpnSignUpInformation?, List<Error>) -> Unit>().invoke(signupInfo, emptyList())
         }
-        source.vpnSignup("orderId", "token", "productId").test {
+        source.vpnSignup("orderId", "token", "productId", "obfuscatedDeviceId").test {
             val actual = awaitItem()
             kotlin.test.assertEquals(expected, actual)
         }
@@ -52,7 +52,7 @@ internal class SignupDataSourceImplTest {
         coEvery { api.vpnSignUp(any(), any()) } answers {
             lastArg<(VpnSignUpInformation?, List<Error>) -> Unit>().invoke(expected, listOf(Error()))
         }
-        source.vpnSignup("orderId", "token", "productId").test {
+        source.vpnSignup("orderId", "token", "productId", "obfuscatedDeviceId").test {
             val actual = awaitItem()
             kotlin.test.assertEquals(expected, actual)
         }
