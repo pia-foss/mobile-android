@@ -2,9 +2,14 @@ package com.kape.signup.di
 
 import com.kape.signup.ConsentPrefs
 import com.kape.signup.data.EmailDataSourceImpl
+import com.kape.signup.data.Identifier
+import com.kape.signup.data.IdentifierImpl
+import com.kape.signup.data.Obfuscator
+import com.kape.signup.data.ObfuscatorImpl
 import com.kape.signup.data.SignupDataSourceImpl
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.EmailDataSource
+import com.kape.signup.domain.GetObfuscatedDeviceIdentifierUseCase
 import com.kape.signup.domain.SetEmailUseCase
 import com.kape.signup.domain.SignupDataSource
 import com.kape.signup.domain.SignupUseCase
@@ -21,7 +26,10 @@ fun signupModule(appModule: Module) = module {
 private val localSignupModule = module {
     single<SignupDataSource> { SignupDataSourceImpl(get()) }
     single<EmailDataSource> { EmailDataSourceImpl(get()) }
-    single { SignupUseCase(get(), get(), get(), get()) }
+    single<Obfuscator> { ObfuscatorImpl() }
+    single<Identifier> { IdentifierImpl(get()) }
+    single { GetObfuscatedDeviceIdentifierUseCase(get(), get()) }
+    single { SignupUseCase(get(), get(), get(), get(), get()) }
     single { SetEmailUseCase(get()) }
     single { PriceFormatter(get()) }
     single { ConsentPrefs(get()) }

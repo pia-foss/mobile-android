@@ -12,6 +12,7 @@ class SignupUseCase(
     private val loginUseCase: LoginUseCase,
     private val emailDataSource: EmailDataSource,
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
+    private val getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase,
 ) {
 
     suspend fun vpnSignup(email: String): Flow<Credentials?> = flow {
@@ -20,7 +21,11 @@ class SignupUseCase(
             emit(null)
             return@flow
         }
-        signupDataSource.vpnSignup(purchaseData.orderId, purchaseData.token, purchaseData.productId)
+        val obfuscatedDeviceIdentifier = getObfuscatedDeviceIdentifierUseCase.obfuscatedDeviceIdentifier().getOrElse {
+            emit(null)
+            return@flow
+        }
+        signupDataSource.vpnSignup(purchaseData.orderId, purchaseData.token, purchaseData.productId, obfuscatedDeviceIdentifier)
             .collect { credentials ->
                 credentials?.let { data ->
                     loginUseCase.login(data.username, data.password).collect { loginState ->

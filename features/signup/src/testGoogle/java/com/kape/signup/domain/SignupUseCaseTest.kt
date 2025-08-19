@@ -25,25 +25,27 @@ internal class SignupUseCaseTest : KoinTest {
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase = mockk()
     private val loginUseCase: LoginUseCase = mockk()
     private val emailDataSource: EmailDataSource = mockk()
+    private val getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase = mockk()
 
     private lateinit var useCase: SignupUseCase
 
     @BeforeEach
     fun setUp() {
-        useCase = SignupUseCase(signupDataSource, loginUseCase, emailDataSource, purchaseDetailsUseCase)
+        useCase = SignupUseCase(signupDataSource, loginUseCase, emailDataSource, purchaseDetailsUseCase, getObfuscatedDeviceIdentifierUseCase)
     }
 
     @ParameterizedTest(name = "expected: {0}, data: {1}")
     @MethodSource("arguments")
     fun `test signup`(expected: Credentials?, purchaseData: PurchaseData?) = runTest {
         every { purchaseDetailsUseCase.getPurchaseDetails() } returns purchaseData
+        every { getObfuscatedDeviceIdentifierUseCase.obfuscatedDeviceIdentifier() } returns Result.success("obfuscatedDeviceId")
         coEvery { loginUseCase.login(any(), any()) } returns flow {
             emit(LoginState.Successful)
         }
         every { emailDataSource.setEmail(any()) } returns flow {
             emit(true)
         }
-        coEvery { signupDataSource.vpnSignup(any(), any(), any()) } returns flow {
+        coEvery { signupDataSource.vpnSignup(any(), any(), any(), any()) } returns flow {
             emit(expected)
         }
 

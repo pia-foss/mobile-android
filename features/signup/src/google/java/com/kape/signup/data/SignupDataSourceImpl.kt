@@ -15,7 +15,7 @@ class SignupDataSourceImpl(private val api: AndroidAccountAPI) : SignupDataSourc
 
     override fun vpnSignup(vararg data: String): Flow<Credentials?> = callbackFlow {
         val receipt = AndroidVpnSignupInformation.Receipt(data[0], data[1], data[2])
-        api.vpnSignUp(AndroidVpnSignupInformation(STORE, receipt)) { details, error ->
+        api.vpnSignUp(AndroidVpnSignupInformation(store = STORE, receipt = receipt, obfuscatedDeviceId = data[3])) { details, error ->
             if (error.isNotEmpty() || details == null) {
                 trySend(null)
                 return@vpnSignUp
