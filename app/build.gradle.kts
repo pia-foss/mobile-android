@@ -208,7 +208,7 @@ task("fetchRegionsInformation") {
         )
     File("$rootDir/app/src/main/assets/vpn-regions.json")
         .writeText(
-            URL("https://serverlist.piaservers.net/vpninfo/servers/v6").readText(),
+            URL("https://serverlist-stg.pvt.site:8080/vpninfo/servers/v6").readText(),
         )
     File("$rootDir/app/src/main/assets/shadowsocks-regions.json")
         .writeText(
