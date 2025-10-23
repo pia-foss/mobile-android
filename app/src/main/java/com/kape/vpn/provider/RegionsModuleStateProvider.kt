@@ -14,16 +14,16 @@ class RegionsModuleStateProvider(
 
     override fun regionEndpoints(): List<RegionEndpoint> {
         val endpoints = mutableListOf<RegionEndpoint>()
-        for (metaEndpoint in metaEndpointsProvider.metaEndpoints()) {
-            endpoints.add(
-                RegionEndpoint(
-                    metaEndpoint.endpoint,
-                    metaEndpoint.isProxy,
-                    metaEndpoint.usePinnedCertificate,
-                    metaEndpoint.certificateCommonName,
-                ),
-            )
-        }
+//        for (metaEndpoint in metaEndpointsProvider.metaEndpoints()) {
+//            endpoints.add(
+//                RegionEndpoint(
+//                    metaEndpoint.endpoint,
+//                    metaEndpoint.isProxy,
+//                    metaEndpoint.usePinnedCertificate,
+//                    metaEndpoint.certificateCommonName,
+//                ),
+//            )
+//        }
         endpoints.add(
             RegionEndpoint(
                 REGION_BASE_ENDPOINT,
