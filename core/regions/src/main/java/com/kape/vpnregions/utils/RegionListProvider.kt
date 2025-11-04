@@ -80,20 +80,19 @@ class RegionListProvider(
         locale: String,
         isConnected: Boolean,
     ) = flow {
-//        regionRepository.fetchVpnRegions(locale).collect {
-//            regionRepository
-//                .fetchLatencies(isConnected)
-//                .collect { updatedServers ->
-//                    for (server in updatedServers) {
-//                        it.filter { it.name == server.name }[0].latency =
-//                            server.latency ?: VPN_REGIONS_PING_TIMEOUT.toString()
-//                    }
-//                    _servers.value = updatedServers
-//                    isDefaultList.value = false
-//                    emit(updatedServers)
-//                }
-//        }
-        emit(_servers.value)
+        regionRepository.fetchVpnRegions(locale).collect {
+            regionRepository
+                .fetchLatencies(isConnected)
+                .collect { updatedServers ->
+                    for (server in updatedServers) {
+                        it.filter { it.name == server.name }[0].latency =
+                            server.latency ?: VPN_REGIONS_PING_TIMEOUT.toString()
+                    }
+                    _servers.value = updatedServers
+                    isDefaultList.value = false
+                    emit(updatedServers)
+                }
+        }
     }
 
     private fun setRegionsListToDefault() {
