@@ -4,7 +4,7 @@ import com.kape.vpn.utils.STAGING
 import com.privateinternetaccess.regions.IRegionEndpointProvider
 import com.privateinternetaccess.regions.RegionEndpoint
 
-private const val REGION_BASE_ENDPOINT = "serverlist-stg.pvt.site:8080"
+private const val REGION_BASE_ENDPOINT = "serverlist.piaservers.net"
 
 class RegionsModuleStateProvider(
     val certificate: String,
