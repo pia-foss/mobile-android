@@ -40,12 +40,7 @@ import com.kape.ui.mobile.text.AppBarConnectionTextDefault
 import com.kape.ui.mobile.text.AppBarTitleText
 import com.kape.ui.theme.connectedGradient
 import com.kape.ui.theme.connectingGradient
-import com.kape.ui.theme.defaultGradient
 import com.kape.ui.theme.errorGradient
-import com.kape.ui.theme.statusBarConnected
-import com.kape.ui.theme.statusBarConnecting
-import com.kape.ui.theme.statusBarDefault
-import com.kape.ui.theme.statusBarError
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionStatus
 
@@ -175,29 +170,14 @@ private fun getAppBarLeftIcon(type: AppBarType): Int {
 
 private fun getAppBarBackgroundColor(status: ConnectionStatus, scheme: ColorScheme): Brush {
     return when (status) {
-        ConnectionStatus.ERROR -> Brush.verticalGradient(scheme.errorGradient())
-        ConnectionStatus.CONNECTED -> Brush.verticalGradient(scheme.connectedGradient())
-        ConnectionStatus.DISCONNECTING,
-        ConnectionStatus.DISCONNECTED,
-        -> Brush.verticalGradient(scheme.defaultGradient(scheme))
+        ConnectionStatus.ERROR, ConnectionStatus.DISCONNECTING, ConnectionStatus.DISCONNECTED -> Brush.verticalGradient(
+            scheme.errorGradient(),
+        )
 
+        ConnectionStatus.CONNECTED -> Brush.verticalGradient(scheme.connectedGradient())
         ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
         -> Brush.verticalGradient(scheme.connectingGradient())
-    }
-}
-
-private fun getStatusBarColor(status: ConnectionStatus, scheme: ColorScheme): Color {
-    return when (status) {
-        ConnectionStatus.ERROR -> scheme.statusBarError()
-        ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
-            scheme,
-        )
-
-        ConnectionStatus.RECONNECTING,
-        ConnectionStatus.CONNECTING,
-        -> scheme.statusBarConnecting()
     }
 }
 

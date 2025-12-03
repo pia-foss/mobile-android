@@ -46,11 +46,13 @@ fun ConnectButton(
     var backgroundColor = colorScheme.surface
     val color = when (status) {
         ConnectionStatus.ERROR,
+        ConnectionStatus.DISCONNECTING,
+        ConnectionStatus.DISCONNECTED,
         -> colorScheme.connectionError()
+
         ConnectionStatus.CONNECTED,
         -> colorScheme.primary
-        ConnectionStatus.DISCONNECTED,
-        ConnectionStatus.DISCONNECTING,
+
         ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
         -> colorScheme.connectionDefault()
