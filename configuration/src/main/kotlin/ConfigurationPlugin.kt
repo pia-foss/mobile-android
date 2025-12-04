@@ -11,9 +11,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 object Config {
-    const val COMPILE_SDK = 35
+    const val COMPILE_SDK = 36
     const val MIN_SDK = 24
-    const val TARGET_SDK = 35
+    const val TARGET_SDK = 36
 }
 
 class ConfigurationPlugin : Plugin<Project> {

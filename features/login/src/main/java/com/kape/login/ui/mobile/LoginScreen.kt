@@ -146,7 +146,8 @@ fun LoginScreen(navController: NavController) = Screen {
                         content = getErrorMessage(state = state) ?: "",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(16.dp)
+                            .testTag(":LoginScreen:login_error"),
                     )
                 }
 

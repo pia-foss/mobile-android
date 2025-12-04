@@ -1,26 +1,23 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorObjectFinder
-import screens.helpers.UiAutomatorStepsHelper
+import screens.helpers.UiAutomatorHelpers
+import screens.helpers.UiAutomatorHelpers.waitUntilVisible
 
 object SideMenuSteps {
-    val settingsButton =
-        UiAutomatorObjectFinder.findByResourceId(":SideMenu:Settings")
-    val dedicatedIP =
-        UiAutomatorObjectFinder.findByResourceId(":SideMenu:DedicatedIP")
-    val logoutButton =
-        UiAutomatorObjectFinder.findByResourceId(":SideMenu:Logout")
-    val logoutDialogueConfirmButton =
-        UiAutomatorObjectFinder.findByResourceId(":SideMenu:ConfirmButton")
+
+    val settingsButton get() = UiAutomatorHelpers.findByResId(":SideMenu:Settings")
+    val dedicatedIP get() = UiAutomatorHelpers.findByResId(":SideMenu:DedicatedIP")
+    val logoutButton get() = UiAutomatorHelpers.findByResId(":SideMenu:Logout")
+    val logoutDialogueConfirmButton get() = UiAutomatorHelpers.findByResId(":SideMenu:ConfirmButton")
 
     fun logOut() {
-        logoutButton.clickAndWaitForNewWindow()
-        logoutDialogueConfirmButton.clickAndWaitForNewWindow()
-        UiAutomatorStepsHelper.waitUntilFound(SignUpSteps.loginButton)
+        UiAutomatorHelpers.click(logoutButton)
+        UiAutomatorHelpers.click(logoutDialogueConfirmButton)
+        waitUntilVisible(SignUpSteps.loginButton)
     }
 
     fun navigateToSideMenu() {
         MainScreenSteps.navigateToMainScreen()
-        MainScreenSteps.sideMenu.click()
+        UiAutomatorHelpers.click(MainScreenSteps.sideMenu)
     }
 }
