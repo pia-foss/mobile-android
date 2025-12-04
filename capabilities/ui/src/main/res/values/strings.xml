@@ -92,6 +92,9 @@
     <string name="reconnecting">Reconnecting&#8230;</string>
     <string name="not_connected">Not Connected</string>
     <string name="connection_error">Connection Error</string>
+    <string name="vpn_protected">Protected</string>
+    <string name="vpn_protected_to_format">Protected | %s</string>
+    <string name="vpn_not_protected">Not Protected</string>
 
     <string name="bits_per_second" translatable="false">%.0f bit/s</string>
     <string name="kbits_per_second" translatable="false">%.1f kbit/s</string>

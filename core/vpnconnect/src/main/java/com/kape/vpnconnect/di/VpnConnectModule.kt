@@ -47,8 +47,8 @@ private fun provideConnectionStatusValues(context: Context): Map<ConnectionStatu
     val values = mutableMapOf<ConnectionStatus, String>()
     values[ConnectionStatus.CONNECTING] = context.getString(com.kape.ui.R.string.connecting)
     values[ConnectionStatus.CONNECTED] =
-        context.getString(com.kape.ui.R.string.connected_to_format)
-    values[ConnectionStatus.DISCONNECTED] = context.getString(com.kape.ui.R.string.not_connected)
+        context.getString(com.kape.ui.R.string.vpn_protected_to_format)
+    values[ConnectionStatus.DISCONNECTED] = context.getString(com.kape.ui.R.string.vpn_not_protected)
     values[ConnectionStatus.DISCONNECTING] = context.getString(com.kape.ui.R.string.not_connected)
     values[ConnectionStatus.RECONNECTING] =
         context.getString(com.kape.ui.R.string.reconnecting)

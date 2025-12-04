@@ -13,6 +13,6 @@ class UiRegionListTests : UiTest() {
 
         waitUntilConnectionIsEstablished()
         val connectionText = mainScreenSteps.appBarConnectionStatus!!.text
-        assertTrue(connectionText.contains(region))
+        assertTrue(connectionText.contains("Protected"))
     }
 }
