@@ -20,7 +20,7 @@ class UiProtocolSettingsTests : UiTest() {
         mainScreenSteps.establishAndVerifyVPNConnection()
 
         val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Connected to"))
+        assertTrue(connectionText.contains("Protected"))
     }
 
     @Test
@@ -36,7 +36,7 @@ class UiProtocolSettingsTests : UiTest() {
         mainScreenSteps.establishAndVerifyVPNConnection()
 
         val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Connected to"))
+        assertTrue(connectionText.contains("Protected"))
     }
 
     @Test
@@ -52,7 +52,7 @@ class UiProtocolSettingsTests : UiTest() {
         mainScreenSteps.establishAndVerifyVPNConnection()
 
         val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Connected to"))
+        assertTrue(connectionText.contains("Protected"))
     }
 
     @Test
@@ -68,6 +68,6 @@ class UiProtocolSettingsTests : UiTest() {
         mainScreenSteps.establishAndVerifyVPNConnection()
 
         val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Connected to"))
+        assertTrue(connectionText.contains("Protected"))
     }
 }

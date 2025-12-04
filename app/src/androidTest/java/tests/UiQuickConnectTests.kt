@@ -16,7 +16,7 @@ class UiQuickConnectTests : UiTest() {
 
         waitUntilConnectionIsEstablished()
         val connectionText = mainScreenSteps.appBarConnectionStatus?.text?:""
-        assertTrue(connectionText.contains("Connected to"))
+        assertTrue(connectionText.contains("Protected"))
     }
 
     @Test
@@ -28,6 +28,6 @@ class UiQuickConnectTests : UiTest() {
 
         waitUntilConnectionIsEstablished()
         val connectionText = mainScreenSteps.appBarConnectionStatus?.text?:""
-        assertTrue(connectionText.contains("Connected to"))
+        assertTrue(connectionText.contains("Protected"))
     }
 }

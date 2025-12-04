@@ -29,7 +29,7 @@ class ConnectionManager(
     val serverIso: StateFlow<String> = _serverIso
 
     private val _connectionStatusTitle =
-        MutableStateFlow(context.getString(com.kape.ui.R.string.not_connected))
+        MutableStateFlow(context.getString(com.kape.ui.R.string.vpn_not_protected))
     val connectionStatusTitle: StateFlow<String> = _connectionStatusTitle
 
     var isManualConnection: Boolean = false
@@ -67,7 +67,8 @@ class ConnectionManager(
         }
         _connectionStatus.value = currentStatus
         connectionValues[currentStatus]?.let {
-            _connectionStatusTitle.value = String.format(it, serverName.value)
+            // TODO: KM-13200
+            _connectionStatusTitle.value = String.format(it, "")
         }
         submitKpiEventUseCase.submitConnectionEvent(
             getKpiConnectionStatus(status),
