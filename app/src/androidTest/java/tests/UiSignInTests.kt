@@ -3,15 +3,14 @@ package tests
 import com.kape.vpn.BuildConfig
 import org.junit.Before
 import org.junit.Test
-import screens.helpers.UiAutomatorStepsHelper.waitUntilFound
-import screens.steps.LoginSteps
-import screens.steps.MainScreenSteps
+import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import kotlin.test.assertTrue
 
 class UiSignInTests : UiTest() {
 
     @Before
     override fun setUp() {
-        setupWithoutLogin()
+        setupWithoutLogin()  // Launch app without auto-login
     }
 
     @Test
@@ -20,7 +19,8 @@ class UiSignInTests : UiTest() {
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
         loginSteps.giveAppPermissions()
-        assert(mainScreenSteps.connectButton.exists())
+
+        assertTrue(waitUntilVisible(mainScreenSteps.connectButton))
     }
 
     @Test
@@ -28,8 +28,8 @@ class UiSignInTests : UiTest() {
         signUpSteps.navigateToSignUpScreen()
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn("InvalidUser", "InvalidPassword")
-        waitUntilFound(loginSteps.loginButton)
-        assert(loginSteps.loginButton.exists())
+
+        assertTrue(waitUntilVisible(loginSteps.errorField))
     }
 
     @Test
@@ -37,8 +37,8 @@ class UiSignInTests : UiTest() {
         signUpSteps.navigateToSignUpScreen()
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn("", "")
-        waitUntilFound(loginSteps.loginButton)
-        assert(loginSteps.loginButton.exists())
+
+        assertTrue(waitUntilVisible(loginSteps.errorField))
     }
 
     @Test
@@ -46,8 +46,8 @@ class UiSignInTests : UiTest() {
         signUpSteps.navigateToSignUpScreen()
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, "")
-        waitUntilFound(loginSteps.loginButton)
-        assert(loginSteps.loginButton.exists())
+
+        assertTrue(waitUntilVisible(loginSteps.errorField))
     }
 
     @Test
@@ -55,8 +55,7 @@ class UiSignInTests : UiTest() {
         signUpSteps.navigateToSignUpScreen()
         loginSteps.navigateToLoginScreen()
         loginSteps.logIn("", BuildConfig.PIA_VALID_PASSWORD)
-        loginSteps.giveAppPermissions()
-        waitUntilFound(loginSteps.loginButton)
-        assert(loginSteps.loginButton.exists())
+
+        assertTrue(waitUntilVisible(loginSteps.errorField))
     }
 }

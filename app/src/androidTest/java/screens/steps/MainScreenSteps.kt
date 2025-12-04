@@ -1,32 +1,25 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorObjectFinder
-import screens.helpers.UiAutomatorStepsHelper
-import screens.helpers.UiAutomatorStepsHelper.waitUntilFound
-import screens.helpers.UiAutomatorStepsHelper.waitUntilConnectionIsEstablished
+import screens.helpers.UiAutomatorHelpers
+import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import screens.helpers.UiAutomatorHelpers.waitUntilConnectionIsEstablished
 
 object MainScreenSteps {
-    val connectButton =
-        UiAutomatorObjectFinder.findByResourceId(":ConnectionScreen:connection_button")
-    val sideMenu =
-        UiAutomatorObjectFinder.findByResourceId(":AppBar:side_menu")
-    val appBarConnectionStatus = UiAutomatorObjectFinder.findByResourceId(":AppBar:connection_text_default")
-    val quickConnectFirstItem = UiAutomatorObjectFinder.findByResourceId(":QuickConnect:server_0")
-    val quickConnectSecondItem = UiAutomatorObjectFinder.findByResourceId(":QuickConnect:server_1")
-    val locationPicker = UiAutomatorObjectFinder.findByResourceId(":ConnectionScreen:VpnLocationPicker")
-    //we select 8 as it is most likely to have a different VPN server than the optimal location.
-    val locationEightItem = UiAutomatorObjectFinder.findByResourceId(":VpnRegionSelectionScreen:locationItem_8")
+
+    val connectButton get() = UiAutomatorHelpers.findByResId(":ConnectionScreen:connection_button")
+    val sideMenu get() = UiAutomatorHelpers.findByResId(":AppBar:side_menu")
+    val appBarConnectionStatus get() = UiAutomatorHelpers.findByResId(":AppBar:connection_text_default")
+    val quickConnectFirstItem get() = UiAutomatorHelpers.findByResId(":QuickConnect:server_0")
+    val quickConnectSecondItem get() = UiAutomatorHelpers.findByResId(":QuickConnect:server_1")
+    val locationPicker get() = UiAutomatorHelpers.findByResId(":ConnectionScreen:VpnLocationPicker")
+    val locationEightItem get() = UiAutomatorHelpers.findByResId(":VpnRegionSelectionScreen:locationItem_8")
+
     fun navigateToMainScreen() {
-        try {
-            waitUntilFound(connectButton)
-        } catch (e: Exception) {
-            UiAutomatorStepsHelper.device.pressBack()
-            navigateToMainScreen()
-        }
+        waitUntilVisible(connectButton)
     }
 
     fun establishAndVerifyVPNConnection() {
-        connectButton.click()
+        UiAutomatorHelpers.click(connectButton)
         waitUntilConnectionIsEstablished()
     }
 }

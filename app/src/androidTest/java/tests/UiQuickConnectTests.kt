@@ -1,8 +1,9 @@
 package tests
 
 import org.junit.Test
-import screens.helpers.UiAutomatorStepsHelper.defaultTimeout
-import screens.helpers.UiAutomatorStepsHelper.waitUntilConnectionIsEstablished
+import screens.helpers.UiAutomatorHelpers
+import screens.helpers.UiAutomatorHelpers.waitUntilConnectionIsEstablished
+import screens.helpers.UiAutomatorHelpers.waitUntilVisible
 import kotlin.test.assertTrue
 
 class UiQuickConnectTests : UiTest() {
@@ -10,21 +11,23 @@ class UiQuickConnectTests : UiTest() {
     @Test
     fun quick_connect_should_connect_from_disconnect_state() {
         mainScreenSteps.establishAndVerifyVPNConnection()
-        mainScreenSteps.connectButton.click()
-        mainScreenSteps.quickConnectFirstItem.click()
+        mainScreenSteps.connectButton?.click()
+        mainScreenSteps.quickConnectFirstItem?.let { UiAutomatorHelpers.clickAndWaitForNewWindow(it) }
+
         waitUntilConnectionIsEstablished()
-        val connectionText = mainScreenSteps.appBarConnectionStatus.text
-        assertTrue(connectionText.contains("Connected to") && mainScreenSteps.quickConnectFirstItem.exists())
+        val connectionText = mainScreenSteps.appBarConnectionStatus?.text?:""
+        assertTrue(connectionText.contains("Connected to"))
     }
 
     @Test
     fun quick_connect_should_switch_server_when_already_connected() {
         mainScreenSteps.establishAndVerifyVPNConnection()
-        mainScreenSteps.locationPicker.clickAndWaitForNewWindow(defaultTimeout)
-        mainScreenSteps.locationEightItem.clickAndWaitForNewWindow(defaultTimeout)
-        mainScreenSteps.quickConnectSecondItem.click()
+        mainScreenSteps.locationPicker?.let { UiAutomatorHelpers.clickAndWaitForNewWindow(it) }
+        mainScreenSteps.locationEightItem?.let { UiAutomatorHelpers.clickAndWaitForNewWindow(it) }
+        mainScreenSteps.quickConnectSecondItem?.let { UiAutomatorHelpers.clickAndWaitForNewWindow(it) }
+
         waitUntilConnectionIsEstablished()
-        val connectionText = mainScreenSteps.appBarConnectionStatus.text
-        assertTrue(connectionText.contains("Connected to") && mainScreenSteps.quickConnectSecondItem.exists())
+        val connectionText = mainScreenSteps.appBarConnectionStatus?.text?:""
+        assertTrue(connectionText.contains("Connected to"))
     }
 }

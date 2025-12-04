@@ -2,31 +2,42 @@ package tests
 
 import com.kape.vpn.BuildConfig
 import org.junit.Test
-import screens.helpers.UiAutomatorStepsHelper.waitUntilFound
+import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import kotlin.test.assertTrue
 
 class UiDedicatedIPTests : UiTest() {
 
     @Test
     fun accept_valid_dedicated_ip_token() {
+        // Navigate to Dedicated IP screen
         dedicatedIPSteps.navigateToDedicatedIPPage()
+
+        // Enter a valid token and activate
         dedicatedIPSteps.activateDedicatedIPToken(BuildConfig.PIA_VALID_DIP_TOKEN)
-        waitUntilFound(dedicatedIPSteps.dedicatedIPServerName)
-        assert(dedicatedIPSteps.dedicatedIPServerName.exists()
-                && dedicatedIPSteps.dedicatedIPFlag.exists()
-                && !dedicatedIPSteps.dedicatedIPField.exists())
+
+        // Wait for server name and flag to appear
+        assertTrue(waitUntilVisible(dedicatedIPSteps.dedicatedIPServerName))
+        assertTrue(waitUntilVisible(dedicatedIPSteps.dedicatedIPFlag))
+
+        // Verify that the input field is gone after successful activation
+        assertTrue(dedicatedIPSteps.dedicatedIPField == null)
     }
 
     @Test
     fun reject_invalid_dedicated_ip_token() {
         dedicatedIPSteps.navigateToDedicatedIPPage()
         dedicatedIPSteps.activateDedicatedIPToken("InvalidToken")
-        assert(dedicatedIPSteps.dedicatedIPField.exists())
+
+        // Input field should still be present
+        assertTrue(waitUntilVisible(dedicatedIPSteps.dedicatedIPField))
     }
 
     @Test
     fun reject_empty_dedicated_ip_token() {
         dedicatedIPSteps.navigateToDedicatedIPPage()
         dedicatedIPSteps.activateDedicatedIPToken("")
-        assert(dedicatedIPSteps.dedicatedIPField.exists())
+
+        // Input field should still be present
+        assertTrue(waitUntilVisible(dedicatedIPSteps.dedicatedIPField))
     }
 }

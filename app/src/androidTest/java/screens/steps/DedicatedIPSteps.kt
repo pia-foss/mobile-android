@@ -1,21 +1,22 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorObjectFinder
-import screens.helpers.UiAutomatorStepsHelper
+import screens.helpers.UiAutomatorHelpers
+
 
 object DedicatedIPSteps {
-    val dedicatedIPField = UiAutomatorObjectFinder.findByResourceId(":DedicatedIPScreen:dip_text_field")
-    val activateButton = UiAutomatorObjectFinder.findByResourceId(":DedicatedIPScreen:activate_button")
-    val dedicatedIPFlag = UiAutomatorObjectFinder.findByResourceId(":DedicatedIPScreen:dip_flag")
-    val dedicatedIPServerName = UiAutomatorObjectFinder.findByResourceId(":DedicatedIPScreen:dip_server_name")
+
+    val dedicatedIPField get() = UiAutomatorHelpers.findByResId(":DedicatedIPScreen:dip_text_field")
+    val activateButton get() = UiAutomatorHelpers.findByResId(":DedicatedIPScreen:activate_button")
+    val dedicatedIPFlag get() = UiAutomatorHelpers.findByResId(":DedicatedIPScreen:dip_flag")
+    val dedicatedIPServerName get() = UiAutomatorHelpers.findByResId(":DedicatedIPScreen:dip_server_name")
 
     fun navigateToDedicatedIPPage() {
-        MainScreenSteps.sideMenu.click()
-        SideMenuSteps.dedicatedIP.click()
+        UiAutomatorHelpers.click(MainScreenSteps.sideMenu)
+        UiAutomatorHelpers.click(SideMenuSteps.dedicatedIP)
     }
 
-    fun activateDedicatedIPToken(dipToken: String) {
-        UiAutomatorStepsHelper.inputTextInField(dedicatedIPField, dipToken)
-        activateButton.clickAndWaitForNewWindow()
+    fun activateDedicatedIPToken(token: String) {
+        dedicatedIPField?.let { UiAutomatorHelpers.inputText(it, token) }
+        UiAutomatorHelpers.click(activateButton)
     }
 }

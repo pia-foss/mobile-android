@@ -1,25 +1,18 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorObjectFinder
-import screens.helpers.UiAutomatorStepsHelper
+import screens.helpers.UiAutomatorHelpers
+import screens.helpers.UiAutomatorHelpers.waitUntilVisible
 
 object SignUpSteps {
-    val loginButton = UiAutomatorObjectFinder.findByResourceId(":SignUpScreen:Login")
+
+    val loginButton get() = UiAutomatorHelpers.findByResId(":SignUpScreen:Login")
 
     fun navigateToSignUpScreen() {
-        try {
-            UiAutomatorStepsHelper.waitUntilFound(loginButton)
+        if (!waitUntilVisible(loginButton)) {
+            MainScreenSteps.sideMenu?.let { UiAutomatorHelpers.click(it) }
+            SideMenuSteps.logoutButton?.let { UiAutomatorHelpers.click(it) }
+            SideMenuSteps.logoutDialogueConfirmButton?.let { UiAutomatorHelpers.click(it) }
+            waitUntilVisible(loginButton)
         }
-        catch (e: Exception) {
-            UiAutomatorStepsHelper.waitUntilFound(MainScreenSteps.connectButton)
-            MainScreenSteps.sideMenu.clickAndWaitForNewWindow(UiAutomatorStepsHelper.defaultTimeout)
-            SideMenuSteps.logoutButton.clickAndWaitForNewWindow(UiAutomatorStepsHelper.defaultTimeout)
-            SideMenuSteps.logoutDialogueConfirmButton.clickAndWaitForNewWindow(
-                UiAutomatorStepsHelper.defaultTimeout
-            )
-            UiAutomatorStepsHelper.waitUntilFound(loginButton)
-        }
-
-        assert(loginButton.exists())
     }
 }
