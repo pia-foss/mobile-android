@@ -36,6 +36,7 @@ import com.kape.permissions.utils.GRANTED
 import com.kape.permissions.utils.IDLE
 import com.kape.permissions.utils.NOT_GRANTED
 import com.kape.permissions.utils.REQUEST
+import com.kape.ui.mobile.elements.InsetsColumn
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.OnboardingDescriptionText
@@ -68,65 +69,66 @@ fun VpnPermissionScreen() = Screen {
             Toast.LENGTH_LONG,
         ).show()
     }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .background(LocalColors.current.background)
-            .semantics {
-                testTagsAsResourceId = true
-            },
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = CenterHorizontally,
-    ) {
-        Column(modifier = Modifier.widthIn(max = 520.dp)) {
-            Image(
-                painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(40.dp)
-                    .fillMaxWidth(),
-            )
-            Image(
-                painter = painterResource(id = R.drawable.image_lock),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(40.dp)
-                    .height(140.dp)
-                    .fillMaxWidth(),
-            )
-            Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                OnboardingTitleText(
-                    content = stringResource(id = com.kape.ui.R.string.vpn_permission_title),
+    InsetsColumn {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .background(LocalColors.current.background)
+                .semantics {
+                    testTagsAsResourceId = true
+                },
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = CenterHorizontally,
+        ) {
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                Image(
+                    painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .height(40.dp)
+                        .fillMaxWidth(),
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.image_lock),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(40.dp)
+                        .height(140.dp)
+                        .fillMaxWidth(),
+                )
+                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                    OnboardingTitleText(
+                        content = stringResource(id = com.kape.ui.R.string.vpn_permission_title),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    )
+                    OnboardingDescriptionText(
+                        content = stringResource(id = com.kape.ui.R.string.vpn_permission_description),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    OnboardingFooterText(
+                        content = stringResource(id = com.kape.ui.R.string.vpn_permission_footer),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    )
+                }
+                PrimaryButton(
+                    text = stringResource(id = com.kape.ui.R.string.ok),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                )
-                OnboardingDescriptionText(
-                    content = stringResource(id = com.kape.ui.R.string.vpn_permission_description),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                OnboardingFooterText(
-                    content = stringResource(id = com.kape.ui.R.string.vpn_permission_footer),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                )
-            }
-            PrimaryButton(
-                text = stringResource(id = com.kape.ui.R.string.ok),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
-                    .align(CenterHorizontally)
-                    .testTag(":VpnPermissionScreen:ok"),
-            ) {
-                viewModel.onOkButtonClicked()
+                        .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
+                        .align(CenterHorizontally)
+                        .testTag(":VpnPermissionScreen:ok"),
+                ) {
+                    viewModel.onOkButtonClicked()
+                }
             }
         }
     }
