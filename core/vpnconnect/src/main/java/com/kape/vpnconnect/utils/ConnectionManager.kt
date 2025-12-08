@@ -7,8 +7,14 @@ import com.kape.shareevents.data.models.KpiConnectionStatus
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 const val NOTIFICATION_ID = 123
 
@@ -21,7 +27,8 @@ class ConnectionManager(
     private val _connectionStatus =
         MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
     val connectionStatus: StateFlow<ConnectionStatus> = _connectionStatus
-
+    private var timerJob: Job? = null
+    private var timer: Timer? = null
     private val _serverName = MutableStateFlow("")
     val serverName: StateFlow<String> = _serverName
 
@@ -49,7 +56,10 @@ class ConnectionManager(
 
     override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
         val currentStatus = when (status) {
-            VPNManagerConnectionStatus.Disconnecting -> ConnectionStatus.DISCONNECTING
+            VPNManagerConnectionStatus.Disconnecting -> {
+                cancelTimerJob()
+                ConnectionStatus.DISCONNECTING
+            }
             is VPNManagerConnectionStatus.Disconnected -> ConnectionStatus.DISCONNECTED
             VPNManagerConnectionStatus.Authenticating,
             VPNManagerConnectionStatus.LinkUp,
@@ -58,7 +68,11 @@ class ConnectionManager(
             -> ConnectionStatus.CONNECTING
 
             VPNManagerConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
-            is VPNManagerConnectionStatus.Connected -> ConnectionStatus.CONNECTED
+            is VPNManagerConnectionStatus.Connected -> {
+                cancelTimerJob()
+                startTimer(System.currentTimeMillis())
+                ConnectionStatus.CONNECTED
+            }
         }
         // If we update the notification too often, Android will silence it.
         if (_connectionStatus.value != currentStatus) {
@@ -66,10 +80,7 @@ class ConnectionManager(
             notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
         }
         _connectionStatus.value = currentStatus
-        connectionValues[currentStatus]?.let {
-            // TODO: KM-13200
-            _connectionStatusTitle.value = String.format(it, "")
-        }
+        setConnectionValuesTitle(timer)
         submitKpiEventUseCase.submitConnectionEvent(
             getKpiConnectionStatus(status),
             isManualConnection,
@@ -91,5 +102,49 @@ class ConnectionManager(
             VPNManagerConnectionStatus.Reconnecting -> KpiConnectionStatus.Reconnecting
             is VPNManagerConnectionStatus.Connected -> KpiConnectionStatus.Connected
         }
+    }
+
+    private fun setConnectionValuesTitle(timer: Timer?) {
+        val status = _connectionStatus.value
+        connectionValues[status]?.let {
+            val args = if (status == ConnectionStatus.CONNECTED) {
+                "%02d:%02d:%02d".format(
+                    timer?.hours,
+                    timer?.minutes,
+                    timer?.seconds,
+                )
+            } else {
+                ""
+            }
+            _connectionStatusTitle.value = String.format(it, args)
+        }
+    }
+
+    private fun cancelTimerJob() {
+        timerJob?.cancel()
+        timerJob = null
+        timer = Timer(0, 0, 0)
+    }
+
+    private fun startTimer(connectedAt: Long) {
+        timerJob = CoroutineScope(Dispatchers.IO).launch {
+            while (true) {
+                delay(1_000L)
+                timer = getTimer(System.currentTimeMillis() - connectedAt)
+                withContext(Dispatchers.Main) {
+                    setConnectionValuesTitle(timer)
+                }
+            }
+        }
+    }
+
+    private fun getTimer(timeConnected: Long): Timer {
+        var remainingSeconds = timeConnected
+        val hours = remainingSeconds / 3_600_000
+        remainingSeconds %= 3_600_000
+        val minutes = remainingSeconds / 60_000
+        remainingSeconds %= 60_000
+        val seconds = remainingSeconds / 1_000
+        return Timer(hours, minutes, seconds)
     }
 }
