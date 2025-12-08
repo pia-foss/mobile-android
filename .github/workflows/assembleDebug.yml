@@ -69,6 +69,10 @@ jobs:
   e2e-testing:
     name: Run end to end instrumentation tests
     runs-on: ubuntu-latest
+    needs:
+      - build-playstore-version
+      - build-website-version
+      - build-amazon-version
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4.1.0

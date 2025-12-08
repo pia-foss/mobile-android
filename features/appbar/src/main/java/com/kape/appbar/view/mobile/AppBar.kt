@@ -194,17 +194,6 @@ private fun AppBarConnectionStatus(
                 .align(Center)
                 .testTag(":AppBar:connection_status"),
         ) {
-            if (status == ConnectionStatus.DISCONNECTED) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_logo_small),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .align(CenterVertically)
-                        .padding(end = 8.dp),
-                    tint = Color.Unspecified,
-                )
-            }
             val statusPrefix = stringResource(id = R.string.vpn_status)
             AppBarConnectionTextDefault(
                 content = title ?: "",
