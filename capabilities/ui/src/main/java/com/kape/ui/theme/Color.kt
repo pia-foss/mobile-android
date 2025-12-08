@@ -89,7 +89,7 @@ val DarkColorScheme = darkColorScheme(
     onError = white,
     errorContainer = error50,
     onErrorContainer = error10,
-    outline = grey40,
+    outline = grey30,
     outlineVariant = grey70,
 )
 

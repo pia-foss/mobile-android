@@ -79,4 +79,5 @@ dependencies {
     implementation(libs.kape.vpnmanager)
     implementation(libs.kape.account)
     implementation(libs.bundles.serialization)
+    implementation(libs.constraintlayout)
 }

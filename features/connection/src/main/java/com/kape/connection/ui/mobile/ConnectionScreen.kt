@@ -5,7 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,12 +18,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +44,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -42,7 +52,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -53,7 +63,6 @@ import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.rating.data.RatingDialogType
-import com.kape.rating.ui.RatingDialog
 import com.kape.rating.ui.RatingFeedbackDialog
 import com.kape.rating.ui.RatingReviewDialog
 import com.kape.sidemenu.ui.screens.mobile.SideMenuContent
@@ -72,6 +81,7 @@ import com.kape.ui.mobile.tiles.ShadowsocksLocationPicker
 import com.kape.ui.mobile.tiles.Snooze
 import com.kape.ui.mobile.tiles.Traffic
 import com.kape.ui.mobile.tiles.VpnLocationPicker
+import com.kape.ui.theme.PiaTypography.subtitle3
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionManager
@@ -178,6 +188,20 @@ fun ConnectionScreen() = Screen {
                         viewModel.onConnectionButtonClicked()
                     }
                     Spacer(modifier = Modifier.height(36.dp))
+                    if (showRatingGeneralDialog.value) {
+                        RatingCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            onClose = {
+                                viewModel.setRatingStateInactive()
+                                showRatingGeneralDialog.value = false
+                            },
+                            onThumbsUp = viewModel::showReviewPrompt,
+                            onThumbsDown = viewModel::showFeedbackPrompt,
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                     viewModel.getOrderedElements().forEach { screenElement ->
                         DisplayComponent(
                             screenElement = screenElement,
@@ -192,17 +216,6 @@ fun ConnectionScreen() = Screen {
                         state.value.ratingDialogType is RatingDialogType.Review
                     showRatingFeedbackDialog.value =
                         state.value.ratingDialogType is RatingDialogType.Feedback
-
-                    if (showRatingGeneralDialog.value) {
-                        RatingDialog(
-                            onConfirm = {
-                                viewModel.showReviewPrompt()
-                            },
-                            onDismiss = {
-                                viewModel.showFeedbackPrompt()
-                            },
-                        )
-                    }
 
                     if (showRatingReviewDialog.value) {
                         val url = stringResource(id = R.string.app_url)
@@ -419,4 +432,99 @@ private fun DedicatedIpBanner(
         )
     }
     Spacer(modifier = Modifier.height(16.dp))
+}
+
+@Composable
+fun RatingCard(
+    modifier: Modifier,
+    onClose: () -> Unit,
+    onThumbsUp: () -> Unit,
+    onThumbsDown: () -> Unit,
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = LocalColors.current.outline),
+    ) {
+        ConstraintLayout(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            val (image, content, closeButton) = createRefs()
+            Image(
+                painterResource(R.drawable.img_rating),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(90.dp)
+                    .constrainAs(image) {
+                        start.linkTo(parent.start)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    },
+            )
+            Column(
+                modifier = Modifier.constrainAs(content) {
+                    start.linkTo(image.end)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    end.linkTo(closeButton.start)
+                },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = stringResource(R.string.rating_prompt),
+                    style = subtitle3,
+                    color = LocalColors.current.onBackground,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row {
+                    IconButton(
+                        onClick = onThumbsDown,
+                        modifier = Modifier
+                            .background(
+                                LocalColors.current.onPrimary,
+                                shape = CircleShape,
+                            )
+                            .padding(2.dp),
+                    ) {
+                        Icon(
+                            painterResource(R.drawable.ic_thumbs_down),
+                            contentDescription = null,
+                            tint = LocalColors.current.onBackground,
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    IconButton(
+                        onClick = onThumbsUp,
+                        modifier = Modifier
+                            .background(
+                                LocalColors.current.onPrimary,
+                                shape = CircleShape,
+                            )
+                            .padding(4.dp),
+                    ) {
+                        Icon(
+                            painterResource(R.drawable.ic_thumbs_up),
+                            contentDescription = null,
+                            tint = LocalColors.current.onBackground,
+                        )
+                    }
+                }
+            }
+            IconButton(
+                onClick = onClose,
+                modifier = Modifier.constrainAs(closeButton) {
+                    top.linkTo(parent.top)
+                    end.linkTo(parent.end)
+                },
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_close),
+                    contentDescription = null,
+                    tint = LocalColors.current.onBackground,
+                )
+            }
+        }
+    }
 }
