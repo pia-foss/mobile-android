@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
@@ -17,8 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.tv.foundation.lazy.grid.TvGridCells
-import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import com.kape.about.vm.AboutViewModel
@@ -74,11 +74,11 @@ fun TvAboutScreen() = Screen {
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
-            TvLazyVerticalGrid(
+            LazyVerticalGrid(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(32.dp),
-                columns = TvGridCells.Fixed(1),
+                columns = GridCells.Fixed(1),
             ) {
                 val licenses = viewModel.licences
                 items(licenses.size) { index ->
