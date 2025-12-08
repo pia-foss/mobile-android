@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
@@ -37,8 +39,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.tv.foundation.lazy.grid.TvGridCells
-import androidx.tv.foundation.lazy.grid.TvLazyVerticalGrid
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
@@ -127,8 +127,8 @@ fun TvPerAppSettingsScreen() = Screen {
                     ) {
                         viewModel.filterAppsByName(it, packageManager)
                     }
-                    TvLazyVerticalGrid(
-                        columns = TvGridCells.Fixed(1),
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(1),
                         contentPadding = PaddingValues(vertical = 16.dp),
                     ) {
                         val applicationPackages = viewModel.appList.value
