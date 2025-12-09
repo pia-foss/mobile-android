@@ -7,10 +7,10 @@ plugins {
     alias(libs.plugins.configuration)
 }
 
-val googleAppVersionCode = 686
+val googleAppVersionCode = 687
 val amazonAppVersionCode = googleAppVersionCode.plus(10000)
 val noInAppVersionCode = googleAppVersionCode.plus(10000)
-val appVersionName = "4.0.22"
+val appVersionName = "4.0.23"
 
 android {
     namespace = "com.kape.vpn"
