@@ -435,8 +435,7 @@
     <!-- Rating -->
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="rating_enjoy_title">Are you enjoying PIA VPN?</string>
-    <string name="rating_enjoy_message">We hope our VPN product is meeting your expectations</string>
+    <string name="rating_prompt">How are we doing?</string>
     <string name="rating_review_title">How about a review in Google Play?</string>
     <string name="rating_review_message">We appreciate you sharing your experience</string>
     <string name="rating_feedback_title">What went wrong?</string>
