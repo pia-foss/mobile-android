@@ -1,11 +1,11 @@
 package com.kape.vpn
 
-import android.app.Activity.ScreenCaptureCallback
 import android.app.ComponentCaller
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +27,6 @@ import com.kape.automation.ui.AutomationFlow
 import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
-import com.kape.dedicatedip.domain.ObserveScreenCaptureUseCase
 import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpFlow
 import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
 import com.kape.dedicatedip.utils.DedicatedIpStep
@@ -50,7 +49,6 @@ import com.kape.router.Connection
 import com.kape.router.Customization
 import com.kape.router.DedicatedIp
 import com.kape.router.Default
-import com.kape.router.EnterFlow
 import com.kape.router.Login
 import com.kape.router.NavigateBack
 import com.kape.router.NavigateOut
@@ -95,9 +93,7 @@ class MainActivity : AppCompatActivity() {
     private val router: Router by inject()
     private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
-    private val observeScreenCaptureUseCase: ObserveScreenCaptureUseCase by inject()
     private val shortcutPrefs: ShortcutPrefs by inject()
-    private lateinit var screenCaptureCallback: ScreenCaptureCallback
     private var currentDestination: String = ""
     private val destinationsForClearBackStack =
         listOf(
@@ -110,6 +106,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE)
+
         vpnSubscriptionPaymentProvider.register(this)
         defineScreenOrientation()
         deepLinkLogin(intent)
@@ -179,23 +180,6 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         if (currentDestination == Subscribe.Main) {
             vpnSubscriptionPaymentProvider.getPurchaseUpdates()
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            screenCaptureCallback = ScreenCaptureCallback {
-                observeScreenCaptureUseCase.announce()
-            }
-            registerScreenCaptureCallback(mainExecutor, screenCaptureCallback)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            unregisterScreenCaptureCallback(screenCaptureCallback)
         }
     }
 

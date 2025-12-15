@@ -16,25 +16,26 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
         </intent>
+
         <package android:name="androidx.test.orchestrator.OrchestratorService" />
     </queries>
 
+    <!-- Normal permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <!--Android 13-->
+
+    <!-- Android 16 foreground service permissions -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
-    <!--Android 14-->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
-    <uses-permission android:name="android.permission.DETECT_SCREEN_CAPTURE" />
-
-    <!--  Fix Google Play Ad Id Issue  -->
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+    <!-- Remove Play-sensitive AD_ID -->
+    <uses-permission
+        android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
 
     <uses-feature
         android:name="android.software.leanback"
@@ -45,13 +46,13 @@
 
     <application
         android:name=".App"
+        android:banner="@mipmap/ic_banner"
         android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
-        android:banner="@mipmap/ic_banner"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.PIA"
-        tools:targetApi="31">
+        tools:targetApi="36">
 
         <provider
             android:name="com.privateinternetaccess.account.AccountContentProvider"
@@ -94,12 +95,13 @@
                 android:resource="@xml/shortcuts" />
         </activity>
 
+        <!-- Boot receiver -->
         <receiver
             android:name=".receiver.OnBootReceiver"
             android:exported="true">
             <intent-filter android:priority="999">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" /> <!-- HTC boot notification -->
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
@@ -110,14 +112,17 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
+
         <receiver android:name="com.kape.snooze.OnSnoozeReceiver" />
         <receiver android:name=".receiver.PortForwardingReceiver" />
         <receiver android:name=".receiver.OnRulesChangedReceiver" />
 
         <service
             android:name=".service.AutomationService"
-            android:foregroundServiceType="location"
-            android:permission="android.permission.BIND_VPN_SERVICE" />
+            android:exported="false"
+            android:foregroundServiceType="systemExempted"
+            android:permission="android.permission.BIND_VPN_SERVICE"
+            tools:ignore="VpnServicePolicy" />
 
         <service
             android:name=".service.VpnAlwaysOnService"
@@ -133,23 +138,22 @@
             android:name=".service.WidgetProviderService"
             android:exported="true"
             android:foregroundServiceType="systemExempted"
-            android:permission="android.permission.BIND_VPN_SERVICE">
-            <intent-filter>
-                <action android:name="android.net.VpnService" />
-            </intent-filter>
-        </service>
+            android:permission="android.permission.BIND_VPN_SERVICE"
+            tools:ignore="VpnServicePolicy" />
 
+        <!-- Quick Settings tile service -->
         <service
             android:name=".service.QuickSettingService"
-            android:value="true"
-            android:label="@string/qs_title"
+            android:exported="true"
             android:icon="@drawable/ic_stat_pia_robot_white"
+            android:label="@string/qs_title"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:exported="true">
+            android:value="true">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
-            <meta-data android:name="android.service.quicksettings.ACTIVE_TILE"
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
                 android:value="false" />
         </service>
 
