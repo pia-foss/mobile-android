@@ -8,7 +8,6 @@ import com.kape.dedicatedip.domain.FetchSignupDipToken
 import com.kape.dedicatedip.domain.GetDipMonthlyPlan
 import com.kape.dedicatedip.domain.GetDipSupportedCountries
 import com.kape.dedicatedip.domain.GetDipYearlyPlan
-import com.kape.dedicatedip.domain.ObserveScreenCaptureUseCase
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.ui.vm.DipViewModel
@@ -34,8 +33,7 @@ val localDipModule = module {
     single { GetDipYearlyPlan(get(), get(), get()) }
     single { ValidateDipSignup(get(), get()) }
     single { FetchSignupDipToken(get()) }
-    single { ObserveScreenCaptureUseCase() }
     viewModel {
-        DipViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+        DipViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
 }
