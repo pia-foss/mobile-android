@@ -19,10 +19,6 @@ class AutomationService : Service(), KoinComponent {
         networkConnectionListener.triggerUpdate()
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        return super.onStartCommand(intent, flags, startId)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         stopForeground(STOP_FOREGROUND_REMOVE)
