@@ -5,27 +5,35 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.kape.signup.ui.vm.SignupViewModel
@@ -35,7 +43,6 @@ import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
-import com.kape.ui.mobile.elements.InsetsColumn
 import com.kape.ui.mobile.elements.MonthlySubscriptionCard
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -57,52 +64,62 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
     BackHandler {
         viewModel.exitApp()
     }
-
-    InsetsColumn(com.kape.signup.R.drawable.map) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .paint(
+                painter = painterResource(com.kape.signup.R.drawable.map),
+                contentScale = ContentScale.FillBounds,
+            )
+            .semantics {
+                testTagsAsResourceId = true
+            },
+    ) {
         Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .fillMaxSize(),
-            horizontalAlignment = CenterHorizontally,
+                .padding(WindowInsets.systemBars.asPaddingValues())
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                Image(
-                    painter = painterResource(id = R.drawable.pia_medium),
-                    contentDescription = stringResource(id = R.string.pia_signup),
+            Image(
+                painter = painterResource(id = R.drawable.pia_medium),
+                contentDescription = stringResource(id = R.string.pia_signup),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .height(40.dp)
+                    .fillMaxWidth(),
+            )
+            Image(
+                painter = painterResource(id = com.kape.signup.R.drawable.ic_globe),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth()
+                    .size(150.dp),
+            )
+            Column(
+                modifier = Modifier.widthIn(max = 520.dp),
+            ) {
+                OnboardingTitleText(
+                    content = stringResource(id = R.string.subscribe_screen_title),
                     modifier = Modifier
-                        .padding(16.dp)
-                        .height(40.dp)
-                        .fillMaxWidth(),
+                        .align(CenterHorizontally),
                 )
-                Image(
-                    painter = painterResource(id = com.kape.signup.R.drawable.ic_globe),
-                    contentDescription = null,
+                OnboardingDescriptionText(
+                    content = if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
+                        stringResource(id = R.string.subscribe_screen_description_no_in_app)
+                    } else {
+                        "${
+                        stringResource(id = R.string.subscribe_screen_description).format(
+                            subscriptionData?.yearly?.mainPrice,
+                        )
+                        } ${stringResource(id = R.string.subscribe_screen_description_cancel_anytime)}"
+                    },
                     modifier = Modifier
-                        .padding(20.dp)
-                        .fillMaxWidth()
-                        .size(150.dp),
+                        .align(CenterHorizontally)
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
                 )
-                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                    OnboardingTitleText(
-                        content = stringResource(id = R.string.subscribe_screen_title),
-                        modifier = Modifier
-                            .align(CenterHorizontally),
-                    )
-                    OnboardingDescriptionText(
-                        content = if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
-                            stringResource(id = R.string.subscribe_screen_description_no_in_app)
-                        } else {
-                            "${
-                            stringResource(id = R.string.subscribe_screen_description).format(
-                                subscriptionData?.yearly?.mainPrice,
-                            )
-                            } ${stringResource(id = R.string.subscribe_screen_description_cancel_anytime)}"
-                        },
-                        modifier = Modifier
-                            .align(CenterHorizontally)
-                            .padding(horizontal = 20.dp, vertical = 8.dp),
-                    )
-                }
                 Spacer(modifier = Modifier.height(16.dp))
                 Column(modifier = Modifier.alpha(determineProductsAlpha(screenState))) {
                     val subscriptionOptions = stringResource(id = R.string.subscription_option)
@@ -134,7 +151,7 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                     }
                 }
                 if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                 } else {
                     Spacer(modifier = Modifier.height(16.dp))
                     OnboardingDescriptionPaymentText(
@@ -168,14 +185,15 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                 ) {
                     viewModel.navigateToLogin()
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                Spacer(modifier = Modifier.weight(1f))
-                Footer(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .align(CenterHorizontally),
-                )
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+            Footer(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .align(CenterHorizontally),
+            )
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }

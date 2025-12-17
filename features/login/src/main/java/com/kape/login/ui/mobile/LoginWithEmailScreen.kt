@@ -3,9 +3,12 @@ package com.kape.login.ui.mobile
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,7 +32,6 @@ import com.kape.login.ui.vm.mobile.LoginWithEmailViewModel
 import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
 import com.kape.router.Login
-import com.kape.ui.mobile.elements.InsetsColumn
 import com.kape.ui.mobile.elements.NoNetworkBanner
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -45,44 +47,47 @@ fun LoginWithEmailScreen(navController: NavController) = Screen {
     val noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet)
     val email = remember { mutableStateOf("") }
 
-    InsetsColumn {
-        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                if (!isConnected) {
-                    NoNetworkBanner(noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet))
-                }
-                Image(
-                    painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
-                    contentDescription = "logo",
-                    modifier = Modifier
-                        .padding(start = 150.dp, top = 36.dp, bottom = 24.dp, end = 150.dp),
-                )
-                Text(
-                    text = stringResource(id = com.kape.ui.R.string.sign_in),
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(bottom = 24.dp),
-                )
-                Input(
-                    modifier = Modifier.padding(24.dp, 8.dp),
-                    label = stringResource(id = com.kape.ui.R.string.enter_email),
-                    maskInput = false,
-                    keyboard = KeyboardType.Email,
-                    content = email,
-                )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(WindowInsets.systemBars.asPaddingValues()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Column(modifier = Modifier.widthIn(max = 520.dp)) {
+            if (!isConnected) {
+                NoNetworkBanner(noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet))
+            }
+            Image(
+                painter = painterResource(id = com.kape.ui.R.drawable.ic_logo_large),
+                contentDescription = "logo",
+                modifier = Modifier
+                    .padding(start = 150.dp, top = 36.dp, bottom = 24.dp, end = 150.dp),
+            )
+            Text(
+                text = stringResource(id = com.kape.ui.R.string.sign_in),
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(bottom = 24.dp),
+            )
+            Input(
+                modifier = Modifier.padding(24.dp, 8.dp),
+                label = stringResource(id = com.kape.ui.R.string.enter_email),
+                maskInput = false,
+                keyboard = KeyboardType.Email,
+                content = email,
+            )
 
-                PrimaryButton(
-                    text = stringResource(id = com.kape.ui.R.string.send_link),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                ) {
-                    if (isConnected) {
-                        viewModel.loginWithEmail(email.value)
-                    } else {
-                        Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
-                    }
+            PrimaryButton(
+                text = stringResource(id = com.kape.ui.R.string.send_link),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+            ) {
+                if (isConnected) {
+                    viewModel.loginWithEmail(email.value)
+                } else {
+                    Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
                 }
             }
         }
