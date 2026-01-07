@@ -15,8 +15,11 @@ import com.android.billingclient.api.QueryPurchasesParams
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
+import com.kape.payments.data.SubscriptionPlan
+import com.kape.payments.utils.MONTHLY
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
+import com.kape.payments.utils.YEARLY
 import com.kape.payments.utils.monthlySubscription
 import com.kape.payments.utils.yearlySubscription
 import kotlinx.coroutines.channels.awaitClose
@@ -99,6 +102,24 @@ class VpnSubscriptionPaymentProviderImpl(
         it.plan.lowercase() == yearlySubscription.lowercase()
     }
 
+    override fun getMonthlySubscriptionPlan(): SubscriptionPlan? {
+        return prefs.getVpnSubscriptionPlans().firstOrNull {
+            it.billingPeriod == MONTHLY
+        }
+    }
+
+    override fun getYearlySubscriptionPlan(): SubscriptionPlan? {
+        return prefs.getVpnSubscriptionPlans().firstOrNull {
+            it.billingPeriod == YEARLY
+        }
+    }
+
+    override fun getFreeTrialYearlySubscriptionPlan(): SubscriptionPlan? {
+        return prefs.getVpnSubscriptionPlans().firstOrNull {
+            it.billingPeriod == YEARLY && it.freeTrialDuration != null
+        }
+    }
+
     override fun loadProducts() {
         if (prefs.getVpnSubscriptions().isEmpty()) {
             purchaseState.value = PurchaseState.ProductsLoadedFailed
@@ -119,25 +140,37 @@ class VpnSubscriptionPaymentProviderImpl(
             ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 val data = prefs.getVpnSubscriptions()
+                val plans = mutableListOf<SubscriptionPlan>()
                 for (item in productDetailsList.productDetailsList) {
                     if (data.any { it.id == item.productId }) {
-                        item.subscriptionOfferDetails?.let {
-                            // if offers are more than one - there's a free trial
-                            if (it.size > 1) {
-                                data.first { it.id == item.productId }.formattedPrice =
-                                    item.subscriptionOfferDetails?.getOrNull(1)?.pricingPhases?.pricingPhaseList?.get(
-                                        0,
-                                    )?.formattedPrice
-                            } else {
-                                data.first { it.id == item.productId }.formattedPrice =
-                                    item.subscriptionOfferDetails?.getOrNull(0)?.pricingPhases?.pricingPhaseList?.get(
-                                        0,
-                                    )?.formattedPrice
+                        item.subscriptionOfferDetails?.let { subOfferDetails ->
+                            subOfferDetails.forEach { details ->
+                                val freeTrial =
+                                    details.pricingPhases.pricingPhaseList.firstOrNull { it.priceAmountMicros == 0L }
+                                val plan =
+                                    details.pricingPhases.pricingPhaseList.first { it.priceAmountMicros != 0L }
+                                val planPeriod = when (plan.billingPeriod) {
+                                    MONTHLY -> monthlySubscription
+                                    YEARLY -> yearlySubscription
+                                    else -> ""
+                                }
+                                val subscriptionPlan = SubscriptionPlan(
+                                    id = item.productId,
+                                    billingPeriod = plan.billingPeriod,
+                                    priceInMicros = plan.priceAmountMicros,
+                                    formattedPrice = plan.formattedPrice,
+                                    freeTrialDuration = freeTrial?.billingPeriod,
+                                    plan = planPeriod,
+                                )
+                                if (!plans.contains(subscriptionPlan)) {
+                                    plans.add(subscriptionPlan)
+                                }
                             }
                         }
                     }
                 }
                 prefs.storeVpnSubscriptions(data)
+                prefs.storeVpnSubscriptionPlans(plans)
                 availableProducts.clear()
                 availableProducts.addAll(productDetailsList.productDetailsList)
                 purchaseState.value = PurchaseState.ProductsLoadedSuccess
