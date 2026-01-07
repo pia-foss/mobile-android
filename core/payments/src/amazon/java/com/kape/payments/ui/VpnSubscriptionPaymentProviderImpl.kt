@@ -12,6 +12,7 @@ import com.amazon.device.iap.model.UserDataResponse
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
+import com.kape.payments.data.SubscriptionPlan
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
 import com.kape.payments.utils.monthlySubscription
@@ -103,6 +104,21 @@ class VpnSubscriptionPaymentProviderImpl(private val prefs: SubscriptionPrefs, v
 
     override fun getYearlySubscription(): Subscription? =
         prefs.getVpnSubscriptions().firstOrNull { plan -> plan.id == Y1 }
+
+    override fun getMonthlySubscriptionPlan(): SubscriptionPlan? {
+        // Subscriptions not supported
+        return null
+    }
+
+    override fun getYearlySubscriptionPlan(): SubscriptionPlan? {
+        // Subscriptions not supported
+        return null
+    }
+
+    override fun getFreeTrialYearlySubscriptionPlan(): SubscriptionPlan? {
+        // Subscriptions not supported
+        return null
+    }
 
     override fun loadProducts() {
         PurchasingService.getProductData(products)

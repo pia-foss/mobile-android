@@ -30,7 +30,10 @@ val SUBSCRIPTIONS_FAILED_TO_LOAD = SignupScreenState(
     SignupStep.Subscriptions(supportsSubscription = true, displaySubscribeButton = false),
 )
 val NO_IN_APP_SUBSCRIPTIONS = SignupScreenState(loading = false, SignupStep.Subscriptions(false))
-val AMAZON_LOGIN = SignupScreenState(loading = false, SignupStep.Subscriptions(supportsSubscription = true, displaySubscribeButton = false))
+val AMAZON_LOGIN = SignupScreenState(
+    loading = false,
+    SignupStep.Subscriptions(supportsSubscription = true, displaySubscribeButton = false),
+)
 
 fun signedUp(credentials: Credentials) =
     SignupScreenState(loading = false, SignupStep.SignedUp(credentials))
@@ -59,7 +62,7 @@ data class SubscriptionData(val selected: MutableState<Plan>, val yearly: Plan, 
 data class Plan(
     val id: String,
     val period: String,
-    val bestValue: Boolean,
+    val hasFreeTrial: Boolean,
     val mainPrice: String,
     val secondaryPrice: String? = null,
 )

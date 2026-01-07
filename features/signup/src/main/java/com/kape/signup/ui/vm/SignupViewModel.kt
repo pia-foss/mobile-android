@@ -84,8 +84,11 @@ class SignupViewModel(
                         }
 
                         PurchaseState.ProductsLoadedSuccess -> {
-                            val yearlyPlan = vpnSubscriptionPaymentProvider.getYearlySubscription()
-                            val monthlyPlan = vpnSubscriptionPaymentProvider.getMonthlySubscription()
+                            val yearlyPlan =
+                                vpnSubscriptionPaymentProvider.getFreeTrialYearlySubscriptionPlan()
+                                    ?: vpnSubscriptionPaymentProvider.getYearlySubscriptionPlan()
+                            val monthlyPlan =
+                                vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
 
                             if (yearlyPlan == null || monthlyPlan == null) {
                                 onProductsFailedToLoad()
@@ -105,17 +108,8 @@ class SignupViewModel(
                                         }
                                     },
                                     true,
-                                    mainPrice =
-                                    yearlyPlan.formattedPrice?.let { formattedPrice ->
-                                        formatter.formatYearlyPlan(formattedPrice)
-                                    } ?: run {
-                                        formatter.formatYearlyPlan(yearlyPlan.price.toString())
-                                    },
-                                    secondaryPrice = yearlyPlan.formattedPrice?.let { formattedPrice ->
-                                        formatter.formatYearlyPerMonth(formattedPrice)
-                                    } ?: run {
-                                        formatter.formatYearlyPerMonth(yearlyPlan.price.toString())
-                                    },
+                                    mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice),
+                                    secondaryPrice = formatter.formatYearlyPerMonth(yearlyPlan.formattedPrice),
                                 )
                             val monthly = Plan(
                                 monthlyPlan.id,
@@ -129,11 +123,7 @@ class SignupViewModel(
                                     }
                                 },
                                 false,
-                                mainPrice = monthlyPlan.formattedPrice?.let { formattedPrice ->
-                                    formatter.formatMonthlyPlan(formattedPrice)
-                                } ?: run {
-                                    formatter.formatMonthlyPlan(monthlyPlan.price.toString())
-                                },
+                                mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
                             )
                             subscriptionData.value =
                                 SubscriptionData(mutableStateOf(yearly), yearly, monthly)
