@@ -51,7 +51,7 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
     fun getVpnIp() = prefs.getString(VPN_IP, NO_IP) ?: NO_IP
 
-    fun setSelectedVpnServer(server: VpnServer) =
+    fun setSelectedVpnServer(server: VpnServer?) =
         prefs.edit().putString(PRE_SELECTED_VPN_SERVER, Json.encodeToString(server)).apply()
 
     fun getSelectedVpnServer(): VpnServer? = prefs.getString(PRE_SELECTED_VPN_SERVER, null)?.let {

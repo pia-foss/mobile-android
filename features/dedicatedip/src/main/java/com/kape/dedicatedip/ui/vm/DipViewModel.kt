@@ -26,6 +26,7 @@ import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.router.Back
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,6 +46,7 @@ class DipViewModel(
     private val dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
     private val dipPrefs: DipPrefs,
     private val connectionPrefs: ConnectionPrefs,
+    private val connectionUseCase: ConnectionUseCase,
     private val router: Router,
 ) : ViewModel(), KoinComponent {
 
@@ -144,12 +146,15 @@ class DipViewModel(
     }
 
     fun removeDip(serverKey: String, dipToken: String) {
-        for (dip in dipPrefs.getDedicatedIps()) {
-            if (dip.dipToken == dipToken) {
-                dipPrefs.removeDedicatedIp(dip)
-                connectionPrefs.removeFromQuickConnect(serverKey)
-                loadDedicatedIps()
+        val dip = dipPrefs.getDedicatedIps().firstOrNull { it.dipToken == dipToken }
+        dip?.let {
+            dipPrefs.removeDedicatedIp(it)
+            connectionPrefs.removeFromQuickConnect(serverKey)
+            if (connectionPrefs.getSelectedVpnServer()?.key == serverKey) {
+                connectionPrefs.setSelectedVpnServer(null)
+                disconnect()
             }
+            loadDedicatedIps()
         }
     }
 
@@ -246,22 +251,23 @@ class DipViewModel(
         }
     }
 
-    fun validateSubscriptionPurchase(dipPurchaseData: DipPurchaseData? = null) = viewModelScope.launch {
-        showSpinner.value = true
-        showPurchaseValidationError.value = false
-        validateDipSignup.invoke(dipPurchaseData = dipPurchaseData).collect { result ->
-            result.fold(
-                onSuccess = {
-                    showSpinner.value = false
-                    showPurchaseValidationError.value = false
-                    fetchPurchasedDedicatedIpToken()
-                },
-                onFailure = {
-                    showPurchaseValidationError.value = true
-                },
-            )
+    fun validateSubscriptionPurchase(dipPurchaseData: DipPurchaseData? = null) =
+        viewModelScope.launch {
+            showSpinner.value = true
+            showPurchaseValidationError.value = false
+            validateDipSignup.invoke(dipPurchaseData = dipPurchaseData).collect { result ->
+                result.fold(
+                    onSuccess = {
+                        showSpinner.value = false
+                        showPurchaseValidationError.value = false
+                        fetchPurchasedDedicatedIpToken()
+                    },
+                    onFailure = {
+                        showPurchaseValidationError.value = true
+                    },
+                )
+            }
         }
-    }
 
     fun fetchPurchasedDedicatedIpToken() = viewModelScope.launch {
         showSpinner.value = true
@@ -335,6 +341,10 @@ class DipViewModel(
                 },
             )
         }
+    }
+
+    private fun disconnect() = viewModelScope.launch {
+        connectionUseCase.stopConnection().collect { }
     }
 
     private fun navigateToDedicatedIpPurchaseSuccess() = viewModelScope.launch {
