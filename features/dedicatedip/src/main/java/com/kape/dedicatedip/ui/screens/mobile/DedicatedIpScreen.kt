@@ -234,7 +234,12 @@ fun DedicatedIpScreen() = Screen {
                         DeleteDipDialog(
                             showDialog = showDialog,
                             server = server,
-                            onRemoveClicked = { viewModel.removeDip(dipToken) },
+                            onRemoveClicked = {
+                                viewModel.removeDip(
+                                    serverKey = server.key,
+                                    dipToken = dipToken,
+                                )
+                            },
                             onCancelClicked = { serverForDeletion.value = null },
                         )
                     }

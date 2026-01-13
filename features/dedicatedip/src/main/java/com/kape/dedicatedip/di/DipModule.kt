@@ -34,6 +34,6 @@ val localDipModule = module {
     single { ValidateDipSignup(get(), get()) }
     single { FetchSignupDipToken(get()) }
     viewModel {
-        DipViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+        DipViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
 }

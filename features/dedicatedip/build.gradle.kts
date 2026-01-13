@@ -35,6 +35,7 @@ dependencies {
     implementation(project(":core:localprefs:dip"))
     implementation(project(":core:localprefs:payments:data"))
     implementation(project(":core:localprefs:payments"))
+    implementation(project(":core:localprefs:connection"))
     implementation(project(":features:appbar"))
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:buildconfig"))

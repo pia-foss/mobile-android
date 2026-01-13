@@ -30,6 +30,13 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
         prefs.edit().putString(QUICK_CONNECT, Json.encodeToString(quickConnectList)).apply()
     }
 
+    fun removeFromQuickConnect(serverKey: String) {
+        val quickConnectList = getQuickConnectServers().toMutableList()
+        val server = quickConnectList.firstOrNull { it.serverKey == serverKey && it.isDip }
+        server?.let { quickConnectList.remove(it) }
+        prefs.edit().putString(QUICK_CONNECT, Json.encodeToString(quickConnectList)).apply()
+    }
+
     fun getQuickConnectServers(): List<QuickConnectServer> {
         return prefs.getString(QUICK_CONNECT, null)?.let {
             Json.decodeFromString(it)

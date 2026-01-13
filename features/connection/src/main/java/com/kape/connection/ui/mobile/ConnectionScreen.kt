@@ -35,6 +35,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -53,6 +54,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -103,13 +108,20 @@ fun ConnectionScreen() = Screen {
     val isConnected = viewModel.isConnected.collectAsState()
     val scope: CoroutineScope = rememberCoroutineScope()
     val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
-    val state = viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val showRatingGeneralDialog = remember { mutableStateOf(false) }
     val showRatingReviewDialog = remember { mutableStateOf(false) }
     val showRatingFeedbackDialog = remember { mutableStateOf(false) }
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     BackHandler {
         viewModel.exitApp()
+    }
+
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewModel.refreshState()
+        }
     }
 
     LaunchedEffect(key1 = Unit) {
@@ -207,15 +219,15 @@ fun ConnectionScreen() = Screen {
                             screenElement = screenElement,
                             isVisible = viewModel.isScreenElementVisible(screenElement),
                             viewModel = viewModel,
-                            state = state.value,
+                            state = state,
                         )
                     }
                     showRatingGeneralDialog.value =
-                        state.value.ratingDialogType is RatingDialogType.General
+                        state.ratingDialogType is RatingDialogType.General
                     showRatingReviewDialog.value =
-                        state.value.ratingDialogType is RatingDialogType.Review
+                        state.ratingDialogType is RatingDialogType.Review
                     showRatingFeedbackDialog.value =
-                        state.value.ratingDialogType is RatingDialogType.Feedback
+                        state.ratingDialogType is RatingDialogType.Feedback
 
                     if (showRatingReviewDialog.value) {
                         val url = stringResource(id = R.string.app_url)
@@ -293,7 +305,7 @@ private fun DisplayComponent(
                     isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
                     publicIp = viewModel.clientIp.value,
                     vpnIp = viewModel.vpnIp.value,
-                    portForwardingStatus = when (state.value) {
+                    portForwardingStatus = when (state) {
                         PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
                         PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
                         PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)

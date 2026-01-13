@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.connection.ConnectionPrefs
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
 import com.kape.dedicatedip.domain.ActivateDipUseCase
@@ -43,6 +44,7 @@ class DipViewModel(
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
     private val dipPrefs: DipPrefs,
+    private val connectionPrefs: ConnectionPrefs,
     private val router: Router,
 ) : ViewModel(), KoinComponent {
 
@@ -141,10 +143,11 @@ class DipViewModel(
         activationState.value = null
     }
 
-    fun removeDip(dipToken: String) {
+    fun removeDip(serverKey: String, dipToken: String) {
         for (dip in dipPrefs.getDedicatedIps()) {
             if (dip.dipToken == dipToken) {
                 dipPrefs.removeDedicatedIp(dip)
+                connectionPrefs.removeFromQuickConnect(serverKey)
                 loadDedicatedIps()
             }
         }

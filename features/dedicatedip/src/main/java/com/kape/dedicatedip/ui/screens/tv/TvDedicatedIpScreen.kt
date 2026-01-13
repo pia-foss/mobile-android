@@ -211,7 +211,7 @@ fun TvDedicatedIpScreen() = Screen {
                 onConfirm = {
                     showDeletionDialog.value = false
                     server.dipToken?.let {
-                        viewModel.removeDip(it)
+                        viewModel.removeDip(server.key, it)
                     }
                 },
                 onDismiss = {
@@ -296,7 +296,10 @@ private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorSche
     return when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
+            scheme,
+        )
+
         ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }
