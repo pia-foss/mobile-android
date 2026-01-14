@@ -30,6 +30,13 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
         prefs.edit().putString(QUICK_CONNECT, Json.encodeToString(quickConnectList)).apply()
     }
 
+    fun removeFromQuickConnect(serverKey: String) {
+        val quickConnectList = getQuickConnectServers().toMutableList()
+        val server = quickConnectList.firstOrNull { it.serverKey == serverKey && it.isDip }
+        server?.let { quickConnectList.remove(it) }
+        prefs.edit().putString(QUICK_CONNECT, Json.encodeToString(quickConnectList)).apply()
+    }
+
     fun getQuickConnectServers(): List<QuickConnectServer> {
         return prefs.getString(QUICK_CONNECT, null)?.let {
             Json.decodeFromString(it)
@@ -44,7 +51,7 @@ class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
     fun getVpnIp() = prefs.getString(VPN_IP, NO_IP) ?: NO_IP
 
-    fun setSelectedVpnServer(server: VpnServer) =
+    fun setSelectedVpnServer(server: VpnServer?) =
         prefs.edit().putString(PRE_SELECTED_VPN_SERVER, Json.encodeToString(server)).apply()
 
     fun getSelectedVpnServer(): VpnServer? = prefs.getString(PRE_SELECTED_VPN_SERVER, null)?.let {

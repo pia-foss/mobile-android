@@ -106,7 +106,7 @@ jobs:
           PIA_VALID_PASSWORD: ${{ secrets.PIA_VALID_PASSWORD }}
           PIA_VALID_DIP_TOKEN: ${{ secrets.PIA_VALID_DIP_TOKEN }}
         with:
-          api-level: 30
+          api-level: 33
           arch: x86_64
           profile: pixel_4
           disk-size: 2G

@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -141,7 +142,8 @@ class ConnectionViewModel(
                 prefs.getSelectedVpnServer()?.let {
                     connectionUseCase.startConnection(it, false).collect()
                 } ?: run {
-                    connectionUseCase.startConnection(regionListProvider.getOptimalServer(), false).collect()
+                    connectionUseCase.startConnection(regionListProvider.getOptimalServer(), false)
+                        .collect()
                 }
             }
         }
@@ -371,5 +373,9 @@ class ConnectionViewModel(
     fun updateRatingDate() {
         ratingTool.updateRatingDate()
         _state.value = state.value.copy(ratingDialogType = null)
+    }
+
+    fun refreshState() {
+        _state.update { it.copy(quickConnectServers = getQuickConnectVpnServers()) }
     }
 }
