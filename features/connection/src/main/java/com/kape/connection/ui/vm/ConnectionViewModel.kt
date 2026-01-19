@@ -343,6 +343,21 @@ class ConnectionViewModel(
                         )
                         connectionUseCase.reconnect(serverToConnect).collect()
                     }
+                } else {
+                    if (!connectionUseCase.isConnected() && vpnRegionPrefs.needsVpnReconnect()) {
+                        vpnRegionPrefs.setVpnReconnect(false)
+                        prefs.addToQuickConnect(server.key, server.isDedicatedIp)
+                        connectionUseCase.startConnection(server, true).collect { }
+                        _state.emit(
+                            ConnectionScreenState(
+                                server,
+                                getQuickConnectVpnServers(),
+                                isOptimalLocation(server.key),
+                                showOptimalLocationInfo,
+                                ratingTool.showRating.value,
+                            ),
+                        )
+                    }
                 }
             } ?: run {
                 _state.emit(
