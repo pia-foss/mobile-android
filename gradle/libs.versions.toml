@@ -1,5 +1,5 @@
 [versions]
-plugin-gradle = "8.13.1"
+plugin-gradle = "9.0.0"
 plugin-kotlin = "2.2.21"
 plugin-ktlint = "11.5.1"
 compose-bom = "2025.12.00"
@@ -114,7 +114,6 @@ constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compos
 [plugins]
 application = { id = "com.android.application", version.ref = "plugin-gradle" }
 library = { id = "com.android.library", version.ref = "plugin-gradle" }
-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "plugin-kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "plugin-kotlin" }
 jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "plugin-kotlin" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "plugin-kotlin" }

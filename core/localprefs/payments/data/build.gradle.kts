@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.library)
-    alias(libs.plugins.kotlin)
     alias(libs.plugins.serialization)
     alias(libs.plugins.ktlint)
 }

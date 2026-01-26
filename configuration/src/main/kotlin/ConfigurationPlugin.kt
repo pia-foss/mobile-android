@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.ApplicationDefaultConfig
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryExtension
@@ -6,6 +5,7 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
@@ -17,49 +17,61 @@ object Config {
 }
 
 class ConfigurationPlugin : Plugin<Project> {
+
     override fun apply(project: Project) {
         project.plugins.withId("com.android.application") {
-            configureAndroidAppProject(project)
+            project.extensions.findByType<ApplicationExtension>()
+                ?.applyAndroidConfig(project)
         }
+
         project.plugins.withId("com.android.library") {
-            configureAndroidLibraryProject(project)
+            project.extensions.findByType<LibraryExtension>()
+                ?.applyAndroidConfig(project)
         }
     }
 
-    private fun configureAndroidAppProject(project: Project) {
-        val androidExt = project.extensions.findByType(ApplicationExtension::class.java)
-        androidExt?.applyCommonAndroidConfig(project)
-    }
-
-    private fun configureAndroidLibraryProject(project: Project) {
-        val androidExt = project.extensions.findByType(LibraryExtension::class.java)
-        androidExt?.applyCommonAndroidConfig(project)
-    }
-
-    private fun CommonExtension<*, *, *, *, *, *>.applyCommonAndroidConfig(project: Project) {
+    /** Shared config for all modules */
+    private fun CommonExtension.applySharedConfig(project: Project) {
         compileSdk = Config.COMPILE_SDK
+
+        // Kotlin JVM target for all modules
+        project.tasks.withType<KotlinJvmCompile>().configureEach {
+            compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+        }
+
+        // Java plugin compatibility (if applied)
+        project.extensions.findByType<JavaPluginExtension>()?.apply {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+        }
+    }
+
+    /** App-specific config */
+    private fun ApplicationExtension.applyAndroidConfig(project: Project) {
+        applySharedConfig(project)
 
         defaultConfig {
             minSdk = Config.MIN_SDK
-            // targetSdk only available for Application modules
-            if (this is ApplicationDefaultConfig) {
-                targetSdk = Config.TARGET_SDK
-            }
+            targetSdk = Config.TARGET_SDK
         }
+
         compileOptions {
             sourceCompatibility = JavaVersion.VERSION_17
             targetCompatibility = JavaVersion.VERSION_17
         }
+    }
 
-        // Also set Java compatibility for the Java plugin (if applied)
-        project.extensions.findByType(JavaPluginExtension::class.java)?.run {
+    /** Library-specific config */
+    private fun LibraryExtension.applyAndroidConfig(project: Project) {
+        applySharedConfig(project)
+
+        defaultConfig {
+            minSdk = Config.MIN_SDK
+        }
+
+        compileOptions {
             sourceCompatibility = JavaVersion.VERSION_17
             targetCompatibility = JavaVersion.VERSION_17
-        }
-        project.tasks.withType<KotlinJvmCompile>().configureEach {
-            compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_17)
-            }
         }
     }
 }
