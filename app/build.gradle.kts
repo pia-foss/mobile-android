@@ -1,8 +1,8 @@
-import java.net.URL
+import com.android.build.api.dsl.ApplicationExtension
+import java.net.URI
 
 plugins {
     alias(libs.plugins.application)
-    alias(libs.plugins.kotlin)
     alias(libs.plugins.compose)
     alias(libs.plugins.configuration)
 }
@@ -12,45 +12,43 @@ val amazonAppVersionCode = googleAppVersionCode.plus(10000)
 val noInAppVersionCode = googleAppVersionCode.plus(10000)
 val appVersionName = "4.0.23"
 
-android {
+configure<ApplicationExtension> {
     namespace = "com.kape.vpn"
+
     defaultConfig {
         testInstrumentationRunnerArguments += mapOf("clearPackageData" to "true")
         applicationId = "com.kape.vpn"
         versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-    }
-    testOptions {
-        execution = "ANDROIDX_TEST_ORCHESTRATOR"
+        vectorDrawables.useSupportLibrary = true
     }
 
+    testOptions.execution = "ANDROIDX_TEST_ORCHESTRATOR"
+
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
+                "proguard-rules.pro"
             )
         }
-        debug {
+        getByName("debug") {
             buildConfigField(
                 "String",
                 "PIA_VALID_USERNAME",
-                "\"${System.getenv("PIA_VALID_USERNAME")}\"",
+                "\"${System.getenv("PIA_VALID_USERNAME")}\""
             )
             buildConfigField(
                 "String",
                 "PIA_VALID_PASSWORD",
-                "\"${System.getenv("PIA_VALID_PASSWORD")}\"",
+                "\"${System.getenv("PIA_VALID_PASSWORD")}\""
             )
             buildConfigField(
                 "String",
                 "PIA_VALID_DIP_TOKEN",
-                "\"${System.getenv("PIA_VALID_DIP_TOKEN")}\"",
+                "\"${System.getenv("PIA_VALID_DIP_TOKEN")}\""
             )
         }
     }
@@ -61,65 +59,56 @@ android {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
             versionCode = amazonAppVersionCode
-
             buildConfigField(
                 "String",
                 "UPDATE_URL",
-                "\"amzn://apps/android?com.privateinternetaccess.android\"",
+                "\"amzn://apps/android?com.privateinternetaccess.android\""
             )
         }
         create("google") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
             versionCode = googleAppVersionCode
-
             buildConfigField(
                 "String",
                 "UPDATE_URL",
-                "\"market://details?id=com.privateinternetaccess.android\"",
+                "\"market://details?id=com.privateinternetaccess.android\""
             )
         }
         create("noinapp") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
             versionCode = noInAppVersionCode
-
-            buildConfigField(
-                "String",
-                "UPDATE_URL",
-                "\"\"",
-            )
+            buildConfigField("String", "UPDATE_URL", "\"\"")
         }
     }
 
     sourceSets {
-        getByName("amazon") {
-            manifest.srcFile("amazon/AndroidManifest.xml")
-        }
-        getByName("google") {
-            manifest.srcFile("google/AndroidManifest.xml")
-        }
-        getByName("noinapp") {
-            manifest.srcFile("noinapp/AndroidManifest.xml")
-        }
+        getByName("amazon").manifest.srcFile("amazon/AndroidManifest.xml")
+        getByName("google").manifest.srcFile("google/AndroidManifest.xml")
+        getByName("noinapp").manifest.srcFile("noinapp/AndroidManifest.xml")
     }
+
     compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
         isCoreLibraryDesugaringEnabled = true
     }
+
     buildFeatures {
         buildConfig = true
         compose = true
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "/META-INF/versions/9/OSGI-INF/MANIFEST.MF"
-            excludes += "/META-INF/LICENSE.md"
-            excludes += "/META-INF/LICENSE-notice.md"
-        }
-        jniLibs {
-            useLegacyPackaging = true
-        }
+
+    packaging.resources {
+        excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        excludes += "/META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+        excludes += "/META-INF/LICENSE.md"
+        excludes += "/META-INF/LICENSE-notice.md"
+    }
+
+    packaging.jniLibs {
+        useLegacyPackaging = true
     }
 }
 
@@ -201,17 +190,37 @@ dependencies {
     "androidTestUtil"(libs.orchestrator)
 }
 
-task("fetchRegionsInformation") {
-    File("$rootDir/app/src/main/assets/metadata-regions.json")
-        .writeText(
-            URL("https://serverlist.piaservers.net/vpninfo/regions/v2").readText(),
+val fetchRegionsInformation = tasks.register("fetchRegionsInformation") {
+    group = "custom"
+    description = "Fetches VPN and Shadowsocks region metadata"
+
+    doLast {
+        val assetsDir = File("$rootDir/app/src/main/assets")
+        if (!assetsDir.exists()) assetsDir.mkdirs()
+
+        fun fetchFile(urlString: String, targetFile: File) {
+            val url = URI(urlString).toURL()
+            targetFile.writeText(url.readText())
+        }
+
+        fetchFile(
+            "https://serverlist.piaservers.net/vpninfo/regions/v2",
+            File(assetsDir, "metadata-regions.json")
         )
-    File("$rootDir/app/src/main/assets/vpn-regions.json")
-        .writeText(
-            URL("https://serverlist.piaservers.net/vpninfo/servers/v6").readText(),
+        fetchFile(
+            "https://serverlist.piaservers.net/vpninfo/servers/v6",
+            File(assetsDir, "vpn-regions.json")
         )
-    File("$rootDir/app/src/main/assets/shadowsocks-regions.json")
-        .writeText(
-            URL("https://serverlist.piaservers.net/shadow_socks").readText(),
+        fetchFile(
+            "https://serverlist.piaservers.net/shadow_socks",
+            File(assetsDir, "shadowsocks-regions.json")
         )
+
+        println("Region information files updated successfully!")
+    }
+}
+
+// Hook the task to run before every build
+tasks.named("preBuild") {
+    dependsOn(fetchRegionsInformation)
 }
