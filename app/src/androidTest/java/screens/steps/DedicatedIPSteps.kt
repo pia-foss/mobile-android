@@ -1,22 +1,20 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorHelpers
+import androidx.test.uiautomator.UiAutomatorTestScope
+import screens.helpers.UiAutomatorHelpers.get
+import screens.helpers.UiAutomatorHelpers.inputText
 
 
 object DedicatedIPSteps {
 
-    val dedicatedIPField get() = UiAutomatorHelpers.findByResId(":DedicatedIPScreen:dip_text_field")
-    val activateButton get() = UiAutomatorHelpers.findByResId(":DedicatedIPScreen:activate_button")
-    val dedicatedIPFlag get() = UiAutomatorHelpers.findByResId(":DedicatedIPScreen:dip_flag")
-    val dedicatedIPServerName get() = UiAutomatorHelpers.findByResId(":DedicatedIPScreen:dip_server_name")
+    const val DEDICATED_IP_FIELD = ":DedicatedIPScreen:dip_text_field"
+    const val ACTIVATE_BUTTON = ":DedicatedIPScreen:activate_button"
+    const val DEDICATED_IP_FLAG = ":DedicatedIPScreen:dip_flag"
+    const val DEDICATED_IP_SERVER_NAME = ":DedicatedIPScreen:dip_server_name"
 
-    fun navigateToDedicatedIPPage() {
-        UiAutomatorHelpers.click(MainScreenSteps.sideMenu)
-        UiAutomatorHelpers.click(SideMenuSteps.dedicatedIP)
-    }
-
-    fun activateDedicatedIPToken(token: String) {
-        dedicatedIPField?.let { UiAutomatorHelpers.inputText(it, token) }
-        UiAutomatorHelpers.click(activateButton)
+    fun UiAutomatorTestScope.activateDedicatedIPToken(token: String) {
+        inputText(get(DEDICATED_IP_FIELD), token)
+        get(ACTIVATE_BUTTON).click()
+        waitForStableInActiveWindow()
     }
 }

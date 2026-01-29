@@ -1,61 +1,66 @@
 package tests
 
+import androidx.test.uiautomator.uiAutomator
 import com.kape.vpn.BuildConfig
-import org.junit.Before
 import org.junit.Test
-import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import screens.helpers.UiAutomatorHelpers.elementExists
+import screens.helpers.UiAutomatorHelpers.launchApp
+import screens.helpers.UiAutomatorHelpers.waitForElement
+import screens.steps.LoginSteps
+import screens.steps.LoginSteps.giveAppPermissions
+import screens.steps.LoginSteps.logIn
+import screens.steps.LoginSteps.navigateToLoginScreen
+import screens.steps.MainScreenSteps
 import kotlin.test.assertTrue
 
-class UiSignInTests : UiTest() {
+class UiSignInTests {
 
-    @Before
-    override fun setUp() {
-        setupWithoutLogin()  // Launch app without auto-login
+    @Test
+    fun sign_in_with_valid_credentials_reaches_connect_screen() = uiAutomator {
+        launchApp()
+        navigateToLoginScreen()
+        logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
+        giveAppPermissions()
+
+        waitForElement(MainScreenSteps.CONNECT_BUTTON)
+        assertTrue { elementExists(MainScreenSteps.CONNECT_BUTTON) }
     }
 
     @Test
-    fun sign_in_with_valid_credentials_reaches_connect_screen() {
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
-        loginSteps.giveAppPermissions()
+    fun sign_in_with_invalid_credentials_does_not_login() = uiAutomator {
+        launchApp()
+        navigateToLoginScreen()
+        logIn("InvalidUser", "InvalidPassword")
+        waitForElement(LoginSteps.ERROR_FIELD)
 
-        assertTrue(waitUntilVisible(mainScreenSteps.connectButton))
+        assertTrue(elementExists(LoginSteps.ERROR_FIELD))
     }
 
     @Test
-    fun sign_in_with_invalid_credentials_does_not_login() {
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn("InvalidUser", "InvalidPassword")
+    fun sign_in_empty_user_and_password_does_not_login() = uiAutomator {
+        launchApp()
+        navigateToLoginScreen()
+        logIn("", "")
 
-        assertTrue(waitUntilVisible(loginSteps.errorField))
+        assertTrue(elementExists(LoginSteps.ERROR_FIELD))
     }
 
     @Test
-    fun sign_in_empty_user_and_password_does_not_login() {
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn("", "")
+    fun sign_in_valid_user_empty_password_does_not_login() = uiAutomator {
+        launchApp()
+        navigateToLoginScreen()
+        logIn(BuildConfig.PIA_VALID_USERNAME, "")
 
-        assertTrue(waitUntilVisible(loginSteps.errorField))
+        assertTrue(elementExists(LoginSteps.ERROR_FIELD))
     }
 
     @Test
-    fun sign_in_valid_user_empty_password_does_not_login() {
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, "")
+    fun sign_in_empty_user_valid_password_does_not_login() = uiAutomator {
+        launchApp()
+        navigateToLoginScreen()
+        logIn("", BuildConfig.PIA_VALID_PASSWORD)
 
-        assertTrue(waitUntilVisible(loginSteps.errorField))
+        assertTrue(elementExists(LoginSteps.ERROR_FIELD))
     }
 
-    @Test
-    fun sign_in_empty_user_valid_password_does_not_login() {
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn("", BuildConfig.PIA_VALID_PASSWORD)
-
-        assertTrue(waitUntilVisible(loginSteps.errorField))
-    }
 }

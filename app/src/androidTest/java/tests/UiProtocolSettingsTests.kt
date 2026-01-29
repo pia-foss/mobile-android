@@ -1,73 +1,81 @@
 package tests
 
+import androidx.test.uiautomator.uiAutomator
 import org.junit.Test
-import screens.helpers.UiAutomatorHelpers
-import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import screens.helpers.UiAutomatorHelpers.get
+import screens.helpers.UiAutomatorHelpers.launchAppAndLogIn
+import screens.steps.MainScreenSteps
+import screens.steps.MainScreenSteps.establishAndVerifyVPNConnection
+import screens.steps.ProtocolsSteps.selectOpenVPN
+import screens.steps.ProtocolsSteps.selectProtocol
+import screens.steps.ProtocolsSteps.selectWireGuard
+import screens.steps.ProtocolsSteps.smallPacketToggleChecked
+import screens.steps.SideMenuSteps.navigateToSettings
 import kotlin.test.assertTrue
 
-class UiProtocolSettingsTests : UiTest() {
+class UiProtocolSettingsTests {
 
     @Test
-    fun openVPN_connectivity_when_small_packet_disabled() {
-        settingsSteps.navigateToSettingsPage()
-        protocolSteps.selectProtocol()
-        protocolSteps.selectOpenVPN()
-        protocolSteps.smallPacketToggleChecked(false)
-        // press back twice to get back to the main screen
-        UiAutomatorHelpers.device.pressBack()
-        UiAutomatorHelpers.device.pressBack()
-        mainScreenSteps.navigateToMainScreen()
-        mainScreenSteps.establishAndVerifyVPNConnection()
+    fun openVPN_connectivity_when_small_packet_disabled() = uiAutomator {
+        launchAppAndLogIn()
+        navigateToSettings()
+        selectProtocol()
+        selectOpenVPN()
+        smallPacketToggleChecked(false)
+        // get back to main screen
+        pressBack()
+        pressBack()
+        establishAndVerifyVPNConnection()
 
-        val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Protected"))
+        val connectionText = get(MainScreenSteps.APPBAR_CONNECTION_STATUS).text
+        assertTrue(connectionText.startsWith("Protected"))
     }
 
     @Test
-    fun openVPN_connectivity_when_small_packet_enabled() {
-        settingsSteps.navigateToSettingsPage()
-        protocolSteps.selectProtocol()
-        protocolSteps.selectOpenVPN()
-        protocolSteps.smallPacketToggleChecked(true)
-        // press back twice to get back to the main screen
-        UiAutomatorHelpers.device.pressBack()
-        UiAutomatorHelpers.device.pressBack()
-        mainScreenSteps.navigateToMainScreen()
-        mainScreenSteps.establishAndVerifyVPNConnection()
+    fun openVPN_connectivity_when_small_packet_enabled() = uiAutomator {
+        launchAppAndLogIn()
+        navigateToSettings()
+        selectProtocol()
+        selectOpenVPN()
+        smallPacketToggleChecked(true)
+        // get back to main screen
+        pressBack()
+        pressBack()
+        establishAndVerifyVPNConnection()
 
-        val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Protected"))
+        val connectionText = get(MainScreenSteps.APPBAR_CONNECTION_STATUS).text
+        assertTrue(connectionText.startsWith("Protected"))
     }
 
     @Test
-    fun wireGuard_connectivity_when_small_packet_disabled() {
-        settingsSteps.navigateToSettingsPage()
-        protocolSteps.selectProtocol()
-        protocolSteps.selectWireGuard()
-        protocolSteps.smallPacketToggleChecked(false)
-        // press back twice to get back to the main screen
-        UiAutomatorHelpers.device.pressBack()
-        UiAutomatorHelpers.device.pressBack()
-        mainScreenSteps.navigateToMainScreen()
-        mainScreenSteps.establishAndVerifyVPNConnection()
+    fun wireGuard_connectivity_when_small_packet_disabled() = uiAutomator {
+        launchAppAndLogIn()
+        navigateToSettings()
+        selectProtocol()
+        selectWireGuard()
+        smallPacketToggleChecked(false)
+        // get back to main screen
+        pressBack()
+        pressBack()
+        establishAndVerifyVPNConnection()
 
-        val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Protected"))
+        val connectionText = get(MainScreenSteps.APPBAR_CONNECTION_STATUS).text
+        assertTrue(connectionText.startsWith("Protected"))
     }
 
     @Test
-    fun wireGuard_connectivity_when_small_packet_enabled() {
-        settingsSteps.navigateToSettingsPage()
-        protocolSteps.selectProtocol()
-        protocolSteps.selectWireGuard()
-        protocolSteps.smallPacketToggleChecked(true)
-        // press back twice to get back to the main screen
-        UiAutomatorHelpers.device.pressBack()
-        UiAutomatorHelpers.device.pressBack()
-        mainScreenSteps.navigateToMainScreen()
-        mainScreenSteps.establishAndVerifyVPNConnection()
+    fun wireGuard_connectivity_when_small_packet_enabled() = uiAutomator {
+        launchAppAndLogIn()
+        navigateToSettings()
+        selectProtocol()
+        selectWireGuard()
+        smallPacketToggleChecked(true)
+        // get back to main screen
+        pressBack()
+        pressBack()
+        establishAndVerifyVPNConnection()
 
-        val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Protected"))
+        val connectionText = get(MainScreenSteps.APPBAR_CONNECTION_STATUS).text
+        assertTrue(connectionText.startsWith("Protected"))
     }
 }

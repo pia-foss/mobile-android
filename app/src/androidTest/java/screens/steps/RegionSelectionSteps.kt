@@ -1,18 +1,22 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorHelpers
-import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import androidx.test.uiautomator.UiAutomatorTestScope
+import screens.helpers.UiAutomatorHelpers.get
+import screens.helpers.UiAutomatorHelpers.inputText
+import screens.helpers.UiAutomatorHelpers.waitForElement
+import screens.helpers.UiAutomatorHelpers.waitUntilConnectionIsEstablished
 
 object RegionSelectionSteps {
 
-    val searchBar get() = UiAutomatorHelpers.findByResId(":VpnRegionSelectionScreen:searchBar")
-    val searchLocationText get() = UiAutomatorHelpers.findByResId(":VpnRegionSelectionScreen:locationItem_0:regionName")
+    const val SEARCH_BAR = ":VpnRegionSelectionScreen:searchBar"
+    const val SEARCH_LOCATION_TEXT = ":VpnRegionSelectionScreen:locationItem_0:regionName"
 
-    fun searchAndConnectToRegion(region: String) {
-        UiAutomatorHelpers.click(MainScreenSteps.locationPicker)
-        searchBar?.let { UiAutomatorHelpers.inputText(it, region) }
-        waitUntilVisible(searchLocationText)
-        UiAutomatorHelpers.click(searchLocationText)
-        UiAutomatorHelpers.waitUntilConnectionIsEstablished()
+    fun UiAutomatorTestScope.searchAndConnectToRegion(region: String) {
+        get(MainScreenSteps.LOCATION_PICKER).click()
+        waitForElement(SEARCH_BAR)
+        inputText(get(SEARCH_BAR), region)
+        waitForElement(SEARCH_LOCATION_TEXT)
+        get(SEARCH_LOCATION_TEXT).click()
+        waitUntilConnectionIsEstablished()
     }
 }

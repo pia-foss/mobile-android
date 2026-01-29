@@ -1,23 +1,38 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorHelpers
-import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import androidx.test.uiautomator.UiAutomatorTestScope
+import androidx.test.uiautomator.waitForStable
+import screens.helpers.UiAutomatorHelpers.get
+import screens.helpers.UiAutomatorHelpers.waitForElement
 
 object SideMenuSteps {
 
-    val settingsButton get() = UiAutomatorHelpers.findByResId(":SideMenu:Settings")
-    val dedicatedIP get() = UiAutomatorHelpers.findByResId(":SideMenu:DedicatedIP")
-    val logoutButton get() = UiAutomatorHelpers.findByResId(":SideMenu:Logout")
-    val logoutDialogueConfirmButton get() = UiAutomatorHelpers.findByResId(":SideMenu:ConfirmButton")
+    const val SETTINGS = ":SideMenu:Settings"
+    const val DEDICATED_IP = ":SideMenu:DedicatedIP"
+    const val LOGOUT = ":SideMenu:Logout"
+    const val LOGOUT_DIALOGUE_CONFIRM_BUTTON = ":SideMenu:ConfirmButton"
 
-    fun logOut() {
-        UiAutomatorHelpers.click(logoutButton)
-        UiAutomatorHelpers.click(logoutDialogueConfirmButton)
-        waitUntilVisible(SignUpSteps.loginButton)
+    fun UiAutomatorTestScope.navigateToSettings() {
+        navigateToSideMenu()
+        waitForStableInActiveWindow()
+        get(SETTINGS).click()
     }
 
-    fun navigateToSideMenu() {
-        MainScreenSteps.navigateToMainScreen()
-        UiAutomatorHelpers.click(MainScreenSteps.sideMenu)
+    fun UiAutomatorTestScope.navigateToDedicatedIp() {
+        navigateToSideMenu()
+        waitForStableInActiveWindow()
+        get(DEDICATED_IP).click()
+        waitForStableInActiveWindow()
+    }
+
+    fun UiAutomatorTestScope.logout() {
+        navigateToSideMenu()
+        get(LOGOUT).click()
+        get(LOGOUT_DIALOGUE_CONFIRM_BUTTON).click()
+    }
+
+    fun UiAutomatorTestScope.navigateToSideMenu() {
+        get(MainScreenSteps.SIDE_MENU).click()
+        waitForStableInActiveWindow()
     }
 }

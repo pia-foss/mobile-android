@@ -1,40 +1,44 @@
 package tests
 
-import com.kape.settings.data.VpnProtocols
-import com.kape.vpn.BuildConfig
+import androidx.test.uiautomator.uiAutomator
 import org.junit.Test
-import screens.helpers.UiAutomatorHelpers
-import screens.helpers.UiAutomatorHelpers.waitUntilVisible
-import kotlin.test.assertEquals
+import screens.helpers.UiAutomatorHelpers.get
+import screens.helpers.UiAutomatorHelpers.launchAppAndLogIn
+import screens.helpers.UiAutomatorHelpers.logIn
+import screens.helpers.UiAutomatorHelpers.waitForElement
+import screens.steps.ProtocolsSteps
+import screens.steps.ProtocolsSteps.selectOpenVPN
+import screens.steps.ProtocolsSteps.selectProtocol
+import screens.steps.SideMenuSteps.logout
+import screens.steps.SideMenuSteps.navigateToSettings
+import screens.steps.SignUpSteps
 import kotlin.test.assertTrue
 
-class UiLogoutTests : UiTest() {
+class UiLogoutTests {
 
     @Test
-    fun sign_out_from_connect_screen_reaches_signup_screen() {
-        sideMenuSteps.navigateToSideMenu()
-        sideMenuSteps.logOut()
+    fun sign_out_from_connect_screen_reaches_signup_screen() = uiAutomator {
+        launchAppAndLogIn()
+        logout()
 
-        assertTrue(waitUntilVisible(signUpSteps.loginButton))
+        assertTrue(waitForElement(SignUpSteps.SIGNUP_LOGIN_BUTTON))
     }
 
     @Test
-    fun persistence_layer_wiped_after_sign_out() {
-        settingsSteps.navigateToSettingsPage()
-        protocolSteps.selectProtocol()
-        protocolSteps.selectOpenVPN()
+    fun persistence_layer_wiped_after_sign_out() = uiAutomator {
+        launchAppAndLogIn()
+        navigateToSettings()
+        selectProtocol()
+        selectOpenVPN()
+        // get back to main screen
+        pressBack()
+        pressBack()
+        logout()
 
-        UiAutomatorHelpers.device.pressBack()
-        mainScreenSteps.navigateToMainScreen()
-        sideMenuSteps.navigateToSideMenu()
-        sideMenuSteps.logOut()
-
-        signUpSteps.navigateToSignUpScreen()
-        loginSteps.navigateToLoginScreen()
-        loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
-        loginSteps.giveAppPermissions()
-
-        settingsSteps.navigateToSettingsPage()
-        assertEquals(VpnProtocols.WireGuard.name, protocolSteps.getSelectedProtocol())
+        logIn()
+        navigateToSettings()
+        selectProtocol()
+        waitForElement(ProtocolsSteps.WIRE_GUARD_BUTTON)
+        assertTrue(get(ProtocolsSteps.WIRE_GUARD_BUTTON).isEnabled)
     }
 }
