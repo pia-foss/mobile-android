@@ -95,7 +95,7 @@ private fun AppBarContent(
                 onClick = { onLeftIconClick() },
                 modifier = Modifier
                     .align(CenterStart)
-                    .testTag(":AppBar:side_menu")
+                    .testTag(if (type == AppBarType.Connection) ":AppBar:side_menu" else ":AppBar:back")
                     .semantics {
                         contentDescription = when (type) {
                             AppBarType.Connection -> menuContentDescription

@@ -1,6 +1,7 @@
 package tests
 
 import org.junit.Test
+import screens.helpers.UiAutomatorHelpers
 import screens.helpers.UiAutomatorHelpers.waitUntilConnectionIsEstablished
 import kotlin.test.assertTrue
 
@@ -12,7 +13,8 @@ class UiRegionListTests : UiTest() {
         regionSelectionSteps.searchAndConnectToRegion(region)
 
         waitUntilConnectionIsEstablished()
-        val connectionText = mainScreenSteps.appBarConnectionStatus!!.text
-        assertTrue(connectionText.contains("Protected"))
+        val connectionText =
+            UiAutomatorHelpers.findByResId(mainScreenSteps.appBarConnectionStatus)!!.text
+        assertTrue(connectionText.startsWith("Protected"))
     }
 }

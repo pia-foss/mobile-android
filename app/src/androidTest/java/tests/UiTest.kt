@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.kape.vpn.BuildConfig
 import screens.helpers.UiAutomatorHelpers
 import screens.steps.*
+import kotlin.test.assertNotNull
 
 open class UiTest(
     val loginSteps: LoginSteps = LoginSteps,
@@ -33,9 +34,9 @@ open class UiTest(
     open fun setUp() {
         context.startActivity(intent)
         // Wait for SignUp screen
-        UiAutomatorHelpers.waitUntilVisible(signUpSteps.loginButton)
+        assertNotNull(UiAutomatorHelpers.findByResId(signUpSteps.loginButton))
         // Navigate to login
-        signUpSteps.loginButton?.let { UiAutomatorHelpers.click(it) }
+        UiAutomatorHelpers.findByResId(signUpSteps.loginButton)?.click()
         loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
         loginSteps.giveAppPermissions()
     }

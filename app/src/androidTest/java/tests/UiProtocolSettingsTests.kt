@@ -2,7 +2,7 @@ package tests
 
 import org.junit.Test
 import screens.helpers.UiAutomatorHelpers
-import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class UiProtocolSettingsTests : UiTest() {
@@ -14,13 +14,11 @@ class UiProtocolSettingsTests : UiTest() {
         protocolSteps.selectOpenVPN()
         protocolSteps.smallPacketToggleChecked(false)
         // press back twice to get back to the main screen
-        UiAutomatorHelpers.device.pressBack()
-        UiAutomatorHelpers.device.pressBack()
-        mainScreenSteps.navigateToMainScreen()
+        UiAutomatorHelpers.pressBackTwice(2)
+
         mainScreenSteps.establishAndVerifyVPNConnection()
 
-        val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Protected"))
+        assertNotNull(UiAutomatorHelpers.findByStartsWith("Protected"))
     }
 
     @Test
@@ -30,13 +28,11 @@ class UiProtocolSettingsTests : UiTest() {
         protocolSteps.selectOpenVPN()
         protocolSteps.smallPacketToggleChecked(true)
         // press back twice to get back to the main screen
-        UiAutomatorHelpers.device.pressBack()
-        UiAutomatorHelpers.device.pressBack()
-        mainScreenSteps.navigateToMainScreen()
+        UiAutomatorHelpers.pressBackTwice(2)
+
         mainScreenSteps.establishAndVerifyVPNConnection()
 
-        val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Protected"))
+        assertNotNull(UiAutomatorHelpers.findByStartsWith("Protected"))
     }
 
     @Test
@@ -46,13 +42,11 @@ class UiProtocolSettingsTests : UiTest() {
         protocolSteps.selectWireGuard()
         protocolSteps.smallPacketToggleChecked(false)
         // press back twice to get back to the main screen
-        UiAutomatorHelpers.device.pressBack()
-        UiAutomatorHelpers.device.pressBack()
-        mainScreenSteps.navigateToMainScreen()
+        UiAutomatorHelpers.pressBackTwice(2)
+
         mainScreenSteps.establishAndVerifyVPNConnection()
 
-        val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Protected"))
+        assertNotNull(UiAutomatorHelpers.findByStartsWith("Protected"))
     }
 
     @Test
@@ -62,12 +56,10 @@ class UiProtocolSettingsTests : UiTest() {
         protocolSteps.selectWireGuard()
         protocolSteps.smallPacketToggleChecked(true)
         // press back twice to get back to the main screen
-        UiAutomatorHelpers.device.pressBack()
-        UiAutomatorHelpers.device.pressBack()
-        mainScreenSteps.navigateToMainScreen()
+        UiAutomatorHelpers.pressBackTwice(2)
+
         mainScreenSteps.establishAndVerifyVPNConnection()
 
-        val connectionText = mainScreenSteps.appBarConnectionStatus?.text ?: ""
-        assertTrue(connectionText.contains("Protected"))
+        assertNotNull(UiAutomatorHelpers.findByStartsWith("Protected"))
     }
 }

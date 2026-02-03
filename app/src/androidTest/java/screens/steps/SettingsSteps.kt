@@ -3,10 +3,10 @@ package screens.steps
 import screens.helpers.UiAutomatorHelpers
 
 object SettingsSteps {
-    val protocolsButton get() = UiAutomatorHelpers.findByResId(":SettingsScreen:Protocols")
+    val protocolsButton = ":SettingsScreen:Protocols"
 
     fun navigateToSettingsPage() {
-        UiAutomatorHelpers.click(MainScreenSteps.sideMenu)
-        UiAutomatorHelpers.click(SideMenuSteps.settingsButton)
+        UiAutomatorHelpers.clickWhenReady(MainScreenSteps.sideMenu)
+        UiAutomatorHelpers.clickWhenReady(SideMenuSteps.settingsButton)
     }
 }
