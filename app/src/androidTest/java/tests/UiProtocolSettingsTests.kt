@@ -1,65 +1,74 @@
 package tests
 
+import androidx.test.uiautomator.uiAutomator
 import org.junit.Test
 import screens.helpers.UiAutomatorHelpers
+import screens.helpers.UiAutomatorHelpers.findByStartsWith
+import screens.helpers.UiAutomatorHelpers.pressBackTwice
+import screens.steps.MainScreenSteps.establishAndVerifyVPNConnection
+import screens.steps.ProtocolsSteps.selectOpenVPN
+import screens.steps.ProtocolsSteps.selectProtocol
+import screens.steps.ProtocolsSteps.selectWireGuard
+import screens.steps.ProtocolsSteps.smallPacketToggleChecked
+import screens.steps.SettingsSteps.navigateToSettingsPage
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class UiProtocolSettingsTests : UiTest() {
 
     @Test
-    fun openVPN_connectivity_when_small_packet_disabled() {
-        settingsSteps.navigateToSettingsPage()
-        protocolSteps.selectProtocol()
-        protocolSteps.selectOpenVPN()
-        protocolSteps.smallPacketToggleChecked(false)
+    fun openVPN_connectivity_when_small_packet_disabled() = uiAutomator {
+        navigateToSettingsPage()
+        selectProtocol()
+        selectOpenVPN()
+        smallPacketToggleChecked(false)
         // press back twice to get back to the main screen
-        UiAutomatorHelpers.pressBackTwice(2)
+        pressBackTwice(2)
 
-        mainScreenSteps.establishAndVerifyVPNConnection()
+        establishAndVerifyVPNConnection()
 
-        assertNotNull(UiAutomatorHelpers.findByStartsWith("Protected"))
+        assertNotNull(findByStartsWith("Protected"))
     }
 
     @Test
-    fun openVPN_connectivity_when_small_packet_enabled() {
-        settingsSteps.navigateToSettingsPage()
-        protocolSteps.selectProtocol()
-        protocolSteps.selectOpenVPN()
-        protocolSteps.smallPacketToggleChecked(true)
+    fun openVPN_connectivity_when_small_packet_enabled() = uiAutomator {
+        navigateToSettingsPage()
+        selectProtocol()
+        selectOpenVPN()
+        smallPacketToggleChecked(true)
         // press back twice to get back to the main screen
-        UiAutomatorHelpers.pressBackTwice(2)
+        pressBackTwice(2)
 
-        mainScreenSteps.establishAndVerifyVPNConnection()
+        establishAndVerifyVPNConnection()
 
-        assertNotNull(UiAutomatorHelpers.findByStartsWith("Protected"))
+        assertNotNull(findByStartsWith("Protected"))
     }
 
     @Test
-    fun wireGuard_connectivity_when_small_packet_disabled() {
-        settingsSteps.navigateToSettingsPage()
-        protocolSteps.selectProtocol()
-        protocolSteps.selectWireGuard()
-        protocolSteps.smallPacketToggleChecked(false)
+    fun wireGuard_connectivity_when_small_packet_disabled() = uiAutomator {
+        navigateToSettingsPage()
+        selectProtocol()
+        selectWireGuard()
+        smallPacketToggleChecked(false)
         // press back twice to get back to the main screen
-        UiAutomatorHelpers.pressBackTwice(2)
+        pressBackTwice(2)
 
-        mainScreenSteps.establishAndVerifyVPNConnection()
+        establishAndVerifyVPNConnection()
 
-        assertNotNull(UiAutomatorHelpers.findByStartsWith("Protected"))
+        assertNotNull(findByStartsWith("Protected"))
     }
 
     @Test
-    fun wireGuard_connectivity_when_small_packet_enabled() {
-        settingsSteps.navigateToSettingsPage()
-        protocolSteps.selectProtocol()
-        protocolSteps.selectWireGuard()
-        protocolSteps.smallPacketToggleChecked(true)
+    fun wireGuard_connectivity_when_small_packet_enabled() = uiAutomator {
+        navigateToSettingsPage()
+        selectProtocol()
+        selectWireGuard()
+        smallPacketToggleChecked(true)
         // press back twice to get back to the main screen
-        UiAutomatorHelpers.pressBackTwice(2)
+        pressBackTwice(2)
 
-        mainScreenSteps.establishAndVerifyVPNConnection()
+        establishAndVerifyVPNConnection()
 
-        assertNotNull(UiAutomatorHelpers.findByStartsWith("Protected"))
+        assertNotNull(findByStartsWith("Protected"))
     }
 }

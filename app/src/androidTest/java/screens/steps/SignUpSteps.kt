@@ -2,6 +2,6 @@ package screens.steps
 
 object SignUpSteps {
 
-    val loginButton = ":SignUpScreen:Login"
+    const val LOGIN_BUTTON = ":SignUpScreen:Login"
 
 }

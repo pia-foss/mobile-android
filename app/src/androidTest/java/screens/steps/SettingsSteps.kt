@@ -1,12 +1,13 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorHelpers
+import androidx.test.uiautomator.UiAutomatorTestScope
+import screens.helpers.UiAutomatorHelpers.click
 
 object SettingsSteps {
-    val protocolsButton = ":SettingsScreen:Protocols"
+    const val PROTOCOLS_BUTTON = ":SettingsScreen:Protocols"
 
-    fun navigateToSettingsPage() {
-        UiAutomatorHelpers.clickWhenReady(MainScreenSteps.sideMenu)
-        UiAutomatorHelpers.clickWhenReady(SideMenuSteps.settingsButton)
+    fun UiAutomatorTestScope.navigateToSettingsPage() {
+        click(MainScreenSteps.SIDE_MENU)
+        click(SideMenuSteps.SETTINGS_BUTTON)
     }
 }

@@ -1,20 +1,19 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorHelpers
+import androidx.test.uiautomator.UiAutomatorTestScope
+import screens.helpers.UiAutomatorHelpers.click
 import screens.helpers.UiAutomatorHelpers.waitUntilConnectionIsEstablished
 
 object MainScreenSteps {
+    const val CONNECT_BUTTON = ":ConnectionScreen:connection_button"
+    const val SIDE_MENU = ":AppBar:side_menu"
+    const val QUICK_CONNECT_FIRST_ITEM = ":QuickConnect:server_0"
+    const val QUICK_CONNECT_SECOND_ITEM = ":QuickConnect:server_1"
+    const val LOCATION_PICKER = ":ConnectionScreen:VpnLocationPicker"
+    const val LOCATION_EIGHT_ITEM = ":VpnRegionSelectionScreen:locationItem_8"
 
-    val connectButton=":ConnectionScreen:connection_button"
-    val sideMenu=":AppBar:side_menu"
-    val appBarConnectionStatus=":AppBar:connection_text_default"
-    val quickConnectFirstItem=":QuickConnect:server_0"
-    val quickConnectSecondItem=":QuickConnect:server_1"
-    val locationPicker=":ConnectionScreen:VpnLocationPicker"
-    val locationEightItem=":VpnRegionSelectionScreen:locationItem_8"
-
-    fun establishAndVerifyVPNConnection() {
-        UiAutomatorHelpers.clickWhenReady(connectButton)
+    fun UiAutomatorTestScope.establishAndVerifyVPNConnection() {
+        click(CONNECT_BUTTON)
         waitUntilConnectionIsEstablished()
     }
 }
