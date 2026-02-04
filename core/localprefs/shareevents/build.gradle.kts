@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.shareevents"
+    namespace = "com.kape.shareevents.prefs"
 }
 
 dependencies {

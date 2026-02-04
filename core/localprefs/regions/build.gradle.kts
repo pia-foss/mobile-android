@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.vpnregions"
+    namespace = "com.kape.vpnregions.prefs"
 
     flavorDimensions.add("provider")
     productFlavors {

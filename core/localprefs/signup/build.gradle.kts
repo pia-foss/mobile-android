@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.signup"
+    namespace = "com.kape.signup.prefs"
 }
 
 dependencies {

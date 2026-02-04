@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.csi"
+    namespace = "com.kape.csi.binder"
 }
 
 dependencies {

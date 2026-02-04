@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.obfuscator"
+    namespace = "com.kape.obfuscator.binder"
 }
 
 dependencies {

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.payments"
+    namespace = "com.kape.payments.prefs"
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
