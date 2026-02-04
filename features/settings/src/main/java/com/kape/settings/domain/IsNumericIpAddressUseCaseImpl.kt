@@ -10,6 +10,7 @@ class IsNumericIpAddressUseCaseImpl : IsNumericIpAddressUseCase {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             InetAddresses.isNumericAddress(ipAddress)
         } else {
+            @Suppress("DEPRECATION")
             Patterns.IP_ADDRESS.matcher(ipAddress).matches()
         }
     }

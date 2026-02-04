@@ -229,6 +229,7 @@ private fun provideNotification(context: Context): Notification.Builder {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationBuilder(context)
         } else {
+            @Suppress("DEPRECATION")
             Notification.Builder(context)
         }
 

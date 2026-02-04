@@ -112,6 +112,7 @@ class NetworkConnectionListener(
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             (networkCapabilities.transportInfo as WifiInfo).ssid
         } else {
+            @Suppress("DEPRECATION")
             wifiManager.connectionInfo.ssid
         }
     }
