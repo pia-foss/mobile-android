@@ -69,7 +69,7 @@ fun Input(
             ),
             visualTransformation = if (maskInput) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = KeyboardOptions(
-                autoCorrect = false,
+                autoCorrectEnabled = false,
                 keyboardType = keyboard,
                 imeAction = imeAction,
                 platformImeOptions = platformImeOptions,

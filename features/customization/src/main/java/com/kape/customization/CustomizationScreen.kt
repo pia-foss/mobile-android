@@ -172,7 +172,6 @@ private fun DisplayComponent(
                     PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
                     PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
                     PortForwardingStatus.Success -> viewModel.port.value.toString()
-                    else -> ""
                 },
             )
         }

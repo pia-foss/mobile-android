@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -35,7 +36,7 @@ fun BehaviorDialog(
     showDialog: MutableState<Boolean>,
     onItemSelected: (selected: String) -> Unit,
 ) {
-    AlertDialog(
+    BasicAlertDialog(
         onDismissRequest = { showDialog.value = false },
         modifier = Modifier.background(LocalColors.current.surfaceVariant),
     ) {

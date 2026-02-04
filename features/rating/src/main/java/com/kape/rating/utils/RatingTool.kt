@@ -104,7 +104,7 @@ class RatingTool(private val connectionManager: ConnectionManager, private val p
         return dateString?.let {
             val dateFormat = SimpleDateFormat(DATE_FORMAT)
             val date = dateFormat.parse(dateString)
-            return TimeUnit.DAYS.convert(Date().time - date.time, TimeUnit.MILLISECONDS)
+            return TimeUnit.DAYS.convert(Date().time - date!!.time, TimeUnit.MILLISECONDS)
         } ?: 0
     }
 }

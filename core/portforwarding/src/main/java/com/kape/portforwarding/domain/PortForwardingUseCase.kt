@@ -101,6 +101,6 @@ class PortForwardingUseCase(
     private fun tokenExpirationDateDaysLeft(tokenExpirationDate: String): Long {
         val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
         val expirationDate = format.parse(tokenExpirationDate)
-        return TimeUnit.DAYS.convert(expirationDate.time - Date().time, TimeUnit.MILLISECONDS)
+        return TimeUnit.DAYS.convert(expirationDate!!.time - Date().time, TimeUnit.MILLISECONDS)
     }
 }

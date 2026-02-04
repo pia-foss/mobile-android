@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -37,7 +38,7 @@ fun Footer(modifier: Modifier = Modifier) {
             Text(
                 text = " ${stringResource(R.string.and)} ",
                 modifier = Modifier.semantics {
-                    this.invisibleToUser()
+                    hideFromAccessibility()
                 },
             )
             ClickableText(R.string.terms_of_service, EnterFlow.TermsOfService)
