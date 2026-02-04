@@ -54,5 +54,4 @@ dependencies {
     runtimeOnly(libs.launcher)
     implementation(libs.kape.vpnmanager)
     implementation(libs.bundles.serialization)
-    implementation(libs.bundles.swipetoreferesh)
 }

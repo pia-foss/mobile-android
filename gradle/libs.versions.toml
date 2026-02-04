@@ -61,8 +61,6 @@ compose-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "c
 compose-tv-material = { module = "androidx.tv:tv-material", version.ref = "compose-tv-material" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
 compose-navigation-test = { module = "androidx.navigation:navigation-testing", version.ref = "compose-navigation" }
-swipetorefresh-layout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swipe-to-refresh" }
-swiperefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
 viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "compose-jetpack" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "compose-jetpack" }
@@ -125,7 +123,6 @@ configuration = { id = "configuration", version = "1.0" }
 compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-foundation", "compose-runtime", "compose-navigation", "compose-tv-material", "compose-tv-foundation", "material3"]
 composeandroidtest = ["compose-android-test", "compose-navigation-test"]
 debugtest = ["debug-manifest", "debug-tooling"]
-swipetoreferesh = ["swiperefresh", "swipetorefresh-layout"]
 android = ["viewmodel", "androidx-core", "lifecycle", "lifecyclecompose", "lifecycleprocess", "activity", "appcompat"]
 koin = ["koin-core", "koin-android", "koin-compose", "koin-navigation"]
 kointest = ["koin-testjunit5", "koin-testandroid"]

@@ -48,5 +48,4 @@ dependencies {
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
     implementation(libs.bundles.serialization)
-    implementation(libs.bundles.swipetoreferesh)
 }

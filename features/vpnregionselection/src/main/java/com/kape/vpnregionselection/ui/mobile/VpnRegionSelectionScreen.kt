@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -23,8 +25,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.regions.data.ServerData
@@ -79,8 +79,9 @@ fun VpnRegionSelectionScreen() = Screen {
             val context: Context = LocalContext.current
             val message = stringResource(id = R.string.error_pinging_while_connected)
 
-            SwipeRefresh(
-                state = rememberSwipeRefreshState(isLoading.value),
+            PullToRefreshBox(
+                isRefreshing = isLoading.value,
+                state = rememberPullToRefreshState(),
                 onRefresh = {
                     showToast.value = viewModel.isVpnConnectionActive()
                     if (showToast.value) {
