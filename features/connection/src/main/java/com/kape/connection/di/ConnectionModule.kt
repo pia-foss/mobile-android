@@ -3,7 +3,7 @@ package com.kape.connection.di
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.domain.ClientStateDataSource
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

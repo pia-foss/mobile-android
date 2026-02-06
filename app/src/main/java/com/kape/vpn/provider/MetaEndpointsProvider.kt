@@ -29,10 +29,12 @@ class MetaEndpointsProvider : KoinComponent {
         }.toMutableList()
 
         // If there were no regions with valid latencies yet or less than what we need to. Pick random.
-        if (regionsWithValidLatency.isEmpty() || regionsWithValidLatency.size < MAX_META_ENDPOINTS && sortedLatencyRegions.isNotEmpty()) {
-            for (i in 1..MAX_META_ENDPOINTS) {
-                val region = sortedLatencyRegions[Random.nextInt(0, sortedLatencyRegions.size)]
-                regionsWithValidLatency.add(region)
+        if (regionsWithValidLatency.isEmpty() || regionsWithValidLatency.size < MAX_META_ENDPOINTS) {
+            for (i in 2..MAX_META_ENDPOINTS) {
+                if (sortedLatencyRegions.isNotEmpty()) {
+                    val region = sortedLatencyRegions[Random.nextInt(0, sortedLatencyRegions.size)]
+                    regionsWithValidLatency.add(region)
+                }
             }
         }
 
@@ -41,21 +43,24 @@ class MetaEndpointsProvider : KoinComponent {
             regionsWithValidLatency.add(0, it)
         }
 
-        // Add the MAX_META_ENDPOINTS regions with the lowest latencies.
-        for (region in regionsWithValidLatency.subList(0, MAX_META_ENDPOINTS)) {
-            // We want different meta regions. Provide just one meta per region region.
-            val selectedEndpoint = region.endpoints[VpnServer.ServerGroup.META]?.firstOrNull()
-            if (selectedEndpoint != null) {
-                endpoints.add(
-                    GenericEndpoint(
-                        selectedEndpoint.ip,
-                        isProxy = true,
-                        usePinnedCertificate = true,
-                        certificateCommonName = selectedEndpoint.cn,
-                    ),
-                )
+        if (regionsWithValidLatency.size > MAX_META_ENDPOINTS) {
+            // Add the MAX_META_ENDPOINTS regions with the lowest latencies.
+            for (region in regionsWithValidLatency.subList(0, MAX_META_ENDPOINTS)) {
+                // We want different meta regions. Provide just one meta per region region.
+                val selectedEndpoint = region.endpoints[VpnServer.ServerGroup.META]?.firstOrNull()
+                if (selectedEndpoint != null) {
+                    endpoints.add(
+                        GenericEndpoint(
+                            selectedEndpoint.ip,
+                            isProxy = true,
+                            usePinnedCertificate = true,
+                            certificateCommonName = selectedEndpoint.cn,
+                        ),
+                    )
+                }
             }
         }
+
         return endpoints
     }
 }

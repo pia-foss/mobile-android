@@ -5,7 +5,7 @@ import com.kape.profile.domain.DeleteAccountUseCase
 import com.kape.profile.domain.GetProfileUseCase
 import com.kape.profile.domain.ProfileDatasource
 import com.kape.profile.ui.vm.ProfileViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
