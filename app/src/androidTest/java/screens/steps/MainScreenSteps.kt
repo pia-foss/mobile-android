@@ -1,25 +1,19 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorHelpers
-import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import androidx.test.uiautomator.UiAutomatorTestScope
+import screens.helpers.UiAutomatorHelpers.click
 import screens.helpers.UiAutomatorHelpers.waitUntilConnectionIsEstablished
 
 object MainScreenSteps {
+    const val CONNECT_BUTTON = ":ConnectionScreen:connection_button"
+    const val SIDE_MENU = ":AppBar:side_menu"
+    const val QUICK_CONNECT_FIRST_ITEM = ":QuickConnect:server_0"
+    const val QUICK_CONNECT_SECOND_ITEM = ":QuickConnect:server_1"
+    const val LOCATION_PICKER = ":ConnectionScreen:VpnLocationPicker"
+    const val LOCATION_EIGHT_ITEM = ":VpnRegionSelectionScreen:locationItem_8"
 
-    val connectButton get() = UiAutomatorHelpers.findByResId(":ConnectionScreen:connection_button")
-    val sideMenu get() = UiAutomatorHelpers.findByResId(":AppBar:side_menu")
-    val appBarConnectionStatus get() = UiAutomatorHelpers.findByResId(":AppBar:connection_text_default")
-    val quickConnectFirstItem get() = UiAutomatorHelpers.findByResId(":QuickConnect:server_0")
-    val quickConnectSecondItem get() = UiAutomatorHelpers.findByResId(":QuickConnect:server_1")
-    val locationPicker get() = UiAutomatorHelpers.findByResId(":ConnectionScreen:VpnLocationPicker")
-    val locationEightItem get() = UiAutomatorHelpers.findByResId(":VpnRegionSelectionScreen:locationItem_8")
-
-    fun navigateToMainScreen() {
-        waitUntilVisible(connectButton)
-    }
-
-    fun establishAndVerifyVPNConnection() {
-        UiAutomatorHelpers.click(connectButton)
+    fun UiAutomatorTestScope.establishAndVerifyVPNConnection() {
+        click(CONNECT_BUTTON)
         waitUntilConnectionIsEstablished()
     }
 }

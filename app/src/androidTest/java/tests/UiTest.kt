@@ -1,43 +1,28 @@
 package tests
 
-import android.content.Context
-import android.content.Intent
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.uiAutomator
 import com.kape.vpn.BuildConfig
-import screens.helpers.UiAutomatorHelpers
-import screens.steps.*
+import screens.helpers.UiAutomatorHelpers.findByResId
+import screens.steps.LoginSteps.giveAppPermissions
+import screens.steps.LoginSteps.logIn
+import screens.steps.SignUpSteps
+import kotlin.test.assertNotNull
 
-open class UiTest(
-    val loginSteps: LoginSteps = LoginSteps,
-    val signUpSteps: SignUpSteps = SignUpSteps,
-    val mainScreenSteps: MainScreenSteps = MainScreenSteps,
-    val sideMenuSteps: SideMenuSteps = SideMenuSteps,
-    val settingsSteps: SettingsSteps = SettingsSteps,
-    val protocolSteps: ProtocolsSteps = ProtocolsSteps,
-    val dedicatedIPSteps: DedicatedIPSteps = DedicatedIPSteps,
-    val regionSelectionSteps: RegionSelectionSteps = RegionSelectionSteps
-) {
-
-    var context: Context = InstrumentationRegistry.getInstrumentation().targetContext
-    private var intent: Intent? = context.packageManager.getLaunchIntentForPackage(BuildConfig.APPLICATION_ID)
-
-    init {
-        intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK) // Clear previous app instances
-    }
+open class UiTest() {
 
     /**
      * Default setup: launches app and logs in with valid credentials.
      */
     @org.junit.Before
-    open fun setUp() {
-        context.startActivity(intent)
+    open fun setUp() = uiAutomator {
+        startApp(BuildConfig.APPLICATION_ID)
+        waitForAppToBeVisible(BuildConfig.APPLICATION_ID)
         // Wait for SignUp screen
-        UiAutomatorHelpers.waitUntilVisible(signUpSteps.loginButton)
+        assertNotNull(findByResId(SignUpSteps.LOGIN_BUTTON))
         // Navigate to login
-        signUpSteps.loginButton?.let { UiAutomatorHelpers.click(it) }
-        loginSteps.logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
-        loginSteps.giveAppPermissions()
+        findByResId(SignUpSteps.LOGIN_BUTTON)?.click()
+        logIn(BuildConfig.PIA_VALID_USERNAME, BuildConfig.PIA_VALID_PASSWORD)
+        giveAppPermissions()
     }
 
     /**
@@ -45,7 +30,8 @@ open class UiTest(
      * Useful for tests that start from SignUp screen.
      */
     @org.junit.Before
-    fun setupWithoutLogin() {
-        context.startActivity(intent)
+    fun setupWithoutLogin() = uiAutomator {
+        startApp(BuildConfig.APPLICATION_ID)
+        waitForAppToBeVisible(BuildConfig.APPLICATION_ID)
     }
 }

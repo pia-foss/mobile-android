@@ -1,45 +1,36 @@
 package screens.steps
 
-import com.kape.settings.data.VpnProtocols
-import screens.helpers.UiAutomatorHelpers
-import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import androidx.test.uiautomator.UiAutomatorTestScope
+import screens.helpers.UiAutomatorHelpers.click
+import screens.helpers.UiAutomatorHelpers.findByResId
 
 object ProtocolsSteps {
 
-    val protocolSelectionButton get() = UiAutomatorHelpers.findByResId(":ProtocolSettingsScreen:protocol_selection")
-    val openVpnButton get() = UiAutomatorHelpers.findByResId(":OptionsDialog:OpenVPN")
-    val wireGuardButton get() = UiAutomatorHelpers.findByResId(":OptionsDialog:WireGuard")
-    val androidOkButton get() = UiAutomatorHelpers.findByResId(":OptionsDialog:Ok")
-    val smallPacketsToggle get() = UiAutomatorHelpers.findByResId(":ProtocolSettingsScreen:use_small_packets")
+    const val PROTOCOL_SELECTION_BUTTON = ":ProtocolSettingsScreen:protocol_selection"
+    const val OPEN_VPN_BUTTON = ":OptionsDialog:OpenVPN"
+    const val WIRE_GUARD_BUTTON = ":OptionsDialog:WireGuard"
+    const val ANDROID_OK_BUTTON = ":OptionsDialog:Ok"
+    const val SMALL_PACKETS_TOGGLE = ":ProtocolSettingsScreen:use_small_packets"
 
-    fun selectProtocol() {
-        UiAutomatorHelpers.click(SettingsSteps.protocolsButton)
-        UiAutomatorHelpers.click(protocolSelectionButton)
+    fun UiAutomatorTestScope.selectProtocol() {
+        click(SettingsSteps.PROTOCOLS_BUTTON)
+        click(PROTOCOL_SELECTION_BUTTON)
     }
 
-    fun selectOpenVPN() {
-        UiAutomatorHelpers.click(openVpnButton)
-        UiAutomatorHelpers.click(androidOkButton)
+    fun UiAutomatorTestScope.selectOpenVPN() {
+        click(OPEN_VPN_BUTTON)
+        click(ANDROID_OK_BUTTON)
     }
 
-    fun selectWireGuard() {
-        UiAutomatorHelpers.click(wireGuardButton)
-        UiAutomatorHelpers.click(androidOkButton)
+    fun UiAutomatorTestScope.selectWireGuard() {
+        click(WIRE_GUARD_BUTTON)
+        click(ANDROID_OK_BUTTON)
     }
 
-    fun getSelectedProtocol(): String {
-        waitUntilVisible(SettingsSteps.protocolsButton)
-        return when {
-            UiAutomatorHelpers.findByText(VpnProtocols.OpenVPN.name)?.let { it.isEnabled } == true -> VpnProtocols.OpenVPN.name
-            UiAutomatorHelpers.findByText(VpnProtocols.WireGuard.name)?.let { it.isEnabled } == true -> VpnProtocols.WireGuard.name
-            else -> "Unknown protocol"
-        }
-    }
-
-    fun smallPacketToggleChecked(desiredState: Boolean) {
-        smallPacketsToggle?.let {
+    fun UiAutomatorTestScope.smallPacketToggleChecked(desiredState: Boolean) {
+        findByResId(SMALL_PACKETS_TOGGLE)?.let {
             if (it.isChecked != desiredState) {
-                UiAutomatorHelpers.click(it)
+                click(SMALL_PACKETS_TOGGLE)
             }
         }
     }

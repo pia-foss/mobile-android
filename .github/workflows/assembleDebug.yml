@@ -67,11 +67,6 @@ jobs:
   e2e-testing:
     name: Run end to end instrumentation tests
     runs-on: ubuntu-latest
-    needs:
-      - build-playstore-version
-      - build-website-version
-      - build-amazon-version
-      - build-playstore-apk-version
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4.1.0
@@ -114,7 +109,11 @@ jobs:
           emulator-boot-timeout: 480
           disable-animations: true
           disable-spellchecker: true
-          script: ./gradlew :app:connectedGoogleDebugAndroidTest
+          script: |
+            adb shell settings put global window_animation_scale 0
+            adb shell settings put global transition_animation_scale 0
+            adb shell settings put global animator_duration_scale 0
+            ./gradlew :app:connectedGoogleDebugAndroidTest
 
       - uses: actions/upload-artifact@v4
         if: always()

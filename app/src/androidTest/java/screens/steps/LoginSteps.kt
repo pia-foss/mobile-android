@@ -1,48 +1,47 @@
 package screens.steps
 
-import screens.helpers.UiAutomatorHelpers
-import screens.helpers.UiAutomatorHelpers.waitUntilVisible
+import androidx.test.uiautomator.UiAutomatorTestScope
+import screens.helpers.UiAutomatorHelpers.click
+import screens.helpers.UiAutomatorHelpers.findByResId
+import screens.helpers.UiAutomatorHelpers.inputText
 
 object LoginSteps {
 
-    private val device get() = UiAutomatorHelpers.device
+    const val USERNAME_FIELD = ":LoginScreen:enter_username"
+    const val PASSWORD_FIELD = ":LoginScreen:enter_password"
+    const val ERROR_FIELD = ":LoginScreen:login_error"
+    const val LOGIN_BUTTON = ":LoginScreen:login_button"
+    const val VPN_PROFILE_OK_BUTTON = ":VpnPermissionScreen:ok"
+    const val ANDROID_OK_BUTTON = "android:id/button1"
+    const val APP_ALLOW_NOTIFICATIONS = ":NotificationPermissionScreen:notifications_action"
+    const val ANDROID_ALLOW_NOTIFICATIONS =
+        "com.android.permissioncontroller:id/permission_allow_button"
 
-    val usernameField get() = UiAutomatorHelpers.findByResId(":LoginScreen:enter_username")
-    val passwordField get() = UiAutomatorHelpers.findByResId(":LoginScreen:enter_password")
-    val errorField get() = UiAutomatorHelpers.findByResId(":LoginScreen:login_error")
-    val loginButton get() = UiAutomatorHelpers.findByResId(":LoginScreen:login_button")
-    val vpnProfileOkButton get() = UiAutomatorHelpers.findByResId(":VpnPermissionScreen:ok")
-    val androidOkButton get() = UiAutomatorHelpers.findByResId("android:id/button1")
-    val appAllowNotifications get() = UiAutomatorHelpers.findByResId(":NotificationPermissionScreen:notifications_action")
-    val androidAllowNotifications get() = UiAutomatorHelpers.findByResId("com.android.permissioncontroller:id/permission_allow_button")
-
-    fun navigateToLoginScreen() {
-        SignUpSteps.loginButton?.let { UiAutomatorHelpers.click(it) }
-        waitUntilVisible(usernameField)
+    fun UiAutomatorTestScope.navigateToLoginScreen() {
+        click(SignUpSteps.LOGIN_BUTTON)
     }
 
-    fun logIn(username: String, password: String) {
-        waitUntilVisible(usernameField)
-        UiAutomatorHelpers.inputText(usernameField, username)
-        UiAutomatorHelpers.inputText(passwordField, password)
-        UiAutomatorHelpers.click(loginButton)
+    fun UiAutomatorTestScope.logIn(username: String, password: String) {
+        inputText(USERNAME_FIELD, username)
+        inputText(PASSWORD_FIELD, password)
+        click(LOGIN_BUTTON)
     }
 
-    fun allowVpnProfileCreation() {
-        vpnProfileOkButton?.takeIf { waitUntilVisible(it) }?.let {
-            UiAutomatorHelpers.click(it)
-            UiAutomatorHelpers.click(androidOkButton)
+    fun UiAutomatorTestScope.allowVpnProfileCreation() {
+        findByResId(VPN_PROFILE_OK_BUTTON).takeIf { it != null }?.let {
+            findByResId(VPN_PROFILE_OK_BUTTON)?.click()
+            findByResId(ANDROID_OK_BUTTON)?.click()
         }
     }
 
-    fun allowNotifications() {
-        appAllowNotifications?.takeIf { waitUntilVisible(it) }?.let {
-            UiAutomatorHelpers.click(it)
-            UiAutomatorHelpers.click(androidAllowNotifications)
+    fun UiAutomatorTestScope.allowNotifications() {
+        findByResId(APP_ALLOW_NOTIFICATIONS).takeIf { it != null }?.let {
+            findByResId(APP_ALLOW_NOTIFICATIONS)?.click()
+            findByResId(ANDROID_ALLOW_NOTIFICATIONS)?.click()
         }
     }
 
-    fun giveAppPermissions() {
+    fun UiAutomatorTestScope.giveAppPermissions() {
         allowVpnProfileCreation()
         allowNotifications()
     }
