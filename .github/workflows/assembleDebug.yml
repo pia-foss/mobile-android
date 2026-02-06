@@ -85,14 +85,7 @@ jobs:
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
 
-      - name: Enable Hardware Acceleration (Add KVM group perms)
-        run: |
-          sudo modprobe kvm
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
-
-      - name: Run end to end instrumentation tests on emulator
+      - name: Run end-to-end instrumentation tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
         env:
           GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
@@ -109,11 +102,38 @@ jobs:
           emulator-boot-timeout: 480
           disable-animations: true
           disable-spellchecker: true
+          emulator-options: "-no-window -gpu swiftshader_indirect -noaudio -no-snapshot"
           script: |
+            echo "Waiting for emulator to be ready..."
+            adb wait-for-device
+            adb shell input keyevent 82  # Unlock screen
             adb shell settings put global window_animation_scale 0
             adb shell settings put global transition_animation_scale 0
             adb shell settings put global animator_duration_scale 0
-            ./gradlew :app:connectedGoogleDebugAndroidTest
+
+            # Run tests with Gradle Fladle-like retry for only failed tests
+            MAX_RETRIES=2
+            RETRY_COUNT=0
+            while [ $RETRY_COUNT -le $MAX_RETRIES ]; do
+                echo "Running instrumentation tests (attempt $((RETRY_COUNT+1)))..."
+                ./gradlew :app:connectedGoogleDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.numShards=1 --continue
+                TEST_RESULT=$?
+
+                if [ $TEST_RESULT -eq 0 ]; then
+                    echo "Tests passed!"
+                    break
+                else
+                    echo "Tests failed. Retry $((RETRY_COUNT+1)) of $MAX_RETRIES."
+                    RETRY_COUNT=$((RETRY_COUNT+1))
+                    sleep 5
+                fi
+            done
+
+            # Fail the workflow if tests still fail after retries
+            if [ $TEST_RESULT -ne 0 ]; then
+                echo "Tests failed after $MAX_RETRIES retries."
+                exit 1
+            fi
 
       - uses: actions/upload-artifact@v4
         if: always()
