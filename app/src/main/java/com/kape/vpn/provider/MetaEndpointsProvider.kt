@@ -43,21 +43,24 @@ class MetaEndpointsProvider : KoinComponent {
             regionsWithValidLatency.add(0, it)
         }
 
-        // Add the MAX_META_ENDPOINTS regions with the lowest latencies.
-        for (region in regionsWithValidLatency.subList(0, MAX_META_ENDPOINTS)) {
-            // We want different meta regions. Provide just one meta per region region.
-            val selectedEndpoint = region.endpoints[VpnServer.ServerGroup.META]?.firstOrNull()
-            if (selectedEndpoint != null) {
-                endpoints.add(
-                    GenericEndpoint(
-                        selectedEndpoint.ip,
-                        isProxy = true,
-                        usePinnedCertificate = true,
-                        certificateCommonName = selectedEndpoint.cn,
-                    ),
-                )
+        if (regionsWithValidLatency.size > MAX_META_ENDPOINTS) {
+            // Add the MAX_META_ENDPOINTS regions with the lowest latencies.
+            for (region in regionsWithValidLatency.subList(0, MAX_META_ENDPOINTS)) {
+                // We want different meta regions. Provide just one meta per region region.
+                val selectedEndpoint = region.endpoints[VpnServer.ServerGroup.META]?.firstOrNull()
+                if (selectedEndpoint != null) {
+                    endpoints.add(
+                        GenericEndpoint(
+                            selectedEndpoint.ip,
+                            isProxy = true,
+                            usePinnedCertificate = true,
+                            certificateCommonName = selectedEndpoint.cn,
+                        ),
+                    )
+                }
             }
         }
+
         return endpoints
     }
 }

@@ -13,7 +13,7 @@ import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dip.DipPrefs
 import com.kape.ui.utils.PriceFormatter
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
