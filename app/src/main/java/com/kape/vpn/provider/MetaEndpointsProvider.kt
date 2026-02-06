@@ -29,10 +29,12 @@ class MetaEndpointsProvider : KoinComponent {
         }.toMutableList()
 
         // If there were no regions with valid latencies yet or less than what we need to. Pick random.
-        if (regionsWithValidLatency.isEmpty() || regionsWithValidLatency.size < MAX_META_ENDPOINTS && sortedLatencyRegions.isNotEmpty()) {
-            for (i in 1..MAX_META_ENDPOINTS) {
-                val region = sortedLatencyRegions[Random.nextInt(0, sortedLatencyRegions.size)]
-                regionsWithValidLatency.add(region)
+        if (regionsWithValidLatency.isEmpty() || regionsWithValidLatency.size < MAX_META_ENDPOINTS) {
+            for (i in 2..MAX_META_ENDPOINTS) {
+                if (sortedLatencyRegions.isNotEmpty()) {
+                    val region = sortedLatencyRegions[Random.nextInt(0, sortedLatencyRegions.size)]
+                    regionsWithValidLatency.add(region)
+                }
             }
         }
 
