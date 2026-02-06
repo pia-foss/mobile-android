@@ -38,11 +38,11 @@ dependencies {
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.android)
     implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)
     implementation(libs.coroutines)
+    testImplementation(libs.bundles.kointest)
     testImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
+    androidTestImplementation(libs.bundles.coroutines.androidtest)
     runtimeOnly(libs.launcher)
 }

@@ -9,6 +9,7 @@ data class SubscriptionPlan(
     val priceInMicros: Long,
     val formattedPrice: String,
     val billingPeriod: String,
+    val currencyCode: String,
     val freeTrialDuration: String?,
     val plan: String,
 ) {
