@@ -311,9 +311,9 @@
     <string name="privacy_policy">개인정보 취급방침</string>
     <string name="and">및</string>
     <string name="terms_of_service">서비스 약관</string>
-    <string name="monthly_ending">%1$s/월</string>
-    <string name="yearly_month_ending">%2$s%1$s/월</string>
-    <string name="yearly_ending">%1$s/년</string>
+    <string name="monthly_ending">%s/월</string>
+    <string name="yearly_month_ending">%s/월</string>
+    <string name="yearly_ending">%s/년</string>
     <string name="consent_title">저희가 서비스를 개선할 수 있도록 도와주세요</string>
     <string name="consent_message">연결 상태를 저희와 익명으로 공유해 주시면 저희 서비스의 연결 성능을 개선하는 데 도움이 됩니다. 이 보고서에는 개인 식별 정보가 포함되지 않습니다.</string>
     <string name="find_out_more">자세히 보기</string>

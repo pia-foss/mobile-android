@@ -311,9 +311,9 @@
     <string name="privacy_policy">Polityka prywatności</string>
     <string name="and">i</string>
     <string name="terms_of_service">Warunki użytkowania</string>
-    <string name="monthly_ending">%1$s/msc.</string>
-    <string name="yearly_month_ending">%2$s%1$s/msc.</string>
-    <string name="yearly_ending">%1$s rocznie</string>
+    <string name="monthly_ending">%s/msc.</string>
+    <string name="yearly_month_ending">%s/msc.</string>
+    <string name="yearly_ending">%s rocznie</string>
     <string name="consent_title">Prosimy o pomoc w ulepszeniu naszych usług</string>
     <string name="consent_message">Aby pomóc nam zapewnić najlepszą wydajność naszych usług, możesz anonimowo udostępniać nam swoje statystyki połączeń. Raporty te nie zawierają żadnych informacji umożliwiających identyfikację osób.</string>
     <string name="find_out_more">Dowiedz się więcej</string>

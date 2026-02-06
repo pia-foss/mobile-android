@@ -311,9 +311,9 @@
     <string name="privacy_policy">Personvernerklæring</string>
     <string name="and">og</string>
     <string name="terms_of_service">tjenestevilkårene</string>
-    <string name="monthly_ending">%1$s/mnd</string>
-    <string name="yearly_month_ending">%2$s%1$s/mnd</string>
-    <string name="yearly_ending">%1$s per år</string>
+    <string name="monthly_ending">%s/mnd</string>
+    <string name="yearly_month_ending">%s/mnd</string>
+    <string name="yearly_ending">%s per år</string>
     <string name="consent_title">Hjelp oss med å forbedre tjenesten vår</string>
     <string name="consent_message">For å hjelpe oss med å sikre tjenestens tilkoblingsytelse, kan du anonymt dele tilkoblingsstatistikken din med oss. Disse rapportene inkluderer informasjon som ikke er personlig identifiserbar.</string>
     <string name="find_out_more">Finn ut mer</string>
