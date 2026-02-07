@@ -311,9 +311,9 @@
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="and">и</string>
     <string name="terms_of_service">Условия использования</string>
-    <string name="monthly_ending">%1$s/мес.</string>
-    <string name="yearly_month_ending">%2$s%1$s/мес.</string>
-    <string name="yearly_ending">%1$s в год</string>
+    <string name="monthly_ending">%s/мес.</string>
+    <string name="yearly_month_ending">%s/мес.</string>
+    <string name="yearly_ending">%s в год</string>
     <string name="consent_title">Помогите нам улучшить сервис</string>
     <string name="consent_message">Чтобы помочь нам обеспечивать высокое качество подключений, вы можете анонимно поделиться с нами статистикой своих соединений. Эти отчеты не содержат никакой личной информации.</string>
     <string name="find_out_more">Подробнее</string>

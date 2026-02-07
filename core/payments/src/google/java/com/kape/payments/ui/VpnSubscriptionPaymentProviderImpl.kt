@@ -94,12 +94,14 @@ class VpnSubscriptionPaymentProviderImpl(
         )
     }
 
+    @Deprecated("Deprecated in favor of SubscriptionPlan")
     override fun getMonthlySubscription(): Subscription? = prefs.getVpnSubscriptions().firstOrNull {
-        it.plan.lowercase() == monthlySubscription.lowercase()
+        it.plan.equals(monthlySubscription, ignoreCase = true)
     }
 
+    @Deprecated("Deprecated in favor of SubscriptionPlan")
     override fun getYearlySubscription(): Subscription? = prefs.getVpnSubscriptions().firstOrNull {
-        it.plan.lowercase() == yearlySubscription.lowercase()
+        it.plan.equals(yearlySubscription, ignoreCase = true)
     }
 
     override fun getMonthlySubscriptionPlan(): SubscriptionPlan? {
@@ -157,6 +159,7 @@ class VpnSubscriptionPaymentProviderImpl(
                                 val subscriptionPlan = SubscriptionPlan(
                                     id = item.productId,
                                     billingPeriod = plan.billingPeriod,
+                                    currencyCode = plan.priceCurrencyCode,
                                     priceInMicros = plan.priceAmountMicros,
                                     formattedPrice = plan.formattedPrice,
                                     freeTrialDuration = freeTrial?.billingPeriod,

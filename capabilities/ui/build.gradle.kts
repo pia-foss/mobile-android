@@ -24,8 +24,15 @@ dependencies {
 
     implementation(libs.bundles.compose)
     implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.swipetoreferesh)
+    testImplementation(libs.bundles.test)
+    testImplementation(libs.bundles.kointest)
+    testImplementation(libs.coroutines.test)
+    runtimeOnly(libs.launcher)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

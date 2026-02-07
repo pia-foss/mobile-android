@@ -311,9 +311,9 @@
     <string name="privacy_policy">سياسة الخصوصية</string>
     <string name="and">-</string>
     <string name="terms_of_service">شروط الخدمة</string>
-    <string name="monthly_ending">%1$s/شهر</string>
-    <string name="yearly_month_ending">%2$s%1$s/شهر</string>
-    <string name="yearly_ending">%1$s في السنة</string>
+    <string name="monthly_ending">%s/شهر</string>
+    <string name="yearly_month_ending">%s/شهر</string>
+    <string name="yearly_ending">%s في السنة</string>
     <string name="consent_title">يرجى مساعدتنا في تحسين خدماتنا</string>
     <string name="consent_message">لمساعدتنا في تحسين خدمتنا، يمكنك مشاركة إحصائيات اتصالاتك معنا دون الكشف عن هويتك. لا تتضمن هذه التقارير أي معلومات شخصية.</string>
     <string name="find_out_more">اكتشف المزيد</string>

@@ -311,9 +311,9 @@
     <string name="privacy_policy">Informativa sulla Privacy</string>
     <string name="and">e</string>
     <string name="terms_of_service">Termini di servizio</string>
-    <string name="monthly_ending">%1$s al mese</string>
-    <string name="yearly_month_ending">%2$s%1$s al mese</string>
-    <string name="yearly_ending">%1$s all\'anno</string>
+    <string name="monthly_ending">%s al mese</string>
+    <string name="yearly_month_ending">%s al mese</string>
+    <string name="yearly_ending">%s all\'anno</string>
     <string name="consent_title">Aiutaci a migliorare il nostro servizio</string>
     <string name="consent_message">Per aiutarci a garantire le prestazioni di connessione del nostro servizio, puoi condividere in modo anonimo le tue statistiche di connessione con noi. Questi rapporti non includono alcuna informazione di identificazione personale.</string>
     <string name="find_out_more">Scopri di più</string>

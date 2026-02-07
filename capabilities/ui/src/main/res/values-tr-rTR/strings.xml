@@ -311,9 +311,9 @@
     <string name="privacy_policy">Gizlilik Politikası</string>
     <string name="and">ve</string>
     <string name="terms_of_service">Hizmet Koşulları</string>
-    <string name="monthly_ending">Ayda %1$s</string>
-    <string name="yearly_month_ending">Ayda %2$s%1$s</string>
-    <string name="yearly_ending">Yıllık %1$s</string>
+    <string name="monthly_ending">Ayda %s</string>
+    <string name="yearly_month_ending">Ayda %s</string>
+    <string name="yearly_ending">Yıllık %s</string>
     <string name="consent_title">Lütfen hizmetimizi geliştirmemize yardımcı olun</string>
     <string name="consent_message">Hizmetimizin bağlantı performansını sağlamamıza yardımcı olmak için bağlantı istatistiklerinizi anonim olarak bizimle paylaşabilirsiniz. Bu raporlar herhangi bir kişisel olarak tanımlanabilir bilgi içermez.</string>
     <string name="find_out_more">Daha fazlasını öğrenin</string>

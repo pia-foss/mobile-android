@@ -311,9 +311,9 @@
     <string name="privacy_policy">隐私政策</string>
     <string name="and">和</string>
     <string name="terms_of_service">服务条款</string>
-    <string name="monthly_ending">%1$s/每月</string>
-    <string name="yearly_month_ending">%2$s%1$s/每月</string>
-    <string name="yearly_ending">%1$s/每年</string>
+    <string name="monthly_ending">%s/每月</string>
+    <string name="yearly_month_ending">%s/每月</string>
+    <string name="yearly_ending">%s/每年</string>
     <string name="consent_title">请帮助我们改进服务</string>
     <string name="consent_message">为了帮助我们保持服务的连接性能，您可以匿名与我们共享您的连接统计数据。这些报告不包括任何可识别个人身份的信息。</string>
     <string name="find_out_more">了解更多</string>

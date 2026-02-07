@@ -41,7 +41,7 @@ class GetDipYearlyPlan(
                             DedicatedIpYearlyPlan(
                                 id = productDetails.first,
                                 yearlyPrice = formatter.formatYearlyPlan(productDetails.second),
-                                monthlyPrice = formatter.formatYearlyPerMonth(productDetails.second),
+                                monthlyPrice = formatter.formatYearlyPerMonth(productDetails.second, "USD"),
                             ),
                         )
                     },

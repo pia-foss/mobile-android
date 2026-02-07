@@ -311,9 +311,9 @@
     <string name="privacy_policy">Datenschutzrichtlinie</string>
     <string name="and">und</string>
     <string name="terms_of_service">Nutzungsbedingungen</string>
-    <string name="monthly_ending">%1$s/Monat</string>
-    <string name="yearly_month_ending">%2$s%1$s/Monat</string>
-    <string name="yearly_ending">%1$s/Jahr</string>
+    <string name="monthly_ending">%s/Monat</string>
+    <string name="yearly_month_ending">%s/Monat</string>
+    <string name="yearly_ending">%s/Jahr</string>
     <string name="consent_title">Helfen Sie uns, unseren Dienst zu verbessern.</string>
     <string name="consent_message">Um uns zu helfen, die Verbindungsleistung unseres Dienstes sicherzustellen, können Sie Ihre Verbindungsstatistiken anonym mit uns teilen. Diese Berichte enthalten keine persönlich identifizierbaren Daten.</string>
     <string name="find_out_more">Mehr erfahren</string>
