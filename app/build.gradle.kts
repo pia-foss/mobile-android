@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.configuration)
 }
 
-val googleAppVersionCode = 693
+val googleAppVersionCode = 694
 val amazonAppVersionCode = googleAppVersionCode.plus(10000)
 val noInAppVersionCode = googleAppVersionCode.plus(10000)
 val appVersionName = "4.0.25"
