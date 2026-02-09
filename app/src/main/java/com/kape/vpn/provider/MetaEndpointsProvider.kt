@@ -32,7 +32,13 @@ class MetaEndpointsProvider : KoinComponent {
         if (regionsWithValidLatency.isEmpty() || regionsWithValidLatency.size < MAX_META_ENDPOINTS) {
             for (i in 2..MAX_META_ENDPOINTS) {
                 if (sortedLatencyRegions.isNotEmpty()) {
-                    val region = sortedLatencyRegions[Random.nextInt(0, sortedLatencyRegions.size)]
+                    val region =
+                        if (sortedLatencyRegions.size == 1) sortedLatencyRegions[0] else sortedLatencyRegions[
+                            Random.nextInt(
+                                0,
+                                sortedLatencyRegions.size,
+                            ),
+                        ]
                     regionsWithValidLatency.add(region)
                 }
             }
