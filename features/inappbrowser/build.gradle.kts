@@ -39,7 +39,6 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
-    implementation(libs.webview)
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.android)

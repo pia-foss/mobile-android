@@ -108,7 +108,6 @@ drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter
 glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 glancematerial = { module = "androidx.glance:glance-material3", version.ref = "glance" }
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
-webview = { module = "com.google.accompanist:accompanist-webview", version.ref = "accompanist" }
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-constraint-layout" }
 
 [plugins]
