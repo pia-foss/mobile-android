@@ -64,6 +64,10 @@ jobs:
     uses: ./.github/workflows/build-playstore-apk-android.yaml
     secrets: inherit
 
+  build-meta-version:
+    uses: ./.github/workflows/build-meta-android.yaml
+    secrets: inherit
+
   e2e-testing:
     name: Run end to end instrumentation tests
     runs-on: ubuntu-latest

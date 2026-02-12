@@ -30,6 +30,7 @@ val SUBSCRIPTIONS_FAILED_TO_LOAD = SignupScreenState(
     SignupStep.Subscriptions(supportsSubscription = true, displaySubscribeButton = false),
 )
 val NO_IN_APP_SUBSCRIPTIONS = SignupScreenState(loading = false, SignupStep.Subscriptions(false))
+val META_SUBSCRIPTIONS = SignupScreenState(loading = false, SignupStep.Subscriptions(false))
 val AMAZON_LOGIN = SignupScreenState(
     loading = false,
     SignupStep.Subscriptions(supportsSubscription = true, displaySubscribeButton = false),

@@ -6,7 +6,6 @@ import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
 import com.kape.payments.data.SubscriptionPlan
 import com.kape.utils.Prefs
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 private const val AVAILABLE_VPN_SUBSCRIPTIONS = "available-subscriptions"

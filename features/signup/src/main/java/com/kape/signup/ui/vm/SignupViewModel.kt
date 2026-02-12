@@ -26,6 +26,7 @@ import com.kape.signup.utils.ERROR_EMAIL_INVALID
 import com.kape.signup.utils.ERROR_REGISTRATION
 import com.kape.signup.utils.IN_PROCESS
 import com.kape.signup.utils.LOADING
+import com.kape.signup.utils.META_SUBSCRIPTIONS
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
 import com.kape.signup.utils.Plan
 import com.kape.signup.utils.SUBSCRIPTIONS
@@ -165,6 +166,10 @@ class SignupViewModel(
         }
         if (buildConfigProvider.isWebFlavor()) {
             _state.emit(NO_IN_APP_SUBSCRIPTIONS)
+            return@launch
+        }
+        if (buildConfigProvider.isMetaFlavor()) {
+            _state.emit(META_SUBSCRIPTIONS)
             return@launch
         }
         if (subscriptionPrefs.getVpnSubscriptions().isEmpty()) {

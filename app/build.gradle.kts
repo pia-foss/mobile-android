@@ -10,6 +10,7 @@ plugins {
 val googleAppVersionCode = 695
 val amazonAppVersionCode = googleAppVersionCode.plus(10000)
 val noInAppVersionCode = googleAppVersionCode.plus(10000)
+val metaVersionCode = googleAppVersionCode.plus((10000))
 val appVersionName = "4.0.26"
 
 configure<ApplicationExtension> {
@@ -31,24 +32,24 @@ configure<ApplicationExtension> {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         getByName("debug") {
             buildConfigField(
                 "String",
                 "PIA_VALID_USERNAME",
-                "\"${System.getenv("PIA_VALID_USERNAME")}\""
+                "\"${System.getenv("PIA_VALID_USERNAME")}\"",
             )
             buildConfigField(
                 "String",
                 "PIA_VALID_PASSWORD",
-                "\"${System.getenv("PIA_VALID_PASSWORD")}\""
+                "\"${System.getenv("PIA_VALID_PASSWORD")}\"",
             )
             buildConfigField(
                 "String",
                 "PIA_VALID_DIP_TOKEN",
-                "\"${System.getenv("PIA_VALID_DIP_TOKEN")}\""
+                "\"${System.getenv("PIA_VALID_DIP_TOKEN")}\"",
             )
         }
     }
@@ -62,7 +63,7 @@ configure<ApplicationExtension> {
             buildConfigField(
                 "String",
                 "UPDATE_URL",
-                "\"amzn://apps/android?com.privateinternetaccess.android\""
+                "\"amzn://apps/android?com.privateinternetaccess.android\"",
             )
         }
         create("google") {
@@ -72,7 +73,7 @@ configure<ApplicationExtension> {
             buildConfigField(
                 "String",
                 "UPDATE_URL",
-                "\"market://details?id=com.privateinternetaccess.android\""
+                "\"market://details?id=com.privateinternetaccess.android\"",
             )
         }
         create("noinapp") {
@@ -81,12 +82,20 @@ configure<ApplicationExtension> {
             versionCode = noInAppVersionCode
             buildConfigField("String", "UPDATE_URL", "\"\"")
         }
+        create("meta") {
+            dimension = "provider"
+            applicationId = "com.privateinternetaccess.android"
+            versionCode = metaVersionCode
+            buildConfigField("String", "UPDATE_URL", "\"\"")
+        }
     }
 
     sourceSets {
         getByName("amazon").manifest.srcFile("amazon/AndroidManifest.xml")
         getByName("google").manifest.srcFile("google/AndroidManifest.xml")
         getByName("noinapp").manifest.srcFile("noinapp/AndroidManifest.xml")
+        getByName("meta").manifest.srcFile("meta/AndroidManifest.xml")
+
     }
 
     compileOptions {
@@ -205,15 +214,15 @@ val fetchRegionsInformation = tasks.register("fetchRegionsInformation") {
 
         fetchFile(
             "https://serverlist.piaservers.net/vpninfo/regions/v2",
-            File(assetsDir, "metadata-regions.json")
+            File(assetsDir, "metadata-regions.json"),
         )
         fetchFile(
             "https://serverlist.piaservers.net/vpninfo/servers/v6",
-            File(assetsDir, "vpn-regions.json")
+            File(assetsDir, "vpn-regions.json"),
         )
         fetchFile(
             "https://serverlist.piaservers.net/shadow_socks",
-            File(assetsDir, "shadowsocks-regions.json")
+            File(assetsDir, "shadowsocks-regions.json"),
         )
 
         println("Region information files updated successfully!")
