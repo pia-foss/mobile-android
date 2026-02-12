@@ -1,19 +1,14 @@
 package com.kape.utils
 
+import android.app.UiModeManager
 import android.content.Context
-import android.content.pm.PackageManager
+import android.content.res.Configuration
 
 object PlatformUtils {
 
     fun isTv(context: Context): Boolean {
-        when {
-            context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEVISION) ||
-                context.packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK) ||
-                context.packageManager.hasSystemFeature(PackageManager.FEATURE_LIVE_TV) ||
-                context.packageManager.hasSystemFeature("amazon.hardware.fire_tv") -> {
-                return true
-            }
-        }
-        return false
+        val uiModeManager =
+            context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        return uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
     }
 }
