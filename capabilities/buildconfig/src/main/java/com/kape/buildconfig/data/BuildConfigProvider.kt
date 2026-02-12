@@ -1,14 +1,15 @@
 package com.kape.buildconfig.data
 
 class BuildConfigProvider(
-    private val buildFlavor: String,
-    private val buildType: String,
+    buildFlavor: String,
+    buildType: String,
 ) {
 
     private val flavor = when (buildFlavor) {
         "google" -> BuildFlavor.GOOGLE
         "amazon" -> BuildFlavor.AMAZON
         "noinapp" -> BuildFlavor.WEB
+        "meta" -> BuildFlavor.META
         else -> throw IllegalArgumentException("Unknown app flavor. Please update enum.")
     }
 
@@ -26,6 +27,9 @@ class BuildConfigProvider(
 
     fun isWebFlavor() =
         flavor == BuildFlavor.WEB
+
+    fun isMetaFlavor() =
+        flavor == BuildFlavor.META
 
     fun isDebugType() =
         type == BuildType.DEBUG

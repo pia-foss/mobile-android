@@ -1,0 +1,39 @@
+name: Build Meta Android
+on: [workflow_call]
+jobs:
+  build:
+    name: Generate APK
+    env:
+      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+      - name: Gradle rights
+        run: chmod +x gradlew
+      - name: Assemble 'metaRelease' with Gradle
+        run: ./gradlew assembleMetaRelease
+      - name: Sign APK
+        id: sign_apk
+        uses: ilharp/sign-android-release@v2
+        with:
+          releaseDir: app/build/outputs/apk/meta/release
+          signingKey: ${{ secrets.SIGNING_WEB_KEYSTORE }}
+          keyAlias: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
+        env:
+          BUILD_TOOLS_VERSION: "34.0.0"
+      - run: echo "Build status report=${{ job.status }}."
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pia-output-meta
+          path: ${{steps.sign_apk.outputs.signedFile}}
+          if-no-files-found: error

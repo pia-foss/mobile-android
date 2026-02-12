@@ -4,4 +4,5 @@ internal enum class BuildFlavor {
     GOOGLE,
     AMAZON,
     WEB,
+    META,
 }

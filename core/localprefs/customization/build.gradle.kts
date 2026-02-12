@@ -18,6 +18,9 @@ android {
         create("noinapp") {
             dimension = "provider"
         }
+        create("meta") {
+            dimension = "provider"
+        }
     }
 }
 

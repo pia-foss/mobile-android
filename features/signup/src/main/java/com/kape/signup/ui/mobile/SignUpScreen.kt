@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.max
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.kape.signup.ui.vm.SignupViewModel
+import com.kape.signup.utils.META_SUBSCRIPTIONS
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
 import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
@@ -207,7 +208,7 @@ private fun determineProductsAlpha(state: SignupScreenState): Float {
 }
 
 private fun determineSubscribeButtonAlpha(state: SignupScreenState): Float {
-    return if (state == SUBSCRIPTIONS_FAILED_TO_LOAD) {
+    return if (state == SUBSCRIPTIONS_FAILED_TO_LOAD || state == META_SUBSCRIPTIONS) {
         0f
     } else {
         1f
