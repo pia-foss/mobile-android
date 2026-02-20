@@ -234,25 +234,7 @@ class ConnectionUseCase(
         }
 
         val details = server.endpoints[getServerGroup()]
-
-        val ip: String
-        val cn: String
-        val port: Int
-
-        if (details.isNullOrEmpty()) {
-            ip = ""
-            cn = ""
-            port = 8080
-        } else {
-            if (details[0].ip.contains(":")) {
-                ip = details[0].ip.substring(0, details[0].ip.indexOf(":"))
-                port = details[0].ip.substring(details[0].ip.indexOf(":") + 1).toInt()
-            } else {
-                ip = details[0].ip
-                port = settingsPrefs.getOpenVpnSettings().port.toInt()
-            }
-            cn = details[0].cn
-        }
+        val serverList = mutableListOf<ServerList.Server>()
 
         val protocolTarget: VPNManagerProtocolTarget
         val settings: ProtocolSettings
@@ -294,6 +276,22 @@ class ConnectionUseCase(
             }
         }
 
+        if (details.isNullOrEmpty()) {
+            serverList.add(createServer("", "", 8080, server, emptyList()))
+        } else {
+            for (endpoint in details) {
+                if (endpoint.ip.contains(":")) {
+                    val ip = endpoint.ip.substring(0, endpoint.ip.indexOf(":"))
+                    val port = endpoint.ip.substring(endpoint.ip.indexOf(":") + 1).toInt()
+                    serverList.add(createServer(ip, endpoint.cn, port, server, dnsList))
+                } else {
+                    val ip = endpoint.ip
+                    val port = settingsPrefs.getOpenVpnSettings().port.toInt()
+                    serverList.add(createServer(ip, endpoint.cn, port, server, dnsList))
+                }
+            }
+        }
+
         val cipher = when (settingsPrefs.getOpenVpnSettings().dataEncryption) {
             DataEncryption.AES_128_GCM -> "AES-128-GCM"
             DataEncryption.AES_256_GCM -> "AES-256-GCM"
@@ -321,29 +319,7 @@ class ConnectionUseCase(
             allowedApplicationPackages = emptyList(),
             disallowedApplicationPackages = settingsPrefs.getVpnExcludedApps(),
             allowLocalNetworkAccess = settingsPrefs.isAllowLocalTrafficEnabled(),
-            serverList = ServerList(
-                servers = listOf(
-                    ServerList.Server(
-                        ip = ip,
-                        port = port,
-                        commonOrDistinguishedName = cn,
-                        transport = when (settingsPrefs.getOpenVpnSettings().transport) {
-                            Transport.UDP -> TransportProtocol.UDP
-                            Transport.TCP -> TransportProtocol.TCP
-                        },
-                        ciphers = when (settingsPrefs.getOpenVpnSettings().dataEncryption) {
-                            DataEncryption.AES_128_GCM -> listOf(ProtocolCipher.AES_128_GCM)
-                            DataEncryption.AES_256_GCM -> listOf(ProtocolCipher.AES_256_GCM)
-                            DataEncryption.CHA_CHA_20 -> listOf(ProtocolCipher.CHA_CHA_20)
-                        },
-                        latency = server.latency?.toLong(),
-                        dnsInformation = DnsInformation(
-                            dnsList = dnsList,
-                            systemDnsResolverEnabled = settingsPrefs.getSelectedDnsOption() == DnsOptions.SYSTEM,
-                        ),
-                    ),
-                ),
-            ),
+            serverList = ServerList(servers = serverList),
             openVpnClientConfiguration = OpenVpnClientConfiguration(
                 caCertificate = certificate,
                 username = username,
@@ -379,5 +355,33 @@ class ConnectionUseCase(
             }
         }
         return proxyDetails
+    }
+
+    private fun createServer(
+        ip: String,
+        cn: String,
+        port: Int,
+        server: VpnServer,
+        dnsList: List<String>,
+    ): ServerList.Server {
+        return ServerList.Server(
+            ip = ip,
+            port = port,
+            commonOrDistinguishedName = cn,
+            transport = when (settingsPrefs.getOpenVpnSettings().transport) {
+                Transport.UDP -> TransportProtocol.UDP
+                Transport.TCP -> TransportProtocol.TCP
+            },
+            ciphers = when (settingsPrefs.getOpenVpnSettings().dataEncryption) {
+                DataEncryption.AES_128_GCM -> listOf(ProtocolCipher.AES_128_GCM)
+                DataEncryption.AES_256_GCM -> listOf(ProtocolCipher.AES_256_GCM)
+                DataEncryption.CHA_CHA_20 -> listOf(ProtocolCipher.CHA_CHA_20)
+            },
+            latency = server.latency?.toLong(),
+            dnsInformation = DnsInformation(
+                dnsList = dnsList,
+                systemDnsResolverEnabled = settingsPrefs.getSelectedDnsOption() == DnsOptions.SYSTEM,
+            ),
+        )
     }
 }
