@@ -104,7 +104,7 @@ fun ConnectionScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val locale = Locale.getDefault().language
     val connectionManager: ConnectionManager = koinInject()
-    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val connectionStatus by connectionManager.connectionStatus.collectAsState()
     val isConnected = viewModel.isConnected.collectAsState()
     val scope: CoroutineScope = rememberCoroutineScope()
     val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
@@ -129,6 +129,12 @@ fun ConnectionScreen() = Screen {
         viewModel.loadShadowsocksServers(locale)
         viewModel.shouldShowDedicatedIpSignupBanner()
         viewModel.autoConnect()
+    }
+
+    LaunchedEffect(connectionStatus) {
+        if (connectionStatus is ConnectionStatus.CONNECTED) {
+            viewModel.updateConnectionInfo()
+        }
     }
 
     ModalNavigationDrawer(
@@ -167,7 +173,7 @@ fun ConnectionScreen() = Screen {
                     var connectButtonDescription =
                         stringResource(id = R.string.toggle_connection_button)
 
-                    connectButtonDescription += when (connectionStatus.value) {
+                    connectButtonDescription += when (connectionStatus) {
                         ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> stringResource(
                             id = R.string.disconnect_from_vpn,
                         )
@@ -187,7 +193,7 @@ fun ConnectionScreen() = Screen {
                         )
                     }
                     ConnectButton(
-                        status = if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
+                        status = if (isConnected.value) connectionStatus else ConnectionStatus.ERROR,
                         onTvLayout = false,
                         modifier = Modifier
                             .align(CenterHorizontally)
