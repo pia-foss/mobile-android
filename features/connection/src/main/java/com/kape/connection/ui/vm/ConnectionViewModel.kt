@@ -393,4 +393,8 @@ class ConnectionViewModel(
     fun refreshState() {
         _state.update { it.copy(quickConnectServers = getQuickConnectVpnServers()) }
     }
+
+    fun updateConnectionInfo() = viewModelScope.launch {
+        connectionUseCase.getClientStatus().collect()
+    }
 }
