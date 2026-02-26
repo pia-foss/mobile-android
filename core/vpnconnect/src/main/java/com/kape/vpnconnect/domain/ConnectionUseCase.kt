@@ -4,6 +4,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import androidx.compose.runtime.mutableStateOf
 import com.kape.connection.ConnectionPrefs
+import com.kape.connection.NO_IP
 import com.kape.obfuscator.data.ObfuscatorProcessInformation
 import com.kape.obfuscator.data.ObfuscatorProcessListener
 import com.kape.obfuscator.domain.StartObfuscatorProcess
@@ -20,6 +21,7 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnconnect.utils.NOTIFICATION_ID
 import com.kape.vpnmanager.api.OpenVpnSocksProxyDetails
 import com.kape.vpnmanager.data.models.ClientConfiguration
@@ -114,18 +116,8 @@ class ConnectionUseCase(
             generateConnectionConfiguration(server = server),
             connectionManager,
         ).collect { connected ->
+            startPortForwarding().collect()
             emit(connected)
-            // The API can be sometimes be called before the tunnel is up which means the request times out
-            // Add a delay prior to the request to avoid it.
-            delay(1000)
-            clientStateDataSource.getClientStatus().collect {
-                if (!connected) {
-                    clientIp.value = connectionPrefs.getClientIp()
-                    clientStateDataSource.resetVpnIp()
-                }
-                vpnIp.value = connectionPrefs.getVpnIp()
-                startPortForwarding().collect()
-            }
         }
     }
 
@@ -203,11 +195,17 @@ class ConnectionUseCase(
         portForwardingUseCase.clearBindPort()
     }
 
-    fun getClientStatus(): Flow<Boolean> = flow {
-        clientStateDataSource.getClientStatus().collect {
+    fun getClientStatus(status: ConnectionStatus): Flow<Boolean> = flow {
+        clientStateDataSource.getClientStatus(status).collect {
             clientIp.value = connectionPrefs.getClientIp()
             vpnIp.value = connectionPrefs.getVpnIp()
         }
+    }
+
+    fun getConnectionStatus() = connectionManager.connectionStatus
+
+    fun resetVpnIp() {
+        vpnIp.value = NO_IP
     }
 
     private fun getServerGroup(): VpnServer.ServerGroup =

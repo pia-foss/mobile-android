@@ -103,9 +103,6 @@ fun ConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val locale = Locale.getDefault().language
-    val connectionManager: ConnectionManager = koinInject()
-    val connectionStatus by connectionManager.connectionStatus.collectAsState()
-    val isConnected = viewModel.isConnected.collectAsState()
     val scope: CoroutineScope = rememberCoroutineScope()
     val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -129,12 +126,6 @@ fun ConnectionScreen() = Screen {
         viewModel.loadShadowsocksServers(locale)
         viewModel.shouldShowDedicatedIpSignupBanner()
         viewModel.autoConnect()
-    }
-
-    LaunchedEffect(connectionStatus) {
-        if (connectionStatus is ConnectionStatus.CONNECTED) {
-            viewModel.updateConnectionInfo()
-        }
     }
 
     ModalNavigationDrawer(
@@ -173,7 +164,7 @@ fun ConnectionScreen() = Screen {
                     var connectButtonDescription =
                         stringResource(id = R.string.toggle_connection_button)
 
-                    connectButtonDescription += when (connectionStatus) {
+                    connectButtonDescription += when (state.connectionData.connectionStatus) {
                         ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> stringResource(
                             id = R.string.disconnect_from_vpn,
                         )
@@ -193,7 +184,7 @@ fun ConnectionScreen() = Screen {
                         )
                     }
                     ConnectButton(
-                        status = if (isConnected.value) connectionStatus else ConnectionStatus.ERROR,
+                        status = state.connectionData.connectionStatus,
                         onTvLayout = false,
                         modifier = Modifier
                             .align(CenterHorizontally)

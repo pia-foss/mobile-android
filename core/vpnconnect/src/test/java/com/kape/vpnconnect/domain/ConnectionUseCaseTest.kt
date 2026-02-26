@@ -39,7 +39,7 @@ internal class ConnectionUseCaseTest {
     }
     private val clientStateDataSource: ClientStateDataSource =
         mockk<ClientStateDataSource>().apply {
-            every { getClientStatus() } returns flow {
+            every { getClientStatus(any()) } returns flow {
                 emit(true)
             }
             every { resetVpnIp() } just Runs
@@ -183,21 +183,6 @@ internal class ConnectionUseCaseTest {
             val actual = awaitItem()
             awaitComplete()
             assertEquals(expected, actual)
-        }
-    }
-
-    @Test
-    fun `startConnection - failure - reset vpn IP`() = runTest {
-        val expected = false
-        every { connectionDataSource.startConnection(any(), any()) } returns flow {
-            emit(expected)
-        }
-        every { connectionDataSource.getVpnToken() } returns "username:password"
-
-        useCase.startConnection(server, true).test {
-            awaitItem()
-            awaitComplete()
-            verify(exactly = 1) { clientStateDataSource.resetVpnIp() }
         }
     }
 
