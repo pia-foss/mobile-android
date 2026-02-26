@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.connection.ConnectionPrefs
+import com.kape.connection.utils.ConnectionData
 import com.kape.connection.utils.ConnectionScreenState
 import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement
@@ -32,12 +33,15 @@ import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnregions.VpnRegionPrefs
 import com.kape.vpnregions.utils.RegionListProvider
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -68,6 +72,11 @@ class ConnectionViewModel(
         isCurrentServerOptimal = false,
         showOptimalLocationInfo = prefs.getSelectedVpnServer() == null,
         ratingDialogType = ratingTool.showRating.value,
+        connectionData = ConnectionData(
+            connectionUseCase.clientIp.value,
+            connectionUseCase.vpnIp.value,
+            connectionUseCase.getConnectionStatus().value,
+        ),
     )
     private val _state: MutableStateFlow<ConnectionScreenState> = MutableStateFlow(defaultState)
     val state: StateFlow<ConnectionScreenState> = _state
@@ -89,7 +98,26 @@ class ConnectionViewModel(
 
     init {
         viewModelScope.launch {
-            connectionUseCase.getClientStatus().collect()
+            connectionUseCase.getConnectionStatus().collectLatest { connectionStatus ->
+                _state.update {
+                    it.copy(
+                        connectionData = ConnectionData(
+                            connectionUseCase.clientIp.value,
+                            connectionUseCase.vpnIp.value,
+                            connectionStatus,
+                        ),
+                    )
+                }
+                when (connectionStatus) {
+                    ConnectionStatus.CONNECTED,
+                    ConnectionStatus.DISCONNECTED,
+                        -> connectionUseCase.getClientStatus(connectionStatus).collect()
+
+                    else -> {
+                        connectionUseCase.resetVpnIp()
+                    }
+                }
+            }
         }
         ratingTool.start()
         renewDedicatedIps()
@@ -142,7 +170,10 @@ class ConnectionViewModel(
                 prefs.getSelectedVpnServer()?.let {
                     connectionUseCase.startConnection(it, false).collect()
                 } ?: run {
-                    connectionUseCase.startConnection(regionListProvider.getOptimalServer(), false)
+                    connectionUseCase.startConnection(
+                        regionListProvider.getOptimalServer(),
+                        false,
+                    )
                         .collect()
                 }
             }
@@ -178,9 +209,9 @@ class ConnectionViewModel(
         when (screenElement.element) {
             Element.ShadowsocksRegionSelection ->
                 screenElement.isVisible &&
-                    settingsPrefs.isShadowsocksObfuscationEnabled() &&
-                    settingsPrefs.getSelectedProtocol() == VpnProtocols.OpenVPN &&
-                    settingsPrefs.getSelectedObfuscationOption() == ObfuscationOptions.PIA
+                        settingsPrefs.isShadowsocksObfuscationEnabled() &&
+                        settingsPrefs.getSelectedProtocol() == VpnProtocols.OpenVPN &&
+                        settingsPrefs.getSelectedObfuscationOption() == ObfuscationOptions.PIA
 
             Element.VpnRegionSelection,
             Element.ConnectionInfo,
@@ -189,7 +220,7 @@ class ConnectionViewModel(
             Element.Snooze,
             Element.IpInfo,
             Element.Traffic,
-            -> screenElement.isVisible
+                -> screenElement.isVisible
         }
 
     fun shouldShowDedicatedIpSignupBanner() {
@@ -331,7 +362,10 @@ class ConnectionViewModel(
                     if (vpnRegionPrefs.needsVpnReconnect()) {
                         vpnRegionPrefs.setVpnReconnect(false)
                         prefs.setSelectedVpnServer(serverToConnect)
-                        prefs.addToQuickConnect(serverToConnect.key, serverToConnect.isDedicatedIp)
+                        prefs.addToQuickConnect(
+                            serverToConnect.key,
+                            serverToConnect.isDedicatedIp,
+                        )
                         _state.emit(
                             ConnectionScreenState(
                                 serverToConnect,
@@ -339,6 +373,11 @@ class ConnectionViewModel(
                                 isOptimalLocation(serverToConnect.key),
                                 showOptimalLocationInfo,
                                 ratingTool.showRating.value,
+                                ConnectionData(
+                                    connectionUseCase.clientIp.value,
+                                    connectionUseCase.vpnIp.value,
+                                    connectionUseCase.getConnectionStatus().value,
+                                ),
                             ),
                         )
                         connectionUseCase.reconnect(serverToConnect).collect()
@@ -355,6 +394,11 @@ class ConnectionViewModel(
                                 isOptimalLocation(server.key),
                                 showOptimalLocationInfo,
                                 ratingTool.showRating.value,
+                                ConnectionData(
+                                    connectionUseCase.clientIp.value,
+                                    connectionUseCase.vpnIp.value,
+                                    connectionUseCase.getConnectionStatus().value,
+                                ),
                             ),
                         )
                     }
@@ -367,6 +411,11 @@ class ConnectionViewModel(
                         isOptimalLocation(server.key),
                         showOptimalLocationInfo,
                         ratingTool.showRating.value,
+                        ConnectionData(
+                            connectionUseCase.clientIp.value,
+                            connectionUseCase.vpnIp.value,
+                            connectionUseCase.getConnectionStatus().value,
+                        ),
                     ),
                 )
             }
@@ -392,9 +441,5 @@ class ConnectionViewModel(
 
     fun refreshState() {
         _state.update { it.copy(quickConnectServers = getQuickConnectVpnServers()) }
-    }
-
-    fun updateConnectionInfo() = viewModelScope.launch {
-        connectionUseCase.getClientStatus().collect()
     }
 }
