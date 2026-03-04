@@ -1,21 +1,36 @@
 package com.kape.vpn.service
 
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.os.IBinder
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
 class AutomationService : Service(), KoinComponent {
 
     private val automationManager: AutomationManager by inject()
     private val networkConnectionListener: NetworkConnectionListener by inject()
+    private val automationPendingIntent: PendingIntent by inject(named("automation-pending-intent"))
 
     override fun onCreate() {
         super.onCreate()
-        startForeground(123, automationManager.notificationBuilder.build())
+        val notification =
+            automationManager.notificationBuilder.setContentIntent(automationPendingIntent).build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                123,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION,
+            )
+        } else {
+            startForeground(123, automationManager.notificationBuilder.build())
+        }
         networkConnectionListener.triggerUpdate()
     }
 

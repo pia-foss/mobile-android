@@ -56,6 +56,7 @@ class ConnectionUseCase(
     private val startObfuscatorProcess: StartObfuscatorProcess,
     private val stopObfuscatorProcess: StopObfuscatorProcess,
     private val portForwardingUseCase: PortForwardingUseCase,
+    private val automationPendingIntent: PendingIntent,
 ) : KoinComponent {
 
     val portForwardingStatus = portForwardingUseCase.portForwardingStatus
@@ -305,7 +306,11 @@ class ConnectionUseCase(
         additionalOpenVpnParams += "--block-ipv6"
 
         notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
-        notificationBuilder.setContentIntent(configureIntent)
+        if (settingsPrefs.isAutomationEnabled()) {
+            notificationBuilder.setContentIntent(automationPendingIntent)
+        } else {
+            notificationBuilder.setContentIntent(configureIntent)
+        }
 
         return ClientConfiguration(
             sessionName = Clock.System.now().toString(),
