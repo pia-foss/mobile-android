@@ -19,6 +19,7 @@ import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
 import com.kape.rating.prefs.RatingPrefs
 import com.kape.rating.utils.RatingTool
+import com.kape.router.Automation
 import com.kape.router.Router
 import com.kape.router.mobile.MobileRouter
 import com.kape.router.tv.TvRouter
@@ -126,6 +127,7 @@ val appModule = module {
     single(named("rules-updated-intent")) { provideRulesUpdatedIntent(get()) }
     single(named("licences")) { provideLicences(get()) }
     single { CustomizationPrefs(get()) }
+    single(named("automation-pending-intent")) { provideAutomationPendingIntent(get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -305,3 +307,16 @@ private fun providerRouter(context: Context): Router =
 private fun provideUpdateClient(): GetWebsiteDownloadLink = GetWebsiteDownloadLinkImpl()
 
 private fun provideUpdateUrl(): String = BuildConfig.UPDATE_URL
+
+private fun provideAutomationPendingIntent(context: Context): PendingIntent {
+    val intent = Intent(context, MainActivity::class.java).apply {
+        action = Automation.Route // custom action
+        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
+    return PendingIntent.getActivity(
+        context,
+        0,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+    )
+}

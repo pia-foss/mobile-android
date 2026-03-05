@@ -91,6 +91,7 @@ internal class ConnectionUseCaseTest {
     private val getActiveInterfaceDnsUseCase = mockk<GetActiveInterfaceDnsUseCase>()
     private val startObfuscatorProcess: StartObfuscatorProcess = mockk(relaxed = true)
     private val stopObfuscatorProcess: StopObfuscatorProcess = mockk(relaxed = true)
+    private val automationPendingIntent: PendingIntent = mockk(relaxed = true)
 
     private val appModule = module {
         single { "certificate" }
@@ -116,6 +117,7 @@ internal class ConnectionUseCaseTest {
             startObfuscatorProcess,
             stopObfuscatorProcess,
             portForwardingUseCase,
+            automationPendingIntent
         )
         every { connectionManager.setConnectedServerName(any(), any()) } returns Unit
     }
@@ -123,6 +125,7 @@ internal class ConnectionUseCaseTest {
     @Test
     fun `startConnection - success`() = runTest {
         val expected = true
+        every { settingsPrefs.isAutomationEnabled() } returns false
         every { connectionDataSource.startConnection(any(), any()) } returns flow {
             emit(expected)
         }
@@ -138,6 +141,7 @@ internal class ConnectionUseCaseTest {
     @Test
     fun `startConnection - failure`() = runTest {
         val expected = false
+        every { settingsPrefs.isAutomationEnabled() } returns false
         every { connectionDataSource.startConnection(any(), any()) } returns flow {
             emit(expected)
         }
@@ -203,6 +207,7 @@ internal class ConnectionUseCaseTest {
 
     @Test
     fun `reconnect - when NOT connected - connect`() = runTest {
+        every { settingsPrefs.isAutomationEnabled() } returns false
         every { connectionManager.isConnected() } returns false
         every { connectionDataSource.getVpnToken() } returns "username:password"
         every { connectionDataSource.startConnection(any(), any()) } returns flow {
