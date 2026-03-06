@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
-import com.kape.about.vm.AboutViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.theme.statusBarConnected
@@ -38,8 +37,7 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun TvAboutScreen() = Screen {
-    val viewModel: AboutViewModel = koinViewModel()
+fun TvAboutScreen(licences: List<String>) = Screen {
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
 
@@ -80,9 +78,8 @@ fun TvAboutScreen() = Screen {
                     .padding(32.dp),
                 columns = GridCells.Fixed(1),
             ) {
-                val licenses = viewModel.licences
-                items(licenses.size) { index ->
-                    val license = licenses[index]
+                items(licences.size) { index ->
+                    val license = licences[index]
                     AboutButton {
                         Text(text = license)
                     }
@@ -97,7 +94,10 @@ private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorSche
     return when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
+            scheme,
+        )
+
         ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }

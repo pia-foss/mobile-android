@@ -13,16 +13,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.kape.about.vm.AboutViewModel
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AboutScreen() = Screen {
-    val viewModel: AboutViewModel = koinViewModel()
+fun AboutScreen(licences: List<String>) = Screen {
+    val localNavigator = LocalNavigator.current
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.about))
     }
@@ -31,7 +31,7 @@ fun AboutScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateBack() },
+                onLeftIconClick = { localNavigator.navigateBack },
             )
         },
     ) {
@@ -44,7 +44,7 @@ fun AboutScreen() = Screen {
             LazyColumn(
                 modifier = Modifier.widthIn(max = 520.dp),
             ) {
-                items(viewModel.licences) {
+                items(licences) {
                     Text(text = it, modifier = Modifier.padding(horizontal = 16.dp))
                 }
             }
