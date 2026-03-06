@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,11 +24,13 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.regions.data.ServerData
+import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Search
@@ -57,6 +60,12 @@ fun VpnRegionSelectionScreen() = Screen {
     }
     val isSearchEnabled = remember { mutableStateOf(false) }
     val showToast = remember { mutableStateOf(false) }
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
+    destination?.let {
+        navigator.navigateTo(it)
+    }
 
     Column(
         modifier = Modifier
@@ -65,7 +74,7 @@ fun VpnRegionSelectionScreen() = Screen {
             .semantics { testTagsAsResourceId = true },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AppBar(appBarViewModel, onLeftIconClick = { viewModel.navigateBack() })
+        AppBar(appBarViewModel, onLeftIconClick = { navigator.navigateBack() })
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Search(
                 modifier = Modifier
@@ -112,7 +121,10 @@ fun VpnRegionSelectionScreen() = Screen {
                                     enableFavorite = item.type.enableFavorite,
                                     isPortForwardingEnabled = viewModel.isPortForwardingEnabled,
                                     isOffline = item.type.server.isOffline,
-                                    onClick = { viewModel.onVpnRegionSelected(it) },
+                                    onClick = {
+                                        viewModel.onVpnRegionSelected(it)
+                                        navigator.navigateBack()
+                                    },
                                     onFavoriteVpnClick = {
                                         viewModel.onFavoriteVpnClicked(
                                             ServerData(

@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.regions.data.ServerData
-import com.kape.router.Back
-import com.kape.router.EnterFlow
-import com.kape.router.ExitFlow
+import com.kape.router.Connection
 import com.kape.router.Router
+import com.kape.router.TvHelp
+import com.kape.router.TvSideMenu
 import com.kape.settings.SettingsPrefs
 import com.kape.utils.AUTO_KEY
 import com.kape.utils.vpnserver.VpnServer
@@ -22,9 +22,9 @@ import org.koin.core.component.KoinComponent
 import java.util.Collections
 
 class VpnRegionSelectionViewModel(
+    val router: Router,
     private val regionListProvider: RegionListProvider,
     private val connectionUseCase: ConnectionUseCase,
-    private val router: Router,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val settingsPrefs: SettingsPrefs,
 ) : ViewModel(),
@@ -57,7 +57,6 @@ class VpnRegionSelectionViewModel(
 
     fun onVpnRegionSelected(server: VpnServer) {
         vpnRegionPrefs.selectVpnServer(server)
-        router.handleFlow(ExitFlow.RegionSelection)
     }
 
     fun onFavoriteVpnClicked(serverData: ServerData) {
@@ -90,19 +89,15 @@ class VpnRegionSelectionViewModel(
     }
 
     fun navigateToHelp() {
-        router.handleFlow(EnterFlow.TvHelp)
+        router.updateDestination(TvHelp)
     }
 
     fun navigateToSideMenu() {
-        router.handleFlow(EnterFlow.TvSideMenu)
+        router.updateDestination(TvSideMenu)
     }
 
     fun navigateToVpn() {
-        router.handleFlow(EnterFlow.Connection)
-    }
-
-    fun navigateBack() {
-        router.handleFlow(Back)
+        router.updateDestination(Connection)
     }
 
     fun getTvVpnServers(): MutableState<List<ServerItem>> {

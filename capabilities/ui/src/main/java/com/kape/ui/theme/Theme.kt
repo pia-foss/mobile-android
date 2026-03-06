@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.kape.router.LocalNavigator
 import com.kape.router.Navigator
+import com.kape.router.Router
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.PlatformUtils
 
@@ -43,6 +44,7 @@ fun PIATheme(
 @Composable
 fun PiaScreen(
     darkTheme: Boolean = isDarkTheme(context = LocalContext.current),
+    router: Router,
     vararg compositionLocalValues: ProvidedValue<*>,
     content: @Composable (navController: NavHostController) -> Unit,
 ) {
@@ -54,8 +56,12 @@ fun PiaScreen(
     val navigator = Navigator(
         navigateTo = { destination ->
             navController.navigate(destination) // route must be typed
+            router.resetNavigation()
         },
-        navigateBack = navController::popBackStack,
+        navigateBack = {
+            navController.popBackStack()
+            router.resetNavigation()
+        },
     )
 
     val providedValues = buildList {
