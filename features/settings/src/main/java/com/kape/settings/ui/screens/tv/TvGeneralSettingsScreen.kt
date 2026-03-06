@@ -16,6 +16,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -24,6 +25,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.router.LocalNavigator
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
@@ -40,13 +43,14 @@ fun TvGeneralSettingsScreen() = Screen {
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val initialFocusRequester = FocusRequester()
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+    destination?.let {
+        navigator.navigateTo(it)
+    }
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
-    }
-
-    BackHandler {
-        viewModel.navigateUp()
     }
 
     Box(

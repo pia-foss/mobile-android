@@ -16,11 +16,11 @@ private fun localSettingsModule(version: String) = module {
     viewModel {
         SettingsViewModel(
             get(),
-            get(),
-            get(),
-            get(),
-            get(),
             version,
+            get(),
+            get(),
+            get(),
+            get(),
             get(),
             get(),
             get(),

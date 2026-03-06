@@ -17,6 +17,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,6 +29,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.router.LocalNavigator
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.CustomDnsDialog
 import com.kape.settings.ui.elements.DnsSelectionDialog
@@ -52,6 +55,11 @@ fun TvNetworkSettingsScreen() = Screen {
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val initialFocusRequester = FocusRequester()
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+    destination?.let {
+        navigator.navigateTo(it)
+    }
 
     val dnsOptions = mutableMapOf(
         DnsOptions.PIA to stringResource(id = R.string.pia),
@@ -73,16 +81,8 @@ fun TvNetworkSettingsScreen() = Screen {
     val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
     val dnsWarningDialogVisible = remember { mutableStateOf(false) }
 
-    BackHandler {
-        viewModel.navigateUp()
-    }
-
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
-    }
-
-    BackHandler {
-        viewModel.navigateUp()
     }
 
     Box(

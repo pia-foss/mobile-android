@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,6 +28,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.router.LocalNavigator
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.ui.elements.OptionsDialog
 import com.kape.settings.ui.elements.ReconnectDialog
@@ -59,12 +62,14 @@ fun TvProtocolSettingsScreen() = Screen {
     val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
     val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+    destination?.let {
+        navigator.navigateTo(it)
     }
 
-    BackHandler {
-        viewModel.navigateUp()
+    LaunchedEffect(key1 = Unit) {
+        initialFocusRequester.requestFocus()
     }
 
     Box(
