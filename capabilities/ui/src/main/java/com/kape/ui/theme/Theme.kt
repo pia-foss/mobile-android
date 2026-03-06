@@ -10,6 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ProvidedValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.kape.router.LocalNavigator
+import com.kape.router.Navigator
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.PlatformUtils
 
@@ -40,21 +44,33 @@ fun PIATheme(
 fun PiaScreen(
     darkTheme: Boolean = isDarkTheme(context = LocalContext.current),
     vararg compositionLocalValues: ProvidedValue<*>,
-    content: @Composable () -> Unit,
+    content: @Composable (navController: NavHostController) -> Unit,
 ) {
+    val navController = rememberNavController()
+
     val materialColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val piaColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+
+    val navigator = Navigator(
+        navigateTo = { destination ->
+            navController.navigate(destination) // route must be typed
+        },
+        navigateBack = navController::popBackStack,
+    )
+
     val providedValues = buildList {
         addAll(compositionLocalValues)
         add(LocalColors provides piaColorScheme)
+        add(LocalNavigator provides navigator)
     }
 
     CompositionLocalProvider(*providedValues.toTypedArray()) {
         MaterialTheme(
             typography = AppTypography,
             colorScheme = materialColorScheme,
-            content = content,
-        )
+        ) {
+            content(navController)
+        }
     }
 }
 

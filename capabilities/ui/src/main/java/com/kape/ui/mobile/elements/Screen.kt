@@ -2,15 +2,14 @@ package com.kape.ui.mobile.elements
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import com.kape.router.Back
-import com.kape.router.Router
-import org.koin.compose.koinInject
+import com.kape.router.LocalNavigator
 
 @Composable
 fun Screen(content: @Composable () -> Unit) {
-    val router: Router = koinInject()
+    val navigator = LocalNavigator.current
+
     BackHandler {
-        router.handleFlow(Back)
+        navigator.navigateBack()
     }
     content()
 }

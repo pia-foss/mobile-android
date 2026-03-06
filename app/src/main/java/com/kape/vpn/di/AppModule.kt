@@ -21,6 +21,7 @@ import com.kape.rating.prefs.RatingPrefs
 import com.kape.rating.utils.RatingTool
 import com.kape.router.Automation
 import com.kape.router.Router
+import com.kape.router.RouterImpl
 import com.kape.router.mobile.MobileRouter
 import com.kape.router.tv.TvRouter
 import com.kape.settings.SettingsPrefs
@@ -298,11 +299,7 @@ private const val USER_AGENT =
 private fun provideLicences(context: Context): List<String> =
     context.assets.open("acknowledgements.txt").bufferedReader().use(BufferedReader::readLines)
 
-private fun providerRouter(context: Context): Router =
-    when (PlatformUtils.isTv(context = context)) {
-        true -> TvRouter()
-        false -> MobileRouter()
-    }
+private fun providerRouter(): Router = RouterImpl()
 
 private fun provideUpdateClient(): GetWebsiteDownloadLink = GetWebsiteDownloadLinkImpl()
 

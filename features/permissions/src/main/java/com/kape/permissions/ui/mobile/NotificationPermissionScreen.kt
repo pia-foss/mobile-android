@@ -30,6 +30,9 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.permissions.ui.vm.PermissionsViewModel
+import com.kape.permissions.utils.PermissionUtil
+import com.kape.router.Connection
+import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -41,19 +44,13 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NotificationPermissionScreen() = Screen {
-    val viewModel: PermissionsViewModel = koinViewModel()
+    val localNavigator = LocalNavigator.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {
-            viewModel.exitOnboarding()
+            localNavigator.navigateTo(Connection)
         },
     )
-
-    LaunchedEffect(key1 = Unit) {
-        if (viewModel.isNotificationPermissionGranted()) {
-            viewModel.exitOnboarding()
-        }
-    }
 
     Column(
         modifier = Modifier

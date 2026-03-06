@@ -88,13 +88,16 @@ import com.kape.utils.PlatformUtils
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
+import java.security.Permissions
 
 class MainActivity : AppCompatActivity() {
     private val router: Router by inject()
     private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
     private val shortcutPrefs: ShortcutPrefs by inject()
-    private var currentDestination: String = ""
+    val licences: List<String> by inject(named("licences"))
+    val permissionUtil: PermissionUtil by inject()
     private val destinationsForClearBackStack =
         listOf(
             Splash.Main,
@@ -167,8 +170,12 @@ class MainActivity : AppCompatActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
                     ) {
-                        NavHost(navController = navController, startDestination = Splash.Main) {
-                            defineNavigationGraph(navController = navController)
+                        NavHost(navController = navController, startDestination = Splash) {
+                            defineNavigationGraph(
+                                navController = navController,
+                                licences,
+                                permissionUtil,
+                            )
                         }
                     }
                 }

@@ -2,11 +2,13 @@ package com.kape.router
 
 import kotlinx.coroutines.flow.StateFlow
 
+
 interface Router {
 
-    fun handleFlow(flow: AppFlow)
+    fun updateDestination(destination: ComposeDestination)
+
+    fun getNavigationState(): StateFlow<ComposeDestination?>
 
     fun resetNavigation()
 
-    fun getNavigation(): StateFlow<String>
 }
