@@ -74,7 +74,7 @@ fun VpnRegionSelectionScreen() = Screen {
             .semantics { testTagsAsResourceId = true },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AppBar(appBarViewModel, onLeftIconClick = { navigator.navigateBack() })
+        AppBar(appBarViewModel, onLeftIconClick = navigator.navigateBack)
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Search(
                 modifier = Modifier

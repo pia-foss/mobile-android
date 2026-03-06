@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,8 +26,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.router.LocalNavigator
 import com.kape.settings.ui.elements.mobile.SettingsItem
 import com.kape.settings.ui.elements.mobile.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
@@ -41,20 +44,22 @@ fun HelpScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.help))
     }
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
+    destination?.let {
+        navigator.navigateTo(it)
+    }
     val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
     val showToast = remember { mutableStateOf(false) }
     val showSpinner = remember { mutableStateOf(false) }
 
-    BackHandler {
-        viewModel.navigateUp()
-    }
-
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
+                onLeftIconClick = navigator.navigateBack,
             )
         },
     ) {

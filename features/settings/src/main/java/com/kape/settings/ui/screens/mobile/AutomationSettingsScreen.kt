@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -14,9 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.router.LocalNavigator
 import com.kape.settings.ui.elements.mobile.SettingsItem
 import com.kape.settings.ui.elements.mobile.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
@@ -31,9 +34,11 @@ fun AutomationSettingsScreen() = Screen {
         appBarText(stringResource(id = R.string.automation))
     }
     val automationEnabled = remember { mutableStateOf(viewModel.isAutomationEnabled()) }
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
 
-    BackHandler {
-        viewModel.navigateUp()
+    destination?.let {
+        navigator.navigateTo(it)
     }
 
     Scaffold(
@@ -41,7 +46,7 @@ fun AutomationSettingsScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 type = AppBarType.Navigation,
-                onLeftIconClick = { viewModel.navigateUp() },
+                onLeftIconClick = navigator.navigateBack,
             )
         },
     ) {

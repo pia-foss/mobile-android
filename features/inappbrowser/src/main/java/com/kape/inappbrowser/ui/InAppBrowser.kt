@@ -55,7 +55,7 @@ fun InAppBrowser(url: String) = Screen {
         AppBar(
             viewModel = appBarViewModel,
             type = AppBarType.InAppBrowser,
-            onLeftIconClick = { navigator.navigateBack() },
+            onLeftIconClick = navigator.navigateBack,
         )
 
         if (loading) {

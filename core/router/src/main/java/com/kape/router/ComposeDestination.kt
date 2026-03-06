@@ -49,6 +49,9 @@ object ProtocolSettings : ComposeDestination
 object AutomationSettings : ComposeDestination
 
 @Serializable
+object Automation: ComposeDestination
+
+@Serializable
 object KillSwitchSettings : ComposeDestination
 
 @Serializable

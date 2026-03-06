@@ -55,7 +55,7 @@ fun LocationPermissionScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { navigator.navigateBack() },
+                onLeftIconClick = navigator.navigateBack,
             )
         },
     ) {

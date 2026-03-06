@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,9 +28,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.router.LocalNavigator
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
@@ -48,9 +51,15 @@ fun ExternalProxyAppList() {
     }
 
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
+    destination?.let {
+        navigator.navigateTo(it)
+    }
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps)
+        onBackPressed(viewModel, lastExcludedApps, navigator.navigateBack)
     }
 
     Scaffold(
@@ -58,7 +67,7 @@ fun ExternalProxyAppList() {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    onBackPressed(viewModel, lastExcludedApps)
+                    onBackPressed(viewModel, lastExcludedApps, navigator.navigateBack)
                 },
             )
         },
@@ -106,11 +115,11 @@ fun ExternalProxyAppList() {
                 onReconnect = {
                     viewModel.reconnect()
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.navigateUp()
+                    navigator.navigateBack()
                 },
                 onLater = {
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.navigateUp()
+                    navigator.navigateBack()
                 },
             )
         }
@@ -181,10 +190,10 @@ private fun SelectedCheckBox(checked: Boolean, modifier: Modifier) {
     )
 }
 
-private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>) {
+private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>, navigateBack: () -> Unit) {
     if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
-        viewModel.navigateUp()
+        navigateBack()
     }
 }

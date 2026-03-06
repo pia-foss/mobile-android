@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,8 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.router.LocalNavigator
 import com.kape.settings.data.DataEncryption
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
@@ -41,16 +44,19 @@ fun ProtocolSettingsScreen() = Screen {
     }
     val protocolDialogVisible = remember { mutableStateOf(false) }
     val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
 
-    BackHandler {
-        viewModel.navigateUp()
+    destination?.let {
+        navigator.navigateTo(it)
     }
+
 
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
+                onLeftIconClick = navigator.navigateBack,
             )
         },
     ) {

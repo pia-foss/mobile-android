@@ -57,7 +57,7 @@ fun ProfileScreen() = Screen {
     Column {
         AppBar(
             viewModel = appBarViewModel,
-            onLeftIconClick = { navigator.navigateBack() },
+            onLeftIconClick = navigator.navigateBack,
         )
         if (state.loading) {
             Box(modifier = Modifier.fillMaxSize()) {

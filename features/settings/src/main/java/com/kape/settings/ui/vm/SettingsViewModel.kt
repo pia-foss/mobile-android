@@ -9,10 +9,19 @@ import com.kape.connection.ConnectionPrefs
 import com.kape.csi.CsiPrefs
 import com.kape.csi.domain.SendLogUseCase
 import com.kape.location.data.LocationPermissionManager
-import com.kape.router.Back
-import com.kape.router.EnterFlow
-import com.kape.router.ExitFlow
+import com.kape.router.About
+import com.kape.router.Automation
+import com.kape.router.ConnectionStats
+import com.kape.router.DebugLogs
+import com.kape.router.ExternalAppList
+import com.kape.router.GeneralSettings
+import com.kape.router.HelpSettings
+import com.kape.router.KillSwitchSettings
+import com.kape.router.NetworkSettings
+import com.kape.router.ObfuscationSettings
+import com.kape.router.ProtocolSettings
 import com.kape.router.Router
+import com.kape.router.WebDestination
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.CustomObfuscation
@@ -25,7 +34,6 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
-import com.kape.settings.utils.SettingsStep
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.utils.AutomationManager
 import com.kape.vpnconnect.domain.ConnectionDataSource
@@ -33,18 +41,16 @@ import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class SettingsViewModel(
+    val router: Router,
+    val version: String,
     private val prefs: SettingsPrefs,
     private val connectionPrefs: ConnectionPrefs,
     private val csiPrefs: CsiPrefs,
-    private val router: Router,
     private val regionsRepository: VpnRegionRepository,
-    val version: String,
     private val kpiDataSource: KpiDataSource,
     private val connectionDataSource: ConnectionDataSource,
     private val getDebugLogsUseCase: GetLogsUseCase,
@@ -58,9 +64,6 @@ class SettingsViewModel(
     companion object {
         private const val GET_INSTALLED_APPS_DELAY_MS = 1000L
     }
-
-    private val _state = MutableStateFlow<SettingsStep>(SettingsStep.Main)
-    val state: StateFlow<SettingsStep> = _state
 
     val launchOnBootEnabled = mutableStateOf(prefs.isLaunchOnStartupEnabled())
     val connectOnStart = mutableStateOf(prefs.isConnectOnLaunchEnabled())
@@ -84,84 +87,33 @@ class SettingsViewModel(
     var reconnectDialogVisible = mutableStateOf(false)
     val externalProxyTcpDialogVisible = mutableStateOf(false)
 
-    fun navigateUp() {
-        when (_state.value) {
-            SettingsStep.Automation -> _state.value = SettingsStep.Main
-            SettingsStep.Obfuscation -> _state.value = SettingsStep.Main
-            SettingsStep.ExternalProxyAppList -> _state.value = SettingsStep.Obfuscation
-            SettingsStep.ConnectionStats -> _state.value = SettingsStep.Help
-            SettingsStep.DebugLogs -> _state.value = SettingsStep.Help
-            SettingsStep.General -> _state.value = SettingsStep.Main
-            SettingsStep.Help -> _state.value = SettingsStep.Main
-            SettingsStep.KillSwitch -> _state.value = SettingsStep.Main
-            SettingsStep.Main -> router.handleFlow(Back)
-            SettingsStep.Network -> _state.value = SettingsStep.Main
-            SettingsStep.Privacy -> _state.value = SettingsStep.Main
-            SettingsStep.Protocol -> _state.value = SettingsStep.Main
-            SettingsStep.ShortcutAutomation,
-            SettingsStep.ShortcutKillSwitch,
-            SettingsStep.ShortcutProtocol,
-            -> router.handleFlow(Back)
-        }
-    }
+    fun navigateToGeneralSettings() = router.updateDestination(GeneralSettings)
 
-    fun navigateToConnection() {
-        router.handleFlow(ExitFlow.Settings)
-    }
+    fun navigateToProtocolSettings() = router.updateDestination(ProtocolSettings)
 
-    fun navigateToGeneralSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.General)
-    }
+    fun navigateToNetworkSettings() = router.updateDestination(NetworkSettings)
 
-    fun navigateToProtocolSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Protocol)
-    }
+    fun navigateToPrivacySettings() = router.updateDestination(WebDestination.Privacy)
 
-    fun navigateToNetworkSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Network)
-    }
+    fun navigateToHelpSettings() = router.updateDestination(HelpSettings)
 
-    fun navigateToPrivacySettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Privacy)
-    }
+    fun navigateToAutomationSettings() = router.updateDestination(Automation)
 
-    fun navigateToHelpSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Help)
-    }
+    fun navigateToObfuscationSettings() = router.updateDestination(ObfuscationSettings)
 
-    fun navigateToAutomationSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Automation)
-    }
+    fun navigateToKillSwitch() = router.updateDestination(KillSwitchSettings)
 
-    fun navigateToObfuscationSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Obfuscation)
-    }
+    fun navigateToConnectionStats() = router.updateDestination(ConnectionStats)
 
-    fun exitObfuscationSettings() = viewModelScope.launch {
-        _state.emit(SettingsStep.Main)
-    }
+    fun navigateToDebugLogs() = router.updateDestination(DebugLogs)
 
-    fun navigateToKillSwitch() = viewModelScope.launch {
-        _state.emit(SettingsStep.KillSwitch)
-    }
+    fun navigateToAutomation() = router.updateDestination(Automation)
 
-    fun navigateToConnectionStats() = viewModelScope.launch {
-        _state.emit(SettingsStep.ConnectionStats)
-    }
+    fun navigateToPrivacyPolicy() = router.updateDestination(WebDestination.Privacy)
 
-    fun navigateToDebugLogs() = viewModelScope.launch {
-        _state.emit(SettingsStep.DebugLogs)
-    }
+    fun navigateToAbout() = router.updateDestination(About)
 
-    fun navigateToAutomation() = router.handleFlow(EnterFlow.Automation)
-
-    fun navigateToPrivacyPolicy() = router.handleFlow(EnterFlow.PrivacyPolicy)
-
-    fun navigateToAbout() = router.handleFlow(EnterFlow.About)
-
-    fun navigateToExternalAppList() = viewModelScope.launch {
-        _state.emit(SettingsStep.ExternalProxyAppList)
-    }
+    fun navigateToExternalAppList() = router.updateDestination(ExternalAppList)
 
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
@@ -295,7 +247,7 @@ class SettingsViewModel(
 
     fun areLocationPermissionsGranted() =
         locationPermissionManager.isFineLocationPermissionGranted() &&
-            locationPermissionManager.isBackgroundLocationPermissionGranted()
+                locationPermissionManager.isBackgroundLocationPermissionGranted()
 
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()
@@ -405,7 +357,8 @@ class SettingsViewModel(
         // at around the same time.
         delay(GET_INSTALLED_APPS_DELAY_MS)
 
-        installedApps = PerAppSettingsUtils.getInstalledApps(packageManager = packageManager).filterNotNull()
+        installedApps =
+            PerAppSettingsUtils.getInstalledApps(packageManager = packageManager).filterNotNull()
         appList.value = installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
     }
 

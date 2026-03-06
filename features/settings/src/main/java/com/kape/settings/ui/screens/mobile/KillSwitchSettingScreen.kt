@@ -16,14 +16,17 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.router.LocalNavigator
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
@@ -39,16 +42,18 @@ fun KillSwitchSettingScreen() = Screen {
         appBarText(stringResource(id = R.string.privacy_kill_switch_title))
     }
     val context = LocalContext.current
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
 
-    BackHandler {
-        viewModel.navigateUp()
+    destination?.let {
+        navigator.navigateTo(it)
     }
 
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
+                onLeftIconClick = navigator.navigateBack,
             )
         },
     ) {
