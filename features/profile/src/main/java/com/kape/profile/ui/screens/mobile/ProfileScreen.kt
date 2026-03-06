@@ -24,9 +24,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.profile.ui.vm.ProfileViewModel
+import com.kape.router.LocalNavigator
+import com.kape.router.WebDestination
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Separator
@@ -39,15 +42,22 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ProfileScreen() = Screen {
     val viewModel: ProfileViewModel = koinViewModel()
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.account))
     }
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
 
+    destination?.let {
+        navigator.navigateTo(it)
+        viewModel.router.resetNavigation()
+    }
+
     Column {
         AppBar(
             viewModel = appBarViewModel,
-            onLeftIconClick = { viewModel.navigateBack() },
+            onLeftIconClick = { navigator.navigateBack() },
         )
         if (state.loading) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -106,7 +116,7 @@ fun ProfileScreen() = Screen {
                     HyperlinkRed(
                         content = stringResource(id = R.string.account_deletion_action),
                         modifier = Modifier.clickable {
-                            viewModel.navigateToDeleteAccount()
+                            viewModel.router.updateDestination(WebDestination.DeleteAccount)
                         },
                     )
                     Spacer(modifier = Modifier.height(16.dp))
