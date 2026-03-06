@@ -6,8 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.profile.domain.GetProfileUseCase
-import com.kape.router.EnterFlow
+import com.kape.router.About
+import com.kape.router.Connection
+import com.kape.router.DedicatedIpActivateToken
+import com.kape.router.PerAppSettings
+import com.kape.router.Profile
 import com.kape.router.Router
+import com.kape.router.Settings
+import com.kape.router.Splash
+import com.kape.router.WebDestination
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -16,7 +23,7 @@ class SideMenuViewModel(
     private val logoutUseCase: LogoutUseCase,
     val versionCode: Int,
     val versionName: String,
-    private val router: Router,
+    val router: Router,
 ) : ViewModel(), KoinComponent {
 
     val username = mutableStateOf("")
@@ -37,39 +44,39 @@ class SideMenuViewModel(
 
     fun logout() = viewModelScope.launch {
         logoutUseCase.logout().collect {
-            router.handleFlow(EnterFlow.Splash)
+            router.updateDestination(Splash)
         }
     }
 
     fun navigateToVpnConnect() {
-        router.handleFlow(EnterFlow.Connection)
+        router.updateDestination(Connection)
     }
 
     fun navigateToProfile() {
-        router.handleFlow(EnterFlow.Profile)
+        router.updateDestination(Profile)
     }
 
     fun navigateToSettings() {
-        router.handleFlow(EnterFlow.Settings)
+        router.updateDestination(Settings)
     }
 
     fun navigateToPerAppSettings() {
-        router.handleFlow(EnterFlow.PerAppSettings)
+        router.updateDestination(PerAppSettings)
     }
 
     fun navigateToDedicatedIp() {
-        router.handleFlow(EnterFlow.DedicatedIpActivate)
+        router.updateDestination(DedicatedIpActivateToken)
     }
 
     fun navigateToPrivacyPolicy() {
-        router.handleFlow(EnterFlow.PrivacyPolicy)
+        router.updateDestination(WebDestination.Privacy)
     }
 
     fun navigateToSupport() {
-        router.handleFlow(EnterFlow.Support)
+        router.updateDestination(WebDestination.Support)
     }
 
     fun navigateToAbout() {
-        router.handleFlow(EnterFlow.About)
+        router.updateDestination(About)
     }
 }
