@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:notifications"))
     implementation(project(":capabilities:featureflags"))
+    implementation(project(":features:login"))
 
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)

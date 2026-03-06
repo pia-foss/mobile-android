@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.router.LocalNavigator
 import com.kape.splash.ui.vm.SplashViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -20,6 +23,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) = Screen {
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val localNavigator = LocalNavigator.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -37,5 +42,10 @@ fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) = Screen {
 
     LaunchedEffect(key1 = Unit) {
         viewModel.load()
+    }
+
+    destination?.let {
+        localNavigator.navigateTo(it)
+        viewModel.router.resetNavigation()
     }
 }

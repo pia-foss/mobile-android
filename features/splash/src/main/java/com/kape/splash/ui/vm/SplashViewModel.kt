@@ -4,21 +4,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.httpclient.domain.GetWebsiteDownloadLink
-import com.kape.router.EnterFlow
-import com.kape.router.ExitFlow
+import com.kape.login.domain.mobile.GetUserLoggedInUseCase
+import com.kape.router.Connection
 import com.kape.router.Router
+import com.kape.router.Subscribe
+import com.kape.router.Update
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class SplashViewModel(
-    private val router: Router,
+    val router: Router,
     private val regionListProvider: RegionListProvider,
     private val forceUpdateUseCase: ForceUpdateUseCase,
     private val getWebsiteDownloadLink: GetWebsiteDownloadLink,
     private val appUpdateUrl: String,
     private val connectionUseCase: ConnectionUseCase,
+    private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
 ) : ViewModel(), KoinComponent {
 
     private var updateUrl: String = ""
@@ -34,14 +37,14 @@ class SplashViewModel(
                         getWebsiteDownloadLink.invoke().collect {
                             updateUrl = it
                             if (updateUrl.isEmpty()) {
-                                router.handleFlow(ExitFlow.Splash)
+                                handleSplashExit()
                             } else {
-                                router.handleFlow(EnterFlow.Update)
+                                router.updateDestination(Update)
                             }
                         }
                     }
                 } else {
-                    router.handleFlow(ExitFlow.Splash)
+                    handleSplashExit()
                 }
             }
         }
@@ -55,4 +58,12 @@ class SplashViewModel(
     }
 
     fun isConnected(): Boolean = connectionUseCase.isConnected()
+
+    private fun handleSplashExit() {
+        if (getUserLoggedInUseCase.isUserLoggedIn()) {
+            router.updateDestination(Connection)
+        } else {
+            router.updateDestination(Subscribe)
+        }
+    }
 }
