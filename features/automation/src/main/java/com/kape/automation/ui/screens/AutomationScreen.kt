@@ -33,6 +33,7 @@ import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
+import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.NetworkCard
 import com.kape.ui.mobile.elements.Screen
@@ -46,6 +47,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AutomationScreen(isSet: Boolean) = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
+    val navigator = LocalNavigator.current
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.trusted_network_plural))
     }
@@ -64,7 +66,7 @@ fun AutomationScreen(isSet: Boolean) = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.exitAutomation() },
+                onLeftIconClick = { navigator.navigateBack() },
             )
         },
     ) {

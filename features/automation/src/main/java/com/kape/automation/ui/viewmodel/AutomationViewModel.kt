@@ -11,8 +11,6 @@ import com.kape.location.data.LocationPermissionManager
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkRulesManager
-import com.kape.router.Back
-import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.utils.AutomationManager
@@ -43,10 +41,6 @@ class AutomationViewModel(
     init {
         navigateToNextScreen()
     }
-
-    fun exitAutomation() = router.handleFlow(ExitFlow.Automation)
-
-    fun navigateUp() = router.handleFlow(Back)
 
     fun navigateToNextScreen() = viewModelScope.launch {
         viewModelScope.launch {

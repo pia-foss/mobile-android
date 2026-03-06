@@ -26,6 +26,7 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
+import com.kape.router.LocalNavigator
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.mobile.text.OnboardingFooterText
@@ -35,6 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AddNewRuleScreen() = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
+    val navigator = LocalNavigator.current
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
     }
@@ -50,7 +52,7 @@ fun AddNewRuleScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
+                onLeftIconClick = { navigator.navigateBack() },
             )
         },
     ) {

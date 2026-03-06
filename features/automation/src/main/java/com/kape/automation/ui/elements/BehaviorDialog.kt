@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import com.kape.ui.R
 import com.kape.ui.mobile.text.DialogActionText
 import com.kape.ui.mobile.text.DialogTitleText
@@ -35,86 +37,88 @@ fun BehaviorDialog(
     showDialog: MutableState<Boolean>,
     onItemSelected: (selected: String) -> Unit,
 ) {
-    AlertDialog(
+    BasicAlertDialog(
         onDismissRequest = { showDialog.value = false },
         modifier = Modifier.background(LocalColors.current.surfaceVariant),
-    ) {
-        val radioOptions = mutableListOf(
-            stringResource(id = R.string.nmt_connect),
-            stringResource(id = R.string.nmt_disconnect),
-            stringResource(id = R.string.nmt_retain),
-        )
-
-        if (showRemoveOption) {
-            radioOptions.add(stringResource(id = com.kape.ui.R.string.nmt_remove_rule))
-        }
-
-        val selectedOption = remember {
-            mutableStateOf(
-                radioOptions[
-                    radioOptions.indexOf(
-                        status,
-                    ),
-                ],
+        properties = DialogProperties(),
+        content = {
+            val radioOptions = mutableListOf(
+                stringResource(id = R.string.nmt_connect),
+                stringResource(id = R.string.nmt_disconnect),
+                stringResource(id = R.string.nmt_retain),
             )
-        }
 
-        Column(
-            Modifier.fillMaxWidth(),
-        ) {
-            DialogTitleText(
-                content = stringResource(id = R.string.dialog_title),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        LocalColors.current.surface,
-                    )
-                    .padding(16.dp),
-            )
-            radioOptions.forEach { text ->
-                Row(
-                    Modifier
+            if (showRemoveOption) {
+                radioOptions.add(stringResource(id = com.kape.ui.R.string.nmt_remove_rule))
+            }
+
+            val selectedOption = remember {
+                mutableStateOf(
+                    radioOptions[
+                        radioOptions.indexOf(
+                            status,
+                        ),
+                    ],
+                )
+            }
+
+            Column(
+                Modifier.fillMaxWidth(),
+            ) {
+                DialogTitleText(
+                    content = stringResource(id = R.string.dialog_title),
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .selectable(
-                            selected = (text == selectedOption.value),
-                            onClick = {
-                                selectedOption.value = text
-                            },
-                            role = Role.RadioButton,
+                        .background(
+                            LocalColors.current.surface,
                         )
-                        .padding(vertical = 14.dp, horizontal = 10.dp),
+                        .padding(16.dp),
+                )
+                radioOptions.forEach { text ->
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(
+                                selected = (text == selectedOption.value),
+                                onClick = {
+                                    selectedOption.value = text
+                                },
+                                role = Role.RadioButton,
+                            )
+                            .padding(vertical = 14.dp, horizontal = 10.dp),
+                    ) {
+                        RadioButton(
+                            selected = (text == selectedOption.value),
+                            onClick = null,
+                        )
+                        Text(
+                            text = text,
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                        )
+                    }
+                }
+
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(16.dp),
                 ) {
-                    RadioButton(
-                        selected = (text == selectedOption.value),
-                        onClick = null,
+                    DialogActionText(
+                        content = stringResource(id = android.R.string.cancel),
+                        modifier = Modifier.clickable {
+                            showDialog.value = false
+                        },
                     )
-                    Text(
-                        text = text,
-                        modifier = Modifier.align(Alignment.CenterVertically),
+                    Spacer(modifier = Modifier.width(16.dp))
+                    DialogActionText(
+                        content = stringResource(id = android.R.string.ok),
+                        modifier = Modifier.clickable {
+                            onItemSelected(selectedOption.value)
+                            showDialog.value = false
+                        },
                     )
                 }
             }
-
-            Row(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(16.dp),
-            ) {
-                DialogActionText(
-                    content = stringResource(id = android.R.string.cancel),
-                    modifier = Modifier.clickable {
-                        showDialog.value = false
-                    },
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                DialogActionText(
-                    content = stringResource(id = android.R.string.ok),
-                    modifier = Modifier.clickable {
-                        onItemSelected(selectedOption.value)
-                        showDialog.value = false
-                    },
-                )
-            }
         }
-    }
+    )
 }

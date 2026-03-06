@@ -28,6 +28,7 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.R
 import com.kape.automation.ui.viewmodel.AutomationViewModel
+import com.kape.router.LocalNavigator
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.OnboardingDescriptionText
@@ -40,6 +41,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun BackgroundLocationPermissionScreen() = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
+    val navigator = LocalNavigator.current
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
     }
@@ -56,7 +58,7 @@ fun BackgroundLocationPermissionScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.exitAutomation() },
+                onLeftIconClick = { navigator.navigateBack() },
             )
         },
     ) {

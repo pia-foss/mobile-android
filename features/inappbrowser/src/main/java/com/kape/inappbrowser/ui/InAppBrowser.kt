@@ -21,6 +21,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.router.LocalNavigator
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
@@ -29,7 +30,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun InAppBrowser(url: String) = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel()
-    val viewModel: InAppBrowserViewModel = koinViewModel()
+    val navigator = LocalNavigator.current
 
     var loading by remember { mutableStateOf(true) }
     val context = LocalContext.current
@@ -54,7 +55,7 @@ fun InAppBrowser(url: String) = Screen {
         AppBar(
             viewModel = appBarViewModel,
             type = AppBarType.InAppBrowser,
-            onLeftIconClick = { viewModel.navigateBack() },
+            onLeftIconClick = { navigator.navigateBack() },
         )
 
         if (loading) {
