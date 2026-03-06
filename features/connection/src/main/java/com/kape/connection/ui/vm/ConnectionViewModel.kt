@@ -16,9 +16,17 @@ import com.kape.dip.DipPrefs
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.utils.RatingTool
-import com.kape.router.EnterFlow
-import com.kape.router.Exit
+import com.kape.router.AutomationSettings
+import com.kape.router.Customization
+import com.kape.router.DedicatedIpSignupPlans
+import com.kape.router.KillSwitchSettings
+import com.kape.router.ProtocolSettings
 import com.kape.router.Router
+import com.kape.router.Settings
+import com.kape.router.ShadowsocksRegionSelection
+import com.kape.router.TvHelp
+import com.kape.router.TvSideMenu
+import com.kape.router.VpnRegionSelection
 import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
@@ -47,11 +55,11 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class ConnectionViewModel(
+    val router: Router,
     private val regionListProvider: RegionListProvider,
     private val setShadowsocksRegionsUseCase: SetShadowsocksRegionsUseCase,
     private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
     private val connectionUseCase: ConnectionUseCase,
-    private val router: Router,
     private val prefs: ConnectionPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val snoozeHandler: SnoozeHandler,
@@ -123,7 +131,7 @@ class ConnectionViewModel(
         renewDedicatedIps()
         if (shortcutPrefs.isShortcutSettings()) {
             shortcutPrefs.setShortcutSettings(false)
-            router.handleFlow(EnterFlow.Settings)
+            router.updateDestination(Settings)
         }
         if (shortcutPrefs.isShortcutChangeServer()) {
             shortcutPrefs.setShortcutChangeServer(false)
@@ -131,36 +139,30 @@ class ConnectionViewModel(
         }
     }
 
-    fun navigateToHelp() {
-        router.handleFlow(EnterFlow.TvHelp)
-    }
+    fun navigateToHelp() = router.updateDestination(TvHelp)
 
     fun navigateToSideMenu() {
-        router.handleFlow(EnterFlow.TvSideMenu)
+        router.updateDestination(TvSideMenu)
     }
 
     fun navigateToKillSwitch() {
-        router.handleFlow(EnterFlow.KillSwitchSettings)
+        router.updateDestination(KillSwitchSettings)
     }
 
     fun navigateToAutomation() {
-        router.handleFlow(EnterFlow.AutomationSettings)
+        router.updateDestination(AutomationSettings)
     }
 
     fun navigateToProtocols() {
-        router.handleFlow(EnterFlow.ProtocolSettings)
+        router.updateDestination(ProtocolSettings)
     }
 
     fun navigateToCustomization() {
-        router.handleFlow(EnterFlow.Customization)
+        router.updateDestination(Customization)
     }
 
     fun navigateToDedicatedIpPlans() {
-        router.handleFlow(EnterFlow.DedicatedIpPlans)
-    }
-
-    fun exitApp() {
-        router.handleFlow(Exit)
+        router.updateDestination(DedicatedIpSignupPlans)
     }
 
     fun autoConnect() {
@@ -288,11 +290,11 @@ class ConnectionViewModel(
     }
 
     fun showVpnRegionSelection() {
-        router.handleFlow(EnterFlow.VpnRegionSelection)
+        router.updateDestination(VpnRegionSelection)
     }
 
     fun showShadowsocksRegionSelection() {
-        router.handleFlow(EnterFlow.ShadowsocksRegionSelection)
+        router.updateDestination(ShadowsocksRegionSelection)
     }
 
     fun onSnoozeResumed() {

@@ -70,6 +70,7 @@ import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.ui.RatingFeedbackDialog
 import com.kape.rating.ui.RatingReviewDialog
+import com.kape.router.LocalNavigator
 import com.kape.sidemenu.ui.screens.mobile.SideMenuContent
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.InfoCard
@@ -99,7 +100,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ConnectionScreen() = Screen {
+fun ConnectionScreen(exitApp: () -> Unit) = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val locale = Locale.getDefault().language
@@ -110,9 +111,15 @@ fun ConnectionScreen() = Screen {
     val showRatingReviewDialog = remember { mutableStateOf(false) }
     val showRatingFeedbackDialog = remember { mutableStateOf(false) }
     val lifecycleOwner = LocalLifecycleOwner.current
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
+    destination?.let {
+        navigator.navigateTo(it)
+    }
 
     BackHandler {
-        viewModel.exitApp()
+        exitApp()
     }
 
     LaunchedEffect(lifecycleOwner) {
