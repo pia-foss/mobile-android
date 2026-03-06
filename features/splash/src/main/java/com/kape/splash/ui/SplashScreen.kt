@@ -24,7 +24,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) = Screen {
     val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val localNavigator = LocalNavigator.current
+    val navigator = LocalNavigator.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -45,7 +45,7 @@ fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) = Screen {
     }
 
     destination?.let {
-        localNavigator.navigateTo(it)
+        navigator.navigateTo(it)
         viewModel.router.resetNavigation()
     }
 }

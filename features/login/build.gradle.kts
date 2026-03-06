@@ -51,6 +51,8 @@ dependencies {
     implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:ui"))
 
+    implementation(project(":features:permissions"))
+
     // prefs
     implementation(project(":core:localprefs:connection"))
     implementation(project(":core:localprefs:csi"))

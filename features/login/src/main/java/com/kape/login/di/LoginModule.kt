@@ -21,7 +21,7 @@ fun loginModule(appModule: Module) = module {
 
 private val localLoginModule = module {
     single<AuthenticationDataSource> { AuthenticationDataSourceImpl(get()) }
-    single { TokenAuthenticationUtil(get(), get()) }
+    single { TokenAuthenticationUtil(get(), get(), get()) }
     single { LoginUsernameUseCase() }
     single { LoginUseCase(get()) }
     single {
@@ -46,5 +46,5 @@ private val localLoginModule = module {
     viewModel { LoginUsernameViewModel(get(), get()) }
     viewModel { LoginPasswordViewModel(get()) }
     viewModel { LoginViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { LoginWithEmailViewModel(get(), get()) }
+    viewModel { LoginWithEmailViewModel(get(), get(), get()) }
 }

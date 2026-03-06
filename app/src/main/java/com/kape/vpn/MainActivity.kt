@@ -31,6 +31,8 @@ import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpFlow
 import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
 import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.inappbrowser.ui.InAppBrowser
+import com.kape.login.ui.mobile.LoginScreen
+import com.kape.login.ui.mobile.LoginWithEmailScreen
 import com.kape.login.ui.mobile.loginNavigation
 import com.kape.login.ui.tv.LoginPasswordScreen
 import com.kape.login.ui.tv.LoginUsernameScreen
@@ -50,6 +52,8 @@ import com.kape.router.Customization
 import com.kape.router.DedicatedIp
 import com.kape.router.Default
 import com.kape.router.Login
+import com.kape.router.LoginWithCredentials
+import com.kape.router.LoginWithEmail
 import com.kape.router.NavigateBack
 import com.kape.router.NavigateOut
 import com.kape.router.PerAppSettings
@@ -236,7 +240,8 @@ class MainActivity : AppCompatActivity() {
             composable(TvHelp.Main) { TvSettingsFlow(initialStep = SettingsStep.Help) }
             composable(About.Main) { TvAboutScreen() }
         } else {
-            loginNavigation(navController)
+            composable(LoginWithCredentials) { LoginScreen(navController = navController) }
+            composable(LoginWithEmail) { LoginWithEmailScreen(navController = navController) }
             composable(Settings.Route) { SettingsFlow() }
             composable(Permissions.Route) { PermissionsFlow() }
             composable(Automation.Route) { AutomationFlow() }

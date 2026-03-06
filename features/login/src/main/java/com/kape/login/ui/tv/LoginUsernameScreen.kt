@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,7 +30,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.login.ui.vm.tv.LoginUsernameViewModel
+import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.text.EnterUsernameScreenTitleText
@@ -40,7 +43,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LoginUsernameScreen() = Screen {
     val viewModel: LoginUsernameViewModel = koinViewModel()
-
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
     val usernameErrorMessage = stringResource(id = R.string.error_username_invalid)
     val evaluateUsernameError = remember { mutableStateOf(false) }
 
@@ -54,6 +58,11 @@ fun LoginUsernameScreen() = Screen {
         } else {
             usernameErrorMessage
         }
+    }
+
+    destination?.let {
+        navigator.navigateTo(it)
+        viewModel.router.resetNavigation()
     }
 
     Row(

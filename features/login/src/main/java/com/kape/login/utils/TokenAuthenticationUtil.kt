@@ -2,7 +2,7 @@ package com.kape.login.utils
 
 import android.net.Uri
 import com.kape.login.domain.mobile.AuthenticationDataSource
-import com.kape.router.ExitFlow
+import com.kape.permissions.utils.PermissionUtil
 import com.kape.router.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +13,7 @@ import kotlin.coroutines.CoroutineContext
 class TokenAuthenticationUtil(
     private val dataSource: AuthenticationDataSource,
     private val router: Router,
+    private val permissionUtil: PermissionUtil,
 ) : CoroutineScope {
 
     private val job = Job()
@@ -29,7 +30,7 @@ class TokenAuthenticationUtil(
         token?.let {
             launch {
                 dataSource.migrateToken(it).collect {
-                    router.handleFlow(ExitFlow.Login)
+                    router.updateDestination(permissionUtil.getNextDestination())
                 }
             }
         }

@@ -24,14 +24,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.login.ui.vm.mobile.LoginWithEmailViewModel
 import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
-import com.kape.router.Login
+import com.kape.router.LocalNavigator
+import com.kape.router.LoginWithCredentials
 import com.kape.ui.mobile.elements.NoNetworkBanner
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -39,8 +38,10 @@ import com.kape.ui.mobile.text.Input
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LoginWithEmailScreen(navController: NavController) = Screen {
+fun LoginWithEmailScreen() = Screen {
     val viewModel: LoginWithEmailViewModel = koinViewModel()
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
     val currentContext = LocalContext.current
@@ -99,9 +100,14 @@ fun LoginWithEmailScreen(navController: NavController) = Screen {
             key1 = state,
             block = {
                 Toast.makeText(currentContext, message, Toast.LENGTH_SHORT).show()
-                navController.navigate(Login.WithCredentials)
+                viewModel.router.updateDestination(LoginWithCredentials)
             },
         )
+    }
+
+    destination?.let {
+        navigator.navigateTo(it)
+        viewModel.router.resetNavigation()
     }
 }
 
@@ -112,15 +118,9 @@ private fun getErrorMessage(state: LoginScreenState): String? {
         LoginError.Failed,
         LoginError.Invalid,
         LoginError.Throttled,
-        -> stringResource(id = com.kape.ui.R.string.error_missing_email)
+            -> stringResource(id = com.kape.ui.R.string.error_missing_email)
 
         LoginError.ServiceUnavailable -> stringResource(id = com.kape.ui.R.string.error_operation_failed)
         null -> null
     }
-}
-
-@Composable
-@Preview
-fun LoginWithEmailPreview() {
-    LoginWithEmailScreen(rememberNavController())
 }

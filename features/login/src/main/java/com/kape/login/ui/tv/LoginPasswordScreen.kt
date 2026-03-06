@@ -33,6 +33,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.ui.vm.tv.LoginPasswordViewModel
 import com.kape.login.utils.EXPIRED
@@ -44,6 +45,7 @@ import com.kape.login.utils.LoginError
 import com.kape.login.utils.SERVICE_UNAVAILABLE
 import com.kape.login.utils.SUCCESS
 import com.kape.login.utils.THROTTLED
+import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.text.EnterUsernameScreenTitleText
@@ -55,9 +57,16 @@ import org.koin.androidx.compose.koinViewModel
 fun LoginPasswordScreen() = Screen {
     val loginPasswordViewModel: LoginPasswordViewModel = koinViewModel()
     val loginViewModel: LoginViewModel = koinViewModel()
+    val destination by loginViewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
 
     val evaluatePasswordError = remember { mutableStateOf(false) }
     val loginState by remember(loginViewModel) { loginViewModel.loginState }.collectAsState()
+
+    destination?.let {
+        navigator.navigateTo(it)
+        loginViewModel.router.resetNavigation()
+    }
 
     when (loginState) {
         IDLE -> {
@@ -69,6 +78,7 @@ fun LoginPasswordScreen() = Screen {
                 loginError = null,
             )
         }
+
         LOADING -> {
             ShowLoginPasswordScreen(
                 loginViewModel = loginViewModel,
@@ -78,15 +88,17 @@ fun LoginPasswordScreen() = Screen {
                 loginError = null,
             )
         }
+
         SUCCESS -> {
             // Do nothing. The viewmodel is handling the navigation on success.
         }
+
         THROTTLED,
         FAILED,
         EXPIRED,
         INVALID,
         SERVICE_UNAVAILABLE,
-        -> {
+            -> {
             evaluatePasswordError.value = true
             ShowLoginPasswordScreen(
                 loginViewModel = loginViewModel,
@@ -120,11 +132,12 @@ fun ShowLoginPasswordScreen(
             return when (it) {
                 LoginError.Throttled ->
                     loginThrottledErrorMessage
+
                 LoginError.Invalid,
                 LoginError.Failed,
                 LoginError.Expired,
                 LoginError.ServiceUnavailable,
-                ->
+                    ->
                     loginFailedErrorMessage
             }
         }
