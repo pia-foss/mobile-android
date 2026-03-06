@@ -59,17 +59,9 @@ import com.kape.ui.mobile.text.OnboardingTitleText
 fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?) = Screen {
     val screenState by viewModel.state.collectAsState()
     val context = LocalContext.current
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.registerClientIfNeeded(context as Activity)
-    }
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
     }
 
     Column(

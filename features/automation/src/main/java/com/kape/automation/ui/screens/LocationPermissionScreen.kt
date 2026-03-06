@@ -38,7 +38,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LocationPermissionScreen() = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
-    val navigator = LocalNavigator.current
+
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
     }
@@ -55,7 +55,7 @@ fun LocationPermissionScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = navigator.navigateBack,
+                onLeftIconClick = viewModel.router::navigateBack,
             )
         },
     ) {

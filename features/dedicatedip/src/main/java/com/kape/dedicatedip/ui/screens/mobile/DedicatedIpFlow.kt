@@ -1,6 +1,7 @@
 package com.kape.dedicatedip.ui.screens.mobile
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -11,14 +12,9 @@ import com.kape.router.LocalNavigator
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun DedicatedIpFlow() {
+fun DedicatedIpFlow(initialStep: DedicatedIpStep) {
     val viewModel: DipViewModel = koinViewModel()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
 //    // If the viewmodel doesn't have a known state. Use the initial one.
 //    val step = if (state == null) {

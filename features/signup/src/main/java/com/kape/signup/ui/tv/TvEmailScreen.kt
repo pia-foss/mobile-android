@@ -47,13 +47,6 @@ fun TvEmailScreen() {
     val email = remember { mutableStateOf("") }
     val emailErrorMessage = stringResource(id = R.string.error_missing_email)
     val evaluateEmailError = remember { mutableStateOf(false) }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
 
     fun showEmailErrorIfNeeded(): String? {
         if (evaluateEmailError.value.not()) {

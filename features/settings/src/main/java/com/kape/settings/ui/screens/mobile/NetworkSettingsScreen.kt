@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,18 +60,13 @@ fun NetworkSettingsScreen() = Screen {
     val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
     val dnsWarningDialogVisible = remember { mutableStateOf(false) }
 
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = navigator.navigateBack,
+                onLeftIconClick = viewModel.router::navigateBack,
             )
         },
     ) {

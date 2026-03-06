@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,12 +45,7 @@ fun HelpScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.help))
     }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
 
-    destination?.let {
-        navigator.navigateTo(it)
-    }
     val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
     val showToast = remember { mutableStateOf(false) }
@@ -59,7 +55,7 @@ fun HelpScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = navigator.navigateBack,
+                onLeftIconClick = viewModel.router::navigateBack,
             )
         },
     ) {

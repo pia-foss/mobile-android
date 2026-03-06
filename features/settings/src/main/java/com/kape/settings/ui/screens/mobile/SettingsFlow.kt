@@ -1,6 +1,7 @@
 package com.kape.settings.ui.screens.mobile
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -13,12 +14,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SettingsFlow() {
     val viewModel: SettingsViewModel = koinViewModel()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
 //    when (state) {
 //        SettingsStep.Automation, SettingsStep.ShortcutAutomation -> AutomationSettingsScreen()

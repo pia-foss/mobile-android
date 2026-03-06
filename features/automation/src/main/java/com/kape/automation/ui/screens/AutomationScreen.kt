@@ -47,7 +47,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AutomationScreen(isSet: Boolean) = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
-    val navigator = LocalNavigator.current
+
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.trusted_network_plural))
     }
@@ -66,7 +66,7 @@ fun AutomationScreen(isSet: Boolean) = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = navigator.navigateBack,
+                onLeftIconClick = viewModel.router::navigateBack,
             )
         },
     ) {

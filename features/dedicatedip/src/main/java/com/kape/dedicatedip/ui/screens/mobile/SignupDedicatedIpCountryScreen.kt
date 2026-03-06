@@ -68,12 +68,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
         appBarText(stringResource(id = R.string.dedicated_ip_title))
     }
     val viewModel: DipViewModel = koinViewModel()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getDipSupportedCountries()
@@ -116,7 +111,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             topBar = {
                 AppBar(
                     viewModel = appBarViewModel,
-                    onLeftIconClick = navigator.navigateBack,
+                    onLeftIconClick = viewModel.router::navigateBack,
                 )
             },
         ) {
@@ -190,12 +185,12 @@ fun SignupDedicatedIpCountryScreen() = Screen {
                         .padding(horizontal = 16.dp),
                 )
                 if (showAllLocations.value) {
-                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, navigator.navigateBack)
+                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, viewModel.router::navigateBack)
                 }
             }
             Column {
                 if (!showAllLocations.value) {
-                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, navigator.navigateBack)
+                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, viewModel.router::navigateBack)
                 }
             }
         }
@@ -208,7 +203,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             onConfirmCallback = {
                 viewModel.validateSubscriptionPurchase()
             },
-            onDismissCallback = navigator.navigateBack,
+            onDismissCallback = viewModel.router::navigateBack,
         )
     }
 
@@ -219,7 +214,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             onConfirmCallback = {
                 viewModel.fetchPurchasedDedicatedIpToken()
             },
-            onDismissCallback = navigator.navigateBack,
+            onDismissCallback = viewModel.router::navigateBack,
         )
     }
 }

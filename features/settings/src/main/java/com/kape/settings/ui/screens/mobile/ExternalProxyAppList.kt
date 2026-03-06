@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,15 +52,10 @@ fun ExternalProxyAppList() {
     }
 
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps, navigator.navigateBack)
+        onBackPressed(viewModel, lastExcludedApps, viewModel.router::navigateBack)
     }
 
     Scaffold(
@@ -67,7 +63,7 @@ fun ExternalProxyAppList() {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    onBackPressed(viewModel, lastExcludedApps, navigator.navigateBack)
+                    onBackPressed(viewModel, lastExcludedApps, viewModel.router::navigateBack)
                 },
             )
         },
@@ -115,11 +111,11 @@ fun ExternalProxyAppList() {
                 onReconnect = {
                     viewModel.reconnect()
                     viewModel.reconnectDialogVisible.value = false
-                    navigator.navigateBack()
+                    viewModel.router.navigateBack()
                 },
                 onLater = {
                     viewModel.reconnectDialogVisible.value = false
-                    navigator.navigateBack()
+                    viewModel.router.navigateBack()
                 },
             )
         }

@@ -15,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,12 +58,6 @@ fun SignupDedicatedIpTokenDetailsScreen() = Screen {
         withStyle(style = SpanStyle(color = LocalColors.current.connectionError())) {
             append(" ${stringResource(id = R.string.dip_signup_save_your_token_footer_end)}")
         }
-    }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
     }
 
     Column(

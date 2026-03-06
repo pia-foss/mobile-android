@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,22 +67,17 @@ fun CustomizationScreen() = Screen {
         }
     }
 
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
                 type = AppBarType.Customization,
-                onLeftIconClick = navigator.navigateBack,
+                onLeftIconClick = viewModel.router::navigateBack,
                 onRightIconClick = {
                     viewModel.saveOrder()
-                    navigator.navigateBack()
+                    viewModel.router.navigateBack()
                 },
             )
         },

@@ -40,8 +40,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LoginWithEmailScreen() = Screen {
     val viewModel: LoginWithEmailViewModel = koinViewModel()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
+
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
     val currentContext = LocalContext.current
@@ -103,11 +102,6 @@ fun LoginWithEmailScreen() = Screen {
                 viewModel.router.updateDestination(LoginWithCredentials)
             },
         )
-    }
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
     }
 }
 

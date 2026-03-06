@@ -15,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,12 +48,7 @@ fun SignupDedicatedIpTokenActivateScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel()
     val showSpinner = remember { mutableStateOf(false) }
     val dipToken = remember { mutableStateOf(viewModel.getSignupDipToken()) }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     Column(
         modifier = Modifier

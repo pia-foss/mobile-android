@@ -70,14 +70,10 @@ fun TvPerAppSettingsScreen() = Screen {
     val keyboardController = LocalSoftwareKeyboardController.current
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
 
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps, navigator.navigateBack)
+        onBackPressed(viewModel, lastExcludedApps, viewModel.router::navigateBack)
     }
 
     Box(
@@ -196,11 +192,11 @@ fun TvPerAppSettingsScreen() = Screen {
                 onReconnect = {
                     viewModel.reconnect()
                     viewModel.reconnectDialogVisible.value = false
-                    navigator.navigateBack()
+                    viewModel.router.navigateBack()
                 },
                 onLater = {
                     viewModel.reconnectDialogVisible.value = false
-                    navigator.navigateBack()
+                    viewModel.router.navigateBack()
                 },
             )
         }

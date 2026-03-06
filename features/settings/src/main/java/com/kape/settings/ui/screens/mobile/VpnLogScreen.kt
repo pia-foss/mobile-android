@@ -32,18 +32,13 @@ fun VpnLogScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.debug_logs_title))
     }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = navigator.navigateBack,
+                onLeftIconClick = viewModel.router::navigateBack,
             )
         },
     ) {

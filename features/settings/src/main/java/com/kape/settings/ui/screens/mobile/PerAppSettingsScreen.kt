@@ -54,19 +54,14 @@ fun PerAppSettingsScreen() = Screen {
         appBarText(stringResource(id = R.string.per_app_settings))
     }
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getInstalledApplications(packageManager)
     }
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps, navigator.navigateBack)
+        onBackPressed(viewModel, lastExcludedApps, viewModel.router::navigateBack)
     }
 
     Scaffold(
@@ -74,7 +69,7 @@ fun PerAppSettingsScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    onBackPressed(viewModel, lastExcludedApps, navigator.navigateBack)
+                    onBackPressed(viewModel, lastExcludedApps, viewModel.router::navigateBack)
                 },
             )
         },
@@ -127,11 +122,11 @@ fun PerAppSettingsScreen() = Screen {
                 onReconnect = {
                     viewModel.reconnect()
                     viewModel.reconnectDialogVisible.value = false
-                    navigator.navigateBack()
+                    viewModel.router.navigateBack()
                 },
                 onLater = {
                     viewModel.reconnectDialogVisible.value = false
-                    navigator.navigateBack()
+                    viewModel.router.navigateBack()
                 },
             )
         }

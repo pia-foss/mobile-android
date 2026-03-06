@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class AutomationViewModel(
-    private val router: Router,
+    val router: Router,
     private val locationPermissionManager: LocationPermissionManager,
     private val settingsPrefs: SettingsPrefs,
     private val networkRulesManager: NetworkRulesManager,

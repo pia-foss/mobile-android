@@ -21,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,12 +57,7 @@ import org.koin.androidx.compose.koinViewModel
 fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
     val viewModel: SideMenuViewModel = koinViewModel()
     val logoutDialogVisible = remember { mutableStateOf(false) }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     Column(
         modifier = Modifier

@@ -49,13 +49,6 @@ import org.koin.androidx.compose.koinViewModel
 fun TvCredentialsScreen(credentials: Credentials) = Screen {
     val viewModel: SignupViewModel = koinViewModel()
     val initialFocusRequester = FocusRequester()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()

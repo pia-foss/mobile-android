@@ -37,13 +37,6 @@ import com.kape.ui.utils.LocalColors
 @Composable
 fun EmailScreen(viewModel: SignupViewModel) = Screen {
     val email = remember { mutableStateOf("") }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
 
     Column(
         modifier = Modifier

@@ -16,13 +16,6 @@ fun TvSignupScreensFlow() {
     val viewModel: SignupViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.state }.collectAsState()
     val connectionState by remember(viewModel) { viewModel.isConnected }.collectAsState()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
 
     when (state.step) {
         SignupStep.Default -> {

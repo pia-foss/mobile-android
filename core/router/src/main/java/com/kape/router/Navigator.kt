@@ -1,3 +1,13 @@
 package com.kape.router
 
-class Navigator(val navigateTo: (ComposeDestination) -> Unit, val navigateBack: () -> Unit)
+class Navigator(
+    private val router: Router,
+) {
+    fun navigateTo(destination: ComposeDestination) {
+        router.updateDestination(destination)
+    }
+
+    fun navigateBack() {
+        router.navigateBack()
+    }
+}

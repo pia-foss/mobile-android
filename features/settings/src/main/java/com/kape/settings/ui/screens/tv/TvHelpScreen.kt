@@ -60,11 +60,7 @@ fun TvHelpScreen() = Screen {
     val showToast = remember { mutableStateOf(false) }
     val showSpinner = remember { mutableStateOf(false) }
 
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+
 
     with(viewModel.requestId.value) {
         when {

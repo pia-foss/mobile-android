@@ -16,6 +16,7 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -69,12 +70,7 @@ fun TvDedicatedIpScreen() = Screen {
     val showActivationDialog = remember { mutableStateOf(false) }
     val showDeletionDialog = remember { mutableStateOf(false) }
     val text = remember { mutableStateOf("") }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     Box(
         modifier = Modifier
@@ -175,7 +171,7 @@ fun TvDedicatedIpScreen() = Screen {
                         },
                         onDismiss = {
                             viewModel.resetActivationState()
-                            navigator.navigateBack()
+                            viewModel.router.navigateBack()
                         },
                     )
                 }
@@ -194,7 +190,7 @@ fun TvDedicatedIpScreen() = Screen {
                         },
                         onDismiss = {
                             viewModel.resetActivationState()
-                            navigator.navigateBack()
+                            viewModel.router.navigateBack()
                         },
                     )
                 }

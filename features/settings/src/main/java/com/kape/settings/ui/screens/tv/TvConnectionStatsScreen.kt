@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -43,11 +44,7 @@ fun TvConnectionStatsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
         getRecentEvents()
     }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+
 
     Box(
         modifier = Modifier

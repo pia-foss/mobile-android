@@ -57,16 +57,9 @@ import org.koin.androidx.compose.koinViewModel
 fun LoginPasswordScreen() = Screen {
     val loginPasswordViewModel: LoginPasswordViewModel = koinViewModel()
     val loginViewModel: LoginViewModel = koinViewModel()
-    val destination by loginViewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
 
     val evaluatePasswordError = remember { mutableStateOf(false) }
     val loginState by remember(loginViewModel) { loginViewModel.loginState }.collectAsState()
-
-    destination?.let {
-        navigator.navigateTo(it)
-        loginViewModel.router.resetNavigation()
-    }
 
     when (loginState) {
         IDLE -> {

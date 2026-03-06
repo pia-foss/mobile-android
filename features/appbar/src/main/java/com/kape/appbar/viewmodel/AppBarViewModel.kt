@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.router.Router
 import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class AppBarViewModel(
+    val router: Router,
     private val connectionManager: ConnectionManager,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {

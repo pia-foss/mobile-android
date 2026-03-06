@@ -59,8 +59,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LoginScreen() = Screen {
     val viewModel: LoginViewModel = koinViewModel()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
+
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
     val currentContext = LocalContext.current
@@ -68,11 +67,6 @@ fun LoginScreen() = Screen {
 
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
 
     Column(
         modifier = Modifier

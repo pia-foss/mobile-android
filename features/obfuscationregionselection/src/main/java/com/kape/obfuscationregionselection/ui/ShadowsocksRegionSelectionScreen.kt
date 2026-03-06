@@ -48,20 +48,14 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
         appBarText(stringResource(id = R.string.location_selection_title))
     }
     val isSearchEnabled = remember { mutableStateOf(false) }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
-
+    
     Column(
         modifier = Modifier
             .background(LocalColors.current.surfaceVariant)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AppBar(appBarViewModel, onLeftIconClick = navigator.navigateBack)
+        AppBar(appBarViewModel, onLeftIconClick = viewModel.router::navigateBack)
 
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Search(
@@ -96,7 +90,7 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
                                     enableFavorite = item.type.enableFavorite,
                                     onClick = {
                                         viewModel.onShadowsocksRegionSelected(it)
-                                        navigator.navigateBack()
+                                        viewModel.router.navigateBack()
                                     },
                                     onFavoriteShadowsocksClick = {
                                         viewModel.onFavoriteShadowsocksClicked(

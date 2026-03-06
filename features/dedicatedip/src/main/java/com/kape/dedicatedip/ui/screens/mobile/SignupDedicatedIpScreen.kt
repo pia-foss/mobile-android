@@ -54,12 +54,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SignupDedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     LaunchedEffect(key1 = Unit) {
         viewModel.hasActivePlaystoreSubscription()
@@ -151,7 +146,7 @@ fun SignupDedicatedIpScreen() = Screen {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
             ) {
-                navigator.navigateBack()
+                viewModel.router.navigateBack()
             }
             Spacer(modifier = Modifier.weight(1f))
             Footer(
@@ -174,7 +169,7 @@ fun SignupDedicatedIpScreen() = Screen {
                     message = stringResource(id = R.string.dip_signup_required_information_missing_error),
                     confirmButtonMessage = stringResource(id = R.string.take_me_back),
                     onConfirmCallback = {
-                        navigator.navigateBack()
+                        viewModel.router.navigateBack()
                     },
                 )
             }
@@ -184,7 +179,7 @@ fun SignupDedicatedIpScreen() = Screen {
             message = stringResource(id = R.string.dip_signup_error),
             confirmButtonMessage = stringResource(id = R.string.take_me_back),
             onConfirmCallback = {
-                navigator.navigateBack()
+                viewModel.router.navigateBack()
             },
         )
     }

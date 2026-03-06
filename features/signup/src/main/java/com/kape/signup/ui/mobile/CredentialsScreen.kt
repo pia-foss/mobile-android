@@ -35,13 +35,6 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Screen {
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
 
     Column(
         modifier = Modifier

@@ -43,8 +43,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun LoginUsernameScreen() = Screen {
     val viewModel: LoginUsernameViewModel = koinViewModel()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
+
     val usernameErrorMessage = stringResource(id = R.string.error_username_invalid)
     val evaluateUsernameError = remember { mutableStateOf(false) }
 
@@ -58,11 +57,6 @@ fun LoginUsernameScreen() = Screen {
         } else {
             usernameErrorMessage
         }
-    }
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
     }
 
     Row(

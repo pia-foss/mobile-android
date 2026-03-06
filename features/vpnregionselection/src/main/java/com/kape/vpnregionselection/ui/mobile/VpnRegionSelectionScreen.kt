@@ -60,12 +60,7 @@ fun VpnRegionSelectionScreen() = Screen {
     }
     val isSearchEnabled = remember { mutableStateOf(false) }
     val showToast = remember { mutableStateOf(false) }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     Column(
         modifier = Modifier
@@ -74,7 +69,7 @@ fun VpnRegionSelectionScreen() = Screen {
             .semantics { testTagsAsResourceId = true },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AppBar(appBarViewModel, onLeftIconClick = navigator.navigateBack)
+        AppBar(appBarViewModel, onLeftIconClick = viewModel.router::navigateBack)
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Search(
                 modifier = Modifier
@@ -123,7 +118,7 @@ fun VpnRegionSelectionScreen() = Screen {
                                     isOffline = item.type.server.isOffline,
                                     onClick = {
                                         viewModel.onVpnRegionSelected(it)
-                                        navigator.navigateBack()
+                                        viewModel.router.navigateBack()
                                     },
                                     onFavoriteVpnClick = {
                                         viewModel.onFavoriteVpnClicked(

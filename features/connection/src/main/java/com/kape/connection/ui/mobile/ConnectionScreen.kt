@@ -111,12 +111,7 @@ fun ConnectionScreen(exitApp: () -> Unit) = Screen {
     val showRatingReviewDialog = remember { mutableStateOf(false) }
     val showRatingFeedbackDialog = remember { mutableStateOf(false) }
     val lifecycleOwner = LocalLifecycleOwner.current
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+    
 
     BackHandler {
         exitApp()

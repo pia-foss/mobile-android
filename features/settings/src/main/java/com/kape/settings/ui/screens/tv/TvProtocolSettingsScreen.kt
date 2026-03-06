@@ -62,11 +62,7 @@ fun TvProtocolSettingsScreen() = Screen {
     val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
     val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
 
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()

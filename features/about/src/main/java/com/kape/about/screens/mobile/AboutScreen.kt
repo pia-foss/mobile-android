@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.router.LocalNavigator
@@ -22,7 +23,6 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AboutScreen(licences: List<String>) = Screen {
-    val localNavigator = LocalNavigator.current
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.about))
     }
@@ -31,7 +31,7 @@ fun AboutScreen(licences: List<String>) = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = { localNavigator.navigateBack },
+                onLeftIconClick = appBarViewModel.router::navigateBack,
             )
         },
     ) {

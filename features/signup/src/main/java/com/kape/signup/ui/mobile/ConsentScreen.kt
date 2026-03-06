@@ -38,13 +38,6 @@ import com.kape.ui.mobile.elements.SecondaryButton
 @Composable
 fun ConsentScreen(viewModel: SignupViewModel) = Screen {
     val showMoreInfo = remember { mutableStateOf(false) }
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
 
     Column(
         modifier = Modifier

@@ -8,7 +8,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ProvidedValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -17,6 +20,9 @@ import com.kape.router.Navigator
 import com.kape.router.Router
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.PlatformUtils
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @Composable
 fun PIATheme(
@@ -29,7 +35,6 @@ fun PIATheme(
             val context = LocalContext.current
             if (darkTheme) DarkColorScheme else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
@@ -53,21 +58,17 @@ fun PiaScreen(
     val materialColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val piaColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
-    val navigator = Navigator(
-        navigateTo = { destination ->
-            navController.navigate(destination) // route must be typed
-            router.resetNavigation()
-        },
-        navigateBack = {
-            navController.popBackStack()
-            router.resetNavigation()
-        },
-    )
+    // Navigator now only writes to Router - never touches navController directly
+    val navigator = remember(router) {
+        Navigator(router = router)
+    }
 
-    val providedValues = buildList {
-        addAll(compositionLocalValues)
-        add(LocalColors provides piaColorScheme)
-        add(LocalNavigator provides navigator)
+    val providedValues = remember(navigator, piaColorScheme, compositionLocalValues) {
+        buildList {
+            addAll(compositionLocalValues)
+            add(LocalColors provides piaColorScheme)
+            add(LocalNavigator provides navigator)
+        }
     }
 
     CompositionLocalProvider(*providedValues.toTypedArray()) {
@@ -76,6 +77,34 @@ fun PiaScreen(
             colorScheme = materialColorScheme,
         ) {
             content(navController)
+
+            // Single coroutine: wait for graph, then handle ALL navigation
+            LaunchedEffect(navController) {
+                // Suspend until NavHost has set the graph
+                snapshotFlow {
+                    try { navController.graph; true }
+                    catch (e: IllegalStateException) { false }
+                }.first { it }
+
+                // Graph is ready - merge both forward and back navigation
+                launch {
+                    router.getNavigationState()
+                        .filter { it != null }
+                        .collect { destination ->
+                            navController.navigate(destination!!)
+                            router.resetNavigation()
+                        }
+                }
+
+                launch {
+                    router.getBackState()
+                        .filter { it }
+                        .collect {
+                            navController.popBackStack()
+                            router.resetBack()
+                        }
+                }
+            }
         }
     }
 }

@@ -43,21 +43,18 @@ import org.koin.androidx.compose.koinViewModel
 fun ProfileScreen() = Screen {
     val viewModel: ProfileViewModel = koinViewModel()
     val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
+
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.account))
     }
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
 
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
+    
 
     Column {
         AppBar(
             viewModel = appBarViewModel,
-            onLeftIconClick = navigator.navigateBack,
+            onLeftIconClick = viewModel.router::navigateBack,
         )
         if (state.loading) {
             Box(modifier = Modifier.fillMaxSize()) {

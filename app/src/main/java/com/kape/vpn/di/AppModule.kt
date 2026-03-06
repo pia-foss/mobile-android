@@ -19,16 +19,13 @@ import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
 import com.kape.rating.prefs.RatingPrefs
 import com.kape.rating.utils.RatingTool
-import com.kape.router.Automation
 import com.kape.router.Router
 import com.kape.router.RouterImpl
-import com.kape.router.mobile.MobileRouter
-import com.kape.router.tv.TvRouter
 import com.kape.settings.SettingsPrefs
 import com.kape.shortcut.prefs.ShortcutPrefs
+import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_AUTOMATION
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
-import com.kape.utils.PlatformUtils
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
 import com.kape.vpn.R
@@ -110,7 +107,7 @@ val appModule = module {
     single { AutomationManager(get(), get(named(AUTOMATION_SERVICE_INTENT)), get()) }
     single { UsageProvider(get()) }
     single { provideVpnManagerApi(get(), get(), get()) }
-    single { providerRouter(get()) }
+    single { providerRouter() }
     single { VpnLauncher(get(), get(), get(), get(), get()) }
     single { provideAlarmManager(get()) }
     single(named("port-forwarding-intent")) { providePortForwardingReceiverIntent(get()) }
@@ -307,7 +304,7 @@ private fun provideUpdateUrl(): String = BuildConfig.UPDATE_URL
 
 private fun provideAutomationPendingIntent(context: Context): PendingIntent {
     val intent = Intent(context, MainActivity::class.java).apply {
-        action = Automation.Route // custom action
+        action = ACTION_AUTOMATION // custom action
         flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
     }
     return PendingIntent.getActivity(

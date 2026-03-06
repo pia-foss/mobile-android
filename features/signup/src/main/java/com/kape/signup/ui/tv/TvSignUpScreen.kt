@@ -47,13 +47,6 @@ fun TvSignUpScreen() = Screen {
     val initialFocusRequester = FocusRequester()
     val viewModel: SignupViewModel = koinViewModel()
     val subscriptionData = viewModel.subscriptionData.value
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()

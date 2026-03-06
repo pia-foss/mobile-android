@@ -43,11 +43,7 @@ fun TvGeneralSettingsScreen() = Screen {
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val initialFocusRequester = FocusRequester()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-    destination?.let {
-        navigator.navigateTo(it)
-    }
+
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()

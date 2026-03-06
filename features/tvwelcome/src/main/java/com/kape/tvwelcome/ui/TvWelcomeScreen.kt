@@ -34,17 +34,11 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun TvWelcomeScreen() = Screen {
     val welcomeViewModel: TvWelcomeViewModel = koinViewModel()
-    val destination by welcomeViewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
+
     val initialFocusRequester = FocusRequester()
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
-    }
-
-    destination?.let {
-        navigator.navigateTo(it)
-        welcomeViewModel.router.resetNavigation()
     }
 
     Row(

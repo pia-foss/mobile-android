@@ -40,13 +40,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun TvConsentScreen() {
     val viewModel: SignupViewModel = koinViewModel()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
-
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
 
     Row(
         modifier = Modifier

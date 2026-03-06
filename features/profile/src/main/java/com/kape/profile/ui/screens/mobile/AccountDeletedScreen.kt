@@ -34,16 +34,13 @@ import org.koin.androidx.compose.koinViewModel
 fun AccountDeletedScreen(exitApp: () -> Unit) {
     val viewModel: ProfileViewModel = koinViewModel()
     val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-    val navigator = LocalNavigator.current
+
 
     BackHandler {
         exitApp()
     }
 
-    destination?.let {
-        navigator.navigateTo(it)
-        viewModel.router.resetNavigation()
-    }
+    
 
     Column(
         modifier = Modifier
