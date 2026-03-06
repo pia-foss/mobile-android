@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -30,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.router.LocalNavigator
 import com.kape.signup.data.models.Credentials
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
@@ -46,6 +49,13 @@ import org.koin.androidx.compose.koinViewModel
 fun TvCredentialsScreen(credentials: Credentials) = Screen {
     val viewModel: SignupViewModel = koinViewModel()
     val initialFocusRequester = FocusRequester()
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
+    destination?.let {
+        navigator.navigateTo(it)
+        viewModel.router.resetNavigation()
+    }
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()

@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.router.LocalNavigator
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.META_SUBSCRIPTIONS
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
@@ -57,14 +59,19 @@ import com.kape.ui.mobile.text.OnboardingTitleText
 fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?) = Screen {
     val screenState by viewModel.state.collectAsState()
     val context = LocalContext.current
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.registerClientIfNeeded(context as Activity)
     }
 
-    BackHandler {
-        viewModel.exitApp()
+    destination?.let {
+        navigator.navigateTo(it)
+        viewModel.router.resetNavigation()
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,6 +23,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.router.LocalNavigator
 import com.kape.signup.data.models.Credentials
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
@@ -32,6 +35,14 @@ import com.kape.ui.utils.LocalColors
 
 @Composable
 fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Screen {
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
+    destination?.let {
+        navigator.navigateTo(it)
+        viewModel.router.resetNavigation()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

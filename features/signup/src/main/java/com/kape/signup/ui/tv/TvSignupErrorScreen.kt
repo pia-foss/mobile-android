@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -25,6 +26,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.router.LocalNavigator
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -38,6 +41,13 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun TvSignupErrorScreen() = Screen {
     val viewModel: SignupViewModel = koinViewModel()
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
+    destination?.let {
+        navigator.navigateTo(it)
+        viewModel.router.resetNavigation()
+    }
 
     Row(
         modifier = Modifier

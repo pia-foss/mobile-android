@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":core:utils"))
 
     implementation(project(":features:login"))
+    implementation(project(":features:permissions"))
 
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
