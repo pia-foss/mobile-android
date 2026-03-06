@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -31,6 +32,7 @@ import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.customization.data.Element
 import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
+import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Separator
@@ -64,13 +66,23 @@ fun CustomizationScreen() = Screen {
         }
     }
 
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
+    destination?.let {
+        navigator.navigateTo(it)
+    }
+
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
                 type = AppBarType.Customization,
-                onLeftIconClick = { viewModel.exitCustomization() },
-                onRightIconClick = { viewModel.saveOrder() },
+                onLeftIconClick = navigator.navigateBack,
+                onRightIconClick = {
+                    viewModel.saveOrder()
+                    navigator.navigateBack()
+                },
             )
         },
     ) {
