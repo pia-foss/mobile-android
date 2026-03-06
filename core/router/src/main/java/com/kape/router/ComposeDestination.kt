@@ -104,6 +104,9 @@ object DedicatedIpSignupTokenActivate : ComposeDestination
 object DedicatedIpLocationSelection : ComposeDestination
 
 @Serializable
+object DedicatedIpPurchaseSuccess : ComposeDestination
+
+@Serializable
 object AutomationLocation : ComposeDestination
 
 @Serializable

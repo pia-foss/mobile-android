@@ -91,7 +91,7 @@ fun SettingsScreen() = Screen {
                     titleId = com.kape.ui.R.string.automation,
                     subtitle = stringResource(id = if (viewModel.isAutomationEnabled()) com.kape.ui.R.string.enabled else com.kape.ui.R.string.disabled),
                     onClick = {
-                        viewModel.navigateToAutomationSettings()
+                        viewModel.navigateToAutomation()
                     },
                 )
                 if (shouldShowObfuscation) {

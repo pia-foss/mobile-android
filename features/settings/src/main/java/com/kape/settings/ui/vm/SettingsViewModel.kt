@@ -10,7 +10,8 @@ import com.kape.csi.CsiPrefs
 import com.kape.csi.domain.SendLogUseCase
 import com.kape.location.data.LocationPermissionManager
 import com.kape.router.About
-import com.kape.router.Automation
+import com.kape.router.AutomationSet
+import com.kape.router.AutomationSettings
 import com.kape.router.ConnectionStats
 import com.kape.router.DebugLogs
 import com.kape.router.ExternalAppList
@@ -19,6 +20,7 @@ import com.kape.router.HelpSettings
 import com.kape.router.KillSwitchSettings
 import com.kape.router.NetworkSettings
 import com.kape.router.ObfuscationSettings
+import com.kape.router.PrivacySettings
 import com.kape.router.ProtocolSettings
 import com.kape.router.Router
 import com.kape.router.WebDestination
@@ -93,11 +95,11 @@ class SettingsViewModel(
 
     fun navigateToNetworkSettings() = router.updateDestination(NetworkSettings)
 
-    fun navigateToPrivacySettings() = router.updateDestination(WebDestination.Privacy)
+    fun navigateToPrivacySettings() = router.updateDestination(PrivacySettings)
 
     fun navigateToHelpSettings() = router.updateDestination(HelpSettings)
 
-    fun navigateToAutomationSettings() = router.updateDestination(Automation)
+    fun navigateToAutomation() = router.updateDestination(AutomationSettings)
 
     fun navigateToObfuscationSettings() = router.updateDestination(ObfuscationSettings)
 
@@ -107,7 +109,6 @@ class SettingsViewModel(
 
     fun navigateToDebugLogs() = router.updateDestination(DebugLogs)
 
-    fun navigateToAutomation() = router.updateDestination(Automation)
 
     fun navigateToPrivacyPolicy() = router.updateDestination(WebDestination.Privacy)
 

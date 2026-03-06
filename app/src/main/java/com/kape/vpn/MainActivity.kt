@@ -1,6 +1,5 @@
 package com.kape.vpn
 
-import Automation
 import android.app.ComponentCaller
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -27,7 +26,12 @@ import com.kape.automation.ui.screens.LocationPermissionScreen
 import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
-import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpFlow
+import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpCountryScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpPurchaseSuccessScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenActivateScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenDetailsScreen
 import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
 import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.inappbrowser.ui.InAppBrowser
@@ -57,12 +61,20 @@ import com.kape.router.AutomationUpdate
 import com.kape.router.Connection
 import com.kape.router.Customization
 import com.kape.router.DedicatedIpActivateToken
+import com.kape.router.DedicatedIpLocationSelection
+import com.kape.router.DedicatedIpPurchaseSuccess
 import com.kape.router.DedicatedIpSignupPlans
+import com.kape.router.DedicatedIpSignupTokenActivate
+import com.kape.router.DedicatedIpSignupTokenDetails
+import com.kape.router.GeneralSettings
+import com.kape.router.HelpSettings
 import com.kape.router.KillSwitchSettings
 import com.kape.router.LoginWithCredentials
 import com.kape.router.LoginWithEmail
+import com.kape.router.NetworkSettings
 import com.kape.router.NotificationPermission
 import com.kape.router.PerAppSettings
+import com.kape.router.PrivacySettings
 import com.kape.router.Profile
 import com.kape.router.ProtocolSettings
 import com.kape.router.Router
@@ -80,8 +92,12 @@ import com.kape.router.VpnPermission
 import com.kape.router.VpnRegionSelection
 import com.kape.router.WebDestination
 import com.kape.settings.ui.screens.mobile.AutomationSettingsScreen
+import com.kape.settings.ui.screens.mobile.GeneralSettingsScreen
+import com.kape.settings.ui.screens.mobile.HelpScreen
 import com.kape.settings.ui.screens.mobile.KillSwitchSettingScreen
+import com.kape.settings.ui.screens.mobile.NetworkSettingsScreen
 import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
+import com.kape.settings.ui.screens.mobile.PrivacySettingsScreen
 import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.mobile.SettingsScreen
 import com.kape.settings.ui.screens.tv.TvHelpScreen
@@ -143,7 +159,7 @@ class MainActivity : AppCompatActivity() {
                         color = MaterialTheme.colorScheme.background,
                     ) {
                         NavHost(navController = navController, startDestination = Splash) {
-                            defineNavigationGraph(licences,)
+                            defineNavigationGraph(licences)
                         }
                     }
                 }
@@ -210,7 +226,7 @@ class MainActivity : AppCompatActivity() {
             composable<Settings> { SettingsScreen() }
             composable<VpnPermission> { VpnPermissionScreen() }
             composable<NotificationPermission> { NotificationPermissionScreen() }
-            composable<Automation> { AutomationFlow() }
+            composable<AutomationSettings> { AutomationFlow() }
             composable<AutomationSet> { AutomationScreen(isSet = true) }
             composable<AutomationUpdate> { AutomationScreen(isSet = false) }
             composable<AutomationAddRule> { AddNewRuleScreen() }
@@ -246,12 +262,12 @@ class MainActivity : AppCompatActivity() {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_delete_account))
             }
             composable<PerAppSettings> { PerAppSettingsScreen() }
-            composable<DedicatedIpActivateToken> {
-                DedicatedIpFlow(initialStep = DedicatedIpStep.ActivateToken)
-            }
-            composable<DedicatedIpSignupPlans> {
-                DedicatedIpFlow(initialStep = DedicatedIpStep.SignupPlans)
-            }
+            composable<DedicatedIpActivateToken> { DedicatedIpScreen() }
+            composable<DedicatedIpSignupPlans> { SignupDedicatedIpScreen() }
+            composable<DedicatedIpSignupTokenDetails> { SignupDedicatedIpTokenDetailsScreen() }
+            composable<DedicatedIpLocationSelection> { SignupDedicatedIpCountryScreen() }
+            composable<DedicatedIpSignupTokenActivate> { SignupDedicatedIpTokenActivateScreen() }
+            composable<DedicatedIpPurchaseSuccess> { SignupDedicatedIpPurchaseSuccessScreen() }
             composable<AutomationSettings> { AutomationSettingsScreen() }
             composable<KillSwitchSettings> { KillSwitchSettingScreen() }
             composable<ProtocolSettings> { ProtocolSettingsScreen() }
@@ -261,6 +277,11 @@ class MainActivity : AppCompatActivity() {
                 AccountDeletedScreen({ finishAndRemoveTask() })
             }
             composable<Update> { UpdateScreen() }
+            composable<GeneralSettings> { GeneralSettingsScreen() }
+            composable<ProtocolSettings> { ProtocolSettingsScreen() }
+            composable<NetworkSettings> { NetworkSettingsScreen() }
+            composable<PrivacySettings> { PrivacySettingsScreen() }
+            composable<HelpSettings> { HelpScreen() }
         }
     }
     // endregion

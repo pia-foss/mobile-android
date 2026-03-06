@@ -40,8 +40,6 @@ fun PrivacySettingsScreen() = Screen {
         appBarText(stringResource(id = R.string.privacy))
     }
     val showWarning = remember { mutableStateOf(false) }
-    
-
 
     Scaffold(
         topBar = {
