@@ -1,5 +1,6 @@
 package com.kape.vpn
 
+import Automation
 import android.app.ComponentCaller
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -19,6 +20,10 @@ import androidx.navigation.compose.composable
 import com.kape.about.screens.mobile.AboutScreen
 import com.kape.about.screens.tv.TvAboutScreen
 import com.kape.automation.ui.AutomationFlow
+import com.kape.automation.ui.screens.AddNewRuleScreen
+import com.kape.automation.ui.screens.AutomationScreen
+import com.kape.automation.ui.screens.BackgroundLocationPermissionScreen
+import com.kape.automation.ui.screens.LocationPermissionScreen
 import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
@@ -43,8 +48,12 @@ import com.kape.profile.ui.screens.mobile.ProfileScreen
 import com.kape.profile.ui.screens.tv.TvProfileScreen
 import com.kape.router.About
 import com.kape.router.AccountDeleted
-import com.kape.router.Automation
+import com.kape.router.AutomationAddRule
+import com.kape.router.AutomationBackgroundLocation
+import com.kape.router.AutomationLocation
+import com.kape.router.AutomationSet
 import com.kape.router.AutomationSettings
+import com.kape.router.AutomationUpdate
 import com.kape.router.Connection
 import com.kape.router.Customization
 import com.kape.router.DedicatedIpActivateToken
@@ -74,7 +83,7 @@ import com.kape.settings.ui.screens.mobile.AutomationSettingsScreen
 import com.kape.settings.ui.screens.mobile.KillSwitchSettingScreen
 import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
 import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
-import com.kape.settings.ui.screens.mobile.SettingsFlow
+import com.kape.settings.ui.screens.mobile.SettingsScreen
 import com.kape.settings.ui.screens.tv.TvHelpScreen
 import com.kape.settings.ui.screens.tv.TvPerAppSettingsScreen
 import com.kape.settings.ui.screens.tv.TvSettingsScreen
@@ -100,23 +109,13 @@ class MainActivity : AppCompatActivity() {
     private val shortcutPrefs: ShortcutPrefs by inject()
     val licences: List<String> by inject(named("licences"))
     val permissionUtil: PermissionUtil by inject()
-//    private val destinationsForClearBackStack =
-//        listOf(
-//            Splash.Main,
-//            Subscribe.Main,
-//            Permissions.Route,
-//            Connection.Main,
-//            AccountDeleted.Route,
-//        )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         window.setFlags(
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE,
         )
-
         vpnSubscriptionPaymentProvider.register(this)
         defineScreenOrientation()
         deepLinkLogin(intent)
@@ -137,46 +136,14 @@ class MainActivity : AppCompatActivity() {
 //        }
         enableEdgeToEdge()
         setContent {
-//            LaunchedEffect(key1 = Unit) {
-//                repeatOnLifecycle(Lifecycle.State.CREATED) {
-//                    router.getNavigation().collect {
-//                        when (it) {
-//                            NavigateBack -> navController.navigateUp()
-//                            NavigateOut -> {
-//                                finishAndRemoveTask()
-//                                router.resetNavigation()
-//                            }
-//
-//                            Default.Route -> {
-//                                // default state, don't do anything
-//                            }
-//
-//                            else -> {
-//                                currentDestination = it
-//                                navController.navigate(it) {
-//                                    launchSingleTop = true
-//                                    if (it in destinationsForClearBackStack) {
-//                                        navController.popBackStack()
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-
             PIATheme {
-                PiaScreen(router = router) { navController -> // ✅ use the one PiaScreen provides
+                PiaScreen(router = router) { navController ->
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
                     ) {
                         NavHost(navController = navController, startDestination = Splash) {
-                            defineNavigationGraph(
-                                navController = navController,
-                                licences,
-                                permissionUtil,
-                            )
+                            defineNavigationGraph(licences,)
                         }
                     }
                 }
@@ -213,11 +180,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun NavGraphBuilder.defineNavigationGraph(
-        navController: NavController,
-        licences: List<String>,
-        permissionUtil: PermissionUtil,
-    ) {
+    private fun NavGraphBuilder.defineNavigationGraph(licences: List<String>) {
         if (PlatformUtils.isTv(context = this@MainActivity)) {
             composable<Splash> { SplashScreen() }
             composable<TvWelcome> { TvWelcomeScreen() }
@@ -244,10 +207,15 @@ class MainActivity : AppCompatActivity() {
         } else {
             composable<LoginWithCredentials> { LoginScreen() }
             composable<LoginWithEmail> { LoginWithEmailScreen() }
-            composable<Settings> { SettingsFlow() }
+            composable<Settings> { SettingsScreen() }
             composable<VpnPermission> { VpnPermissionScreen() }
             composable<NotificationPermission> { NotificationPermissionScreen() }
             composable<Automation> { AutomationFlow() }
+            composable<AutomationSet> { AutomationScreen(isSet = true) }
+            composable<AutomationUpdate> { AutomationScreen(isSet = false) }
+            composable<AutomationAddRule> { AddNewRuleScreen() }
+            composable<AutomationLocation> { LocationPermissionScreen() }
+            composable<AutomationBackgroundLocation> { BackgroundLocationPermissionScreen() }
             composable<Splash> { SplashScreen() }
             composable<Connection> { ConnectionScreen(exitApp = { finishAndRemoveTask() }) }
             composable<Profile> { ProfileScreen() }

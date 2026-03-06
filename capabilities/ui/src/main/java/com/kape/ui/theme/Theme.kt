@@ -15,6 +15,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.kape.router.DestinationNavOptions
 import com.kape.router.LocalNavigator
 import com.kape.router.Navigator
 import com.kape.router.Router
@@ -35,6 +36,7 @@ fun PIATheme(
             val context = LocalContext.current
             if (darkTheme) DarkColorScheme else dynamicLightColorScheme(context)
         }
+
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
@@ -58,7 +60,6 @@ fun PiaScreen(
     val materialColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val piaColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
-    // Navigator now only writes to Router - never touches navController directly
     val navigator = remember(router) {
         Navigator(router = router)
     }
@@ -78,20 +79,33 @@ fun PiaScreen(
         ) {
             content(navController)
 
-            // Single coroutine: wait for graph, then handle ALL navigation
             LaunchedEffect(navController) {
                 // Suspend until NavHost has set the graph
                 snapshotFlow {
-                    try { navController.graph; true }
-                    catch (e: IllegalStateException) { false }
+                    try {
+                        navController.graph; true
+                    } catch (e: IllegalStateException) {
+                        false
+                    }
                 }.first { it }
 
-                // Graph is ready - merge both forward and back navigation
                 launch {
                     router.getNavigationState()
                         .filter { it != null }
                         .collect { destination ->
-                            navController.navigate(destination!!)
+                            val options = destination!!.navOptions
+                            navController.navigate(destination) {
+                                when (options) {
+                                    is DestinationNavOptions.None -> { /* no-op */
+                                    }
+
+                                    is DestinationNavOptions.PopUpTo -> {
+                                        popUpTo(options.destination) {
+                                            inclusive = options.inclusive
+                                        }
+                                    }
+                                }
+                            }
                             router.resetNavigation()
                         }
                 }

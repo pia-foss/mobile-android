@@ -12,6 +12,11 @@ import com.kape.automation.ui.screens.BackgroundLocationPermissionScreen
 import com.kape.automation.ui.screens.LocationPermissionScreen
 import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.automation.utils.AutomationStep
+import com.kape.router.AutomationAddRule
+import com.kape.router.AutomationBackgroundLocation
+import com.kape.router.AutomationLocation
+import com.kape.router.AutomationSet
+import com.kape.router.AutomationUpdate
 import org.koin.androidx.compose.koinViewModel
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -21,10 +26,13 @@ fun AutomationFlow() {
     val state by remember(viewModel) { viewModel.state }.collectAsState()
 
     when (state) {
-        AutomationStep.LocationPermission -> LocationPermissionScreen()
-        AutomationStep.EnableBackgroundLocation -> BackgroundLocationPermissionScreen()
-        AutomationStep.AddRule -> AddNewRuleScreen()
-        AutomationStep.MainSet -> AutomationScreen(isSet = true)
-        AutomationStep.MainUpdate -> AutomationScreen(isSet = false)
+        AutomationStep.LocationPermission -> viewModel.router.updateDestination(AutomationLocation)
+        AutomationStep.EnableBackgroundLocation -> viewModel.router.updateDestination(
+            AutomationBackgroundLocation,
+        )
+
+        AutomationStep.AddRule -> viewModel.router.updateDestination(AutomationAddRule)
+        AutomationStep.MainSet -> viewModel.router.updateDestination(AutomationSet)
+        AutomationStep.MainUpdate -> viewModel.router.updateDestination(AutomationUpdate)
     }
 }

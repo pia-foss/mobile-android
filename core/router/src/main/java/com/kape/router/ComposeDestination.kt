@@ -2,7 +2,17 @@ package com.kape.router
 
 import kotlinx.serialization.Serializable
 
-interface ComposeDestination
+interface ComposeDestination {
+    val navOptions: DestinationNavOptions get() = DestinationNavOptions.None
+}
+
+sealed interface DestinationNavOptions {
+    data object None : DestinationNavOptions
+    data class PopUpTo(
+        val destination: ComposeDestination,
+        val inclusive: Boolean = true,
+    ) : DestinationNavOptions
+}
 
 // Mobile screens
 
@@ -16,13 +26,22 @@ object LoginWithCredentials : ComposeDestination
 object LoginWithEmail : ComposeDestination
 
 @Serializable
-object VpnPermission : ComposeDestination
+object VpnPermission : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
+}
 
 @Serializable
-object NotificationPermission : ComposeDestination
+object NotificationPermission : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
+}
 
 @Serializable
-object Connection : ComposeDestination
+object Connection : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
+}
 
 @Serializable
 object VpnRegionSelection : ComposeDestination
@@ -34,7 +53,10 @@ object ShadowsocksRegionSelection : ComposeDestination
 object Profile : ComposeDestination
 
 @Serializable
-object Subscribe : ComposeDestination
+object Subscribe : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
+}
 
 @Serializable
 object Settings : ComposeDestination
@@ -47,9 +69,6 @@ object ProtocolSettings : ComposeDestination
 
 @Serializable
 object AutomationSettings : ComposeDestination
-
-@Serializable
-object Automation: ComposeDestination
 
 @Serializable
 object KillSwitchSettings : ComposeDestination
@@ -76,16 +95,13 @@ object DedicatedIpActivateToken : ComposeDestination
 object DedicatedIpSignupPlans : ComposeDestination
 
 @Serializable
-object DedicatedIpSignupTokenDetails: ComposeDestination
+object DedicatedIpSignupTokenDetails : ComposeDestination
 
 @Serializable
-object DedicatedIpSignupTokenActivate: ComposeDestination
+object DedicatedIpSignupTokenActivate : ComposeDestination
 
 @Serializable
-object DedicatedIpLocationSelection: ComposeDestination
-
-@Serializable
-object AutomationRoute : ComposeDestination
+object DedicatedIpLocationSelection : ComposeDestination
 
 @Serializable
 object AutomationLocation : ComposeDestination
@@ -106,7 +122,10 @@ object AutomationAddRule : ComposeDestination
 object Customization : ComposeDestination
 
 @Serializable
-object AccountDeleted : ComposeDestination
+object AccountDeleted : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
+}
 
 @Serializable
 object Update : ComposeDestination
@@ -188,10 +207,16 @@ object TvProtocolSettings : ComposeDestination
 object TvSettings : ComposeDestination
 
 @Serializable
-object TvVpnPermission : ComposeDestination
+object TvVpnPermission : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
+}
 
 @Serializable
-object TvNotificationPermission : ComposeDestination
+object TvNotificationPermission : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
+}
 
 @Serializable
 object TvConnect : ComposeDestination
