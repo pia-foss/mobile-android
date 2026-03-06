@@ -76,6 +76,15 @@ object DedicatedIpActivateToken : ComposeDestination
 object DedicatedIpSignupPlans : ComposeDestination
 
 @Serializable
+object DedicatedIpSignupTokenDetails: ComposeDestination
+
+@Serializable
+object DedicatedIpSignupTokenActivate: ComposeDestination
+
+@Serializable
+object DedicatedIpLocationSelection: ComposeDestination
+
+@Serializable
 object AutomationRoute : ComposeDestination
 
 @Serializable

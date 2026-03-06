@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,7 +31,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.dedicatedip.ui.vm.DipViewModel
+import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.MonthlySubscriptionCard
@@ -51,6 +54,12 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SignupDedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel()
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
+    destination?.let {
+        navigator.navigateTo(it)
+    }
 
     LaunchedEffect(key1 = Unit) {
         viewModel.hasActivePlaystoreSubscription()
@@ -142,7 +151,7 @@ fun SignupDedicatedIpScreen() = Screen {
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
             ) {
-                viewModel.navigateBack()
+                navigator.navigateBack()
             }
             Spacer(modifier = Modifier.weight(1f))
             Footer(
@@ -165,7 +174,7 @@ fun SignupDedicatedIpScreen() = Screen {
                     message = stringResource(id = R.string.dip_signup_required_information_missing_error),
                     confirmButtonMessage = stringResource(id = R.string.take_me_back),
                     onConfirmCallback = {
-                        viewModel.navigateBack()
+                        navigator.navigateBack()
                     },
                 )
             }
@@ -175,7 +184,7 @@ fun SignupDedicatedIpScreen() = Screen {
             message = stringResource(id = R.string.dip_signup_error),
             confirmButtonMessage = stringResource(id = R.string.take_me_back),
             onConfirmCallback = {
-                viewModel.navigateBack()
+                navigator.navigateBack()
             },
         )
     }

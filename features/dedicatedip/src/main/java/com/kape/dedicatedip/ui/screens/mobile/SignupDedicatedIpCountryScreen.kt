@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,10 +41,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dip.data.DedicatedIpSelectedCountry
+import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.PrimaryButton
@@ -65,6 +68,12 @@ fun SignupDedicatedIpCountryScreen() = Screen {
         appBarText(stringResource(id = R.string.dedicated_ip_title))
     }
     val viewModel: DipViewModel = koinViewModel()
+    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
+    val navigator = LocalNavigator.current
+
+    destination?.let {
+        navigator.navigateTo(it)
+    }
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getDipSupportedCountries()
@@ -107,7 +116,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             topBar = {
                 AppBar(
                     viewModel = appBarViewModel,
-                    onLeftIconClick = { viewModel.navigateBack() },
+                    onLeftIconClick = navigator.navigateBack,
                 )
             },
         ) {
@@ -181,12 +190,12 @@ fun SignupDedicatedIpCountryScreen() = Screen {
                         .padding(horizontal = 16.dp),
                 )
                 if (showAllLocations.value) {
-                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel)
+                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, navigator.navigateBack)
                 }
             }
             Column {
                 if (!showAllLocations.value) {
-                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel)
+                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, navigator.navigateBack)
                 }
             }
         }
@@ -199,9 +208,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             onConfirmCallback = {
                 viewModel.validateSubscriptionPurchase()
             },
-            onDismissCallback = {
-                viewModel.navigateBack()
-            },
+            onDismissCallback = navigator.navigateBack,
         )
     }
 
@@ -212,15 +219,13 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             onConfirmCallback = {
                 viewModel.fetchPurchasedDedicatedIpToken()
             },
-            onDismissCallback = {
-                viewModel.navigateBack()
-            },
+            onDismissCallback = navigator.navigateBack,
         )
     }
 }
 
 @Composable
-fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel) {
+fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel, navigateBack: () -> Unit) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -245,7 +250,7 @@ fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            viewModel.navigateBack()
+            navigateBack()
         }
         Spacer(modifier = Modifier.height(16.dp))
         Footer(

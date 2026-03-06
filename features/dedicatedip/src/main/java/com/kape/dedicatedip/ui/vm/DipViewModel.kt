@@ -23,7 +23,11 @@ import com.kape.dip.data.DedicatedIpSelectedCountry
 import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
-import com.kape.router.Back
+import com.kape.router.DedicatedIpActivateToken
+import com.kape.router.DedicatedIpLocationSelection
+import com.kape.router.DedicatedIpSignupPlans
+import com.kape.router.DedicatedIpSignupTokenActivate
+import com.kape.router.DedicatedIpSignupTokenDetails
 import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
@@ -35,6 +39,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class DipViewModel(
+    val router: Router,
     private val regionListProvider: RegionListProvider,
     private val activateDipUseCase: ActivateDipUseCase,
     private val getDipSupportedCountries: GetDipSupportedCountries,
@@ -47,7 +52,6 @@ class DipViewModel(
     private val dipPrefs: DipPrefs,
     private val connectionPrefs: ConnectionPrefs,
     private val connectionUseCase: ConnectionUseCase,
-    private val router: Router,
 ) : ViewModel(), KoinComponent {
 
     private val _state = MutableStateFlow<DedicatedIpStep?>(null)
@@ -68,47 +72,19 @@ class DipViewModel(
     val showFetchingPlansSpinner = mutableStateOf(true)
     val showSpinner = mutableStateOf(false)
 
-    fun navigateBack() {
-        _state.value?.let {
-            when (it) {
-                DedicatedIpStep.ActivateToken,
-                DedicatedIpStep.SignupPlans,
-                -> router.handleFlow(Back)
+    fun navigateToActivateToken() = router.updateDestination(DedicatedIpActivateToken)
 
-                DedicatedIpStep.LocationSelection,
-                -> _state.value = DedicatedIpStep.SignupPlans
+    fun navigateToDedicatedIpPlans() = router.updateDestination(DedicatedIpSignupPlans)
 
-                DedicatedIpStep.SignupSuccess,
-                DedicatedIpStep.SignupTokenDetails,
-                DedicatedIpStep.SignupTokenActivate,
-                -> {
-                    // No-op
-                }
-            }
-        } ?: run {
-            router.handleFlow(Back)
-        }
-    }
+    fun navigateToDedicatedIpTokenDetails() =
+        router.updateDestination(DedicatedIpSignupTokenDetails)
 
-    fun navigateToActivateToken() = viewModelScope.launch {
-        _state.emit(DedicatedIpStep.ActivateToken)
-    }
+    fun navigateToDedicatedIpTokenActivate() =
+        router.updateDestination(DedicatedIpSignupTokenActivate)
 
-    fun navigateToDedicatedIpPlans() = viewModelScope.launch {
-        _state.emit(DedicatedIpStep.SignupPlans)
-    }
 
-    fun navigateToDedicatedIpTokenDetails() = viewModelScope.launch {
-        _state.emit(DedicatedIpStep.SignupTokenDetails)
-    }
-
-    fun navigateToDedicatedIpTokenActivate() = viewModelScope.launch {
-        _state.emit(DedicatedIpStep.SignupTokenActivate)
-    }
-
-    fun navigateToDedicatedIpLocationSelection() = viewModelScope.launch {
-        _state.emit(DedicatedIpStep.LocationSelection)
-    }
+    fun navigateToDedicatedIpLocationSelection() =
+        router.updateDestination(DedicatedIpLocationSelection)
 
     fun loadDedicatedIps() = viewModelScope.launch {
         dipList.clear()
@@ -133,7 +109,7 @@ class DipViewModel(
 
                 DipApiResult.Error,
                 DipApiResult.Invalid,
-                -> {
+                    -> {
                     // no-op
                 }
             }
