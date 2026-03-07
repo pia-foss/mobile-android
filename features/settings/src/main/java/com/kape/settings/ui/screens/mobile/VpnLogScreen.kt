@@ -38,7 +38,7 @@ fun VpnLogScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = viewModel.router::navigateBack,
+                onLeftIconClick = appBarViewModel::navigateBack,
             )
         },
     ) {

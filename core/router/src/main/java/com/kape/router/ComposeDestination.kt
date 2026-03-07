@@ -68,6 +68,8 @@ object GeneralSettings : ComposeDestination
 object ProtocolSettings : ComposeDestination
 
 @Serializable
+object AutomationDestination: ComposeDestination
+@Serializable
 object AutomationSettings : ComposeDestination
 
 @Serializable

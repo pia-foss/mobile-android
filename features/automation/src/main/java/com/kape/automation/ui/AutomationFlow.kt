@@ -25,14 +25,14 @@ fun AutomationFlow() {
     val viewModel: AutomationViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.state }.collectAsState()
 
-    when (state) {
-        AutomationStep.LocationPermission -> viewModel.router.updateDestination(AutomationLocation)
-        AutomationStep.EnableBackgroundLocation -> viewModel.router.updateDestination(
-            AutomationBackgroundLocation,
-        )
+    println("--- automation state: $state")
 
-        AutomationStep.AddRule -> viewModel.router.updateDestination(AutomationAddRule)
-        AutomationStep.MainSet -> viewModel.router.updateDestination(AutomationSet)
-        AutomationStep.MainUpdate -> viewModel.router.updateDestination(AutomationUpdate)
+    when (state) {
+        AutomationStep.LocationPermission -> viewModel.navigateToAutomationLocation()
+        AutomationStep.EnableBackgroundLocation -> viewModel.navigateToAutomationBackgroundLocation()
+
+        AutomationStep.AddRule -> viewModel.navigateToAutomationAddRule()
+        AutomationStep.MainSet -> viewModel.navigateToAutomationMainSet()
+        AutomationStep.MainUpdate -> viewModel.navigateToAutomationMainUpdate()
     }
 }

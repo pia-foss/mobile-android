@@ -47,7 +47,7 @@ fun TvNotificationPermissionScreen() {
         val launcher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
             onResult = {
-                viewModel.router.updateDestination(Connection)
+                viewModel.navigateToConnection()
             },
         )
 
@@ -101,7 +101,7 @@ fun TvNotificationPermissionScreen() {
                     modifier = Modifier
                         .padding(horizontal = 16.dp),
                 ) {
-                    viewModel.router.updateDestination(Connection)
+                    viewModel.navigateToConnection()
                 }
             }
             Column(

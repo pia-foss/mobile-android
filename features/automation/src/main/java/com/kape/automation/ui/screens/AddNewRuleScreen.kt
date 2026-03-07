@@ -52,7 +52,7 @@ fun AddNewRuleScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = viewModel.router::navigateBack,
+                onLeftIconClick = appBarViewModel::navigateBack,
             )
         },
     ) {

@@ -9,6 +9,7 @@ import com.kape.permissions.utils.PermissionUtil
 import com.kape.permissions.utils.REQUEST
 import com.kape.permissions.utils.VpnProfileState
 import com.kape.router.ComposeDestination
+import com.kape.router.Connection
 import com.kape.router.NotificationPermission
 import com.kape.router.Router
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +21,7 @@ import org.koin.core.component.KoinComponent
 
 class PermissionsViewModel(
     private val permissionUtil: PermissionUtil,
-    val router: Router,
+    private val router: Router,
 ) : ViewModel(), KoinComponent {
 
     private val _vpnPermissionState = MutableStateFlow(IDLE)
@@ -39,4 +40,6 @@ class PermissionsViewModel(
             }
             _vpnPermissionState.emit(NOT_GRANTED)
         }
+
+    fun navigateToConnection() = router.updateDestination(Connection)
 }

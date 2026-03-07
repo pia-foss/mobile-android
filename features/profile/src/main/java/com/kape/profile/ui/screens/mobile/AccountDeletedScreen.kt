@@ -33,14 +33,10 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AccountDeletedScreen(exitApp: () -> Unit) {
     val viewModel: ProfileViewModel = koinViewModel()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-
 
     BackHandler {
         exitApp()
     }
-
-    
 
     Column(
         modifier = Modifier
@@ -86,7 +82,7 @@ fun AccountDeletedScreen(exitApp: () -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            viewModel.router.updateDestination(LoginWithCredentials)
+            viewModel.navigateToLogin()
         }
         Spacer(modifier = Modifier.height(8.dp))
         SecondaryButton(
@@ -95,7 +91,7 @@ fun AccountDeletedScreen(exitApp: () -> Unit) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            viewModel.router.updateDestination(Subscribe)
+            viewModel.navigateToSubscribe()
         }
         Spacer(modifier = Modifier.height(16.dp))
     }

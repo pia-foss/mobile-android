@@ -15,6 +15,7 @@ import com.kape.login.utils.getScreenState
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.permissions.utils.PermissionUtil
+import com.kape.router.LoginWithEmail
 import com.kape.router.Router
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class LoginViewModel(
-    val router: Router,
+    private val router: Router,
     private val loginUseCase: LoginUseCase,
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val buildConfigProvider: BuildConfigProvider,
@@ -60,6 +61,8 @@ class LoginViewModel(
             vpnSubscriptionPaymentProvider.getPurchaseHistory()
         }
     }
+
+    fun navigateToLoginWithEmail() = router.updateDestination(LoginWithEmail)
 
     private fun collectPurchaseHistory() {
         viewModelScope.launch {

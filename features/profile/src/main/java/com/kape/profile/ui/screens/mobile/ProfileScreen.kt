@@ -42,19 +42,15 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ProfileScreen() = Screen {
     val viewModel: ProfileViewModel = koinViewModel()
-    val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
-
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.account))
     }
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
 
-    
-
     Column {
         AppBar(
             viewModel = appBarViewModel,
-            onLeftIconClick = viewModel.router::navigateBack,
+            onLeftIconClick = appBarViewModel::navigateBack,
         )
         if (state.loading) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -113,7 +109,7 @@ fun ProfileScreen() = Screen {
                     HyperlinkRed(
                         content = stringResource(id = R.string.account_deletion_action),
                         modifier = Modifier.clickable {
-                            viewModel.router.updateDestination(WebDestination.DeleteAccount)
+                            viewModel.navigateToDeleteAccount()
                         },
                     )
                     Spacer(modifier = Modifier.height(16.dp))

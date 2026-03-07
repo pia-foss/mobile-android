@@ -9,7 +9,7 @@ import com.kape.router.TvLoginPassword
 import org.koin.core.component.KoinComponent
 
 class LoginUsernameViewModel(
-    val router: Router,
+    private val router: Router,
     private val loginUsernameUseCase: LoginUsernameUseCase,
 ) : ViewModel(), KoinComponent {
 

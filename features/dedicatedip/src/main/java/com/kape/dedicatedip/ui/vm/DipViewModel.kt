@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class DipViewModel(
-    val router: Router,
+    private val router: Router,
     private val regionListProvider: RegionListProvider,
     private val activateDipUseCase: ActivateDipUseCase,
     private val getDipSupportedCountries: GetDipSupportedCountries,
@@ -85,6 +85,8 @@ class DipViewModel(
 
     fun navigateToDedicatedIpLocationSelection() =
         router.updateDestination(DedicatedIpLocationSelection)
+
+    fun navigateBack() = router.navigateBack()
 
     fun loadDedicatedIps() = viewModelScope.launch {
         dipList.clear()

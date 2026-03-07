@@ -99,7 +99,7 @@ fun LoginWithEmailScreen() = Screen {
             key1 = state,
             block = {
                 Toast.makeText(currentContext, message, Toast.LENGTH_SHORT).show()
-                viewModel.router.updateDestination(LoginWithCredentials)
+                viewModel.navigateToLoginWithCredentials()
             },
         )
     }

@@ -23,7 +23,7 @@ class SideMenuViewModel(
     private val logoutUseCase: LogoutUseCase,
     val versionCode: Int,
     val versionName: String,
-    val router: Router,
+    private val router: Router,
 ) : ViewModel(), KoinComponent {
 
     val username = mutableStateOf("")

@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -40,9 +39,7 @@ import com.kape.permissions.utils.GRANTED
 import com.kape.permissions.utils.IDLE
 import com.kape.permissions.utils.NOT_GRANTED
 import com.kape.permissions.utils.REQUEST
-import com.kape.router.ComposeDestination
 import com.kape.router.LocalNavigator
-import com.kape.router.NotificationPermission
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.OnboardingDescriptionText
@@ -57,7 +54,6 @@ fun VpnPermissionScreen() =
     Screen {
         val localNavigator = LocalNavigator.current
         val viewModel: PermissionsViewModel = koinViewModel()
-        val destination by viewModel.router.getNavigationState().collectAsStateWithLifecycle()
         val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsStateWithLifecycle()
         val startForResult =
             rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -140,12 +136,6 @@ fun VpnPermissionScreen() =
                     viewModel.onOkButtonClicked()
                 }
             }
-        }
-
-
-        destination?.let {
-            localNavigator.navigateTo(it)
-            viewModel.router.resetNavigation()
         }
     }
 

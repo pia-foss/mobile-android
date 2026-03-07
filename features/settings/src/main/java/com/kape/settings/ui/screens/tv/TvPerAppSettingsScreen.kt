@@ -73,7 +73,7 @@ fun TvPerAppSettingsScreen() = Screen {
 
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps, viewModel.router::navigateBack)
+        onBackPressed(viewModel, lastExcludedApps, viewModel::navigateBack)
     }
 
     Box(
@@ -192,11 +192,11 @@ fun TvPerAppSettingsScreen() = Screen {
                 onReconnect = {
                     viewModel.reconnect()
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.router.navigateBack()
+                    viewModel.navigateBack()
                 },
                 onLater = {
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.router.navigateBack()
+                    viewModel.navigateBack()
                 },
             )
         }

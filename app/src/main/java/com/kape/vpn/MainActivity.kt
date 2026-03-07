@@ -54,6 +54,7 @@ import com.kape.router.About
 import com.kape.router.AccountDeleted
 import com.kape.router.AutomationAddRule
 import com.kape.router.AutomationBackgroundLocation
+import com.kape.router.AutomationDestination
 import com.kape.router.AutomationLocation
 import com.kape.router.AutomationSet
 import com.kape.router.AutomationSettings
@@ -226,7 +227,8 @@ class MainActivity : AppCompatActivity() {
             composable<Settings> { SettingsScreen() }
             composable<VpnPermission> { VpnPermissionScreen() }
             composable<NotificationPermission> { NotificationPermissionScreen() }
-            composable<AutomationSettings> { AutomationFlow() }
+            composable<AutomationSettings> { AutomationSettingsScreen() }
+            composable<AutomationDestination> { AutomationFlow() }
             composable<AutomationSet> { AutomationScreen(isSet = true) }
             composable<AutomationUpdate> { AutomationScreen(isSet = false) }
             composable<AutomationAddRule> { AddNewRuleScreen() }
@@ -268,7 +270,6 @@ class MainActivity : AppCompatActivity() {
             composable<DedicatedIpLocationSelection> { SignupDedicatedIpCountryScreen() }
             composable<DedicatedIpSignupTokenActivate> { SignupDedicatedIpTokenActivateScreen() }
             composable<DedicatedIpPurchaseSuccess> { SignupDedicatedIpPurchaseSuccessScreen() }
-            composable<AutomationSettings> { AutomationSettingsScreen() }
             composable<KillSwitchSettings> { KillSwitchSettingScreen() }
             composable<ProtocolSettings> { ProtocolSettingsScreen() }
             composable<About> { AboutScreen(licences) }

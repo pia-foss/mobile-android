@@ -11,6 +11,11 @@ import com.kape.location.data.LocationPermissionManager
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkRulesManager
+import com.kape.router.AutomationAddRule
+import com.kape.router.AutomationBackgroundLocation
+import com.kape.router.AutomationLocation
+import com.kape.router.AutomationSet
+import com.kape.router.AutomationUpdate
 import com.kape.router.Router
 import com.kape.settings.SettingsPrefs
 import com.kape.utils.AutomationManager
@@ -21,7 +26,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class AutomationViewModel(
-    val router: Router,
+    private val router: Router,
     private val locationPermissionManager: LocationPermissionManager,
     private val settingsPrefs: SettingsPrefs,
     private val networkRulesManager: NetworkRulesManager,
@@ -84,4 +89,12 @@ class AutomationViewModel(
         networkRulesManager.removeRule(rule)
         rules = networkRulesManager.getRules()
     }
+
+    fun navigateToAutomationLocation() = router.updateDestination(AutomationLocation)
+    fun navigateToAutomationBackgroundLocation() = router.updateDestination(
+        AutomationBackgroundLocation,
+    )
+    fun navigateToAutomationAddRule() = router.updateDestination(AutomationAddRule)
+    fun navigateToAutomationMainSet() = router.updateDestination(AutomationSet)
+    fun navigateToAutomationMainUpdate() = router.updateDestination(AutomationUpdate)
 }

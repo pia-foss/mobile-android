@@ -66,7 +66,7 @@ fun AutomationScreen(isSet: Boolean) = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = viewModel.router::navigateBack,
+                onLeftIconClick = appBarViewModel::navigateBack,
             )
         },
     ) {

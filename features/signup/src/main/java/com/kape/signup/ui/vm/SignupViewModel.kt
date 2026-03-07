@@ -43,7 +43,7 @@ import org.koin.core.component.KoinComponent
 import java.util.Locale
 
 class SignupViewModel(
-    val router: Router,
+    private val router: Router,
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val formatter: PriceFormatter,
     private val consentUseCase: ConsentUseCase,

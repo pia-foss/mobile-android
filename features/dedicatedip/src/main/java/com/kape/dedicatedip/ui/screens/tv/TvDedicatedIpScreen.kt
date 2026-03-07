@@ -171,7 +171,7 @@ fun TvDedicatedIpScreen() = Screen {
                         },
                         onDismiss = {
                             viewModel.resetActivationState()
-                            viewModel.router.navigateBack()
+                            viewModel.navigateBack()
                         },
                     )
                 }
@@ -190,7 +190,7 @@ fun TvDedicatedIpScreen() = Screen {
                         },
                         onDismiss = {
                             viewModel.resetActivationState()
-                            viewModel.router.navigateBack()
+                            viewModel.navigateBack()
                         },
                     )
                 }

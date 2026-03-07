@@ -10,6 +10,7 @@ import com.kape.csi.CsiPrefs
 import com.kape.csi.domain.SendLogUseCase
 import com.kape.location.data.LocationPermissionManager
 import com.kape.router.About
+import com.kape.router.AutomationDestination
 import com.kape.router.AutomationSet
 import com.kape.router.AutomationSettings
 import com.kape.router.ConnectionStats
@@ -47,7 +48,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class SettingsViewModel(
-    val router: Router,
+    private val router: Router,
     val version: String,
     private val prefs: SettingsPrefs,
     private val connectionPrefs: ConnectionPrefs,
@@ -99,7 +100,7 @@ class SettingsViewModel(
 
     fun navigateToHelpSettings() = router.updateDestination(HelpSettings)
 
-    fun navigateToAutomation() = router.updateDestination(AutomationSettings)
+    fun navigateToAutomation() = router.updateDestination(AutomationDestination)
 
     fun navigateToObfuscationSettings() = router.updateDestination(ObfuscationSettings)
 
@@ -115,6 +116,8 @@ class SettingsViewModel(
     fun navigateToAbout() = router.updateDestination(About)
 
     fun navigateToExternalAppList() = router.updateDestination(ExternalAppList)
+
+    fun navigateBack() = router.navigateBack()
 
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)

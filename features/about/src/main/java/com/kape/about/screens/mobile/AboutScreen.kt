@@ -31,7 +31,7 @@ fun AboutScreen(licences: List<String>) = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = appBarViewModel.router::navigateBack,
+                onLeftIconClick = appBarViewModel::navigateBack,
             )
         },
     ) {

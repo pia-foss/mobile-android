@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class AppBarViewModel(
-    val router: Router,
+    private val router: Router,
     private val connectionManager: ConnectionManager,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
@@ -40,6 +40,8 @@ class AppBarViewModel(
     fun appBarText(title: String?) {
         appBarText = title ?: appBarTitle(connectionManager.connectionStatusTitle.value)
     }
+
+    fun navigateBack() = router.navigateBack()
 
     private fun refreshAppBarTitle(status: String) {
         appBarText = appBarTitle(status)

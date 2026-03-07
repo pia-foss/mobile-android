@@ -61,7 +61,7 @@ fun PerAppSettingsScreen() = Screen {
     }
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps, viewModel.router::navigateBack)
+        onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
     }
 
     Scaffold(
@@ -69,7 +69,7 @@ fun PerAppSettingsScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    onBackPressed(viewModel, lastExcludedApps, viewModel.router::navigateBack)
+                    onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
                 },
             )
         },
@@ -122,11 +122,11 @@ fun PerAppSettingsScreen() = Screen {
                 onReconnect = {
                     viewModel.reconnect()
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.router.navigateBack()
+                    appBarViewModel.navigateBack()
                 },
                 onLater = {
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.router.navigateBack()
+                    appBarViewModel.navigateBack()
                 },
             )
         }

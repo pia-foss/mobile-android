@@ -55,7 +55,7 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AppBar(appBarViewModel, onLeftIconClick = viewModel.router::navigateBack)
+        AppBar(appBarViewModel, onLeftIconClick = appBarViewModel::navigateBack)
 
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Search(
@@ -90,7 +90,7 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
                                     enableFavorite = item.type.enableFavorite,
                                     onClick = {
                                         viewModel.onShadowsocksRegionSelected(it)
-                                        viewModel.router.navigateBack()
+                                        appBarViewModel.navigateBack()
                                     },
                                     onFavoriteShadowsocksClick = {
                                         viewModel.onFavoriteShadowsocksClicked(

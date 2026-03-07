@@ -30,7 +30,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun InAppBrowser(url: String) = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel()
-
     var loading by remember { mutableStateOf(true) }
     val context = LocalContext.current
 
@@ -54,7 +53,7 @@ fun InAppBrowser(url: String) = Screen {
         AppBar(
             viewModel = appBarViewModel,
             type = AppBarType.InAppBrowser,
-            onLeftIconClick = appBarViewModel.router::navigateBack,
+            onLeftIconClick = appBarViewModel::navigateBack,
         )
 
         if (loading) {

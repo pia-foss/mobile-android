@@ -111,7 +111,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             topBar = {
                 AppBar(
                     viewModel = appBarViewModel,
-                    onLeftIconClick = viewModel.router::navigateBack,
+                    onLeftIconClick = appBarViewModel::navigateBack,
                 )
             },
         ) {
@@ -185,12 +185,12 @@ fun SignupDedicatedIpCountryScreen() = Screen {
                         .padding(horizontal = 16.dp),
                 )
                 if (showAllLocations.value) {
-                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, viewModel.router::navigateBack)
+                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, appBarViewModel::navigateBack)
                 }
             }
             Column {
                 if (!showAllLocations.value) {
-                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, viewModel.router::navigateBack)
+                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, appBarViewModel::navigateBack)
                 }
             }
         }
@@ -203,7 +203,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             onConfirmCallback = {
                 viewModel.validateSubscriptionPurchase()
             },
-            onDismissCallback = viewModel.router::navigateBack,
+            onDismissCallback = appBarViewModel::navigateBack,
         )
     }
 
@@ -214,7 +214,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             onConfirmCallback = {
                 viewModel.fetchPurchasedDedicatedIpToken()
             },
-            onDismissCallback = viewModel.router::navigateBack,
+            onDismissCallback = appBarViewModel::navigateBack,
         )
     }
 }

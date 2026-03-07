@@ -61,9 +61,9 @@ fun ObfuscationSettingsScreen() = Screen {
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
-                onLeftIconClick = viewModel.router::navigateBack,
+                onLeftIconClick = appBarViewModel::navigateBack,
             ) {
-                viewModel.router.navigateBack()
+                appBarViewModel.navigateBack()
             }
         },
     ) {

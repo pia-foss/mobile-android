@@ -55,7 +55,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class ConnectionViewModel(
-    val router: Router,
+    private val router: Router,
     private val regionListProvider: RegionListProvider,
     private val setShadowsocksRegionsUseCase: SetShadowsocksRegionsUseCase,
     private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,

@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class ShadowsocksRegionSelectionViewModel(
-    val router: Router,
+    private val router: Router,
     private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
 ) : ViewModel(), KoinComponent {

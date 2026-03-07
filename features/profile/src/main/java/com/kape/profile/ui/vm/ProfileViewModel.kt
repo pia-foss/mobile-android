@@ -10,8 +10,12 @@ import com.kape.profile.ui.screens.mobile.IDLE
 import com.kape.profile.ui.screens.mobile.LOADING
 import com.kape.profile.ui.screens.mobile.ProfileScreenState
 import com.kape.profile.ui.screens.mobile.createSuccessState
+import com.kape.router.AccountDeleted
+import com.kape.router.LoginWithCredentials
 import com.kape.router.Router
 import com.kape.router.Splash
+import com.kape.router.Subscribe
+import com.kape.router.WebDestination
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +25,7 @@ class ProfileViewModel(
     private val useCase: GetProfileUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
     private val logoutUseCase: LogoutUseCase,
-    val router: Router,
+    private val router: Router,
 ) :
     ViewModel(), KoinComponent {
 
@@ -37,6 +41,11 @@ class ProfileViewModel(
             router.updateDestination(Splash)
         }
     }
+
+    fun navigateToLogin() = router.updateDestination(LoginWithCredentials)
+    fun navigateToSubscribe() = router.updateDestination(Subscribe)
+    fun navigateToAccountDeleted() = router.updateDestination(AccountDeleted)
+    fun navigateToDeleteAccount() = router.updateDestination(WebDestination.DeleteAccount)
 
     private fun loadProfile() = viewModelScope.launch {
         _state.emit(LOADING)

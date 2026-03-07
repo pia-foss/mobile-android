@@ -42,7 +42,7 @@ fun AutomationSettingsScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 type = AppBarType.Navigation,
-                onLeftIconClick = viewModel.router::navigateBack,
+                onLeftIconClick = appBarViewModel::navigateBack,
             )
         },
     ) {

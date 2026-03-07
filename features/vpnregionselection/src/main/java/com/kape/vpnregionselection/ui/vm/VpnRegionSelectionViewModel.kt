@@ -22,7 +22,7 @@ import org.koin.core.component.KoinComponent
 import java.util.Collections
 
 class VpnRegionSelectionViewModel(
-    val router: Router,
+    private val router: Router,
     private val regionListProvider: RegionListProvider,
     private val connectionUseCase: ConnectionUseCase,
     private val vpnRegionPrefs: VpnRegionPrefs,

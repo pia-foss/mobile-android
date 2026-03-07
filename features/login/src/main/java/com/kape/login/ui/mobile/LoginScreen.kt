@@ -173,7 +173,7 @@ fun LoginScreen() = Screen {
                     .align(CenterHorizontally)
                     .padding(16.dp, 8.dp, 16.dp, 16.dp)
                     .clickable {
-                        viewModel.router.updateDestination(LoginWithEmail)
+                        viewModel.navigateToLoginWithEmail()
                     },
             )
         }

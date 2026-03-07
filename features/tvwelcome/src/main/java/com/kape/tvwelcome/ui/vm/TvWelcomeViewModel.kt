@@ -8,7 +8,7 @@ import com.kape.router.TvLoginUsername
 import org.koin.core.component.KoinComponent
 
 class TvWelcomeViewModel(
-    val router: Router,
+    private val router: Router,
     buildConfigProvider: BuildConfigProvider,
 ) : ViewModel(), KoinComponent {
 
