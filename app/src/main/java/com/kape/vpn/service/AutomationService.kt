@@ -13,13 +13,15 @@ import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 
 class AutomationService : Service(), KoinComponent {
-
     private val automationManager: AutomationManager by inject()
     private val networkConnectionListener: NetworkConnectionListener by inject()
     private val automationPendingIntent: PendingIntent by inject(named("automation-pending-intent"))
 
-    override fun onCreate() {
-        super.onCreate()
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
         val notification =
             automationManager.notificationBuilder.setContentIntent(automationPendingIntent).build()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -29,9 +31,10 @@ class AutomationService : Service(), KoinComponent {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION,
             )
         } else {
-            startForeground(123, automationManager.notificationBuilder.build())
+            startForeground(123, notification)
         }
         networkConnectionListener.triggerUpdate()
+        return START_STICKY
     }
 
     override fun onDestroy() {
