@@ -110,6 +110,9 @@ import com.kape.splash.ui.UpdateScreen
 import com.kape.tvwelcome.ui.TvWelcomeScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
+import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_CONNECT
+import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
+import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.utils.PlatformUtils
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
@@ -133,21 +136,21 @@ class MainActivity : AppCompatActivity() {
         vpnSubscriptionPaymentProvider.register(this)
         defineScreenOrientation()
         deepLinkLogin(intent)
-//        intent.action?.let {
-//            when (it) {
-//                Settings.Route -> {
-//                    shortcutPrefs.setShortcutSettings(true)
-//                }
-//
-//                VpnRegionSelection.Main -> {
-//                    shortcutPrefs.setShortcutChangeServer(true)
-//                }
-//
-//                Connection.Main -> {
-//                    shortcutPrefs.setShortcutConnectToVpn(true)
-//                }
-//            }
-//        }
+        intent.action?.let {
+            when (it) {
+                ACTION_SETTINGS -> {
+                    shortcutPrefs.setShortcutSettings(true)
+                }
+
+                ACTION_SERVER_SELECTION -> {
+                    shortcutPrefs.setShortcutChangeServer(true)
+                }
+
+                ACTION_CONNECT -> {
+                    shortcutPrefs.setShortcutConnectToVpn(true)
+                }
+            }
+        }
         enableEdgeToEdge()
         setContent {
             PIATheme {
