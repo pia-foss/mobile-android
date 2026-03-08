@@ -45,7 +45,7 @@ object NotificationPermission : ComposeDestination {
 @Serializable
 object Connection : ComposeDestination {
     override val navOptions: DestinationNavOptions =
-        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
+        DestinationNavOptions.ClearAll
 }
 
 @Serializable

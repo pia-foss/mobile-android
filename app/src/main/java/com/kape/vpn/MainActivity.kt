@@ -168,13 +168,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-//        if (currentDestination == Subscribe.Main) {
-//            vpnSubscriptionPaymentProvider.getPurchaseUpdates()
-//        }
-    }
-
     override fun onNewIntent(intent: Intent, caller: ComponentCaller) {
         super.onNewIntent(intent, caller)
         deepLinkLogin(intent)
