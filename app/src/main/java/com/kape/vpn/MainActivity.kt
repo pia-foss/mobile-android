@@ -18,7 +18,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.kape.about.screens.mobile.AboutScreen
 import com.kape.about.screens.tv.TvAboutScreen
-import com.kape.automation.ui.AutomationFlow
 import com.kape.automation.ui.screens.AddNewRuleScreen
 import com.kape.automation.ui.screens.AutomationScreen
 import com.kape.automation.ui.screens.BackgroundLocationPermissionScreen
@@ -54,11 +53,9 @@ import com.kape.router.About
 import com.kape.router.AccountDeleted
 import com.kape.router.AutomationAddRule
 import com.kape.router.AutomationBackgroundLocation
-import com.kape.router.AutomationDestination
 import com.kape.router.AutomationLocation
-import com.kape.router.AutomationSet
+import com.kape.router.AutomationMain
 import com.kape.router.AutomationSettings
-import com.kape.router.AutomationUpdate
 import com.kape.router.Connection
 import com.kape.router.Customization
 import com.kape.router.DedicatedIpActivateToken
@@ -206,7 +203,7 @@ class MainActivity : AppCompatActivity() {
             composable<TvLoginPassword> { LoginPasswordScreen() }
             composable<VpnPermission> { TvVpnPermissionScreen() }
             composable<NotificationPermission> { TvNotificationPermissionScreen() }
-            composable<Connection> { TvConnectionScreen(exitApp = { finishAndRemoveTask() }) }
+            composable<Connection> { TvConnectionScreen() }
             composable<VpnRegionSelection> { TvVpnRegionSelectionScreen() }
             composable<WebDestination.Terms> {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_terms_of_service))
@@ -228,9 +225,7 @@ class MainActivity : AppCompatActivity() {
             composable<VpnPermission> { VpnPermissionScreen() }
             composable<NotificationPermission> { NotificationPermissionScreen() }
             composable<AutomationSettings> { AutomationSettingsScreen() }
-            composable<AutomationDestination> { AutomationFlow() }
-            composable<AutomationSet> { AutomationScreen(isSet = true) }
-            composable<AutomationUpdate> { AutomationScreen(isSet = false) }
+            composable<AutomationMain> { AutomationScreen() }
             composable<AutomationAddRule> { AddNewRuleScreen() }
             composable<AutomationLocation> { LocationPermissionScreen() }
             composable<AutomationBackgroundLocation> { BackgroundLocationPermissionScreen() }

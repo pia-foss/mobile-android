@@ -10,8 +10,6 @@ import com.kape.csi.CsiPrefs
 import com.kape.csi.domain.SendLogUseCase
 import com.kape.location.data.LocationPermissionManager
 import com.kape.router.About
-import com.kape.router.AutomationDestination
-import com.kape.router.AutomationSet
 import com.kape.router.AutomationSettings
 import com.kape.router.ConnectionStats
 import com.kape.router.DebugLogs
@@ -38,7 +36,6 @@ import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.shareevents.domain.KpiDataSource
-import com.kape.utils.AutomationManager
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.domain.GetLogsUseCase
@@ -61,7 +58,6 @@ class SettingsViewModel(
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
     private val locationPermissionManager: LocationPermissionManager,
     private val connectionUseCase: ConnectionUseCase,
-    private val automationManager: AutomationManager,
 ) : ViewModel(), KoinComponent {
 
     companion object {
@@ -100,7 +96,7 @@ class SettingsViewModel(
 
     fun navigateToHelpSettings() = router.updateDestination(HelpSettings)
 
-    fun navigateToAutomation() = router.updateDestination(AutomationDestination)
+    fun navigateToAutomation() = router.updateDestination(AutomationSettings)
 
     fun navigateToObfuscationSettings() = router.updateDestination(ObfuscationSettings)
 
@@ -118,6 +114,8 @@ class SettingsViewModel(
     fun navigateToExternalAppList() = router.updateDestination(ExternalAppList)
 
     fun navigateBack() = router.navigateBack()
+
+    fun isAutomationEnabled() = prefs.isAutomationEnabled()
 
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
@@ -241,17 +239,6 @@ class SettingsViewModel(
         prefs.setSelectedObfuscationOption(obfuscationOptions = obfuscationOptions)
 
     fun getSelectedObfuscationOption(): ObfuscationOptions = prefs.getSelectedObfuscationOption()
-
-    fun isAutomationEnabled() = prefs.isAutomationEnabled()
-
-    fun disableAutomation() {
-        prefs.setAutomationEnabled(false)
-        automationManager.stopAutomationService()
-    }
-
-    fun areLocationPermissionsGranted() =
-        locationPermissionManager.isFineLocationPermissionGranted() &&
-                locationPermissionManager.isBackgroundLocationPermissionGranted()
 
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()

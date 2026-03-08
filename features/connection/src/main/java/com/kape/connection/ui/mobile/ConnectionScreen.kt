@@ -112,11 +112,6 @@ fun ConnectionScreen(exitApp: () -> Unit) = Screen {
     val showRatingFeedbackDialog = remember { mutableStateOf(false) }
     val lifecycleOwner = LocalLifecycleOwner.current
     
-
-    BackHandler {
-        exitApp()
-    }
-
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             viewModel.refreshState()

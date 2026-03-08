@@ -54,6 +54,7 @@ dependencies {
     implementation(project(":capabilities:location"))
     implementation(project(":features:appbar"))
     implementation(project(":features:vpnregionselection"))
+    implementation(project(":features:automation"))
 
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)

@@ -46,7 +46,7 @@ import org.koin.compose.koinInject
 import java.util.Locale
 
 @Composable
-fun TvConnectionScreen(exitApp: () -> Unit) = Screen {
+fun TvConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
@@ -55,10 +55,6 @@ fun TvConnectionScreen(exitApp: () -> Unit) = Screen {
     val topEndHeaderFocusRequester = remember { FocusRequester() }
     val startQuickConnectFocusRequester = remember { FocusRequester() }
     val locale = Locale.getDefault().language
-
-    BackHandler {
-        exitApp()
-    }
 
     LaunchedEffect(key1 = Unit) {
         topStartHeaderFocusRequester.requestFocus()

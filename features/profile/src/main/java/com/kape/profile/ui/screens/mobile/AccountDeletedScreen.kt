@@ -34,10 +34,6 @@ import org.koin.androidx.compose.koinViewModel
 fun AccountDeletedScreen(exitApp: () -> Unit) {
     val viewModel: ProfileViewModel = koinViewModel()
 
-    BackHandler {
-        exitApp()
-    }
-
     Column(
         modifier = Modifier
             .widthIn(max = 520.dp)

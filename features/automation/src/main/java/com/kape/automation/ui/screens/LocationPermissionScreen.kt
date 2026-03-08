@@ -46,7 +46,7 @@ fun LocationPermissionScreen() = Screen {
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {
             if (it) {
-                viewModel.navigateToNextScreen()
+                viewModel.onLocationPermissionGranted()
             }
         },
     )

@@ -104,6 +104,13 @@ fun PiaScreen(
                                             inclusive = options.inclusive
                                         }
                                     }
+
+                                    DestinationNavOptions.ClearAll -> {
+                                        popUpTo(navController.graph.id) {
+                                            inclusive = true
+                                        }
+                                        launchSingleTop = true
+                                    }
                                 }
                             }
                             router.resetNavigation()

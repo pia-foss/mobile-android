@@ -1,41 +1,37 @@
 package com.kape.settings.ui.screens.mobile
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.router.LocalNavigator
+import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.settings.ui.elements.mobile.SettingsItem
 import com.kape.settings.ui.elements.mobile.SettingsToggle
-import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AutomationSettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
+    val viewModel: AutomationViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.automation))
     }
-    val automationEnabled = remember { mutableStateOf(viewModel.isAutomationEnabled()) }
-    
+    val state by viewModel.automationState.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -57,21 +53,16 @@ fun AutomationSettingsScreen() = Screen {
                 SettingsToggle(
                     titleId = R.string.automation_title,
                     subtitleId = R.string.automation_description,
-                    enabled = viewModel.isAutomationEnabled(),
+                    enabled = state.isEnabled,
                     toggle = {
-                        automationEnabled.value = it
-                        if (viewModel.isAutomationEnabled()) {
-                            viewModel.disableAutomation()
-                        } else if (!viewModel.areLocationPermissionsGranted()) {
-                            viewModel.navigateToAutomation()
-                        }
+                        viewModel.onAutomationToggled(context)
                     },
                 )
-                if (automationEnabled.value) {
+                if (state.isEnabled) {
                     SettingsItem(
                         titleId = R.string.manage_automation,
                         onClick = {
-                            viewModel.navigateToAutomation()
+                            viewModel.navigateToNextScreen()
                         },
                     )
                 }

@@ -12,12 +12,17 @@ sealed interface DestinationNavOptions {
         val destination: ComposeDestination,
         val inclusive: Boolean = true,
     ) : DestinationNavOptions
+
+    data object ClearAll : DestinationNavOptions
 }
 
 // Mobile screens
 
 @Serializable
-object Splash : ComposeDestination
+object Splash : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.ClearAll
+}
 
 @Serializable
 object LoginWithCredentials : ComposeDestination
@@ -68,8 +73,6 @@ object GeneralSettings : ComposeDestination
 object ProtocolSettings : ComposeDestination
 
 @Serializable
-object AutomationDestination: ComposeDestination
-@Serializable
 object AutomationSettings : ComposeDestination
 
 @Serializable
@@ -109,16 +112,22 @@ object DedicatedIpLocationSelection : ComposeDestination
 object DedicatedIpPurchaseSuccess : ComposeDestination
 
 @Serializable
-object AutomationLocation : ComposeDestination
+object AutomationLocation : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(AutomationSettings, inclusive = false)
+}
 
 @Serializable
-object AutomationSet : ComposeDestination
+object AutomationMain : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(AutomationSettings, inclusive = false)
+}
 
 @Serializable
-object AutomationUpdate : ComposeDestination
-
-@Serializable
-object AutomationBackgroundLocation : ComposeDestination
+object AutomationBackgroundLocation : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(AutomationSettings, inclusive = false)
+}
 
 @Serializable
 object AutomationAddRule : ComposeDestination
