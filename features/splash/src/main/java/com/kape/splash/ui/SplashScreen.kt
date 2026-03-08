@@ -20,7 +20,6 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) = Screen {
-
     Box(
         modifier = Modifier
             .fillMaxSize()

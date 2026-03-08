@@ -16,8 +16,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,7 +35,6 @@ import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
-import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.NetworkCard
 import com.kape.ui.mobile.elements.Screen
@@ -58,12 +55,6 @@ fun AutomationScreen() = Screen {
     val currentItem = remember { mutableStateOf<NetworkItem?>(null) }
     val context: Context = LocalContext.current
     val state by viewModel.automationState.collectAsStateWithLifecycle()
-
-//    if (isSet) {
-//        LaunchedEffect(Unit) {
-//            context.sendBroadcast(viewModel.broadcastIntent)
-//        }
-//    }
 
     AutomationScreenContent(
         appBarViewModel,

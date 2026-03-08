@@ -17,12 +17,6 @@ class PermissionUtil(
 
     fun isVpnProfileInstalled(): Boolean = useCaseIsVpnProfileInstalled.isVpnProfileInstalled()
 
-    fun navigateTo(navController: NavController) {
-        navController.navigate(getNextDestination()) {
-            launchSingleTop = true
-        }
-    }
-
     fun getNextDestination(): ComposeDestination {
         return if (!useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
             VpnPermission

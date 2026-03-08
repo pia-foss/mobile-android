@@ -39,7 +39,6 @@ import com.kape.permissions.utils.GRANTED
 import com.kape.permissions.utils.IDLE
 import com.kape.permissions.utils.NOT_GRANTED
 import com.kape.permissions.utils.REQUEST
-import com.kape.router.LocalNavigator
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.OnboardingDescriptionText
@@ -52,7 +51,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun VpnPermissionScreen() =
     Screen {
-        val localNavigator = LocalNavigator.current
         val viewModel: PermissionsViewModel = koinViewModel()
         val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsStateWithLifecycle()
         val startForResult =

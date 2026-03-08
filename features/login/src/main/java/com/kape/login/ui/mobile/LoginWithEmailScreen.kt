@@ -25,12 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.login.ui.vm.mobile.LoginWithEmailViewModel
 import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
-import com.kape.router.LocalNavigator
-import com.kape.router.LoginWithCredentials
 import com.kape.ui.mobile.elements.NoNetworkBanner
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen

@@ -21,8 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -35,17 +33,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kape.router.LocalNavigator
 import com.kape.sidemenu.R
 import com.kape.sidemenu.ui.vm.SideMenuViewModel
 import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.mobile.text.SideMenuUsernameText
 import com.kape.ui.mobile.text.SideMenuVersionText
-import com.kape.ui.theme.PiaScreen
 import com.kape.ui.tiles.LogoutDialog
 import com.kape.ui.utils.LocalColors
 import kotlinx.coroutines.CoroutineScope
@@ -57,7 +51,6 @@ import org.koin.androidx.compose.koinViewModel
 fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
     val viewModel: SideMenuViewModel = koinViewModel()
     val logoutDialogVisible = remember { mutableStateOf(false) }
-    
 
     Column(
         modifier = Modifier

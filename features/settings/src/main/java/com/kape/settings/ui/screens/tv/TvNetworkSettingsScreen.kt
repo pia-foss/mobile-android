@@ -1,6 +1,5 @@
 package com.kape.settings.ui.screens.tv
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +16,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,8 +27,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kape.router.LocalNavigator
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.CustomDnsDialog
 import com.kape.settings.ui.elements.DnsSelectionDialog
@@ -54,8 +50,7 @@ fun TvNetworkSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val initialFocusRequester = FocusRequester()
-
+    val initialFocusRequester = remember { FocusRequester() }
 
     val dnsOptions = mutableMapOf(
         DnsOptions.PIA to stringResource(id = R.string.pia),

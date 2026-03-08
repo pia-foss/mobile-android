@@ -87,32 +87,18 @@ class SettingsViewModel(
     val externalProxyTcpDialogVisible = mutableStateOf(false)
 
     fun navigateToGeneralSettings() = router.updateDestination(GeneralSettings)
-
     fun navigateToProtocolSettings() = router.updateDestination(ProtocolSettings)
-
     fun navigateToNetworkSettings() = router.updateDestination(NetworkSettings)
-
     fun navigateToPrivacySettings() = router.updateDestination(PrivacySettings)
-
     fun navigateToHelpSettings() = router.updateDestination(HelpSettings)
-
     fun navigateToAutomation() = router.updateDestination(AutomationSettings)
-
     fun navigateToObfuscationSettings() = router.updateDestination(ObfuscationSettings)
-
     fun navigateToKillSwitch() = router.updateDestination(KillSwitchSettings)
-
     fun navigateToConnectionStats() = router.updateDestination(ConnectionStats)
-
     fun navigateToDebugLogs() = router.updateDestination(DebugLogs)
-
-
     fun navigateToPrivacyPolicy() = router.updateDestination(WebDestination.Privacy)
-
     fun navigateToAbout() = router.updateDestination(About)
-
     fun navigateToExternalAppList() = router.updateDestination(ExternalAppList)
-
     fun navigateBack() = router.navigateBack()
 
     fun isAutomationEnabled() = prefs.isAutomationEnabled()

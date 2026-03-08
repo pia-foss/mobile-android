@@ -19,12 +19,12 @@ import com.kape.rating.utils.RatingTool
 import com.kape.router.AutomationSettings
 import com.kape.router.Customization
 import com.kape.router.DedicatedIpSignupPlans
+import com.kape.router.HelpSettings
 import com.kape.router.KillSwitchSettings
 import com.kape.router.ProtocolSettings
 import com.kape.router.Router
 import com.kape.router.Settings
 import com.kape.router.ShadowsocksRegionSelection
-import com.kape.router.TvHelp
 import com.kape.router.TvSideMenu
 import com.kape.router.VpnRegionSelection
 import com.kape.settings.SettingsPrefs
@@ -139,7 +139,7 @@ class ConnectionViewModel(
         }
     }
 
-    fun navigateToHelp() = router.updateDestination(TvHelp)
+    fun navigateToHelp() = router.updateDestination(HelpSettings)
 
     fun navigateToSideMenu() {
         router.updateDestination(TvSideMenu)

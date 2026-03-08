@@ -1,6 +1,5 @@
 package com.kape.profile.ui.screens.mobile
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,18 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.profile.ui.vm.ProfileViewModel
-import com.kape.router.LocalNavigator
-import com.kape.router.LoginWithCredentials
-import com.kape.router.Subscribe
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.SecondaryButton
@@ -31,7 +25,7 @@ import com.kape.ui.mobile.text.OnboardingTitleText
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AccountDeletedScreen(exitApp: () -> Unit) {
+fun AccountDeletedScreen() {
     val viewModel: ProfileViewModel = koinViewModel()
 
     Column(

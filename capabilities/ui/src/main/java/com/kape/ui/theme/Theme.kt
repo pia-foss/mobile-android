@@ -27,7 +27,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun PIATheme(
-    darkTheme: Boolean = isDarkTheme(context = LocalContext.current),
+    isTv: Boolean,
+    darkTheme: Boolean = isDarkTheme(isTv),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
@@ -50,7 +51,8 @@ fun PIATheme(
 
 @Composable
 fun PiaScreen(
-    darkTheme: Boolean = isDarkTheme(context = LocalContext.current),
+    isTv: Boolean,
+    darkTheme: Boolean = isDarkTheme(isTv),
     router: Router,
     vararg compositionLocalValues: ProvidedValue<*>,
     content: @Composable (navController: NavHostController) -> Unit,
@@ -131,8 +133,8 @@ fun PiaScreen(
 }
 
 @Composable
-private fun isDarkTheme(context: Context) =
-    if (PlatformUtils.isTv(context = context)) {
+private fun isDarkTheme(isTv: Boolean) =
+    if (isTv) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         true
     } else {

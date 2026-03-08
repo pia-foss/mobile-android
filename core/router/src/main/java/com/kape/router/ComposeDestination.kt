@@ -197,30 +197,6 @@ object TvWelcome : ComposeDestination
 object TvSideMenu : ComposeDestination
 
 @Serializable
-object TvHelp : ComposeDestination
-
-@Serializable
-object TvConnectionStats : ComposeDestination
-
-@Serializable
-object TvGeneralSettings : ComposeDestination
-
-@Serializable
-object TvNetworkSettings : ComposeDestination
-
-@Serializable
-object TvPerAppSettings : ComposeDestination
-
-@Serializable
-object TvPrivacySettings : ComposeDestination
-
-@Serializable
-object TvProtocolSettings : ComposeDestination
-
-@Serializable
-object TvSettings : ComposeDestination
-
-@Serializable
 object TvVpnPermission : ComposeDestination {
     override val navOptions: DestinationNavOptions =
         DestinationNavOptions.PopUpTo(Splash, inclusive = true)

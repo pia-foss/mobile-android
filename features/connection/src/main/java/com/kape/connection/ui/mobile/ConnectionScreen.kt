@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,7 +68,6 @@ import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.ui.RatingFeedbackDialog
 import com.kape.rating.ui.RatingReviewDialog
-import com.kape.router.LocalNavigator
 import com.kape.sidemenu.ui.screens.mobile.SideMenuContent
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.InfoCard
@@ -90,17 +87,15 @@ import com.kape.ui.mobile.tiles.VpnLocationPicker
 import com.kape.ui.theme.PiaTypography.subtitle3
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
 import java.util.Locale
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ConnectionScreen(exitApp: () -> Unit) = Screen {
+fun ConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val locale = Locale.getDefault().language

@@ -8,7 +8,9 @@ import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.router.Connection
 import com.kape.router.Router
 import com.kape.router.Subscribe
+import com.kape.router.TvWelcome
 import com.kape.router.Update
+import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.launch
@@ -22,6 +24,7 @@ class SplashViewModel(
     private val appUpdateUrl: String,
     private val connectionUseCase: ConnectionUseCase,
     private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
+    private val platformUtils: PlatformUtils,
 ) : ViewModel(), KoinComponent {
 
     private var updateUrl: String = ""
@@ -63,7 +66,11 @@ class SplashViewModel(
         if (getUserLoggedInUseCase.isUserLoggedIn()) {
             router.updateDestination(Connection)
         } else {
-            router.updateDestination(Subscribe)
+            if (platformUtils.isTv()) {
+                router.updateDestination(TvWelcome)
+            } else {
+                router.updateDestination(Subscribe)
+            }
         }
     }
 }

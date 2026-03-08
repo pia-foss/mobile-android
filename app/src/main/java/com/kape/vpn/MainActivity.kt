@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,7 +31,6 @@ import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpScreen
 import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenActivateScreen
 import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenDetailsScreen
 import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
-import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.inappbrowser.ui.InAppBrowser
 import com.kape.login.ui.mobile.LoginScreen
 import com.kape.login.ui.mobile.LoginWithEmailScreen
@@ -80,7 +78,6 @@ import com.kape.router.Settings
 import com.kape.router.ShadowsocksRegionSelection
 import com.kape.router.Splash
 import com.kape.router.Subscribe
-import com.kape.router.TvHelp
 import com.kape.router.TvLoginPassword
 import com.kape.router.TvLoginUsername
 import com.kape.router.TvSideMenu
@@ -98,8 +95,12 @@ import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
 import com.kape.settings.ui.screens.mobile.PrivacySettingsScreen
 import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.mobile.SettingsScreen
+import com.kape.settings.ui.screens.tv.TvGeneralSettingsScreen
 import com.kape.settings.ui.screens.tv.TvHelpScreen
+import com.kape.settings.ui.screens.tv.TvNetworkSettingsScreen
 import com.kape.settings.ui.screens.tv.TvPerAppSettingsScreen
+import com.kape.settings.ui.screens.tv.TvPrivacySettingsScreen
+import com.kape.settings.ui.screens.tv.TvProtocolSettingsScreen
 import com.kape.settings.ui.screens.tv.TvSettingsScreen
 import com.kape.shortcut.prefs.ShortcutPrefs
 import com.kape.sidemenu.ui.screens.tv.TvSideMenuScreen
@@ -124,6 +125,7 @@ class MainActivity : AppCompatActivity() {
     private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
     private val shortcutPrefs: ShortcutPrefs by inject()
+    private val platformUtils: PlatformUtils by inject()
     val licences: List<String> by inject(named("licences"))
     val permissionUtil: PermissionUtil by inject()
 
@@ -153,8 +155,8 @@ class MainActivity : AppCompatActivity() {
         }
         enableEdgeToEdge()
         setContent {
-            PIATheme {
-                PiaScreen(router = router) { navController ->
+            PIATheme(platformUtils.isTv()) {
+                PiaScreen(router = router, isTv = platformUtils.isTv()) { navController ->
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
@@ -175,7 +177,7 @@ class MainActivity : AppCompatActivity() {
 
     // region private
     private fun defineScreenOrientation() {
-        if (PlatformUtils.isTv(context = this)) {
+        if (platformUtils.isTv()) {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         } else {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -191,7 +193,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun NavGraphBuilder.defineNavigationGraph(licences: List<String>) {
-        if (PlatformUtils.isTv(context = this@MainActivity)) {
+        if (platformUtils.isTv()) {
             composable<Splash> { SplashScreen() }
             composable<TvWelcome> { TvWelcomeScreen() }
             composable<Subscribe> { TvSignupScreensFlow() }
@@ -212,8 +214,12 @@ class MainActivity : AppCompatActivity() {
             composable<Profile> { TvProfileScreen() }
             composable<DedicatedIpActivateToken> { TvDedicatedIpScreen() }
             composable<PerAppSettings> { TvPerAppSettingsScreen() }
-            composable<TvHelp> { TvHelpScreen() }
+            composable<HelpSettings> { TvHelpScreen() }
             composable<About> { TvAboutScreen(licences) }
+            composable<GeneralSettings> { TvGeneralSettingsScreen() }
+            composable<ProtocolSettings> { TvProtocolSettingsScreen() }
+            composable<NetworkSettings> { TvNetworkSettingsScreen() }
+            composable<PrivacySettings> { TvPrivacySettingsScreen() }
         } else {
             composable<LoginWithCredentials> { LoginScreen() }
             composable<LoginWithEmail> { LoginWithEmailScreen() }
@@ -226,7 +232,7 @@ class MainActivity : AppCompatActivity() {
             composable<AutomationLocation> { LocationPermissionScreen() }
             composable<AutomationBackgroundLocation> { BackgroundLocationPermissionScreen() }
             composable<Splash> { SplashScreen() }
-            composable<Connection> { ConnectionScreen(exitApp = { finishAndRemoveTask() }) }
+            composable<Connection> { ConnectionScreen() }
             composable<Profile> { ProfileScreen() }
             composable<Subscribe> { SignupScreensFlow() }
             composable<VpnRegionSelection> { VpnRegionSelectionScreen() }
@@ -265,9 +271,7 @@ class MainActivity : AppCompatActivity() {
             composable<ProtocolSettings> { ProtocolSettingsScreen() }
             composable<About> { AboutScreen(licences) }
             composable<Customization> { CustomizationScreen() }
-            composable<AccountDeleted> {
-                AccountDeletedScreen({ finishAndRemoveTask() })
-            }
+            composable<AccountDeleted> { AccountDeletedScreen() }
             composable<Update> { UpdateScreen() }
             composable<GeneralSettings> { GeneralSettingsScreen() }
             composable<ProtocolSettings> { ProtocolSettingsScreen() }

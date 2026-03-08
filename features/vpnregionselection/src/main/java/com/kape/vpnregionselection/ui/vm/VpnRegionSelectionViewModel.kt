@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.regions.data.ServerData
 import com.kape.router.Connection
+import com.kape.router.HelpSettings
 import com.kape.router.Router
-import com.kape.router.TvHelp
 import com.kape.router.TvSideMenu
 import com.kape.settings.SettingsPrefs
 import com.kape.utils.AUTO_KEY
@@ -89,7 +89,7 @@ class VpnRegionSelectionViewModel(
     }
 
     fun navigateToHelp() {
-        router.updateDestination(TvHelp)
+        router.updateDestination(HelpSettings)
     }
 
     fun navigateToSideMenu() {

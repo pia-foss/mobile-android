@@ -33,7 +33,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.ui.vm.tv.LoginPasswordViewModel
 import com.kape.login.utils.EXPIRED
@@ -45,7 +44,6 @@ import com.kape.login.utils.LoginError
 import com.kape.login.utils.SERVICE_UNAVAILABLE
 import com.kape.login.utils.SUCCESS
 import com.kape.login.utils.THROTTLED
-import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.text.EnterUsernameScreenTitleText

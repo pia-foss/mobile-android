@@ -4,8 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kape.router.LocalNavigator
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.SignupError
 import com.kape.signup.utils.SignupStep

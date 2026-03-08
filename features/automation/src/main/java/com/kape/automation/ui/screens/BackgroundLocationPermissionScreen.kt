@@ -29,7 +29,6 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.R
 import com.kape.automation.ui.viewmodel.AutomationViewModel
-import com.kape.router.LocalNavigator
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.OnboardingDescriptionText

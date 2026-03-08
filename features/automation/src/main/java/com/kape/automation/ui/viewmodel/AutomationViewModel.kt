@@ -40,7 +40,6 @@ class AutomationViewModel(
         ),
     )
     val automationState = _state.asStateFlow()
-
     val availableNetwork = networkConnectionListener.currentSSID
 
     fun onLocationPermissionGranted() {
