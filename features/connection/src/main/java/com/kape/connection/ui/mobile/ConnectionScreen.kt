@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -106,6 +108,11 @@ fun ConnectionScreen() = Screen {
     val showRatingReviewDialog = remember { mutableStateOf(false) }
     val showRatingFeedbackDialog = remember { mutableStateOf(false) }
     val lifecycleOwner = LocalLifecycleOwner.current
+    val activity = LocalActivity.current
+
+    BackHandler {
+        activity?.finish()
+    }
     
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {

@@ -1,5 +1,6 @@
 package com.kape.ui.theme
 
+import android.app.Activity
 import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
@@ -123,7 +124,7 @@ fun PiaScreen(
                     router.getBackState()
                         .filter { it }
                         .collect {
-                            navController.popBackStack()
+                            navController.previousBackStackEntry != null && navController.popBackStack()
                             router.resetBack()
                         }
                 }

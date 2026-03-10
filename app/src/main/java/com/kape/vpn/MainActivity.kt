@@ -69,6 +69,7 @@ import com.kape.router.LoginWithCredentials
 import com.kape.router.LoginWithEmail
 import com.kape.router.NetworkSettings
 import com.kape.router.NotificationPermission
+import com.kape.router.ObfuscationSettings
 import com.kape.router.PerAppSettings
 import com.kape.router.PrivacySettings
 import com.kape.router.Profile
@@ -91,6 +92,7 @@ import com.kape.settings.ui.screens.mobile.GeneralSettingsScreen
 import com.kape.settings.ui.screens.mobile.HelpScreen
 import com.kape.settings.ui.screens.mobile.KillSwitchSettingScreen
 import com.kape.settings.ui.screens.mobile.NetworkSettingsScreen
+import com.kape.settings.ui.screens.mobile.ObfuscationSettingsScreen
 import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
 import com.kape.settings.ui.screens.mobile.PrivacySettingsScreen
 import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
@@ -278,6 +280,7 @@ class MainActivity : AppCompatActivity() {
             composable<NetworkSettings> { NetworkSettingsScreen() }
             composable<PrivacySettings> { PrivacySettingsScreen() }
             composable<HelpSettings> { HelpScreen() }
+            composable<ObfuscationSettings> { ObfuscationSettingsScreen() }
         }
     }
     // endregion
