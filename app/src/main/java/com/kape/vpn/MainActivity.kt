@@ -56,6 +56,7 @@ import com.kape.router.AutomationMain
 import com.kape.router.AutomationSettings
 import com.kape.router.Connection
 import com.kape.router.Customization
+import com.kape.router.DebugLogs
 import com.kape.router.DedicatedIpActivateToken
 import com.kape.router.DedicatedIpLocationSelection
 import com.kape.router.DedicatedIpPurchaseSuccess
@@ -97,6 +98,7 @@ import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
 import com.kape.settings.ui.screens.mobile.PrivacySettingsScreen
 import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.mobile.SettingsScreen
+import com.kape.settings.ui.screens.mobile.VpnLogScreen
 import com.kape.settings.ui.screens.tv.TvGeneralSettingsScreen
 import com.kape.settings.ui.screens.tv.TvHelpScreen
 import com.kape.settings.ui.screens.tv.TvNetworkSettingsScreen
@@ -281,6 +283,7 @@ class MainActivity : AppCompatActivity() {
             composable<PrivacySettings> { PrivacySettingsScreen() }
             composable<HelpSettings> { HelpScreen() }
             composable<ObfuscationSettings> { ObfuscationSettingsScreen() }
+            composable<DebugLogs> { VpnLogScreen() }
         }
     }
     // endregion
