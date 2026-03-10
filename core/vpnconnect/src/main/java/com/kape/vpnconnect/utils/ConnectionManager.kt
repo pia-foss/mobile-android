@@ -49,6 +49,8 @@ class ConnectionManager(
     fun isConnecting(): Boolean =
         connectionStatus.value == ConnectionStatus.CONNECTING || connectionStatus.value == ConnectionStatus.RECONNECTING
 
+    fun isNotDisconnected() = connectionStatus.value != ConnectionStatus.DISCONNECTED
+
     fun setConnectedServerName(serverName: String, iso: String) {
         _serverName.value = serverName
         _serverIso.value = iso

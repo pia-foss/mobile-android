@@ -14,7 +14,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-class ClientStateDataSourceImpl(
+internal class ClientStateDataSourceImpl(
     private val accountAPI: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
     private val csiPrefs: CsiPrefs,

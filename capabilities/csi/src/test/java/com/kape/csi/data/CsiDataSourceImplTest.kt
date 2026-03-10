@@ -61,7 +61,6 @@ class CsiDataSourceImplTest : KoinTest {
 
         csiDataSource.send().test {
             val actual = awaitItem()
-            println(actual)
             assertTrue(actual.isEmpty())
         }
     }

@@ -10,6 +10,7 @@ import com.kape.shareevents.domain.KpiDataSource
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnmanager.data.models.ClientConfiguration
+import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
@@ -19,7 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.component.KoinComponent
 
-class ConnectionDataSourceImpl(
+internal class ConnectionDataSourceImpl(
     private val connectionApi: VPNManagerAPI,
     private val accountApi: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
@@ -103,6 +104,13 @@ class ConnectionDataSourceImpl(
             } else {
                 trySend(emptyList())
             }
+        }
+        awaitClose { channel.close() }
+    }
+
+    override fun updateConfigurationServers(servers: ServerList): Flow<Boolean> = callbackFlow {
+        connectionApi.updateConfigurationServers(servers) {
+            trySend(it.isSuccess)
         }
         awaitClose { channel.close() }
     }
