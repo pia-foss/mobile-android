@@ -55,6 +55,7 @@ import com.kape.router.AutomationLocation
 import com.kape.router.AutomationMain
 import com.kape.router.AutomationSettings
 import com.kape.router.Connection
+import com.kape.router.ConnectionStats
 import com.kape.router.Customization
 import com.kape.router.DebugLogs
 import com.kape.router.DedicatedIpActivateToken
@@ -89,6 +90,7 @@ import com.kape.router.VpnPermission
 import com.kape.router.VpnRegionSelection
 import com.kape.router.WebDestination
 import com.kape.settings.ui.screens.mobile.AutomationSettingsScreen
+import com.kape.settings.ui.screens.mobile.ConnectionStatsScreen
 import com.kape.settings.ui.screens.mobile.GeneralSettingsScreen
 import com.kape.settings.ui.screens.mobile.HelpScreen
 import com.kape.settings.ui.screens.mobile.KillSwitchSettingScreen
@@ -99,6 +101,7 @@ import com.kape.settings.ui.screens.mobile.PrivacySettingsScreen
 import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
 import com.kape.settings.ui.screens.mobile.SettingsScreen
 import com.kape.settings.ui.screens.mobile.VpnLogScreen
+import com.kape.settings.ui.screens.tv.TvConnectionStatsScreen
 import com.kape.settings.ui.screens.tv.TvGeneralSettingsScreen
 import com.kape.settings.ui.screens.tv.TvHelpScreen
 import com.kape.settings.ui.screens.tv.TvNetworkSettingsScreen
@@ -224,6 +227,7 @@ class MainActivity : AppCompatActivity() {
             composable<ProtocolSettings> { TvProtocolSettingsScreen() }
             composable<NetworkSettings> { TvNetworkSettingsScreen() }
             composable<PrivacySettings> { TvPrivacySettingsScreen() }
+            composable<ConnectionStats> { TvConnectionStatsScreen() }
         } else {
             composable<LoginWithCredentials> { LoginScreen() }
             composable<LoginWithEmail> { LoginWithEmailScreen() }
@@ -284,6 +288,7 @@ class MainActivity : AppCompatActivity() {
             composable<HelpSettings> { HelpScreen() }
             composable<ObfuscationSettings> { ObfuscationSettingsScreen() }
             composable<DebugLogs> { VpnLogScreen() }
+            composable<ConnectionStats> { ConnectionStatsScreen() }
         }
     }
     // endregion
