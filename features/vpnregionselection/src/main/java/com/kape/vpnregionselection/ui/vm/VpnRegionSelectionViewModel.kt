@@ -57,6 +57,7 @@ class VpnRegionSelectionViewModel(
 
     fun onVpnRegionSelected(server: VpnServer) {
         vpnRegionPrefs.selectVpnServer(server)
+        router.navigateBack()
     }
 
     fun onFavoriteVpnClicked(serverData: ServerData) {

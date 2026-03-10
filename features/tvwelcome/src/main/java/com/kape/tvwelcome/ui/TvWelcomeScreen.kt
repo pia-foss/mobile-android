@@ -1,5 +1,7 @@
 package com.kape.tvwelcome.ui
 
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +35,11 @@ import org.koin.androidx.compose.koinViewModel
 fun TvWelcomeScreen() = Screen {
     val welcomeViewModel: TvWelcomeViewModel = koinViewModel()
     val initialFocusRequester = remember { FocusRequester() }
+    val activity = LocalActivity.current
+
+    BackHandler {
+        activity?.finish()
+    }
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()

@@ -84,6 +84,7 @@ import com.kape.router.Subscribe
 import com.kape.router.TvLoginPassword
 import com.kape.router.TvLoginUsername
 import com.kape.router.TvSideMenu
+import com.kape.router.TvSubscribe
 import com.kape.router.TvWelcome
 import com.kape.router.Update
 import com.kape.router.VpnPermission
@@ -203,7 +204,7 @@ class MainActivity : AppCompatActivity() {
         if (platformUtils.isTv()) {
             composable<Splash> { SplashScreen() }
             composable<TvWelcome> { TvWelcomeScreen() }
-            composable<Subscribe> { TvSignupScreensFlow() }
+            composable<TvSubscribe> { TvSignupScreensFlow() }
             composable<TvLoginUsername> { LoginUsernameScreen() }
             composable<TvLoginPassword> { LoginPasswordScreen() }
             composable<VpnPermission> { TvVpnPermissionScreen() }
