@@ -28,7 +28,7 @@ class AutomationService : Service(), KoinComponent {
             startForeground(
                 123,
                 notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
             )
         } else {
             startForeground(123, notification)
