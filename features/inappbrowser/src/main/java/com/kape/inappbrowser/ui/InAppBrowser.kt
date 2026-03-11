@@ -53,7 +53,6 @@ fun InAppBrowser(url: String) = Screen {
         AppBar(
             viewModel = appBarViewModel,
             type = AppBarType.InAppBrowser,
-            onLeftIconClick = appBarViewModel::navigateBack,
         )
 
         if (loading) {

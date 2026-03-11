@@ -105,10 +105,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
     } else {
         Scaffold(
             topBar = {
-                AppBar(
-                    viewModel = appBarViewModel,
-                    onLeftIconClick = appBarViewModel::navigateBack,
-                )
+                AppBar(viewModel = appBarViewModel)
             },
         ) {
             Column(
@@ -181,12 +178,20 @@ fun SignupDedicatedIpCountryScreen() = Screen {
                         .padding(horizontal = 16.dp),
                 )
                 if (showAllLocations.value) {
-                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, appBarViewModel::navigateBack)
+                    BottomScreen(
+                        showAllLocations = showAllLocations.value,
+                        viewModel = viewModel,
+                        appBarViewModel::navigateBack,
+                    )
                 }
             }
             Column {
                 if (!showAllLocations.value) {
-                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel, appBarViewModel::navigateBack)
+                    BottomScreen(
+                        showAllLocations = showAllLocations.value,
+                        viewModel = viewModel,
+                        appBarViewModel::navigateBack,
+                    )
                 }
             }
         }

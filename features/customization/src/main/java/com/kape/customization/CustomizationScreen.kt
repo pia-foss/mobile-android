@@ -71,7 +71,6 @@ fun CustomizationScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 type = AppBarType.Customization,
-                onLeftIconClick = viewModel.router::navigateBack,
                 onRightIconClick = {
                     viewModel.saveOrder()
                     viewModel.router.navigateBack()

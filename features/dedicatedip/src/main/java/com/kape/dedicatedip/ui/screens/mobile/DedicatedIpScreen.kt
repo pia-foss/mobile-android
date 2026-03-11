@@ -85,10 +85,7 @@ fun DedicatedIpScreen() = Screen {
 
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = appBarViewModel::navigateBack,
-            )
+            AppBar(viewModel = appBarViewModel)
         },
     ) {
         Column(

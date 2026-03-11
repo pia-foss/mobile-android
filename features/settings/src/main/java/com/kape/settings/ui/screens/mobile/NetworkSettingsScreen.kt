@@ -42,9 +42,9 @@ fun NetworkSettingsScreen() = Screen {
     if (viewModel.getCustomDns().isInUse()) {
         dnsOptions[DnsOptions.CUSTOM] =
             "${stringResource(id = R.string.network_dns_selection_custom)} ${
-            getCustomDnsInfo(
-                viewModel.getCustomDns(),
-            )
+                getCustomDnsInfo(
+                    viewModel.getCustomDns(),
+                )
             }"
     }
 
@@ -55,14 +55,11 @@ fun NetworkSettingsScreen() = Screen {
     val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
     val dnsWarningDialogVisible = remember { mutableStateOf(false) }
 
-    
+
 
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = appBarViewModel::navigateBack,
-            )
+            AppBar(viewModel = appBarViewModel)
         },
     ) {
         Column(

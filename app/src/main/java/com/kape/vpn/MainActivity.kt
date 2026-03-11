@@ -64,6 +64,7 @@ import com.kape.router.DedicatedIpPurchaseSuccess
 import com.kape.router.DedicatedIpSignupPlans
 import com.kape.router.DedicatedIpSignupTokenActivate
 import com.kape.router.DedicatedIpSignupTokenDetails
+import com.kape.router.ExternalAppList
 import com.kape.router.GeneralSettings
 import com.kape.router.HelpSettings
 import com.kape.router.KillSwitchSettings
@@ -92,6 +93,7 @@ import com.kape.router.VpnRegionSelection
 import com.kape.router.WebDestination
 import com.kape.settings.ui.screens.mobile.AutomationSettingsScreen
 import com.kape.settings.ui.screens.mobile.ConnectionStatsScreen
+import com.kape.settings.ui.screens.mobile.ExternalProxyAppList
 import com.kape.settings.ui.screens.mobile.GeneralSettingsScreen
 import com.kape.settings.ui.screens.mobile.HelpScreen
 import com.kape.settings.ui.screens.mobile.KillSwitchSettingScreen
@@ -290,6 +292,7 @@ class MainActivity : AppCompatActivity() {
             composable<ObfuscationSettings> { ObfuscationSettingsScreen() }
             composable<DebugLogs> { VpnLogScreen() }
             composable<ConnectionStats> { ConnectionStatsScreen() }
+            composable<ExternalAppList> { ExternalProxyAppList() }
         }
     }
     // endregion

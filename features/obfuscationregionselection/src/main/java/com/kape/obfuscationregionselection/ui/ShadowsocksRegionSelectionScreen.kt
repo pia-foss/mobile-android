@@ -55,7 +55,7 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AppBar(appBarViewModel, onLeftIconClick = appBarViewModel::navigateBack)
+        AppBar(appBarViewModel)
 
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Search(
