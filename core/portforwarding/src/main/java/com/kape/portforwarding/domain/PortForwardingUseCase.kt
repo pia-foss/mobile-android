@@ -7,6 +7,7 @@ import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.vpnserver.VpnServer
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -18,10 +19,9 @@ class PortForwardingUseCase(
     private val connectionPrefs: ConnectionPrefs,
     private val settingsPrefs: SettingsPrefs,
 ) {
-
     val portForwardingStatus =
-        mutableStateOf<PortForwardingStatus>(PortForwardingStatus.NoPortForwarding)
-    val port = mutableStateOf<String?>(null)
+        MutableStateFlow<PortForwardingStatus>(PortForwardingStatus.NoPortForwarding)
+    val port = MutableStateFlow<String>("")
 
     suspend fun bindPort(vpnToken: String) {
         portForwardingStatus.value = PortForwardingStatus.Requesting
@@ -51,7 +51,12 @@ class PortForwardingUseCase(
         connectionPrefs.getPortBindingInfo()?.let { portBindingInfo ->
             if (tokenExpirationDateDaysLeft(portBindingInfo.decodedPayload.expirationDate) > MIN_EXPIRATION_DAYS) {
                 portForwardingStatus.value = PortForwardingStatus.Requesting
-                api.bindPort(portBindingInfo.decodedPayload.token, portBindingInfo.payload, portBindingInfo.signature, gateway).collect {
+                api.bindPort(
+                    portBindingInfo.decodedPayload.token,
+                    portBindingInfo.payload,
+                    portBindingInfo.signature,
+                    gateway,
+                ).collect {
                     if (it) {
                         portForwardingStatus.value = PortForwardingStatus.Success
                         port.value = portBindingInfo.decodedPayload.port.toString()

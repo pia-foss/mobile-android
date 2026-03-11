@@ -19,6 +19,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -141,7 +142,7 @@ private fun DisplayComponent(
         return
     }
 
-    val state = viewModel.state.collectAsState()
+    val state by viewModel.state.collectAsState()
 
     when (screenElement) {
         Element.VpnRegionSelection -> {
@@ -149,10 +150,10 @@ private fun DisplayComponent(
                 modifier = Modifier.focusProperties {
                     down = startQuickConnectFocusRequester
                 },
-                server = state.value.server,
-                vpnIp = viewModel.vpnIp.value,
+                server = state.server,
+                vpnIp = state.connectionData.vpnIp,
                 isConnected = viewModel.isConnectionActive(),
-                isOptimal = state.value.isCurrentServerOptimal,
+                isOptimal = state.isCurrentServerOptimal,
             ) {
                 viewModel.showVpnRegionSelection()
             }
@@ -160,9 +161,8 @@ private fun DisplayComponent(
 
         Element.QuickConnect -> {
             val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-            for (server in state.value.quickConnectServers) {
-                quickConnectMap[server] =
-                    viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
+            for (server in state.quickConnectServers) {
+                quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
             }
             QuickConnect(
                 startQuickConnectFocusRequester = startQuickConnectFocusRequester,
@@ -179,7 +179,7 @@ private fun DisplayComponent(
         Element.QuickSettings,
         Element.Snooze,
         Element.Traffic,
-            -> {
+        -> {
             // Continue. Not showing them on TV.
         }
     }
@@ -190,10 +190,7 @@ private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorSche
     return when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
-            scheme,
-        )
-
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
         ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }

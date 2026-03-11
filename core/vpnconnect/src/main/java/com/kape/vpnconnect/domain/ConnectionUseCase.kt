@@ -6,20 +6,21 @@ import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionStatus
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface ConnectionUseCase {
-    val portForwardingStatus: MutableState<PortForwardingStatus>
-    val port: MutableState<String?>
-    val clientIp: MutableState<String>
-    val vpnIp: MutableState<String>
+    val portForwardingStatus: MutableStateFlow<PortForwardingStatus>
+    val port: MutableStateFlow<String>
+    val clientIp: MutableStateFlow<String>
+    val vpnIp: MutableStateFlow<String>
     fun startConnection(server: VpnServer, isManualConnection: Boolean): Flow<Boolean>
     fun stopConnection(): Flow<Boolean>
     fun reconnect(server: VpnServer): Flow<Boolean>
     fun isConnected(): Boolean
     fun isConnecting(): Boolean
     fun isNotDisconnected(): Boolean
-    fun getClientStatus(status: ConnectionStatus): Flow<Boolean>
+    fun getClientStatus(status: ConnectionStatus): Flow<ConnectionStatus>
     fun getConnectionStatus(): StateFlow<ConnectionStatus>
-    fun resetVpnIp()
+    fun resetVpnIp(): StateFlow<String>
 }

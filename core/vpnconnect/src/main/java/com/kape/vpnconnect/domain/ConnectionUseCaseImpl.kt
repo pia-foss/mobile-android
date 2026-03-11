@@ -35,8 +35,11 @@ import com.kape.vpnmanager.data.models.TransportProtocol
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.update
 import kotlinx.datetime.Clock
 import org.koin.core.component.KoinComponent
 
@@ -57,8 +60,8 @@ internal class ConnectionUseCaseImpl(
 ) : ConnectionUseCase, KoinComponent {
     override val portForwardingStatus = portForwardingUseCase.portForwardingStatus
     override val port = portForwardingUseCase.port
-    override val clientIp = mutableStateOf(connectionPrefs.getClientIp())
-    override val vpnIp = mutableStateOf(connectionPrefs.getVpnIp())
+    override val clientIp = MutableStateFlow(connectionPrefs.getClientIp())
+    override val vpnIp = MutableStateFlow(connectionPrefs.getVpnIp())
     override fun startConnection(server: VpnServer, isManualConnection: Boolean): Flow<Boolean> =
         flow {
             connectionManager.setConnectedServerName(server.name, server.iso)
@@ -108,17 +111,19 @@ internal class ConnectionUseCaseImpl(
 
     override fun isNotDisconnected(): Boolean = connectionManager.isNotDisconnected()
 
-    override fun getClientStatus(status: ConnectionStatus): Flow<Boolean> = flow {
+    override fun getClientStatus(status: ConnectionStatus): Flow<ConnectionStatus> = flow {
         clientStateDataSource.getClientStatus(status).collect {
-            clientIp.value = connectionPrefs.getClientIp()
-            vpnIp.value = connectionPrefs.getVpnIp()
+            clientIp.update { connectionPrefs.getClientIp() }
+            vpnIp.update { connectionPrefs.getVpnIp() }
+            emit(status)
         }
     }
 
     override fun getConnectionStatus() = connectionManager.connectionStatus
 
-    override fun resetVpnIp() {
-        vpnIp.value = NO_IP
+    override fun resetVpnIp(): StateFlow<String> {
+        vpnIp.update { NO_IP }
+        return vpnIp
     }
 
     private fun getVpnToken() = connectionSource.getVpnToken()

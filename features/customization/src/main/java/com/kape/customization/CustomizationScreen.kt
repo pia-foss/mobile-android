@@ -64,8 +64,6 @@ fun CustomizationScreen() = Screen {
         }
     }
 
-    
-
     Scaffold(
         topBar = {
             AppBar(
@@ -165,17 +163,17 @@ private fun DisplayComponent(
         }
 
         Element.IpInfo -> {
-            val state = viewModel.portForwardingStatus
+            val state by viewModel.state.collectAsState()
             IPTile(
                 modifier = modifier,
                 isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                publicIp = viewModel.clientIp.value,
-                vpnIp = viewModel.vpnIp.value,
-                portForwardingStatus = when (state.value) {
+                publicIp = state.connectionData.clientIp,
+                vpnIp = state.connectionData.vpnIp,
+                portForwardingStatus = when (state.connectionData.portForwardingStatus) {
                     PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
                     PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
                     PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                    PortForwardingStatus.Success -> viewModel.port.value.toString()
+                    PortForwardingStatus.Success -> state.connectionData.port
                 },
             )
         }

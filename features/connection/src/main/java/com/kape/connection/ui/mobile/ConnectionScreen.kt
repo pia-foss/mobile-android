@@ -296,17 +296,16 @@ private fun DisplayComponent(
             }
 
             Element.IpInfo -> {
-                val state = viewModel.portForwardingStatus
+
                 IPTile(
                     isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                    publicIp = viewModel.clientIp.value,
-                    vpnIp = viewModel.vpnIp.value,
-                    portForwardingStatus = when (state) {
+                    publicIp = state.connectionData.clientIp,
+                    vpnIp = state.connectionData.vpnIp,
+                    portForwardingStatus = when (state.connectionData.portForwardingStatus) {
                         PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
                         PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
                         PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                        PortForwardingStatus.Success -> viewModel.port.value.toString()
-                        else -> ""
+                        PortForwardingStatus.Success -> state.connectionData.port
                     },
                 )
                 Separator()
