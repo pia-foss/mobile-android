@@ -82,7 +82,6 @@ fun DedicatedIpScreen() = Screen {
     val showSpinner = remember { mutableStateOf(false) }
     val serverForDeletion = remember { mutableStateOf<VpnServer?>(null) }
     val context = LocalContext.current
-    
 
     Scaffold(
         topBar = {

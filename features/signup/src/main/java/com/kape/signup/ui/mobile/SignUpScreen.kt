@@ -1,6 +1,8 @@
 package com.kape.signup.ui.mobile
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -55,6 +57,11 @@ import com.kape.ui.mobile.text.OnboardingTitleText
 fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?) = Screen {
     val screenState by viewModel.state.collectAsState()
     val context = LocalContext.current
+    val activity = LocalActivity.current
+
+    BackHandler {
+        activity?.finish()
+    }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.registerClientIfNeeded(context as Activity)
