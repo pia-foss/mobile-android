@@ -23,6 +23,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -82,8 +83,8 @@ internal class ConnectionUseCaseTest {
     }
     private val portForwardingUseCase: PortForwardingUseCase =
         mockk<PortForwardingUseCase>().apply {
-            every { portForwardingStatus } returns mutableStateOf(PortForwardingStatus.NoPortForwarding)
-            every { port } returns mutableStateOf("")
+            every { portForwardingStatus } returns MutableStateFlow(PortForwardingStatus.NoPortForwarding)
+            every { port } returns MutableStateFlow("")
             every { clearBindPort() } returns Unit
         }
 

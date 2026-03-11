@@ -44,16 +44,20 @@ import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnregions.VpnRegionPrefs
 import com.kape.vpnregions.utils.RegionListProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ConnectionViewModel(
     private val router: Router,
     private val regionListProvider: RegionListProvider,
@@ -84,48 +88,51 @@ class ConnectionViewModel(
             connectionUseCase.clientIp.value,
             connectionUseCase.vpnIp.value,
             connectionUseCase.getConnectionStatus().value,
+            connectionUseCase.portForwardingStatus.value,
+            connectionUseCase.port.value,
         ),
     )
     private val _state: MutableStateFlow<ConnectionScreenState> = MutableStateFlow(defaultState)
     val state: StateFlow<ConnectionScreenState> = _state
-
     val isConnected = networkConnectionListener.isConnected
-
-    val clientIp = connectionUseCase.clientIp
-    val vpnIp = connectionUseCase.vpnIp
-
     val download = usageProvider.download
     val upload = usageProvider.upload
-
-    val portForwardingStatus = connectionUseCase.portForwardingStatus
-    val port = connectionUseCase.port
     val isSnoozeActive = snoozeHandler.isSnoozeActive
     val timeUntilResume = snoozeHandler.timeUntilResume
-
     val showDedicatedIpHomeBanner = mutableStateOf(false)
 
     init {
         viewModelScope.launch {
-            connectionUseCase.getConnectionStatus().collectLatest { connectionStatus ->
+            combine(
+                connectionUseCase.getConnectionStatus(),
+                connectionUseCase.clientIp,
+                connectionUseCase.vpnIp,
+                connectionUseCase.portForwardingStatus,
+                connectionUseCase.port,
+            ) { status, clientIp, vpnIp, pfwdStatus, port ->
                 _state.update {
                     it.copy(
                         connectionData = ConnectionData(
-                            connectionUseCase.clientIp.value,
-                            connectionUseCase.vpnIp.value,
-                            connectionStatus,
+                            clientIp,
+                            vpnIp,
+                            status,
+                            pfwdStatus,
+                            port,
                         ),
                     )
                 }
-                when (connectionStatus) {
+                ConnectionInfoStatus(status, clientIp, vpnIp)
+            }.flatMapLatest {
+                when (it.status) {
                     ConnectionStatus.CONNECTED,
                     ConnectionStatus.DISCONNECTED,
-                        -> connectionUseCase.getClientStatus(connectionStatus).collect()
+                        -> connectionUseCase.getClientStatus(it.status)
 
                     else -> {
                         connectionUseCase.resetVpnIp()
                     }
                 }
-            }
+            }.collect()
         }
         ratingTool.start()
         renewDedicatedIps()
@@ -341,9 +348,7 @@ class ConnectionViewModel(
         if (settingsPrefs.isAutomationEnabled()) {
             prefs.disconnectedByUser(true)
         }
-        connectionUseCase.stopConnection().collect {
-            portForwardingStatus.value = PortForwardingStatus.NoPortForwarding
-        }
+        connectionUseCase.stopConnection().collect()
     }
 
     private fun isOptimalLocation(serverKey: String): Boolean {
@@ -368,20 +373,13 @@ class ConnectionViewModel(
                             serverToConnect.key,
                             serverToConnect.isDedicatedIp,
                         )
-                        _state.emit(
-                            ConnectionScreenState(
-                                serverToConnect,
-                                getQuickConnectVpnServers(),
-                                isOptimalLocation(serverToConnect.key),
-                                showOptimalLocationInfo,
-                                ratingTool.showRating.value,
-                                ConnectionData(
-                                    connectionUseCase.clientIp.value,
-                                    connectionUseCase.vpnIp.value,
-                                    connectionUseCase.getConnectionStatus().value,
-                                ),
-                            ),
-                        )
+                        _state.update {
+                            it.copy(
+                                server = serverToConnect,
+                                quickConnectServers = getQuickConnectVpnServers(),
+                                isCurrentServerOptimal = isOptimalLocation(serverToConnect.key),
+                            )
+                        }
                         connectionUseCase.reconnect(serverToConnect).collect()
                     }
                 } else {
@@ -389,59 +387,48 @@ class ConnectionViewModel(
                         vpnRegionPrefs.setVpnReconnect(false)
                         prefs.addToQuickConnect(server.key, server.isDedicatedIp)
                         connectionUseCase.startConnection(server, true).collect { }
-                        _state.emit(
-                            ConnectionScreenState(
-                                server,
-                                getQuickConnectVpnServers(),
-                                isOptimalLocation(server.key),
-                                showOptimalLocationInfo,
-                                ratingTool.showRating.value,
-                                ConnectionData(
-                                    connectionUseCase.clientIp.value,
-                                    connectionUseCase.vpnIp.value,
-                                    connectionUseCase.getConnectionStatus().value,
-                                ),
-                            ),
-                        )
+                        _state.update {
+                            it.copy(
+                                server = server,
+                                quickConnectServers = getQuickConnectVpnServers(),
+                                isCurrentServerOptimal = isOptimalLocation(server.key),
+                            )
+                        }
                     }
                 }
             } ?: run {
-                _state.emit(
-                    ConnectionScreenState(
-                        server,
-                        getQuickConnectVpnServers(),
-                        isOptimalLocation(server.key),
-                        showOptimalLocationInfo,
-                        ratingTool.showRating.value,
-                        ConnectionData(
-                            connectionUseCase.clientIp.value,
-                            connectionUseCase.vpnIp.value,
-                            connectionUseCase.getConnectionStatus().value,
-                        ),
-                    ),
-                )
+                _state.update {
+                    it.copy(
+                        server = server,
+                        quickConnectServers = getQuickConnectVpnServers(),
+                        isCurrentServerOptimal = isOptimalLocation(server.key),
+                        showOptimalLocationInfo = showOptimalLocationInfo,
+                    )
+                }
             }
         }
 
-    fun showReviewPrompt() {
-        _state.value = state.value.copy(ratingDialogType = RatingDialogType.Review)
-    }
+    fun showReviewPrompt() = _state.update { it.copy(ratingDialogType = RatingDialogType.Review) }
 
-    fun showFeedbackPrompt() {
-        _state.value = state.value.copy(ratingDialogType = RatingDialogType.Feedback)
-    }
+    fun showFeedbackPrompt() =
+        _state.update { it.copy(ratingDialogType = RatingDialogType.Feedback) }
 
     fun setRatingStateInactive() {
         ratingTool.setRatingInactive()
-        _state.value = state.value.copy(ratingDialogType = null)
+        _state.update { it.copy(ratingDialogType = null) }
     }
 
     fun updateRatingDate() {
         ratingTool.updateRatingDate()
-        _state.value = state.value.copy(ratingDialogType = null)
+        _state.update { it.copy(ratingDialogType = null) }
     }
 
-    fun refreshState() {
+    fun refreshState() =
         _state.update { it.copy(quickConnectServers = getQuickConnectVpnServers()) }
-    }
+
+    private data class ConnectionInfoStatus(
+        val status: ConnectionStatus,
+        val clientIp: String,
+        val vpnIp: String,
+    )
 }
