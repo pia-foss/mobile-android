@@ -29,6 +29,8 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:regions"))
     implementation(project(":core:localprefs:dip"))
+    implementation(project(":core:localprefs:connection"))
+    implementation(project(":core:vpnconnect"))
 
     implementation(libs.bundles.serialization)
     implementation(libs.kape.regions)

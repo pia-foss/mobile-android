@@ -3,7 +3,7 @@ package com.kape.vpnconnect.domain
 import android.content.Context
 import android.net.ConnectivityManager
 
-class GetActiveInterfaceDnsUseCaseImpl(private val context: Context) : GetActiveInterfaceDnsUseCase {
+internal class GetActiveInterfaceDnsUseCaseImpl(private val context: Context) : GetActiveInterfaceDnsUseCase {
 
     override fun invoke(): List<String> {
         val result = mutableListOf<String>()

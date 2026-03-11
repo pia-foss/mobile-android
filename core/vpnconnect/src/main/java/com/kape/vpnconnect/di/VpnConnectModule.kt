@@ -1,9 +1,14 @@
 package com.kape.vpnconnect.di
 
 import android.content.Context
+import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
+import com.kape.vpnconnect.domain.ClientStateDataSource
+import com.kape.vpnconnect.domain.ConnectionConfigurationUseCase
+import com.kape.vpnconnect.domain.ConnectionConfigurationUseCaseImpl
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.domain.ConnectionUseCaseImpl
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
@@ -14,11 +19,12 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 fun vpnConnectModule(appModule: Module) = module {
-    includes(appModule, localVpnConnectModule)
+    includes(appModule, internalVpnConnectModule)
 }
 
-private val localVpnConnectModule = module {
+internal val internalVpnConnectModule = module {
     single<GetActiveInterfaceDnsUseCase> { GetActiveInterfaceDnsUseCaseImpl(get()) }
+    single<ClientStateDataSource> { ClientStateDataSourceImpl(get(), get(), get(), get()) }
     single<ConnectionDataSource> {
         ConnectionDataSourceImpl(
             get(),
@@ -32,10 +38,31 @@ private val localVpnConnectModule = module {
             get(),
         )
     }
-    single {
-        ConnectionUseCase(
-            get(), get(), get(named("certificate")), get(), get(), get(), get(), get(), get(), get(),
-            get(), get(), get(), get(),
+    single<ConnectionUseCase> {
+        ConnectionUseCaseImpl(
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+        )
+    }
+    single<ConnectionConfigurationUseCase> {
+        ConnectionConfigurationUseCaseImpl(
+            get(),
+            get(named("certificate")),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(),
+            get(named("automation-pending-intent")),
         )
     }
     single { provideConnectionStatusValues(get()) }
@@ -48,7 +75,8 @@ private fun provideConnectionStatusValues(context: Context): Map<ConnectionStatu
     values[ConnectionStatus.CONNECTING] = context.getString(com.kape.ui.R.string.connecting)
     values[ConnectionStatus.CONNECTED] =
         context.getString(com.kape.ui.R.string.vpn_protected_to_format)
-    values[ConnectionStatus.DISCONNECTED] = context.getString(com.kape.ui.R.string.vpn_not_protected)
+    values[ConnectionStatus.DISCONNECTED] =
+        context.getString(com.kape.ui.R.string.vpn_not_protected)
     values[ConnectionStatus.DISCONNECTING] = context.getString(com.kape.ui.R.string.not_connected)
     values[ConnectionStatus.RECONNECTING] =
         context.getString(com.kape.ui.R.string.reconnecting)

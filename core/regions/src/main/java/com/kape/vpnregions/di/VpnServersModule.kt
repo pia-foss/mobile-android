@@ -17,7 +17,7 @@ fun vpnRegionsModule(appModule: Module) = module {
 val localVpnRegionsModule = module {
     single { VpnRegionPrefs(get()) }
     single<VpnRegionDataSource> { RegionDataSourceImpl(get()) }
-    single { VpnRegionRepository(get(), get()) }
+    single { VpnRegionRepository(get(), get(), get(), get(), get()) }
     single { RegionInputStream(get()) }
     single { RegionSerialization() }
     single { ReadVpnRegionsDetailsUseCase(get(), get()) }

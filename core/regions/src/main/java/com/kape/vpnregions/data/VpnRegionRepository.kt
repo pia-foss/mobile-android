@@ -1,8 +1,11 @@
 package com.kape.vpnregions.data
 
+import com.kape.connection.ConnectionPrefs
 import com.kape.dip.DipPrefs
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.utils.vpnserver.VpnServerInfo
+import com.kape.vpnconnect.domain.ConnectionConfigurationUseCase
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.kape.vpnregions.utils.adaptServersInfo
 import com.kape.vpnregions.utils.adaptVpnServers
@@ -14,8 +17,10 @@ import kotlinx.coroutines.flow.flow
 class VpnRegionRepository(
     private val source: VpnRegionDataSource,
     private val dipPrefs: DipPrefs,
+    private val connectionPrefs: ConnectionPrefs,
+    private val connectionUseCase: ConnectionUseCase,
+    private val connectionConfigurationUseCase: ConnectionConfigurationUseCase,
 ) {
-
     private var serverMap: Map<String, VpnServer> = hashMapOf()
     private var serverInfo: VpnServerInfo = VpnServerInfo()
     private var latencyInfo: List<RegionLowerLatencyInformation> = emptyList()
@@ -35,9 +40,15 @@ class VpnRegionRepository(
                 } else {
                     serverMap = adaptVpnServers(it)
                     serverInfo = adaptServersInfo(it)
-                    serverList.addAll(serverMap.values.toList())
+                    serverList.addAll(addDipToServerList(serverMap.values.toList()))
+                    if (connectionUseCase.isNotDisconnected()) {
+                        serverList.filter { it.equals(connectionPrefs.getSelectedVpnServer()) }
+                            .firstOrNull()?.let {
+                                connectionConfigurationUseCase.updateServerConfig(it)
+                            }
+                    }
                 }
-                emit(addDipToServerList(serverList))
+                emit(serverList)
             }
         } else {
             serverList.addAll(serverMap.values.toList())

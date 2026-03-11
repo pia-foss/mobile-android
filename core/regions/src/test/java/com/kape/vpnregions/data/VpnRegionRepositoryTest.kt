@@ -1,8 +1,11 @@
 package com.kape.vpnregions.data
 
 import app.cash.turbine.test
+import com.kape.connection.ConnectionPrefs
 import com.kape.dip.DipPrefs
 import com.kape.utils.vpnserver.VpnServer
+import com.kape.vpnconnect.domain.ConnectionConfigurationUseCase
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.model.VpnRegionsResponse
@@ -23,12 +26,22 @@ import java.util.stream.Stream
 class VpnRegionRepositoryTest : KoinTest {
     private val source: VpnRegionDataSource = mockk()
     private val dipPrefs: DipPrefs = mockk()
+    private val connectionPrefs: ConnectionPrefs = mockk(relaxed = true)
+    private val connectionUseCase: ConnectionUseCase = mockk(relaxed = true)
+    private val connectionConfigurationUseCase: ConnectionConfigurationUseCase =
+        mockk(relaxed = true)
 
     private lateinit var repository: VpnRegionRepository
 
     @BeforeEach
     fun setUp() {
-        repository = VpnRegionRepository(source, dipPrefs)
+        repository = VpnRegionRepository(
+            source,
+            dipPrefs,
+            connectionPrefs,
+            connectionUseCase,
+            connectionConfigurationUseCase,
+        )
     }
 
     @ParameterizedTest(name = "response: {0}, expected: {1}")

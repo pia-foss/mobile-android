@@ -87,6 +87,8 @@ internal class ConnectionUseCaseTest {
             every { clearBindPort() } returns Unit
         }
 
+    private val connectionConfigurationUseCase: ConnectionConfigurationUseCase = mockk(relaxed = true)
+
     private lateinit var useCase: ConnectionUseCase
     private val getActiveInterfaceDnsUseCase = mockk<GetActiveInterfaceDnsUseCase>()
     private val startObfuscatorProcess: StartObfuscatorProcess = mockk(relaxed = true)
@@ -103,21 +105,17 @@ internal class ConnectionUseCaseTest {
         startKoin {
             modules(appModule, vpnConnectModule(appModule))
         }
-        useCase = ConnectionUseCase(
+        useCase = ConnectionUseCaseImpl(
             connectionDataSource,
             clientStateDataSource,
-            certificate,
             connectionManager,
-            settingsPrefs,
             connectionPrefs,
+            settingsPrefs,
             shadowsocksRegionPrefs,
-            intent,
-            notificationBuilder,
-            getActiveInterfaceDnsUseCase,
             startObfuscatorProcess,
             stopObfuscatorProcess,
             portForwardingUseCase,
-            automationPendingIntent
+            connectionConfigurationUseCase
         )
         every { connectionManager.setConnectedServerName(any(), any()) } returns Unit
     }
