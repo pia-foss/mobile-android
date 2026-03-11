@@ -8,12 +8,15 @@ import com.kape.login.utils.INVALID
 import com.kape.login.utils.LOADING
 import com.kape.login.utils.LoginScreenState
 import com.kape.login.utils.SUCCESS
+import com.kape.router.LoginWithCredentials
+import com.kape.router.Router
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LoginWithEmailViewModel(
+    private val router: Router,
     private val useCase: LoginUseCase,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
@@ -32,4 +35,6 @@ class LoginWithEmailViewModel(
             _state.emit(SUCCESS)
         }
     }
+
+    fun navigateToLoginWithCredentials() = router.updateDestination(LoginWithCredentials)
 }

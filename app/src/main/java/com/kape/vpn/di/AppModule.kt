@@ -19,12 +19,11 @@ import com.kape.obfuscator.presenter.ObfuscatorAPI
 import com.kape.obfuscator.presenter.ObfuscatorBuilder
 import com.kape.rating.prefs.RatingPrefs
 import com.kape.rating.utils.RatingTool
-import com.kape.router.Automation
 import com.kape.router.Router
-import com.kape.router.mobile.MobileRouter
-import com.kape.router.tv.TvRouter
+import com.kape.router.RouterImpl
 import com.kape.settings.SettingsPrefs
 import com.kape.shortcut.prefs.ShortcutPrefs
+import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_AUTOMATION
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.PlatformUtils
@@ -109,7 +108,7 @@ val appModule = module {
     single { AutomationManager(get(), get(named(AUTOMATION_SERVICE_INTENT)), get()) }
     single { UsageProvider(get()) }
     single { provideVpnManagerApi(get(), get(), get()) }
-    single { providerRouter(get()) }
+    single { providerRouter() }
     single { VpnLauncher(get(), get(), get(), get(), get()) }
     single { provideAlarmManager(get()) }
     single(named("port-forwarding-intent")) { providePortForwardingReceiverIntent(get()) }
@@ -128,6 +127,7 @@ val appModule = module {
     single(named("licences")) { provideLicences(get()) }
     single { CustomizationPrefs(get()) }
     single(named("automation-pending-intent")) { provideAutomationPendingIntent(get()) }
+    single { PlatformUtils(get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
@@ -298,11 +298,7 @@ private const val USER_AGENT =
 private fun provideLicences(context: Context): List<String> =
     context.assets.open("acknowledgements.txt").bufferedReader().use(BufferedReader::readLines)
 
-private fun providerRouter(context: Context): Router =
-    when (PlatformUtils.isTv(context = context)) {
-        true -> TvRouter()
-        false -> MobileRouter()
-    }
+private fun providerRouter(): Router = RouterImpl()
 
 private fun provideUpdateClient(): GetWebsiteDownloadLink = GetWebsiteDownloadLinkImpl()
 
@@ -310,7 +306,7 @@ private fun provideUpdateUrl(): String = BuildConfig.UPDATE_URL
 
 private fun provideAutomationPendingIntent(context: Context): PendingIntent {
     val intent = Intent(context, MainActivity::class.java).apply {
-        action = Automation.Route // custom action
+        action = ACTION_AUTOMATION // custom action
         flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
     }
     return PendingIntent.getActivity(

@@ -2,6 +2,7 @@ package com.kape.signup.ui.mobile
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,7 +34,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.kape.signup.ui.vm.SignupViewModel
@@ -57,14 +57,16 @@ import com.kape.ui.mobile.text.OnboardingTitleText
 fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?) = Screen {
     val screenState by viewModel.state.collectAsState()
     val context = LocalContext.current
+    val activity = LocalActivity.current
+
+    BackHandler {
+        activity?.finish()
+    }
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         viewModel.registerClientIfNeeded(context as Activity)
     }
 
-    BackHandler {
-        viewModel.exitApp()
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()

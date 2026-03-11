@@ -164,9 +164,7 @@ fun SignupDedicatedIpScreen() = Screen {
                 DipSignupErrorDialog(
                     message = stringResource(id = R.string.dip_signup_required_information_missing_error),
                     confirmButtonMessage = stringResource(id = R.string.take_me_back),
-                    onConfirmCallback = {
-                        viewModel.navigateBack()
-                    },
+                    onConfirmCallback = viewModel::navigateBack,
                 )
             }
         }
@@ -174,9 +172,7 @@ fun SignupDedicatedIpScreen() = Screen {
         DipSignupErrorDialog(
             message = stringResource(id = R.string.dip_signup_error),
             confirmButtonMessage = stringResource(id = R.string.take_me_back),
-            onConfirmCallback = {
-                viewModel.navigateBack()
-            },
+            onConfirmCallback = viewModel::navigateBack,
         )
     }
 }

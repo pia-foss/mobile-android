@@ -2,7 +2,6 @@ package com.kape.settings.ui.screens.mobile
 
 import android.content.Intent
 import android.provider.Settings
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -40,16 +39,9 @@ fun KillSwitchSettingScreen() = Screen {
     }
     val context = LocalContext.current
 
-    BackHandler {
-        viewModel.navigateUp()
-    }
-
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
-            )
+            AppBar(viewModel = appBarViewModel)
         },
     ) {
         Column(

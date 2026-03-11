@@ -46,7 +46,7 @@ import org.koin.androidx.compose.koinViewModel
 fun TvVpnPermissionScreen() = Screen {
     val viewModel: PermissionsViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsState()
-    val initialFocusRequester = FocusRequester()
+    val initialFocusRequester = remember { FocusRequester() }
     val startForResult =
         rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             viewModel.onVpnProfileStateChange()

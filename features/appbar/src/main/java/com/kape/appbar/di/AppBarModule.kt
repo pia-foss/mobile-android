@@ -10,5 +10,5 @@ fun appBarModule(appModule: Module) = module {
 }
 
 private val localAppBarModule = module {
-    viewModel { AppBarViewModel(get(), get()) }
+    viewModel { AppBarViewModel(get(), get(), get()) }
 }

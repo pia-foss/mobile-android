@@ -1,6 +1,5 @@
 package com.kape.profile.ui.screens.mobile
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,10 +27,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun AccountDeletedScreen() {
     val viewModel: ProfileViewModel = koinViewModel()
-
-    BackHandler {
-        viewModel.exitApp()
-    }
 
     Column(
         modifier = Modifier
@@ -86,7 +81,7 @@ fun AccountDeletedScreen() {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            viewModel.navigateToSignUp()
+            viewModel.navigateToSubscribe()
         }
         Spacer(modifier = Modifier.height(16.dp))
     }

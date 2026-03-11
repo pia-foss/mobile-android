@@ -17,9 +17,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kape.router.AppFlow
-import com.kape.router.EnterFlow
+import com.kape.router.ComposeDestination
 import com.kape.router.Router
+import com.kape.router.WebDestination
 import com.kape.ui.R
 import com.kape.ui.utils.LocalColors
 import org.koin.compose.koinInject
@@ -33,20 +33,20 @@ fun Footer(modifier: Modifier = Modifier) {
         ),
     ) {
         Row(modifier = modifier) {
-            ClickableText(R.string.privacy_policy, EnterFlow.PrivacyPolicy)
+            ClickableText(R.string.privacy_policy, WebDestination.Privacy)
             Text(
                 text = " ${stringResource(R.string.and)} ",
                 modifier = Modifier.semantics {
                     this.invisibleToUser()
                 },
             )
-            ClickableText(R.string.terms_of_service, EnterFlow.TermsOfService)
+            ClickableText(R.string.terms_of_service, WebDestination.Terms)
         }
     }
 }
 
 @Composable
-fun ClickableText(@StringRes textId: Int, flow: AppFlow) {
+fun ClickableText(@StringRes textId: Int, destination: ComposeDestination) {
     val router: Router = koinInject()
     val primaryColor = LocalColors.current.primary
 
@@ -56,7 +56,7 @@ fun ClickableText(@StringRes textId: Int, flow: AppFlow) {
         overflow = TextOverflow.Clip,
         softWrap = true,
         modifier = Modifier
-            .clickable { router.handleFlow(flow) }
+            .clickable { router.updateDestination(destination) }
             // This draws the underline.
             // We could add the underline by defining the style as TextDecoration.Underline
             // However, this causes the font size to change, which makes it quite hard to

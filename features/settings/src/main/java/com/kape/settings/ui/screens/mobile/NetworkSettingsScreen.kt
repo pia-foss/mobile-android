@@ -1,6 +1,5 @@
 package com.kape.settings.ui.screens.mobile
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -43,9 +42,9 @@ fun NetworkSettingsScreen() = Screen {
     if (viewModel.getCustomDns().isInUse()) {
         dnsOptions[DnsOptions.CUSTOM] =
             "${stringResource(id = R.string.network_dns_selection_custom)} ${
-            getCustomDnsInfo(
-                viewModel.getCustomDns(),
-            )
+                getCustomDnsInfo(
+                    viewModel.getCustomDns(),
+                )
             }"
     }
 
@@ -56,16 +55,11 @@ fun NetworkSettingsScreen() = Screen {
     val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
     val dnsWarningDialogVisible = remember { mutableStateOf(false) }
 
-    BackHandler {
-        viewModel.navigateUp()
-    }
+
 
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
-            )
+            AppBar(viewModel = appBarViewModel)
         },
     ) {
         Column(

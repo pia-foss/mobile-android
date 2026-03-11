@@ -14,7 +14,8 @@ import com.kape.login.utils.LoginState
 import com.kape.login.utils.getScreenState
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseHistoryState
-import com.kape.router.ExitFlow
+import com.kape.permissions.utils.PermissionUtil
+import com.kape.router.LoginWithEmail
 import com.kape.router.Router
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,11 +24,11 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
-    private val userLoggedInUseCase: GetUserLoggedInUseCase,
-    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val router: Router,
+    private val loginUseCase: LoginUseCase,
+    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val buildConfigProvider: BuildConfigProvider,
+    private val permissionsUtil: PermissionUtil,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
@@ -38,12 +39,6 @@ class LoginViewModel(
 
     private lateinit var packageName: String
 
-    fun checkUserLoggedIn() {
-        if (userLoggedInUseCase.isUserLoggedIn()) {
-            router.handleFlow(ExitFlow.Login)
-        }
-    }
-
     fun login(username: String, password: String) = viewModelScope.launch {
         _state.emit(LOADING)
         if (username.isEmpty() || password.isEmpty()) {
@@ -52,7 +47,7 @@ class LoginViewModel(
         }
         loginUseCase.login(username, password).collect {
             if (it == LoginState.Successful) {
-                router.handleFlow(ExitFlow.Login)
+                router.updateDestination(permissionsUtil.getNextDestination())
                 return@collect
             }
             _state.emit(getScreenState(it))
@@ -67,6 +62,8 @@ class LoginViewModel(
         }
     }
 
+    fun navigateToLoginWithEmail() = router.updateDestination(LoginWithEmail)
+
     private fun collectPurchaseHistory() {
         viewModelScope.launch {
             vpnSubscriptionPaymentProvider.purchaseHistoryState.collect {
@@ -78,7 +75,7 @@ class LoginViewModel(
                         packageName,
                     ).collect { state ->
                         if (state == LoginState.Successful) {
-                            router.handleFlow(ExitFlow.Login)
+                            router.updateDestination(permissionsUtil.getNextDestination())
                             return@collect
                         }
                         _state.emit(getScreenState(state))

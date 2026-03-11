@@ -105,10 +105,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
     } else {
         Scaffold(
             topBar = {
-                AppBar(
-                    viewModel = appBarViewModel,
-                    onLeftIconClick = { viewModel.navigateBack() },
-                )
+                AppBar(viewModel = appBarViewModel)
             },
         ) {
             Column(
@@ -181,12 +178,20 @@ fun SignupDedicatedIpCountryScreen() = Screen {
                         .padding(horizontal = 16.dp),
                 )
                 if (showAllLocations.value) {
-                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel)
+                    BottomScreen(
+                        showAllLocations = showAllLocations.value,
+                        viewModel = viewModel,
+                        appBarViewModel::navigateBack,
+                    )
                 }
             }
             Column {
                 if (!showAllLocations.value) {
-                    BottomScreen(showAllLocations = showAllLocations.value, viewModel = viewModel)
+                    BottomScreen(
+                        showAllLocations = showAllLocations.value,
+                        viewModel = viewModel,
+                        appBarViewModel::navigateBack,
+                    )
                 }
             }
         }
@@ -199,9 +204,7 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             onConfirmCallback = {
                 viewModel.validateSubscriptionPurchase()
             },
-            onDismissCallback = {
-                viewModel.navigateBack()
-            },
+            onDismissCallback = appBarViewModel::navigateBack,
         )
     }
 
@@ -212,15 +215,13 @@ fun SignupDedicatedIpCountryScreen() = Screen {
             onConfirmCallback = {
                 viewModel.fetchPurchasedDedicatedIpToken()
             },
-            onDismissCallback = {
-                viewModel.navigateBack()
-            },
+            onDismissCallback = appBarViewModel::navigateBack,
         )
     }
 }
 
 @Composable
-fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel) {
+fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel, navigateBack: () -> Unit) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -245,7 +246,7 @@ fun BottomScreen(showAllLocations: Boolean, viewModel: DipViewModel) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
         ) {
-            viewModel.navigateBack()
+            navigateBack()
         }
         Spacer(modifier = Modifier.height(16.dp))
         Footer(

@@ -68,7 +68,7 @@ fun TvPerAppSettingsScreen() = Screen {
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps)
+        onBackPressed(viewModel, lastExcludedApps, viewModel::navigateBack)
     }
 
     Box(
@@ -187,11 +187,11 @@ fun TvPerAppSettingsScreen() = Screen {
                 onReconnect = {
                     viewModel.reconnect()
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.navigateUp()
+                    viewModel.navigateBack()
                 },
                 onLater = {
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.navigateUp()
+                    viewModel.navigateBack()
                 },
             )
         }
@@ -255,10 +255,10 @@ private fun PerAppSettingPackageItem(
     }
 }
 
-private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>) {
+private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>, navigateBack: () -> Unit) {
     if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
-        viewModel.navigateUp()
+        navigateBack()
     }
 }

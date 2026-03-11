@@ -1,6 +1,5 @@
 package com.kape.settings.ui.screens.mobile
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -42,16 +41,9 @@ fun ProtocolSettingsScreen() = Screen {
     val protocolDialogVisible = remember { mutableStateOf(false) }
     val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
 
-    BackHandler {
-        viewModel.navigateUp()
-    }
-
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
-            )
+            AppBar(viewModel = appBarViewModel)
         },
     ) {
         Column(

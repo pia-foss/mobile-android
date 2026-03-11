@@ -16,7 +16,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -26,9 +26,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.ui.elements.BehaviorDialog
+import com.kape.automation.ui.viewmodel.AutomationState
 import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
@@ -44,28 +46,57 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AutomationScreen(isSet: Boolean) = Screen {
+fun AutomationScreen() = Screen {
     val viewModel: AutomationViewModel = koinViewModel()
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.trusted_network_plural))
     }
     val showDialog = remember { mutableStateOf(false) }
     val currentItem = remember { mutableStateOf<NetworkItem?>(null) }
-
     val context: Context = LocalContext.current
+    val state by viewModel.automationState.collectAsStateWithLifecycle()
 
-    if (isSet) {
-        LaunchedEffect(Unit) {
-            context.sendBroadcast(viewModel.broadcastIntent)
+    AutomationScreenContent(
+        appBarViewModel,
+        state,
+        onNetworkCardClick = { item ->
+            currentItem.value = item
+            showDialog.value = true
+        },
+        viewModel::navigateToAutomationAddNewRule,
+    )
+
+    if (showDialog.value) {
+        val removeRule = stringResource(id = R.string.nmt_remove_rule)
+        currentItem.value?.let { rule ->
+            BehaviorDialog(
+                status = getStatus(behavior = rule.networkBehavior),
+                showRemoveOption = !rule.isDefault,
+                showDialog,
+            ) {
+                if (it == removeRule) {
+                    viewModel.removeRule(rule)
+                } else {
+                    rule.let { item ->
+                        viewModel.updateRule(item, getRuleForStatus(context, status = it))
+                    }
+                }
+                viewModel.sendBroadcast(context)
+            }
         }
     }
+}
 
+@Composable
+fun AutomationScreenContent(
+    appBarViewModel: AppBarViewModel,
+    state: AutomationState,
+    onNetworkCardClick: (NetworkItem) -> Unit,
+    navigateToAddRule: () -> Unit,
+) {
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.exitAutomation() },
-            )
+            AppBar(viewModel = appBarViewModel)
         },
     ) {
         Column(
@@ -86,7 +117,7 @@ fun AutomationScreen(isSet: Boolean) = Screen {
                 )
 
                 LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                    items(viewModel.rules) { networkItem ->
+                    items(state.rules) { networkItem ->
                         val icon: Int
                         val title: String
                         val status = getStatus(behavior = networkItem.networkBehavior)
@@ -124,10 +155,10 @@ fun AutomationScreen(isSet: Boolean) = Screen {
                                 NetworkBehavior.RetainState -> LocalColors.current.infoBlue()
                             },
                             isDefault = networkItem.isDefault,
-                        ) {
-                            currentItem.value = networkItem
-                            showDialog.value = true
-                        }
+                            onClick = {
+                                onNetworkCardClick(networkItem)
+                            }
+                        )
                     }
                 }
 
@@ -136,7 +167,7 @@ fun AutomationScreen(isSet: Boolean) = Screen {
                     modifier = Modifier
                         .align(CenterHorizontally)
                         .clickable {
-                            viewModel.navigateToAddNewRule()
+                            navigateToAddRule()
                         },
                 ) {
                     Icon(
@@ -150,26 +181,6 @@ fun AutomationScreen(isSet: Boolean) = Screen {
                         modifier = Modifier.align(CenterVertically),
                     )
                 }
-            }
-        }
-    }
-
-    if (showDialog.value) {
-        val removeRule = stringResource(id = R.string.nmt_remove_rule)
-        currentItem.value?.let { rule ->
-            BehaviorDialog(
-                status = getStatus(behavior = rule.networkBehavior),
-                showRemoveOption = !rule.isDefault,
-                showDialog,
-            ) {
-                if (it == removeRule) {
-                    viewModel.removeRule(rule)
-                } else {
-                    rule.let { item ->
-                        viewModel.updateRule(item, getRuleForStatus(context, status = it))
-                    }
-                }
-                context.sendBroadcast(viewModel.broadcastIntent)
             }
         }
     }

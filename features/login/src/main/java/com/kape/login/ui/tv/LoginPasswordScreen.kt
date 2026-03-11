@@ -69,6 +69,7 @@ fun LoginPasswordScreen() = Screen {
                 loginError = null,
             )
         }
+
         LOADING -> {
             ShowLoginPasswordScreen(
                 loginViewModel = loginViewModel,
@@ -78,15 +79,17 @@ fun LoginPasswordScreen() = Screen {
                 loginError = null,
             )
         }
+
         SUCCESS -> {
             // Do nothing. The viewmodel is handling the navigation on success.
         }
+
         THROTTLED,
         FAILED,
         EXPIRED,
         INVALID,
         SERVICE_UNAVAILABLE,
-        -> {
+            -> {
             evaluatePasswordError.value = true
             ShowLoginPasswordScreen(
                 loginViewModel = loginViewModel,
@@ -120,11 +123,12 @@ fun ShowLoginPasswordScreen(
             return when (it) {
                 LoginError.Throttled ->
                     loginThrottledErrorMessage
+
                 LoginError.Invalid,
                 LoginError.Failed,
                 LoginError.Expired,
                 LoginError.ServiceUnavailable,
-                ->
+                    ->
                     loginFailedErrorMessage
             }
         }

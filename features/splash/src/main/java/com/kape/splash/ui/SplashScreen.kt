@@ -1,5 +1,7 @@
 package com.kape.splash.ui
 
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -20,6 +22,11 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) = Screen {
+    val activity = LocalActivity.current
+    BackHandler {
+        activity?.finish()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()

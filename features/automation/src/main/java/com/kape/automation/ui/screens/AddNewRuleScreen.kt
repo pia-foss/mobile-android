@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,10 +23,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
+import com.kape.router.LocalNavigator
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.mobile.text.OnboardingFooterText
@@ -41,6 +44,7 @@ fun AddNewRuleScreen() = Screen {
     val showDialog = remember { mutableStateOf(false) }
     var currentItem: String? = null
     val context: Context = LocalContext.current
+    val availableNetworks by viewModel.availableNetwork.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = Unit) {
         viewModel.scanNetworks()
@@ -48,14 +52,13 @@ fun AddNewRuleScreen() = Screen {
 
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
-            )
+            AppBar(viewModel = appBarViewModel)
         },
     ) {
         Column(
-            modifier = Modifier.padding(it).fillMaxWidth(),
+            modifier = Modifier
+                .padding(it)
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
@@ -63,7 +66,7 @@ fun AddNewRuleScreen() = Screen {
                     content = stringResource(id = com.kape.ui.R.string.add_rule_title),
                     modifier = Modifier.padding(16.dp),
                 )
-                viewModel.availableNetwork.value?.let {
+                availableNetworks?.let {
                     WifiNetworkItem(ssid = it, showDialog) {
                         currentItem = it
                         showDialog.value = true

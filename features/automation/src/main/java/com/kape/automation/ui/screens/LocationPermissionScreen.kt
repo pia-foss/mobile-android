@@ -44,17 +44,14 @@ fun LocationPermissionScreen() = Screen {
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {
             if (it) {
-                viewModel.navigateToNextScreen()
+                viewModel.onLocationPermissionGranted()
             }
         },
     )
 
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.exitAutomation() },
-            )
+            AppBar(viewModel = appBarViewModel)
         },
     ) {
         Column(

@@ -53,12 +53,7 @@ fun ObfuscationSettingsScreen() = Screen {
 
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
-            ) {
-                viewModel.exitObfuscationSettings()
-            }
+            AppBar(viewModel = appBarViewModel, onRightIconClick = appBarViewModel::navigateBack)
         },
     ) {
         Column(

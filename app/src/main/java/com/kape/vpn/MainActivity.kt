@@ -3,7 +3,6 @@ package com.kape.vpn
 import android.app.ComponentCaller
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.compose.setContent
@@ -12,69 +11,107 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.kape.about.screens.mobile.AboutScreen
 import com.kape.about.screens.tv.TvAboutScreen
-import com.kape.automation.ui.AutomationFlow
+import com.kape.automation.ui.screens.AddNewRuleScreen
+import com.kape.automation.ui.screens.AutomationScreen
+import com.kape.automation.ui.screens.BackgroundLocationPermissionScreen
+import com.kape.automation.ui.screens.LocationPermissionScreen
 import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.customization.CustomizationScreen
-import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpFlow
+import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpCountryScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpPurchaseSuccessScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenActivateScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenDetailsScreen
 import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
-import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.inappbrowser.ui.InAppBrowser
-import com.kape.login.ui.mobile.loginNavigation
+import com.kape.login.ui.mobile.LoginScreen
+import com.kape.login.ui.mobile.LoginWithEmailScreen
 import com.kape.login.ui.tv.LoginPasswordScreen
 import com.kape.login.ui.tv.LoginUsernameScreen
 import com.kape.login.utils.TokenAuthenticationUtil
 import com.kape.obfuscationregionselection.ui.ShadowsocksRegionSelectionScreen
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
-import com.kape.permissions.utils.mobile.PermissionsFlow
-import com.kape.permissions.utils.tv.TvPermissionsFlow
+import com.kape.permissions.ui.mobile.NotificationPermissionScreen
+import com.kape.permissions.ui.mobile.VpnPermissionScreen
+import com.kape.permissions.ui.tv.TvNotificationPermissionScreen
+import com.kape.permissions.ui.tv.TvVpnPermissionScreen
+import com.kape.permissions.utils.PermissionUtil
 import com.kape.profile.ui.screens.mobile.AccountDeletedScreen
 import com.kape.profile.ui.screens.mobile.ProfileScreen
 import com.kape.profile.ui.screens.tv.TvProfileScreen
 import com.kape.router.About
 import com.kape.router.AccountDeleted
-import com.kape.router.Automation
+import com.kape.router.AutomationAddRule
+import com.kape.router.AutomationBackgroundLocation
+import com.kape.router.AutomationLocation
+import com.kape.router.AutomationMain
+import com.kape.router.AutomationSettings
 import com.kape.router.Connection
+import com.kape.router.ConnectionStats
 import com.kape.router.Customization
-import com.kape.router.DedicatedIp
-import com.kape.router.Default
-import com.kape.router.Login
-import com.kape.router.NavigateBack
-import com.kape.router.NavigateOut
+import com.kape.router.DebugLogs
+import com.kape.router.DedicatedIpActivateToken
+import com.kape.router.DedicatedIpLocationSelection
+import com.kape.router.DedicatedIpPurchaseSuccess
+import com.kape.router.DedicatedIpSignupPlans
+import com.kape.router.DedicatedIpSignupTokenActivate
+import com.kape.router.DedicatedIpSignupTokenDetails
+import com.kape.router.ExternalAppList
+import com.kape.router.GeneralSettings
+import com.kape.router.HelpSettings
+import com.kape.router.KillSwitchSettings
+import com.kape.router.LoginWithCredentials
+import com.kape.router.LoginWithEmail
+import com.kape.router.NetworkSettings
+import com.kape.router.NotificationPermission
+import com.kape.router.ObfuscationSettings
 import com.kape.router.PerAppSettings
-import com.kape.router.Permissions
+import com.kape.router.PrivacySettings
 import com.kape.router.Profile
+import com.kape.router.ProtocolSettings
 import com.kape.router.Router
 import com.kape.router.Settings
 import com.kape.router.ShadowsocksRegionSelection
 import com.kape.router.Splash
 import com.kape.router.Subscribe
-import com.kape.router.TvHelp
-import com.kape.router.TvLogin
+import com.kape.router.TvLoginPassword
+import com.kape.router.TvLoginUsername
 import com.kape.router.TvSideMenu
+import com.kape.router.TvSubscribe
 import com.kape.router.TvWelcome
 import com.kape.router.Update
+import com.kape.router.VpnPermission
 import com.kape.router.VpnRegionSelection
-import com.kape.router.WebContent
+import com.kape.router.WebDestination
 import com.kape.settings.ui.screens.mobile.AutomationSettingsScreen
+import com.kape.settings.ui.screens.mobile.ConnectionStatsScreen
+import com.kape.settings.ui.screens.mobile.ExternalProxyAppList
+import com.kape.settings.ui.screens.mobile.GeneralSettingsScreen
+import com.kape.settings.ui.screens.mobile.HelpScreen
 import com.kape.settings.ui.screens.mobile.KillSwitchSettingScreen
+import com.kape.settings.ui.screens.mobile.NetworkSettingsScreen
+import com.kape.settings.ui.screens.mobile.ObfuscationSettingsScreen
 import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
+import com.kape.settings.ui.screens.mobile.PrivacySettingsScreen
 import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
-import com.kape.settings.ui.screens.mobile.SettingsFlow
+import com.kape.settings.ui.screens.mobile.SettingsScreen
+import com.kape.settings.ui.screens.mobile.VpnLogScreen
+import com.kape.settings.ui.screens.tv.TvConnectionStatsScreen
+import com.kape.settings.ui.screens.tv.TvGeneralSettingsScreen
+import com.kape.settings.ui.screens.tv.TvHelpScreen
+import com.kape.settings.ui.screens.tv.TvNetworkSettingsScreen
 import com.kape.settings.ui.screens.tv.TvPerAppSettingsScreen
-import com.kape.settings.ui.screens.tv.TvSettingsFlow
-import com.kape.settings.utils.SettingsStep
+import com.kape.settings.ui.screens.tv.TvPrivacySettingsScreen
+import com.kape.settings.ui.screens.tv.TvProtocolSettingsScreen
+import com.kape.settings.ui.screens.tv.TvSettingsScreen
 import com.kape.shortcut.prefs.ShortcutPrefs
 import com.kape.sidemenu.ui.screens.tv.TvSideMenuScreen
 import com.kape.signup.ui.mobile.SignupScreensFlow
@@ -84,102 +121,62 @@ import com.kape.splash.ui.UpdateScreen
 import com.kape.tvwelcome.ui.TvWelcomeScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
+import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_CONNECT
+import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
+import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.utils.PlatformUtils
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 class MainActivity : AppCompatActivity() {
     private val router: Router by inject()
     private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
     private val shortcutPrefs: ShortcutPrefs by inject()
-    private var currentDestination: String = ""
-    private val destinationsForClearBackStack =
-        listOf(
-            Splash.Main,
-            Subscribe.Main,
-            Permissions.Route,
-            Connection.Main,
-            AccountDeleted.Route,
-        )
+    private val platformUtils: PlatformUtils by inject()
+    val licences: List<String> by inject(named("licences"))
+    val permissionUtil: PermissionUtil by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         window.setFlags(
             WindowManager.LayoutParams.FLAG_SECURE,
-            WindowManager.LayoutParams.FLAG_SECURE)
-
+            WindowManager.LayoutParams.FLAG_SECURE,
+        )
         vpnSubscriptionPaymentProvider.register(this)
         defineScreenOrientation()
         deepLinkLogin(intent)
         intent.action?.let {
             when (it) {
-                Settings.Route -> {
+                ACTION_SETTINGS -> {
                     shortcutPrefs.setShortcutSettings(true)
                 }
 
-                VpnRegionSelection.Main -> {
+                ACTION_SERVER_SELECTION -> {
                     shortcutPrefs.setShortcutChangeServer(true)
                 }
 
-                Connection.Main -> {
+                ACTION_CONNECT -> {
                     shortcutPrefs.setShortcutConnectToVpn(true)
                 }
             }
         }
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-
-            LaunchedEffect(key1 = Unit) {
-                repeatOnLifecycle(Lifecycle.State.CREATED) {
-                    router.getNavigation().collect {
-                        when (it) {
-                            NavigateBack -> navController.navigateUp()
-                            NavigateOut -> {
-                                finishAndRemoveTask()
-                                router.resetNavigation()
-                            }
-
-                            Default.Route -> {
-                                // default state, don't do anything
-                            }
-
-                            else -> {
-                                currentDestination = it
-                                navController.navigate(it) {
-                                    launchSingleTop = true
-                                    if (it in destinationsForClearBackStack) {
-                                        navController.popBackStack()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            PIATheme {
-                PiaScreen {
+            PIATheme(platformUtils.isTv()) {
+                PiaScreen(router = router, isTv = platformUtils.isTv()) { navController ->
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
                     ) {
-                        NavHost(navController = navController, startDestination = Splash.Main) {
-                            defineNavigationGraph(navController = navController)
+                        NavHost(navController = navController, startDestination = Splash) {
+                            defineNavigationGraph(licences)
                         }
                     }
                 }
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (currentDestination == Subscribe.Main) {
-            vpnSubscriptionPaymentProvider.getPurchaseUpdates()
         }
     }
 
@@ -190,7 +187,7 @@ class MainActivity : AppCompatActivity() {
 
     // region private
     private fun defineScreenOrientation() {
-        if (PlatformUtils.isTv(context = this)) {
+        if (platformUtils.isTv()) {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         } else {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -205,93 +202,97 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun NavGraphBuilder.defineNavigationGraph(navController: NavController) {
-        if (PlatformUtils.isTv(context = this@MainActivity)) {
-            composable(Splash.Main) { SplashScreen() }
-            composable(TvWelcome.Main) { TvWelcomeScreen() }
-            composable(Subscribe.Main) { TvSignupScreensFlow() }
-            composable(TvLogin.Username) { LoginUsernameScreen() }
-            composable(Login.WithCredentials) { LoginPasswordScreen() }
-            composable(Permissions.Route) { TvPermissionsFlow() }
-            composable(Connection.Main) { TvConnectionScreen() }
-            composable(VpnRegionSelection.Main) { TvVpnRegionSelectionScreen() }
-            composable(WebContent.Terms) {
+    private fun NavGraphBuilder.defineNavigationGraph(licences: List<String>) {
+        if (platformUtils.isTv()) {
+            composable<Splash> { SplashScreen() }
+            composable<TvWelcome> { TvWelcomeScreen() }
+            composable<TvSubscribe> { TvSignupScreensFlow() }
+            composable<TvLoginUsername> { LoginUsernameScreen() }
+            composable<TvLoginPassword> { LoginPasswordScreen() }
+            composable<VpnPermission> { TvVpnPermissionScreen() }
+            composable<NotificationPermission> { TvNotificationPermissionScreen() }
+            composable<Connection> { TvConnectionScreen() }
+            composable<VpnRegionSelection> { TvVpnRegionSelectionScreen() }
+            composable<WebDestination.Terms> {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_terms_of_service))
             }
-            composable(WebContent.Privacy) {
+            composable<WebDestination.Privacy> {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_privacy_policy))
             }
-            composable(Settings.Route) { TvSettingsFlow(initialStep = SettingsStep.Main) }
-            composable(TvSideMenu.Main) { TvSideMenuScreen() }
-            composable(Profile.Main) { TvProfileScreen() }
-            composable(DedicatedIp.ActivateToken) { TvDedicatedIpScreen() }
-            composable(PerAppSettings.Main) { TvPerAppSettingsScreen() }
-            composable(TvHelp.Main) { TvSettingsFlow(initialStep = SettingsStep.Help) }
-            composable(About.Main) { TvAboutScreen() }
+            composable<Settings> { TvSettingsScreen() }
+            composable<TvSideMenu> { TvSideMenuScreen() }
+            composable<Profile> { TvProfileScreen() }
+            composable<DedicatedIpActivateToken> { TvDedicatedIpScreen() }
+            composable<PerAppSettings> { TvPerAppSettingsScreen() }
+            composable<HelpSettings> { TvHelpScreen() }
+            composable<About> { TvAboutScreen(licences) }
+            composable<GeneralSettings> { TvGeneralSettingsScreen() }
+            composable<ProtocolSettings> { TvProtocolSettingsScreen() }
+            composable<NetworkSettings> { TvNetworkSettingsScreen() }
+            composable<PrivacySettings> { TvPrivacySettingsScreen() }
+            composable<ConnectionStats> { TvConnectionStatsScreen() }
         } else {
-            loginNavigation(navController)
-            composable(Settings.Route) { SettingsFlow() }
-            composable(Permissions.Route) { PermissionsFlow() }
-            composable(Automation.Route) { AutomationFlow() }
-            composable(Splash.Main) { SplashScreen() }
-            composable(Connection.Main) { ConnectionScreen() }
-            composable(Profile.Main) { ProfileScreen() }
-            composable(Subscribe.Main) { SignupScreensFlow() }
-            composable(VpnRegionSelection.Main) { VpnRegionSelectionScreen() }
-            composable(ShadowsocksRegionSelection.Main) {
+            composable<LoginWithCredentials> { LoginScreen() }
+            composable<LoginWithEmail> { LoginWithEmailScreen() }
+            composable<Settings> { SettingsScreen() }
+            composable<VpnPermission> { VpnPermissionScreen() }
+            composable<NotificationPermission> { NotificationPermissionScreen() }
+            composable<AutomationSettings> { AutomationSettingsScreen() }
+            composable<AutomationMain> { AutomationScreen() }
+            composable<AutomationAddRule> { AddNewRuleScreen() }
+            composable<AutomationLocation> { LocationPermissionScreen() }
+            composable<AutomationBackgroundLocation> { BackgroundLocationPermissionScreen() }
+            composable<Splash> { SplashScreen() }
+            composable<Connection> { ConnectionScreen() }
+            composable<Profile> { ProfileScreen() }
+            composable<Subscribe> { SignupScreensFlow() }
+            composable<VpnRegionSelection> { VpnRegionSelectionScreen() }
+            composable<ShadowsocksRegionSelection> {
                 ShadowsocksRegionSelectionScreen()
             }
-            composable(WebContent.Terms) {
+            composable<WebDestination.Terms> {
                 InAppBrowser(
                     url = getString(com.kape.ui.R.string.url_terms_of_service),
                 )
             }
-            composable(WebContent.Privacy) {
+            composable<WebDestination.Privacy> {
                 InAppBrowser(
                     url = getString(com.kape.ui.R.string.url_privacy_policy),
                 )
             }
-            composable(WebContent.Support) {
+            composable<WebDestination.Support> {
                 InAppBrowser(
                     url = getString(com.kape.ui.R.string.url_support),
                 )
             }
-            composable(WebContent.NoInAppRegistration) {
+            composable<WebDestination.NoInAppRegistration> {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_registration))
             }
-            composable(WebContent.DeleteAccount) {
+            composable<WebDestination.DeleteAccount> {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_delete_account))
             }
-            composable(PerAppSettings.Main) {
-                PerAppSettingsScreen()
-            }
-            composable(DedicatedIp.ActivateToken) {
-                DedicatedIpFlow(initialStep = DedicatedIpStep.ActivateToken)
-            }
-            composable(DedicatedIp.SignupPlans) {
-                DedicatedIpFlow(initialStep = DedicatedIpStep.SignupPlans)
-            }
-            composable(Settings.Automation) {
-                AutomationSettingsScreen()
-            }
-            composable(Settings.KillSwitch) {
-                KillSwitchSettingScreen()
-            }
-            composable(Settings.Protocols) {
-                ProtocolSettingsScreen()
-            }
-            composable(About.Main) {
-                AboutScreen()
-            }
-            composable(Customization.Route) {
-                CustomizationScreen()
-            }
-            composable(AccountDeleted.Route) {
-                AccountDeletedScreen()
-            }
-            composable(Update.Route) {
-                UpdateScreen()
-            }
+            composable<PerAppSettings> { PerAppSettingsScreen() }
+            composable<DedicatedIpActivateToken> { DedicatedIpScreen() }
+            composable<DedicatedIpSignupPlans> { SignupDedicatedIpScreen() }
+            composable<DedicatedIpSignupTokenDetails> { SignupDedicatedIpTokenDetailsScreen() }
+            composable<DedicatedIpLocationSelection> { SignupDedicatedIpCountryScreen() }
+            composable<DedicatedIpSignupTokenActivate> { SignupDedicatedIpTokenActivateScreen() }
+            composable<DedicatedIpPurchaseSuccess> { SignupDedicatedIpPurchaseSuccessScreen() }
+            composable<KillSwitchSettings> { KillSwitchSettingScreen() }
+            composable<ProtocolSettings> { ProtocolSettingsScreen() }
+            composable<About> { AboutScreen(licences) }
+            composable<Customization> { CustomizationScreen() }
+            composable<AccountDeleted> { AccountDeletedScreen() }
+            composable<Update> { UpdateScreen() }
+            composable<GeneralSettings> { GeneralSettingsScreen() }
+            composable<ProtocolSettings> { ProtocolSettingsScreen() }
+            composable<NetworkSettings> { NetworkSettingsScreen() }
+            composable<PrivacySettings> { PrivacySettingsScreen() }
+            composable<HelpSettings> { HelpScreen() }
+            composable<ObfuscationSettings> { ObfuscationSettingsScreen() }
+            composable<DebugLogs> { VpnLogScreen() }
+            composable<ConnectionStats> { ConnectionStatsScreen() }
+            composable<ExternalAppList> { ExternalProxyAppList() }
         }
     }
     // endregion

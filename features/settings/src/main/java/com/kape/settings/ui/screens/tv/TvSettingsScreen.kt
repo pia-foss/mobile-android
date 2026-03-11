@@ -16,6 +16,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -46,7 +47,7 @@ fun TvSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val initialFocusRequester = FocusRequester()
+    val initialFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()

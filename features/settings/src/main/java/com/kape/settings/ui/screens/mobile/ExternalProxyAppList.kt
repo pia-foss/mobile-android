@@ -46,11 +46,10 @@ fun ExternalProxyAppList() {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.proxy_selection_title))
     }
-
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps)
+        onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
     }
 
     Scaffold(
@@ -58,7 +57,7 @@ fun ExternalProxyAppList() {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    onBackPressed(viewModel, lastExcludedApps)
+                    onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
                 },
             )
         },
@@ -106,11 +105,11 @@ fun ExternalProxyAppList() {
                 onReconnect = {
                     viewModel.reconnect()
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.navigateUp()
+                    appBarViewModel.navigateBack()
                 },
                 onLater = {
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.navigateUp()
+                    appBarViewModel.navigateBack()
                 },
             )
         }
@@ -181,10 +180,10 @@ private fun SelectedCheckBox(checked: Boolean, modifier: Modifier) {
     )
 }
 
-private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>) {
+private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>, navigateBack: () -> Unit) {
     if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
-        viewModel.navigateUp()
+        navigateBack()
     }
 }

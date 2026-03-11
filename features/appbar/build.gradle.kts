@@ -32,6 +32,7 @@ dependencies {
     implementation(project(":capabilities:ui"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:utils"))
+    implementation(project(":core:router"))
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.viewmodel)

@@ -1,6 +1,5 @@
 package com.kape.settings.ui.screens.tv
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +49,7 @@ fun TvProtocolSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val initialFocusRequester = FocusRequester()
+    val initialFocusRequester = remember { FocusRequester() }
 
     val protocolDialogVisible = remember { mutableStateOf(false) }
     val transportDialogVisible = remember { mutableStateOf(false) }
@@ -61,10 +60,6 @@ fun TvProtocolSettingsScreen() = Screen {
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
-    }
-
-    BackHandler {
-        viewModel.navigateUp()
     }
 
     Box(

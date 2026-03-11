@@ -1,6 +1,5 @@
 package com.kape.settings.ui.screens.mobile
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,16 +32,9 @@ fun SettingsScreen() = Screen {
     }
     val shouldShowObfuscation = viewModel.getSelectedProtocol() == VpnProtocols.OpenVPN
 
-    BackHandler {
-        viewModel.navigateUp()
-    }
-
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateToConnection() },
-            )
+            AppBar(viewModel = appBarViewModel)
         },
     ) {
         Column(
@@ -90,7 +82,7 @@ fun SettingsScreen() = Screen {
                     titleId = com.kape.ui.R.string.automation,
                     subtitle = stringResource(id = if (viewModel.isAutomationEnabled()) com.kape.ui.R.string.enabled else com.kape.ui.R.string.disabled),
                     onClick = {
-                        viewModel.navigateToAutomationSettings()
+                        viewModel.navigateToAutomation()
                     },
                 )
                 if (shouldShowObfuscation) {

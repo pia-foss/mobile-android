@@ -43,12 +43,13 @@ import com.kape.ui.theme.connectingGradient
 import com.kape.ui.theme.errorGradient
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionStatus
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppBar(
     viewModel: AppBarViewModel,
     type: AppBarType = AppBarType.Navigation,
-    onLeftIconClick: () -> Unit,
+    onLeftIconClick: () -> Unit = viewModel::navigateBack,
     onRightIconClick: () -> Unit = {},
 ) {
     val isConnected = viewModel.isConnected.collectAsState()

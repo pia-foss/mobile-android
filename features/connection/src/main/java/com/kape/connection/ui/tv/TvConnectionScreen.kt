@@ -1,4 +1,3 @@
-
 package com.kape.connection.ui.tv
 
 import androidx.activity.compose.BackHandler
@@ -56,10 +55,6 @@ fun TvConnectionScreen() = Screen {
     val topEndHeaderFocusRequester = remember { FocusRequester() }
     val startQuickConnectFocusRequester = remember { FocusRequester() }
     val locale = Locale.getDefault().language
-
-    BackHandler {
-        viewModel.exitApp()
-    }
 
     LaunchedEffect(key1 = Unit) {
         topStartHeaderFocusRequester.requestFocus()
@@ -166,7 +161,8 @@ private fun DisplayComponent(
         Element.QuickConnect -> {
             val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
             for (server in state.value.quickConnectServers) {
-                quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
+                quickConnectMap[server] =
+                    viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
             }
             QuickConnect(
                 startQuickConnectFocusRequester = startQuickConnectFocusRequester,
@@ -183,7 +179,7 @@ private fun DisplayComponent(
         Element.QuickSettings,
         Element.Snooze,
         Element.Traffic,
-        -> {
+            -> {
             // Continue. Not showing them on TV.
         }
     }
@@ -194,7 +190,10 @@ private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorSche
     return when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
+            scheme,
+        )
+
         ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }

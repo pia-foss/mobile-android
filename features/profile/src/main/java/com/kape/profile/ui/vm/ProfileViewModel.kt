@@ -10,10 +10,12 @@ import com.kape.profile.ui.screens.mobile.IDLE
 import com.kape.profile.ui.screens.mobile.LOADING
 import com.kape.profile.ui.screens.mobile.ProfileScreenState
 import com.kape.profile.ui.screens.mobile.createSuccessState
-import com.kape.router.Back
-import com.kape.router.EnterFlow
-import com.kape.router.Exit
+import com.kape.router.AccountDeleted
+import com.kape.router.LoginWithCredentials
 import com.kape.router.Router
+import com.kape.router.Splash
+import com.kape.router.Subscribe
+import com.kape.router.WebDestination
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,29 +36,16 @@ class ProfileViewModel(
         loadProfile()
     }
 
-    fun navigateBack() {
-        router.handleFlow(Back)
-    }
-
-    fun navigateToLogin() {
-        router.handleFlow(EnterFlow.Login)
-    }
-
-    fun navigateToSignUp() {
-        router.handleFlow(EnterFlow.Splash)
-    }
-
-    fun exitApp() {
-        router.handleFlow(Exit)
-    }
-
-    fun navigateToDeleteAccount() = router.handleFlow(EnterFlow.DeleteAccount)
-
     fun logout() = viewModelScope.launch {
         logoutUseCase.logout().collect {
-            router.handleFlow(EnterFlow.Splash)
+            router.updateDestination(Splash)
         }
     }
+
+    fun navigateToLogin() = router.updateDestination(LoginWithCredentials)
+    fun navigateToSubscribe() = router.updateDestination(Subscribe)
+    fun navigateToAccountDeleted() = router.updateDestination(AccountDeleted)
+    fun navigateToDeleteAccount() = router.updateDestination(WebDestination.DeleteAccount)
 
     private fun loadProfile() = viewModelScope.launch {
         _state.emit(LOADING)

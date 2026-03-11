@@ -62,7 +62,6 @@ fun TvDedicatedIpScreen() = Screen {
     }
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-
     val showActivationDialog = remember { mutableStateOf(false) }
     val showDeletionDialog = remember { mutableStateOf(false) }
     val text = remember { mutableStateOf("") }

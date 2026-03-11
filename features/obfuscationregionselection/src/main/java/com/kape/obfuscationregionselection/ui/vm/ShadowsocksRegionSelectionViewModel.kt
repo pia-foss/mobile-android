@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.obfuscationregionselection.util.ItemType
 import com.kape.obfuscationregionselection.util.ShadowsocksServerItem
-import com.kape.router.Back
-import com.kape.router.ExitFlow
 import com.kape.router.Router
 import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
@@ -16,8 +14,8 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 class ShadowsocksRegionSelectionViewModel(
-    private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
     private val router: Router,
+    private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
 ) : ViewModel(), KoinComponent {
 
@@ -37,7 +35,6 @@ class ShadowsocksRegionSelectionViewModel(
 
     fun onShadowsocksRegionSelected(server: ShadowsocksServer) {
         shadowsocksRegionPrefs.setSelectShadowsocksServer(server)
-        router.handleFlow(ExitFlow.RegionSelection)
     }
 
     fun onFavoriteShadowsocksClicked(serverName: String) {
@@ -61,10 +58,6 @@ class ShadowsocksRegionSelectionViewModel(
                 isSearchEnabled.value = false
             }
         }
-
-    fun navigateBack() {
-        router.handleFlow(Back)
-    }
 
     private fun isShadowsocksServerFavorite(serverName: String): Boolean {
         return shadowsocksRegionPrefs.isFavorite(serverName)

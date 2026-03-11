@@ -1,6 +1,5 @@
 package com.kape.settings.ui.screens.tv
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -43,15 +42,12 @@ fun TvPrivacySettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val initialFocusRequester = FocusRequester()
+    val initialFocusRequester = remember { FocusRequester() }
     val showWarning = remember { mutableStateOf(false) }
+
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
-    }
-
-    BackHandler {
-        viewModel.navigateUp()
     }
 
     Box(

@@ -7,15 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
-import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseState
-import com.kape.router.EnterFlow
-import com.kape.router.Exit
-import com.kape.router.ExitFlow
+import com.kape.permissions.utils.PermissionUtil
+import com.kape.router.LoginWithCredentials
 import com.kape.router.Router
+import com.kape.router.TvWelcome
+import com.kape.router.WebDestination
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.SignupUseCase
 import com.kape.signup.utils.AMAZON_LOGIN
@@ -43,15 +43,15 @@ import org.koin.core.component.KoinComponent
 import java.util.Locale
 
 class SignupViewModel(
+    private val router: Router,
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val formatter: PriceFormatter,
     private val consentUseCase: ConsentUseCase,
     private val useCase: SignupUseCase,
-    private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
-    private val router: Router,
     private val subscriptionPrefs: SubscriptionPrefs,
     private val subscriptionsUseCase: GetSubscriptionsUseCase,
     private val buildConfigProvider: BuildConfigProvider,
+    private val permissionUtil: PermissionUtil,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel(), KoinComponent {
 
@@ -63,58 +63,40 @@ class SignupViewModel(
 
     init {
         viewModelScope.launch {
-            if (getUserLoggedInUseCase.isUserLoggedIn()) {
-                router.handleFlow(ExitFlow.Subscribe)
-            } else {
-                vpnSubscriptionPaymentProvider.purchaseState.collect {
-                    when (it) {
-                        PurchaseState.Default -> {
-                            // no op
-                        }
+            vpnSubscriptionPaymentProvider.purchaseState.collect {
+                when (it) {
+                    PurchaseState.Default -> {
+                        // no op
+                    }
 
-                        PurchaseState.InitFailed -> {
+                    PurchaseState.InitFailed -> {
+                        onProductsFailedToLoad()
+                    }
+
+                    PurchaseState.InitSuccess -> {
+                        // no-op
+                    }
+
+                    PurchaseState.ProductsLoadedFailed -> {
+                        onProductsFailedToLoad()
+                    }
+
+                    PurchaseState.ProductsLoadedSuccess -> {
+                        val yearlyPlan =
+                            vpnSubscriptionPaymentProvider.getFreeTrialYearlySubscriptionPlan()
+                                ?: vpnSubscriptionPaymentProvider.getYearlySubscriptionPlan()
+                        val monthlyPlan =
+                            vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
+
+                        if (yearlyPlan == null || monthlyPlan == null) {
                             onProductsFailedToLoad()
+                            return@collect
                         }
 
-                        PurchaseState.InitSuccess -> {
-                            // no-op
-                        }
-
-                        PurchaseState.ProductsLoadedFailed -> {
-                            onProductsFailedToLoad()
-                        }
-
-                        PurchaseState.ProductsLoadedSuccess -> {
-                            val yearlyPlan =
-                                vpnSubscriptionPaymentProvider.getFreeTrialYearlySubscriptionPlan()
-                                    ?: vpnSubscriptionPaymentProvider.getYearlySubscriptionPlan()
-                            val monthlyPlan =
-                                vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
-
-                            if (yearlyPlan == null || monthlyPlan == null) {
-                                onProductsFailedToLoad()
-                                return@collect
-                            }
-
-                            val yearly =
-                                Plan(
-                                    yearlyPlan.id,
-                                    yearlyPlan.plan.replaceFirstChar { first ->
-                                        if (first.isLowerCase()) {
-                                            first.titlecase(
-                                                Locale.getDefault(),
-                                            )
-                                        } else {
-                                            first.toString()
-                                        }
-                                    },
-                                    true,
-                                    mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice),
-                                    secondaryPrice = formatter.formatYearlyPerMonth(yearlyPlan.formattedPrice, yearlyPlan.currencyCode),
-                                )
-                            val monthly = Plan(
-                                monthlyPlan.id,
-                                monthlyPlan.plan.replaceFirstChar { first ->
+                        val yearly =
+                            Plan(
+                                yearlyPlan.id,
+                                yearlyPlan.plan.replaceFirstChar { first ->
                                     if (first.isLowerCase()) {
                                         first.titlecase(
                                             Locale.getDefault(),
@@ -123,36 +105,53 @@ class SignupViewModel(
                                         first.toString()
                                     }
                                 },
-                                false,
-                                mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
+                                true,
+                                mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice),
+                                secondaryPrice = formatter.formatYearlyPerMonth(
+                                    yearlyPlan.formattedPrice,
+                                    yearlyPlan.currencyCode,
+                                ),
                             )
-                            subscriptionData.value =
-                                SubscriptionData(mutableStateOf(yearly), yearly, monthly)
-                            _state.emit(SUBSCRIPTIONS)
-                        }
-
-                        PurchaseState.PurchaseFailed -> {
-                            // TODO: handle error
-                        }
-
-                        PurchaseState.PurchaseSuccess -> {
-                            if (it == PurchaseState.PurchaseSuccess) {
-                                _state.emit(CONSENT)
-                            } else if (it == PurchaseState.PurchaseFailed) {
-                                // TODO: handle error?
-                                subscriptionData.value?.let { subscriptionData ->
-                                    _state.emit(SUBSCRIPTIONS)
+                        val monthly = Plan(
+                            monthlyPlan.id,
+                            monthlyPlan.plan.replaceFirstChar { first ->
+                                if (first.isLowerCase()) {
+                                    first.titlecase(
+                                        Locale.getDefault(),
+                                    )
+                                } else {
+                                    first.toString()
                                 }
+                            },
+                            false,
+                            mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
+                        )
+                        subscriptionData.value =
+                            SubscriptionData(mutableStateOf(yearly), yearly, monthly)
+                        _state.emit(SUBSCRIPTIONS)
+                    }
+
+                    PurchaseState.PurchaseFailed -> {
+                        // TODO: handle error
+                    }
+
+                    PurchaseState.PurchaseSuccess -> {
+                        if (it == PurchaseState.PurchaseSuccess) {
+                            _state.emit(CONSENT)
+                        } else if (it == PurchaseState.PurchaseFailed) {
+                            // TODO: handle error?
+                            subscriptionData.value?.let { subscriptionData ->
+                                _state.emit(SUBSCRIPTIONS)
                             }
                         }
+                    }
 
-                        PurchaseState.NoInAppPurchase -> {
-                            _state.emit(NO_IN_APP_SUBSCRIPTIONS)
-                        }
+                    PurchaseState.NoInAppPurchase -> {
+                        _state.emit(NO_IN_APP_SUBSCRIPTIONS)
+                    }
 
-                        PurchaseState.Disconnected -> {
-                            // no-op
-                        }
+                    PurchaseState.Disconnected -> {
+                        // no-op
                     }
                 }
             }
@@ -193,24 +192,24 @@ class SignupViewModel(
     }
 
     fun navigateToLogin() {
-        router.handleFlow(EnterFlow.Login)
+        router.updateDestination(LoginWithCredentials)
         vpnSubscriptionPaymentProvider.reset()
     }
 
     fun navigateToTvWelcome() {
-        router.handleFlow(EnterFlow.TvWelcome)
+        router.updateDestination(TvWelcome)
     }
 
     fun navigateToPrivacyPolicy() {
-        router.handleFlow(EnterFlow.PrivacyPolicy)
+        router.updateDestination(WebDestination.Privacy)
     }
 
     fun navigateToTermsOfService() {
-        router.handleFlow(EnterFlow.TermsOfService)
+        router.updateDestination(WebDestination.Terms)
     }
 
     fun navigateToWebsite() {
-        router.handleFlow(EnterFlow.NoInAppRegistration)
+        router.updateDestination(WebDestination.NoInAppRegistration)
     }
 
     fun allowEventSharing(allow: Boolean) = viewModelScope.launch {
@@ -238,12 +237,8 @@ class SignupViewModel(
     }
 
     fun completeSubscription() {
-        router.handleFlow(ExitFlow.Subscribe)
+        router.updateDestination(permissionUtil.getNextDestination())
         vpnSubscriptionPaymentProvider.purchaseState.value = PurchaseState.Default
-    }
-
-    fun exitApp() {
-        router.handleFlow(Exit)
     }
 
     fun registerClientIfNeeded(activity: Activity) {

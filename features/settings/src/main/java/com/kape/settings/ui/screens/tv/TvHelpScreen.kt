@@ -3,7 +3,6 @@ package com.kape.settings.ui.screens.tv
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -50,7 +49,7 @@ fun TvHelpScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val initialFocusRequester = FocusRequester()
+    val initialFocusRequester = remember { FocusRequester() }
 
     val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
@@ -76,10 +75,6 @@ fun TvHelpScreen() = Screen {
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
-    }
-
-    BackHandler {
-        viewModel.navigateToConnection()
     }
 
     Box(

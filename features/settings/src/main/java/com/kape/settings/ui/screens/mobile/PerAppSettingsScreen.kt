@@ -57,7 +57,7 @@ fun PerAppSettingsScreen() = Screen {
     }
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps)
+        onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
     }
 
     Scaffold(
@@ -65,7 +65,7 @@ fun PerAppSettingsScreen() = Screen {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    onBackPressed(viewModel, lastExcludedApps)
+                    onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
                 },
             )
         },
@@ -118,11 +118,11 @@ fun PerAppSettingsScreen() = Screen {
                 onReconnect = {
                     viewModel.reconnect()
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.navigateUp()
+                    appBarViewModel.navigateBack()
                 },
                 onLater = {
                     viewModel.reconnectDialogVisible.value = false
-                    viewModel.navigateUp()
+                    appBarViewModel.navigateBack()
                 },
             )
         }
@@ -147,7 +147,7 @@ private fun ApplicationRow(
                 },
             ),
 
-    ) {
+        ) {
         val (image, text, button) = createRefs()
 
         Icon(
@@ -203,10 +203,14 @@ private fun SelectedCheckBox(checked: Boolean, modifier: Modifier) {
     )
 }
 
-private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>) {
+private fun onBackPressed(
+    viewModel: SettingsViewModel,
+    lastExcludedApps: List<String>,
+    navigateBack: () -> Unit,
+) {
     if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
-        viewModel.navigateUp()
+        navigateBack()
     }
 }

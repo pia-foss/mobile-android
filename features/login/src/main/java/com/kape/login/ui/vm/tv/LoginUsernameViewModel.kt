@@ -4,8 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.kape.login.domain.tv.LoginUsernameUseCase
-import com.kape.router.EnterFlow
 import com.kape.router.Router
+import com.kape.router.TvLoginPassword
 import org.koin.core.component.KoinComponent
 
 class LoginUsernameViewModel(
@@ -20,7 +20,7 @@ class LoginUsernameViewModel(
     }
 
     fun navigateToPassword() {
-        router.handleFlow(EnterFlow.Login)
+        router.updateDestination(TvLoginPassword)
     }
 
     fun isValidUsername(): Boolean =

@@ -3,7 +3,6 @@ package com.kape.settings.ui.screens.mobile
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,21 +40,15 @@ fun HelpScreen() = Screen {
     val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
         appBarText(stringResource(id = R.string.help))
     }
+
     val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
     val showToast = remember { mutableStateOf(false) }
     val showSpinner = remember { mutableStateOf(false) }
 
-    BackHandler {
-        viewModel.navigateUp()
-    }
-
     Scaffold(
         topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = { viewModel.navigateUp() },
-            )
+            AppBar(viewModel = appBarViewModel)
         },
     ) {
         Column(

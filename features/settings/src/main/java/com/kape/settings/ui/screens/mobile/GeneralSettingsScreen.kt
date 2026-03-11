@@ -1,6 +1,5 @@
 package com.kape.settings.ui.screens.mobile
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,24 +28,17 @@ fun GeneralSettingsScreen() =
                 appBarText(stringResource(id = R.string.general))
             }
 
-        BackHandler {
-            viewModel.navigateUp()
-        }
-
         Scaffold(
             topBar = {
-                AppBar(
-                    viewModel = appBarViewModel,
-                    onLeftIconClick = { viewModel.navigateUp() },
-                )
+                AppBar(viewModel = appBarViewModel)
             },
         ) {
             Column(
                 modifier =
-                Modifier
-                    .padding(it)
-                    .fillMaxWidth()
-                    .semantics {},
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth()
+                        .semantics {},
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {

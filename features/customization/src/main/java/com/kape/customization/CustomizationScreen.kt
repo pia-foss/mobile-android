@@ -64,13 +64,17 @@ fun CustomizationScreen() = Screen {
         }
     }
 
+    
+
     Scaffold(
         topBar = {
             AppBar(
                 viewModel = appBarViewModel,
                 type = AppBarType.Customization,
-                onLeftIconClick = { viewModel.exitCustomization() },
-                onRightIconClick = { viewModel.saveOrder() },
+                onRightIconClick = {
+                    viewModel.saveOrder()
+                    viewModel.router.navigateBack()
+                },
             )
         },
     ) {
@@ -172,7 +176,6 @@ private fun DisplayComponent(
                     PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
                     PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
                     PortForwardingStatus.Success -> viewModel.port.value.toString()
-                    else -> ""
                 },
             )
         }

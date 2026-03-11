@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -16,12 +17,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
 import com.kape.obfuscationregionselection.util.ItemType
+import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Search
@@ -45,14 +48,14 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
         appBarText(stringResource(id = R.string.location_selection_title))
     }
     val isSearchEnabled = remember { mutableStateOf(false) }
-
+    
     Column(
         modifier = Modifier
             .background(LocalColors.current.surfaceVariant)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AppBar(appBarViewModel, onLeftIconClick = { viewModel.navigateBack() })
+        AppBar(appBarViewModel)
 
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Search(
@@ -85,7 +88,10 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
                                     server = item.type.server,
                                     isFavorite = item.type.isFavorite,
                                     enableFavorite = item.type.enableFavorite,
-                                    onClick = { viewModel.onShadowsocksRegionSelected(it) },
+                                    onClick = {
+                                        viewModel.onShadowsocksRegionSelected(it)
+                                        appBarViewModel.navigateBack()
+                                    },
                                     onFavoriteShadowsocksClick = {
                                         viewModel.onFavoriteShadowsocksClicked(
                                             it,

@@ -1,6 +1,5 @@
 package com.kape.settings.ui.screens.tv
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -40,10 +39,6 @@ fun TvConnectionStatsScreen() = Screen {
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
     val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
         getRecentEvents()
-    }
-
-    BackHandler {
-        viewModel.navigateUp()
     }
 
     Box(

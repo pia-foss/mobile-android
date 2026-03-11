@@ -65,7 +65,7 @@ fun VpnRegionSelectionScreen() = Screen {
             .semantics { testTagsAsResourceId = true },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AppBar(appBarViewModel, onLeftIconClick = { viewModel.navigateBack() })
+        AppBar(appBarViewModel)
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Search(
                 modifier = Modifier
@@ -112,7 +112,10 @@ fun VpnRegionSelectionScreen() = Screen {
                                     enableFavorite = item.type.enableFavorite,
                                     isPortForwardingEnabled = viewModel.isPortForwardingEnabled,
                                     isOffline = item.type.server.isOffline,
-                                    onClick = { viewModel.onVpnRegionSelected(it) },
+                                    onClick = {
+                                        viewModel.onVpnRegionSelected(it)
+                                        appBarViewModel.navigateBack()
+                                    },
                                     onFavoriteVpnClick = {
                                         viewModel.onFavoriteVpnClicked(
                                             ServerData(

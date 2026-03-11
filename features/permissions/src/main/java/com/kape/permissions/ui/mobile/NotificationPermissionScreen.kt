@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -45,15 +44,9 @@ fun NotificationPermissionScreen() = Screen {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = {
-            viewModel.exitOnboarding()
+            viewModel.navigateToConnection()
         },
     )
-
-    LaunchedEffect(key1 = Unit) {
-        if (viewModel.isNotificationPermissionGranted()) {
-            viewModel.exitOnboarding()
-        }
-    }
 
     Column(
         modifier = Modifier

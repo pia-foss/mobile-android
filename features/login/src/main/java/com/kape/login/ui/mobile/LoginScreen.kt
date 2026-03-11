@@ -20,7 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,12 +39,13 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
-import com.kape.router.Login
+import com.kape.router.LocalNavigator
+import com.kape.router.LoginWithEmail
 import com.kape.ui.mobile.elements.ErrorCard
 import com.kape.ui.mobile.elements.NoNetworkBanner
 import com.kape.ui.mobile.elements.PrimaryButton
@@ -57,8 +57,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginScreen(navController: NavController) = Screen {
+fun LoginScreen() = Screen {
     val viewModel: LoginViewModel = koinViewModel()
+
     val state by remember(viewModel) { viewModel.loginState }.collectAsState()
     val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
     val currentContext = LocalContext.current
@@ -66,10 +67,6 @@ fun LoginScreen(navController: NavController) = Screen {
 
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-
-    LaunchedEffect(key1 = state) {
-        viewModel.checkUserLoggedIn()
-    }
 
     Column(
         modifier = Modifier
@@ -176,7 +173,7 @@ fun LoginScreen(navController: NavController) = Screen {
                     .align(CenterHorizontally)
                     .padding(16.dp, 8.dp, 16.dp, 16.dp)
                     .clickable {
-                        navController.navigate(Login.WithEmail)
+                        viewModel.navigateToLoginWithEmail()
                     },
             )
         }
@@ -193,10 +190,4 @@ private fun getErrorMessage(state: LoginScreenState): String? {
         LoginError.ServiceUnavailable -> stringResource(id = com.kape.ui.R.string.error_operation_failed)
         null -> null
     }
-}
-
-@Preview
-@Composable
-fun ShowLoginScreen() {
-    LoginScreen(rememberNavController())
 }

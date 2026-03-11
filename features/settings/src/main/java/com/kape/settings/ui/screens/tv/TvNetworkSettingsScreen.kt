@@ -1,6 +1,5 @@
 package com.kape.settings.ui.screens.tv
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +50,7 @@ fun TvNetworkSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
     val connectionManager: ConnectionManager = koinInject()
     val connectionStatus = connectionManager.connectionStatus.collectAsState()
-    val initialFocusRequester = FocusRequester()
+    val initialFocusRequester = remember { FocusRequester() }
 
     val dnsOptions = mutableMapOf(
         DnsOptions.PIA to stringResource(id = R.string.pia),
@@ -73,16 +72,8 @@ fun TvNetworkSettingsScreen() = Screen {
     val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
     val dnsWarningDialogVisible = remember { mutableStateOf(false) }
 
-    BackHandler {
-        viewModel.navigateUp()
-    }
-
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()
-    }
-
-    BackHandler {
-        viewModel.navigateUp()
     }
 
     Box(

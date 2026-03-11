@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.kape.about.di.aboutModule
 import com.kape.appbar.di.appBarModule
 import com.kape.automation.di.automationModule
 import com.kape.buildconfig.di.buildConfigModule
@@ -13,7 +12,6 @@ import com.kape.csi.di.csiModule
 import com.kape.customization.di.customizationModule
 import com.kape.dedicatedip.di.dedicatedIpModule
 import com.kape.featureflags.di.featureFlagsModule
-import com.kape.inappbrowser.di.inAppBrowserModule
 import com.kape.login.di.loginModule
 import com.kape.networkmanagement.di.networkManagementModule
 import com.kape.notifications.di.notificationModule
@@ -97,9 +95,7 @@ class App : Application() {
                 add(shadowsocksRegionsModule(appModule))
                 add(automationModule(appModule))
                 add(networkManagementModule)
-                add(aboutModule(appModule))
                 add(customizationModule(appModule))
-                add(inAppBrowserModule(appModule))
                 add(snoozeModule(appModule))
                 add(obfuscatorModule(appModule))
                 add(featureFlagsModule)

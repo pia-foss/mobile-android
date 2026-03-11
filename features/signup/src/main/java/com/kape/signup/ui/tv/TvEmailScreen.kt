@@ -1,6 +1,5 @@
 package com.kape.signup.ui.tv
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,10 +43,6 @@ fun TvEmailScreen() {
     val email = remember { mutableStateOf("") }
     val emailErrorMessage = stringResource(id = R.string.error_missing_email)
     val evaluateEmailError = remember { mutableStateOf(false) }
-
-    BackHandler {
-        viewModel.exitApp()
-    }
 
     fun showEmailErrorIfNeeded(): String? {
         if (evaluateEmailError.value.not()) {
