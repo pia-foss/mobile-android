@@ -57,6 +57,7 @@ object UiAutomatorHelpers {
     fun UiAutomatorTestScope.pressBackTwice(times: Int = 1) {
         repeat(times) {
             findFreshByResId(":AppBar:back").click()
+            device.waitForIdle()
         }
     }
 

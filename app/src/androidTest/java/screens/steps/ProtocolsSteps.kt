@@ -1,6 +1,9 @@
 package screens.steps
 
+import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiAutomatorTestScope
+import androidx.test.uiautomator.Until
+import screens.helpers.UiAutomatorHelpers.DEFAULT_TIMEOUT
 import screens.helpers.UiAutomatorHelpers.click
 import screens.helpers.UiAutomatorHelpers.findByResId
 
@@ -20,18 +23,20 @@ object ProtocolsSteps {
     fun UiAutomatorTestScope.selectOpenVPN() {
         click(OPEN_VPN_BUTTON)
         click(ANDROID_OK_BUTTON)
+        device.wait(Until.gone(By.res(ANDROID_OK_BUTTON)), DEFAULT_TIMEOUT)
     }
 
     fun UiAutomatorTestScope.selectWireGuard() {
         click(WIRE_GUARD_BUTTON)
         click(ANDROID_OK_BUTTON)
+        device.wait(Until.gone(By.res(ANDROID_OK_BUTTON)), DEFAULT_TIMEOUT)
     }
 
     fun UiAutomatorTestScope.smallPacketToggleChecked(desiredState: Boolean) {
-        findByResId(SMALL_PACKETS_TOGGLE)?.let {
-            if (it.isChecked != desiredState) {
-                click(SMALL_PACKETS_TOGGLE)
-            }
+        val toggle = findByResId(SMALL_PACKETS_TOGGLE) ?: return
+        if (toggle.isChecked != desiredState) {
+            toggle.click()  // use the same reference, not a fresh lookup
+            device.waitForIdle()
         }
     }
 }

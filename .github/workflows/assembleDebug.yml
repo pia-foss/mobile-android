@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6
 
       - name: Setup JAVA 17
         uses: actions/setup-java@v4.7.0
@@ -19,20 +19,12 @@ jobs:
       - name: Run Ktlint Check
         run: ./gradlew ktlintCheck
 
-      - name: Check Java version
-        run: java -version
-
-  assemble-apks:
+  build-debug-apk:
     needs: ktlintCheck
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        config: [Debug, Release]
-
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6
 
       - name: Setup JAVA 17
         uses: actions/setup-java@v4.7.0
@@ -41,39 +33,58 @@ jobs:
           java-version: 17
 
       - name: Cache Gradle and wrapper
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
 
+      - name: Build Debug APK
+        env:
+          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+        run: ./gradlew :app:assembleGoogleDebug
+
+      - name: Upload Debug APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/google/debug/*.apk
+          retention-days: 1
+
   build-playstore-version:
+    needs: ktlintCheck
     uses: ./.github/workflows/build-playstore-android.yaml
     secrets: inherit
 
   build-website-version:
+    needs: ktlintCheck
     uses: ./.github/workflows/build-website-android.yaml
     secrets: inherit
 
   build-amazon-version:
+    needs: ktlintCheck
     uses: ./.github/workflows/build-amazon-android.yaml
     secrets: inherit
 
   build-playstore-apk-version:
+    needs: ktlintCheck
     uses: ./.github/workflows/build-playstore-apk-android.yaml
     secrets: inherit
 
   build-meta-version:
+    needs: ktlintCheck
     uses: ./.github/workflows/build-meta-android.yaml
     secrets: inherit
 
   e2e-testing:
     name: Run end to end instrumentation tests
+    needs: build-debug-apk
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6
 
       - name: Setup JAVA 17
         uses: actions/setup-java@v4.7.0
@@ -82,12 +93,18 @@ jobs:
           java-version: 17
 
       - name: Cache Gradle and wrapper
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+
+      - name: Download Debug APK
+        uses: actions/download-artifact@v4
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/google/debug/
 
       - name: Enable Hardware Acceleration (Add KVM group perms)
         run: |
@@ -119,9 +136,10 @@ jobs:
             adb shell settings put global animator_duration_scale 0
             ./gradlew :app:connectedGoogleDebugAndroidTest
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload E2E report
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: e2e-report
-          path: ${{github.workspace}}/app/build/reports/androidTests/connected/debug/flavors/google/*
+          path: ${{ github.workspace }}/app/build/reports/androidTests/connected/debug/flavors/google/*
           overwrite: true
