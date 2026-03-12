@@ -14,6 +14,8 @@ object MainScreenSteps {
 
     fun UiAutomatorTestScope.establishAndVerifyVPNConnection() {
         click(CONNECT_BUTTON)
-        waitUntilConnectionIsEstablished()
+        check(waitUntilConnectionIsEstablished()) {
+            "Vpn failed to connect within timeout"
+        }
     }
 }
