@@ -15,14 +15,15 @@ class PriceFormatter(private val context: Context) {
 
     fun formatYearlyPerMonth(cost: String, currencyCode: String): String {
         val priceAsDouble = toEnglishDigits(cost)
-        return try {
-            val costPerMonth = priceAsDouble / 12
-            context.getString(com.kape.ui.R.string.yearly_month_ending)
-                .format(formatPrice(costPerMonth, currencyCode))
-        } catch (e: NumberFormatException) {
-            val errorMessage = "${e.message}, $cost"
-            throw Exception(errorMessage)
-        }
+        priceAsDouble?.let {
+            return try {
+                val costPerMonth = priceAsDouble / 12
+                context.getString(com.kape.ui.R.string.yearly_month_ending)
+                    .format(formatPrice(costPerMonth, currencyCode))
+            } catch (e: NumberFormatException) {
+                ""
+            }
+        }?: return ""
     }
 
     fun formatMonthlyPlan(cost: String): String {
@@ -36,14 +37,12 @@ class PriceFormatter(private val context: Context) {
         return format.format(amount)
     }
 
-    fun toEnglishDigits(price: String, locale: Locale = Locale.getDefault()): Double {
+    fun toEnglishDigits(price: String, locale: Locale = Locale.getDefault()): Double? {
         val cleaned = price.replace("[^\\d.,]".toRegex(), "").trim()
         return try {
             NumberFormat.getNumberInstance(locale).parse(cleaned)?.toDouble()
-                ?: throw NumberFormatException("Cannot parse: $price")
         } catch (e: ParseException) {
-            // Fallback: try treating comma as decimal separator
-            cleaned.replace(",", ".").toDouble()
+            null
         }
     }
 
