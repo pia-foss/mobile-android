@@ -188,9 +188,11 @@ class MainActivity : AppCompatActivity() {
     // region private
     private fun defineScreenOrientation() {
         if (platformUtils.isTv()) {
-            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE // tv
+        } else if (platformUtils.isTablet()) {
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED  // allow rotation
         } else {
-            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT // phone
         }
     }
 
