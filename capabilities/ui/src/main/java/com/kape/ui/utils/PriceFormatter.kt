@@ -3,7 +3,9 @@ package com.kape.ui.utils
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import java.text.NumberFormat
+import java.text.ParseException
 import java.util.Currency
+import java.util.Locale
 
 class PriceFormatter(private val context: Context) {
 
@@ -12,11 +14,11 @@ class PriceFormatter(private val context: Context) {
     }
 
     fun formatYearlyPerMonth(cost: String, currencyCode: String): String {
-        val priceInDigits = cost.toEnglishDigits()
+        val priceAsDouble = toEnglishDigits(cost)
         return try {
-            val costPerMonth = priceInDigits.toFloat() / 12
+            val costPerMonth = priceAsDouble / 12
             context.getString(com.kape.ui.R.string.yearly_month_ending)
-                .format(formatPrice(costPerMonth.toDouble(), currencyCode))
+                .format(formatPrice(costPerMonth, currencyCode))
         } catch (e: NumberFormatException) {
             val errorMessage = "${e.message}, $cost"
             throw Exception(errorMessage)
@@ -34,29 +36,15 @@ class PriceFormatter(private val context: Context) {
         return format.format(amount)
     }
 
-    private fun String.toEnglishDigits(): Double {
-        // 1) Convert all localized digits → Latin digits
-        val normalizedDigits = this.map { c ->
-            val d = Character.getNumericValue(c)
-            if (d in 0..9) d else c
-        }.joinToString("")
-
-        // 2) Keep only numbers, commas and dots
-        val cleaned = normalizedDigits.replace(Regex("[^0-9.,]"), "")
-
-        // 3) Handle decimal separator intelligently
-        val lastComma = cleaned.lastIndexOf(',')
-        val lastDot = cleaned.lastIndexOf('.')
-
-        val normalizedNumber = when {
-            lastComma > lastDot -> cleaned
-                .replace(".", "")
-                .replace(",", ".")
-
-            else -> cleaned.replace(",", "")
+    fun toEnglishDigits(price: String, locale: Locale = Locale.getDefault()): Double {
+        val cleaned = price.replace("[^\\d.,]".toRegex(), "").trim()
+        return try {
+            NumberFormat.getNumberInstance(locale).parse(cleaned)?.toDouble()
+                ?: throw NumberFormatException("Cannot parse: $price")
+        } catch (e: ParseException) {
+            // Fallback: try treating comma as decimal separator
+            cleaned.replace(",", ".").toDouble()
         }
-
-        return normalizedNumber.toDouble()
     }
 
 }
