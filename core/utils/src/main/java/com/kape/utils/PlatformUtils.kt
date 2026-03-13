@@ -11,4 +11,8 @@ class PlatformUtils(private val context: Context) {
             context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
         return uiModeManager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION
     }
+
+    fun isTablet(): Boolean {
+        return context.resources.configuration.smallestScreenWidthDp >= 600
+    }
 }
