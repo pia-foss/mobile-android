@@ -85,7 +85,7 @@ class RegionListProvider(
                 .fetchLatencies(isConnected)
                 .collect { updatedServers ->
                     for (server in updatedServers) {
-                        it.filter { it.name == server.name }[0].latency =
+                        it.filter { it.name == server.name }.firstOrNull()?.latency =
                             server.latency ?: VPN_REGIONS_PING_TIMEOUT.toString()
                     }
                     _servers.value = updatedServers
