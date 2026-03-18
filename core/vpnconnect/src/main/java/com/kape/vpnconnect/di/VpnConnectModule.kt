@@ -14,6 +14,7 @@ import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
+import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.Module
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -66,7 +67,7 @@ internal val internalVpnConnectModule = module {
         )
     }
     single { provideConnectionStatusValues(get()) }
-    single { ConnectionManager(get(), get(), get(), get()) }
+    single { ConnectionManager(androidApplication(), get(), get(), get()) }
     single { GetLogsUseCase(get()) }
 }
 

@@ -64,6 +64,7 @@ import com.privateinternetaccess.kpi.internals.utils.KTimeUnit
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.RegionsBuilder
 import kotlinx.coroutines.Dispatchers
+import org.koin.android.ext.koin.androidApplication
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import java.io.BufferedReader
@@ -102,7 +103,7 @@ val appModule = module {
     single { provideKpiApi(get()) }
     single { provideLauncherIntent(get()) }
     single { providePendingIntent(get(), get()) }
-    single { provideNotification(get()) }
+    single { provideNotification(androidApplication()) }
     single(named("service-intent")) { provideWidgetServiceIntent(get()) }
     single(named(AUTOMATION_SERVICE_INTENT)) { provideAutomationServiceIntent(get()) }
     single { AutomationManager(get(), get(named(AUTOMATION_SERVICE_INTENT)), get()) }
