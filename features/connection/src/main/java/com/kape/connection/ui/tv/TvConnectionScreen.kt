@@ -1,6 +1,7 @@
 package com.kape.connection.ui.tv
 
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,6 +57,11 @@ fun TvConnectionScreen() = Screen {
     val topEndHeaderFocusRequester = remember { FocusRequester() }
     val startQuickConnectFocusRequester = remember { FocusRequester() }
     val locale = Locale.getDefault().language
+    val activity = LocalActivity.current
+
+    BackHandler {
+        activity?.finish()
+    }
 
     LaunchedEffect(key1 = Unit) {
         topStartHeaderFocusRequester.requestFocus()
