@@ -40,8 +40,10 @@ import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 
 class SettingsViewModel(
@@ -328,16 +330,22 @@ class SettingsViewModel(
         vpnExcludedApps.value = prefs.getVpnExcludedApps()
     }
 
-    fun getInstalledApplications(packageManager: PackageManager) = viewModelScope.launch {
-        // Allow for the transition to take effect. Otherwise the transition and the loading of the
-        // packages will cause a stutter due to the recomposition and the transition happening
-        // at around the same time.
-        delay(GET_INSTALLED_APPS_DELAY_MS)
+    fun getInstalledApplications(packageManager: PackageManager) =
+        viewModelScope.launch(Dispatchers.IO) {
+            // Allow for the transition to take effect. Otherwise the transition and the loading of the
+            // packages will cause a stutter due to the recomposition and the transition happening
+            // at around the same time.
+            delay(GET_INSTALLED_APPS_DELAY_MS)
 
-        installedApps =
-            PerAppSettingsUtils.getInstalledApps(packageManager = packageManager).filterNotNull()
-        appList.value = installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
-    }
+            installedApps =
+                PerAppSettingsUtils.getInstalledApps(packageManager = packageManager)
+                    .filterNotNull()
+            val sortedApps =
+                installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
+            withContext(Dispatchers.Main) {
+                appList.value = sortedApps
+            }
+        }
 
     fun filterAppsByName(value: String, packageManager: PackageManager) {
         if (value.isEmpty()) {
