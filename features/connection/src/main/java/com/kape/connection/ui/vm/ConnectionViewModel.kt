@@ -182,9 +182,12 @@ class ConnectionViewModel(
                     connectionUseCase.startConnection(
                         regionListProvider.getOptimalServer(),
                         false,
-                    )
-                        .collect()
+                    ).collect()
                 }
+            }
+            if (shortcutPrefs.isShortcutDisconnectVpn()) {
+                shortcutPrefs.setShortcutDisconnectVpn(false)
+                connectionUseCase.stopConnection().collect()
             }
         }
     }
