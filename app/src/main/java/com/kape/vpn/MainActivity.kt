@@ -122,9 +122,12 @@ import com.kape.tvwelcome.ui.TvWelcomeScreen
 import com.kape.ui.theme.PIATheme
 import com.kape.ui.theme.PiaScreen
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_CONNECT
+import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_DISCONNECT
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.utils.PlatformUtils
+import com.kape.vpn.utils.ShortcutManager
+import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
 import org.koin.android.ext.android.inject
@@ -136,6 +139,7 @@ class MainActivity : AppCompatActivity() {
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
     private val shortcutPrefs: ShortcutPrefs by inject()
     private val platformUtils: PlatformUtils by inject()
+    private val shortcutManager: ShortcutManager by inject()
     val licences: List<String> by inject(named("licences"))
     val permissionUtil: PermissionUtil by inject()
 
@@ -145,22 +149,16 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE,
         )
+        shortcutManager.createDynamicShortcuts()
         vpnSubscriptionPaymentProvider.register(this)
         defineScreenOrientation()
         deepLinkLogin(intent)
         intent.action?.let {
             when (it) {
-                ACTION_SETTINGS -> {
-                    shortcutPrefs.setShortcutSettings(true)
-                }
-
-                ACTION_SERVER_SELECTION -> {
-                    shortcutPrefs.setShortcutChangeServer(true)
-                }
-
-                ACTION_CONNECT -> {
-                    shortcutPrefs.setShortcutConnectToVpn(true)
-                }
+                ACTION_SETTINGS -> shortcutPrefs.setShortcutSettings(true)
+                ACTION_SERVER_SELECTION -> shortcutPrefs.setShortcutChangeServer(true)
+                ACTION_CONNECT -> shortcutPrefs.setShortcutConnectToVpn(true)
+                ACTION_DISCONNECT -> shortcutPrefs.setShortcutDisconnectVpn(true)
             }
         }
         enableEdgeToEdge()

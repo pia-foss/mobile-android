@@ -45,6 +45,7 @@ import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.service.AutomationService
 import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.NetworkManager
+import com.kape.vpn.utils.ShortcutManager
 import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
@@ -129,6 +130,7 @@ val appModule = module {
     single { CustomizationPrefs(get()) }
     single(named("automation-pending-intent")) { provideAutomationPendingIntent(get()) }
     single { PlatformUtils(get()) }
+    single { ShortcutManager(get(), get()) }
 }
 
 private fun provideAndroidAccountApi(provider: AccountModuleStateProvider): AndroidAccountAPI {
