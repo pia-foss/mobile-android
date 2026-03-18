@@ -5,6 +5,10 @@ on:
     tags:
       - '*'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   Gradle:
     env:
@@ -13,12 +17,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup JDK
         uses: actions/setup-java@v5
         with:
+          distribution: 'temurin'
           java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Make Gradle executable
         run: chmod +x ./gradlew
@@ -29,6 +37,8 @@ jobs:
       - name: Sign APK
         id: sign_apk
         uses: ilharp/sign-android-release@v2
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
           releaseDir: app/build/outputs/apk/noinapp/release
           signingKey: ${{ secrets.SIGNING_WEB_KEYSTORE }}
@@ -38,7 +48,7 @@ jobs:
           buildToolsVersion: "34.0.0"
 
       - name: Releasing using Hub
-        uses: kyze8439690/action-release-releaseapk@master
+        uses: kyze8439690/action-release-releaseapk@v1
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
           APP_FOLDER: app

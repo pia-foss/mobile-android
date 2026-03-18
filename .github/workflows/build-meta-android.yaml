@@ -8,14 +8,16 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Gradle rights
         run: chmod +x gradlew
@@ -26,6 +28,8 @@ jobs:
       - name: Sign APK
         id: sign_apk
         uses: ilharp/sign-android-release@v2
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         with:
           releaseDir: app/build/outputs/apk/meta/release
           signingKey: ${{ secrets.SIGNING_WEB_KEYSTORE }}
@@ -37,7 +41,7 @@ jobs:
       - run: echo "Build status report=${{ job.status }}."
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: pia-output-meta
           path: ${{ steps.sign_apk.outputs.signedFile }}
