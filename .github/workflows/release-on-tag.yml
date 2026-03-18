@@ -12,16 +12,20 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-      - name: setup jdk
-        uses: actions/setup-java@v4.7.0
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup JDK
+        uses: actions/setup-java@v5
         with:
           java-version: 17
+
       - name: Make Gradle executable
         run: chmod +x ./gradlew
+
       - name: Build Release APK
         run: ./gradlew assembleNoinappRelease
+
       - name: Sign APK
         id: sign_apk
         uses: ilharp/sign-android-release@v2
@@ -31,6 +35,8 @@ jobs:
           keyAlias: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
           keyPassword: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
+          buildToolsVersion: "34.0.0"
+
       - name: Releasing using Hub
         uses: kyze8439690/action-release-releaseapk@master
         env:
