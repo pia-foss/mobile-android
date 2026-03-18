@@ -35,8 +35,7 @@ object ProtocolsSteps {
     fun UiAutomatorTestScope.smallPacketToggleChecked(desiredState: Boolean) {
         val toggle = findByResId(SMALL_PACKETS_TOGGLE) ?: return
         if (toggle.isChecked != desiredState) {
-            toggle.click()  // use the same reference, not a fresh lookup
-            device.waitForIdle()
+            click(SMALL_PACKETS_TOGGLE)
         }
     }
 }
