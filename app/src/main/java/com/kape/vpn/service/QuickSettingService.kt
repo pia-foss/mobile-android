@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.coroutines.CoroutineContext
@@ -28,7 +29,9 @@ class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
     init {
         launch {
             connectionManager.connectionStatus.collect {
-                updateTile()
+                withContext(Dispatchers.Main) {
+                    updateTile()
+                }
             }
         }
     }
@@ -59,25 +62,30 @@ class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+    }
+
     private fun updateTile() {
         qsTile?.let {
             if (connectionManager.isConnected()) {
-                qsTile.state = Tile.STATE_ACTIVE
-                qsTile.label = if (connectionManager.serverName.value.isEmpty()) {
+                it.state = Tile.STATE_ACTIVE
+                it.label = if (connectionManager.serverName.value.isEmpty()) {
                     getString(R.string.qs_disconnect_nolocation)
                 } else {
                     getString(R.string.qs_disconnect, connectionManager.serverName.value)
                 }
             } else {
                 if (!getUserLoggedInUseCase.isUserLoggedIn()) {
-                    qsTile.state = Tile.STATE_UNAVAILABLE
-                    qsTile.label = getString(R.string.not_logged_in)
+                    it.state = Tile.STATE_UNAVAILABLE
+                    it.label = getString(R.string.not_logged_in)
                 } else {
-                    qsTile.state = Tile.STATE_INACTIVE
-                    qsTile.label = getString(R.string.qs_title)
+                    it.state = Tile.STATE_INACTIVE
+                    it.label = getString(R.string.qs_title)
                 }
             }
-            qsTile.updateTile()
+            it.updateTile()
         }
     }
 }
