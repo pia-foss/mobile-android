@@ -8,32 +8,42 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: set up JDK 17
-        uses: actions/setup-java@v4.7.0
+      - uses: actions/checkout@v6
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
       - name: Gradle rights
         run: chmod +x gradlew
+
       - name: Assemble 'metaRelease' with Gradle
         run: ./gradlew assembleMetaRelease
+
+      - name: Decode keystore
+        run: echo "${{ secrets.SIGNING_WEB_KEYSTORE }}" | base64 -d > keystore.jks
+
       - name: Sign APK
         id: sign_apk
-        uses: ilharp/sign-android-release@v2
-        with:
-          releaseDir: app/build/outputs/apk/meta/release
-          signingKey: ${{ secrets.SIGNING_WEB_KEYSTORE }}
-          keyAlias: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
-        env:
-          BUILD_TOOLS_VERSION: "34.0.0"
+        run: |
+          $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
+            --ks keystore.jks \
+            --ks-pass pass:"${{ secrets.SIGNING_WEB_STORE_PASSWORD }}" \
+            --key-pass pass:"${{ secrets.SIGNING_WEB_KEY_PASSWORD }}" \
+            --ks-key-alias "${{ secrets.SIGNING_WEB_KEY_ALIAS }}" \
+            --out app-meta-release-signed.apk \
+            app/build/outputs/apk/meta/release/app-meta-release-unsigned.apk
+
       - run: echo "Build status report=${{ job.status }}."
+
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: pia-output-meta
-          path: ${{steps.sign_apk.outputs.signedFile}}
+          path: app-meta-release-signed.apk
           if-no-files-found: error
