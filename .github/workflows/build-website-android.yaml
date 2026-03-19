@@ -25,18 +25,19 @@ jobs:
       - name: Assemble 'noinappRelease' with Gradle
         run: ./gradlew assembleNoinappRelease
 
+      - name: Decode keystore
+        run: echo "${{ secrets.SIGNING_WEB_KEYSTORE }}" | base64 -d > keystore.jks
+
       - name: Sign APK
         id: sign_apk
-        uses: ilharp/sign-android-release@v2
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-        with:
-          releaseDir: app/build/outputs/apk/noinapp/release
-          signingKey: ${{ secrets.SIGNING_WEB_KEYSTORE }}
-          keyAlias: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
-          buildToolsVersion: "34.0.0"
+        run: |
+          $ANDROID_HOME/build-tools/34.0.0/apksigner sign \
+            --ks keystore.jks \
+            --ks-pass pass:"${{ secrets.SIGNING_WEB_STORE_PASSWORD }}" \
+            --key-pass pass:"${{ secrets.SIGNING_WEB_KEY_PASSWORD }}" \
+            --ks-key-alias "${{ secrets.SIGNING_WEB_KEY_ALIAS }}" \
+            --out app-noinapp-release-signed.apk \
+            app/build/outputs/apk/noinapp/release/app-noinapp-release-unsigned.apk
 
       - run: echo "Build status report=${{ job.status }}."
 
@@ -44,5 +45,5 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: pia-output-website
-          path: ${{ steps.sign_apk.outputs.signedFile }}
+          path: app-noinapp-release-signed.apk
           if-no-files-found: error

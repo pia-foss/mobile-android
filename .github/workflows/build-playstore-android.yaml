@@ -25,18 +25,21 @@ jobs:
       - name: Bundle 'googleRelease' with Gradle
         run: ./gradlew bundleGoogleRelease
 
+      - name: Decode keystore
+        run: echo "${{ secrets.SIGNING_PLAYSTORE_KEYSTORE }}" | base64 -d > keystore.jks
+
       - name: Sign AAB
         id: sign_aab
-        uses: ilharp/sign-android-release@v2
-        env:
-          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-        with:
-          releaseDir: app/build/outputs/bundle/googleRelease
-          signingKey: ${{ secrets.SIGNING_PLAYSTORE_KEYSTORE }}
-          keyAlias: ${{ secrets.SIGNING_PLAYSTORE_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.SIGNING_PLAYSTORE_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.SIGNING_PLAYSTORE_KEY_PASSWORD }}
-          buildToolsVersion: "34.0.0"
+        run: |
+          jarsigner -verbose \
+            -sigalg SHA256withRSA \
+            -digestalg SHA-256 \
+            -keystore keystore.jks \
+            -storepass "${{ secrets.SIGNING_PLAYSTORE_STORE_PASSWORD }}" \
+            -keypass "${{ secrets.SIGNING_PLAYSTORE_KEY_PASSWORD }}" \
+            -signedjar app-google-release-signed.aab \
+            app/build/outputs/bundle/googleRelease/app-google-release.aab \
+            "${{ secrets.SIGNING_PLAYSTORE_KEY_ALIAS }}" 
 
       - run: echo "Build status report=${{ job.status }}."
 
@@ -44,5 +47,5 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: pia-output-google-play
-          path: ${{ steps.sign_aab.outputs.signedFile }}
+          path: app-google-release-signed.aab
           if-no-files-found: error
