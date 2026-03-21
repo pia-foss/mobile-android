@@ -59,6 +59,7 @@ class ShortcutManager(
             .setIntent(
                 Intent(context, MainActivity::class.java).apply {
                     action = if (isConnected) ACTION_DISCONNECT else ACTION_CONNECT
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 },
             )
             .build()
@@ -75,6 +76,7 @@ class ShortcutManager(
             .setIntent(
                 Intent(context, MainActivity::class.java).apply {
                     action = ACTION_SERVER_SELECTION
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 },
             )
             .build()
@@ -83,7 +85,12 @@ class ShortcutManager(
             .setShortLabel(context.getString(R.string.settings))
             .setLongLabel(context.getString(R.string.settings))
             .setIcon(IconCompat.createWithResource(context, com.kape.ui.R.drawable.ic_settings))
-            .setIntent(Intent(context, MainActivity::class.java).apply { action = ACTION_SETTINGS })
+            .setIntent(
+                Intent(context, MainActivity::class.java).apply {
+                    action = ACTION_SETTINGS
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                },
+            )
             .build()
 
         ShortcutManagerCompat.setDynamicShortcuts(context, listOf(connect, servers, settings))
