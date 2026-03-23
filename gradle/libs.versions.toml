@@ -8,7 +8,7 @@ compose-tv-material = "1.0.1"
 compose-navigation = "2.9.7"
 compose-jetpack = "2.10.0"
 accompanist = "0.36.0"
-koin = "4.1.1"
+koin = "4.2.0"
 desugar = "2.1.5"
 swipe-to-refresh = "1.2.0"
 androidx-core = "1.18.0"
@@ -58,7 +58,6 @@ compose-android-test = { group = "androidx.compose.ui", name = "ui-test-junit4" 
 debug-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 debug-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-material3" }
-compose-tv-foundation = { module = "androidx.tv:tv-foundation", version.ref = "compose-tv" }
 compose-tv-material = { module = "androidx.tv:tv-material", version.ref = "compose-tv-material" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
 compose-navigation-test = { module = "androidx.navigation:navigation-testing", version.ref = "compose-navigation" }
@@ -121,7 +120,7 @@ junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junit5" }
 configuration = { id = "configuration", version = "1.0" }
 
 [bundles]
-compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-foundation", "compose-runtime", "compose-navigation", "compose-tv-material", "compose-tv-foundation", "material3"]
+compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-foundation", "compose-runtime", "compose-navigation", "compose-tv-material", "material3"]
 composeandroidtest = ["compose-android-test", "compose-navigation-test"]
 debugtest = ["debug-manifest", "debug-tooling"]
 android = ["viewmodel", "androidx-core", "lifecycle", "lifecyclecompose", "lifecycleprocess", "activity", "appcompat"]
