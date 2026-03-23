@@ -13,6 +13,7 @@ import com.kape.router.Update
 import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -33,7 +34,7 @@ class SplashViewModel(
         if (regionListProvider.isDefaultList()) {
             regionListProvider.loadVpnServerLatencies()
         }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             forceUpdateUseCase.requiresForceUpdate().collect { requiresUpdate ->
                 if (requiresUpdate) {
                     viewModelScope.launch {
