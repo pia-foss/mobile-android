@@ -34,20 +34,21 @@ class SplashViewModel(
         if (regionListProvider.isDefaultList()) {
             regionListProvider.loadVpnServerLatencies()
         }
+        if (getUserLoggedInUseCase.isUserLoggedIn()) {
+            handleSplashExit()
+        }
         viewModelScope.launch(Dispatchers.IO) {
             forceUpdateUseCase.requiresForceUpdate().collect { requiresUpdate ->
                 if (requiresUpdate) {
                     viewModelScope.launch {
                         getWebsiteDownloadLink.invoke().collect {
                             updateUrl = it
-                            if (updateUrl.isEmpty()) {
-                                handleSplashExit()
-                            } else {
+                            if (updateUrl.isNotEmpty()) {
                                 router.updateDestination(Update)
                             }
                         }
                     }
-                } else {
+                } else if (!getUserLoggedInUseCase.isUserLoggedIn()) {
                     handleSplashExit()
                 }
             }

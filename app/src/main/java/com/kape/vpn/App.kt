@@ -34,13 +34,18 @@ import com.kape.vpn.di.appModule
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnregions.di.vpnRegionsModule
 import com.kape.vpnregionselection.di.regionSelectionModule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
-import org.koin.core.module.Module
 
 class App : Application() {
 
+    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val kpiDataSource: KpiDataSource by inject()
 
     private val lifecycleObserver = object : DefaultLifecycleObserver {
@@ -57,49 +62,54 @@ class App : Application() {
             .lifecycle
             .addObserver(lifecycleObserver)
         setupKoinDependencyInjection()
+        loadDeferredModules()
     }
-
 
     private fun setupKoinDependencyInjection() = startKoin {
         androidContext(this@App)
         modules(
-            mutableListOf<Module>().apply {
-                add(appModule)
-                add(vpnConnectModule(appModule))
-                add(appBarModule(appModule))
-                add(notificationModule)
-                add(buildConfigModule(BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE))
-                add(paymentsModule(appModule))
-                add(loginModule(appModule))
-                add(permissionsModule(appModule))
-                add(sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME))
-                add(profileModule(appModule))
-                add(regionSelectionModule(appModule))
-                add(shadowsocksSelectionModule(appModule))
-                add(splashModule)
-                add(tvWelcomeModule)
-                add(signupModule(appModule))
-                add(kpiModule(appModule))
-                add(connectionModule(appModule))
-                add(
+            appModule,
+            vpnConnectModule(appModule),
+            appBarModule(appModule),
+            notificationModule,
+            buildConfigModule(BuildConfig.FLAVOR, BuildConfig.BUILD_TYPE),
+            loginModule(appModule),
+            splashModule,
+            kpiModule(appModule),
+            connectionModule(appModule),
+            vpnRegionsModule(appModule),
+            networkManagementModule,
+            featureFlagsModule,
+        )
+    }
+
+    private fun loadDeferredModules() {
+        appScope.launch {
+            GlobalContext.get().loadModules(
+                listOf(
+                    paymentsModule(appModule),
+                    permissionsModule(appModule),
+                    sideMenuModule(BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME),
+                    profileModule(appModule),
+                    regionSelectionModule(appModule),
+                    shadowsocksSelectionModule(appModule),
+                    tvWelcomeModule,
+                    signupModule(appModule),
                     settingsModule(
                         appBarModule(appModule),
                         BuildConfig.VERSION_CODE,
                         BuildConfig.VERSION_NAME,
                     ),
-                )
-                add(portForwardingModule(appModule))
-                add(dedicatedIpModule(appModule))
-                add(csiModule(appModule))
-                add(vpnRegionsModule(appModule))
-                add(shadowsocksRegionsModule(appModule))
-                add(automationModule(appModule))
-                add(networkManagementModule)
-                add(customizationModule(appModule))
-                add(snoozeModule(appModule))
-                add(obfuscatorModule(appModule))
-                add(featureFlagsModule)
-            },
-        )
+                    portForwardingModule(appModule),
+                    dedicatedIpModule(appModule),
+                    csiModule(appModule),
+                    shadowsocksRegionsModule(appModule),
+                    automationModule(appModule),
+                    customizationModule(appModule),
+                    snoozeModule(appModule),
+                    obfuscatorModule(appModule),
+                ),
+            )
+        }
     }
 }
