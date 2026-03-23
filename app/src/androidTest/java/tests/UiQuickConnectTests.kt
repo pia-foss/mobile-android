@@ -1,6 +1,7 @@
 package tests
 
 import androidx.test.uiautomator.uiAutomator
+import org.junit.Before
 import org.junit.Test
 import screens.helpers.UiAutomatorHelpers.findByResId
 import screens.helpers.UiAutomatorHelpers.findByStartsWith
@@ -10,6 +11,10 @@ import screens.steps.MainScreenSteps.establishAndVerifyVPNConnection
 import kotlin.test.assertNotNull
 
 class UiQuickConnectTests : UiTest() {
+    @Before
+    fun setUp() {
+        setupWithLogin()
+    }
 
     @Test
     fun quick_connect_should_connect_from_disconnect_state() = uiAutomator {

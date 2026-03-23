@@ -1,6 +1,7 @@
 package tests
 
 import androidx.test.uiautomator.uiAutomator
+import org.junit.Before
 import org.junit.Test
 import screens.helpers.UiAutomatorHelpers
 import screens.helpers.UiAutomatorHelpers.findByResId
@@ -11,6 +12,10 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class UiRegionListTests : UiTest() {
+    @Before
+    fun setUp() {
+        setupWithLogin()
+    }
 
     @Test
     fun valid_region_displays_in_list() = uiAutomator {

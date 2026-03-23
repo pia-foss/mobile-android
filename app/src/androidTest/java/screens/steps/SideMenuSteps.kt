@@ -1,7 +1,7 @@
 package screens.steps
 
 import androidx.test.uiautomator.UiAutomatorTestScope
-import screens.helpers.UiAutomatorHelpers.findByResId
+import screens.helpers.UiAutomatorHelpers.click
 
 object SideMenuSteps {
 
@@ -11,11 +11,11 @@ object SideMenuSteps {
     const val LOGOUT_DIALOG_CONFIRM_BUTTON = ":SideMenu:ConfirmButton"
 
     fun UiAutomatorTestScope.logOut() {
-        findByResId(LOGOUT_BUTTON)?.click()
-        findByResId(LOGOUT_DIALOG_CONFIRM_BUTTON)?.click()
+        click(LOGOUT_BUTTON)
+        click(LOGOUT_DIALOG_CONFIRM_BUTTON)
     }
 
     fun UiAutomatorTestScope.navigateToSideMenu() {
-        findByResId(MainScreenSteps.SIDE_MENU)?.click()
+        click(MainScreenSteps.SIDE_MENU)
     }
 }

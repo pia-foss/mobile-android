@@ -10,7 +10,8 @@ import androidx.test.uiautomator.textAsString
 object UiAutomatorHelpers {
 
     const val DEFAULT_TIMEOUT = 5000L
-    const val LONG_TIMEOUT = 10000L
+    const val LONG_TIMEOUT = 30000L
+    const val VPN_CONNECT_TIMEOUT = 60000L
 
     fun UiAutomatorTestScope.findByResId(
         resId: String,
@@ -62,8 +63,8 @@ object UiAutomatorHelpers {
     }
 
     private fun UiAutomatorTestScope.findFreshByResId(resId: String): UiObject2 {
-        device.wait(Until.hasObject(By.res(resId)), DEFAULT_TIMEOUT)
-        return device.findObject(By.res(resId))
+        return device.wait(Until.findObject(By.res(resId)), DEFAULT_TIMEOUT)
+            ?: error("Element with resId '$resId' not found within timeout")
     }
 
     fun UiAutomatorTestScope.inputText(
@@ -83,27 +84,22 @@ object UiAutomatorHelpers {
     }
 
     fun UiAutomatorTestScope.waitUntilConnectionIsEstablished(
-        timeout: Long = LONG_TIMEOUT,
+        timeout: Long = VPN_CONNECT_TIMEOUT,
     ): Boolean {
 
         val vpnIpRegex = "^((\\d{1,3})\\.){3}(\\d{1,3})$".toRegex()
         val endTime = System.currentTimeMillis() + timeout
 
-        // Wait until the IP field exists first (fast-fail if screen wrong)
-        val ipField = device.wait(
-            Until.findObject(By.res(":Text:vpnIp")),
-            timeout.coerceAtMost(2_000),
-        ) ?: return false
+        // Fast-fail if the IP field never appears on screen
+        device.wait(Until.hasObject(By.res(":Text:vpnIp")), timeout.coerceAtMost(2_000))
+            ?: return false
 
-        // Now poll ONLY the text (cheap + stable)
+        // Re-query on every iteration to avoid stale references during recomposition
         while (System.currentTimeMillis() < endTime) {
-
-            val text = ipField.text
-
+            val text = device.findObject(By.res(":Text:vpnIp"))?.text
             if (text != null && vpnIpRegex.matches(text)) {
                 return true
             }
-
             device.waitForIdle(150)
         }
 

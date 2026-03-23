@@ -15,8 +15,8 @@ import kotlin.test.assertNotNull
 class UiSignInTests : UiTest() {
 
     @Before
-    override fun setUp() {
-        setupWithoutLogin()  // Launch app without auto-login
+    fun setUp() {
+        setupWithoutLogin()
     }
 
     @Test

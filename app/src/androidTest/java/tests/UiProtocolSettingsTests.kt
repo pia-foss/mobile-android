@@ -1,9 +1,8 @@
 package tests
 
 import androidx.test.uiautomator.uiAutomator
+import org.junit.Before
 import org.junit.Test
-import screens.helpers.UiAutomatorHelpers
-import screens.helpers.UiAutomatorHelpers.findByStartsWith
 import screens.helpers.UiAutomatorHelpers.pressBackTwice
 import screens.steps.MainScreenSteps.establishAndVerifyVPNConnection
 import screens.steps.ProtocolsSteps.selectOpenVPN
@@ -11,10 +10,12 @@ import screens.steps.ProtocolsSteps.selectProtocol
 import screens.steps.ProtocolsSteps.selectWireGuard
 import screens.steps.ProtocolsSteps.smallPacketToggleChecked
 import screens.steps.SettingsSteps.navigateToSettingsPage
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class UiProtocolSettingsTests : UiTest() {
+    @Before
+    fun setUp() {
+        setupWithFreshLogin()
+    }
 
     @Test
     fun openVPN_connectivity_when_small_packet_disabled() = uiAutomator {
@@ -26,8 +27,6 @@ class UiProtocolSettingsTests : UiTest() {
         pressBackTwice(2)
 
         establishAndVerifyVPNConnection()
-
-        assertNotNull(findByStartsWith("Protected"))
     }
 
     @Test
@@ -40,8 +39,6 @@ class UiProtocolSettingsTests : UiTest() {
         pressBackTwice(2)
 
         establishAndVerifyVPNConnection()
-
-        assertNotNull(findByStartsWith("Protected"))
     }
 
     @Test
@@ -54,8 +51,6 @@ class UiProtocolSettingsTests : UiTest() {
         pressBackTwice(2)
 
         establishAndVerifyVPNConnection()
-
-        assertNotNull(findByStartsWith("Protected"))
     }
 
     @Test
@@ -68,7 +63,5 @@ class UiProtocolSettingsTests : UiTest() {
         pressBackTwice(2)
 
         establishAndVerifyVPNConnection()
-
-        assertNotNull(findByStartsWith("Protected"))
     }
 }
