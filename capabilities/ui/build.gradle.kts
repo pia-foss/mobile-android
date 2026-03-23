@@ -26,7 +26,6 @@ dependencies {
     implementation(libs.bundles.koin)
     androidTestImplementation(libs.bundles.koinandroidtest)
     androidTestImplementation(libs.bundles.composeandroidtest)
-    implementation(libs.bundles.swipetoreferesh)
     testImplementation(libs.bundles.test)
     testImplementation(libs.bundles.kointest)
     testImplementation(libs.coroutines.test)

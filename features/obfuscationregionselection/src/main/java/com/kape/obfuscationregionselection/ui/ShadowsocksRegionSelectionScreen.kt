@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,8 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
@@ -48,7 +48,7 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
         appBarText(stringResource(id = R.string.location_selection_title))
     }
     val isSearchEnabled = remember { mutableStateOf(false) }
-    
+
     Column(
         modifier = Modifier
             .background(LocalColors.current.surfaceVariant)
@@ -66,8 +66,9 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
                 viewModel.filterByName(it, isSearchEnabled)
             }
 
-            SwipeRefresh(
-                state = rememberSwipeRefreshState(isLoading.value),
+            PullToRefreshBox(
+                state = rememberPullToRefreshState(),
+                isRefreshing = isLoading.value,
                 onRefresh = {
                     locale?.let {
                         viewModel.fetchShadowsocksRegions(locale, isLoading)
