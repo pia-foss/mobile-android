@@ -4,10 +4,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.obfuscationregionselection.util.ItemType
 import com.kape.obfuscationregionselection.util.ShadowsocksServerItem
 import com.kape.router.Router
-import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import kotlinx.coroutines.launch

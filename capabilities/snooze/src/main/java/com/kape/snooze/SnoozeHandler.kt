@@ -5,7 +5,7 @@ import android.app.PendingIntent
 import android.os.CountDownTimer
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import com.kape.connection.ConnectionPrefs
+import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.vpnlauncher.VpnLauncher
 import java.util.Calendar
 

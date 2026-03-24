@@ -1,8 +1,8 @@
 package com.kape.vpnregions.data
 
 import app.cash.turbine.test
-import com.kape.connection.ConnectionPrefs
-import com.kape.dip.DipPrefs
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.DipPrefs
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionConfigurationUseCase
 import com.kape.vpnconnect.domain.ConnectionUseCase

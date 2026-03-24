@@ -41,8 +41,8 @@ dependencies {
 
     implementation(libs.kape.account)
     implementation(project(":core:utils"))
-    implementation(project(":core:localprefs:payments"))
-    implementation(project(":core:localprefs:payments:data"))
+    implementation(project(":core:localprefs:prefs"))
+    implementation(project(":core:localprefs:data"))
 
     implementation(libs.crypto)
     implementation(libs.bundles.koin)

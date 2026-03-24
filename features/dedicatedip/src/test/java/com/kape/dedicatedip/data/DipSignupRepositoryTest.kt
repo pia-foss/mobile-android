@@ -2,8 +2,8 @@ package com.kape.dedicatedip.data
 
 import app.cash.turbine.test
 import com.kape.dedicatedip.domain.DipDataSource
-import com.kape.dip.DipPrefs
 import com.kape.dip.data.DedicatedIpSignupPlans
+import com.kape.localprefs.prefs.DipPrefs
 import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
 import io.mockk.every
 import io.mockk.mockk

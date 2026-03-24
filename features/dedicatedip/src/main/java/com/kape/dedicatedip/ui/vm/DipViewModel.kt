@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.connection.ConnectionPrefs
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
 import com.kape.dedicatedip.domain.ActivateDipUseCase
@@ -18,8 +17,9 @@ import com.kape.dedicatedip.domain.GetDipYearlyPlan
 import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.utils.DedicatedIpStep
 import com.kape.dedicatedip.utils.DipApiResult
-import com.kape.dip.DipPrefs
 import com.kape.dip.data.DedicatedIpSelectedCountry
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.DipPrefs
 import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider

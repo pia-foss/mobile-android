@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.kape.dedicatedip.di.dedicatedIpModule
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.utils.DipApiResult
-import com.kape.dip.DipPrefs
+import com.kape.localprefs.prefs.DipPrefs
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse

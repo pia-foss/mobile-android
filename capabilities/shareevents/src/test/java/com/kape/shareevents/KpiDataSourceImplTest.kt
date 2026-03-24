@@ -1,7 +1,7 @@
 package com.kape.shareevents
 
 import app.cash.turbine.test
-import com.kape.settings.SettingsPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.data.KpiDataSourceImpl
 import com.kape.shareevents.data.models.KpiConnectionEvent

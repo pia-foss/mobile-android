@@ -1,6 +1,6 @@
 package com.kape.signup.domain
 
-import com.kape.signup.ConsentPrefs
+import com.kape.localprefs.prefs.ConsentPrefs
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest

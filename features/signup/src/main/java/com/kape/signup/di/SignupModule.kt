@@ -1,6 +1,6 @@
 package com.kape.signup.di
 
-import com.kape.signup.ConsentPrefs
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.signup.data.EmailDataSourceImpl
 import com.kape.signup.data.Identifier
 import com.kape.signup.data.IdentifierImpl

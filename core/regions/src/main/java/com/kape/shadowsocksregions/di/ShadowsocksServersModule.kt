@@ -3,12 +3,12 @@ package com.kape.shadowsocksregions.di
 import com.kape.data.RegionDataSourceImpl
 import com.kape.data.RegionInputStream
 import com.kape.data.RegionSerialization
-import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.shadowsocksregions.data.ShadowsocksRegionRepository
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import com.kape.shadowsocksregions.domain.ReadShadowsocksRegionsDetailsUseCase
 import com.kape.shadowsocksregions.domain.SetShadowsocksRegionsUseCase
 import com.kape.shadowsocksregions.domain.ShadowsocksRegionDataSource
+import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import org.koin.core.module.Module
 import org.koin.dsl.module
 

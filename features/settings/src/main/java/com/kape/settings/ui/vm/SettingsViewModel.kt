@@ -5,9 +5,10 @@ import android.content.pm.PackageManager
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.connection.ConnectionPrefs
-import com.kape.csi.CsiPrefs
 import com.kape.csi.domain.SendLogUseCase
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.location.data.LocationPermissionManager
 import com.kape.router.About
 import com.kape.router.AutomationSettings
@@ -23,7 +24,6 @@ import com.kape.router.PrivacySettings
 import com.kape.router.ProtocolSettings
 import com.kape.router.Router
 import com.kape.router.WebDestination
-import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.CustomObfuscation
 import com.kape.settings.data.DataEncryption

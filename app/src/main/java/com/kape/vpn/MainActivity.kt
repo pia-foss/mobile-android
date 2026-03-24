@@ -32,6 +32,7 @@ import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenActivateScre
 import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenDetailsScreen
 import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
 import com.kape.inappbrowser.ui.InAppBrowser
+import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.login.ui.mobile.LoginScreen
 import com.kape.login.ui.mobile.LoginWithEmailScreen
 import com.kape.login.ui.tv.LoginPasswordScreen
@@ -112,7 +113,6 @@ import com.kape.settings.ui.screens.tv.TvPerAppSettingsScreen
 import com.kape.settings.ui.screens.tv.TvPrivacySettingsScreen
 import com.kape.settings.ui.screens.tv.TvProtocolSettingsScreen
 import com.kape.settings.ui.screens.tv.TvSettingsScreen
-import com.kape.shortcut.prefs.ShortcutPrefs
 import com.kape.sidemenu.ui.screens.tv.TvSideMenuScreen
 import com.kape.signup.ui.mobile.SignupScreensFlow
 import com.kape.signup.ui.tv.TvSignupScreensFlow

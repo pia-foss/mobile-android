@@ -29,8 +29,8 @@ import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.customization.data.Element
-import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
+import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Separator

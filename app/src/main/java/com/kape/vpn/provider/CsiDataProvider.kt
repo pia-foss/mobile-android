@@ -1,8 +1,8 @@
 package com.kape.vpn.provider
 
 import android.os.Build
-import com.kape.csi.CsiPrefs
-import com.kape.settings.SettingsPrefs
+import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.privateinternetaccess.csi.ICSIProvider
 import com.privateinternetaccess.csi.ProviderType

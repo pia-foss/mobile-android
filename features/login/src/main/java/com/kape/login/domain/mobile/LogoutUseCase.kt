@@ -1,19 +1,19 @@
 package com.kape.login.domain.mobile
 
-import com.kape.connection.ConnectionPrefs
-import com.kape.csi.CsiPrefs
-import com.kape.customization.prefs.CustomizationPrefs
-import com.kape.dip.DipPrefs
-import com.kape.networkmanagement.NetworkManagementPrefs
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.ConsentPrefs
+import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.CustomizationPrefs
+import com.kape.localprefs.prefs.DipPrefs
+import com.kape.localprefs.prefs.KpiPrefs
+import com.kape.localprefs.prefs.NetworkManagementPrefs
+import com.kape.localprefs.prefs.RatingPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
+import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.payments.SubscriptionPrefs
-import com.kape.rating.prefs.RatingPrefs
-import com.kape.settings.SettingsPrefs
-import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
-import com.kape.shareevents.KpiPrefs
-import com.kape.signup.ConsentPrefs
 import com.kape.utils.ApiResult
 import com.kape.vpnconnect.domain.ConnectionUseCase
-import com.kape.vpnregions.VpnRegionPrefs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

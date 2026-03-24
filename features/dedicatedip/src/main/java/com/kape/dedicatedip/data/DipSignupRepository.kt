@@ -1,9 +1,9 @@
 package com.kape.dedicatedip.data
 
 import com.kape.dedicatedip.domain.DipDataSource
-import com.kape.dip.DipPrefs
 import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.dip.data.DedicatedIpSupportedCountries
+import com.kape.localprefs.prefs.DipPrefs
 import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.channels.awaitClose

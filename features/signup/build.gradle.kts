@@ -42,9 +42,8 @@ dependencies {
     implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:ui"))
 
-    implementation(project(":core:localprefs:payments"))
-    implementation(project(":core:localprefs:payments:data"))
-    implementation(project(":core:localprefs:signup"))
+    implementation(project(":core:localprefs:prefs"))
+    implementation(project(":core:localprefs:data"))
     implementation(project(":core:payments"))
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
