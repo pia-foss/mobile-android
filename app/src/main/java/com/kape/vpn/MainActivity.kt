@@ -149,7 +149,6 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE,
         )
-        shortcutManager.createDynamicShortcuts()
         vpnSubscriptionPaymentProvider.register(this)
         defineScreenOrientation()
         deepLinkLogin(intent)
@@ -176,6 +175,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        shortcutManager.createDynamicShortcuts()
     }
 
     override fun onNewIntent(intent: Intent, caller: ComponentCaller) {
