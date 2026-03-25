@@ -65,11 +65,11 @@ import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.ConnectionScreenState
 import com.kape.customization.data.Element
-import com.kape.customization.data.ScreenElement
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.ui.RatingFeedbackDialog
 import com.kape.rating.ui.RatingReviewDialog
+import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.sidemenu.ui.screens.mobile.SideMenuContent
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.InfoCard

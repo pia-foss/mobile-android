@@ -1,6 +1,6 @@
 package com.kape.shareevents.di
 
-import com.kape.shareevents.KpiPrefs
+import com.kape.localprefs.prefs.KpiPrefs
 import com.kape.shareevents.data.KpiDataSourceImpl
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.shareevents.domain.SubmitKpiEventUseCase

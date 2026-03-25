@@ -2,8 +2,8 @@ package com.kape.automation.ui.viewmodel
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.ui.graphics.Path
 import androidx.lifecycle.ViewModel
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.location.data.LocationPermissionManager
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
@@ -13,7 +13,6 @@ import com.kape.router.AutomationBackgroundLocation
 import com.kape.router.AutomationLocation
 import com.kape.router.AutomationMain
 import com.kape.router.Router
-import com.kape.settings.SettingsPrefs
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -3,7 +3,7 @@ package com.kape.vpnregions.di
 import com.kape.data.RegionDataSourceImpl
 import com.kape.data.RegionInputStream
 import com.kape.data.RegionSerialization
-import com.kape.vpnregions.VpnRegionPrefs
+import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.vpnregions.data.VpnRegionRepository
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.domain.VpnRegionDataSource

@@ -11,7 +11,7 @@ import com.kape.dedicatedip.domain.GetDipYearlyPlan
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.ui.vm.DipViewModel
-import com.kape.dip.DipPrefs
+import com.kape.localprefs.prefs.DipPrefs
 import com.kape.ui.utils.PriceFormatter
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.Module

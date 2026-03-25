@@ -1,10 +1,10 @@
 package com.kape.vpn.utils
 
 import android.content.Context
-import com.kape.networkmanagement.NetworkManagementPrefs
+import com.kape.localprefs.prefs.NetworkManagementPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
-import com.kape.settings.SettingsPrefs
 import com.kape.ui.R
 import com.kape.vpnlauncher.VpnLauncher
 

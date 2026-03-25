@@ -1,9 +1,8 @@
 package com.kape.portforwarding.domain
 
-import androidx.compose.runtime.mutableStateOf
-import com.kape.connection.ConnectionPrefs
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.portforwarding.data.model.PortForwardingStatus
-import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.vpnserver.VpnServer

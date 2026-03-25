@@ -4,8 +4,10 @@ import android.app.Notification
 import android.app.PendingIntent
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.kape.connection.ConnectionPrefs
-import com.kape.connection.NO_IP
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.NO_IP
+import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.obfuscator.data.ObfuscatorProcessInformation
 import com.kape.obfuscator.data.ObfuscatorProcessListener
 import com.kape.obfuscator.domain.StartObfuscatorProcess
@@ -14,13 +16,6 @@ import com.kape.obfuscator.domain.StartObfuscatorProcess.Companion.OBFUSCATOR_PR
 import com.kape.obfuscator.domain.StopObfuscatorProcess
 import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.portforwarding.domain.PortForwardingUseCase
-import com.kape.settings.SettingsPrefs
-import com.kape.settings.data.DataEncryption
-import com.kape.settings.data.DnsOptions
-import com.kape.settings.data.ProtocolSettings
-import com.kape.settings.data.Transport
-import com.kape.settings.data.VpnProtocols
-import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus

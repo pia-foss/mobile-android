@@ -1,6 +1,6 @@
 package com.kape.shadowsocksregions.domain
 
-import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
+import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.shadowsocksregions.data.ShadowsocksRegionRepository
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import kotlinx.coroutines.flow.Flow

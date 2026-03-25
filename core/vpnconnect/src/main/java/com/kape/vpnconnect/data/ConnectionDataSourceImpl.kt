@@ -2,9 +2,9 @@ package com.kape.vpnconnect.data
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import com.kape.connection.ConnectionPrefs
-import com.kape.csi.CsiPrefs
-import com.kape.settings.SettingsPrefs
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.domain.KpiDataSource
 import com.kape.vpnconnect.domain.ConnectionDataSource

@@ -1,7 +1,7 @@
 package com.kape.vpn.provider
 
-import com.kape.csi.CsiPrefs
-import com.kape.settings.SettingsPrefs
+import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnmanager.presenters.VPNManagerDebugLoggingDependency
 import com.kape.vpnmanager.presenters.VPNManagerPermissionsDependency
 import com.kape.vpnmanager.presenters.VPNManagerResultCallback

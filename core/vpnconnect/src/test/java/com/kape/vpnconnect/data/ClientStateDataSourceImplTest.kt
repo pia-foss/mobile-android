@@ -1,9 +1,9 @@
 package com.kape.vpnconnect.data
 
-import com.kape.connection.ConnectionPrefs
-import com.kape.connection.NO_IP
-import com.kape.csi.CsiPrefs
-import com.kape.settings.SettingsPrefs
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.NO_IP
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnconnect.utils.STATUS_REQUEST_LONG_TIMEOUT
 import com.privateinternetaccess.account.AccountRequestError

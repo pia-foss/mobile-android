@@ -1,7 +1,7 @@
 package com.kape.shareevents.data
 
 import android.os.SystemClock
-import com.kape.settings.SettingsPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.data.models.KpiConnectionEvent
 import com.kape.shareevents.data.models.KpiConnectionSource

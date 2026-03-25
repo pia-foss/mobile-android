@@ -2,16 +2,16 @@ package com.kape.vpnconnect.domain
 
 import android.app.Notification
 import android.app.PendingIntent
-import com.kape.connection.ConnectionPrefs
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.obfuscator.domain.StartObfuscatorProcess.Companion.OBFUSCATOR_PROXY_HOST
 import com.kape.obfuscator.domain.StartObfuscatorProcess.Companion.OBFUSCATOR_PROXY_PORT
-import com.kape.settings.SettingsPrefs
 import com.kape.settings.data.DataEncryption
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.ProtocolSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
-import com.kape.shadowsocksregions.ShadowsocksRegionPrefs
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.NOTIFICATION_ID
 import com.kape.vpnmanager.api.OpenVpnSocksProxyDetails

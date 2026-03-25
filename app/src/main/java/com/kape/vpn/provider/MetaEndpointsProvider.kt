@@ -1,6 +1,6 @@
 package com.kape.vpn.provider
 
-import com.kape.connection.ConnectionPrefs
+import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.utils.RegionListProvider
 import org.koin.core.component.KoinComponent

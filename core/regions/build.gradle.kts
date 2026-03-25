@@ -27,9 +27,9 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
-    implementation(project(":core:localprefs:regions"))
-    implementation(project(":core:localprefs:dip"))
-    implementation(project(":core:localprefs:connection"))
+    implementation(project(":core:localprefs:prefs"))
+    implementation(project(":core:localprefs:prefs"))
+    implementation(project(":core:localprefs:data"))
     implementation(project(":core:vpnconnect"))
 
     implementation(libs.bundles.serialization)

@@ -1,6 +1,6 @@
 package com.kape.networkmanagement.di
 
-import com.kape.networkmanagement.NetworkManagementPrefs
+import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.networkmanagement.data.NetworkRulesManager
 import com.kape.networkmanagement.utils.NetworkUtil
 import org.koin.dsl.module

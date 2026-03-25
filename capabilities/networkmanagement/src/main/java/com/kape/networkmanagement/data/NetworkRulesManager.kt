@@ -1,6 +1,6 @@
 package com.kape.networkmanagement.data
 
-import com.kape.networkmanagement.NetworkManagementPrefs
+import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.networkmanagement.utils.NetworkUtil
 
 class NetworkRulesManager(

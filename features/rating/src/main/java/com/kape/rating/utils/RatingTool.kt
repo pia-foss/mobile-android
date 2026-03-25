@@ -1,7 +1,7 @@
 package com.kape.rating.utils
 
+import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.rating.data.RatingDialogType
-import com.kape.rating.prefs.RatingPrefs
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
 import kotlinx.coroutines.CoroutineScope
