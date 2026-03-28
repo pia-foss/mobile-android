@@ -1,5 +1,7 @@
 package com.kape.login.domain.mobile
 
+import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.data.auth.ApiResult
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
@@ -12,11 +14,12 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.payments.SubscriptionPrefs
-import com.kape.utils.ApiResult
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class LogoutUseCase(
     private val source: AuthenticationDataSource,
     private val connectionPrefs: ConnectionPrefs,

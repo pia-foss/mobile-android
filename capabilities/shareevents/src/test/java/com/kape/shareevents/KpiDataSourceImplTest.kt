@@ -3,10 +3,10 @@ package com.kape.shareevents
 import app.cash.turbine.test
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
+import com.kape.contracts.KpiDataSource
+import com.kape.contracts.data.kpi.KpiConnectionEvent
 import com.kape.shareevents.data.KpiDataSourceImpl
-import com.kape.shareevents.data.models.KpiConnectionEvent
 import com.kape.shareevents.di.kpiModule
-import com.kape.shareevents.domain.KpiDataSource
 import com.privateinternetaccess.kpi.KPIAPI
 import io.mockk.coEvery
 import io.mockk.every
@@ -36,7 +36,7 @@ internal class KpiDataSourceImplTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, kpiModule(appModule))
+            modules(appModule, kpiModule())
         }
         source = KpiDataSourceImpl(userAgent, api, prefs)
     }

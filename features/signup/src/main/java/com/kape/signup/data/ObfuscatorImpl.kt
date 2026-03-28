@@ -1,9 +1,11 @@
 package com.kape.signup.data
 
 import android.util.Base64
+import org.koin.core.annotation.Singleton
 import java.security.MessageDigest
 
-internal class ObfuscatorImpl : Obfuscator {
+@Singleton([Obfuscator::class])
+class ObfuscatorImpl : Obfuscator {
 
     // region Obfuscator
     override fun invoke(value: String): Result<String> {

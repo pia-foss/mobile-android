@@ -1,7 +1,7 @@
 package com.kape.login
 
-import com.kape.utils.ApiError
-import com.kape.utils.ApiResult
+import com.kape.contracts.data.auth.ApiError
+import com.kape.contracts.data.auth.ApiResult
 import com.privateinternetaccess.account.AccountRequestError
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers

@@ -5,7 +5,9 @@ import com.kape.shadowsocksregions.utils.adaptShadowsocksServers
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class ShadowsocksRegionRepository(
     private val shadowsocksRegionDataSource: ShadowsocksRegionDataSource,
 ) {

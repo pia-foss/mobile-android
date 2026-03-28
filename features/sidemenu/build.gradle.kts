@@ -1,8 +1,13 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.compose)
+}
+
+koinCompiler {
+    compileSafety = false
 }
 
 android {
@@ -40,7 +45,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar)
 
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:login"))

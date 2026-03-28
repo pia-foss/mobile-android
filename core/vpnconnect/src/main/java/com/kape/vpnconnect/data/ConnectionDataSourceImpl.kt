@@ -2,11 +2,11 @@ package com.kape.vpnconnect.data
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import com.kape.contracts.KpiDataSource
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
-import com.kape.shareevents.domain.KpiDataSource
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnmanager.data.models.ClientConfiguration
@@ -18,9 +18,11 @@ import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 
-internal class ConnectionDataSourceImpl(
+@Singleton(binds = [ConnectionDataSource::class])
+class ConnectionDataSourceImpl(
     private val connectionApi: VPNManagerAPI,
     private val accountApi: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,

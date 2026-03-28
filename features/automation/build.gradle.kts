@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.compose)
 }
@@ -30,7 +31,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
@@ -49,4 +50,8 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
+}
+
+koinCompiler {
+    compileSafety = false
 }

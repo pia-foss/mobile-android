@@ -1,35 +1,56 @@
 package com.kape.connection.di
 
+import android.app.AlarmManager
+import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.connection.ui.vm.ConnectionViewModel
-import com.kape.vpnconnect.domain.ClientStateDataSource
-import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.kape.contracts.Router
+import com.kape.dedicatedip.domain.RenewDipUseCase
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.CustomizationPrefs
+import com.kape.localprefs.prefs.DipPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.localprefs.prefs.ShortcutPrefs
+import com.kape.localprefs.prefs.VpnRegionPrefs
+import com.kape.rating.utils.RatingTool
+import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
+import com.kape.shadowsocksregions.domain.SetShadowsocksRegionsUseCase
+import com.kape.snooze.SnoozeHandler
+import com.kape.utils.DI
+import com.kape.utils.NetworkConnectionListener
+import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnregions.utils.RegionListProvider
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
 
-fun connectionModule(appModule: Module) = module {
-    includes(appModule, localConnectionModule)
-}
+@Module
+class ConnectionModule {
 
-private val localConnectionModule = module {
-    viewModel {
-        ConnectionViewModel(
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-        )
-    }
+    @KoinViewModel
+    fun provideConnectionViewModel(
+        router: Router,
+        regionListProvider: RegionListProvider,
+        setShadowsocksRegionsUseCase: SetShadowsocksRegionsUseCase,
+        getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
+        connectionUseCase: ConnectionUseCase,
+        prefs: ConnectionPrefs,
+        settingsPrefs: SettingsPrefs,
+        snoozeHandler: SnoozeHandler,
+        usageProvider: UsageProvider,
+        dipPrefs: DipPrefs,
+        renewDipUseCase: RenewDipUseCase,
+        customizationPrefs: CustomizationPrefs,
+        vpnRegionPrefs: VpnRegionPrefs,
+        @Named(DI.ALARM_MANAGER) alarmManager: AlarmManager,
+        ratingTool: RatingTool,
+        shortcutPrefs: ShortcutPrefs,
+        buildConfigProvider: BuildConfigProvider,
+        networkConnectionListener: NetworkConnectionListener,
+    ): ConnectionViewModel = ConnectionViewModel(
+        router, regionListProvider, setShadowsocksRegionsUseCase, getShadowsocksRegionsUseCase,
+        connectionUseCase, prefs, settingsPrefs, snoozeHandler, usageProvider, dipPrefs,
+        renewDipUseCase, customizationPrefs, vpnRegionPrefs, alarmManager, ratingTool,
+        shortcutPrefs, buildConfigProvider, networkConnectionListener,
+    )
 }

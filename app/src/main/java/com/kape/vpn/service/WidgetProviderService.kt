@@ -2,11 +2,14 @@ package com.kape.vpn.service
 
 import android.content.Intent
 import android.net.VpnService
-import com.kape.login.domain.mobile.AuthenticationDataSource
+import com.kape.contracts.AuthenticationDataSource
 import com.kape.vpnlauncher.VpnLauncher
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.getValue
 
+@Singleton
 class WidgetProviderService : VpnService(), KoinComponent {
 
     private val authenticationDataSource: AuthenticationDataSource by inject()

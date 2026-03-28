@@ -26,13 +26,15 @@ import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import kotlin.collections.isNullOrEmpty
 
 private const val MACE_DNS = "10.0.0.241"
 private const val PIA_DNS = "10.0.0.243"
 
-internal class ConnectionConfigurationUseCaseImpl(
+@Singleton([ConnectionConfigurationUseCase::class])
+class ConnectionConfigurationUseCaseImpl(
     private val connectionSource: ConnectionDataSource,
     private val certificate: String,
     private val settingsPrefs: SettingsPrefs,

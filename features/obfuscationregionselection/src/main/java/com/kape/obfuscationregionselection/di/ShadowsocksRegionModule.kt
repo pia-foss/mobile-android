@@ -1,14 +1,21 @@
 package com.kape.obfuscationregionselection.di
 
+import com.kape.contracts.Router
+import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
-import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Module
 
-fun shadowsocksSelectionModule(appModule: Module) = module {
-    includes(appModule, localRegionSelectionModule)
-}
+@Module
+class ShadowsocksRegionModule {
 
-val localRegionSelectionModule = module {
-    viewModel { ShadowsocksRegionSelectionViewModel(get(), get(), get()) }
+    @KoinViewModel
+    fun provideShadowsocksRegionSelectionViewModel(
+        router: Router,
+        getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
+        shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
+    ): ShadowsocksRegionSelectionViewModel = ShadowsocksRegionSelectionViewModel(
+        router, getShadowsocksRegionsUseCase, shadowsocksRegionPrefs,
+    )
 }

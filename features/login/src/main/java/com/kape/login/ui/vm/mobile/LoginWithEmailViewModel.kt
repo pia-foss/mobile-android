@@ -2,19 +2,21 @@ package com.kape.login.ui.vm.mobile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.Router
+import com.kape.contracts.data.LoginWithCredentials
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.IDLE
 import com.kape.login.utils.INVALID
 import com.kape.login.utils.LOADING
 import com.kape.login.utils.LoginScreenState
 import com.kape.login.utils.SUCCESS
-import com.kape.router.LoginWithCredentials
-import com.kape.router.Router
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 
+@KoinViewModel
 class LoginWithEmailViewModel(
     private val router: Router,
     private val useCase: LoginUseCase,

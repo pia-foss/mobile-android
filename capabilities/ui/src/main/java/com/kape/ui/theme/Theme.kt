@@ -16,10 +16,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.kape.router.DestinationNavOptions
+import com.kape.contracts.Router
+import com.kape.contracts.data.DestinationNavOptions
 import com.kape.router.LocalNavigator
 import com.kape.router.Navigator
-import com.kape.router.Router
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.PlatformUtils
 import kotlinx.coroutines.flow.filter

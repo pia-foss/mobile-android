@@ -4,6 +4,7 @@ import com.kape.httpclient.domain.CertificatePinningClient
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
+import org.koin.core.annotation.Singleton
 import org.spongycastle.asn1.x500.X500Name
 import org.spongycastle.asn1.x500.style.BCStyle
 import java.io.ByteArrayOutputStream
@@ -28,6 +29,7 @@ import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
 import javax.security.auth.x500.X500Principal
 
+@Singleton([CertificatePinningClient::class])
 class CertificatePinningClientImpl(private val certificate: String) : CertificatePinningClient {
 
     private lateinit var knownEndpointCommonName: List<Pair<String, String>>

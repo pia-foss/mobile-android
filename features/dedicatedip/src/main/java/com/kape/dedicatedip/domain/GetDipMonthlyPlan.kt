@@ -8,7 +8,9 @@ import com.kape.ui.utils.PriceFormatter
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class GetDipMonthlyPlan(
     private val dipSignupRepository: DipSignupRepository,
     private val dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,

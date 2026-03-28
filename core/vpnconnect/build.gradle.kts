@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
 }
@@ -26,6 +27,7 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:portforwarding"))
     implementation(project(":core:obfuscator"))
     implementation(project(":core:localprefs:prefs"))
@@ -43,4 +45,8 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
+}
+
+koinCompiler {
+    compileSafety = false
 }

@@ -2,9 +2,11 @@ package com.kape.localprefs.prefs
 
 import android.content.Context
 import com.kape.utils.Prefs
+import org.koin.core.annotation.Singleton
 
 private const val ACTIVE_PROTOCOL = "active-protocol"
 
+@Singleton
 class KpiPrefs(context: Context) : Prefs(context, "kpi") {
 
     fun setActiveProtocol(protocol: String) {

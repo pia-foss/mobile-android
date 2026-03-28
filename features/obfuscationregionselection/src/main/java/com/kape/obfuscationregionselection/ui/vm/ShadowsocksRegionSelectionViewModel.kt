@@ -4,20 +4,22 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.Router
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.obfuscationregionselection.util.ItemType
 import com.kape.obfuscationregionselection.util.ShadowsocksServerItem
-import com.kape.router.Router
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 
+@KoinViewModel
 class ShadowsocksRegionSelectionViewModel(
     private val router: Router,
     private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
-) : ViewModel(), KoinComponent {
+) : ViewModel() {
 
     val servers = mutableStateOf(emptyList<ShadowsocksServerItem>())
     val sorted = mutableStateOf(emptyList<ShadowsocksServerItem>())
@@ -25,13 +27,14 @@ class ShadowsocksRegionSelectionViewModel(
     fun getShadowsocksRegions() =
         arrangeShadowsocksServers(getShadowsocksRegionsUseCase.getShadowsocksServers())
 
-    fun fetchShadowsocksRegions(locale: String, isLoading: MutableState<Boolean>) = viewModelScope.launch {
-        isLoading.value = true
-        getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale).collect {
-            arrangeShadowsocksServers(it)
-            isLoading.value = false
+    fun fetchShadowsocksRegions(locale: String, isLoading: MutableState<Boolean>) =
+        viewModelScope.launch {
+            isLoading.value = true
+            getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale).collect {
+                arrangeShadowsocksServers(it)
+                isLoading.value = false
+            }
         }
-    }
 
     fun onShadowsocksRegionSelected(server: ShadowsocksServer) {
         shadowsocksRegionPrefs.setSelectShadowsocksServer(server)

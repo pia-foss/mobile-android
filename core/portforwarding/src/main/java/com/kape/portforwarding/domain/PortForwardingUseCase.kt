@@ -7,12 +7,14 @@ import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.vpnserver.VpnServer
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.koin.core.annotation.Singleton
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
 private const val MIN_EXPIRATION_DAYS = 7
 
+@Singleton
 class PortForwardingUseCase(
     private val api: PortForwardingApi,
     private val connectionPrefs: ConnectionPrefs,

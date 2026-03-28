@@ -1,8 +1,5 @@
-package com.kape.shareevents.data.models
+package com.kape.contracts.data.kpi
 
-import com.kape.utils.KoverIgnore
-
-@KoverIgnore("Sealed class, no need for test coverage")
 sealed class KpiConnectionEvent(val value: String) {
     data object ConnectionAttempt : KpiConnectionEvent("VPN_CONNECTION_ATTEMPT")
     data object ConnectionCancelled : KpiConnectionEvent("VPN_CONNECTION_CANCELLED")

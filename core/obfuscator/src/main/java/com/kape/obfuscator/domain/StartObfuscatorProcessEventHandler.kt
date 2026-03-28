@@ -2,7 +2,9 @@ package com.kape.obfuscator.domain
 
 import com.kape.obfuscator.data.ObfuscatorProcessListener
 import com.kape.obfuscator.presenter.ObfuscatorProcessEventHandler
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class StartObfuscatorProcessEventHandler : ObfuscatorProcessEventHandler {
 
     private lateinit var obfuscatorProcessListener: ObfuscatorProcessListener

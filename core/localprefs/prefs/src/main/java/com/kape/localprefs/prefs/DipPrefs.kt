@@ -1,7 +1,6 @@
 package com.kape.localprefs.prefs
 
 import android.content.Context
-import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.dip.data.DedicatedIpSelectedCountry
 import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.dip.data.DedicatedIpSupportedCountries
@@ -9,6 +8,7 @@ import com.kape.utils.Prefs
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Singleton
 
 private const val DEDICATED_IPS = "dedicated-ips"
 private const val DIP_SIGNUP_ENABLED = "dip-signup-enabled"
@@ -19,10 +19,8 @@ private const val DIP_SIGNUP_PURCHASED_TOKEN = "dip-signup-purchased-token"
 private const val DIP_SIGNUP_SELECTED_PRODUCT_ID = "dip-signup-selected-product-id"
 private const val DIP_SIGNUP_SELECTED_COUNTRY = "dip-signup-selected-country"
 
-class DipPrefs(
-    context: Context,
-    private val buildConfigProvider: BuildConfigProvider,
-) : Prefs(context, "dip") {
+@Singleton
+class DipPrefs(context: Context) : Prefs(context, "dip") {
 
     fun getDedicatedIps(): List<DedicatedIPInformationResponse.DedicatedIPInformation> {
         val dips = mutableListOf<DedicatedIPInformationResponse.DedicatedIPInformation>()
@@ -56,7 +54,7 @@ class DipPrefs(
         prefs.edit().remove(DIP_SIGNUP_PURCHASED_TOKEN).apply()
     }
 
-    fun isDipSignupEnabled() = if (buildConfigProvider.isGoogleFlavor()) {
+    fun isDipSignupEnabled(isGoogleFlavor: Boolean) = if (isGoogleFlavor) {
         prefs.getBoolean(DIP_SIGNUP_ENABLED, false)
     } else {
         false
@@ -69,7 +67,8 @@ class DipPrefs(
     }
 
     fun setDedicatedIpSignupPlans(dedicatedIpSignupPlans: DedicatedIpSignupPlans) {
-        prefs.edit().putString(DIP_SIGNUP_PLANS, Json.encodeToString(dedicatedIpSignupPlans)).apply()
+        prefs.edit().putString(DIP_SIGNUP_PLANS, Json.encodeToString(dedicatedIpSignupPlans))
+            .apply()
     }
 
     fun getDedicatedIpSignupPlans(): DedicatedIpSignupPlans? =

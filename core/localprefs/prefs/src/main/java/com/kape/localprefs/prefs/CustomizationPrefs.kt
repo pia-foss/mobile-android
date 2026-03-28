@@ -7,9 +7,11 @@ import com.kape.utils.Prefs
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONArray
+import org.koin.core.annotation.Singleton
 
 private const val ORDERED_ELEMENTS = "ordered-elements"
 
+@Singleton
 class CustomizationPrefs(context: Context) : Prefs(context, "customization") {
 
     fun getOrderedElements(): List<ScreenElement> = prefs.getString(ORDERED_ELEMENTS, null)?.let {

@@ -13,11 +13,11 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.login.BaseTest
-import com.kape.login.domain.mobile.AuthenticationDataSource
 import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.payments.SubscriptionPrefs
-import com.kape.utils.ApiError
-import com.kape.utils.ApiResult
+import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.data.auth.ApiError
+import com.kape.contracts.data.auth.ApiResult
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import io.mockk.coEvery
 import io.mockk.every

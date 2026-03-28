@@ -5,12 +5,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.kape.contracts.Router
 import com.kape.customization.data.Element
-import com.kape.localprefs.prefs.CustomizationPrefs
-import com.kape.router.Router
 import com.kape.localprefs.data.customization.ScreenElement
+import com.kape.localprefs.prefs.CustomizationPrefs
+import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 
+@KoinViewModel
 class CustomizationViewModel(private val prefs: CustomizationPrefs, val router: Router) :
     ViewModel(), KoinComponent {
 

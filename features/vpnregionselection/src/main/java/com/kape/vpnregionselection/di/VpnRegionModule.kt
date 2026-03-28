@@ -1,14 +1,25 @@
 package com.kape.vpnregionselection.di
 
+import com.kape.contracts.Router
+import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.localprefs.prefs.VpnRegionPrefs
+import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
-import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.kape.vpnregions.utils.RegionListProvider
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Module
 
-fun regionSelectionModule(appModule: Module) = module {
-    includes(appModule, localRegionSelectionModule)
-}
+@Module
+class VpnRegionModule {
 
-val localRegionSelectionModule = module {
-    viewModel { VpnRegionSelectionViewModel(get(), get(), get(), get(), get()) }
+    @KoinViewModel
+    fun provideVpnRegionSelectionViewModel(
+        router: Router,
+        regionListProvider: RegionListProvider,
+        connectionUseCase: ConnectionUseCase,
+        vpnRegionPrefs: VpnRegionPrefs,
+        settingsPrefs: SettingsPrefs,
+    ): VpnRegionSelectionViewModel = VpnRegionSelectionViewModel(
+        router, regionListProvider, connectionUseCase, vpnRegionPrefs, settingsPrefs,
+    )
 }

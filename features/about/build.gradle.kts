@@ -37,7 +37,7 @@ android {
 
 dependencies {
     coreLibraryDesugaring(libs.desugar)
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:utils"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))

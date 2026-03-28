@@ -1,19 +1,25 @@
 package com.kape.shareevents.di
 
-import com.kape.localprefs.prefs.KpiPrefs
+import com.kape.contracts.ConfigInfo
+import com.kape.contracts.KpiDataSource
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.shareevents.data.KpiDataSourceImpl
-import com.kape.shareevents.domain.KpiDataSource
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
-import org.koin.core.module.Module
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
+import com.privateinternetaccess.kpi.KPIAPI
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
 
-fun kpiModule(appModule: Module) = module {
-    includes(appModule, localKpiModule)
-}
+@Module
+class KpiModule {
 
-private val localKpiModule = module {
-    single { KpiPrefs(get()) }
-    single<KpiDataSource> { KpiDataSourceImpl(get(named("user-agent")), get(), get()) }
-    single { SubmitKpiEventUseCase(get()) }
+    @Singleton(binds = [KpiDataSource::class])
+    fun provideKpiDataSource(
+        configInfo: ConfigInfo,
+        api: KPIAPI,
+        settingsPrefs: SettingsPrefs,
+    ): KpiDataSource = KpiDataSourceImpl(configInfo, api, settingsPrefs)
+
+    @Singleton
+    fun provideSubmitKpiEventUseCase(kpiDataSource: KpiDataSource): SubmitKpiEventUseCase =
+        SubmitKpiEventUseCase(kpiDataSource)
 }

@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.content.ContextCompat
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class LocationPermissionManager(private val context: Context) {
 
     fun isFineLocationPermissionGranted() = ContextCompat.checkSelfPermission(

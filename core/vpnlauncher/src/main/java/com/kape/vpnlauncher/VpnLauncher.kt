@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.VpnService
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.utils.DI
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider

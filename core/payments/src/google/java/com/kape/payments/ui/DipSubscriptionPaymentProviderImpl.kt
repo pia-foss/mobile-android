@@ -16,9 +16,11 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Singleton
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
+@Singleton([DipSubscriptionPaymentProvider::class])
 class DipSubscriptionPaymentProviderImpl(
     private val context: Context,
 ) : DipSubscriptionPaymentProvider, CoroutineScope {

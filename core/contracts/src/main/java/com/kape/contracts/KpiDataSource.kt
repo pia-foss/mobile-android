@@ -1,7 +1,7 @@
-package com.kape.shareevents.domain
+package com.kape.contracts
 
-import com.kape.shareevents.data.models.KpiConnectionEvent
-import com.kape.shareevents.data.models.KpiConnectionSource
+import com.kape.contracts.data.kpi.KpiConnectionEvent
+import com.kape.contracts.data.kpi.KpiConnectionSource
 import kotlinx.coroutines.flow.Flow
 
 interface KpiDataSource {

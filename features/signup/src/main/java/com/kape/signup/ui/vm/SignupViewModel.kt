@@ -7,15 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.contracts.Router
+import com.kape.contracts.data.LoginWithCredentials
+import com.kape.contracts.data.TvWelcome
+import com.kape.contracts.data.WebDestination
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseState
 import com.kape.permissions.utils.PermissionUtil
-import com.kape.router.LoginWithCredentials
-import com.kape.router.Router
-import com.kape.router.TvWelcome
-import com.kape.router.WebDestination
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.SignupUseCase
 import com.kape.signup.utils.AMAZON_LOGIN
@@ -39,9 +39,11 @@ import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 import java.util.Locale
 
+@KoinViewModel
 class SignupViewModel(
     private val router: Router,
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,

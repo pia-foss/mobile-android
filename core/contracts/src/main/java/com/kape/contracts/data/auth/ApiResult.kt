@@ -1,4 +1,4 @@
-package com.kape.utils
+package com.kape.contracts.data.auth
 
 sealed class ApiResult {
     object Success : ApiResult() {

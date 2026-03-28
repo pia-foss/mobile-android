@@ -1,4 +1,4 @@
-package com.kape.vpn.provider
+package com.kape.contracts.data
 
 data class GenericEndpoint(
     val endpoint: String,

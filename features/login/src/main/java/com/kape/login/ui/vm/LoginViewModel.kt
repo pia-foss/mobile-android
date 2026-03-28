@@ -3,6 +3,8 @@ package com.kape.login.ui.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.contracts.Router
+import com.kape.contracts.data.LoginWithEmail
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.FAILED
@@ -15,14 +17,14 @@ import com.kape.login.utils.getScreenState
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.permissions.utils.PermissionUtil
-import com.kape.router.LoginWithEmail
-import com.kape.router.Router
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 
+@KoinViewModel
 class LoginViewModel(
     private val router: Router,
     private val loginUseCase: LoginUseCase,
@@ -30,7 +32,7 @@ class LoginViewModel(
     private val buildConfigProvider: BuildConfigProvider,
     private val permissionsUtil: PermissionUtil,
     networkConnectionListener: NetworkConnectionListener,
-) : ViewModel(), KoinComponent {
+) : ViewModel() {
 
     private val _state = MutableStateFlow(IDLE)
     val loginState: StateFlow<LoginScreenState> = _state

@@ -11,10 +11,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.coroutines.CoroutineContext
 
+@Singleton
 class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
 
     private val connectionManager: ConnectionManager by inject()

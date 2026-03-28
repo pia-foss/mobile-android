@@ -5,7 +5,9 @@ import com.privateinternetaccess.csi.CSIAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 
+@Singleton([CsiDataSource::class])
 class CsiDataSourceImpl(private val api: CSIAPI) : CsiDataSource {
 
     override fun send(): Flow<String> = callbackFlow {

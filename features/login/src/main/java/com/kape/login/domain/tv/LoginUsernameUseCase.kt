@@ -1,5 +1,8 @@
 package com.kape.login.domain.tv
 
+import org.koin.core.annotation.Singleton
+
+@Singleton
 class LoginUsernameUseCase {
 
     private var loginUsername: String = ""

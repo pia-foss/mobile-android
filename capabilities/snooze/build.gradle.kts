@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
 }
@@ -33,4 +34,8 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:vpnlauncher"))
+}
+
+koinCompiler {
+    compileSafety = false
 }

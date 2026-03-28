@@ -2,27 +2,31 @@ package com.kape.splash.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.Router
+import com.kape.contracts.data.Connection
+import com.kape.contracts.data.Subscribe
+import com.kape.contracts.data.TvWelcome
+import com.kape.contracts.data.Update
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
-import com.kape.router.Connection
-import com.kape.router.Router
-import com.kape.router.Subscribe
-import com.kape.router.TvWelcome
-import com.kape.router.Update
+import com.kape.utils.DI
 import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Named
 import org.koin.core.component.KoinComponent
 
+@KoinViewModel
 class SplashViewModel(
     private val router: Router,
     private val regionListProvider: RegionListProvider,
     private val forceUpdateUseCase: ForceUpdateUseCase,
     private val getWebsiteDownloadLink: GetWebsiteDownloadLink,
-    private val appUpdateUrl: String,
+    @Named(DI.UPDATE_URL) private val appUpdateUrl: String,
     private val connectionUseCase: ConnectionUseCase,
     private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
     private val platformUtils: PlatformUtils,

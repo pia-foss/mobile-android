@@ -1,6 +1,6 @@
-package com.kape.login.domain.mobile
+package com.kape.contracts
 
-import com.kape.utils.ApiResult
+import com.kape.contracts.data.auth.ApiResult
 import kotlinx.coroutines.flow.Flow
 
 interface AuthenticationDataSource {

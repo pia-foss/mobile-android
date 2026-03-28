@@ -13,8 +13,10 @@ import com.privateinternetaccess.account.model.response.ClientStatusInformation
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 
-internal class ClientStateDataSourceImpl(
+@Singleton(binds = [ClientStateDataSource::class])
+class ClientStateDataSourceImpl(
     private val accountAPI: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
     private val csiPrefs: CsiPrefs,

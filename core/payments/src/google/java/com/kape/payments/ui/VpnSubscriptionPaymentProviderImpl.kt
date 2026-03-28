@@ -1,6 +1,7 @@
 package com.kape.payments.ui
 
 import android.app.Activity
+import androidx.annotation.Size
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -26,7 +27,9 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 
+@Singleton([VpnSubscriptionPaymentProvider::class])
 class VpnSubscriptionPaymentProviderImpl(
     private val prefs: SubscriptionPrefs,
     private var activity: Activity? = null,

@@ -5,7 +5,9 @@ import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
 import com.kape.ui.R
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class NetworkUtil(private val context: Context) {
 
     fun getDefaultList(): List<NetworkItem> {

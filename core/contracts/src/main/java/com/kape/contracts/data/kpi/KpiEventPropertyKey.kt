@@ -1,8 +1,5 @@
-package com.kape.shareevents.data.models
+package com.kape.contracts.data.kpi
 
-import com.kape.utils.KoverIgnore
-
-@KoverIgnore("Sealed class, no need for test coverage")
 sealed class KpiEventPropertyKey(val value: String) {
     data object ConnectionSource : KpiEventPropertyKey("connection_source")
     data object UserAgent : KpiEventPropertyKey("user_agent")

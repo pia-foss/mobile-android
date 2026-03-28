@@ -1,21 +1,26 @@
 package com.kape.vpn.utils
 
 import android.content.Context
+import com.kape.contracts.NetworkManager
 import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.ui.R
+import com.kape.utils.DI
 import com.kape.vpnlauncher.VpnLauncher
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Singleton
 
-class NetworkManager(
+@Singleton([NetworkManager::class])
+class NetworkManagerImpl(
     private val context: Context,
     private val networkPrefs: NetworkManagementPrefs,
     private val vpnLauncher: VpnLauncher,
     private val settingsPrefs: SettingsPrefs,
-) {
+) : NetworkManager {
 
-    fun handleCurrentNetwork(ssid: String, isWifi: Boolean) {
+    override fun handleCurrentNetwork(ssid: String, isWifi: Boolean) {
         if (settingsPrefs.isAutomationEnabled()) {
             networkPrefs.getRuleForNetwork(ssid)?.let {
                 applyNetworkRule(it)

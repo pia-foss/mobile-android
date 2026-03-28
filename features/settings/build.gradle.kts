@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.serialization)
     alias(libs.plugins.junit5)
@@ -40,7 +41,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar)
 
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:utils"))
     implementation(project(":core:regions"))
     implementation(project(":core:vpnconnect"))
@@ -69,4 +70,8 @@ dependencies {
     implementation(libs.bundles.serialization)
     implementation(libs.drawablepainter)
     implementation(libs.constraintlayout)
+}
+
+koinCompiler {
+    compileSafety = false
 }

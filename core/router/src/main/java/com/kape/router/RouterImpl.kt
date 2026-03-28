@@ -1,10 +1,15 @@
 package com.kape.router
 
+import com.kape.contracts.Router
+import com.kape.contracts.data.ComposeDestination
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.koin.core.annotation.Single
+import org.koin.core.annotation.Singleton
 
+@Singleton(binds = [Router::class])
 class RouterImpl : Router {
     private val _destination = MutableStateFlow<ComposeDestination?>(null)
     private val _navigateBack = MutableStateFlow(false)

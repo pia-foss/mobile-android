@@ -16,4 +16,5 @@ dependencies {
     implementation(libs.bundles.ktor)
     implementation(libs.spongycastle)
     implementation(libs.bundles.serialization)
+    implementation(libs.bundles.koin)
 }

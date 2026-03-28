@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
 }
 
@@ -32,4 +33,8 @@ dependencies {
     implementation(project(":core:localprefs:data"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:regions"))
+}
+
+koinCompiler {
+    compileSafety = false
 }

@@ -13,7 +13,9 @@ import com.kape.vpnregions.utils.getServerForDip
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class VpnRegionRepository(
     private val source: VpnRegionDataSource,
     private val dipPrefs: DipPrefs,

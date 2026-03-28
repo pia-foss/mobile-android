@@ -1,9 +1,12 @@
 package com.kape.shareevents.domain
 
-import com.kape.shareevents.data.models.KpiConnectionEvent
-import com.kape.shareevents.data.models.KpiConnectionSource
-import com.kape.shareevents.data.models.KpiConnectionStatus
+import com.kape.contracts.KpiDataSource
+import com.kape.contracts.data.kpi.KpiConnectionEvent
+import com.kape.contracts.data.kpi.KpiConnectionSource
+import com.kape.contracts.data.kpi.KpiConnectionStatus
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class SubmitKpiEventUseCase(
     private val api: KpiDataSource,
 ) {

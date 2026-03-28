@@ -2,6 +2,12 @@ package com.kape.profile.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.Router
+import com.kape.contracts.data.AccountDeleted
+import com.kape.contracts.data.LoginWithCredentials
+import com.kape.contracts.data.Splash
+import com.kape.contracts.data.Subscribe
+import com.kape.contracts.data.WebDestination
 import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.profile.data.models.Profile
 import com.kape.profile.domain.DeleteAccountUseCase
@@ -10,17 +16,13 @@ import com.kape.profile.ui.screens.mobile.IDLE
 import com.kape.profile.ui.screens.mobile.LOADING
 import com.kape.profile.ui.screens.mobile.ProfileScreenState
 import com.kape.profile.ui.screens.mobile.createSuccessState
-import com.kape.router.AccountDeleted
-import com.kape.router.LoginWithCredentials
-import com.kape.router.Router
-import com.kape.router.Splash
-import com.kape.router.Subscribe
-import com.kape.router.WebDestination
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 
+@KoinViewModel
 class ProfileViewModel(
     private val useCase: GetProfileUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,

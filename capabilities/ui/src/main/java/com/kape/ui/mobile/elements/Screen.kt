@@ -2,8 +2,7 @@ package com.kape.ui.mobile.elements
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import com.kape.router.LocalNavigator
-import com.kape.router.Router
+import com.kape.contracts.Router
 import org.koin.compose.koinInject
 
 @Composable

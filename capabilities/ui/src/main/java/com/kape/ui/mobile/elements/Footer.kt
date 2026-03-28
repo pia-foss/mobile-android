@@ -17,9 +17,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kape.router.ComposeDestination
-import com.kape.router.Router
-import com.kape.router.WebDestination
+import com.kape.contracts.Router
+import com.kape.contracts.data.ComposeDestination
+import com.kape.contracts.data.WebDestination
 import com.kape.ui.R
 import com.kape.ui.utils.LocalColors
 import org.koin.compose.koinInject

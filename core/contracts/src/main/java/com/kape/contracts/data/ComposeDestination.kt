@@ -1,4 +1,4 @@
-package com.kape.router
+package com.kape.contracts.data
 
 import kotlinx.serialization.Serializable
 

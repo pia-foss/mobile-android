@@ -8,9 +8,11 @@ import android.webkit.WebStorage
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.vpnlauncher.VpnLauncher
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
+@Singleton
 class OnAppUpdatedReceiver : BroadcastReceiver(), KoinComponent {
 
     private val settingsPrefs: SettingsPrefs by inject()

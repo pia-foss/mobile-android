@@ -5,25 +5,27 @@ import android.content.pm.PackageManager
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.AppInfo
+import com.kape.contracts.KpiDataSource
+import com.kape.contracts.Router
+import com.kape.contracts.data.About
+import com.kape.contracts.data.AutomationSettings
+import com.kape.contracts.data.ConnectionStats
+import com.kape.contracts.data.DebugLogs
+import com.kape.contracts.data.ExternalAppList
+import com.kape.contracts.data.GeneralSettings
+import com.kape.contracts.data.HelpSettings
+import com.kape.contracts.data.KillSwitchSettings
+import com.kape.contracts.data.NetworkSettings
+import com.kape.contracts.data.ObfuscationSettings
+import com.kape.contracts.data.PrivacySettings
+import com.kape.contracts.data.ProtocolSettings
+import com.kape.contracts.data.WebDestination
 import com.kape.csi.domain.SendLogUseCase
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.location.data.LocationPermissionManager
-import com.kape.router.About
-import com.kape.router.AutomationSettings
-import com.kape.router.ConnectionStats
-import com.kape.router.DebugLogs
-import com.kape.router.ExternalAppList
-import com.kape.router.GeneralSettings
-import com.kape.router.HelpSettings
-import com.kape.router.KillSwitchSettings
-import com.kape.router.NetworkSettings
-import com.kape.router.ObfuscationSettings
-import com.kape.router.PrivacySettings
-import com.kape.router.ProtocolSettings
-import com.kape.router.Router
-import com.kape.router.WebDestination
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.CustomObfuscation
 import com.kape.settings.data.DataEncryption
@@ -35,7 +37,6 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
-import com.kape.shareevents.domain.KpiDataSource
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.domain.GetLogsUseCase
@@ -44,11 +45,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 
+@KoinViewModel
 class SettingsViewModel(
     private val router: Router,
-    val version: String,
+    private val appInfo: AppInfo,
     private val prefs: SettingsPrefs,
     private val connectionPrefs: ConnectionPrefs,
     private val csiPrefs: CsiPrefs,
@@ -408,4 +411,6 @@ class SettingsViewModel(
             }
         }
     }
+
+    fun getAppVersion(): String = "${appInfo.versionName} (${appInfo.versionCode})"
 }

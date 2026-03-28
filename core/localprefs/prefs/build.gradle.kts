@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.configuration)
     alias(libs.plugins.serialization)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.koin.compiler)
 }
 
 android {
@@ -27,7 +28,7 @@ android {
 dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:data"))
-    implementation(project(":capabilities:buildconfig"))
+    implementation(libs.bundles.koin)
     implementation(libs.bundles.serialization)
     implementation(libs.kape.account)
 }

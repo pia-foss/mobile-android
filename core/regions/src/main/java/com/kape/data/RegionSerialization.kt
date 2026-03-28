@@ -3,7 +3,9 @@ package com.kape.data
 import com.privateinternetaccess.regions.model.ShadowsocksRegionsResponse
 import com.privateinternetaccess.regions.model.VpnRegionsResponse
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class RegionSerialization {
 
     fun decodeVpnRegionsFromString(

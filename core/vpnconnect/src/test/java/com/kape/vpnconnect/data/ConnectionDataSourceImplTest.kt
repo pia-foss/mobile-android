@@ -7,7 +7,6 @@ import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
-import com.kape.shareevents.domain.KpiDataSource
 import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.provider.UsageProvider

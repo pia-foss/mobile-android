@@ -5,7 +5,9 @@ import com.kape.data.RegionSerialization
 import com.kape.shadowsocksregions.utils.adaptShadowsocksServers
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class ReadShadowsocksRegionsDetailsUseCase(
     private val regionInputStream: RegionInputStream,
     private val regionSerialization: RegionSerialization,

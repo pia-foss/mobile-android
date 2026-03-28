@@ -7,9 +7,11 @@ import com.kape.networkmanagement.data.NetworkType
 import com.kape.utils.Prefs
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Singleton
 
 private const val NETWORK_RULES = "network-rules"
 
+@Singleton
 class NetworkManagementPrefs(context: Context) : Prefs(context, "network-management") {
 
     fun addRuleForNetwork(ssid: String, behavior: NetworkBehavior) {

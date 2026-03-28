@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
     alias(libs.plugins.compose)
@@ -44,7 +45,7 @@ dependencies {
     implementation(project(":capabilities:notifications"))
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:snooze"))
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:payments"))
     implementation(project(":core:regions"))
     implementation(project(":core:vpnconnect"))
@@ -58,6 +59,7 @@ dependencies {
     implementation(project(":features:vpnregionselection"))
     implementation(project(":features:dedicatedip"))
     implementation(project(":features:rating"))
+    implementation(project(":capabilities:buildconfig"))
 
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
@@ -74,4 +76,8 @@ dependencies {
     implementation(libs.kape.account)
     implementation(libs.bundles.serialization)
     implementation(libs.constraintlayout)
+}
+
+koinCompiler {
+    compileSafety = false
 }

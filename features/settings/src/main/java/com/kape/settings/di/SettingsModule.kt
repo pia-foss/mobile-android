@@ -1,33 +1,49 @@
 package com.kape.settings.di
 
+import com.kape.contracts.AppInfo
+import com.kape.contracts.KpiDataSource
+import com.kape.contracts.Router
+import com.kape.csi.domain.SendLogUseCase
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.location.data.LocationPermissionManager
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.domain.IsNumericIpAddressUseCaseImpl
 import com.kape.settings.ui.vm.SettingsViewModel
-import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.kape.vpnconnect.domain.ConnectionDataSource
+import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.domain.GetLogsUseCase
+import com.kape.vpnregions.data.VpnRegionRepository
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
 
-fun settingsModule(appModule: Module, versionCode: Int, versionName: String) = module {
-    includes(appModule, localSettingsModule("$versionName ($versionCode)"))
-}
+@Module
+class SettingsModule {
 
-private fun localSettingsModule(version: String) = module {
-    single<IsNumericIpAddressUseCase> { IsNumericIpAddressUseCaseImpl() }
-    viewModel {
-        SettingsViewModel(
-            get(),
-            version,
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-            get(),
-        )
-    }
+    @Singleton(binds = [IsNumericIpAddressUseCase::class])
+    fun provideIsNumericIpAddressUseCase(): IsNumericIpAddressUseCase =
+        IsNumericIpAddressUseCaseImpl()
+
+    @KoinViewModel
+    fun provideSettingsViewModel(
+        router: Router,
+        appInfo: AppInfo,
+        prefs: SettingsPrefs,
+        connectionPrefs: ConnectionPrefs,
+        csiPrefs: CsiPrefs,
+        regionsRepository: VpnRegionRepository,
+        kpiDataSource: KpiDataSource,
+        connectionDataSource: ConnectionDataSource,
+        getDebugLogsUseCase: GetLogsUseCase,
+        sendLogUseCase: SendLogUseCase,
+        isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
+        locationPermissionManager: LocationPermissionManager,
+        connectionUseCase: ConnectionUseCase,
+    ): SettingsViewModel = SettingsViewModel(
+        router, appInfo, prefs, connectionPrefs, csiPrefs, regionsRepository, kpiDataSource,
+        connectionDataSource, getDebugLogsUseCase, sendLogUseCase, isNumericIpAddressUseCase,
+        locationPermissionManager, connectionUseCase,
+    )
 }

@@ -2,7 +2,6 @@ package com.kape.data
 
 import app.cash.turbine.test
 import com.kape.shadowsocksregions.domain.ShadowsocksRegionDataSource
-import com.kape.vpnregions.di.vpnRegionsModule
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.RegionsAPI
@@ -43,7 +42,7 @@ internal class RegionDataSourceImplTest : KoinTest {
     internal fun setUp() {
         stopKoin()
         startKoin {
-            modules(appModule, vpnRegionsModule(appModule))
+            modules(appModule)
         }
         vpnRegionDataSource = RegionDataSourceImpl(api)
         shadowsocksRegionDataSource = RegionDataSourceImpl(api)

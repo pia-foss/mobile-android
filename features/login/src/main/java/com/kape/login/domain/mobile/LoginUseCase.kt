@@ -1,11 +1,14 @@
 package com.kape.login.domain.mobile
 
+import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.data.auth.ApiError
+import com.kape.contracts.data.auth.ApiResult
 import com.kape.login.utils.LoginState
-import com.kape.utils.ApiError
-import com.kape.utils.ApiResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class LoginUseCase(private val source: AuthenticationDataSource) {
 
     suspend fun login(username: String, password: String): Flow<LoginState> = flow {

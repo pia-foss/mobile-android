@@ -9,7 +9,9 @@ import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class DipSignupRepository(
     private val dipDataSource: DipDataSource,
     private val dipPrefs: DipPrefs,
