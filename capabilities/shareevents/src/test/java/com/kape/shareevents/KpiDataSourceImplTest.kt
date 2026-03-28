@@ -1,12 +1,12 @@
 package com.kape.shareevents
 
 import app.cash.turbine.test
+import com.kape.contracts.ConfigInfo
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.contracts.KpiDataSource
 import com.kape.contracts.data.kpi.KpiConnectionEvent
 import com.kape.shareevents.data.KpiDataSourceImpl
-import com.kape.shareevents.di.kpiModule
 import com.privateinternetaccess.kpi.KPIAPI
 import io.mockk.coEvery
 import io.mockk.every
@@ -24,7 +24,7 @@ internal class KpiDataSourceImplTest {
 
     private val api: KPIAPI = mockk(relaxed = true)
     private val prefs: SettingsPrefs = mockk()
-    private val userAgent: String = "user agent"
+    private val configInfo: ConfigInfo = mockk()
 
     private lateinit var source: KpiDataSource
 
@@ -34,11 +34,10 @@ internal class KpiDataSourceImplTest {
 
     @BeforeEach
     internal fun setUp() {
+        every { configInfo.userAgent } returns "user-agent"
         stopKoin()
-        startKoin {
-            modules(appModule, kpiModule())
-        }
-        source = KpiDataSourceImpl(userAgent, api, prefs)
+        startKoin {}
+        source = KpiDataSourceImpl(configInfo, api, prefs)
     }
 
     @Test

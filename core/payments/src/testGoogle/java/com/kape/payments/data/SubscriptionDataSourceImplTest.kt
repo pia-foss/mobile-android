@@ -2,7 +2,6 @@ package com.kape.payments.data
 
 import app.cash.turbine.test
 import com.kape.payments.SubscriptionPrefs
-import com.kape.payments.di.paymentsModule
 import com.kape.payments.domain.SubscriptionDataSource
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -44,9 +43,7 @@ internal class SubscriptionDataSourceImplTest {
     @BeforeEach
     internal fun setUp() {
         stopKoin()
-        startKoin {
-            modules(appModule, paymentsModule(appModule))
-        }
+        startKoin {}
         source = SubscriptionDataSourceImpl(prefs, api)
     }
 

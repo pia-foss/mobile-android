@@ -3,11 +3,11 @@ package com.kape.vpnconnect.data
 import android.app.AlarmManager
 import android.app.PendingIntent
 import app.cash.turbine.test
+import com.kape.contracts.KpiDataSource
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
-import com.kape.vpnconnect.di.vpnConnectModule
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnmanager.data.models.ClientConfiguration
@@ -68,9 +68,7 @@ internal class ConnectionDataSourceImplTest {
     @BeforeEach
     internal fun setUp() {
         stopKoin()
-        startKoin {
-            modules(appModule, vpnConnectModule(appModule))
-        }
+        startKoin {}
         source = ConnectionDataSourceImpl(
             connectionApi,
             authenticationApi,

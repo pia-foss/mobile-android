@@ -1,7 +1,6 @@
 package com.kape.profile.data
 
 import app.cash.turbine.test
-import com.kape.profile.di.profileModule
 import com.kape.profile.domain.ProfileDatasource
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -44,9 +43,7 @@ internal class ProfileDatasourceImplTest {
     internal fun setUp() {
         Dispatchers.setMain(mainThreadSurrogate)
         stopKoin()
-        startKoin {
-            modules(appModule, profileModule(appModule))
-        }
+        startKoin {}
         dataSource = ProfileDatasourceImpl(api)
     }
 
