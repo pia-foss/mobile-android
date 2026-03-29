@@ -9,22 +9,6 @@ plugins {
 android {
     namespace = "com.kape.splash"
 
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
-
     buildFeatures {
         compose = true
     }
@@ -40,7 +24,6 @@ dependencies {
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:notifications"))
     implementation(project(":capabilities:featureflags"))
-    implementation(project(":features:login"))
 
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)

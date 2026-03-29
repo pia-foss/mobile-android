@@ -8,7 +8,6 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.connection"
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -24,6 +23,7 @@ android {
             dimension = "provider"
         }
     }
+    namespace = "com.kape.connection"
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -46,7 +46,6 @@ dependencies {
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:snooze"))
     implementation(project(":core:contracts"))
-    implementation(project(":core:payments"))
     implementation(project(":core:regions"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:portforwarding"))

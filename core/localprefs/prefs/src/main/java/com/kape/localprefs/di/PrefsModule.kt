@@ -1,19 +1,18 @@
 package com.kape.localprefs.di
 
 import android.content.Context
-import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.CustomizationPrefs
 import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.KpiPrefs
 import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.localprefs.prefs.RatingPrefs
-import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
-import com.kape.payments.SubscriptionPrefs
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
 
@@ -55,7 +54,4 @@ class PrefsModule {
 
     @Singleton
     fun provideCustomizationPrefs(context: Context): CustomizationPrefs = CustomizationPrefs(context)
-
-    @Singleton
-    fun provideSubscriptionPrefs(context: Context): SubscriptionPrefs = SubscriptionPrefs(context)
 }

@@ -10,21 +10,6 @@ plugins {
 
 android {
     namespace = "com.kape.settings"
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
     }

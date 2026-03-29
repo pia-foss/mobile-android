@@ -38,4 +38,7 @@ class PaymentsModule {
     @Singleton(binds = [DipSubscriptionPaymentProvider::class])
     fun provideDipSubscriptionPaymentProvider(context: Context): DipSubscriptionPaymentProvider =
         DipSubscriptionPaymentProviderImpl(context)
+
+    @Singleton
+    fun provideSubscriptionPrefs(context: Context): SubscriptionPrefs = SubscriptionPrefs(context)
 }

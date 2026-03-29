@@ -12,21 +12,6 @@ koinCompiler {
 
 android {
     namespace = "com.kape.sidemenu"
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -48,7 +33,6 @@ dependencies {
     implementation(project(":core:contracts"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))
-    implementation(project(":features:login"))
     implementation(project(":features:profile"))
     implementation(project(":features:vpnregionselection"))
 

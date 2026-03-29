@@ -2,6 +2,7 @@ package com.kape.splash.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
 import com.kape.contracts.data.Connection
 import com.kape.contracts.data.Subscribe
@@ -9,7 +10,6 @@ import com.kape.contracts.data.TvWelcome
 import com.kape.contracts.data.Update
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.httpclient.domain.GetWebsiteDownloadLink
-import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.utils.DI
 import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.ConnectionUseCase
@@ -28,9 +28,9 @@ class SplashViewModel(
     private val getWebsiteDownloadLink: GetWebsiteDownloadLink,
     @Named(DI.UPDATE_URL) private val appUpdateUrl: String,
     private val connectionUseCase: ConnectionUseCase,
-    private val getUserLoggedInUseCase: GetUserLoggedInUseCase,
+    private val isUserLoggedIn: IsUserLoggedInUseCase,
     private val platformUtils: PlatformUtils,
-) : ViewModel(), KoinComponent {
+) : ViewModel(){
 
     private var updateUrl: String = ""
 
@@ -38,7 +38,7 @@ class SplashViewModel(
         if (regionListProvider.isDefaultList()) {
             regionListProvider.loadVpnServerLatencies()
         }
-        if (getUserLoggedInUseCase.isUserLoggedIn()) {
+        if (isUserLoggedIn.invoke()) {
             handleSplashExit()
         }
         viewModelScope.launch(Dispatchers.IO) {
@@ -52,7 +52,7 @@ class SplashViewModel(
                             }
                         }
                     }
-                } else if (!getUserLoggedInUseCase.isUserLoggedIn()) {
+                } else if (!isUserLoggedIn.invoke()) {
                     handleSplashExit()
                 }
             }
@@ -69,7 +69,7 @@ class SplashViewModel(
     fun isConnected(): Boolean = connectionUseCase.isConnected()
 
     private fun handleSplashExit() {
-        if (getUserLoggedInUseCase.isUserLoggedIn()) {
+        if (isUserLoggedIn.invoke()) {
             router.updateDestination(Connection)
         } else {
             if (platformUtils.isTv()) {

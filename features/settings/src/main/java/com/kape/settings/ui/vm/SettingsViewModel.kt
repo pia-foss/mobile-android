@@ -63,7 +63,7 @@ class SettingsViewModel(
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
     private val locationPermissionManager: LocationPermissionManager,
     private val connectionUseCase: ConnectionUseCase,
-) : ViewModel(), KoinComponent {
+) : ViewModel(){
 
     companion object {
         private const val GET_INSTALLED_APPS_DELAY_MS = 1000L

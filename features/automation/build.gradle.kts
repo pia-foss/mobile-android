@@ -9,22 +9,6 @@ plugins {
 android {
     namespace = "com.kape.automation"
 
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
-
     buildFeatures {
         compose = true
     }

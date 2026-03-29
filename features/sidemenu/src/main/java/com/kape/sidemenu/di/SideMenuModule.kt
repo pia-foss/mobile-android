@@ -1,8 +1,8 @@
 package com.kape.sidemenu.di
 
 import com.kape.contracts.AppInfo
+import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
-import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.profile.domain.GetProfileUseCase
 import com.kape.sidemenu.ui.vm.SideMenuViewModel
 import org.koin.core.annotation.KoinViewModel

@@ -8,7 +8,6 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.customization"
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -24,6 +23,7 @@ android {
             dimension = "provider"
         }
     }
+    namespace = "com.kape.customization"
     testOptions {
         unitTests {
             isReturnDefaultValues = true

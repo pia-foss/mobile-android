@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.AppInfo
+import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
-import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.profile.domain.GetProfileUseCase
 import com.kape.contracts.data.About
 import com.kape.contracts.data.Connection
@@ -26,7 +26,7 @@ class SideMenuViewModel(
     private val logoutUseCase: LogoutUseCase,
     private val appInfo: AppInfo,
     private val router: Router,
-) : ViewModel(), KoinComponent {
+) : ViewModel() {
 
     val username = mutableStateOf("")
     val showExpire = mutableStateOf(false)

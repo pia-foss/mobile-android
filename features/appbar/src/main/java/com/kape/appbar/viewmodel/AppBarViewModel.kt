@@ -18,7 +18,7 @@ class AppBarViewModel(
     private val router: Router,
     private val connectionManager: ConnectionManager,
     networkConnectionListener: NetworkConnectionListener,
-) : ViewModel(), KoinComponent {
+) : ViewModel(){
 
     val isConnected = networkConnectionListener.isConnected
 

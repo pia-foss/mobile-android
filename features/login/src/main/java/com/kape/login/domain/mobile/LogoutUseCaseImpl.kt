@@ -1,6 +1,7 @@
 package com.kape.login.domain.mobile
 
 import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.data.auth.ApiResult
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class LogoutUseCase(
+class LogoutUseCaseImpl(
     private val source: AuthenticationDataSource,
     private val connectionPrefs: ConnectionPrefs,
     private val connectionUseCase: ConnectionUseCase,
@@ -35,9 +36,9 @@ class LogoutUseCase(
     private val kpiPrefs: KpiPrefs,
     private val consentPrefs: ConsentPrefs,
     private val ratingPrefs: RatingPrefs,
-) {
+) : LogoutUseCase {
 
-    fun logout(): Flow<Boolean> = flow {
+    override fun logout(): Flow<Boolean> = flow {
         if (settingsPrefs.isAutomationEnabled()) {
             connectionPrefs.disconnectedByUser(true)
         }

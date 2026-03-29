@@ -26,7 +26,7 @@ internal class GetUserLoggedInUseCaseTest : BaseTest() {
     @MethodSource("booleans")
     fun login(expected: Boolean) = runTest {
         every { source.isUserLoggedIn() } returns expected
-        val actual = useCase.isUserLoggedIn()
+        val actual = useCase.invoke()
         assertEquals(expected, actual)
     }
 }

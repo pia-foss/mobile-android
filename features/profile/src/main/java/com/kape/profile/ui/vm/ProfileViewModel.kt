@@ -2,13 +2,13 @@ package com.kape.profile.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
 import com.kape.contracts.data.AccountDeleted
 import com.kape.contracts.data.LoginWithCredentials
 import com.kape.contracts.data.Splash
 import com.kape.contracts.data.Subscribe
 import com.kape.contracts.data.WebDestination
-import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.profile.data.models.Profile
 import com.kape.profile.domain.DeleteAccountUseCase
 import com.kape.profile.domain.GetProfileUseCase

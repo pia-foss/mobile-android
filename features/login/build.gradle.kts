@@ -8,7 +8,6 @@ plugins {
 }
 
 android {
-    namespace = "com.kape.login"
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -24,6 +23,7 @@ android {
             dimension = "provider"
         }
     }
+    namespace = "com.kape.login"
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true

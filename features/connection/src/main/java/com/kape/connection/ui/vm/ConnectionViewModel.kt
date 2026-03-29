@@ -80,7 +80,7 @@ class ConnectionViewModel(
     private val shortcutPrefs: ShortcutPrefs,
     private val buildConfigProvider: BuildConfigProvider,
     networkConnectionListener: NetworkConnectionListener,
-) : ViewModel(), KoinComponent {
+) : ViewModel(){
     private var connectJob: Job? = null
     private var loadVpnServersJob: Job? = null
     private var loadShadowsocksServersJob: Job? = null

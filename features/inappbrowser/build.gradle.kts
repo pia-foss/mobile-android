@@ -9,22 +9,6 @@ plugins {
 android {
     namespace = "com.kape.inappbrowser"
 
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
-
     testOptions {
         unitTests {
             isReturnDefaultValues = true

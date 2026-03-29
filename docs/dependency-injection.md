@@ -159,7 +159,12 @@ Test classes extend or implement `KoinTest` for access to Koin test utilities.
 
 ## Flavor-Specific Bindings
 
-Some Gradle modules have flavor-specific source sets (e.g. `src/google`, `src/amazon`, `src/noinapp`, `src/meta`) that provide different implementations of the same interface. Affected modules today: `core/payments` and `features/signup`.
+### Modules with flavor-specific implementations
+
+Two modules provide different implementations per build flavor via flavor source sets (`src/google`, `src/amazon`, `src/noinapp`, `src/meta`):
+
+- `core/payments` — `SubscriptionDataSourceImpl`, payment-related providers
+- `features/signup` — `SignupDataSourceImpl`, `SignupUseCase`
 
 **Rule:** flavor-specific implementation classes must be registered via an **explicit `@Singleton` provider method** in the module's `@Module` class (located in `src/main`). Do **not** rely on class-level `@Singleton` annotations alone — the Koin compiler plugin does not reliably auto-discover them from sub-packages in multi-module builds.
 
@@ -180,7 +185,22 @@ koinCompiler {
 }
 ```
 
-Affected modules: `core/payments`, `features/signup`.
+### Flavor dimension propagation
+
+Gradle requires that any module depending (directly or transitively) on a module with `productFlavors` must also declare the same flavor dimension, so variant matching can resolve correctly.
+
+The following library modules declare `flavorDimensions.add("provider")` for this reason:
+
+| Module | Reason |
+|--------|--------|
+| `core/payments` | Has flavor-specific source sets |
+| `features/signup` | Has flavor-specific source sets; depends on `core/payments` |
+| `features/login` | Depends on `core/payments` directly |
+| `features/dedicatedip` | Depends on `core/payments` directly |
+| `features/connection` | Transitively reaches `core/payments` via `features/dedicatedip` and `features/signup` |
+| `features/customization` | Transitively reaches `core/payments` via `features/connection` |
+
+Any new module that adds a direct or transitive dependency on `core/payments` or `features/signup` must also add the flavor dimension declaration.
 
 ---
 

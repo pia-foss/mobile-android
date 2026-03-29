@@ -32,7 +32,7 @@ class AutomationViewModel(
     private val networkConnectionListener: NetworkConnectionListener,
     @Named(DI.RULES_UPDATED_INTENT) private val broadcastIntent: Intent,
     private val automationManager: AutomationManager,
-) : ViewModel(), KoinComponent {
+) : ViewModel(){
 
     private val _state = MutableStateFlow<AutomationState>(
         AutomationState(

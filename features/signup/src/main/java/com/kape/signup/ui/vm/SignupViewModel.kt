@@ -55,7 +55,7 @@ class SignupViewModel(
     private val buildConfigProvider: BuildConfigProvider,
     private val permissionUtil: PermissionUtil,
     networkConnectionListener: NetworkConnectionListener,
-) : ViewModel(), KoinComponent {
+) : ViewModel(){
 
     private val _state = MutableStateFlow(DEFAULT)
     val state: StateFlow<SignupScreenState> = _state

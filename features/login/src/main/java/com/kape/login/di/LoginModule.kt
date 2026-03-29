@@ -2,6 +2,8 @@ package com.kape.login.di
 
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.IsUserLoggedInUseCase
+import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
@@ -17,7 +19,7 @@ import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.login.data.AuthenticationDataSourceImpl
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.login.domain.mobile.LoginUseCase
-import com.kape.login.domain.mobile.LogoutUseCase
+import com.kape.login.domain.mobile.LogoutUseCaseImpl
 import com.kape.login.domain.tv.LoginUsernameUseCase
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.ui.vm.mobile.LoginWithEmailViewModel
@@ -61,14 +63,14 @@ class LoginModule {
         kpiPrefs: KpiPrefs,
         consentPrefs: ConsentPrefs,
         ratingPrefs: RatingPrefs,
-    ): LogoutUseCase = LogoutUseCase(
+    ): LogoutUseCase = LogoutUseCaseImpl(
         source, connectionPrefs, connectionUseCase, csiPrefs, customizationPrefs, dipPrefs,
         networkManagementPrefs, subscriptionPrefs, shadowsocksRegionPrefs, vpnRegionPrefs,
         settingsPrefs, kpiPrefs, consentPrefs, ratingPrefs,
     )
 
     @Singleton
-    fun provideGetUserLoggedInUseCase(source: AuthenticationDataSource): GetUserLoggedInUseCase =
+    fun provideGetUserLoggedInUseCase(source: AuthenticationDataSource): IsUserLoggedInUseCase =
         GetUserLoggedInUseCase(source)
 
     @Singleton

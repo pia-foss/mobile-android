@@ -1,9 +1,9 @@
 package com.kape.splash.di
 
+import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.httpclient.domain.GetWebsiteDownloadLink
-import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.splash.ui.vm.SplashViewModel
 import com.kape.utils.DI
 import com.kape.utils.PlatformUtils
@@ -24,7 +24,7 @@ class SplashModule {
         getWebsiteDownloadLink: GetWebsiteDownloadLink,
         @Named(DI.UPDATE_URL) appUpdateUrl: String,
         connectionUseCase: ConnectionUseCase,
-        getUserLoggedInUseCase: GetUserLoggedInUseCase,
+        getUserLoggedInUseCase: IsUserLoggedInUseCase,
         platformUtils: PlatformUtils,
     ): SplashViewModel = SplashViewModel(
         router, regionListProvider, forceUpdateUseCase, getWebsiteDownloadLink,

@@ -1,7 +1,7 @@
 package com.kape.profile.di
 
+import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
-import com.kape.login.domain.mobile.LogoutUseCase
 import com.kape.profile.data.ProfileDatasourceImpl
 import com.kape.profile.domain.DeleteAccountUseCase
 import com.kape.profile.domain.GetProfileUseCase

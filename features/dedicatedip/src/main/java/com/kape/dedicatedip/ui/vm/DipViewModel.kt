@@ -56,7 +56,7 @@ class DipViewModel(
     private val connectionPrefs: ConnectionPrefs,
     private val connectionUseCase: ConnectionUseCase,
     private val buildConfigProvider: BuildConfigProvider,
-) : ViewModel(), KoinComponent {
+) : ViewModel(){
 
     private val _state = MutableStateFlow<DedicatedIpStep?>(null)
     val state: StateFlow<DedicatedIpStep?> = _state

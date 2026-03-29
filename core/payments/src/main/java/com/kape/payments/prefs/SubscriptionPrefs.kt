@@ -8,6 +8,7 @@ import com.kape.payments.data.SubscriptionPlan
 import com.kape.utils.Prefs
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
+import kotlin.toString
 
 private const val AVAILABLE_VPN_SUBSCRIPTIONS = "available-subscriptions"
 private const val AVAILABLE_VPN_SUBSCRIPTIONS_V2 = "available-subscriptions-v2"
