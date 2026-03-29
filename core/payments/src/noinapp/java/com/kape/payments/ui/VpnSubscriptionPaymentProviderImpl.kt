@@ -12,8 +12,13 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 
-class VpnSubscriptionPaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
+@Singleton([VpnSubscriptionPaymentProvider::class])
+class VpnSubscriptionPaymentProviderImpl(
+    private val prefs: SubscriptionPrefs,
+    var activity: Activity? = null,
+) :
     VpnSubscriptionPaymentProvider {
 
     override val purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.NoInAppPurchase)

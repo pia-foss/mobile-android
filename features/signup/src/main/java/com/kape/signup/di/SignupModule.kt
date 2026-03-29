@@ -15,6 +15,7 @@ import com.kape.signup.data.Identifier
 import com.kape.signup.data.IdentifierImpl
 import com.kape.signup.data.Obfuscator
 import com.kape.signup.data.ObfuscatorImpl
+import com.kape.signup.data.SignupDataSourceImpl
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.EmailDataSource
 import com.kape.signup.domain.GetObfuscatedDeviceIdentifierUseCase
@@ -58,6 +59,10 @@ class SignupModule {
     @Singleton
     fun provideSetEmailUseCase(source: EmailDataSource): SetEmailUseCase =
         SetEmailUseCase(source)
+
+    @Singleton(binds = [SignupDataSource::class])
+    fun provideSignupDataSource(api: AndroidAccountAPI): SignupDataSource =
+        SignupDataSourceImpl(api)
 
     @Singleton
     fun provideSignupUseCase(

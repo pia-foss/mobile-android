@@ -157,6 +157,33 @@ Test classes extend or implement `KoinTest` for access to Koin test utilities.
 
 ---
 
+## Flavor-Specific Bindings
+
+Some Gradle modules have flavor-specific source sets (e.g. `src/google`, `src/amazon`, `src/noinapp`, `src/meta`) that provide different implementations of the same interface. Affected modules today: `core/payments` and `features/signup`.
+
+**Rule:** flavor-specific implementation classes must be registered via an **explicit `@Singleton` provider method** in the module's `@Module` class (located in `src/main`). Do **not** rely on class-level `@Singleton` annotations alone — the Koin compiler plugin does not reliably auto-discover them from sub-packages in multi-module builds.
+
+```kotlin
+// In SignupModule (src/main) — resolves to the active flavor's SignupDataSourceImpl at compile time
+@Singleton(binds = [SignupDataSource::class])
+fun provideSignupDataSource(api: AndroidAccountAPI): SignupDataSource =
+    SignupDataSourceImpl(api)
+```
+
+All flavor variants of an implementation class must share the same constructor signature for this to compile across flavors.
+
+Modules with flavor-specific bindings must set `compileSafety = false` in their `build.gradle.kts` to allow the Koin compiler to process overlapping definitions without error:
+
+```kotlin
+koinCompiler {
+    compileSafety = false
+}
+```
+
+Affected modules: `core/payments`, `features/signup`.
+
+---
+
 ## Migration: DSL to Annotations (KM-15137)
 
 The project migrated from manual DSL-based module functions to annotation-based Koin modules.

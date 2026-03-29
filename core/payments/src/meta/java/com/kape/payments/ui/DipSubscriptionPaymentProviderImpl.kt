@@ -2,8 +2,11 @@ package com.kape.payments.ui
 
 import android.app.Activity
 import android.content.Context
+import androidx.annotation.Size
 import com.kape.payments.data.DipPurchaseData
+import org.koin.core.annotation.Singleton
 
+@Singleton([DipSubscriptionPaymentProvider::class])
 class DipSubscriptionPaymentProviderImpl(
     private val context: Context,
 ) : DipSubscriptionPaymentProvider {

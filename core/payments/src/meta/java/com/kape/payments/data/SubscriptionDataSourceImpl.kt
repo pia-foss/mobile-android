@@ -5,8 +5,10 @@ import com.kape.payments.domain.SubscriptionDataSource
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 
+@Singleton(binds = [SubscriptionDataSource::class])
 class SubscriptionDataSourceImpl(
     private val prefs: SubscriptionPrefs,
     private val api: AndroidAccountAPI,
