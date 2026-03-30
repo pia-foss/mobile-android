@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.R
@@ -296,11 +297,15 @@ fun DipItem(
         Text(
             text = server.name,
             fontSize = 14.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .constrainAs(name) {
                     start.linkTo(icon.end, margin = 8.dp)
+                    end.linkTo(latency.start, margin = 8.dp)
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
+                    width = Dimension.fillToConstraints
                 }
                 .testTag(":DedicatedIPScreen:dip_server_name"),
         )
