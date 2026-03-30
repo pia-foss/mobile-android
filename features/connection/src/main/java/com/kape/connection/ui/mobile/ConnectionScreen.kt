@@ -113,7 +113,7 @@ fun ConnectionScreen() = Screen {
     BackHandler {
         activity?.finish()
     }
-    
+
     LaunchedEffect(lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             viewModel.refreshState()
@@ -387,11 +387,7 @@ private fun DisplayComponent(
                     },
                     onClick = {
                         if (viewModel.isConnectionActive()) {
-                            if (!viewModel.isAlarmPermissionGranted()) {
-                                context.startActivity(Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
-                            } else {
-                                viewModel.snooze(it)
-                            }
+                            viewModel.snooze(it)
                         }
                     },
                     onResumeClick = {

@@ -1,14 +1,17 @@
 package com.kape.vpnconnect.data
 
-import android.app.AlarmManager
-import android.app.PendingIntent
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.kape.contracts.KpiDataSource
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
+import com.kape.utils.WorkerTags
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnconnect.worker.PortForwardingWorker
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.presenters.VPNManagerAPI
@@ -20,17 +23,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
+import java.util.concurrent.TimeUnit
 
 @Singleton(binds = [ConnectionDataSource::class])
 class ConnectionDataSourceImpl(
     private val connectionApi: VPNManagerAPI,
     private val accountApi: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
-    private val alarmManager: AlarmManager,
+    private val workManager: WorkManager,
     private val settingsPrefs: SettingsPrefs,
     private val kpiDataSource: KpiDataSource,
     private val usageProvider: UsageProvider,
-    private val portForwardingIntent: PendingIntent,
     private val csiPrefs: CsiPrefs,
 ) : ConnectionDataSource, KoinComponent {
 
@@ -80,11 +83,14 @@ class ConnectionDataSourceImpl(
 
     override fun startPortForwarding() {
         // TODO: handle how to pass status
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            0,
-            AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-            portForwardingIntent,
+        val workRequest = PeriodicWorkRequestBuilder<PortForwardingWorker>(
+            15,
+            TimeUnit.MINUTES,
+        ).build()
+        workManager.enqueueUniquePeriodicWork(
+            WorkerTags.PORT_FORWARDING_WORKER,
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest,
         )
     }
 
@@ -92,7 +98,7 @@ class ConnectionDataSourceImpl(
         // TODO: handle how to pass status
         connectionPrefs.clearGateway()
         connectionPrefs.clearPortBindingInfo()
-        alarmManager.cancel(portForwardingIntent)
+        workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER)
     }
 
     override fun getDebugLogs(): Flow<List<String>> = callbackFlow {

@@ -53,6 +53,7 @@ import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
@@ -75,7 +76,6 @@ class ConnectionViewModel(
     private val renewDipUseCase: RenewDipUseCase,
     private val customizationPrefs: CustomizationPrefs,
     private val vpnRegionPrefs: VpnRegionPrefs,
-    @Named(DI.ALARM_MANAGER) private val alarmManager: AlarmManager,
     private val ratingTool: RatingTool,
     private val shortcutPrefs: ShortcutPrefs,
     private val buildConfigProvider: BuildConfigProvider,
@@ -128,18 +128,17 @@ class ConnectionViewModel(
                         ),
                     )
                 }
-                ConnectionInfoStatus(status, clientIp, vpnIp)
-            }.flatMapLatest {
-                when (it.status) {
-                    ConnectionStatus.CONNECTED,
-                    ConnectionStatus.DISCONNECTED,
-                        -> connectionUseCase.getClientStatus(it.status)
-
-                    else -> {
-                        connectionUseCase.resetVpnIp()
-                    }
-                }
             }.collect()
+        }
+        viewModelScope.launch {
+            connectionUseCase.getConnectionStatus()
+                .flatMapLatest { status ->
+                    when (status) {
+                        ConnectionStatus.CONNECTED,
+                        ConnectionStatus.DISCONNECTED -> connectionUseCase.getClientStatus(status)
+                        else -> flow { connectionUseCase.resetVpnIp() }
+                    }
+                }.collect()
         }
         ratingTool.start()
         renewDedicatedIps()
@@ -260,12 +259,6 @@ class ConnectionViewModel(
     }
 
     fun snooze(interval: Int) = snoozeHandler.setSnooze(interval)
-
-    fun isAlarmPermissionGranted() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        alarmManager.canScheduleExactAlarms()
-    } else {
-        true
-    }
 
     private fun renewDedicatedIps() = viewModelScope.launch {
         if (dipPrefs.getDedicatedIps().isNotEmpty()) {
@@ -449,9 +442,4 @@ class ConnectionViewModel(
     fun refreshState() =
         _state.update { it.copy(quickConnectServers = getQuickConnectVpnServers()) }
 
-    private data class ConnectionInfoStatus(
-        val status: ConnectionStatus,
-        val clientIp: String,
-        val vpnIp: String,
-    )
 }

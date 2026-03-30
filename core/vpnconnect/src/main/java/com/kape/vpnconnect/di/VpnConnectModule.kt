@@ -1,9 +1,9 @@
 package com.kape.vpnconnect.di
 
-import android.app.AlarmManager
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
+import androidx.work.WorkManager
 import com.kape.contracts.ConfigInfo
 import com.kape.contracts.KpiDataSource
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -31,11 +31,13 @@ import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnconnect.provider.UsageProvider
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.kape.vpnmanager.presenters.VPNManagerAPI
+import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Module
+@ComponentScan("com.kape.vpnconnect.worker")
 class VpnConnectModule {
 
     @Singleton
@@ -81,15 +83,14 @@ class VpnConnectModule {
         vpnApi: VPNManagerAPI,
         accountApi: AndroidAccountAPI,
         connectionPrefs: ConnectionPrefs,
-        @Named(DI.ALARM_MANAGER) alarmManager: AlarmManager,
+        workManager: WorkManager,
         settingsPrefs: SettingsPrefs,
         kpiDataSource: KpiDataSource,
         usageProvider: UsageProvider,
-        @Named(DI.PORT_FORWARDING_PENDING_INTENT) portForwardingIntent: PendingIntent,
         csiPrefs: CsiPrefs,
     ): ConnectionDataSource = ConnectionDataSourceImpl(
-        vpnApi, accountApi, connectionPrefs, alarmManager, settingsPrefs,
-        kpiDataSource, usageProvider, portForwardingIntent, csiPrefs,
+        vpnApi, accountApi, connectionPrefs, workManager, settingsPrefs,
+        kpiDataSource, usageProvider, csiPrefs,
     )
 
     @Singleton(binds = [ConnectionConfigurationUseCase::class])

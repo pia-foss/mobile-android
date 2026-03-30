@@ -1,8 +1,10 @@
 package screens.steps
 
 import androidx.test.uiautomator.UiAutomatorTestScope
+import screens.helpers.UiAutomatorHelpers.LONG_TIMEOUT
 import screens.helpers.UiAutomatorHelpers.click
 import screens.helpers.UiAutomatorHelpers.findByResId
+import screens.helpers.UiAutomatorHelpers.hideKeyboard
 import screens.helpers.UiAutomatorHelpers.inputText
 
 object LoginSteps {
@@ -24,18 +26,19 @@ object LoginSteps {
     fun UiAutomatorTestScope.logIn(username: String, password: String) {
         inputText(USERNAME_FIELD, username)
         inputText(PASSWORD_FIELD, password)
+        hideKeyboard()
         click(LOGIN_BUTTON)
     }
 
     fun UiAutomatorTestScope.allowVpnProfileCreation() {
-        findByResId(VPN_PROFILE_OK_BUTTON).takeIf { it != null }?.let {
+        findByResId(VPN_PROFILE_OK_BUTTON, LONG_TIMEOUT).takeIf { it != null }?.let {
             findByResId(VPN_PROFILE_OK_BUTTON)?.click()
             findByResId(ANDROID_OK_BUTTON)?.click()
         }
     }
 
     fun UiAutomatorTestScope.allowNotifications() {
-        findByResId(APP_ALLOW_NOTIFICATIONS).takeIf { it != null }?.let {
+        findByResId(APP_ALLOW_NOTIFICATIONS, LONG_TIMEOUT).takeIf { it != null }?.let {
             findByResId(APP_ALLOW_NOTIFICATIONS)?.click()
             findByResId(ANDROID_ALLOW_NOTIFICATIONS)?.click()
         }
