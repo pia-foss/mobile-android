@@ -1,20 +1,21 @@
 package com.kape.snooze
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.os.CountDownTimer
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.utils.WorkerTags
 import com.kape.vpnlauncher.VpnLauncher
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 private const val MINUTE = 60 * 1000L
 
 class SnoozeHandler(
-    private val alarmManager: AlarmManager,
-    private val setSnoozePendingIntent: PendingIntent,
-    private val cancelSnoozePendingIntent: PendingIntent,
+    private val workManager: WorkManager,
     private val connectionPrefs: ConnectionPrefs,
     private val vpnLauncher: VpnLauncher,
 ) {
@@ -28,14 +29,21 @@ class SnoozeHandler(
         val nowInMillis = Calendar.getInstance().timeInMillis
         val end = nowInMillis + interval
         setCountdownTimer(end)
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, end, setSnoozePendingIntent)
+        val workRequest = OneTimeWorkRequestBuilder<SnoozeWorker>()
+            .setInitialDelay(interval.toLong(), TimeUnit.MILLISECONDS)
+            .build()
+        workManager.enqueueUniqueWork(
+            WorkerTags.SNOOZE_WORKER,
+            ExistingWorkPolicy.REPLACE,
+            workRequest,
+        )
         connectionPrefs.setLastSnoozeEndTime(end)
         vpnLauncher.stopVpn()
     }
 
     fun cancelSnooze() {
         isSnoozeActive.value = false
-        alarmManager.cancel(cancelSnoozePendingIntent)
+        workManager.cancelUniqueWork(WorkerTags.SNOOZE_WORKER)
         connectionPrefs.setLastSnoozeEndTime(0)
         countDownTimer?.cancel()
     }

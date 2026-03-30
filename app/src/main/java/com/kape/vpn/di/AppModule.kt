@@ -1,6 +1,5 @@
 package com.kape.vpn.di
 
-import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -73,7 +72,6 @@ import com.kape.vpn.provider.MetaEndpointsProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
 import com.kape.vpn.provider.VpnManagerProvider
 import com.kape.vpn.receiver.OnRulesChangedReceiver
-import com.kape.vpn.receiver.PortForwardingReceiver
 import com.kape.vpn.service.AutomationService
 import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.USE_STAGING
@@ -358,22 +356,6 @@ class AppModule {
     }
 
     @Singleton
-    @Named(DI.PORT_FORWARDING_RECEIVER_INTENT)
-    fun providePortForwardingReceiverIntent(context: Context): Intent {
-        return Intent(context, PortForwardingReceiver::class.java)
-    }
-
-    @Singleton
-    @Named(DI.PORT_FORWARDING_PENDING_INTENT)
-    fun providePortForwardingPendingIntent(
-        context: Context,
-        @Named(DI.PORT_FORWARDING_RECEIVER_INTENT) intent: Intent,
-    ): PendingIntent {
-        val flags: Int = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-        return PendingIntent.getBroadcast(context, 0, intent, flags)
-    }
-
-    @Singleton
     @Named(DI.AUTOMATION_SERVICE_INTENT)
     fun provideAutomationServiceIntent(context: Context): Intent {
         return Intent(context, AutomationService::class.java)
@@ -421,10 +403,6 @@ class AppModule {
         )
     }
 
-    @Singleton
-    @Named(DI.ALARM_MANAGER)
-    fun provideAlarmManager(context: Context): AlarmManager =
-        context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

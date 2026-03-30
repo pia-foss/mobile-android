@@ -27,8 +27,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!--Android 13-->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-
     <!--Android 14-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
@@ -52,6 +50,17 @@
             android:name="com.privateinternetaccess.account.AccountContentProvider"
             android:authorities="com.privateinternetaccess.account.AccountContentProvider"
             android:exported="false" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
         <activity
             android:name=".MainActivity"
@@ -102,8 +111,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.kape.snooze.OnSnoozeReceiver" />
-        <receiver android:name=".receiver.PortForwardingReceiver" />
         <receiver android:name=".receiver.OnRulesChangedReceiver" />
 
         <service

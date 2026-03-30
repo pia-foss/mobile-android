@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.annotation.KoinApplication
 import org.koin.plugin.module.dsl.startKoin
 
@@ -35,6 +36,7 @@ class App : Application() {
             .addObserver(lifecycleObserver)
         startKoin<App> {
             androidContext(this@App)
+            workManagerFactory()
         }
     }
 }

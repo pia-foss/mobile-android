@@ -29,7 +29,7 @@ class CustomizationPrefs(context: Context) : Prefs(context, "customization") {
         ScreenElement(Element.IpInfo, "ip-info"),
         ScreenElement(Element.QuickConnect, "quick-connect"),
         ScreenElement(Element.QuickSettings, name = "quick-settings"),
-//        ScreenElement(Element.Snooze),
+        ScreenElement(Element.Snooze, name = "snooze"),
         ScreenElement(Element.Traffic, isVisible = false, name = "traffic"),
         ScreenElement(Element.ConnectionInfo, isVisible = false, name = "conection-info"),
     )

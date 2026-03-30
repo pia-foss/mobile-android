@@ -11,11 +11,11 @@ object DI {
     const val VPN_LAUNCHER = "vpn-launcher"
     const val AUTOMATION_PENDING_INTENT = "automation-pending-intent"
     const val AUTOMATION_SERVICE_INTENT = "automation-service-intent"
-    const val PORT_FORWARDING_RECEIVER_INTENT = "port-forwarding-receiver-intent"
-    const val PORT_FORWARDING_PENDING_INTENT = "port-forwarding-pending-intent"
-    const val SET_SNOOZE_PENDING_INTENT = "set-snooze-pending-intent"
-    const val CANCEL_SNOOZE_PENDING_INTENT = "cancel-snooze-pending-intent"
-    const val ALARM_MANAGER = "alarm-manager"
     const val UPDATE_URL = "update-url"
     const val WIDGET_PENDING_INTENT = "widget-pending-intent"
+}
+
+object WorkerTags {
+    const val SNOOZE_WORKER = "snooze-worker"
+    const val PORT_FORWARDING_WORKER = "port-forwarding-worker"
 }

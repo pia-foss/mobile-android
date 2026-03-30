@@ -42,7 +42,6 @@ class ConnectionModule {
         renewDipUseCase: RenewDipUseCase,
         customizationPrefs: CustomizationPrefs,
         vpnRegionPrefs: VpnRegionPrefs,
-        @Named(DI.ALARM_MANAGER) alarmManager: AlarmManager,
         ratingTool: RatingTool,
         shortcutPrefs: ShortcutPrefs,
         buildConfigProvider: BuildConfigProvider,
@@ -50,7 +49,7 @@ class ConnectionModule {
     ): ConnectionViewModel = ConnectionViewModel(
         router, regionListProvider, setShadowsocksRegionsUseCase, getShadowsocksRegionsUseCase,
         connectionUseCase, prefs, settingsPrefs, snoozeHandler, usageProvider, dipPrefs,
-        renewDipUseCase, customizationPrefs, vpnRegionPrefs, alarmManager, ratingTool,
+        renewDipUseCase, customizationPrefs, vpnRegionPrefs, ratingTool,
         shortcutPrefs, buildConfigProvider, networkConnectionListener,
     )
 }

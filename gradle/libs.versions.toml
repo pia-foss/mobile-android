@@ -45,6 +45,7 @@ test-androidx-runner = "1.7.0"
 test-orchestrator = "1.6.1"
 junit5 = "1.14.0.0"
 shortcuts = "1.1.0"
+androidx-work = "2.10.0"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "plugin-gradle" }
@@ -109,7 +110,9 @@ glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 glancematerial = { module = "androidx.glance:glance-material3", version.ref = "glance" }
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-constraint-layout" }
-shortcuts = {module = "androidx.core:core-google-shortcuts", version.ref = "shortcuts"}
+shortcuts = { module = "androidx.core:core-google-shortcuts", version.ref = "shortcuts" }
+work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
+koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
 
 [plugins]
 application = { id = "com.android.application", version.ref = "plugin-gradle" }
@@ -127,7 +130,7 @@ compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-f
 composeandroidtest = ["compose-android-test", "compose-navigation-test"]
 debugtest = ["debug-manifest", "debug-tooling"]
 android = ["viewmodel", "androidx-core", "lifecycle", "lifecyclecompose", "lifecycleprocess", "activity", "appcompat"]
-koin = ["koin-core", "koin-android", "koin-compose", "koin-navigation", "koin-annotations"]
+koin = ["koin-core", "koin-android", "koin-compose", "koin-navigation", "koin-annotations", "koin-workmanager"]
 kointest = ["koin-testjunit5", "koin-testandroid"]
 koinandroidtest = ["koin-testandroid", "koin-andoridtest"]
 serialization = ["serialization-core", "serialization-json", "datetime"]
