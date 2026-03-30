@@ -1,24 +1,38 @@
 package com.kape.permissions.di
 
+import android.content.Context
+import com.kape.contracts.Router
 import com.kape.notifications.data.NotificationPermissionManager
 import com.kape.permissions.data.VpnPermissionDataSourceImpl
 import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.permissions.domain.VpnPermissionDataSource
 import com.kape.permissions.ui.vm.PermissionsViewModel
 import com.kape.permissions.utils.PermissionUtil
-import com.kape.router.NotificationPermission
-import org.koin.core.module.Module
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
 
-fun permissionsModule(appModule: Module) = module {
-    includes(appModule, localPermissionModule)
-}
+@Module
+class PermissionsModule {
 
-val localPermissionModule = module {
-    single<VpnPermissionDataSource> { VpnPermissionDataSourceImpl(context = get()) }
-    single { IsVpnProfileInstalledUseCase(dataSource = get()) }
-    single { NotificationPermissionManager(get()) }
-    single { PermissionUtil(get(), get()) }
-    viewModelOf(::PermissionsViewModel)
+    @Singleton(binds = [VpnPermissionDataSource::class])
+    fun provideVpnPermissionDataSource(context: Context): VpnPermissionDataSource =
+        VpnPermissionDataSourceImpl(context)
+
+    @Singleton
+    fun provideIsVpnProfileInstalledUseCase(
+        dataSource: VpnPermissionDataSource,
+    ): IsVpnProfileInstalledUseCase = IsVpnProfileInstalledUseCase(dataSource)
+
+    @Singleton
+    fun providePermissionUtil(
+        useCaseIsVpnProfileInstalled: IsVpnProfileInstalledUseCase,
+        notificationPermissionManager: NotificationPermissionManager,
+    ): PermissionUtil = PermissionUtil(useCaseIsVpnProfileInstalled, notificationPermissionManager)
+
+    @KoinViewModel
+    fun providePermissionsViewModel(
+        permissionUtil: PermissionUtil,
+        router: Router,
+    ): PermissionsViewModel = PermissionsViewModel(permissionUtil, router)
 }

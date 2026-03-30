@@ -7,6 +7,7 @@ import com.kape.utils.Prefs
 import com.kape.utils.vpnserver.VpnServer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Singleton
 
 private const val QUICK_CONNECT = "quick-connect-server-list"
 private const val CLIENT_IP = "client-ip"
@@ -20,6 +21,7 @@ private const val PROXY_PORT = "proxy-port"
 private const val DEFAULT_PROXY_PORT_VALUE = "8080"
 const val NO_IP = "---"
 
+@Singleton
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {
 
     fun addToQuickConnect(serverKey: String, isDip: Boolean) {

@@ -1,7 +1,7 @@
 package com.kape.login.domain
 
+import com.kape.contracts.AuthenticationDataSource
 import com.kape.login.BaseTest
-import com.kape.login.domain.mobile.AuthenticationDataSource
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import io.mockk.every
 import io.mockk.mockk
@@ -26,7 +26,7 @@ internal class GetUserLoggedInUseCaseTest : BaseTest() {
     @MethodSource("booleans")
     fun login(expected: Boolean) = runTest {
         every { source.isUserLoggedIn() } returns expected
-        val actual = useCase.isUserLoggedIn()
+        val actual = useCase.invoke()
         assertEquals(expected, actual)
     }
 }

@@ -3,32 +3,36 @@ package com.kape.automation.ui.viewmodel
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
+import com.kape.contracts.Router
+import com.kape.contracts.data.AutomationAddRule
+import com.kape.contracts.data.AutomationBackgroundLocation
+import com.kape.contracts.data.AutomationLocation
+import com.kape.contracts.data.AutomationMain
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.location.data.LocationPermissionManager
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkRulesManager
-import com.kape.router.AutomationAddRule
-import com.kape.router.AutomationBackgroundLocation
-import com.kape.router.AutomationLocation
-import com.kape.router.AutomationMain
-import com.kape.router.Router
 import com.kape.utils.AutomationManager
+import com.kape.utils.DI
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Named
 import org.koin.core.component.KoinComponent
 
+@KoinViewModel
 class AutomationViewModel(
     private val router: Router,
     private val locationPermissionManager: LocationPermissionManager,
     private val settingsPrefs: SettingsPrefs,
     private val networkRulesManager: NetworkRulesManager,
     private val networkConnectionListener: NetworkConnectionListener,
-    private val broadcastIntent: Intent,
+    @Named(DI.RULES_UPDATED_INTENT) private val broadcastIntent: Intent,
     private val automationManager: AutomationManager,
-) : ViewModel(), KoinComponent {
+) : ViewModel(){
 
     private val _state = MutableStateFlow<AutomationState>(
         AutomationState(

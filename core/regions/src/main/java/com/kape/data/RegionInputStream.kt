@@ -1,12 +1,13 @@
 package com.kape.data
 
 import android.content.Context
+import org.koin.core.annotation.Singleton
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 
+@Singleton
 class RegionInputStream(private val context: Context) {
-
     fun readAssetsFile(filename: String): String {
         val inputStream: InputStream = context.assets.open(filename)
         val r = BufferedReader(InputStreamReader(inputStream))

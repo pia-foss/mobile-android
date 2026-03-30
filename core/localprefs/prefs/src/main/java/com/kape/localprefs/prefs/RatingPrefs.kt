@@ -4,9 +4,11 @@ import android.content.Context
 import com.kape.rating.data.RatingState
 import com.kape.utils.Prefs
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Singleton
 
 private const val RATING_STATE = "rating-state"
 
+@Singleton
 class RatingPrefs(context: Context) : Prefs(context, "rating") {
 
     fun setRatingState(state: RatingState) {

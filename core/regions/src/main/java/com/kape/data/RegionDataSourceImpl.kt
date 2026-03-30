@@ -9,8 +9,10 @@ import com.privateinternetaccess.regions.model.VpnRegionsResponse
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 
+@Singleton([VpnRegionDataSource::class, ShadowsocksRegionDataSource::class])
 class RegionDataSourceImpl(
     private val api: RegionsAPI,
 ) : VpnRegionDataSource, ShadowsocksRegionDataSource, KoinComponent {

@@ -129,7 +129,7 @@ fun TvHelpScreen() = Screen {
                         TvSettingsItem(
                             modifier = Modifier.focusRequester(initialFocusRequester),
                             titleId = R.string.help_version_title,
-                            subtitle = viewModel.version,
+                            subtitle = viewModel.getAppVersion(),
                         ) {
                             context.startActivity(
                                 Intent(Intent.ACTION_VIEW).apply {

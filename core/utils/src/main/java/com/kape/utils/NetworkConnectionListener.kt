@@ -10,13 +10,14 @@ import android.net.NetworkRequest
 import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
 import android.os.Build
+import com.kape.contracts.NetworkManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class NetworkConnectionListener(
     context: Context,
-    private val networkUpdateHandler: (ssid: String, isWifi: Boolean) -> Unit,
-    receiver: BroadcastReceiver,
+    private val networkManager: NetworkManager,
+    private val receiver: BroadcastReceiver,
 ) {
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -42,14 +43,14 @@ class NetworkConnectionListener(
                     super.onCapabilitiesChanged(network, networkCapabilities)
                     if (networkCapabilities.transportInfo is WifiInfo) {
                         _ssid.value = getSSID(networkCapabilities)
-                        networkUpdateHandler(
+                        networkManager.handleCurrentNetwork(
                             getSSID(networkCapabilities),
                             networkCapabilities.hasTransport(
                                 NetworkCapabilities.TRANSPORT_WIFI,
                             ),
                         )
                     } else {
-                        networkUpdateHandler(
+                        networkManager.handleCurrentNetwork(
                             "",
                             networkCapabilities.hasTransport(
                                 NetworkCapabilities.TRANSPORT_WIFI,
@@ -76,7 +77,7 @@ class NetworkConnectionListener(
                 ) {
                     super.onCapabilitiesChanged(network, networkCapabilities)
                     _ssid.value = getSSID(networkCapabilities)
-                    networkUpdateHandler(
+                    networkManager.handleCurrentNetwork(
                         getSSID(networkCapabilities),
                         networkCapabilities.hasTransport(
                             NetworkCapabilities.TRANSPORT_WIFI,

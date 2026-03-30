@@ -36,12 +36,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.Clock
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 
 private const val MACE_DNS = "10.0.0.241"
 private const val PIA_DNS = "10.0.0.243"
 
-internal class ConnectionUseCaseImpl(
+@Singleton(binds = [ConnectionUseCase::class])
+class ConnectionUseCaseImpl(
     private val connectionSource: ConnectionDataSource,
     private val clientStateDataSource: ClientStateDataSource,
     private val connectionManager: ConnectionManager,

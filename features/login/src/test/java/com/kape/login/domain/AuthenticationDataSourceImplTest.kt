@@ -1,11 +1,10 @@
 package com.kape.login.domain
 
 import app.cash.turbine.test
+import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.data.auth.ApiResult
 import com.kape.login.BaseTest
 import com.kape.login.data.AuthenticationDataSourceImpl
-import com.kape.login.di.loginModule
-import com.kape.login.domain.mobile.AuthenticationDataSource
-import com.kape.utils.ApiResult
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import io.mockk.coEvery
@@ -35,9 +34,7 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
     @BeforeEach
     internal fun setUp() {
         stopKoin()
-        startKoin {
-            modules(appModule, loginModule(appModule))
-        }
+        startKoin {  }
         source = AuthenticationDataSourceImpl(api)
     }
 

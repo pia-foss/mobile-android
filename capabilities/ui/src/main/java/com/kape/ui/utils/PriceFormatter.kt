@@ -2,11 +2,13 @@ package com.kape.ui.utils
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
+import org.koin.core.annotation.Singleton
 import java.text.NumberFormat
 import java.text.ParseException
 import java.util.Currency
 import java.util.Locale
 
+@Singleton
 class PriceFormatter(private val context: Context) {
 
     fun formatYearlyPlan(cost: String): String {

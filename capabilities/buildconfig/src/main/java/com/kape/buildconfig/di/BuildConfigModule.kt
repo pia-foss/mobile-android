@@ -1,8 +1,8 @@
 package com.kape.buildconfig.di
 
-import com.kape.buildconfig.data.BuildConfigProvider
-import org.koin.dsl.module
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 
-fun buildConfigModule(buildFlavor: String, buildType: String) = module {
-    single { BuildConfigProvider(buildFlavor, buildType) }
-}
+@Module
+@ComponentScan("com.kape.buildconfig")
+class BuildConfigModule

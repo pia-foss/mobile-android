@@ -5,8 +5,10 @@ import android.os.Build
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.connection.utils.ConnectionData
 import com.kape.connection.utils.ConnectionScreenState
+import com.kape.contracts.Router
 import com.kape.customization.data.Element
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -16,17 +18,16 @@ import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.utils.RatingTool
-import com.kape.router.AutomationSettings
-import com.kape.router.Customization
-import com.kape.router.DedicatedIpSignupPlans
-import com.kape.router.HelpSettings
-import com.kape.router.KillSwitchSettings
-import com.kape.router.ProtocolSettings
-import com.kape.router.Router
-import com.kape.router.Settings
-import com.kape.router.ShadowsocksRegionSelection
-import com.kape.router.TvSideMenu
-import com.kape.router.VpnRegionSelection
+import com.kape.contracts.data.AutomationSettings
+import com.kape.contracts.data.Customization
+import com.kape.contracts.data.DedicatedIpSignupPlans
+import com.kape.contracts.data.HelpSettings
+import com.kape.contracts.data.KillSwitchSettings
+import com.kape.contracts.data.ProtocolSettings
+import com.kape.contracts.data.Settings
+import com.kape.contracts.data.ShadowsocksRegionSelection
+import com.kape.contracts.data.TvSideMenu
+import com.kape.contracts.data.VpnRegionSelection
 import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.localprefs.prefs.DipPrefs
 import com.kape.settings.data.ObfuscationOptions
@@ -36,6 +37,7 @@ import com.kape.shadowsocksregions.domain.SetShadowsocksRegionsUseCase
 import com.kape.snooze.SnoozeHandler
 import com.kape.ui.mobile.tiles.MAX_SERVERS
 import com.kape.utils.AUTO_KEY
+import com.kape.utils.DI
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.utils.vpnserver.VpnServer
@@ -53,9 +55,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Named
 import org.koin.core.component.KoinComponent
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@KoinViewModel
 class ConnectionViewModel(
     private val router: Router,
     private val regionListProvider: RegionListProvider,
@@ -70,11 +75,12 @@ class ConnectionViewModel(
     private val renewDipUseCase: RenewDipUseCase,
     private val customizationPrefs: CustomizationPrefs,
     private val vpnRegionPrefs: VpnRegionPrefs,
-    private val alarmManager: AlarmManager,
+    @Named(DI.ALARM_MANAGER) private val alarmManager: AlarmManager,
     private val ratingTool: RatingTool,
     private val shortcutPrefs: ShortcutPrefs,
+    private val buildConfigProvider: BuildConfigProvider,
     networkConnectionListener: NetworkConnectionListener,
-) : ViewModel(), KoinComponent {
+) : ViewModel(){
     private var connectJob: Job? = null
     private var loadVpnServersJob: Job? = null
     private var loadShadowsocksServersJob: Job? = null
@@ -243,7 +249,7 @@ class ConnectionViewModel(
         }
 
     fun shouldShowDedicatedIpSignupBanner() {
-        if (dipPrefs.isDipSignupEnabled() && dipPrefs.showDedicatedIpHomeBanner()) {
+        if (dipPrefs.isDipSignupEnabled(buildConfigProvider.isGoogleFlavor()) && dipPrefs.showDedicatedIpHomeBanner()) {
             showDedicatedIpHomeBanner.value = true
         }
     }

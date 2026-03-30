@@ -1,15 +1,17 @@
 package com.kape.login.utils
 
 import android.net.Uri
-import com.kape.login.domain.mobile.AuthenticationDataSource
+import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.Router
 import com.kape.permissions.utils.PermissionUtil
-import com.kape.router.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Singleton
 import kotlin.coroutines.CoroutineContext
 
+@Singleton
 class TokenAuthenticationUtil(
     private val dataSource: AuthenticationDataSource,
     private val router: Router,

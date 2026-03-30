@@ -4,13 +4,13 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.Router
+import com.kape.contracts.data.Connection
+import com.kape.contracts.data.HelpSettings
+import com.kape.contracts.data.TvSideMenu
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.regions.data.ServerData
-import com.kape.router.Connection
-import com.kape.router.HelpSettings
-import com.kape.router.Router
-import com.kape.router.TvSideMenu
 import com.kape.utils.AUTO_KEY
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
@@ -18,17 +18,18 @@ import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 import java.util.Collections
 
+@KoinViewModel
 class VpnRegionSelectionViewModel(
     private val router: Router,
     private val regionListProvider: RegionListProvider,
     private val connectionUseCase: ConnectionUseCase,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val settingsPrefs: SettingsPrefs,
-) : ViewModel(),
-    KoinComponent {
+) : ViewModel() {
     val servers = mutableStateOf(emptyList<ServerItem>())
     val sorted = mutableStateOf(emptyList<ServerItem>())
     lateinit var autoRegionName: String
@@ -79,9 +80,9 @@ class VpnRegionSelectionViewModel(
             sorted.value =
                 servers.value.filter {
                     it.type is ItemType.Content &&
-                        it.type.server.name
-                            .lowercase()
-                            .contains(value.lowercase())
+                            it.type.server.name
+                                .lowercase()
+                                .contains(value.lowercase())
                 }
         } else {
             sorted.value = emptyList()
@@ -105,8 +106,8 @@ class VpnRegionSelectionViewModel(
         var autoRegionIndex =
             servers.value.indexOfFirst { serverItem: ServerItem ->
                 serverItem.type is ItemType.Content &&
-                    serverItem.type.server.iso == autoRegionIso &&
-                    serverItem.type.server.name == autoRegionName
+                        serverItem.type.server.iso == autoRegionIso &&
+                        serverItem.type.server.name == autoRegionName
             }
         if (autoRegionIndex == -1) {
             autoRegionIndex = 0
@@ -118,8 +119,8 @@ class VpnRegionSelectionViewModel(
         var autoRegionIndex =
             sorted.value.indexOfFirst { serverItem: ServerItem ->
                 serverItem.type is ItemType.Content &&
-                    serverItem.type.server.iso == autoRegionIso &&
-                    serverItem.type.server.name == autoRegionName
+                        serverItem.type.server.iso == autoRegionIso &&
+                        serverItem.type.server.name == autoRegionName
             }
         if (autoRegionIndex == -1) {
             autoRegionIndex = 0
@@ -131,7 +132,8 @@ class VpnRegionSelectionViewModel(
 
     fun isVpnConnectionActive(): Boolean = connectionUseCase.isConnected()
 
-    private fun isVpnServerFavorite(serverData: ServerData): Boolean = vpnRegionPrefs.isFavorite(serverData)
+    private fun isVpnServerFavorite(serverData: ServerData): Boolean =
+        vpnRegionPrefs.isFavorite(serverData)
 
     private fun arrangeVpnServers(items: List<VpnServer>? = null) {
         val autoRegion = getAutoRegion(autoRegionName, autoRegionIso)
@@ -146,16 +148,16 @@ class VpnRegionSelectionViewModel(
                 all.add(
                     ServerItem(
                         type =
-                        ItemType.Content(
-                            isFavorite =
-                            isVpnServerFavorite(
-                                ServerData(
-                                    server.name,
-                                    server.isDedicatedIp,
-                                ),
+                            ItemType.Content(
+                                isFavorite =
+                                    isVpnServerFavorite(
+                                        ServerData(
+                                            server.name,
+                                            server.isDedicatedIp,
+                                        ),
+                                    ),
+                                server = server,
                             ),
-                            server = server,
-                        ),
                     ),
                 )
             }
@@ -163,8 +165,8 @@ class VpnRegionSelectionViewModel(
         } ?: run {
             for (item in servers.value.filter { it.type is ItemType.Content }) {
                 if (settingsPrefs
-                    .isShowGeoLocatedServersEnabled()
-                    .not() &&
+                        .isShowGeoLocatedServersEnabled()
+                        .not() &&
                     (item.type as ItemType.Content).server.isGeo
                 ) {
                     continue
@@ -172,17 +174,17 @@ class VpnRegionSelectionViewModel(
                 all.add(
                     ServerItem(
                         type =
-                        ItemType.Content(
-                            isFavorite =
-                            isVpnServerFavorite(
-                                ServerData(
-                                    (item.type as ItemType.Content).server.name,
-                                    item.type.server.isDedicatedIp,
-                                ),
+                            ItemType.Content(
+                                isFavorite =
+                                    isVpnServerFavorite(
+                                        ServerData(
+                                            (item.type as ItemType.Content).server.name,
+                                            item.type.server.isDedicatedIp,
+                                        ),
+                                    ),
+                                enableFavorite = item.type.enableFavorite,
+                                server = item.type.server,
                             ),
-                            enableFavorite = item.type.enableFavorite,
-                            server = item.type.server,
-                        ),
                     ),
                 )
             }
@@ -222,26 +224,26 @@ class VpnRegionSelectionViewModel(
     ): ServerItem =
         ServerItem(
             type =
-            ItemType.Content(
-                isFavorite = false,
-                enableFavorite = false,
-                server =
-                VpnServer(
-                    name = name,
-                    iso = iso,
-                    dns = "",
-                    latency = null,
-                    endpoints = emptyMap(),
-                    key = AUTO_KEY,
-                    latitude = null,
-                    longitude = null,
-                    isGeo = false,
-                    allowsPortForwarding = false,
-                    isOffline = false,
-                    autoRegion = true,
-                    dipToken = null,
-                    dedicatedIp = null,
+                ItemType.Content(
+                    isFavorite = false,
+                    enableFavorite = false,
+                    server =
+                        VpnServer(
+                            name = name,
+                            iso = iso,
+                            dns = "",
+                            latency = null,
+                            endpoints = emptyMap(),
+                            key = AUTO_KEY,
+                            latitude = null,
+                            longitude = null,
+                            isGeo = false,
+                            allowsPortForwarding = false,
+                            isOffline = false,
+                            autoRegion = true,
+                            dipToken = null,
+                            dedicatedIp = null,
+                        ),
                 ),
-            ),
         )
 }

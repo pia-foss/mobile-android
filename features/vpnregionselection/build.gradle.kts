@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.serialization)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
@@ -9,21 +10,6 @@ plugins {
 
 android {
     namespace = "com.kape.vpnregionselection"
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
 
     buildFeatures {
         compose = true
@@ -34,7 +20,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugar)
 
     implementation(project(":core:utils"))
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:regions"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:localprefs:prefs"))
@@ -55,4 +41,8 @@ dependencies {
     runtimeOnly(libs.launcher)
     implementation(libs.kape.vpnmanager)
     implementation(libs.bundles.serialization)
+}
+
+koinCompiler {
+    compileSafety = false
 }

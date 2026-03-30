@@ -5,9 +5,11 @@ import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 
-class EmailDataSourceImpl(private val api: AndroidAccountAPI) : EmailDataSource, KoinComponent {
+@Singleton([EmailDataSource::class])
+class EmailDataSourceImpl(private val api: AndroidAccountAPI) : EmailDataSource {
 
     override fun setEmail(email: String): Flow<Boolean> = callbackFlow {
         api.setEmail(email, false) { temporaryPassword, error ->

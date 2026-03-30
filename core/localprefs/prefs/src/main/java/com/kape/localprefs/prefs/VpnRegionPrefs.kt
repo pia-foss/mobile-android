@@ -8,12 +8,14 @@ import com.kape.utils.vpnserver.VpnServerOutdated
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Singleton
 
 private const val VPN_FAVORITES = "favorites"
 private const val VPN_SELECTED_SERVER = "selected-vpn-server"
 private const val VPN_SERVERS = "servers"
 private const val VPN_RECONNECT = "reconnect"
 
+@Singleton
 class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
 
     fun addToFavorites(serverData: ServerData) {

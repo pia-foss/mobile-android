@@ -44,8 +44,6 @@ import androidx.navigation.compose.rememberNavController
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
-import com.kape.router.LocalNavigator
-import com.kape.router.LoginWithEmail
 import com.kape.ui.mobile.elements.ErrorCard
 import com.kape.ui.mobile.elements.NoNetworkBanner
 import com.kape.ui.mobile.elements.PrimaryButton

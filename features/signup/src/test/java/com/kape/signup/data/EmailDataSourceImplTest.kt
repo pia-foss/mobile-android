@@ -1,7 +1,6 @@
 package com.kape.signup.data
 
 import app.cash.turbine.test
-import com.kape.signup.di.signupModule
 import com.kape.signup.domain.EmailDataSource
 import com.privateinternetaccess.account.AndroidAccountAPI
 import io.mockk.coEvery
@@ -28,9 +27,7 @@ internal class EmailDataSourceImplTest {
     @BeforeEach
     internal fun setUp() {
         stopKoin()
-        startKoin {
-            modules(appModule, signupModule(appModule))
-        }
+        startKoin {}
         source = EmailDataSourceImpl(api)
     }
 

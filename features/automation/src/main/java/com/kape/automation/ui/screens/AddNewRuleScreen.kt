@@ -28,7 +28,6 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
-import com.kape.router.LocalNavigator
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.mobile.text.OnboardingFooterText

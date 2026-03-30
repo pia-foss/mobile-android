@@ -1,27 +1,13 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
 }
 
 android {
     namespace = "com.kape.snooze"
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
 }
 
 dependencies {
@@ -33,4 +19,8 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:vpnlauncher"))
+}
+
+koinCompiler {
+    compileSafety = false
 }

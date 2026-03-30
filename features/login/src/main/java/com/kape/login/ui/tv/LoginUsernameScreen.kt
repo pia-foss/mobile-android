@@ -32,7 +32,6 @@ import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.login.ui.vm.tv.LoginUsernameViewModel
-import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.text.EnterUsernameScreenTitleText

@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import com.kape.vpnconnect.R
 import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
+import org.koin.core.annotation.Singleton
 import kotlin.math.ln
 import kotlin.math.pow
 
+@Singleton([VPNManagerProtocolByteCountDependency::class])
 class UsageProvider(private val context: Context) :
     VPNManagerProtocolByteCountDependency {
 

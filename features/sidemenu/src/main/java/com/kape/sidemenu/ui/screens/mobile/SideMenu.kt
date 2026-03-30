@@ -66,8 +66,8 @@ fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
     ) {
         SideMenuHeaderItem(
             username = viewModel.username.value,
-            versionCode = viewModel.versionCode.toString(),
-            versionName = viewModel.versionName,
+            versionCode = viewModel.getVersionCode(),
+            versionName = viewModel.getVersionCode(),
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -177,7 +177,9 @@ fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 
 @Composable
 private fun SideMenuHeaderItem(username: String, versionCode: String, versionName: String) {
-    Row(modifier = Modifier.fillMaxWidth().focusable()) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .focusable()) {
         Image(
             painter = painterResource(id = R.drawable.drawer_icon),
             modifier = Modifier

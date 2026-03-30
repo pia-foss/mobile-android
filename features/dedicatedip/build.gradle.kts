@@ -1,13 +1,13 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
     alias(libs.plugins.compose)
 }
 
 android {
-    namespace = "com.kape.dedicatedip"
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -23,6 +23,7 @@ android {
             dimension = "provider"
         }
     }
+    namespace = "com.kape.dedicatedip"
     buildFeatures {
         compose = true
     }
@@ -30,7 +31,7 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:regions"))
     implementation(project(":core:payments"))
     implementation(project(":core:vpnconnect"))
@@ -54,4 +55,8 @@ dependencies {
     runtimeOnly(libs.launcher)
     implementation(libs.constraintlayout)
     implementation(libs.kape.vpnmanager)
+}
+
+koinCompiler {
+    compileSafety = false
 }

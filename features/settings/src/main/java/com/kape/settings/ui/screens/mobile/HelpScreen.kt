@@ -79,7 +79,7 @@ fun HelpScreen() = Screen {
                 val appUrl = stringResource(id = R.string.app_url)
                 SettingsItem(
                     titleId = R.string.help_version_title,
-                    subtitle = viewModel.version,
+                    subtitle = viewModel.getAppVersion(),
                     onClick = {
                         context.startActivity(
                             Intent(Intent.ACTION_VIEW).apply {

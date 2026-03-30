@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
     alias(libs.plugins.compose)
@@ -8,21 +9,6 @@ plugins {
 
 android {
     namespace = "com.kape.profile"
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
 
     testOptions {
         unitTests {
@@ -38,12 +24,11 @@ dependencies {
     coreLibraryDesugaring(libs.desugar)
 
     implementation(libs.kape.account)
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:utils"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
-    implementation(project(":features:login"))
 
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
@@ -57,4 +42,8 @@ dependencies {
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
     implementation(libs.kape.vpnmanager)
+}
+
+koinCompiler {
+    compileSafety = false
 }

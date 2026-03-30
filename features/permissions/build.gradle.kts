@@ -1,27 +1,13 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.compose)
 }
 
 android {
     namespace = "com.kape.permissions"
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
 
     buildFeatures {
         compose = true
@@ -31,7 +17,7 @@ android {
 dependencies {
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:notifications"))
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.android)
@@ -43,4 +29,8 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
+}
+
+koinCompiler {
+    compileSafety = false
 }

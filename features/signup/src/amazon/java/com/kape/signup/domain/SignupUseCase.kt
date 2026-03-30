@@ -5,7 +5,9 @@ import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.signup.data.models.Credentials
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class SignupUseCase(
     private val signupDataSource: SignupDataSource,
     private val loginUseCase: LoginUseCase,

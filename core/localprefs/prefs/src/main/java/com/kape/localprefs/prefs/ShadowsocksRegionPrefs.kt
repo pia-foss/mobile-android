@@ -5,11 +5,13 @@ import com.kape.regions.data.ServerData
 import com.kape.utils.Prefs
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Singleton
 
 private const val SHADOWSOCKS_VPN_FAVORITES = "favorite-servers"
 private const val SHADOWSOCKS_SELECTED_SERVER = "shadowsocks-selected-server"
 private const val SHADOWSOCKS_SERVERS = "shadowsocks-servers"
 
+@Singleton
 class ShadowsocksRegionPrefs(context: Context) : Prefs(context, "shadowsocks-regions") {
 
     fun addToFavorites(shadowsocksServerName: String) {

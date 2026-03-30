@@ -2,11 +2,13 @@ package com.kape.localprefs.prefs
 
 import android.content.Context
 import com.kape.utils.Prefs
+import org.koin.core.annotation.Singleton
 
 private const val LAST_KNOWN_EXCEPTION = "last-known-exception"
 private const val PROTOCOL_DEBUG_LOGS = "protocol-debug-logs"
 private const val DEBUG_LOGS = "debug-logs"
 
+@Singleton
 class CsiPrefs(context: Context) : Prefs(context, "csi") {
 
     fun setLastKnownException(value: String) =

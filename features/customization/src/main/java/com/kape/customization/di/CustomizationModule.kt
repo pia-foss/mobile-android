@@ -1,14 +1,17 @@
 package com.kape.customization.di
 
+import com.kape.contracts.Router
 import com.kape.customization.CustomizationViewModel
-import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.kape.localprefs.prefs.CustomizationPrefs
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Module
 
-fun customizationModule(appModule: Module) = module {
-    includes(appModule, localCustomizationModule)
-}
+@Module
+class CustomizationModule {
 
-private val localCustomizationModule = module {
-    viewModel { CustomizationViewModel(get(), get()) }
+    @KoinViewModel
+    fun provideCustomizationViewModel(
+        prefs: CustomizationPrefs,
+        router: Router,
+    ): CustomizationViewModel = CustomizationViewModel(prefs, router)
 }

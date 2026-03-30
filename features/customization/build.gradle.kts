@@ -1,13 +1,13 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
     alias(libs.plugins.compose)
 }
 
 android {
-    namespace = "com.kape.customization"
     flavorDimensions.add("provider")
     productFlavors {
         create("amazon") {
@@ -23,6 +23,7 @@ android {
             dimension = "provider"
         }
     }
+    namespace = "com.kape.customization"
     testOptions {
         unitTests {
             isReturnDefaultValues = true
@@ -47,7 +48,7 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:utils"))
     implementation(project(":core:portforwarding"))
     implementation(project(":core:localprefs:prefs"))
@@ -55,4 +56,8 @@ dependencies {
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
     implementation(project(":features:connection"))
+}
+
+koinCompiler {
+    compileSafety = false
 }

@@ -6,8 +6,10 @@ import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 
+@Singleton([SubscriptionDataSource::class])
 class SubscriptionDataSourceImpl(
     private val prefs: SubscriptionPrefs,
     private val api: AndroidAccountAPI,

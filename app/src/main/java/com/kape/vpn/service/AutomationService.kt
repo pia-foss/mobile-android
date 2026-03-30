@@ -8,10 +8,12 @@ import android.os.Build
 import android.os.IBinder
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 
+@Singleton
 class AutomationService : Service(), KoinComponent {
     private val automationManager: AutomationManager by inject()
     private val networkConnectionListener: NetworkConnectionListener by inject()

@@ -1,24 +1,19 @@
 package com.kape.vpnregions.di
 
-import com.kape.data.RegionDataSourceImpl
-import com.kape.data.RegionInputStream
-import com.kape.data.RegionSerialization
-import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.vpnregions.data.VpnRegionRepository
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
-import com.kape.vpnregions.domain.VpnRegionDataSource
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.kape.vpnregions.utils.RegionListProvider
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
 
-fun vpnRegionsModule(appModule: Module) = module {
-    includes(appModule, localVpnRegionsModule)
-}
+@Module
+@ComponentScan("com.kape.vpnregions", "com.kape.data")
+class VpnServersModule {
 
-val localVpnRegionsModule = module {
-    single { VpnRegionPrefs(get()) }
-    single<VpnRegionDataSource> { RegionDataSourceImpl(get()) }
-    single { VpnRegionRepository(get(), get(), get(), get(), get()) }
-    single { RegionInputStream(get()) }
-    single { RegionSerialization() }
-    single { ReadVpnRegionsDetailsUseCase(get(), get()) }
+    @Singleton
+    fun provideRegionListProvider(
+        regionRepository: VpnRegionRepository,
+        readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
+    ): RegionListProvider = RegionListProvider(regionRepository, readVpnRegionsDetailsUseCase)
 }

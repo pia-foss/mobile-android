@@ -3,26 +3,11 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
 }
 
 android {
     namespace = "com.kape.featureflags"
-
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
 }
 
 dependencies {
@@ -35,4 +20,8 @@ dependencies {
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)
+}
+
+koinCompiler {
+    compileSafety = false
 }

@@ -2,12 +2,14 @@ package com.kape.localprefs.prefs
 
 import android.content.Context
 import com.kape.utils.Prefs
+import org.koin.core.annotation.Singleton
 
 private const val SHORTCUT_CONNECT_TO_VPN = "shortcut-connect-to-vpn"
 private const val SHORTCUT_DISCONNECT_VPN = "shortcut-disconnect-vpn"
 private const val SHORTCUT_CHANGE_SERVER = "shortcut-change-server"
 private const val SHORTCUT_SETTINGS = "shortcut-settings"
 
+@Singleton
 class ShortcutPrefs(
     context: Context,
 ) : Prefs(context, "shortcut") {

@@ -2,7 +2,9 @@ package com.kape.dedicatedip.domain
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class FetchSignupDipToken(
     private val dipDataSource: DipDataSource,
 ) {

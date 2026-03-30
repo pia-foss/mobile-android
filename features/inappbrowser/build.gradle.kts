@@ -9,22 +9,6 @@ plugins {
 android {
     namespace = "com.kape.inappbrowser"
 
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
-
     testOptions {
         unitTests {
             isReturnDefaultValues = true
@@ -38,7 +22,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar)
 
-    implementation(project(":core:router"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:utils"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))

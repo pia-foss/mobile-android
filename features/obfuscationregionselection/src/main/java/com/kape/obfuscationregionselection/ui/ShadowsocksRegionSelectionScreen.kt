@@ -24,7 +24,6 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
 import com.kape.obfuscationregionselection.util.ItemType
-import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Search

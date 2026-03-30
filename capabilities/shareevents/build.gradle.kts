@@ -3,26 +3,11 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
 }
 
 android {
     namespace = "com.kape.shareevents"
-
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
 
     compileOptions {
     }
@@ -33,6 +18,7 @@ dependencies {
 
     implementation(libs.kape.kpi)
     implementation(project(":core:utils"))
+    implementation(project(":core:contracts"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
 
@@ -43,4 +29,8 @@ dependencies {
     testImplementation(libs.bundles.kointest)
     testImplementation(libs.coroutines.test)
     runtimeOnly(libs.launcher)
+}
+
+koinCompiler {
+    compileSafety = false
 }

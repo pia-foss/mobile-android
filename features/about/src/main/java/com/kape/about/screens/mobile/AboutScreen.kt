@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.router.LocalNavigator
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import org.koin.androidx.compose.koinViewModel

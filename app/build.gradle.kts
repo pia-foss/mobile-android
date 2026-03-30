@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.application)
     alias(libs.plugins.compose)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
 }
 
 val googleAppVersionCode = 701
@@ -138,6 +139,7 @@ dependencies {
     implementation(project(":core:portforwarding"))
     implementation(project(":core:regions"))
     implementation(project(":core:obfuscator"))
+    implementation(project(":core:contracts"))
     implementation(libs.kape.account)
     implementation(libs.kape.kpi)
     implementation(libs.kape.regions)
@@ -153,6 +155,7 @@ dependencies {
     implementation(project(":capabilities:snooze"))
     implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:featureflags"))
+    implementation(project(":capabilities:location"))
 
     implementation(project(":features:splash"))
     implementation(project(":features:tvwelcome"))

@@ -1,7 +1,6 @@
 package com.kape.dedicatedip.data
 
 import app.cash.turbine.test
-import com.kape.dedicatedip.di.dedicatedIpModule
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.localprefs.prefs.DipPrefs
@@ -38,9 +37,7 @@ class DipDataSourceImplTest {
     @BeforeEach
     internal fun setUp() {
         stopKoin()
-        startKoin {
-            modules(appModule, dedicatedIpModule(appModule))
-        }
+        startKoin {}
         source = DipDataSourceImpl(context, api, prefs)
     }
 

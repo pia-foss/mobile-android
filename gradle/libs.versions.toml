@@ -1,6 +1,6 @@
 [versions]
 plugin-gradle = "9.1.0"
-plugin-kotlin = "2.3.10"
+plugin-kotlin = "2.3.20"
 plugin-ktlint = "11.5.1"
 compose-bom = "2026.03.00"
 compose-tv = "1.0.0-alpha12"
@@ -9,6 +9,7 @@ compose-navigation = "2.9.7"
 compose-jetpack = "2.10.0"
 accompanist = "0.36.0"
 koin = "4.2.0"
+koin-plugin = "0.4.1"
 desugar = "2.1.5"
 swipe-to-refresh = "1.2.0"
 androidx-core = "1.18.0"
@@ -71,6 +72,7 @@ appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-a
 desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-navigation = { module = "io.insert-koin:koin-androidx-navigation", version.ref = "koin" }
 koin-testjunit5 = { module = "io.insert-koin:koin-test-junit5", version.ref = "koin" }
@@ -118,13 +120,14 @@ compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "plugin-ko
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "plugin-ktlint" }
 junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junit5" }
 configuration = { id = "configuration", version = "1.0" }
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 
 [bundles]
 compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-foundation", "compose-runtime", "compose-navigation", "compose-tv-material", "material3"]
 composeandroidtest = ["compose-android-test", "compose-navigation-test"]
 debugtest = ["debug-manifest", "debug-tooling"]
 android = ["viewmodel", "androidx-core", "lifecycle", "lifecyclecompose", "lifecycleprocess", "activity", "appcompat"]
-koin = ["koin-core", "koin-android", "koin-compose", "koin-navigation"]
+koin = ["koin-core", "koin-android", "koin-compose", "koin-navigation", "koin-annotations"]
 kointest = ["koin-testjunit5", "koin-testandroid"]
 koinandroidtest = ["koin-testandroid", "koin-andoridtest"]
 serialization = ["serialization-core", "serialization-json", "datetime"]

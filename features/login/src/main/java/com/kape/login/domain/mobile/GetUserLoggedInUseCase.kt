@@ -1,6 +1,11 @@
 package com.kape.login.domain.mobile
 
-class GetUserLoggedInUseCase(private val source: AuthenticationDataSource) {
+import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.IsUserLoggedInUseCase
+import org.koin.core.annotation.Singleton
 
-    fun isUserLoggedIn() = source.isUserLoggedIn()
+@Singleton
+class GetUserLoggedInUseCase(private val source: AuthenticationDataSource) : IsUserLoggedInUseCase {
+
+    override fun invoke() = source.isUserLoggedIn()
 }

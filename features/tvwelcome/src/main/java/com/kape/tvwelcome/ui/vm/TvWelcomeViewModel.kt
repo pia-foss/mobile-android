@@ -2,16 +2,17 @@ package com.kape.tvwelcome.ui.vm
 
 import androidx.lifecycle.ViewModel
 import com.kape.buildconfig.data.BuildConfigProvider
-import com.kape.router.Router
-import com.kape.router.Subscribe
-import com.kape.router.TvLoginUsername
-import com.kape.router.TvSubscribe
+import com.kape.contracts.Router
+import com.kape.contracts.data.TvLoginUsername
+import com.kape.contracts.data.TvSubscribe
+import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 
+@KoinViewModel
 class TvWelcomeViewModel(
     private val router: Router,
     buildConfigProvider: BuildConfigProvider,
-) : ViewModel(), KoinComponent {
+) : ViewModel() {
 
     val shouldShowSubscribeButton = buildConfigProvider.isGoogleFlavor()
 

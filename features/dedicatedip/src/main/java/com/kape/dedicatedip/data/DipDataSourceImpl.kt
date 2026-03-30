@@ -13,7 +13,9 @@ import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 
+@Singleton([DipDataSource::class])
 class DipDataSourceImpl(
     private val context: Context,
     private val accountApi: AndroidAccountAPI,

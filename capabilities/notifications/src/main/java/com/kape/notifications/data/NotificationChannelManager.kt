@@ -6,8 +6,10 @@ import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 
+@Singleton
 class NotificationChannelManager(
     private val context: Context,
 ) : KoinComponent {

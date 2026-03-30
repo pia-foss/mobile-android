@@ -29,7 +29,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.permissions.ui.vm.PermissionsViewModel
 import com.kape.permissions.utils.PermissionUtil
-import com.kape.router.Connection
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.elements.PrimaryButton

@@ -2,7 +2,9 @@ package com.kape.networkmanagement.data
 
 import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.networkmanagement.utils.NetworkUtil
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class NetworkRulesManager(
     private val prefs: NetworkManagementPrefs,
     private val util: NetworkUtil,

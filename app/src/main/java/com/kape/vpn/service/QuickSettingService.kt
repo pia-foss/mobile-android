@@ -2,7 +2,7 @@ package com.kape.vpn.service
 
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
-import com.kape.login.domain.mobile.GetUserLoggedInUseCase
+import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.ui.R
 import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnlauncher.VpnLauncher
@@ -11,15 +11,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.coroutines.CoroutineContext
 
+@Singleton
 class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
 
     private val connectionManager: ConnectionManager by inject()
     private val vpnLauncher: VpnLauncher by inject()
-    private val getUserLoggedInUseCase: GetUserLoggedInUseCase by inject()
+    private val isUserLoggedIn: IsUserLoggedInUseCase by inject()
 
     private val job = Job()
 
@@ -53,7 +55,7 @@ class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
     }
 
     private fun onClickAction() {
-        if (getUserLoggedInUseCase.isUserLoggedIn()) {
+        if (isUserLoggedIn.invoke()) {
             if (vpnLauncher.isVpnConnected()) {
                 vpnLauncher.stopVpn()
             } else {
@@ -77,7 +79,7 @@ class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
                     getString(R.string.qs_disconnect, connectionManager.serverName.value)
                 }
             } else {
-                if (!getUserLoggedInUseCase.isUserLoggedIn()) {
+                if (!isUserLoggedIn.invoke()) {
                     it.state = Tile.STATE_UNAVAILABLE
                     it.label = getString(R.string.not_logged_in)
                 } else {

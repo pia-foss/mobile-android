@@ -3,7 +3,7 @@ package com.kape.vpnconnect.utils
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.Context
-import com.kape.shareevents.data.models.KpiConnectionStatus
+import com.kape.contracts.data.kpi.KpiConnectionStatus
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
@@ -15,9 +15,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Singleton
 
 const val NOTIFICATION_ID = 123
 
+@Singleton
 class ConnectionManager(
     private val context: Context,
     private val connectionValues: Map<ConnectionStatus, String>,

@@ -9,11 +9,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
 
+@Singleton
 class PortForwardingReceiver : BroadcastReceiver(), CoroutineScope, KoinComponent {
 
     private val portForwardingUseCase: PortForwardingUseCase by inject()

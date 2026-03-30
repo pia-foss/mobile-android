@@ -2,8 +2,9 @@ package com.kape.vpn.service
 
 import android.content.Intent
 import android.net.VpnService
-import com.kape.login.domain.mobile.AuthenticationDataSource
+import com.kape.contracts.AuthenticationDataSource
 import com.kape.vpnlauncher.VpnLauncher
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -11,6 +12,7 @@ import org.koin.core.component.inject
  * This service is only used to detect when the 'Always ON' option from device's network settings is selected,
  * so that the app can start a connection using the vpn manager.
  */
+@Singleton
 class VpnAlwaysOnService : VpnService(), KoinComponent {
 
     private val authenticationDataSource: AuthenticationDataSource by inject()

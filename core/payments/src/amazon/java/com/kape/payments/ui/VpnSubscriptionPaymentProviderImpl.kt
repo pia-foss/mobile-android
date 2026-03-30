@@ -21,10 +21,12 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 
 private const val M1 = "PIA-M1"
 private const val Y1 = "PIA-Y1"
 
+@Singleton([VpnSubscriptionPaymentProvider::class])
 class VpnSubscriptionPaymentProviderImpl(private val prefs: SubscriptionPrefs, var activity: Activity? = null) :
     VpnSubscriptionPaymentProvider {
 

@@ -1,38 +1,22 @@
 plugins {
     alias(libs.plugins.library)
     alias(libs.plugins.configuration)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.compose)
 }
 
 android {
     namespace = "com.kape.tvwelcome"
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-    }
     buildFeatures {
         compose = true
     }
 }
 
 dependencies {
-    implementation(project(":core:router"))
-    implementation(project(":core:payments"))
+    implementation(project(":core:contracts"))
     implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:ui"))
-    implementation(project(":features:login"))
 
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
@@ -45,4 +29,8 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
+}
+
+koinCompiler {
+    compileSafety = false
 }

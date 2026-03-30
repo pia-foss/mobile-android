@@ -1,46 +1,51 @@
 package com.kape.snooze.di
 
+import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.snooze.OnSnoozeReceiver
 import com.kape.snooze.SnoozeHandler
-import org.koin.core.module.Module
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
+import com.kape.utils.DI
+import com.kape.vpnlauncher.VpnLauncher
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Singleton
 
-fun snoozeModule(appModule: Module) = module {
-    includes(appModule, localSnoozeModule)
-}
-
-val localSnoozeModule = module {
-    single(named("set-snooze-pending-intent")) { provideSetSnoozePendingIntent(get()) }
-    single(named("cancel-snooze-pending-intent")) { provideCancelSnoozePendingIntent(get()) }
-    single {
-        SnoozeHandler(
-            get(),
-            get(named("set-snooze-pending-intent")),
-            get(named("cancel-snooze-pending-intent")),
-            get(),
-            get(),
+@Module
+class SnoozeModule {
+    @Singleton
+    @Named(DI.SET_SNOOZE_PENDING_INTENT)
+    fun provideSetSnoozePendingIntent(context: Context): PendingIntent {
+        return PendingIntent.getBroadcast(
+            context,
+            0,
+            Intent(context, OnSnoozeReceiver::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT,
         )
     }
-}
 
-private fun provideSetSnoozePendingIntent(context: Context): PendingIntent {
-    return PendingIntent.getBroadcast(
-        context,
-        0,
-        Intent(context, OnSnoozeReceiver::class.java),
-        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT,
-    )
-}
+    @Singleton
+    @Named(DI.CANCEL_SNOOZE_PENDING_INTENT)
+    fun provideCancelSnoozePendingIntent(context: Context): PendingIntent? {
+        return PendingIntent.getBroadcast(
+            context,
+            0,
+            Intent(context, OnSnoozeReceiver::class.java),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE,
+        )
+    }
 
-private fun provideCancelSnoozePendingIntent(context: Context): PendingIntent? {
-    return PendingIntent.getBroadcast(
-        context,
-        0,
-        Intent(context, OnSnoozeReceiver::class.java),
-        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_NO_CREATE,
+    @Singleton
+    fun provideSnoozeHandler(
+        @Named(DI.ALARM_MANAGER) alarmManager: AlarmManager,
+        @Named(DI.SET_SNOOZE_PENDING_INTENT) setSnooze: PendingIntent,
+        @Named(DI.CANCEL_SNOOZE_PENDING_INTENT) cancelSnooze: PendingIntent,
+        connectionPrefs: ConnectionPrefs,
+        vpnLauncher: VpnLauncher,
+    ): SnoozeHandler = SnoozeHandler(
+        alarmManager, setSnooze, cancelSnooze, connectionPrefs, vpnLauncher,
     )
+
 }

@@ -12,8 +12,10 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Singleton
 import java.io.IOException
 
+@Singleton([PortForwardingApi::class])
 class PortForwardingApiImpl(
     private val certificatePinningClient: CertificatePinningClient,
     private val userAgent: String,

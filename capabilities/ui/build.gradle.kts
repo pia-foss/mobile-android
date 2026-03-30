@@ -19,6 +19,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar)
 
+    implementation(project(":core:contracts"))
     implementation(project(":core:router"))
     implementation(project(":core:utils"))
 

@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:contracts"))
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)

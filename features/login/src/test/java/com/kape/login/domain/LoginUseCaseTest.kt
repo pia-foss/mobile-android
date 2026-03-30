@@ -2,11 +2,11 @@ package com.kape.login.domain
 
 import app.cash.turbine.test
 import com.kape.login.BaseTest
-import com.kape.login.domain.mobile.AuthenticationDataSource
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.LoginState
-import com.kape.utils.ApiError
-import com.kape.utils.ApiResult
+import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.data.auth.ApiError
+import com.kape.contracts.data.auth.ApiResult
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

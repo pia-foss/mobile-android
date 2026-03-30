@@ -7,6 +7,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.contracts.Router
+import com.kape.contracts.data.DedicatedIpActivateToken
+import com.kape.contracts.data.DedicatedIpLocationSelection
+import com.kape.contracts.data.DedicatedIpSignupPlans
+import com.kape.contracts.data.DedicatedIpSignupTokenActivate
+import com.kape.contracts.data.DedicatedIpSignupTokenDetails
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
 import com.kape.dedicatedip.domain.ActivateDipUseCase
@@ -23,12 +30,6 @@ import com.kape.localprefs.prefs.DipPrefs
 import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
-import com.kape.router.DedicatedIpActivateToken
-import com.kape.router.DedicatedIpLocationSelection
-import com.kape.router.DedicatedIpSignupPlans
-import com.kape.router.DedicatedIpSignupTokenActivate
-import com.kape.router.DedicatedIpSignupTokenDetails
-import com.kape.router.Router
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
@@ -36,8 +37,10 @@ import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 
+@KoinViewModel
 class DipViewModel(
     private val router: Router,
     private val regionListProvider: RegionListProvider,
@@ -52,7 +55,8 @@ class DipViewModel(
     private val dipPrefs: DipPrefs,
     private val connectionPrefs: ConnectionPrefs,
     private val connectionUseCase: ConnectionUseCase,
-) : ViewModel(), KoinComponent {
+    private val buildConfigProvider: BuildConfigProvider,
+) : ViewModel(){
 
     private val _state = MutableStateFlow<DedicatedIpStep?>(null)
     val state: StateFlow<DedicatedIpStep?> = _state
@@ -188,7 +192,7 @@ class DipViewModel(
     }
 
     fun showDedicatedIpSignupBanner() =
-        dipPrefs.isDipSignupEnabled()
+        dipPrefs.isDipSignupEnabled(buildConfigProvider.isGoogleFlavor())
 
     fun selectDipCountry(dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) {
         dipPrefs.setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry = dedicatedIpSelectedCountry)

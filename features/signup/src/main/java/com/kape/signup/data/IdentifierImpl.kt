@@ -2,10 +2,10 @@ package com.kape.signup.data
 
 import android.content.Context
 import android.provider.Settings
+import org.koin.core.annotation.Singleton
 
-internal class IdentifierImpl(
-    private val context: Context,
-) : Identifier {
+@Singleton([Identifier::class])
+class IdentifierImpl(private val context: Context, ) : Identifier {
 
     // region Identifier
     override fun invoke(): Result<String> =

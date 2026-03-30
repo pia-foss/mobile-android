@@ -7,9 +7,11 @@ import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 
-class ProfileDatasourceImpl(private val api: AndroidAccountAPI) : ProfileDatasource, KoinComponent {
+@Singleton([ProfileDatasource::class])
+class ProfileDatasourceImpl(private val api: AndroidAccountAPI) : ProfileDatasource {
 
     override fun accountDetails(): Flow<Profile?> = callbackFlow {
         api.accountDetails { details, errorList ->

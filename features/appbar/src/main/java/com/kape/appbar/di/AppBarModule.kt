@@ -1,14 +1,19 @@
 package com.kape.appbar.di
 
 import com.kape.appbar.viewmodel.AppBarViewModel
-import org.koin.core.module.dsl.viewModel
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.kape.contracts.Router
+import com.kape.utils.NetworkConnectionListener
+import com.kape.vpnconnect.utils.ConnectionManager
+import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Module
 
-fun appBarModule(appModule: Module) = module {
-    includes(appModule, localAppBarModule)
-}
+@Module
+class AppBarModule {
 
-private val localAppBarModule = module {
-    viewModel { AppBarViewModel(get(), get(), get()) }
+    @KoinViewModel
+    fun provideAppBarViewModel(
+        router: Router,
+        connectionManager: ConnectionManager,
+        networkConnectionListener: NetworkConnectionListener,
+    ): AppBarViewModel = AppBarViewModel(router, connectionManager, networkConnectionListener)
 }

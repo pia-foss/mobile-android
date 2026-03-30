@@ -4,7 +4,9 @@ import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.data.DipPurchaseData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class ValidateDipSignup(
     private val subscriptionPrefs: SubscriptionPrefs,
     private val dataSource: DipDataSource,
