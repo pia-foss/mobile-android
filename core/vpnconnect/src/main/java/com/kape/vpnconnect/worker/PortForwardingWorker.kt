@@ -21,9 +21,9 @@ class PortForwardingWorker(
             portForwardingUseCase.bindPort(connectionDataSource.getVpnToken())
             Result.success()
         } catch (exception: IOException) {
-            Result.success()
+            Result.failure()
         } catch (exception: IllegalStateException) {
-            Result.success()
+            Result.failure()
         }
     }
 }

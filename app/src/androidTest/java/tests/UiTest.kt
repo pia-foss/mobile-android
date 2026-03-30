@@ -2,6 +2,7 @@ package tests
 
 import androidx.test.uiautomator.uiAutomator
 import com.kape.vpn.BuildConfig
+import org.junit.Before
 import screens.helpers.UiAutomatorHelpers.findByResId
 import screens.steps.LoginSteps.giveAppPermissions
 import screens.steps.LoginSteps.logIn
@@ -13,7 +14,7 @@ open class UiTest() {
     /**
      * Default setup: launches app and logs in with valid credentials.
      */
-    @org.junit.Before
+    @Before
     open fun setUp() = uiAutomator {
         startApp(BuildConfig.APPLICATION_ID)
         waitForAppToBeVisible(BuildConfig.APPLICATION_ID)
@@ -29,7 +30,6 @@ open class UiTest() {
      * Setup variant: launches app without logging in.
      * Useful for tests that start from SignUp screen.
      */
-    @org.junit.Before
     fun setupWithoutLogin() = uiAutomator {
         startApp(BuildConfig.APPLICATION_ID)
         waitForAppToBeVisible(BuildConfig.APPLICATION_ID)

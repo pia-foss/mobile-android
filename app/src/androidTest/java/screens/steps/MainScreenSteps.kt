@@ -1,6 +1,8 @@
 package screens.steps
 
 import androidx.test.uiautomator.UiAutomatorTestScope
+import screens.helpers.UiAutomatorHelpers.CONNECTION_TIMEOUT
+import screens.helpers.UiAutomatorHelpers.LONG_TIMEOUT
 import screens.helpers.UiAutomatorHelpers.click
 import screens.helpers.UiAutomatorHelpers.waitUntilConnectionIsEstablished
 
@@ -13,8 +15,8 @@ object MainScreenSteps {
     const val LOCATION_EIGHT_ITEM = ":VpnRegionSelectionScreen:locationItem_8"
 
     fun UiAutomatorTestScope.establishAndVerifyVPNConnection() {
-        click(CONNECT_BUTTON)
-        check(waitUntilConnectionIsEstablished()) {
+        click(CONNECT_BUTTON, LONG_TIMEOUT)
+        check(waitUntilConnectionIsEstablished(CONNECTION_TIMEOUT)) {
             "Vpn failed to connect within timeout"
         }
     }

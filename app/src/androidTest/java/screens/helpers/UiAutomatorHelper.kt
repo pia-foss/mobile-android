@@ -11,6 +11,7 @@ object UiAutomatorHelpers {
 
     const val DEFAULT_TIMEOUT = 5000L
     const val LONG_TIMEOUT = 10000L
+    const val CONNECTION_TIMEOUT = 30000L
 
     fun UiAutomatorTestScope.findByResId(
         resId: String,
@@ -66,6 +67,11 @@ object UiAutomatorHelpers {
         return device.findObject(By.res(resId))
     }
 
+    fun UiAutomatorTestScope.hideKeyboard() {
+        device.pressBack()
+        device.waitForIdle()
+    }
+
     fun UiAutomatorTestScope.inputText(
         resId: String,
         text: String,
@@ -92,7 +98,7 @@ object UiAutomatorHelpers {
         // Wait until the IP field exists first (fast-fail if screen wrong)
         val ipField = device.wait(
             Until.findObject(By.res(":Text:vpnIp")),
-            timeout.coerceAtMost(2_000),
+            timeout,
         ) ?: return false
 
         // Now poll ONLY the text (cheap + stable)
