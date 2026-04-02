@@ -23,9 +23,7 @@ import com.kape.ui.R
 import com.kape.ui.mobile.text.QuickConnectText
 import com.kape.ui.mobile.text.TileTitleText
 import com.kape.ui.utils.LocalColors
-import com.kape.utils.FIFTEEN_MINUTES
-import com.kape.utils.FIVE_MINUTES
-import com.kape.utils.SIXTY_MINUTES
+import com.kape.utils.SnoozeIntervals
 
 @Composable
 fun Snooze(
@@ -60,7 +58,7 @@ fun Snooze(
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            onClick(FIVE_MINUTES)
+                            onClick(SnoozeIntervals.FIVE_MINUTES)
                         },
                 )
 
@@ -70,7 +68,7 @@ fun Snooze(
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            onClick(FIFTEEN_MINUTES)
+                            onClick(SnoozeIntervals.FIFTEEN_MINUTES)
                         },
                 )
 
@@ -80,7 +78,7 @@ fun Snooze(
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            onClick(SIXTY_MINUTES)
+                            onClick(SnoozeIntervals.SIXTY_MINUTES)
                         },
                 )
             }

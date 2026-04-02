@@ -96,6 +96,7 @@ import com.privateinternetaccess.kpi.internals.utils.KTimeUnit
 import com.privateinternetaccess.regions.PlatformInstancesProvider
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.RegionsBuilder
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
@@ -168,6 +169,20 @@ class AppModule {
     @Singleton
     @Named(DI.UPDATE_URL)
     fun provideUpdateUrl(configInfo: ConfigInfo): String = configInfo.updateUrl
+
+    @Singleton
+    @Named(DI.MAIN_DISPATCHER)
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Singleton
+    @Named(DI.IO_DISPATCHER)
+    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Singleton
+    fun provideNotificationManager(context: Context): NotificationManager =
+        context.getSystemService(
+            Context.NOTIFICATION_SERVICE,
+        ) as NotificationManager
 
     @Singleton
     fun provideBuildConfigProvider(appInfo: AppInfo): BuildConfigProvider =

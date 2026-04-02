@@ -9,6 +9,7 @@ import com.kape.utils.DI
 import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
@@ -26,8 +27,9 @@ class SplashModule {
         connectionUseCase: ConnectionUseCase,
         getUserLoggedInUseCase: IsUserLoggedInUseCase,
         platformUtils: PlatformUtils,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): SplashViewModel = SplashViewModel(
         router, regionListProvider, forceUpdateUseCase, getWebsiteDownloadLink,
-        appUpdateUrl, connectionUseCase, getUserLoggedInUseCase, platformUtils,
+        appUpdateUrl, connectionUseCase, getUserLoggedInUseCase, platformUtils, ioDispatcher,
     )
 }

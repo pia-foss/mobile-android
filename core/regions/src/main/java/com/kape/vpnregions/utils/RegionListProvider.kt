@@ -1,29 +1,26 @@
 package com.kape.vpnregions.utils
 
+import com.kape.utils.DI
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.data.VpnRegionRepository
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Named
 import java.util.Locale
-import kotlin.coroutines.CoroutineContext
 
 class RegionListProvider(
     private val regionRepository: VpnRegionRepository,
     private val readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
-) : CoroutineScope {
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+) {
     private val locale = Locale.getDefault().language
     private val isDefaultList = MutableStateFlow(true)
     private val _servers: MutableStateFlow<List<VpnServer>> = MutableStateFlow(emptyList())
     val servers: StateFlow<List<VpnServer>> = _servers
-    private val job = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.IO
 
     init {
         setRegionsListToDefault()
@@ -47,11 +44,9 @@ class RegionListProvider(
         _servers.value = regionRepository.getServers(false)
     }
 
-    fun loadVpnServerLatencies() =
-        launch {
-            updateServerLatencies(locale, false)
-            job.complete()
-        }
+    fun loadVpnServerLatencies() = CoroutineScope(ioDispatcher).launch {
+        updateServerLatencies(locale, false)
+    }
 
     suspend fun updateServerLatencies(
         isConnected: Boolean,

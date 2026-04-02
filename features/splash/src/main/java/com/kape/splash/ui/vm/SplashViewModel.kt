@@ -14,6 +14,7 @@ import com.kape.utils.DI
 import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
@@ -30,6 +31,7 @@ class SplashViewModel(
     private val connectionUseCase: ConnectionUseCase,
     private val isUserLoggedIn: IsUserLoggedInUseCase,
     private val platformUtils: PlatformUtils,
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
 
     private var updateUrl: String = ""
@@ -38,7 +40,7 @@ class SplashViewModel(
         if (regionListProvider.isDefaultList()) {
             regionListProvider.loadVpnServerLatencies()
         }
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(ioDispatcher) {
             val requiresUpdate = forceUpdateUseCase.requiresForceUpdate()
             if (requiresUpdate) {
                 val url = getWebsiteDownloadLink.invoke()
