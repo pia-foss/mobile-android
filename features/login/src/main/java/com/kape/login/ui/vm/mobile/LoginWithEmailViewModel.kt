@@ -33,9 +33,8 @@ class LoginWithEmailViewModel(
             _state.emit(INVALID)
             return@launch
         }
-        useCase.loginWithEmail(email).collect {
-            _state.emit(SUCCESS)
-        }
+        useCase.loginWithEmail(email)
+        _state.emit(SUCCESS)
     }
 
     fun navigateToLoginWithCredentials() = router.updateDestination(LoginWithCredentials)

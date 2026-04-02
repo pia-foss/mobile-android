@@ -363,25 +363,19 @@ class SettingsViewModel(
     }
 
     fun getRecentEvents() = viewModelScope.launch {
-        kpiDataSource.recentEvents().collect {
-            eventList.value = it
-        }
+        eventList.value = kpiDataSource.recentEvents()
     }
 
     fun getDebugLogs() = viewModelScope.launch {
-        getDebugLogsUseCase.getDebugLogs().collect {
-            debugLogs.value = it
-        }
+        debugLogs.value = getDebugLogsUseCase.getDebugLogs()
     }
 
     fun sendLogs() = viewModelScope.launch {
-        connectionDataSource.getDebugLogs().collect {
-            csiPrefs.setProtocolDebugLogs(it.joinToString(separator = "\n"))
-            sendLogUseCase.sendLog().collect {
-                requestId.value = it
-                csiPrefs.clearCustomDebugLogs()
-            }
-        }
+        val logs = connectionDataSource.getDebugLogs()
+        csiPrefs.setProtocolDebugLogs(logs.joinToString(separator = "\n"))
+        val result = sendLogUseCase.sendLog()
+        requestId.value = result
+        csiPrefs.clearCustomDebugLogs()
     }
 
     fun resetRequestId() {
@@ -407,7 +401,7 @@ class SettingsViewModel(
     fun reconnect() {
         viewModelScope.launch {
             connectionPrefs.getSelectedVpnServer()?.let {
-                connectionUseCase.reconnect(it).collect {}
+                connectionUseCase.reconnect(it)
             }
         }
     }

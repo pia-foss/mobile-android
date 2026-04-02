@@ -46,14 +46,9 @@ class VpnRegionSelectionViewModel(
         if (displayLoading) {
             isLoading.value = true
         }
-        regionListProvider
-            .updateServerLatencies(
-                isVpnConnectionActive(),
-                displayLoading,
-            ).collect {
-                arrangeVpnServers(it)
-                isLoading.value = false
-            }
+        val servers = regionListProvider.updateServerLatencies(isVpnConnectionActive(), displayLoading)
+        arrangeVpnServers(servers)
+        isLoading.value = false
     }
 
     fun onVpnRegionSelected(server: VpnServer) {

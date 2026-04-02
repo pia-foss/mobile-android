@@ -11,7 +11,6 @@ import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import kotlin.coroutines.CoroutineContext
@@ -47,13 +46,11 @@ class VpnLauncher(
                             if (regionListProvider.isDefaultList().not()) {
                                 initiateConnection(regionListProvider.getOptimalServer())
                             } else {
-                                regionListProvider
-                                    .updateServerLatencies(
+                                regionListProvider.updateServerLatencies(
                                         isConnected = false,
                                         isUserInitiated = false,
-                                    ).collect {
-                                        initiateConnection(regionListProvider.getOptimalServer())
-                                    }
+                                    )
+                                    initiateConnection(regionListProvider.getOptimalServer())
                             }
                         }
                     }
@@ -64,15 +61,12 @@ class VpnLauncher(
         }
     }
 
-    private suspend fun initiateConnection(server: VpnServer) = connectionUseCase
-        .startConnection(
-            server,
-            false,
-        ).collect()
+    private suspend fun initiateConnection(server: VpnServer) =
+        connectionUseCase.startConnection(server, false)
 
     fun stopVpn() =
         launch {
-            connectionUseCase.stopConnection().collect()
+            connectionUseCase.stopConnection()
         }
 
     fun isVpnConnected() = connectionUseCase.isConnected()

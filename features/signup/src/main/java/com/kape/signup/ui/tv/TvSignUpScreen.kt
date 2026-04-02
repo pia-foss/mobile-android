@@ -18,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -44,7 +46,8 @@ import org.koin.androidx.compose.koinViewModel
 fun TvSignUpScreen() = Screen {
     val initialFocusRequester = remember { FocusRequester() }
     val viewModel: SignupViewModel = koinViewModel()
-    val subscriptionData = viewModel.subscriptionData.value
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val subscriptionData = state.subscriptionData
 
     LaunchedEffect(key1 = Unit) {
         initialFocusRequester.requestFocus()

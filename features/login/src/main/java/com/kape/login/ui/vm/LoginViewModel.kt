@@ -47,11 +47,10 @@ class LoginViewModel(
             _state.emit(INVALID)
             return@launch
         }
-        loginUseCase.login(username, password).collect {
-            if (it == LoginState.Successful) {
-                router.updateDestination(permissionsUtil.getNextDestination())
-                return@collect
-            }
+        val it = loginUseCase.login(username, password)
+        if (it == LoginState.Successful) {
+            router.updateDestination(permissionsUtil.getNextDestination())
+        } else {
             _state.emit(getScreenState(it))
         }
     }
@@ -71,16 +70,17 @@ class LoginViewModel(
             vpnSubscriptionPaymentProvider.purchaseHistoryState.collect {
                 _state.emit(LOADING)
                 when (it) {
-                    is PurchaseHistoryState.PurchaseHistorySuccess -> loginUseCase.loginWithReceipt(
-                        it.purchaseToken,
-                        it.productId,
-                        packageName,
-                    ).collect { state ->
+                    is PurchaseHistoryState.PurchaseHistorySuccess -> {
+                        val state = loginUseCase.loginWithReceipt(
+                            it.purchaseToken,
+                            it.productId,
+                            packageName,
+                        )
                         if (state == LoginState.Successful) {
                             router.updateDestination(permissionsUtil.getNextDestination())
-                            return@collect
+                        } else {
+                            _state.emit(getScreenState(state))
                         }
-                        _state.emit(getScreenState(state))
                     }
 
                     PurchaseHistoryState.Default -> {

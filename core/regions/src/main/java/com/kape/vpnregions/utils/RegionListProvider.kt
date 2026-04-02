@@ -8,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.coroutines.CoroutineContext
@@ -50,49 +49,40 @@ class RegionListProvider(
 
     fun loadVpnServerLatencies() =
         launch {
-            updateServerLatencies(locale, false).collect {
-                job.complete()
-            }
+            updateServerLatencies(locale, false)
+            job.complete()
         }
 
-    fun updateServerLatencies(
+    suspend fun updateServerLatencies(
         isConnected: Boolean,
         isUserInitiated: Boolean,
-    ) = flow {
+    ): List<VpnServer> {
         if (isUserInitiated) {
-            updateServerLatencies(locale, isConnected).collect {
-                _servers.value = it
-                emit(servers.value)
-            }
+            _servers.value = updateServerLatencies(locale, isConnected)
         }
-        if (_servers.value.none { it.latency != null }) {
-            updateServerLatencies(locale, isConnected).collect {
-                _servers.value = it
-                emit(servers.value)
-            }
+        return if (_servers.value.none { it.latency != null }) {
+            val servers = updateServerLatencies(locale, isConnected)
+            _servers.value = servers
+            servers
         } else {
             _servers.value = regionRepository.getServers(isConnected)
-            emit(servers.value)
+            _servers.value
         }
     }
 
-    private fun updateServerLatencies(
+    private suspend fun updateServerLatencies(
         locale: String,
         isConnected: Boolean,
-    ) = flow {
-        regionRepository.fetchVpnRegions(locale).collect {
-            regionRepository
-                .fetchLatencies(isConnected)
-                .collect { updatedServers ->
-                    for (server in updatedServers) {
-                        it.filter { it.name == server.name }.firstOrNull()?.latency =
-                            server.latency ?: VPN_REGIONS_PING_TIMEOUT.toString()
-                    }
-                    _servers.value = updatedServers
-                    isDefaultList.value = false
-                    emit(updatedServers)
-                }
+    ): List<VpnServer> {
+        val regions = regionRepository.fetchVpnRegions(locale)
+        val updatedServers = regionRepository.fetchLatencies(isConnected)
+        for (server in updatedServers) {
+            regions.filter { it.name == server.name }.firstOrNull()?.latency =
+                server.latency ?: VPN_REGIONS_PING_TIMEOUT.toString()
         }
+        _servers.value = updatedServers
+        isDefaultList.value = false
+        return updatedServers
     }
 
     private fun setRegionsListToDefault() {

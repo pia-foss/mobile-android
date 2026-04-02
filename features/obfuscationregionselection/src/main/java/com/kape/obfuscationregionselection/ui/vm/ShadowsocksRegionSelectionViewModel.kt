@@ -30,10 +30,9 @@ class ShadowsocksRegionSelectionViewModel(
     fun fetchShadowsocksRegions(locale: String, isLoading: MutableState<Boolean>) =
         viewModelScope.launch {
             isLoading.value = true
-            getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale).collect {
-                arrangeShadowsocksServers(it)
-                isLoading.value = false
-            }
+            val servers = getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale)
+            arrangeShadowsocksServers(servers)
+            isLoading.value = false
         }
 
     fun onShadowsocksRegionSelected(server: ShadowsocksServer) {

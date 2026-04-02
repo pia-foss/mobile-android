@@ -38,30 +38,24 @@ class SplashViewModel(
         if (regionListProvider.isDefaultList()) {
             regionListProvider.loadVpnServerLatencies()
         }
-        if (isUserLoggedIn.invoke()) {
-            handleSplashExit()
-        }
         viewModelScope.launch(Dispatchers.IO) {
-            forceUpdateUseCase.requiresForceUpdate().collect { requiresUpdate ->
-                if (requiresUpdate) {
-                    viewModelScope.launch {
-                        getWebsiteDownloadLink.invoke().collect {
-                            updateUrl = it
-                            if (updateUrl.isNotEmpty()) {
-                                router.updateDestination(Update)
-                            }
-                        }
-                    }
-                } else if (!isUserLoggedIn.invoke()) {
-                    handleSplashExit()
+            val requiresUpdate = forceUpdateUseCase.requiresForceUpdate()
+            if (requiresUpdate) {
+                val url = getWebsiteDownloadLink.invoke()
+                updateUrl = url
+                if (updateUrl.isNotEmpty()) {
+                    router.updateDestination(Update)
                 }
+            } else if (!isUserLoggedIn.invoke()) {
+                handleSplashExit()
             }
         }
+        handleSplashExit()
     }
 
     fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) {
         viewModelScope.launch {
-            connectionUseCase.stopConnection().collect {}
+            connectionUseCase.stopConnection()
         }
         launchUpdate(appUpdateUrl.ifEmpty { updateUrl })
     }

@@ -39,9 +39,8 @@ class ProfileViewModel(
     }
 
     fun logout() = viewModelScope.launch {
-        logoutUseCase.logout().collect {
-            router.updateDestination(Splash)
-        }
+        logoutUseCase.logout()
+        router.updateDestination(Splash)
     }
 
     fun navigateToLogin() = router.updateDestination(LoginWithCredentials)
@@ -51,12 +50,11 @@ class ProfileViewModel(
 
     private fun loadProfile() = viewModelScope.launch {
         _state.emit(LOADING)
-        useCase.getProfile().collect { profile ->
-            if (profile == null) {
-                _state.emit(IDLE)
-            } else {
-                _state.emit(getState(profile))
-            }
+        val profile = useCase.getProfile()
+        if (profile == null) {
+            _state.emit(IDLE)
+        } else {
+            _state.emit(getState(profile))
         }
     }
 

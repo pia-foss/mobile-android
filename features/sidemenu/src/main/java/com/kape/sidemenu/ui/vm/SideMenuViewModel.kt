@@ -34,20 +34,18 @@ class SideMenuViewModel(
 
     init {
         viewModelScope.launch {
-            profileUseCase.getProfile().collect {
-                it?.let {
-                    username.value = it.username.uppercase()
-                    showExpire.value = it.subscription.showExpire
-                    daysRemaining.value = it.subscription.daysRemaining
-                }
+            val it = profileUseCase.getProfile()
+            it?.let {
+                username.value = it.username.uppercase()
+                showExpire.value = it.subscription.showExpire
+                daysRemaining.value = it.subscription.daysRemaining
             }
         }
     }
 
     fun logout() = viewModelScope.launch {
-        logoutUseCase.logout().collect {
-            router.updateDestination(Splash)
-        }
+        logoutUseCase.logout()
+        router.updateDestination(Splash)
     }
 
     fun navigateToVpnConnect() {
