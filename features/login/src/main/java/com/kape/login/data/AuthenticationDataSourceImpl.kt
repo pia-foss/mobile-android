@@ -4,11 +4,10 @@ import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.data.auth.ApiResult
 import com.kape.contracts.data.auth.getApiError
 import com.privateinternetaccess.account.AndroidAccountAPI
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
+import kotlin.coroutines.resume
 
 private const val STORE = "google_play"
 
@@ -20,62 +19,60 @@ class AuthenticationDataSourceImpl(private val api: AndroidAccountAPI) :
         return !api.apiToken().isNullOrEmpty() && !api.vpnToken().isNullOrEmpty()
     }
 
-    override fun login(username: String, password: String): Flow<ApiResult> = callbackFlow {
-        api.loginWithCredentials(username, password) {
-            if (it.isNotEmpty()) {
-                trySend(ApiResult.Error(getApiError(it.last().code)))
-                return@loginWithCredentials
+    override suspend fun login(username: String, password: String): ApiResult =
+        suspendCancellableCoroutine { cont ->
+            api.loginWithCredentials(username, password) {
+                if (it.isNotEmpty()) {
+                    cont.resume(ApiResult.Error(getApiError(it.last().code)))
+                    return@loginWithCredentials
+                }
+                cont.resume(ApiResult.Success)
             }
-            trySend(ApiResult.Success)
         }
-        awaitClose { channel.close() }
-    }
 
-    override fun logout(): Flow<ApiResult> = callbackFlow {
+    override suspend fun logout(): ApiResult = suspendCancellableCoroutine { cont ->
         api.logout {
             if (it.isNotEmpty()) {
-                trySend(ApiResult.Error(getApiError(it.last().code)))
+                cont.resume(ApiResult.Error(getApiError(it.last().code)))
                 return@logout
             }
-            trySend(ApiResult.Success)
+            cont.resume(ApiResult.Success)
         }
-        awaitClose { channel.close() }
     }
 
-    override fun loginWithEmail(email: String): Flow<ApiResult> = callbackFlow {
-        api.loginLink(email) {
-            if (it.isNotEmpty()) {
-                trySend(ApiResult.Error(getApiError(it.last().code)))
-                return@loginLink
+    override suspend fun loginWithEmail(email: String): ApiResult =
+        suspendCancellableCoroutine { cont ->
+            api.loginLink(email) {
+                if (it.isNotEmpty()) {
+                    cont.resume(ApiResult.Error(getApiError(it.last().code)))
+                    return@loginLink
+                }
+                cont.resume(ApiResult.Success)
             }
-            trySend(ApiResult.Success)
         }
-        awaitClose { channel.close() }
-    }
 
-    override fun loginWithReceipt(
+    override suspend fun loginWithReceipt(
         receiptToken: String,
         productId: String,
         packageName: String,
-    ): Flow<ApiResult> = callbackFlow {
+    ): ApiResult = suspendCancellableCoroutine { cont ->
         api.loginWithReceipt(STORE, receiptToken, productId, packageName) {
             if (it.isNotEmpty()) {
-                trySend(ApiResult.Error(getApiError(it.last().code)))
+                cont.resume(ApiResult.Error(getApiError(it.last().code)))
                 return@loginWithReceipt
             }
-            trySend(ApiResult.Success)
+            cont.resume(ApiResult.Success)
         }
-        awaitClose { channel.close() }
     }
 
-    override fun migrateToken(apiToken: String): Flow<ApiResult> = callbackFlow {
-        api.migrateApiToken(apiToken) {
-            if (it.isNotEmpty()) {
-                trySend(ApiResult.Error(getApiError(it.last().code)))
-                return@migrateApiToken
+    override suspend fun migrateToken(apiToken: String): ApiResult =
+        suspendCancellableCoroutine { cont ->
+            api.migrateApiToken(apiToken) {
+                if (it.isNotEmpty()) {
+                    cont.resume(ApiResult.Error(getApiError(it.last().code)))
+                    return@migrateApiToken
+                }
+                cont.resume(ApiResult.Success)
             }
-            trySend(ApiResult.Success)
         }
-        awaitClose { channel.close() }
-    }
 }

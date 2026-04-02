@@ -16,8 +16,6 @@ import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.payments.SubscriptionPrefs
 import com.kape.vpnconnect.domain.ConnectionUseCase
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -38,30 +36,21 @@ class LogoutUseCaseImpl(
     private val ratingPrefs: RatingPrefs,
 ) : LogoutUseCase {
 
-    override fun logout(): Flow<Boolean> = flow {
+    override suspend fun logout(): Boolean {
         if (settingsPrefs.isAutomationEnabled()) {
             connectionPrefs.disconnectedByUser(true)
         }
         if (connectionUseCase.isConnected()) {
-            connectionUseCase.stopConnection().collect {
-                performLogout().collect {
-                    emit(it)
-                }
-            }
-        } else {
-            performLogout().collect {
-                emit(it)
-            }
+            connectionUseCase.stopConnection()
         }
+        return performLogout()
     }
 
-    private fun performLogout(): Flow<Boolean> = flow {
+    private suspend fun performLogout(): Boolean {
         clearPrefs()
-        source.logout().collect {
-            when (it) {
-                ApiResult.Success -> emit(true)
-                is ApiResult.Error -> emit(false)
-            }
+        return when (source.logout()) {
+            ApiResult.Success -> true
+            is ApiResult.Error -> false
         }
     }
 

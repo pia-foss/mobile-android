@@ -29,12 +29,13 @@ import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.TransportProtocol
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
@@ -59,47 +60,32 @@ class ConnectionUseCaseImpl(
     override val port = portForwardingUseCase.port
     override val clientIp = MutableStateFlow(connectionPrefs.getClientIp())
     override val vpnIp = MutableStateFlow(connectionPrefs.getVpnIp())
-    override fun startConnection(server: VpnServer, isManualConnection: Boolean): Flow<Boolean> =
-        flow {
-            connectionManager.setConnectedServerName(server.name, server.iso)
-            connectionManager.isManualConnection = isManualConnection
-            connectionPrefs.setSelectedVpnServer(server)
-            startShadowsocksConnection().collect { succeeded ->
-                if (succeeded.not()) {
-                    emit(false)
-                    return@collect
-                }
 
-                startVpnConnection(server = server).collect { connected ->
-                    emit(connected)
-                    if (!connected) {
-                        stopShadowsocksConnection().collect()
-                    }
-                }
-            }
-        }
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    override fun stopConnection(): Flow<Boolean> = flow {
-        stopVpnConnection().collect {
-            stopShadowsocksConnection().collect {
-                stopPortForwarding()
-                emit(it)
-            }
-        }
+    override suspend fun startConnection(server: VpnServer, isManualConnection: Boolean): Boolean {
+        connectionManager.setConnectedServerName(server.name, server.iso)
+        connectionManager.isManualConnection = isManualConnection
+        connectionPrefs.setSelectedVpnServer(server)
+        val succeeded = startShadowsocksConnection()
+        if (!succeeded) return false
+        val connected = startVpnConnection(server)
+        if (!connected) stopShadowsocksConnection()
+        return connected
     }
 
-    override fun reconnect(server: VpnServer): Flow<Boolean> = flow {
+    override suspend fun stopConnection(): Boolean {
+        val result = stopVpnConnection()
+        stopShadowsocksConnection()
+        stopPortForwarding()
+        return result
+    }
+
+    override suspend fun reconnect(server: VpnServer): Boolean {
         if (isConnected()) {
-            stopConnection().collect {
-                startConnection(server, false).collect {
-                    emit(it)
-                }
-            }
-        } else {
-            startConnection(server, false).collect {
-                emit(it)
-            }
+            stopConnection()
         }
+        return startConnection(server, false)
     }
 
     override fun isConnected(): Boolean = connectionManager.isConnected()
@@ -108,12 +94,11 @@ class ConnectionUseCaseImpl(
 
     override fun isNotDisconnected(): Boolean = connectionManager.isNotDisconnected()
 
-    override fun getClientStatus(status: ConnectionStatus): Flow<ConnectionStatus> = flow {
-        clientStateDataSource.getClientStatus(status).collect {
-            clientIp.update { connectionPrefs.getClientIp() }
-            vpnIp.update { connectionPrefs.getVpnIp() }
-            emit(status)
-        }
+    override suspend fun getClientStatus(status: ConnectionStatus): ConnectionStatus {
+        clientStateDataSource.getClientStatus(status)
+        clientIp.update { connectionPrefs.getClientIp() }
+        vpnIp.update { connectionPrefs.getVpnIp() }
+        return status
     }
 
     override fun getConnectionStatus() = connectionManager.connectionStatus
@@ -125,39 +110,31 @@ class ConnectionUseCaseImpl(
 
     private fun getVpnToken() = connectionSource.getVpnToken()
 
-    private fun startVpnConnection(server: VpnServer): Flow<Boolean> = flow {
-        connectionSource.startConnection(
+    private suspend fun startVpnConnection(server: VpnServer): Boolean {
+        val connected = connectionSource.startConnection(
             connectionConfigurationUseCase.generateConnectionConfiguration(server = server),
             connectionManager,
-        ).collect { connected ->
-            startPortForwarding().collect()
-            emit(connected)
-        }
+        )
+        startPortForwarding()
+        return connected
     }
 
-    private fun stopVpnConnection(): Flow<Boolean> = flow {
-        connectionSource.stopConnection().collect {
-            connectionManager.setConnectedServerName("", "")
-            clientStateDataSource.resetVpnIp()
-            vpnIp.value = connectionPrefs.getVpnIp()
-            stopPortForwarding()
-            emit(it)
-        }
+    private suspend fun stopVpnConnection(): Boolean {
+        val result = connectionSource.stopConnection()
+        connectionManager.setConnectedServerName("", "")
+        clientStateDataSource.resetVpnIp()
+        vpnIp.value = connectionPrefs.getVpnIp()
+        stopPortForwarding()
+        return result
     }
 
-    private fun startShadowsocksConnection(): Flow<Boolean> = flow {
-        if (settingsPrefs.isShadowsocksObfuscationEnabled().not()) {
-            emit(true)
-            return@flow
-        }
+    private suspend fun startShadowsocksConnection(): Boolean {
+        if (settingsPrefs.isShadowsocksObfuscationEnabled().not()) return true
 
         val selectedShadowsocksServer =
-            shadowsocksRegionPrefs.getSelectedShadowsocksServer() ?: run {
-                emit(false)
-                return@flow
-            }
+            shadowsocksRegionPrefs.getSelectedShadowsocksServer() ?: return false
 
-        startObfuscatorProcess(
+        val result = startObfuscatorProcess(
             obfuscatorProcessInformation = ObfuscatorProcessInformation(
                 serverIp = selectedShadowsocksServer.host,
                 serverPort = selectedShadowsocksServer.port.toString(),
@@ -166,41 +143,24 @@ class ConnectionUseCaseImpl(
             ),
             obfuscatorProcessListener = object : ObfuscatorProcessListener {
                 override fun processStopped() {
-                    stopConnection()
+                    scope.launch { stopConnection() }
                 }
             },
-        ).collect {
-            it.fold(
-                onSuccess = {
-                    emit(true)
-                },
-                onFailure = {
-                    emit(false)
-                },
-            )
-        }
+        )
+        return result.isSuccess
     }
 
-    private fun stopShadowsocksConnection(): Flow<Boolean> = flow {
-        stopObfuscatorProcess().collect {
-            it.fold(
-                onSuccess = {
-                    emit(true)
-                },
-                onFailure = {
-                    emit(false)
-                },
-            )
-        }
+    private suspend fun stopShadowsocksConnection(): Boolean {
+        return stopObfuscatorProcess().isSuccess
     }
 
-    private fun startPortForwarding(): Flow<Boolean> = flow {
-        if (settingsPrefs.isPortForwardingEnabled()) {
+    private suspend fun startPortForwarding(): Boolean {
+        return if (settingsPrefs.isPortForwardingEnabled()) {
             portForwardingUseCase.bindPort(getVpnToken())
             connectionSource.startPortForwarding()
-            emit(true)
+            true
         } else {
-            emit(false)
+            false
         }
     }
 

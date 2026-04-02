@@ -23,8 +23,6 @@ import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.TransportProtocol
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
@@ -93,7 +91,7 @@ class ConnectionConfigurationUseCaseImpl(
         )
     }
 
-    override fun updateServerConfig(server: VpnServer): Flow<Boolean> =
+    override suspend fun updateServerConfig(server: VpnServer): Boolean =
         connectionSource.updateConfigurationServers(ServerList(getEndpoints(server)))
 
     private fun getServerGroup(): VpnServer.ServerGroup =

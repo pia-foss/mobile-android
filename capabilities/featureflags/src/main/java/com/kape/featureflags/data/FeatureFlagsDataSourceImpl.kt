@@ -2,24 +2,22 @@ package com.kape.featureflags.data
 
 import com.kape.featureflags.domain.FeatureFlagsDataSource
 import com.privateinternetaccess.account.AndroidAccountAPI
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
+import kotlin.coroutines.resume
 
 @Singleton([FeatureFlagsDataSource::class])
 class FeatureFlagsDataSourceImpl(private val api: AndroidAccountAPI) :
     FeatureFlagsDataSource {
 
-    override fun invoke(): Flow<List<String>> = callbackFlow {
+    override suspend fun invoke(): List<String> = suspendCancellableCoroutine { continuation ->
         api.featureFlags { details, error ->
             details?.let {
-                trySend(it.flags)
+                continuation.resume(it.flags)
             } ?: run {
-                trySend(emptyList())
+                continuation.resume(emptyList())
             }
         }
-        awaitClose { channel.close() }
     }
 }

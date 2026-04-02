@@ -4,19 +4,18 @@ import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.presenters.VPNManagerCallback
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
-import kotlinx.coroutines.flow.Flow
 
 interface ConnectionDataSource {
-    fun startConnection(
+    suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
         listener: VPNManagerConnectionListener,
-    ): Flow<Boolean>
+    ): Boolean
 
-    fun stopConnection(): Flow<Boolean>
+    suspend fun stopConnection(): Boolean
     fun getVpnToken(): String
     fun startPortForwarding()
     fun stopPortForwarding()
-    fun getDebugLogs(): Flow<List<String>>
-    fun updateConfigurationServers(servers: ServerList): Flow<Boolean>
+    suspend fun getDebugLogs(): List<String>
+    suspend fun updateConfigurationServers(servers: ServerList): Boolean
 
 }

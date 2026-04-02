@@ -10,10 +10,9 @@ import com.kape.vpnconnect.utils.STATUS_REQUEST_LONG_TIMEOUT
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.ClientStatusInformation
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
+import kotlin.coroutines.resume
 
 @Singleton(binds = [ClientStateDataSource::class])
 class ClientStateDataSourceImpl(
@@ -23,7 +22,7 @@ class ClientStateDataSourceImpl(
     private val settingsPrefs: SettingsPrefs,
 ) : ClientStateDataSource {
 
-    override fun getClientStatus(connectionStatus: ConnectionStatus): Flow<Boolean> = callbackFlow {
+    override suspend fun getClientStatus(connectionStatus: ConnectionStatus): Boolean = suspendCancellableCoroutine { continuation ->
         fun processClientStatus(
             status: ClientStatusInformation?,
             error: List<AccountRequestError>,
@@ -39,10 +38,10 @@ class ClientStateDataSourceImpl(
                     connectionPrefs.setClientIp(status.ip)
                     connectionPrefs.setVpnIp(NO_IP)
                 }
-                trySend(true)
+                continuation.resume(true)
             } ?: run {
                 connectionPrefs.setVpnIp(NO_IP)
-                trySend(false)
+                continuation.resume(false)
             }
         }
 
@@ -62,8 +61,6 @@ class ClientStateDataSourceImpl(
                 }
             }
         }
-
-        awaitClose { channel.close() }
     }
 
     override fun resetVpnIp() {

@@ -18,12 +18,11 @@ import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import com.privateinternetaccess.account.AndroidAccountAPI
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
 
 @Singleton(binds = [ConnectionDataSource::class])
 class ConnectionDataSourceImpl(
@@ -37,36 +36,34 @@ class ConnectionDataSourceImpl(
     private val csiPrefs: CsiPrefs,
 ) : ConnectionDataSource, KoinComponent {
 
-    override fun startConnection(
+    override suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
         listener: VPNManagerConnectionListener,
-    ): Flow<Boolean> =
-        callbackFlow {
-            connectionApi.addConnectionListener(listener) {}
-            if (settingsPrefs.isHelpImprovePiaEnabled()) {
-                kpiDataSource.start()
-            } else {
-                kpiDataSource.stop()
-            }
-            connectionApi.startConnection(clientConfiguration) {
-                it.getOrNull()?.let { serverPeerInfo ->
-                    connectionPrefs.setGateway(serverPeerInfo.gateway)
-                } ?: run {
-                    csiPrefs.addCustomDebugLogs(
-                        "startConnection failed: $it",
-                        settingsPrefs.isDebugLoggingEnabled(),
-                    )
-                }
-                trySend(it.isSuccess)
-            }
-            awaitClose { channel.close() }
+    ): Boolean = suspendCancellableCoroutine { cont ->
+        connectionApi.addConnectionListener(listener) {}
+        if (settingsPrefs.isHelpImprovePiaEnabled()) {
+            kpiDataSource.start()
+        } else {
+            kpiDataSource.stop()
         }
+        connectionApi.startConnection(clientConfiguration) {
+            it.getOrNull()?.let { serverPeerInfo ->
+                connectionPrefs.setGateway(serverPeerInfo.gateway)
+            } ?: run {
+                csiPrefs.addCustomDebugLogs(
+                    "startConnection failed: $it",
+                    settingsPrefs.isDebugLoggingEnabled(),
+                )
+            }
+            cont.resume(it.isSuccess)
+        }
+    }
 
-    override fun stopConnection(): Flow<Boolean> = callbackFlow {
+    override suspend fun stopConnection(): Boolean = suspendCancellableCoroutine { cont ->
         connectionApi.stopConnection {
             usageProvider.reset()
             stopPortForwarding()
-            trySend(it.isSuccess)
+            cont.resume(it.isSuccess)
             if (it.isFailure) {
                 csiPrefs.addCustomDebugLogs(
                     "stop connection failed: ${it.exceptionOrNull()}",
@@ -74,7 +71,6 @@ class ConnectionDataSourceImpl(
                 )
             }
         }
-        awaitClose { channel.close() }
     }
 
     override fun getVpnToken(): String {
@@ -101,25 +97,23 @@ class ConnectionDataSourceImpl(
         workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER)
     }
 
-    override fun getDebugLogs(): Flow<List<String>> = callbackFlow {
+    override suspend fun getDebugLogs(): List<String> = suspendCancellableCoroutine { cont ->
         val target = when (settingsPrefs.getSelectedProtocol()) {
             VpnProtocols.WireGuard -> VPNManagerProtocolTarget.WIREGUARD
             VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
         }
         connectionApi.getVpnProtocolLogs(target) {
             if (it.isSuccess) {
-                trySend(it.getOrDefault(emptyList()))
+                cont.resume(it.getOrDefault(emptyList()))
             } else {
-                trySend(emptyList())
+                cont.resume(emptyList())
             }
         }
-        awaitClose { channel.close() }
     }
 
-    override fun updateConfigurationServers(servers: ServerList): Flow<Boolean> = callbackFlow {
+    override suspend fun updateConfigurationServers(servers: ServerList): Boolean = suspendCancellableCoroutine { cont ->
         connectionApi.updateConfigurationServers(servers) {
-            trySend(it.isSuccess)
+            cont.resume(it.isSuccess)
         }
-        awaitClose { channel.close() }
     }
 }

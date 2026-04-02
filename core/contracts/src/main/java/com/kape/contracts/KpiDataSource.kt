@@ -2,7 +2,6 @@ package com.kape.contracts
 
 import com.kape.contracts.data.kpi.KpiConnectionEvent
 import com.kape.contracts.data.kpi.KpiConnectionSource
-import kotlinx.coroutines.flow.Flow
 
 interface KpiDataSource {
 
@@ -17,5 +16,5 @@ interface KpiDataSource {
 
     fun flush()
 
-    fun recentEvents(): Flow<List<String>>
+    suspend fun recentEvents(): List<String>
 }

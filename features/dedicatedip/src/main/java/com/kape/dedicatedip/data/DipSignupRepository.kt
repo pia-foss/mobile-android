@@ -6,9 +6,6 @@ import com.kape.dip.data.DedicatedIpSupportedCountries
 import com.kape.localprefs.prefs.DipPrefs
 import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -22,69 +19,53 @@ class DipSignupRepository(
         private const val DIP_SIGNUP_FETCH_PLANS_MIN_CACHE_12_HOURS = 1L * 12 * 60 * 60 * 1000
     }
 
-    fun signupPlans(): Flow<AndroidAddonsSubscriptionsInformation?> = callbackFlow {
+    suspend fun signupPlans(): AndroidAddonsSubscriptionsInformation? {
         dipPrefs.getDedicatedIpSignupPlans()?.let {
             if (System.currentTimeMillis() - it.persistedTimestamp > DIP_SIGNUP_FETCH_PLANS_MIN_CACHE_1_DAY) {
-                fetchSignupPlans().collect { fetchedSignupPlans ->
-                    trySend(fetchedSignupPlans)
-                }
+                return fetchSignupPlans()
             } else {
-                trySend(it.signupPlans)
-            }
-        } ?: run {
-            fetchSignupPlans().collect {
-                trySend(it)
+                return it.signupPlans
             }
         }
-        awaitClose { channel.close() }
+        return fetchSignupPlans()
     }
 
-    fun dipSupportedCountries(): Flow<DipCountriesResponse?> = callbackFlow {
+    suspend fun dipSupportedCountries(): DipCountriesResponse? {
         dipPrefs.getDedicatedIpSupportedCountries()?.let {
             if (System.currentTimeMillis() - it.persistedTimestamp > DIP_SIGNUP_FETCH_PLANS_MIN_CACHE_12_HOURS) {
-                fetchSupportedCountries().collect { fetchedSupportedCountries ->
-                    trySend(fetchedSupportedCountries)
-                }
+                return fetchSupportedCountries()
             } else {
-                trySend(it.supportedCountries)
-            }
-        } ?: run {
-            fetchSupportedCountries().collect {
-                trySend(it)
+                return it.supportedCountries
             }
         }
-        awaitClose { channel.close() }
+        return fetchSupportedCountries()
     }
 
     // region private
-    private fun fetchSignupPlans(): Flow<AndroidAddonsSubscriptionsInformation?> = callbackFlow {
-        dipDataSource.signupPlans().collect {
-            it?.let {
-                dipPrefs.setDedicatedIpSignupPlans(
-                    dedicatedIpSignupPlans = DedicatedIpSignupPlans(
-                        persistedTimestamp = System.currentTimeMillis(),
-                        signupPlans = it,
-                    ),
-                )
-            }
-            trySend(it)
+    private suspend fun fetchSignupPlans(): AndroidAddonsSubscriptionsInformation? {
+        val plans = dipDataSource.signupPlans()
+        plans?.let {
+            dipPrefs.setDedicatedIpSignupPlans(
+                dedicatedIpSignupPlans = DedicatedIpSignupPlans(
+                    persistedTimestamp = System.currentTimeMillis(),
+                    signupPlans = it,
+                ),
+            )
         }
-        awaitClose { channel.close() }
+        return plans
     }
 
-    private fun fetchSupportedCountries(): Flow<DipCountriesResponse?> = callbackFlow {
-        dipDataSource.supportedCountries().collect {
-            it?.let {
-                dipPrefs.setDedicatedIpSupportedCountries(
-                    dedicatedIpSupportedCountries = DedicatedIpSupportedCountries(
-                        persistedTimestamp = System.currentTimeMillis(),
-                        supportedCountries = it,
-                    ),
-                )
-            }
-            trySend(it)
+    private suspend fun fetchSupportedCountries(): DipCountriesResponse? {
+        val countries = dipDataSource.supportedCountries()
+        countries?.let {
+            dipPrefs.setDedicatedIpSupportedCountries(
+                dedicatedIpSupportedCountries = DedicatedIpSupportedCountries(
+                    persistedTimestamp = System.currentTimeMillis(),
+                    supportedCountries = it,
+                ),
+            )
         }
-        awaitClose { channel.close() }
+        return countries
     }
     // endregion
 }

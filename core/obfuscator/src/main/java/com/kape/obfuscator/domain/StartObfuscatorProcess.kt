@@ -3,10 +3,9 @@ package com.kape.obfuscator.domain
 import com.kape.obfuscator.data.ObfuscatorProcessInformation
 import com.kape.obfuscator.data.ObfuscatorProcessListener
 import com.kape.obfuscator.presenter.ObfuscatorAPI
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
+import kotlin.coroutines.resume
 
 @Singleton
 class StartObfuscatorProcess(
@@ -19,10 +18,10 @@ class StartObfuscatorProcess(
         const val OBFUSCATOR_PROXY_PORT = 8383
     }
 
-    operator fun invoke(
+    suspend operator fun invoke(
         obfuscatorProcessInformation: ObfuscatorProcessInformation,
         obfuscatorProcessListener: ObfuscatorProcessListener,
-    ): Flow<Result<Unit>> = callbackFlow {
+    ): Result<Unit> = suspendCancellableCoroutine { continuation ->
         obfuscatorAPI.start(
             commandLineParams = listOf(
                 "-vvv", "--log-without-time",
@@ -37,13 +36,12 @@ class StartObfuscatorProcess(
         ) {
             it.fold(
                 onSuccess = {
-                    trySend(Result.success(Unit))
+                    continuation.resume(Result.success(Unit))
                 },
                 onFailure = { throwable ->
-                    trySend(Result.failure(throwable))
+                    continuation.resume(Result.failure(throwable))
                 },
             )
         }
-        awaitClose { channel.close() }
     }
 }

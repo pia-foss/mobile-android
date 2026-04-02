@@ -1,20 +1,18 @@
 package com.kape.obfuscator.domain
 
 import com.kape.obfuscator.presenter.ObfuscatorAPI
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
+import kotlin.coroutines.resume
 
 @Singleton
 class StopObfuscatorProcess(
     private val obfuscatorAPI: ObfuscatorAPI,
 ) {
 
-    operator fun invoke(): Flow<Result<Unit>> = callbackFlow {
+    suspend operator fun invoke(): Result<Unit> = suspendCancellableCoroutine { continuation ->
         obfuscatorAPI.stop {
-            trySend(it)
+            continuation.resume(it)
         }
-        awaitClose { channel.close() }
     }
 }

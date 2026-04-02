@@ -1,16 +1,10 @@
 package com.kape.payments.domain
 
 import com.kape.payments.data.Subscription
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class GetSubscriptionsUseCase(private val source: SubscriptionDataSource) {
 
-    suspend fun getVpnSubscriptions(): Flow<List<Subscription>> = flow {
-        source.getAvailableVpnSubscriptions().collect {
-            emit(it)
-        }
-    }
+    suspend fun getVpnSubscriptions(): List<Subscription> = source.getAvailableVpnSubscriptions()
 }

@@ -10,11 +10,10 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.privateinternetaccess.kpi.KPIAPI
 import com.privateinternetaccess.kpi.KPIClientEvent
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.datetime.Clock
 import org.koin.core.annotation.Singleton
+import kotlin.coroutines.resume
 
 @Singleton(binds = [KpiDataSource::class])
 class KpiDataSourceImpl(
@@ -63,11 +62,10 @@ class KpiDataSourceImpl(
         api.flush { }
     }
 
-    override fun recentEvents(): Flow<List<String>> = callbackFlow {
+    override suspend fun recentEvents(): List<String> = suspendCancellableCoroutine { continuation ->
         api.recentEvents {
-            trySend(it)
+            continuation.resume(it)
         }
-        awaitClose { channel.close() }
     }
 
     private fun getEventProperties(

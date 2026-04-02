@@ -11,8 +11,6 @@ import com.kape.vpnregions.utils.adaptServersInfo
 import com.kape.vpnregions.utils.adaptVpnServers
 import com.kape.vpnregions.utils.getServerForDip
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -32,42 +30,40 @@ class VpnRegionRepository(
         private const val UPDATE_INTERVAL_MS = 30000 // (30 seconds)
     }
 
-    fun fetchVpnRegions(locale: String): Flow<List<VpnServer>> = flow {
+    suspend fun fetchVpnRegions(locale: String): List<VpnServer> {
         val serverList = mutableListOf<VpnServer>()
-        if (serverMap.isEmpty() or (System.currentTimeMillis() - lastUpdate >= UPDATE_INTERVAL_MS)) {
-            source.fetchVpnRegions(locale).collect {
-                lastUpdate = System.currentTimeMillis()
-                if (it == null) {
-                    serverList.clear()
-                } else {
-                    serverMap = adaptVpnServers(it)
-                    serverInfo = adaptServersInfo(it)
-                    serverList.addAll(addDipToServerList(serverMap.values.toList()))
-                    if (connectionUseCase.isNotDisconnected()) {
-                        serverList.filter { it.equals(connectionPrefs.getSelectedVpnServer()) }
-                            .firstOrNull()?.let {
-                                connectionConfigurationUseCase.updateServerConfig(it)
-                            }
-                    }
+        if (serverMap.isEmpty() || System.currentTimeMillis() - lastUpdate >= UPDATE_INTERVAL_MS) {
+            val response = source.fetchVpnRegions(locale)
+            lastUpdate = System.currentTimeMillis()
+            if (response == null) {
+                serverList.clear()
+            } else {
+                serverMap = adaptVpnServers(response)
+                serverInfo = adaptServersInfo(response)
+                serverList.addAll(addDipToServerList(serverMap.values.toList()))
+                if (connectionUseCase.isNotDisconnected()) {
+                    serverList.filter { it == connectionPrefs.getSelectedVpnServer() }
+                        .firstOrNull()?.let {
+                            connectionConfigurationUseCase.updateServerConfig(it)
+                        }
                 }
-                emit(serverList)
             }
         } else {
             serverList.addAll(serverMap.values.toList())
-            emit(addDipToServerList(serverList))
+            return addDipToServerList(serverList)
         }
+        return serverList
     }
 
-    fun fetchLatencies(isConnected: Boolean): Flow<List<VpnServer>> = flow {
+    suspend fun fetchLatencies(isConnected: Boolean): List<VpnServer> {
         if (isConnected) {
             populateLatencies(isConnected)
-            emit(addDipToServerList(serverMap.values.toList()))
+            return addDipToServerList(serverMap.values.toList())
         } else {
-            source.pingRequests().collect {
-                latencyInfo = it ?: emptyList()
-                populateLatencies(isConnected)
-                emit(addDipToServerList(serverMap.values.toList()))
-            }
+            val latencies = source.pingRequests()
+            latencyInfo = latencies ?: emptyList()
+            populateLatencies(isConnected)
+            return addDipToServerList(serverMap.values.toList())
         }
     }
 

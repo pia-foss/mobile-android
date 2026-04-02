@@ -52,37 +52,33 @@ class PortForwardingUseCase(
         connectionPrefs.getPortBindingInfo()?.let { portBindingInfo ->
             if (tokenExpirationDateDaysLeft(portBindingInfo.decodedPayload.expirationDate) > MIN_EXPIRATION_DAYS) {
                 portForwardingStatus.value = PortForwardingStatus.Requesting
-                api.bindPort(
+                val successful = api.bindPort(
                     portBindingInfo.decodedPayload.token,
                     portBindingInfo.payload,
                     portBindingInfo.signature,
                     gateway,
-                ).collect {
-                    if (it) {
-                        portForwardingStatus.value = PortForwardingStatus.Success
-                        port.value = portBindingInfo.decodedPayload.port.toString()
-                    } else {
-                        portForwardingStatus.value = PortForwardingStatus.Error
-                    }
+                )
+                if (successful) {
+                    portForwardingStatus.value = PortForwardingStatus.Success
+                    port.value = portBindingInfo.decodedPayload.port.toString()
+                } else {
+                    portForwardingStatus.value = PortForwardingStatus.Error
                 }
             }
         } ?: run {
             portForwardingStatus.value = PortForwardingStatus.Requesting
-            api.getPayloadAndSignature(vpnToken, gateway).collect {
-                connectionPrefs.setPortBindingInformation(it)
-                if (it != null) {
-                    api.bindPort(it.decodedPayload.token, it.payload, it.signature, gateway)
-                        .collect { successful ->
-                            if (successful) {
-                                portForwardingStatus.value = PortForwardingStatus.Success
-                                port.value = it.decodedPayload.port.toString()
-                            } else {
-                                portForwardingStatus.value = PortForwardingStatus.Error
-                            }
-                        }
+            val it = api.getPayloadAndSignature(vpnToken, gateway)
+            connectionPrefs.setPortBindingInformation(it)
+            if (it != null) {
+                val successful = api.bindPort(it.decodedPayload.token, it.payload, it.signature, gateway)
+                if (successful) {
+                    portForwardingStatus.value = PortForwardingStatus.Success
+                    port.value = it.decodedPayload.port.toString()
                 } else {
                     portForwardingStatus.value = PortForwardingStatus.Error
                 }
+            } else {
+                portForwardingStatus.value = PortForwardingStatus.Error
             }
         }
     }

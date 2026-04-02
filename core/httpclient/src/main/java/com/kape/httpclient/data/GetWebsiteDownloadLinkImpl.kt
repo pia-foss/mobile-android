@@ -5,20 +5,18 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 class GetWebsiteDownloadLinkImpl : GetWebsiteDownloadLink {
-    override fun invoke(): Flow<String> = flow {
+    override suspend fun invoke(): String {
         val client = HttpClient(OkHttp)
         val response =
             client.get(urlString = "https://privateinternetaccess.com/api/client/android/latest_release")
                 .bodyAsText()
         val result = Json.decodeFromString<UpdateClientResponse>(response)
-        emit(result.url)
+        return result.url
     }
 }
 
