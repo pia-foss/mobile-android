@@ -21,6 +21,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -49,7 +50,7 @@ import com.kape.ui.theme.statusBarError
 import com.kape.ui.tv.elements.Search
 import com.kape.ui.tv.text.RegionSelectionGridSectionText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
@@ -65,8 +66,8 @@ fun TvVpnRegionSelectionScreen() = Screen {
     val allButtonFocusRequester = remember { FocusRequester() }
     val favoriteButtonFocusRequester = remember { FocusRequester() }
     val searchButtonFocusRequester = remember { FocusRequester() }
-    val connectionManager: ConnectionManager = koinInject()
-    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+    val status by connectionInfoProvider.connectionState.collectAsState()
     val isFavoriteSelected = remember { mutableStateOf(false) }
     val isSearchEnabled = remember { mutableStateOf(false) }
     val viewModel: VpnRegionSelectionViewModel =
@@ -100,8 +101,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 4.dp,
-            color = getTopBarConnectionColor(
-                status = connectionStatus.value,
+            color = connectionInfoProvider.getTopBarConnectionColor(
                 scheme = LocalColors.current,
             ),
         )
@@ -116,7 +116,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
             TvHomeHeaderItem(
                 modifier = Modifier.focusRequester(initialFocusRequester),
                 title = stringResource(id = R.string.location_selection_title),
-                connectionStatus = connectionStatus,
+                connectionStatus = status.status,
                 defaultSelectedTabIndex = 1,
                 onVpnSelected = {
                     viewModel.navigateToVpn()
@@ -171,6 +171,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
                                             allButtonFocusRequester
                                         }
                                     }
+
                                     else -> FocusRequester.Default
                                 }
                             }
@@ -250,15 +251,5 @@ fun TvVpnRegionSelectionScreen() = Screen {
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
-    return when (status) {
-        ConnectionStatus.ERROR -> scheme.statusBarError()
-        ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
-        ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }

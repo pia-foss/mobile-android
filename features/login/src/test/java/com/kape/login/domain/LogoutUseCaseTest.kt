@@ -18,7 +18,6 @@ import com.kape.payments.SubscriptionPrefs
 import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.data.auth.ApiError
 import com.kape.contracts.data.auth.ApiResult
-import com.kape.vpnconnect.domain.ConnectionUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

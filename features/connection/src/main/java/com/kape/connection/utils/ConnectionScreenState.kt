@@ -11,13 +11,4 @@ data class ConnectionScreenState(
     val isCurrentServerOptimal: Boolean,
     val showOptimalLocationInfo: Boolean,
     val ratingDialogType: RatingDialogType?,
-    val connectionData: ConnectionData,
-)
-
-data class ConnectionData(
-    val clientIp: String,
-    val vpnIp: String,
-    val connectionStatus: ConnectionStatus,
-    val portForwardingStatus: PortForwardingStatus,
-    val port: String,
 )

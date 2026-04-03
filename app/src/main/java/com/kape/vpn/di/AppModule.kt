@@ -77,7 +77,7 @@ import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.di.VpnConnectModule
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnconnect.utils.ConnectionStatusProvider
 import com.kape.vpnlauncher.di.VpnLauncherModule
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
@@ -136,7 +136,7 @@ import java.io.BufferedReader
         VpnConnectModule::class,
         PortForwardingModule::class,
         VpnLauncherModule::class,
-        SideMenuModule::class
+        SideMenuModule::class,
     ],
 )
 @ComponentScan("com.kape.vpn", "com.kape.obfuscator")
@@ -339,9 +339,10 @@ class AppModule {
 
     @Singleton
     fun provideRatingTool(
-        connectionManager: ConnectionManager,
+        connectionStatusProvider: ConnectionStatusProvider,
         ratingPrefs: RatingPrefs,
-    ): RatingTool = RatingTool(connectionManager, ratingPrefs)
+        @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
+    ): RatingTool = RatingTool(connectionStatusProvider, ratingPrefs, mainDispatcher)
 
     @Singleton
     fun provideNotificationPermissionManager(context: Context): NotificationPermissionManager =

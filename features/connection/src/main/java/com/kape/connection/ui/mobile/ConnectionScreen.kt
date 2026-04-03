@@ -89,7 +89,9 @@ import com.kape.ui.mobile.tiles.VpnLocationPicker
 import com.kape.ui.theme.PiaTypography.subtitle3
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.vpnserver.VpnServer
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnconnect.utils.ConnectionStatus
+import com.kape.vpnconnect.utils.ConnectionStatusProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -99,6 +101,8 @@ import java.util.Locale
 @Composable
 fun ConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
+    val vpnState by viewModel.connectionInfoProvider.state.collectAsStateWithLifecycle()
+    val connectionState by viewModel.connectionInfoProvider.connectionState.collectAsStateWithLifecycle()
     val appBarViewModel: AppBarViewModel = koinViewModel()
     val locale = Locale.getDefault().language
     val scope: CoroutineScope = rememberCoroutineScope()
@@ -121,8 +125,8 @@ fun ConnectionScreen() = Screen {
     }
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.loadVpnServers(locale)
-        viewModel.loadShadowsocksServers(locale)
+//        viewModel.loadVpnServers(locale)
+//        viewModel.loadShadowsocksServers(locale)
         viewModel.shouldShowDedicatedIpSignupBanner()
         viewModel.autoConnect()
     }
@@ -163,7 +167,7 @@ fun ConnectionScreen() = Screen {
                     var connectButtonDescription =
                         stringResource(id = R.string.toggle_connection_button)
 
-                    connectButtonDescription += when (state.connectionData.connectionStatus) {
+                    connectButtonDescription += when (connectionState.status) {
                         ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> stringResource(
                             id = R.string.disconnect_from_vpn,
                         )
@@ -183,7 +187,7 @@ fun ConnectionScreen() = Screen {
                         )
                     }
                     ConnectButton(
-                        status = state.connectionData.connectionStatus,
+                        status = connectionState.status,
                         onTvLayout = false,
                         modifier = Modifier
                             .align(CenterHorizontally)
@@ -215,7 +219,9 @@ fun ConnectionScreen() = Screen {
                             screenElement = screenElement,
                             isVisible = viewModel.isScreenElementVisible(screenElement),
                             viewModel = viewModel,
-                            state = state,
+                            screenState = state,
+                            connectionStatus = connectionState.status,
+                            vpnState = vpnState,
                         )
                     }
                     showRatingGeneralDialog.value =
@@ -278,7 +284,9 @@ private fun DisplayComponent(
     screenElement: ScreenElement,
     isVisible: Boolean,
     viewModel: ConnectionViewModel,
-    state: ConnectionScreenState,
+    screenState: ConnectionScreenState,
+    connectionStatus: ConnectionStatus,
+    vpnState: ConnectionInfoProvider.VpnConnectionInfo,
 ) {
     if (isVisible) {
         val context: Context = LocalContext.current
@@ -299,13 +307,13 @@ private fun DisplayComponent(
 
                 IPTile(
                     isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                    publicIp = state.connectionData.clientIp,
-                    vpnIp = state.connectionData.vpnIp,
-                    portForwardingStatus = when (state.connectionData.portForwardingStatus) {
+                    publicIp = vpnState.publicIp,
+                    vpnIp = vpnState.vpnIp,
+                    portForwardingStatus = when (vpnState.portforwardingStatus) {
                         PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
                         PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
                         PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                        PortForwardingStatus.Success -> state.connectionData.port
+                        PortForwardingStatus.Success -> vpnState.port
                     },
                 )
                 Separator()
@@ -313,7 +321,7 @@ private fun DisplayComponent(
 
             Element.QuickConnect -> {
                 val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-                for (server in state.quickConnectServers) {
+                for (server in screenState.quickConnectServers) {
                     quickConnectMap[server] =
                         viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
                 }
@@ -344,15 +352,15 @@ private fun DisplayComponent(
             Element.VpnRegionSelection -> {
                 VpnLocationPicker(
                     modifier = Modifier.testTag(":ConnectionScreen:VpnLocationPicker"),
-                    server = state.server,
-                    isConnected = viewModel.isConnectionActive(),
-                    isOptimal = state.isCurrentServerOptimal,
+                    server = screenState.server,
+                    isConnected = connectionStatus == ConnectionStatus.CONNECTED,
+                    isOptimal = screenState.isCurrentServerOptimal,
                 ) {
                     viewModel.showVpnRegionSelection()
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
-                if (state.showOptimalLocationInfo) {
+                if (screenState.showOptimalLocationInfo) {
                     InfoCard(
                         content = stringResource(id = R.string.optimal_location_hint),
                         modifier = Modifier
@@ -363,12 +371,12 @@ private fun DisplayComponent(
             }
 
             Element.ShadowsocksRegionSelection -> {
-                ShadowsocksLocationPicker(
-                    server = viewModel.getSelectedShadowsocksServer(),
-                    isConnected = viewModel.isConnectionActive(),
-                ) {
-                    viewModel.showShadowsocksRegionSelection()
-                }
+//                ShadowsocksLocationPicker(
+//                    server = viewModel.getSelectedShadowsocksServer(),
+//                    isConnected = connectionStatus == ConnectionStatus.CONNECTED,
+//                ) {
+//                    viewModel.showShadowsocksRegionSelection()
+//                }
             }
 
             Element.Snooze -> {
@@ -386,7 +394,7 @@ private fun DisplayComponent(
                         )
                     },
                     onClick = {
-                        if (viewModel.isConnectionActive()) {
+                        if (connectionStatus == ConnectionStatus.CONNECTED) {
                             viewModel.snooze(it)
                         }
                     },

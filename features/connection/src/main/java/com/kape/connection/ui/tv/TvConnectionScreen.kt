@@ -41,7 +41,7 @@ import com.kape.ui.tv.tiles.QuickConnect
 import com.kape.ui.tv.tiles.VpnLocationPicker
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -50,8 +50,8 @@ import java.util.Locale
 @Composable
 fun TvConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
-    val connectionManager: ConnectionManager = koinInject()
-    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+    val state by connectionInfoProvider.connectionState.collectAsState()
     val isConnected = viewModel.isConnected.collectAsState()
     val topStartHeaderFocusRequester = remember { FocusRequester() }
     val topEndHeaderFocusRequester = remember { FocusRequester() }
@@ -65,7 +65,7 @@ fun TvConnectionScreen() = Screen {
 
     LaunchedEffect(key1 = Unit) {
         topStartHeaderFocusRequester.requestFocus()
-        viewModel.loadVpnServers(locale)
+//        viewModel.loadVpnServers(locale)
         viewModel.autoConnect()
     }
 
@@ -77,8 +77,7 @@ fun TvConnectionScreen() = Screen {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 4.dp,
-            color = getTopBarConnectionColor(
-                status = connectionStatus.value,
+            color = connectionInfoProvider.getTopBarConnectionColor(
                 scheme = LocalColors.current,
             ),
         )
@@ -91,7 +90,7 @@ fun TvConnectionScreen() = Screen {
             verticalArrangement = Arrangement.Center,
         ) {
             TvHomeHeaderItem(
-                connectionStatus = connectionStatus,
+                connectionStatus = state.status,
                 defaultSelectedTabIndex = 0,
                 topStartHeaderFocusRequester = topStartHeaderFocusRequester,
                 topEndHeaderFocusRequester = topEndHeaderFocusRequester,
@@ -112,7 +111,7 @@ fun TvConnectionScreen() = Screen {
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
                 ConnectButton(
-                    status = if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
+                    status = if (isConnected.value) state.status else ConnectionStatus.ERROR,
                     onTvLayout = true,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
@@ -149,6 +148,8 @@ private fun DisplayComponent(
     }
 
     val state by viewModel.state.collectAsState()
+    val connectionState by viewModel.connectionInfoProvider.connectionState.collectAsState()
+    val vpnState by viewModel.connectionInfoProvider.state.collectAsState()
 
     when (screenElement) {
         Element.VpnRegionSelection -> {
@@ -157,8 +158,8 @@ private fun DisplayComponent(
                     down = startQuickConnectFocusRequester
                 },
                 server = state.server,
-                vpnIp = state.connectionData.vpnIp,
-                isConnected = viewModel.isConnectionActive(),
+                vpnIp = vpnState.vpnIp,
+                isConnected = connectionState == ConnectionStatus.CONNECTED,
                 isOptimal = state.isCurrentServerOptimal,
             ) {
                 viewModel.showVpnRegionSelection()
@@ -188,15 +189,5 @@ private fun DisplayComponent(
         -> {
             // Continue. Not showing them on TV.
         }
-    }
-}
-
-@Composable
-private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
-    return when (status) {
-        ConnectionStatus.ERROR -> scheme.statusBarError()
-        ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
-        ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }

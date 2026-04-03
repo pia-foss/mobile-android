@@ -41,7 +41,7 @@ import com.kape.vpnconnect.utils.ConnectionStatus
 fun TvHomeHeaderItem(
     modifier: Modifier = Modifier,
     title: String? = null,
-    connectionStatus: State<ConnectionStatus>,
+    connectionStatus: ConnectionStatus,
     defaultSelectedTabIndex: Int,
     topStartHeaderFocusRequester: FocusRequester = FocusRequester(),
     topEndHeaderFocusRequester: FocusRequester = FocusRequester(),
@@ -55,8 +55,8 @@ fun TvHomeHeaderItem(
         stringResource(id = R.string.location),
     )
     val focusRequesters = listOf(
-        FocusRequester(),
-        FocusRequester(),
+        remember { FocusRequester() },
+        remember { FocusRequester() },
     )
     val colorScheme = LocalColors.current
     val selectedTabIndex = remember { mutableIntStateOf(defaultSelectedTabIndex) }
@@ -129,12 +129,12 @@ fun TvHomeHeaderItem(
         }
         AppBarTitleText(
             content = title ?: getTopTextConnectionString(
-                status = connectionStatus.value,
+                status = connectionStatus,
             ),
             textColor = title?.let {
                 LocalColors.current.onSurface
             } ?: getTopTextConnectionColor(
-                status = connectionStatus.value,
+                status = connectionStatus,
                 scheme = LocalColors.current,
             ),
             isError = false,

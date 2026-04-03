@@ -12,8 +12,8 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.ProtocolSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
+import com.kape.utils.NOTIFICATION_ID
 import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.utils.NOTIFICATION_ID
 import com.kape.vpnmanager.api.OpenVpnSocksProxyDetails
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.DnsInformation

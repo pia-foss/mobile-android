@@ -16,7 +16,6 @@ import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.utils.ConnectionManager
 import io.mockk.Runs
 import io.mockk.every
 import io.mockk.just

@@ -127,7 +127,6 @@ import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.utils.PlatformUtils
 import com.kape.vpn.utils.ShortcutManager
-import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
 import org.koin.android.ext.android.inject

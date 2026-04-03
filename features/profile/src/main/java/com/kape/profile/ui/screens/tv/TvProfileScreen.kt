@@ -47,7 +47,7 @@ import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.tv.text.SettingsL2Text
 import com.kape.ui.tv.text.SettingsL2TextDescription
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -55,8 +55,7 @@ import org.koin.compose.koinInject
 @Composable
 fun TvProfileScreen() = Screen {
     val viewModel: ProfileViewModel = koinViewModel()
-    val connectionManager: ConnectionManager = koinInject()
-    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
 
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
     val logoutDialogVisible = remember { mutableStateOf(false) }
@@ -68,8 +67,7 @@ fun TvProfileScreen() = Screen {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 4.dp,
-            color = getTopBarConnectionColor(
-                status = connectionStatus.value,
+            color = connectionInfoProvider.getTopBarConnectionColor(
                 scheme = LocalColors.current,
             ),
         )
@@ -188,15 +186,5 @@ fun TvProfileItem(
                 SettingsL2TextDescription(content = it)
             }
         }
-    }
-}
-
-@Composable
-private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
-    return when (status) {
-        ConnectionStatus.ERROR -> scheme.statusBarError()
-        ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
-        ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }

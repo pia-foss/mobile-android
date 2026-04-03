@@ -6,10 +6,13 @@ import com.kape.localprefs.prefs.NO_IP
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.utils.ConnectionStatus
+import com.kape.vpnconnect.utils.DELAY_BETWEEN_RETRY
+import com.kape.vpnconnect.utils.SHORT_DELAY
 import com.kape.vpnconnect.utils.STATUS_REQUEST_LONG_TIMEOUT
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.ClientStatusInformation
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import kotlin.coroutines.resume
@@ -22,48 +25,36 @@ class ClientStateDataSourceImpl(
     private val settingsPrefs: SettingsPrefs,
 ) : ClientStateDataSource {
 
-    override suspend fun getClientStatus(connectionStatus: ConnectionStatus): Boolean = suspendCancellableCoroutine { continuation ->
-        fun processClientStatus(
-            status: ClientStatusInformation?,
-            error: List<AccountRequestError>,
-        ) {
-            csiPrefs.addCustomDebugLogs(
-                "getClientStatusErrors: $error",
-                settingsPrefs.isDebugLoggingEnabled(),
-            )
-            status?.let {
-                if (status.connected) {
-                    connectionPrefs.setVpnIp(status.ip)
-                } else {
-                    connectionPrefs.setClientIp(status.ip)
+    override suspend fun getPublicIp(): String = suspendCancellableCoroutine { continuation ->
+        accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT) { clientStatusInfo, errors ->
+            clientStatusInfo?.let {
+                if (!it.connected) {
+                    connectionPrefs.setClientIp(it.ip)
                     connectionPrefs.setVpnIp(NO_IP)
                 }
-                continuation.resume(true)
-            } ?: run {
-                connectionPrefs.setVpnIp(NO_IP)
-                continuation.resume(false)
-            }
+                continuation.resume(it.ip)
+            } ?: continuation.resume(NO_IP)
         }
+    }
 
-        fun conditionsMatch(status: ClientStatusInformation?, error: List<AccountRequestError>): Boolean {
-            if (error.isNotEmpty() || status == null) return false
-            return (status.connected && connectionStatus is ConnectionStatus.CONNECTED) ||
-                    (!status.connected && connectionStatus is ConnectionStatus.DISCONNECTED)
+    override suspend fun getVpnIp(): String {
+        repeat(3) { attempt ->
+            val vpnIp = getVpnIpOnce()
+            if (vpnIp != NO_IP) return vpnIp
+
+            delay(DELAY_BETWEEN_RETRY)
         }
+        return NO_IP
+    }
 
-        accountAPI.clientStatus { status: ClientStatusInformation?, error: List<AccountRequestError> ->
-            if (conditionsMatch(status, error)) {
-                processClientStatus(status, error)
-            } else {
-                // Retry with longer timeout if conditions don't match or there are errors
-                accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT) { retryStatus: ClientStatusInformation?, retryError: List<AccountRequestError> ->
-                    processClientStatus(retryStatus, retryError)
+    private suspend fun getVpnIpOnce(): String =
+        suspendCancellableCoroutine { continuation ->
+            accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT) { clientStatusInfo, errors ->
+                val ip = clientStatusInfo?.ip ?: NO_IP
+                if (clientStatusInfo?.connected == true) {
+                    connectionPrefs.setVpnIp(ip)
                 }
+                continuation.resume(ip)
             }
         }
-    }
-
-    override fun resetVpnIp() {
-        connectionPrefs.setVpnIp(NO_IP)
-    }
 }

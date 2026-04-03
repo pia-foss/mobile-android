@@ -7,7 +7,8 @@ import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.splash.ui.vm.SplashViewModel
 import com.kape.utils.DI
 import com.kape.utils.PlatformUtils
-import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.domain.StopConnectionUseCase
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
@@ -24,12 +25,21 @@ class SplashModule {
         forceUpdateUseCase: ForceUpdateUseCase,
         getWebsiteDownloadLink: GetWebsiteDownloadLink,
         @Named(DI.UPDATE_URL) appUpdateUrl: String,
-        connectionUseCase: ConnectionUseCase,
-        getUserLoggedInUseCase: IsUserLoggedInUseCase,
+        stopConnectionUseCase: StopConnectionUseCase,
+        connectionInfoProvider: ConnectionInfoProvider,
+        isUserLoggedIn: IsUserLoggedInUseCase,
         platformUtils: PlatformUtils,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): SplashViewModel = SplashViewModel(
-        router, regionListProvider, forceUpdateUseCase, getWebsiteDownloadLink,
-        appUpdateUrl, connectionUseCase, getUserLoggedInUseCase, platformUtils, ioDispatcher,
+        router,
+        regionListProvider,
+        forceUpdateUseCase,
+        getWebsiteDownloadLink,
+        appUpdateUrl,
+        stopConnectionUseCase,
+        connectionInfoProvider,
+        isUserLoggedIn,
+        platformUtils,
+        ioDispatcher,
     )
 }

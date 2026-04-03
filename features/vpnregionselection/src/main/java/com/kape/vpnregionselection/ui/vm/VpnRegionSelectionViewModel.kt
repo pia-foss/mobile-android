@@ -13,7 +13,9 @@ import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.regions.data.ServerData
 import com.kape.utils.AUTO_KEY
 import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.domain.ReconnectUseCase
+import com.kape.vpnconnect.domain.StartConnectionUseCase
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
@@ -26,9 +28,10 @@ import java.util.Collections
 class VpnRegionSelectionViewModel(
     private val router: Router,
     private val regionListProvider: RegionListProvider,
-    private val connectionUseCase: ConnectionUseCase,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val settingsPrefs: SettingsPrefs,
+    private val connectionInfoProvider: ConnectionInfoProvider,
+    private val reconnectUseCase: ReconnectUseCase
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<ServerItem>())
     val sorted = mutableStateOf(emptyList<ServerItem>())
@@ -51,8 +54,8 @@ class VpnRegionSelectionViewModel(
         isLoading.value = false
     }
 
-    fun onVpnRegionSelected(server: VpnServer) {
-        vpnRegionPrefs.selectVpnServer(server)
+    fun onVpnRegionSelected(server: VpnServer) = viewModelScope.launch {
+        reconnectUseCase(server)
         router.navigateBack()
     }
 
@@ -125,7 +128,7 @@ class VpnRegionSelectionViewModel(
         return mutableStateOf(sorted.value.subList(autoRegionIndex, sorted.value.size))
     }
 
-    fun isVpnConnectionActive(): Boolean = connectionUseCase.isConnected()
+    fun isVpnConnectionActive(): Boolean = connectionInfoProvider.isConnected()
 
     private fun isVpnServerFavorite(serverData: ServerData): Boolean =
         vpnRegionPrefs.isFavorite(serverData)

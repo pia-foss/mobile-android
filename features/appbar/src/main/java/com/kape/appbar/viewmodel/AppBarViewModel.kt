@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
 import com.kape.utils.NetworkConnectionListener
-import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnconnect.utils.ConnectionStatus
+import com.kape.vpnconnect.utils.ConnectionStatusProvider
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
@@ -16,9 +16,9 @@ import org.koin.core.component.KoinComponent
 @KoinViewModel
 class AppBarViewModel(
     private val router: Router,
-    private val connectionManager: ConnectionManager,
+    private val connectionStatusProvider: ConnectionStatusProvider,
     networkConnectionListener: NetworkConnectionListener,
-) : ViewModel(){
+) : ViewModel() {
 
     val isConnected = networkConnectionListener.isConnected
 
@@ -32,15 +32,15 @@ class AppBarViewModel(
 
     init {
         viewModelScope.launch {
-            connectionManager.connectionStatusTitle.collect {
-                refreshConnectionState(it)
-                appBarConnectionState = connectionManager.connectionStatus.value
+            connectionStatusProvider.state.collect {
+                refreshConnectionState(it.title)
+                appBarConnectionState = it.status
             }
         }
     }
 
     fun appBarText(title: String?) {
-        appBarText = title ?: appBarTitle(connectionManager.connectionStatusTitle.value)
+        appBarText = title ?: appBarTitle(connectionStatusProvider.state.value.title)
     }
 
     fun navigateBack() = router.navigateBack()

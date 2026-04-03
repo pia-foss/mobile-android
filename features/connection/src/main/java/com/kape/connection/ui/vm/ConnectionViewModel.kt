@@ -1,23 +1,11 @@
 package com.kape.connection.ui.vm
 
-import android.app.AlarmManager
-import android.os.Build
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
-import com.kape.connection.utils.ConnectionData
 import com.kape.connection.utils.ConnectionScreenState
 import com.kape.contracts.Router
-import com.kape.customization.data.Element
-import com.kape.dedicatedip.domain.RenewDipUseCase
-import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.CustomizationPrefs
-import com.kape.localprefs.prefs.SettingsPrefs
-import com.kape.localprefs.prefs.ShortcutPrefs
-import com.kape.localprefs.prefs.VpnRegionPrefs
-import com.kape.rating.data.RatingDialogType
-import com.kape.rating.utils.RatingTool
 import com.kape.contracts.data.AutomationSettings
 import com.kape.contracts.data.Customization
 import com.kape.contracts.data.DedicatedIpSignupPlans
@@ -28,8 +16,17 @@ import com.kape.contracts.data.Settings
 import com.kape.contracts.data.ShadowsocksRegionSelection
 import com.kape.contracts.data.TvSideMenu
 import com.kape.contracts.data.VpnRegionSelection
+import com.kape.customization.data.Element
+import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.localprefs.data.customization.ScreenElement
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.CustomizationPrefs
 import com.kape.localprefs.prefs.DipPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.localprefs.prefs.ShortcutPrefs
+import com.kape.localprefs.prefs.VpnRegionPrefs
+import com.kape.rating.data.RatingDialogType
+import com.kape.rating.utils.RatingTool
 import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
@@ -37,32 +34,28 @@ import com.kape.shadowsocksregions.domain.SetShadowsocksRegionsUseCase
 import com.kape.snooze.SnoozeHandler
 import com.kape.ui.mobile.tiles.MAX_SERVERS
 import com.kape.utils.AUTO_KEY
-import com.kape.utils.DI
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.domain.StartConnectionUseCase
+import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionStatus
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.annotation.Named
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class ConnectionViewModel(
     private val router: Router,
     private val regionListProvider: RegionListProvider,
-    private val setShadowsocksRegionsUseCase: SetShadowsocksRegionsUseCase,
-    private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
-    private val connectionUseCase: ConnectionUseCase,
+    private val startConnectionUseCase: StartConnectionUseCase,
+    private val stopConnectionUseCase: StopConnectionUseCase,
     private val prefs: ConnectionPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val snoozeHandler: SnoozeHandler,
@@ -74,8 +67,9 @@ class ConnectionViewModel(
     private val ratingTool: RatingTool,
     private val shortcutPrefs: ShortcutPrefs,
     private val buildConfigProvider: BuildConfigProvider,
+    val connectionInfoProvider: ConnectionInfoProvider,
     networkConnectionListener: NetworkConnectionListener,
-) : ViewModel(){
+) : ViewModel() {
     private var connectJob: Job? = null
     private var loadVpnServersJob: Job? = null
     private var loadShadowsocksServersJob: Job? = null
@@ -86,13 +80,6 @@ class ConnectionViewModel(
         isCurrentServerOptimal = false,
         showOptimalLocationInfo = prefs.getSelectedVpnServer() == null,
         ratingDialogType = ratingTool.showRating.value,
-        connectionData = ConnectionData(
-            connectionUseCase.clientIp.value,
-            connectionUseCase.vpnIp.value,
-            connectionUseCase.getConnectionStatus().value,
-            connectionUseCase.portForwardingStatus.value,
-            connectionUseCase.port.value,
-        ),
     )
     private val _state: MutableStateFlow<ConnectionScreenState> = MutableStateFlow(defaultState)
     val state: StateFlow<ConnectionScreenState> = _state
@@ -104,36 +91,13 @@ class ConnectionViewModel(
     val showDedicatedIpHomeBanner = mutableStateOf(false)
 
     init {
+
         viewModelScope.launch {
-            combine(
-                connectionUseCase.getConnectionStatus(),
-                connectionUseCase.clientIp,
-                connectionUseCase.vpnIp,
-                connectionUseCase.portForwardingStatus,
-                connectionUseCase.port,
-            ) { status, clientIp, vpnIp, pfwdStatus, port ->
-                _state.update {
-                    it.copy(
-                        connectionData = ConnectionData(
-                            clientIp,
-                            vpnIp,
-                            status,
-                            pfwdStatus,
-                            port,
-                        ),
-                    )
-                }
-            }.collect()
-        }
-        viewModelScope.launch {
-            connectionUseCase.getConnectionStatus().collect { status ->
-                when (status) {
-                    ConnectionStatus.CONNECTED,
-                    ConnectionStatus.DISCONNECTED -> connectionUseCase.getClientStatus(status)
-                    else -> connectionUseCase.resetVpnIp()
-                }
+            connectionInfoProvider.state.collectLatest {
+                println("--- connectionInfoState: $it")
             }
         }
+
         ratingTool.start()
         renewDedicatedIps()
         if (shortcutPrefs.isShortcutSettings()) {
@@ -177,45 +141,15 @@ class ConnectionViewModel(
             if (settingsPrefs.isConnectOnLaunchEnabled() || shortcutPrefs.isShortcutConnectToVpn()) {
                 shortcutPrefs.setShortcutConnectToVpn(false)
                 prefs.getSelectedVpnServer()?.let {
-                    connectionUseCase.startConnection(it, false)
+                    startConnectionUseCase(it, false)
                 } ?: run {
-                    connectionUseCase.startConnection(
-                        regionListProvider.getOptimalServer(),
-                        false,
-                    )
+                    startConnectionUseCase(regionListProvider.getOptimalServer(), false)
                 }
             }
             if (shortcutPrefs.isShortcutDisconnectVpn()) {
                 shortcutPrefs.setShortcutDisconnectVpn(false)
-                connectionUseCase.stopConnection()
+                stopConnectionUseCase()
             }
-        }
-    }
-
-    fun isConnectionActive() = connectionUseCase.isConnected()
-
-    fun loadVpnServers(locale: String) {
-        loadVpnServersJob?.cancel()
-        loadVpnServersJob = viewModelScope.launch {
-            regionListProvider.updateServerLatencies(isConnectionActive(), false)
-            prefs.getSelectedVpnServer()?.let {
-                updateState(it, false)
-            } ?: run {
-                if (!connectionUseCase.isConnected() || !connectionUseCase.isConnecting()) {
-                    updateState(
-                        regionListProvider.getOptimalServer(),
-                        false,
-                    )
-                }
-            }
-        }
-    }
-
-    fun loadShadowsocksServers(locale: String) {
-        loadShadowsocksServersJob?.cancel()
-        loadShadowsocksServersJob = viewModelScope.launch {
-            val servers = getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale)
-            setShadowsocksRegionsUseCase.setShadowsocksServers(shadowsocksServers = servers)
         }
     }
 
@@ -259,9 +193,6 @@ class ConnectionViewModel(
             }
         }
     }
-
-    fun getSelectedShadowsocksServer(): ShadowsocksServer =
-        getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
 
     private fun getFavoriteServers(): List<VpnServer> {
         val favoriteServers = mutableListOf<VpnServer>()
@@ -310,7 +241,7 @@ class ConnectionViewModel(
     }
 
     fun onConnectionButtonClicked() = viewModelScope.launch {
-        if (connectionUseCase.isConnected() || connectionUseCase.isConnecting()) {
+        if (connectionInfoProvider.isInConnectState()) {
             disconnect()
         } else {
             connect()
@@ -324,7 +255,7 @@ class ConnectionViewModel(
 
     fun quickConnect(server: VpnServer) {
         vpnRegionPrefs.selectVpnServer(server)
-        updateState(state.value.server, false)
+//        updateState(state.value.server, false)
         connect()
     }
 
@@ -339,12 +270,9 @@ class ConnectionViewModel(
         connectJob = viewModelScope.launch {
             prefs.setSelectedVpnServer(state.value.server)
             prefs.addToQuickConnect(state.value.server.key, state.value.server.isDedicatedIp)
-            updateState(state.value.server, false)
+//            updateState(state.value.server, false)
             snoozeHandler.cancelSnooze()
-            connectionUseCase.startConnection(
-                server = state.value.server,
-                isManualConnection = true,
-            )
+            startConnectionUseCase(server = state.value.server, true)
         }
     }
 
@@ -354,67 +282,67 @@ class ConnectionViewModel(
         if (settingsPrefs.isAutomationEnabled()) {
             prefs.disconnectedByUser(true)
         }
-        connectionUseCase.stopConnection()
+        stopConnectionUseCase()
     }
 
     private fun isOptimalLocation(serverKey: String): Boolean {
         return regionListProvider.getOptimalServer().key == serverKey
     }
 
-    private fun updateState(server: VpnServer, showOptimalLocationInfo: Boolean) {
-        updateStateJob?.cancel()
-        updateStateJob = viewModelScope.launch {
-            val existingServer = vpnRegionPrefs.getSelectedServer()
-            existingServer?.let {
-                if (server != existingServer) {
-                    val serverToConnect =
-                        if (existingServer.key == AUTO_KEY) {
-                            regionListProvider.getOptimalServer()
-                        } else {
-                            it
-                        }
-                    if (vpnRegionPrefs.needsVpnReconnect()) {
-                        vpnRegionPrefs.setVpnReconnect(false)
-                        prefs.setSelectedVpnServer(serverToConnect)
-                        prefs.addToQuickConnect(
-                            serverToConnect.key,
-                            serverToConnect.isDedicatedIp,
-                        )
-                        _state.update {
-                            it.copy(
-                                server = serverToConnect,
-                                quickConnectServers = getQuickConnectVpnServers(),
-                                isCurrentServerOptimal = isOptimalLocation(serverToConnect.key),
-                            )
-                        }
-                        connectionUseCase.reconnect(serverToConnect)
-                    }
-                } else {
-                    if (!connectionUseCase.isConnected() && vpnRegionPrefs.needsVpnReconnect()) {
-                        vpnRegionPrefs.setVpnReconnect(false)
-                        prefs.addToQuickConnect(server.key, server.isDedicatedIp)
-                        connectionUseCase.startConnection(server, true)
-                        _state.update {
-                            it.copy(
-                                server = server,
-                                quickConnectServers = getQuickConnectVpnServers(),
-                                isCurrentServerOptimal = isOptimalLocation(server.key),
-                            )
-                        }
-                    }
-                }
-            } ?: run {
-                _state.update {
-                    it.copy(
-                        server = server,
-                        quickConnectServers = getQuickConnectVpnServers(),
-                        isCurrentServerOptimal = isOptimalLocation(server.key),
-                        showOptimalLocationInfo = showOptimalLocationInfo,
-                    )
-                }
-            }
-        }
-    }
+//    private fun updateState(server: VpnServer, showOptimalLocationInfo: Boolean) {
+//        updateStateJob?.cancel()
+//        updateStateJob = viewModelScope.launch {
+//            val existingServer = vpnRegionPrefs.getSelectedServer()
+//            existingServer?.let {
+//                if (server != existingServer) {
+//                    val serverToConnect =
+//                        if (existingServer.key == AUTO_KEY) {
+//                            regionListProvider.getOptimalServer()
+//                        } else {
+//                            it
+//                        }
+//                    if (vpnRegionPrefs.needsVpnReconnect()) {
+//                        vpnRegionPrefs.setVpnReconnect(false)
+//                        prefs.setSelectedVpnServer(serverToConnect)
+//                        prefs.addToQuickConnect(
+//                            serverToConnect.key,
+//                            serverToConnect.isDedicatedIp,
+//                        )
+//                        _state.update {
+//                            it.copy(
+//                                server = serverToConnect,
+//                                quickConnectServers = getQuickConnectVpnServers(),
+//                                isCurrentServerOptimal = isOptimalLocation(serverToConnect.key),
+//                            )
+//                        }
+////                        connectionUseCase.reconnect(serverToConnect)
+//                    }
+//                } else {
+//                    if (!connectionInfoProvider.isConnected() && vpnRegionPrefs.needsVpnReconnect()) {
+//                        vpnRegionPrefs.setVpnReconnect(false)
+//                        prefs.addToQuickConnect(server.key, server.isDedicatedIp)
+////                        connectionUseCase.startConnection(server, true)
+//                        _state.update {
+//                            it.copy(
+//                                server = server,
+//                                quickConnectServers = getQuickConnectVpnServers(),
+//                                isCurrentServerOptimal = isOptimalLocation(server.key),
+//                            )
+//                        }
+//                    }
+//                }
+//            } ?: run {
+//                _state.update {
+//                    it.copy(
+//                        server = server,
+//                        quickConnectServers = getQuickConnectVpnServers(),
+//                        isCurrentServerOptimal = isOptimalLocation(server.key),
+//                        showOptimalLocationInfo = showOptimalLocationInfo,
+//                    )
+//                }
+//            }
+//        }
+//    }
 
     fun showReviewPrompt() = _state.update { it.copy(ratingDialogType = RatingDialogType.Review) }
 

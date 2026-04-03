@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -45,6 +46,7 @@ import com.kape.ui.mobile.tiles.Traffic
 import com.kape.ui.mobile.tiles.VpnLocationPicker
 import com.kape.ui.utils.LocalColors
 import com.kape.utils.vpnserver.VpnServer
+import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -148,6 +150,9 @@ private fun DisplayComponent(
     viewModel: ConnectionViewModel,
 ) {
     val state = viewModel.state.collectAsState()
+    val vpnState by viewModel.connectionInfoProvider.state.collectAsState()
+    val connectionState by viewModel.connectionInfoProvider.connectionState.collectAsState()
+
     when (screenElement.element) {
         Element.ConnectionInfo -> {
             val settings = viewModel.getConnectionSettings()
@@ -167,13 +172,13 @@ private fun DisplayComponent(
             IPTile(
                 modifier = modifier,
                 isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                publicIp = state.connectionData.clientIp,
-                vpnIp = state.connectionData.vpnIp,
-                portForwardingStatus = when (state.connectionData.portForwardingStatus) {
+                publicIp = vpnState.publicIp,
+                vpnIp = vpnState.vpnIp,
+                portForwardingStatus = when (vpnState.portforwardingStatus) {
                     PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
                     PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
                     PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                    PortForwardingStatus.Success -> state.connectionData.port
+                    PortForwardingStatus.Success -> vpnState.port
                 },
             )
         }
@@ -204,17 +209,17 @@ private fun DisplayComponent(
             VpnLocationPicker(
                 modifier = modifier,
                 server = state.value.server,
-                isConnected = viewModel.isConnectionActive(),
+                isConnected = connectionState == ConnectionStatus.CONNECTED,
                 state.value.isCurrentServerOptimal,
             ) {}
         }
 
         Element.ShadowsocksRegionSelection -> {
-            ShadowsocksLocationPicker(
-                modifier = modifier,
-                server = viewModel.getSelectedShadowsocksServer(),
-                isConnected = viewModel.isConnectionActive(),
-            ) {}
+//            ShadowsocksLocationPicker(
+//                modifier = modifier,
+//                server = viewModel.getSelectedShadowsocksServer(),
+//                isConnected = connectionState == ConnectionStatus.CONNECTED,
+//            ) {}
         }
 
         Element.Snooze -> {

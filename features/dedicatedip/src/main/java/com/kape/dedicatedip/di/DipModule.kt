@@ -20,7 +20,7 @@ import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.ui.utils.PriceFormatter
-import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.AndroidAccountAPI
 import org.koin.core.annotation.KoinViewModel
@@ -67,14 +67,16 @@ class DipModule {
         dipSignupRepository: DipSignupRepository,
         dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
         formatter: PriceFormatter,
-    ): GetDipMonthlyPlan = GetDipMonthlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider, formatter)
+    ): GetDipMonthlyPlan =
+        GetDipMonthlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider, formatter)
 
     @Singleton
     fun provideGetDipYearlyPlan(
         dipSignupRepository: DipSignupRepository,
         dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
         formatter: PriceFormatter,
-    ): GetDipYearlyPlan = GetDipYearlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider, formatter)
+    ): GetDipYearlyPlan =
+        GetDipYearlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider, formatter)
 
     @Singleton
     fun provideFetchSignupDipToken(
@@ -95,12 +97,12 @@ class DipModule {
         dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
         dipPrefs: DipPrefs,
         connectionPrefs: ConnectionPrefs,
-        connectionUseCase: ConnectionUseCase,
         buildConfigProvider: BuildConfigProvider,
+        stopConnectionUseCase: StopConnectionUseCase,
     ): DipViewModel = DipViewModel(
         router, regionListProvider, activateDipUseCase, getDipSupportedCountries,
         getDipMonthlyPlan, getDipYearlyPlan, validateDipSignup, fetchSignupDipToken,
         vpnSubscriptionPaymentProvider, dipSubscriptionPaymentProvider, dipPrefs,
-        connectionPrefs, connectionUseCase, buildConfigProvider,
+        connectionPrefs, buildConfigProvider, stopConnectionUseCase,
     )
 }

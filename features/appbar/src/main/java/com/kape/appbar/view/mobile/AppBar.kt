@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -52,12 +53,12 @@ fun AppBar(
     onLeftIconClick: () -> Unit = viewModel::navigateBack,
     onRightIconClick: () -> Unit = {},
 ) {
-    val isConnected = viewModel.isConnected.collectAsState()
+    val isConnected by viewModel.isConnected.collectAsState()
 
     AppBarContent(
         type = type,
-        status = if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
-        if (isConnected.value) viewModel.appBarText else stringResource(id = R.string.no_internet_connection),
+        status = if (isConnected) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
+        if (isConnected) viewModel.appBarText else stringResource(id = R.string.no_internet_connection),
         onLeftIconClick,
         onRightIconClick,
     )

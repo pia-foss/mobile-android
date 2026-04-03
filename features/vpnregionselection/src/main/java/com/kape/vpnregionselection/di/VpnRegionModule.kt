@@ -3,7 +3,9 @@ package com.kape.vpnregionselection.di
 import com.kape.contracts.Router
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
-import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.domain.ReconnectUseCase
+import com.kape.vpnconnect.domain.StartConnectionUseCase
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
 import com.kape.vpnregions.utils.RegionListProvider
 import org.koin.core.annotation.KoinViewModel
@@ -16,10 +18,16 @@ class VpnRegionModule {
     fun provideVpnRegionSelectionViewModel(
         router: Router,
         regionListProvider: RegionListProvider,
-        connectionUseCase: ConnectionUseCase,
         vpnRegionPrefs: VpnRegionPrefs,
         settingsPrefs: SettingsPrefs,
+        connectionInfoProvider: ConnectionInfoProvider,
+        reconnectUseCase: ReconnectUseCase,
     ): VpnRegionSelectionViewModel = VpnRegionSelectionViewModel(
-        router, regionListProvider, connectionUseCase, vpnRegionPrefs, settingsPrefs,
+        router,
+        regionListProvider,
+        vpnRegionPrefs,
+        settingsPrefs,
+        connectionInfoProvider,
+        reconnectUseCase,
     )
 }

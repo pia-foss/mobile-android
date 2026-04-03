@@ -5,7 +5,7 @@ import com.kape.localprefs.prefs.DipPrefs
 import com.kape.utils.vpnserver.VpnServer
 import com.kape.utils.vpnserver.VpnServerInfo
 import com.kape.vpnconnect.domain.ConnectionConfigurationUseCase
-import com.kape.vpnconnect.domain.ConnectionUseCase
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.kape.vpnregions.utils.adaptServersInfo
 import com.kape.vpnregions.utils.adaptVpnServers
@@ -18,7 +18,7 @@ class VpnRegionRepository(
     private val source: VpnRegionDataSource,
     private val dipPrefs: DipPrefs,
     private val connectionPrefs: ConnectionPrefs,
-    private val connectionUseCase: ConnectionUseCase,
+    private val connectionInfoProvider: ConnectionInfoProvider,
     private val connectionConfigurationUseCase: ConnectionConfigurationUseCase,
 ) {
     private var serverMap: Map<String, VpnServer> = hashMapOf()
@@ -41,7 +41,7 @@ class VpnRegionRepository(
                 serverMap = adaptVpnServers(response)
                 serverInfo = adaptServersInfo(response)
                 serverList.addAll(addDipToServerList(serverMap.values.toList()))
-                if (connectionUseCase.isNotDisconnected()) {
+                if (connectionInfoProvider.isNotDisconnected()) {
                     serverList.filter { it == connectionPrefs.getSelectedVpnServer() }
                         .firstOrNull()?.let {
                             connectionConfigurationUseCase.updateServerConfig(it)

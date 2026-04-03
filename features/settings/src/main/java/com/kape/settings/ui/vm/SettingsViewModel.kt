@@ -38,8 +38,9 @@ import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.vpnconnect.domain.ConnectionDataSource
-import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.domain.GetLogsUseCase
+import com.kape.vpnconnect.domain.ReconnectUseCase
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -62,8 +63,9 @@ class SettingsViewModel(
     private val sendLogUseCase: SendLogUseCase,
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
     private val locationPermissionManager: LocationPermissionManager,
-    private val connectionUseCase: ConnectionUseCase,
-) : ViewModel(){
+    private val reconnectUseCase: ReconnectUseCase,
+    private val connectionInfoProvider: ConnectionInfoProvider,
+) : ViewModel() {
 
     companion object {
         private const val GET_INSTALLED_APPS_DELAY_MS = 1000L
@@ -383,7 +385,7 @@ class SettingsViewModel(
     }
 
     fun showReconnectDialogIfVpnConnected() {
-        if (isConnected()) {
+        if (connectionInfoProvider.isConnected()) {
             reconnectDialogVisible.value = true
         }
     }
@@ -394,17 +396,15 @@ class SettingsViewModel(
         }
     }
 
-    fun isConnected(): Boolean {
-        return connectionUseCase.isConnected()
-    }
-
     fun reconnect() {
         viewModelScope.launch {
             connectionPrefs.getSelectedVpnServer()?.let {
-                connectionUseCase.reconnect(it)
+                reconnectUseCase(it)
             }
         }
     }
+
+    fun isConnected() = connectionInfoProvider.isConnected()
 
     fun getAppVersion(): String = "${appInfo.versionName} (${appInfo.versionCode})"
 }

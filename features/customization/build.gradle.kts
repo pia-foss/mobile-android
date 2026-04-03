@@ -50,6 +50,7 @@ dependencies {
     runtimeOnly(libs.launcher)
     implementation(project(":core:contracts"))
     implementation(project(":core:utils"))
+    implementation(project(":core:vpnconnect"))
     implementation(project(":core:portforwarding"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))

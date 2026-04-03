@@ -2,8 +2,10 @@ package com.kape.rating.utils
 
 import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.rating.data.RatingDialogType
-import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.utils.DI
 import com.kape.vpnconnect.utils.ConnectionStatus
+import com.kape.vpnconnect.utils.ConnectionStatusProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -11,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.Named
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -21,9 +24,11 @@ private const val RATING_REMINDER_COUNTER = 50
 private const val REVIEW_REMINDER_WAIT_DAYS = 30
 private const val DATE_FORMAT = "dd/MM/yyyy"
 
-class RatingTool(private val connectionManager: ConnectionManager, private val prefs: RatingPrefs) :
-    CoroutineScope {
-
+class RatingTool(
+    private val connectionStatusProvider: ConnectionStatusProvider,
+    private val prefs: RatingPrefs,
+    @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
+) {
     // Because the state events are being reported multiple time per connection cycle, we need
     // to make sure a connected is counted with its disconnection accordingly.
     private var shouldCountConnectedEvent = true
@@ -32,16 +37,13 @@ class RatingTool(private val connectionManager: ConnectionManager, private val p
     private val _showRating: MutableStateFlow<RatingDialogType?> = MutableStateFlow(null)
     val showRating: StateFlow<RatingDialogType?> = _showRating
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
-
     fun start() {
         if (prefs.getRatingState().active) {
             job.start()
 
-            launch {
-                connectionManager.connectionStatus.collectLatest {
-                    when (it) {
+            CoroutineScope(mainDispatcher).launch {
+                connectionStatusProvider.state.collectLatest {
+                    when (it.status) {
                         ConnectionStatus.CONNECTED -> {
                             if (prefs.getRatingState().active && shouldCountConnectedEvent) {
                                 shouldCountConnectedEvent = true
@@ -57,7 +59,7 @@ class RatingTool(private val connectionManager: ConnectionManager, private val p
                         ConnectionStatus.DISCONNECTING,
                         ConnectionStatus.ERROR,
                         ConnectionStatus.RECONNECTING,
-                        -> {
+                            -> {
                             // no-op
                         }
                     }

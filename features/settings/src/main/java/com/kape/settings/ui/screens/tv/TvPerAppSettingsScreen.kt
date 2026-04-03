@@ -51,7 +51,7 @@ import com.kape.ui.mobile.elements.Search
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.tv.text.SecondaryButtonText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -61,8 +61,7 @@ fun TvPerAppSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
         getInstalledApplications(packageManager)
     }
-    val connectionManager: ConnectionManager = koinInject()
-    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
     val initialFocusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
@@ -78,8 +77,7 @@ fun TvPerAppSettingsScreen() = Screen {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 4.dp,
-            color = getTopBarConnectionColor(
-                status = connectionStatus.value,
+            color = connectionInfoProvider.getTopBarConnectionColor(
                 scheme = LocalColors.current,
             ),
         )
@@ -255,7 +253,11 @@ private fun PerAppSettingPackageItem(
     }
 }
 
-private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>, navigateBack: () -> Unit) {
+private fun onBackPressed(
+    viewModel: SettingsViewModel,
+    lastExcludedApps: List<String>,
+    navigateBack: () -> Unit,
+) {
     if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {

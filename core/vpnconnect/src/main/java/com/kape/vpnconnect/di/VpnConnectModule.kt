@@ -1,6 +1,7 @@
 package com.kape.vpnconnect.di
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import androidx.work.WorkManager
@@ -21,16 +22,24 @@ import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.domain.ConnectionConfigurationUseCase
 import com.kape.vpnconnect.domain.ConnectionConfigurationUseCaseImpl
 import com.kape.vpnconnect.domain.ConnectionDataSource
-import com.kape.vpnconnect.domain.ConnectionUseCase
-import com.kape.vpnconnect.domain.ConnectionUseCaseImpl
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
-import com.kape.vpnconnect.utils.ConnectionManager
+import com.kape.vpnconnect.domain.ReconnectUseCase
+import com.kape.vpnconnect.domain.StartConnectionUseCase
+import com.kape.vpnconnect.domain.StartPortForwardingUseCase
+import com.kape.vpnconnect.domain.StartShadowsocksUseCase
+import com.kape.vpnconnect.domain.StopConnectionUseCase
+import com.kape.vpnconnect.domain.StopPortForwardingUseCase
+import com.kape.vpnconnect.domain.StopShadowsocksUseCase
 import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionStatusProvider
+import com.kape.vpnconnect.utils.NotificationHandler
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.kape.vpnmanager.presenters.VPNManagerAPI
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
@@ -59,12 +68,36 @@ class VpnConnectModule {
     fun provideUsageProvider(context: Context): UsageProvider = UsageProvider(context)
 
     @Singleton
-    fun provideConnectionManager(
-        context: Context,
-        connectionValues: Map<ConnectionStatus, String>,
-        submitKpiEventUseCase: SubmitKpiEventUseCase,
+    fun provideNotificationHandler(
+        notificationManager: NotificationManager,
         notificationBuilder: Notification.Builder,
-    ): ConnectionManager = ConnectionManager(context, connectionValues, submitKpiEventUseCase, notificationBuilder)
+    ): NotificationHandler =
+        NotificationHandler(notificationManager, notificationBuilder)
+
+    @Singleton
+    fun provideConnectionStatusProvider(
+        connectionValues: Map<ConnectionStatus, String>,
+        notificationHandler: NotificationHandler,
+    ): ConnectionStatusProvider =
+        ConnectionStatusProvider(connectionValues, notificationHandler)
+
+    @Singleton
+    fun provideConnectionInfoProvider(
+        connectionStatusProvider: ConnectionStatusProvider,
+        clientStateDataSource: ClientStateDataSource,
+        connectionPrefs: ConnectionPrefs,
+        submitKpiEventUseCase: SubmitKpiEventUseCase,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+        @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
+    ): ConnectionInfoProvider =
+        ConnectionInfoProvider(
+            connectionStatusProvider,
+            clientStateDataSource,
+            connectionPrefs,
+            submitKpiEventUseCase,
+            ioDispatcher,
+            mainDispatcher,
+        )
 
     @Singleton(binds = [GetActiveInterfaceDnsUseCase::class])
     fun provideGetActiveInterfaceDnsUseCase(context: Context): GetActiveInterfaceDnsUseCase =
@@ -76,7 +109,8 @@ class VpnConnectModule {
         connectionPrefs: ConnectionPrefs,
         csiPrefs: CsiPrefs,
         settingsPrefs: SettingsPrefs,
-    ): ClientStateDataSource = ClientStateDataSourceImpl(accountApi, connectionPrefs, csiPrefs, settingsPrefs)
+    ): ClientStateDataSource =
+        ClientStateDataSourceImpl(accountApi, connectionPrefs, csiPrefs, settingsPrefs)
 
     @Singleton(binds = [ConnectionDataSource::class])
     fun provideConnectionDataSource(
@@ -110,25 +144,83 @@ class VpnConnectModule {
         configureIntent, automationPendingIntent,
     )
 
-    @Singleton(binds = [ConnectionUseCase::class])
-    fun provideConnectionUseCase(
-        connectionSource: ConnectionDataSource,
-        clientStateDataSource: ClientStateDataSource,
-        connectionManager: ConnectionManager,
-        connectionPrefs: ConnectionPrefs,
-        settingsPrefs: SettingsPrefs,
-        shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
-        startObfuscatorProcess: StartObfuscatorProcess,
-        stopObfuscatorProcess: StopObfuscatorProcess,
-        portForwardingUseCase: PortForwardingUseCase,
-        connectionConfigurationUseCase: ConnectionConfigurationUseCase,
-    ): ConnectionUseCase = ConnectionUseCaseImpl(
-        connectionSource, clientStateDataSource, connectionManager, connectionPrefs, settingsPrefs,
-        shadowsocksRegionPrefs, startObfuscatorProcess, stopObfuscatorProcess,
-        portForwardingUseCase, connectionConfigurationUseCase,
-    )
-
     @Singleton
     fun provideGetLogsUseCase(connectionSource: ConnectionDataSource): GetLogsUseCase =
         GetLogsUseCase(connectionSource)
+
+    @Singleton
+    fun provideStartPortForwardingUseCase(
+        connectionDataSource: ConnectionDataSource,
+        portForwardingUseCase: PortForwardingUseCase,
+        settingsPrefs: SettingsPrefs,
+    ): StartPortForwardingUseCase =
+        StartPortForwardingUseCase(connectionDataSource, portForwardingUseCase, settingsPrefs)
+
+    @Singleton
+    fun provideStartShadowsocksUseCase(
+        settingsPrefs: SettingsPrefs,
+        shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
+        startObfuscatorProcess: StartObfuscatorProcess,
+        stopConnectionUseCase: StopConnectionUseCase,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+    ): StartShadowsocksUseCase = StartShadowsocksUseCase(
+        settingsPrefs,
+        shadowsocksRegionPrefs,
+        startObfuscatorProcess,
+        stopConnectionUseCase,
+        ioDispatcher,
+    )
+
+    @Singleton
+    fun provideStopShadowsocksUseCase(stopObfuscatorProcess: StopObfuscatorProcess): StopShadowsocksUseCase =
+        StopShadowsocksUseCase(stopObfuscatorProcess)
+
+    @Singleton
+    fun provideStopPortForwardingUseCase(
+        connectionSource: ConnectionDataSource,
+        portForwardingUseCase: PortForwardingUseCase,
+    ): StopPortForwardingUseCase =
+        StopPortForwardingUseCase(connectionSource, portForwardingUseCase)
+
+    @Singleton
+    fun provideStartConnectionUseCase(
+        connectionSource: ConnectionDataSource,
+        startShadowsocksUseCase: StartShadowsocksUseCase,
+        startPortForwardingUseCase: StartPortForwardingUseCase,
+        stopShadowsocksUseCase: StopShadowsocksUseCase,
+        connectionConfigurationUseCase: ConnectionConfigurationUseCase,
+        connectionPrefs: ConnectionPrefs,
+        connectionStatusProvider: ConnectionStatusProvider,
+        connectionInfoProvider: ConnectionInfoProvider,
+    ): StartConnectionUseCase = StartConnectionUseCase(
+        connectionSource,
+        connectionInfoProvider,
+        connectionPrefs,
+        startShadowsocksUseCase,
+        stopShadowsocksUseCase,
+        connectionConfigurationUseCase,
+        connectionStatusProvider,
+        startPortForwardingUseCase,
+    )
+
+    @Singleton
+    fun provideStopConnectionUseCase(
+        connectionSource: ConnectionDataSource,
+        stopShadowsocksUseCase: StopShadowsocksUseCase,
+        stopPortForwardingUseCase: StopPortForwardingUseCase,
+        connectionInfoProvider: ConnectionInfoProvider,
+    ): StopConnectionUseCase = StopConnectionUseCase(
+        connectionInfoProvider,
+        connectionSource,
+        stopShadowsocksUseCase,
+        stopPortForwardingUseCase,
+    )
+
+    @Singleton
+    fun provideReconnectUseCase(
+        startConnectionUseCase: StartConnectionUseCase,
+        stopConnectionUseCase: StopConnectionUseCase,
+        connectionInfoProvider: ConnectionInfoProvider,
+    ): ReconnectUseCase =
+        ReconnectUseCase(startConnectionUseCase, stopConnectionUseCase, connectionInfoProvider)
 }
