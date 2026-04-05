@@ -1,6 +1,7 @@
 package com.kape.settings.di
 
 import com.kape.contracts.AppInfo
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.contracts.Router
 import com.kape.csi.domain.SendLogUseCase
@@ -14,7 +15,7 @@ import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.domain.ReconnectUseCase
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.data.VpnRegionRepository
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module

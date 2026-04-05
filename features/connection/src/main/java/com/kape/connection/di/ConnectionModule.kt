@@ -2,6 +2,7 @@ package com.kape.connection.di
 
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.connection.ui.vm.ConnectionViewModel
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.Router
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -16,7 +17,7 @@ import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnconnect.domain.StartConnectionUseCase
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.utils.RegionListProvider
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module

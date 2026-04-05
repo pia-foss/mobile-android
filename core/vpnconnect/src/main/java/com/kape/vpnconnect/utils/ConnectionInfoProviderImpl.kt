@@ -2,12 +2,15 @@ package com.kape.vpnconnect.utils
 
 import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
+import com.kape.data.NO_IP
+import com.kape.data.VpnConnectionInfo
 import com.kape.data.kpi.KpiConnectionStatus
 import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.NO_IP
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
@@ -26,19 +29,19 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
 
-class ConnectionInfoProvider(
+class ConnectionInfoProviderImpl(
     private val connectionStatusProvider: ConnectionStatusProvider,
     private val clientStateDataSource: ClientStateDataSource,
     private val connectionPrefs: ConnectionPrefs,
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
-) {
-    val connectionState = connectionStatusProvider.state
+): ConnectionInfoProvider {
+    override val connectionState = connectionStatusProvider.state
     private val _connectionInfoState: MutableStateFlow<VpnConnectionInfo> = MutableStateFlow(
         VpnConnectionInfo(),
     )
-    val state: StateFlow<VpnConnectionInfo> = _connectionInfoState.asStateFlow()
+    override val state: StateFlow<VpnConnectionInfo> = _connectionInfoState.asStateFlow()
 
     init {
         CoroutineScope(ioDispatcher).launch {
@@ -63,20 +66,20 @@ class ConnectionInfoProvider(
         }
     }
 
-    fun isConnected(): Boolean = connectionState.value == ConnectionStatus.CONNECTED
+    override fun isConnected(): Boolean = connectionState.value == ConnectionStatus.CONNECTED
 
-    fun isInConnectState(): Boolean = listOf(
+    override fun isInConnectState(): Boolean = listOf(
         ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
     ).contains(connectionState.value.status)
 
-    fun isNotDisconnected() = connectionState.value.status != ConnectionStatus.DISCONNECTED
+    override fun isNotDisconnected() = connectionState.value.status != ConnectionStatus.DISCONNECTED
 
-    fun updateInfo(name: String, iso: String, isManual: Boolean) {
+    override fun updateInfo(name: String, iso: String, isManual: Boolean) {
         _connectionInfoState.update { it.copy(name = name, iso = iso, isManual = isManual) }
     }
 
-    fun resetConnectionInfo() {
+    override fun resetConnectionInfo() {
         _connectionInfoState.update { VpnConnectionInfo() }
     }
 
@@ -108,14 +111,4 @@ class ConnectionInfoProvider(
             is VPNManagerConnectionStatus.Connected -> KpiConnectionStatus.Connected
         }
     }
-
-    data class VpnConnectionInfo(
-        val name: String = "",
-        val iso: String = "",
-        val isManual: Boolean = false,
-        val publicIp: String = NO_IP,
-        val vpnIp: String = NO_IP,
-        val portforwardingStatus: PortForwardingStatus = PortForwardingStatus.NoPortForwarding,
-        val port: String = "",
-    )
 }

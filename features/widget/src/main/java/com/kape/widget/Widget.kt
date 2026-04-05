@@ -1,6 +1,5 @@
 package com.kape.widget
 
-import android.R.attr.name
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,10 +31,11 @@ import androidx.glance.layout.size
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.data.ConnectionStatus
 import com.kape.ui.utils.getFlagResource
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnlauncher.VpnLauncher
 
 class Widget(

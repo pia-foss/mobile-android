@@ -2,6 +2,7 @@ package com.kape.vpnconnect.domain
 
 import android.app.Notification
 import android.app.PendingIntent
+import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.data.NOTIFICATION_ID
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs

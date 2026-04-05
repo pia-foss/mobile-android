@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.Router
 import com.kape.data.AUTO_KEY
 import com.kape.data.Connection
@@ -14,7 +15,7 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.regions.data.ServerData
 import com.kape.vpnconnect.domain.ReconnectUseCase
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem

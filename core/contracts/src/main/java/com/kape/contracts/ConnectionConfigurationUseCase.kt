@@ -1,4 +1,4 @@
-package com.kape.vpnconnect.domain
+package com.kape.contracts
 
 import com.kape.data.vpnserver.VpnServer
 import com.kape.vpnmanager.data.models.ClientConfiguration

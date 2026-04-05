@@ -15,6 +15,7 @@ import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.connection.di.ConnectionModule
 import com.kape.contracts.AppInfo
 import com.kape.contracts.ConfigInfo
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.NetworkManager
 import com.kape.csi.di.CsiModule
 import com.kape.customization.di.CustomizationModule
@@ -77,7 +78,7 @@ import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.di.VpnConnectModule
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionStatusProvider
+import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import com.kape.vpnlauncher.di.VpnLauncherModule
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder

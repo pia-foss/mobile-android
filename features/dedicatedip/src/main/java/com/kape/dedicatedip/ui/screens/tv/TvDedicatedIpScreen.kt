@@ -17,7 +17,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -51,7 +50,7 @@ import com.kape.ui.tv.text.DedicatedIpDescription
 import com.kape.ui.tv.text.DedicatedIpTitle
 import com.kape.ui.tv.text.Input
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -60,7 +59,7 @@ fun TvDedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
         loadDedicatedIps()
     }
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
     val showActivationDialog = remember { mutableStateOf(false) }
     val showDeletionDialog = remember { mutableStateOf(false) }
     val text = remember { mutableStateOf("") }

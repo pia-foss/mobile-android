@@ -3,6 +3,7 @@ package com.kape.vpnconnect.domain
 import android.app.Notification
 import android.app.PendingIntent
 import app.cash.turbine.test
+import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs

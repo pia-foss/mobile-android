@@ -3,6 +3,7 @@ package com.kape.data
 const val AUTO_KEY = "auto"
 const val NOTIFICATION_ID = 123
 const val STATUS_REQUEST_LONG_TIMEOUT = 2000L
+const val NO_IP = "---"
 
 object SnoozeIntervals {
     const val FIVE_MINUTES = 5 * 60 * 1000

@@ -3,6 +3,7 @@ package com.kape.localprefs.prefs
 import android.content.Context
 import com.kape.connection.model.PortBindInformation
 import com.kape.connection.model.QuickConnectServer
+import com.kape.data.NO_IP
 import com.kape.data.vpnserver.VpnServer
 import com.kape.utils.Prefs
 import kotlinx.serialization.json.Json
@@ -18,7 +19,6 @@ private const val PORT_BINDING_INFO = "port-binding-info"
 private const val DISCONNECTED_BY_USER = "disconnected-by-user"
 private const val PROXY_PORT = "proxy-port"
 private const val DEFAULT_PROXY_PORT_VALUE = "8080"
-const val NO_IP = "---"
 
 @Singleton
 class ConnectionPrefs(context: Context) : Prefs(context, "connection") {

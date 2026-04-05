@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
 import com.kape.ui.R
@@ -13,7 +14,7 @@ import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_DISCONNECT
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.vpn.MainActivity
-import com.kape.vpnconnect.utils.ConnectionStatusProvider
+import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

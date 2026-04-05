@@ -14,4 +14,5 @@ dependencies {
     implementation(libs.coroutines)
     implementation(libs.bundles.serialization)
     implementation(libs.kape.kpi)
+    implementation(libs.kape.vpnmanager)
 }

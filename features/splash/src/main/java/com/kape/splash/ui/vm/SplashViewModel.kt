@@ -2,6 +2,7 @@ package com.kape.splash.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
 import com.kape.data.Connection
@@ -13,7 +14,6 @@ import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.StopConnectionUseCase
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch

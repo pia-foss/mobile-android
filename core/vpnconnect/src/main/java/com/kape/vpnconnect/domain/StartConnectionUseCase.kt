@@ -1,9 +1,13 @@
 package com.kape.vpnconnect.domain
 
+import com.kape.contracts.ConnectionConfigurationUseCase
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
-import com.kape.vpnconnect.utils.ConnectionStatusProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
+import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
+import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 
 class StartConnectionUseCase(
     private val connectionSource: ConnectionDataSource,
@@ -36,7 +40,7 @@ class StartConnectionUseCase(
     private suspend fun startVpnConnection(server: VpnServer): Boolean {
         val connected = connectionSource.startConnection(
             connectionConfigurationUseCase.generateConnectionConfiguration(server = server),
-            connectionStatusProvider,
+            connectionStatusProvider as VPNManagerConnectionListener,
         )
         startPortForwardingUseCase()
         return connected

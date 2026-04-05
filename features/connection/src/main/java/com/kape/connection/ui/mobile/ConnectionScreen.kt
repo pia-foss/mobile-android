@@ -63,8 +63,10 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.ConnectionScreenState
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.customization.data.Element
 import com.kape.data.ConnectionStatus
+import com.kape.data.VpnConnectionInfo
 import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.data.vpnserver.VpnServer
 import com.kape.rating.data.RatingDialogType
@@ -88,7 +90,7 @@ import com.kape.ui.mobile.tiles.Traffic
 import com.kape.ui.mobile.tiles.VpnLocationPicker
 import com.kape.ui.theme.PiaTypography.subtitle3
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -283,7 +285,7 @@ private fun DisplayComponent(
     viewModel: ConnectionViewModel,
     screenState: ConnectionScreenState,
     connectionStatus: ConnectionStatus,
-    vpnState: ConnectionInfoProvider.VpnConnectionInfo,
+    vpnState: VpnConnectionInfo,
 ) {
     if (isVisible) {
         val context: Context = LocalContext.current

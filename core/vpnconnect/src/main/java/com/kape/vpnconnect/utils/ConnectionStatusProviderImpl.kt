@@ -1,6 +1,8 @@
 package com.kape.vpnconnect.utils
 
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.ConnectionStatus
+import com.kape.data.VpnConnectionStatus
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import kotlinx.coroutines.CoroutineScope
@@ -16,10 +18,10 @@ import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class ConnectionStatusProvider(
+class ConnectionStatusProviderImpl(
     private val connectionValues: Map<ConnectionStatus, String>,
     private val notificationHandler: NotificationHandler,
-) : VPNManagerConnectionListener {
+) : ConnectionStatusProvider, VPNManagerConnectionListener {
     private var timerJob: Job? = null
     private var timer: Timer? = null
     private val defaultVpnConnectionStatus = VpnConnectionStatus(
@@ -28,7 +30,7 @@ class ConnectionStatusProvider(
     )
     private val _state: MutableStateFlow<VpnConnectionStatus> =
         MutableStateFlow(defaultVpnConnectionStatus)
-    val state: StateFlow<VpnConnectionStatus> = _state.asStateFlow()
+    override val state: StateFlow<VpnConnectionStatus> = _state.asStateFlow()
 
     override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
         val currentStatus = when (status) {
@@ -105,11 +107,4 @@ class ConnectionStatusProvider(
             _state.update { it.copy(status, title) }
         }
     }
-
-    data class VpnConnectionStatus(
-        val status: ConnectionStatus,
-        val title: String,
-        val vpnManagerConnectionStatus: VPNManagerConnectionStatus? = null,
-    )
-
 }

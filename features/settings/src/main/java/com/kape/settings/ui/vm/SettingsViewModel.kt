@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.AppInfo
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.contracts.Router
 import com.kape.csi.domain.SendLogUseCase
@@ -40,7 +41,7 @@ import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.domain.ReconnectUseCase
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

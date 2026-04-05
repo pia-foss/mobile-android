@@ -1,7 +1,8 @@
 package com.kape.vpnconnect.domain
 
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.data.vpnserver.VpnServer
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 
 class ReconnectUseCase(
     private val startConnectionUseCase: StartConnectionUseCase,

@@ -14,7 +14,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,14 +39,14 @@ import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
 fun TvProtocolSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
     val initialFocusRequester = remember { FocusRequester() }
 
     val protocolDialogVisible = remember { mutableStateOf(false) }

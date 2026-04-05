@@ -6,6 +6,8 @@ import android.app.PendingIntent
 import android.content.Context
 import androidx.work.WorkManager
 import com.kape.contracts.ConfigInfo
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
@@ -20,7 +22,7 @@ import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnconnect.domain.ClientStateDataSource
-import com.kape.vpnconnect.domain.ConnectionConfigurationUseCase
+import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.vpnconnect.domain.ConnectionConfigurationUseCaseImpl
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
@@ -34,11 +36,12 @@ import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.domain.StopPortForwardingUseCase
 import com.kape.vpnconnect.domain.StopShadowsocksUseCase
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
-import com.kape.vpnconnect.utils.ConnectionStatusProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
+import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import com.kape.vpnconnect.utils.NotificationHandler
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.kape.vpnmanager.presenters.VPNManagerAPI
+import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
@@ -74,14 +77,14 @@ class VpnConnectModule {
     ): NotificationHandler =
         NotificationHandler(notificationManager, notificationBuilder)
 
-    @Singleton
+    @Singleton([ConnectionStatusProvider::class, VPNManagerConnectionListener::class])
     fun provideConnectionStatusProvider(
         connectionValues: Map<ConnectionStatus, String>,
         notificationHandler: NotificationHandler,
     ): ConnectionStatusProvider =
-        ConnectionStatusProvider(connectionValues, notificationHandler)
+        ConnectionStatusProviderImpl(connectionValues, notificationHandler)
 
-    @Singleton
+    @Singleton([ConnectionInfoProvider::class])
     fun provideConnectionInfoProvider(
         connectionStatusProvider: ConnectionStatusProvider,
         clientStateDataSource: ClientStateDataSource,
@@ -90,7 +93,7 @@ class VpnConnectModule {
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): ConnectionInfoProvider =
-        ConnectionInfoProvider(
+        ConnectionInfoProviderImpl(
             connectionStatusProvider,
             clientStateDataSource,
             connectionPrefs,

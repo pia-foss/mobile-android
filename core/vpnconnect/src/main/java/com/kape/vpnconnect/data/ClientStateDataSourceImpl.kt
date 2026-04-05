@@ -1,8 +1,8 @@
 package com.kape.vpnconnect.data
 
+import com.kape.data.NO_IP
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
-import com.kape.localprefs.prefs.NO_IP
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.utils.DELAY_BETWEEN_RETRY

@@ -10,34 +10,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.theme.statusBarConnected
-import com.kape.ui.theme.statusBarConnecting
-import com.kape.ui.theme.statusBarDefault
-import com.kape.ui.theme.statusBarError
 import com.kape.ui.tv.elements.AboutButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
-import org.koin.androidx.compose.koinViewModel
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TvAboutScreen(licences: List<String>) = Screen {
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
 
     Box(
         modifier = Modifier

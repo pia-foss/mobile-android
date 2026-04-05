@@ -36,7 +36,7 @@ import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.tiles.QuickConnect
 import com.kape.ui.tv.tiles.VpnLocationPicker
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.util.Locale
@@ -44,7 +44,7 @@ import java.util.Locale
 @Composable
 fun TvConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
     val state by connectionInfoProvider.connectionState.collectAsState()
     val isConnected = viewModel.isConnected.collectAsState()
     val topStartHeaderFocusRequester = remember { FocusRequester() }

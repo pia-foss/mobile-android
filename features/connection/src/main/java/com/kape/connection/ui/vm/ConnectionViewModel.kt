@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.connection.utils.ConnectionScreenState
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.Router
 import com.kape.customization.data.Element
 import com.kape.data.AutomationSettings
@@ -36,7 +37,7 @@ import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnconnect.domain.StartConnectionUseCase
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

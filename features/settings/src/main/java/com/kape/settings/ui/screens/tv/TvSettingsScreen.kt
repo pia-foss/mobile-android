@@ -11,17 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -30,21 +27,17 @@ import androidx.compose.ui.unit.dp
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.theme.statusBarConnected
-import com.kape.ui.theme.statusBarConnecting
-import com.kape.ui.theme.statusBarDefault
-import com.kape.ui.theme.statusBarError
 import com.kape.ui.tv.elements.SecondaryButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
 fun TvSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
     val initialFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(key1 = Unit) {

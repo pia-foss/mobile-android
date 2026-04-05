@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +30,6 @@ import androidx.compose.ui.focus.FocusDirection.Companion.Left
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -43,14 +41,10 @@ import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.regions.data.ServerData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.theme.statusBarConnected
-import com.kape.ui.theme.statusBarConnecting
-import com.kape.ui.theme.statusBarDefault
-import com.kape.ui.theme.statusBarError
 import com.kape.ui.tv.elements.Search
 import com.kape.ui.tv.text.RegionSelectionGridSectionText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
 import com.kape.vpnregionselection.util.ItemType
@@ -65,7 +59,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
     val allButtonFocusRequester = remember { FocusRequester() }
     val favoriteButtonFocusRequester = remember { FocusRequester() }
     val searchButtonFocusRequester = remember { FocusRequester() }
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
     val status by connectionInfoProvider.connectionState.collectAsState()
     val isFavoriteSelected = remember { mutableStateOf(false) }
     val isSearchEnabled = remember { mutableStateOf(false) }

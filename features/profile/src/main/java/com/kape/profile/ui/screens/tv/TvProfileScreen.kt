@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -37,24 +36,20 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.kape.profile.ui.vm.ProfileViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.theme.statusBarConnected
-import com.kape.ui.theme.statusBarConnecting
-import com.kape.ui.theme.statusBarDefault
-import com.kape.ui.theme.statusBarError
 import com.kape.ui.tiles.LogoutDialog
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.tv.text.SettingsL2Text
 import com.kape.ui.tv.text.SettingsL2TextDescription
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
 fun TvProfileScreen() = Screen {
     val viewModel: ProfileViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
 
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
     val logoutDialogVisible = remember { mutableStateOf(false) }

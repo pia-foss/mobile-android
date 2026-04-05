@@ -1,10 +1,11 @@
 package com.kape.rating.utils
 
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
 import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.rating.data.RatingDialogType
-import com.kape.vpnconnect.utils.ConnectionStatusProvider
+import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
