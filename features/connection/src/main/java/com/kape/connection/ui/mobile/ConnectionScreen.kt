@@ -3,7 +3,6 @@ package com.kape.connection.ui.mobile
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
@@ -65,7 +64,9 @@ import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.ConnectionScreenState
 import com.kape.customization.data.Element
-import com.kape.portforwarding.data.model.PortForwardingStatus
+import com.kape.data.ConnectionStatus
+import com.kape.data.portforwarding.PortForwardingStatus
+import com.kape.data.vpnserver.VpnServer
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.ui.RatingFeedbackDialog
 import com.kape.rating.ui.RatingReviewDialog
@@ -82,16 +83,12 @@ import com.kape.ui.mobile.tiles.ConnectionInfo
 import com.kape.ui.mobile.tiles.IPTile
 import com.kape.ui.mobile.tiles.QuickConnect
 import com.kape.ui.mobile.tiles.QuickSettings
-import com.kape.ui.mobile.tiles.ShadowsocksLocationPicker
 import com.kape.ui.mobile.tiles.Snooze
 import com.kape.ui.mobile.tiles.Traffic
 import com.kape.ui.mobile.tiles.VpnLocationPicker
 import com.kape.ui.theme.PiaTypography.subtitle3
 import com.kape.ui.utils.LocalColors
-import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionInfoProvider
-import com.kape.vpnconnect.utils.ConnectionStatus
-import com.kape.vpnconnect.utils.ConnectionStatusProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel

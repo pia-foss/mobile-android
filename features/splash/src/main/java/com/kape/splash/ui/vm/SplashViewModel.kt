@@ -4,23 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
-import com.kape.contracts.data.Connection
-import com.kape.contracts.data.Subscribe
-import com.kape.contracts.data.TvWelcome
-import com.kape.contracts.data.Update
+import com.kape.data.Connection
+import com.kape.data.DI
+import com.kape.data.Subscribe
+import com.kape.data.TvWelcome
+import com.kape.data.Update
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.httpclient.domain.GetWebsiteDownloadLink
-import com.kape.utils.DI
 import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class SplashViewModel(

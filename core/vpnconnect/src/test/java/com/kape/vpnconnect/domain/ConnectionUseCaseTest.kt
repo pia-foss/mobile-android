@@ -2,7 +2,6 @@ package com.kape.vpnconnect.domain
 
 import android.app.Notification
 import android.app.PendingIntent
-import androidx.compose.runtime.mutableStateOf
 import app.cash.turbine.test
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs

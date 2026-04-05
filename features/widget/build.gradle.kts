@@ -28,6 +28,7 @@ dependencies {
     implementation(libs.bundles.koin)
     implementation(libs.kape.vpnmanager)
     implementation(project(":core:vpnconnect"))
+    implementation(project(":core:data"))
     implementation(project(":core:vpnlauncher"))
     implementation(project(":capabilities:ui"))
 }

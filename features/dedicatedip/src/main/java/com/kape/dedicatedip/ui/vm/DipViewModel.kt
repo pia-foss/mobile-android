@@ -9,11 +9,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.Router
-import com.kape.contracts.data.DedicatedIpActivateToken
-import com.kape.contracts.data.DedicatedIpLocationSelection
-import com.kape.contracts.data.DedicatedIpSignupPlans
-import com.kape.contracts.data.DedicatedIpSignupTokenActivate
-import com.kape.contracts.data.DedicatedIpSignupTokenDetails
+import com.kape.data.DedicatedIpActivateToken
+import com.kape.data.DedicatedIpLocationSelection
+import com.kape.data.DedicatedIpSignupPlans
+import com.kape.data.DedicatedIpSignupTokenActivate
+import com.kape.data.DedicatedIpSignupTokenDetails
+import com.kape.data.vpnserver.VpnServer
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
 import com.kape.dedicatedip.domain.ActivateDipUseCase
@@ -30,7 +31,6 @@ import com.kape.localprefs.prefs.DipPrefs
 import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
-import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
@@ -38,7 +38,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class DipViewModel(

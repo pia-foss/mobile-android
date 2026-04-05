@@ -1,4 +1,4 @@
-package com.kape.utils.vpnserver
+package com.kape.data.vpnserver
 
 data class VpnServerInfo(
     var autoRegions: List<String>? = null,

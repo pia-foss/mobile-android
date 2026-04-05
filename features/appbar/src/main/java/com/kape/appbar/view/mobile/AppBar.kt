@@ -36,6 +36,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.data.ConnectionStatus
 import com.kape.ui.R
 import com.kape.ui.mobile.text.AppBarConnectionTextDefault
 import com.kape.ui.mobile.text.AppBarTitleText
@@ -43,7 +44,6 @@ import com.kape.ui.theme.connectedGradient
 import com.kape.ui.theme.connectingGradient
 import com.kape.ui.theme.errorGradient
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

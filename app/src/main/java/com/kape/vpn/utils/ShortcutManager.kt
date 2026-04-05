@@ -5,25 +5,22 @@ import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import com.kape.data.ConnectionStatus
+import com.kape.data.DI
 import com.kape.ui.R
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_CONNECT
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_DISCONNECT
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
-import com.kape.utils.DI
 import com.kape.vpn.MainActivity
-import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnconnect.utils.ConnectionStatusProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
-import org.koin.core.component.KoinComponent
-import kotlin.coroutines.CoroutineContext
 
 @Singleton
 class ShortcutManager(

@@ -2,7 +2,7 @@ package com.kape.vpnconnect.utils
 
 import android.app.Notification
 import android.app.NotificationManager
-import com.kape.utils.NOTIFICATION_ID
+import com.kape.data.NOTIFICATION_ID
 
 class NotificationHandler(
     private val notificationManager: NotificationManager,

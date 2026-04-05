@@ -19,11 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kape.data.SnoozeIntervals
 import com.kape.ui.R
 import com.kape.ui.mobile.text.QuickConnectText
 import com.kape.ui.mobile.text.TileTitleText
 import com.kape.ui.utils.LocalColors
-import com.kape.utils.SnoozeIntervals
 
 @Composable
 fun Snooze(

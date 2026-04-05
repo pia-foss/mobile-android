@@ -12,6 +12,7 @@ android {
 
 dependencies {
     implementation(project(":core:contracts"))
+    implementation(project(":core:data"))
     implementation(libs.coroutines)
     implementation(libs.serialization.json)
     implementation(libs.bundles.compose)

@@ -1,4 +1,4 @@
-package com.kape.contracts.data.kpi
+package com.kape.data.kpi
 
 sealed class KpiVpnProtocol(val value: String) {
     data object OpenVpn : KpiVpnProtocol("OpenVPN")

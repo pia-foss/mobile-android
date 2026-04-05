@@ -7,6 +7,8 @@ import android.content.Context
 import androidx.work.WorkManager
 import com.kape.contracts.ConfigInfo
 import com.kape.contracts.KpiDataSource
+import com.kape.data.ConnectionStatus
+import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -15,7 +17,6 @@ import com.kape.obfuscator.domain.StartObfuscatorProcess
 import com.kape.obfuscator.domain.StopObfuscatorProcess
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
-import com.kape.utils.DI
 import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnconnect.domain.ClientStateDataSource
@@ -32,7 +33,6 @@ import com.kape.vpnconnect.domain.StartShadowsocksUseCase
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.domain.StopPortForwardingUseCase
 import com.kape.vpnconnect.domain.StopShadowsocksUseCase
-import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnconnect.utils.ConnectionStatusProvider

@@ -1,9 +1,9 @@
 package com.kape.vpnregions.data
 
+import com.kape.data.vpnserver.VpnServer
+import com.kape.data.vpnserver.VpnServerInfo
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.DipPrefs
-import com.kape.utils.vpnserver.VpnServer
-import com.kape.utils.vpnserver.VpnServerInfo
 import com.kape.vpnconnect.domain.ConnectionConfigurationUseCase
 import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnregions.domain.VpnRegionDataSource

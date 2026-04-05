@@ -1,4 +1,4 @@
-package com.kape.utils.vpnserver
+package com.kape.data.vpnserver
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

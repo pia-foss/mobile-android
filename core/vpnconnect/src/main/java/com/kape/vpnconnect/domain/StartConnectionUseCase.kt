@@ -1,7 +1,7 @@
 package com.kape.vpnconnect.domain
 
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnconnect.utils.ConnectionStatusProvider
 

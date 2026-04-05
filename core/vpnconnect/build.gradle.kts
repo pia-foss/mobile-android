@@ -13,6 +13,7 @@ android {
 dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:contracts"))
+    implementation(project(":core:data"))
     implementation(project(":core:portforwarding"))
     implementation(project(":core:obfuscator"))
     implementation(project(":core:localprefs:prefs"))

@@ -1,4 +1,4 @@
-package com.kape.contracts.data.kpi
+package com.kape.data.kpi
 
 sealed class KpiConnectionEvent(val value: String) {
     data object ConnectionAttempt : KpiConnectionEvent("VPN_CONNECTION_ATTEMPT")

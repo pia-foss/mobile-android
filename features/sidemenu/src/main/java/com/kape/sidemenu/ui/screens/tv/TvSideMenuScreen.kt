@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kape.data.ConnectionStatus
 import com.kape.sidemenu.ui.vm.SideMenuViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -39,7 +40,6 @@ import com.kape.ui.tv.elements.SecondaryButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionInfoProvider
-import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 

@@ -2,10 +2,10 @@ package com.kape.splash.di
 
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
+import com.kape.data.DI
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.splash.ui.vm.SplashViewModel
-import com.kape.utils.DI
 import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.utils.ConnectionInfoProvider

@@ -26,6 +26,7 @@ dependencies {
     implementation(libs.kape.account)
     implementation(project(":core:contracts"))
     implementation(project(":core:utils"))
+    implementation(project(":core:data"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))

@@ -5,23 +5,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
-import com.kape.contracts.data.Connection
-import com.kape.contracts.data.HelpSettings
-import com.kape.contracts.data.TvSideMenu
+import com.kape.data.AUTO_KEY
+import com.kape.data.Connection
+import com.kape.data.HelpSettings
+import com.kape.data.TvSideMenu
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.regions.data.ServerData
-import com.kape.utils.AUTO_KEY
-import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnconnect.domain.ReconnectUseCase
-import com.kape.vpnconnect.domain.StartConnectionUseCase
 import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 import java.util.Collections
 
 @KoinViewModel

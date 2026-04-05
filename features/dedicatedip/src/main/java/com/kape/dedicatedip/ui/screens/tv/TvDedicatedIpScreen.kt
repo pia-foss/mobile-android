@@ -32,6 +32,7 @@ import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kape.data.ConnectionStatus
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.ui.R
@@ -51,7 +52,6 @@ import com.kape.ui.tv.text.DedicatedIpTitle
 import com.kape.ui.tv.text.Input
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnconnect.utils.ConnectionInfoProvider
-import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 

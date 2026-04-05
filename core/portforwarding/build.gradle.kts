@@ -12,6 +12,7 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
+    implementation(project(":core:data"))
     implementation(project(":core:httpclient"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))

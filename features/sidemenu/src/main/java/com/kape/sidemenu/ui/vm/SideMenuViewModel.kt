@@ -7,18 +7,17 @@ import androidx.lifecycle.viewModelScope
 import com.kape.contracts.AppInfo
 import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
+import com.kape.data.About
+import com.kape.data.Connection
+import com.kape.data.DedicatedIpActivateToken
+import com.kape.data.PerAppSettings
+import com.kape.data.Profile
+import com.kape.data.Settings
+import com.kape.data.Splash
+import com.kape.data.WebDestination
 import com.kape.profile.domain.GetProfileUseCase
-import com.kape.contracts.data.About
-import com.kape.contracts.data.Connection
-import com.kape.contracts.data.DedicatedIpActivateToken
-import com.kape.contracts.data.PerAppSettings
-import com.kape.contracts.data.Profile
-import com.kape.contracts.data.Settings
-import com.kape.contracts.data.Splash
-import com.kape.contracts.data.WebDestination
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class SideMenuViewModel(

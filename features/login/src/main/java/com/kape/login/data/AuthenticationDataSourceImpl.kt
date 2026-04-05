@@ -1,12 +1,11 @@
 package com.kape.login.data
 
 import com.kape.contracts.AuthenticationDataSource
-import com.kape.contracts.data.auth.ApiResult
-import com.kape.contracts.data.auth.getApiError
+import com.kape.data.auth.ApiResult
+import com.kape.data.auth.getApiError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
-import org.koin.core.component.KoinComponent
 import kotlin.coroutines.resume
 
 private const val STORE = "google_play"

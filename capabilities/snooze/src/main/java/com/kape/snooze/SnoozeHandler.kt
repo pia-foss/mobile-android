@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.utils.WorkerTags
 import com.kape.vpnlauncher.VpnLauncher
 import java.util.Calendar
 import java.util.concurrent.TimeUnit

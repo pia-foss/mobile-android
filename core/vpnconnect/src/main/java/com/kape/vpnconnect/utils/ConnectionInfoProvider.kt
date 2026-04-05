@@ -1,18 +1,18 @@
 package com.kape.vpnconnect.utils
 
 import androidx.compose.material3.ColorScheme
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.kape.contracts.data.kpi.KpiConnectionStatus
+import com.kape.data.ConnectionStatus
+import com.kape.data.DI
+import com.kape.data.kpi.KpiConnectionStatus
+import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.NO_IP
-import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.theme.statusBarError
-import com.kape.utils.DI
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,8 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named

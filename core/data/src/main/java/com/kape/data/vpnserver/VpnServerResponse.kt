@@ -1,4 +1,4 @@
-package com.kape.utils.vpnserver
+package com.kape.data.vpnserver
 
 data class VpnServerResponse(
     private val servers: Map<String, VpnServer>? = null,

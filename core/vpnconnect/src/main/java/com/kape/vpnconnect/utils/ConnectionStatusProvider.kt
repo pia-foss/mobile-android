@@ -1,9 +1,6 @@
 package com.kape.vpnconnect.utils
 
-import android.content.Context
-import com.kape.contracts.data.kpi.KpiConnectionStatus
-import com.kape.shareevents.domain.SubmitKpiEventUseCase
-import com.kape.vpnmanager.api.DisconnectReason
+import com.kape.data.ConnectionStatus
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import kotlinx.coroutines.CoroutineScope

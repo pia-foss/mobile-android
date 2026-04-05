@@ -2,15 +2,14 @@ package com.kape.signup.ui.vm
 
 import android.app.Activity
 import android.util.Patterns
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.Router
-import com.kape.contracts.data.LoginWithCredentials
-import com.kape.contracts.data.TvWelcome
-import com.kape.contracts.data.WebDestination
+import com.kape.data.LoginWithCredentials
+import com.kape.data.TvWelcome
+import com.kape.data.WebDestination
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
@@ -40,7 +39,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 import java.util.Locale
 
 @KoinViewModel

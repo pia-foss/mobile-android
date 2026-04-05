@@ -1,6 +1,6 @@
 package com.kape.vpnconnect.domain
 
-import com.kape.utils.vpnserver.VpnServer
+import com.kape.data.vpnserver.VpnServer
 import com.kape.vpnmanager.data.models.ClientConfiguration
 
 interface ConnectionConfigurationUseCase {

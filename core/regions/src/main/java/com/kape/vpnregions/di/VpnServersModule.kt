@@ -1,6 +1,6 @@
 package com.kape.vpnregions.di
 
-import com.kape.utils.DI
+import com.kape.data.DI
 import com.kape.vpnregions.data.VpnRegionRepository
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.utils.RegionListProvider

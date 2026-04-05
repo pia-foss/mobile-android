@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:utils"))
     implementation(project(":core:contracts"))
+    implementation(project(":core:data"))
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.viewmodel)

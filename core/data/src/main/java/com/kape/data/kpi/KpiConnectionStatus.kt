@@ -1,4 +1,4 @@
-package com.kape.contracts.data.kpi
+package com.kape.data.kpi
 
 sealed class KpiConnectionStatus {
     data object NotConnected : KpiConnectionStatus()

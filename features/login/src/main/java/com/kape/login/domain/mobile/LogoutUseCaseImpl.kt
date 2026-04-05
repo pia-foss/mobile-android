@@ -1,9 +1,8 @@
 package com.kape.login.domain.mobile
 
-import android.util.Printer
 import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.LogoutUseCase
-import com.kape.contracts.data.auth.ApiResult
+import com.kape.data.auth.ApiResult
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
@@ -17,7 +16,6 @@ import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.payments.SubscriptionPrefs
 import com.kape.vpnconnect.domain.StopConnectionUseCase
-import com.kape.vpnconnect.utils.ConnectionInfoProvider
 import org.koin.core.annotation.Singleton
 
 @Singleton

@@ -24,12 +24,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.ui.R
 import com.kape.ui.mobile.text.SelectedRegionServerText
 import com.kape.ui.mobile.text.SelectedRegionTitleText
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.shadowsocksserver.ShadowsocksServer
 
 @Composable
 fun ShadowsocksLocationPicker(

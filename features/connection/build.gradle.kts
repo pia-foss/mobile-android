@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
     implementation(project(":core:utils"))
+    implementation(project(":core:data"))
     implementation(project(":features:appbar"))
     implementation(project(":features:settings"))
     implementation(project(":features:sidemenu"))

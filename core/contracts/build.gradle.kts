@@ -10,6 +10,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:data"))
     implementation(libs.coroutines)
     implementation(libs.bundles.serialization)
     implementation(libs.kape.kpi)

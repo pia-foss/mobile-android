@@ -3,7 +3,7 @@ package com.kape.login.ui.vm.mobile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
-import com.kape.contracts.data.LoginWithCredentials
+import com.kape.data.LoginWithCredentials
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.IDLE
 import com.kape.login.utils.INVALID

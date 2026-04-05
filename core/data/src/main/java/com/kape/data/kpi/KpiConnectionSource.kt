@@ -1,4 +1,4 @@
-package com.kape.contracts.data.kpi
+package com.kape.data.kpi
 
 sealed class KpiConnectionSource(val value: String) {
     data object Automatic : KpiConnectionSource("Automatic")

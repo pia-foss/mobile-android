@@ -1,8 +1,8 @@
 package com.kape.login.domain.mobile
 
 import com.kape.contracts.AuthenticationDataSource
-import com.kape.contracts.data.auth.ApiError
-import com.kape.contracts.data.auth.ApiResult
+import com.kape.data.auth.ApiError
+import com.kape.data.auth.ApiResult
 import com.kape.login.utils.LoginState
 import org.koin.core.annotation.Singleton
 

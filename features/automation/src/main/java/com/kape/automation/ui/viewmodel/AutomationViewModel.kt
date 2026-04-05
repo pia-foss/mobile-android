@@ -4,24 +4,23 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import com.kape.contracts.Router
-import com.kape.contracts.data.AutomationAddRule
-import com.kape.contracts.data.AutomationBackgroundLocation
-import com.kape.contracts.data.AutomationLocation
-import com.kape.contracts.data.AutomationMain
+import com.kape.data.AutomationAddRule
+import com.kape.data.AutomationBackgroundLocation
+import com.kape.data.AutomationLocation
+import com.kape.data.AutomationMain
+import com.kape.data.DI
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.location.data.LocationPermissionManager
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkRulesManager
 import com.kape.utils.AutomationManager
-import com.kape.utils.DI
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class AutomationViewModel(

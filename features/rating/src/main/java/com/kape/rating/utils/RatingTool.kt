@@ -1,13 +1,12 @@
 package com.kape.rating.utils
 
+import com.kape.data.ConnectionStatus
+import com.kape.data.DI
 import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.rating.data.RatingDialogType
-import com.kape.utils.DI
-import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnconnect.utils.ConnectionStatusProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +16,6 @@ import org.koin.core.annotation.Named
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.CoroutineContext
 
 private const val INITIAL_RATING_COUNTER = 3
 private const val RATING_REMINDER_COUNTER = 50

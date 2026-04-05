@@ -3,9 +3,9 @@ package com.kape.shareevents.data
 import android.os.SystemClock
 import com.kape.contracts.ConfigInfo
 import com.kape.contracts.KpiDataSource
-import com.kape.contracts.data.kpi.KpiConnectionEvent
-import com.kape.contracts.data.kpi.KpiConnectionSource
-import com.kape.contracts.data.kpi.KpiEventPropertyKey
+import com.kape.data.kpi.KpiConnectionEvent
+import com.kape.data.kpi.KpiConnectionSource
+import com.kape.data.kpi.KpiEventPropertyKey
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.privateinternetaccess.kpi.KPIAPI

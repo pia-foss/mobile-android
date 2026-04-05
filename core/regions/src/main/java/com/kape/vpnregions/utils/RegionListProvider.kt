@@ -1,7 +1,7 @@
 package com.kape.vpnregions.utils
 
-import com.kape.utils.DI
-import com.kape.utils.vpnserver.VpnServer
+import com.kape.data.DI
+import com.kape.data.vpnserver.VpnServer
 import com.kape.vpnregions.data.VpnRegionRepository
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import kotlinx.coroutines.CoroutineDispatcher

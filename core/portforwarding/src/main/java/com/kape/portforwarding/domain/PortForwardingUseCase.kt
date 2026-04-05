@@ -1,11 +1,11 @@
 package com.kape.portforwarding.domain
 
+import com.kape.data.portforwarding.PortForwardingStatus
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
-import com.kape.portforwarding.data.model.PortForwardingStatus
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
-import com.kape.utils.vpnserver.VpnServer
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.annotation.Singleton
 import java.text.SimpleDateFormat

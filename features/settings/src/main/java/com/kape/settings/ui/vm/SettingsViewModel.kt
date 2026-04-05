@@ -8,20 +8,20 @@ import androidx.lifecycle.viewModelScope
 import com.kape.contracts.AppInfo
 import com.kape.contracts.KpiDataSource
 import com.kape.contracts.Router
-import com.kape.contracts.data.About
-import com.kape.contracts.data.AutomationSettings
-import com.kape.contracts.data.ConnectionStats
-import com.kape.contracts.data.DebugLogs
-import com.kape.contracts.data.ExternalAppList
-import com.kape.contracts.data.GeneralSettings
-import com.kape.contracts.data.HelpSettings
-import com.kape.contracts.data.KillSwitchSettings
-import com.kape.contracts.data.NetworkSettings
-import com.kape.contracts.data.ObfuscationSettings
-import com.kape.contracts.data.PrivacySettings
-import com.kape.contracts.data.ProtocolSettings
-import com.kape.contracts.data.WebDestination
 import com.kape.csi.domain.SendLogUseCase
+import com.kape.data.About
+import com.kape.data.AutomationSettings
+import com.kape.data.ConnectionStats
+import com.kape.data.DebugLogs
+import com.kape.data.ExternalAppList
+import com.kape.data.GeneralSettings
+import com.kape.data.HelpSettings
+import com.kape.data.KillSwitchSettings
+import com.kape.data.NetworkSettings
+import com.kape.data.ObfuscationSettings
+import com.kape.data.PrivacySettings
+import com.kape.data.ProtocolSettings
+import com.kape.data.WebDestination
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -47,7 +47,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class SettingsViewModel(

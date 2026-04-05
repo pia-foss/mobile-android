@@ -1,8 +1,8 @@
 package com.kape.shadowsocksregions.data
 
+import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.shadowsocksregions.domain.ShadowsocksRegionDataSource
 import com.kape.shadowsocksregions.utils.adaptShadowsocksServers
-import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import org.koin.core.annotation.Singleton
 
 @Singleton

@@ -18,6 +18,7 @@ import com.kape.contracts.ConfigInfo
 import com.kape.contracts.NetworkManager
 import com.kape.csi.di.CsiModule
 import com.kape.customization.di.CustomizationModule
+import com.kape.data.DI
 import com.kape.dedicatedip.di.DipModule
 import com.kape.featureflags.di.FeatureFlagsModule
 import com.kape.httpclient.data.CertificatePinningClientImpl
@@ -56,7 +57,6 @@ import com.kape.tvwelcome.di.TvWelcomeModule
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_AUTOMATION
 import com.kape.ui.utils.PriceFormatter
 import com.kape.utils.AutomationManager
-import com.kape.utils.DI
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.di.UtilsModule
 import com.kape.vpn.BuildConfig

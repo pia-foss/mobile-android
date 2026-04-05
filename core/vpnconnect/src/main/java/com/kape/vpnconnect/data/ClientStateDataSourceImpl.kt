@@ -5,7 +5,6 @@ import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.NO_IP
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnconnect.domain.ClientStateDataSource
-import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnconnect.utils.DELAY_BETWEEN_RETRY
 import com.kape.vpnconnect.utils.SHORT_DELAY
 import com.kape.vpnconnect.utils.STATUS_REQUEST_LONG_TIMEOUT

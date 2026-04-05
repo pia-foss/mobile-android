@@ -2,6 +2,8 @@ package com.kape.vpnconnect.domain
 
 import android.app.Notification
 import android.app.PendingIntent
+import com.kape.data.NOTIFICATION_ID
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
@@ -12,8 +14,6 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.ProtocolSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
-import com.kape.utils.NOTIFICATION_ID
-import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnmanager.api.OpenVpnSocksProxyDetails
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.DnsInformation

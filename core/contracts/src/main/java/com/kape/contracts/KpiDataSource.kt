@@ -1,7 +1,8 @@
 package com.kape.contracts
 
-import com.kape.contracts.data.kpi.KpiConnectionEvent
-import com.kape.contracts.data.kpi.KpiConnectionSource
+import com.kape.data.kpi.KpiConnectionEvent
+import com.kape.data.kpi.KpiConnectionSource
+
 
 interface KpiDataSource {
 

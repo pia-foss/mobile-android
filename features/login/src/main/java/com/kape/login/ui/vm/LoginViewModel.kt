@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.Router
-import com.kape.contracts.data.LoginWithEmail
-import com.kape.login.domain.mobile.GetUserLoggedInUseCase
+import com.kape.data.LoginWithEmail
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.FAILED
 import com.kape.login.utils.IDLE
@@ -22,7 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class LoginViewModel(

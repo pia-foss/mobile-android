@@ -1,4 +1,4 @@
-package com.kape.utils.shadowsocksserver
+package com.kape.data.shadowsocksserver
 
 import kotlinx.serialization.Serializable
 

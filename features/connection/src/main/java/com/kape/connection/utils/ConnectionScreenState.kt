@@ -1,9 +1,7 @@
 package com.kape.connection.utils
 
-import com.kape.portforwarding.data.model.PortForwardingStatus
+import com.kape.data.vpnserver.VpnServer
 import com.kape.rating.data.RatingDialogType
-import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.utils.ConnectionStatus
 
 data class ConnectionScreenState(
     val server: VpnServer,

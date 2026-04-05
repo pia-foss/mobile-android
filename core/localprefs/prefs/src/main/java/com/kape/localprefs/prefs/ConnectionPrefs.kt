@@ -3,9 +3,8 @@ package com.kape.localprefs.prefs
 import android.content.Context
 import com.kape.connection.model.PortBindInformation
 import com.kape.connection.model.QuickConnectServer
+import com.kape.data.vpnserver.VpnServer
 import com.kape.utils.Prefs
-import com.kape.utils.vpnserver.VpnServer
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 

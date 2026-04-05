@@ -1,4 +1,4 @@
-package com.kape.utils
+package com.kape.data
 
 const val AUTO_KEY = "auto"
 const val NOTIFICATION_ID = 123

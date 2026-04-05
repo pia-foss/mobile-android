@@ -1,4 +1,4 @@
-package com.kape.portforwarding.data.model
+package com.kape.data.portforwarding
 
 sealed class PortForwardingStatus {
     data object Requesting : PortForwardingStatus()

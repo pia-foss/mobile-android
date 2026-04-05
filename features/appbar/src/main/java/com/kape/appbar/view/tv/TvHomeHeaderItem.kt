@@ -26,6 +26,7 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Tab
 import androidx.tv.material3.TabRow
 import androidx.tv.material3.TabRowDefaults
+import com.kape.data.ConnectionStatus
 import com.kape.ui.R
 import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
@@ -35,7 +36,6 @@ import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.tv.text.PrimaryTabText
 import com.kape.ui.tv.text.SecondaryTabText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionStatus
 
 @Composable
 fun TvHomeHeaderItem(

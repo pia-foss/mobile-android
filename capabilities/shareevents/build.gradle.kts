@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.kape.kpi)
     implementation(project(":core:utils"))
     implementation(project(":core:contracts"))
+    implementation(project(":core:data"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
 

@@ -1,11 +1,11 @@
 package com.kape.vpnconnect.domain
 
+import com.kape.data.DI
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.obfuscator.data.ObfuscatorProcessInformation
 import com.kape.obfuscator.data.ObfuscatorProcessListener
 import com.kape.obfuscator.domain.StartObfuscatorProcess
-import com.kape.utils.DI
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

@@ -1,6 +1,7 @@
 package com.kape.contracts
 
-import com.kape.contracts.data.auth.ApiResult
+import com.kape.data.auth.ApiResult
+
 
 interface AuthenticationDataSource {
 
