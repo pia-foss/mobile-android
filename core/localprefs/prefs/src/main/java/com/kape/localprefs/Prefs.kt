@@ -1,4 +1,4 @@
-package com.kape.utils
+package com.kape.localprefs
 
 import android.content.Context
 import android.content.SharedPreferences

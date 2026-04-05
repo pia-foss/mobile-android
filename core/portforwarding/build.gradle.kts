@@ -11,7 +11,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:utils"))
     implementation(project(":core:data"))
     implementation(project(":core:httpclient"))
     implementation(project(":core:localprefs:prefs"))
@@ -22,7 +21,6 @@ dependencies {
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)
-    implementation(libs.spongycastle)
 }
 
 koinCompiler {

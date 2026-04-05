@@ -4,7 +4,7 @@ import android.content.Context
 import com.kape.dip.data.DedicatedIpSelectedCountry
 import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.dip.data.DedicatedIpSupportedCountries
-import com.kape.utils.Prefs
+import com.kape.localprefs.Prefs
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

@@ -5,7 +5,7 @@ import com.kape.connection.model.PortBindInformation
 import com.kape.connection.model.QuickConnectServer
 import com.kape.data.NO_IP
 import com.kape.data.vpnserver.VpnServer
-import com.kape.utils.Prefs
+import com.kape.localprefs.Prefs
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 

@@ -4,7 +4,7 @@ import android.content.Context
 import com.kape.data.vpnserver.VpnServer
 import com.kape.data.vpnserver.VpnServerOutdated
 import com.kape.regions.data.ServerData
-import com.kape.utils.Prefs
+import com.kape.localprefs.Prefs
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json

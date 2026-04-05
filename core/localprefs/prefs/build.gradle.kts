@@ -12,9 +12,9 @@ android {
 
 dependencies {
     implementation(project(":core:data"))
-    implementation(project(":core:utils"))
     implementation(project(":core:localprefs:data"))
     implementation(libs.bundles.koin)
     implementation(libs.bundles.serialization)
     implementation(libs.kape.account)
+    implementation(libs.crypto)
 }

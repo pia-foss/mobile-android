@@ -8,7 +8,7 @@ import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
-import com.kape.utils.Prefs
+import com.kape.localprefs.Prefs
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton

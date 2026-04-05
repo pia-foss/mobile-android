@@ -5,7 +5,7 @@ import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
 import com.kape.payments.data.SubscriptionPlan
-import com.kape.utils.Prefs
+import com.kape.localprefs.Prefs
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 import kotlin.toString
