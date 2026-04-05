@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":features:dedicatedip"))
     implementation(project(":features:rating"))
     implementation(project(":capabilities:buildconfig"))
+    implementation(project(":capabilities:sharedui"))
 
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)

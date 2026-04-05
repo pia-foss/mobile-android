@@ -1,4 +1,4 @@
-package com.kape.ui.mobile.tiles
+package com.kape.sharedui.tiles
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

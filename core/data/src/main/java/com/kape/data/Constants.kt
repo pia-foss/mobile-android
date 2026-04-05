@@ -4,6 +4,7 @@ const val AUTO_KEY = "auto"
 const val NOTIFICATION_ID = 123
 const val STATUS_REQUEST_LONG_TIMEOUT = 2000L
 const val NO_IP = "---"
+const val QUICK_CONNECT_MAX_SERVERS = 5
 
 object SnoozeIntervals {
     const val FIVE_MINUTES = 5 * 60 * 1000

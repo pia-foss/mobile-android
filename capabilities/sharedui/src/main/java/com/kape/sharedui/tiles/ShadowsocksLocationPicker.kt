@@ -1,4 +1,4 @@
-package com.kape.ui.mobile.tiles
+package com.kape.sharedui.tiles
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

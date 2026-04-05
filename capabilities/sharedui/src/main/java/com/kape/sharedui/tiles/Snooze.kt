@@ -1,4 +1,4 @@
-package com.kape.ui.mobile.tiles
+package com.kape.sharedui.tiles
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

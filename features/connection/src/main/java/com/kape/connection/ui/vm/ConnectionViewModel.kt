@@ -14,6 +14,7 @@ import com.kape.data.DedicatedIpSignupPlans
 import com.kape.data.HelpSettings
 import com.kape.data.KillSwitchSettings
 import com.kape.data.ProtocolSettings
+import com.kape.data.QUICK_CONNECT_MAX_SERVERS
 import com.kape.data.Settings
 import com.kape.data.ShadowsocksRegionSelection
 import com.kape.data.TvSideMenu
@@ -32,12 +33,10 @@ import com.kape.rating.utils.RatingTool
 import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
 import com.kape.snooze.SnoozeHandler
-import com.kape.ui.mobile.tiles.MAX_SERVERS
 import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnconnect.domain.StartConnectionUseCase
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -204,8 +203,8 @@ class ConnectionViewModel(
 
     private fun getQuickConnectVpnServers(): List<VpnServer> {
         val orderedServers = mutableListOf<VpnServer>()
-        if (getFavoriteServers().size > MAX_SERVERS) {
-            for (index in 0 until MAX_SERVERS) {
+        if (getFavoriteServers().size > QUICK_CONNECT_MAX_SERVERS) {
+        for (index in 0 until QUICK_CONNECT_MAX_SERVERS) {
                 orderedServers.add(getFavoriteServers()[index])
             }
         } else {

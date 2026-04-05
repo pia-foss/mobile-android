@@ -1,4 +1,4 @@
-package com.kape.ui.mobile.tiles
+package com.kape.sharedui.tiles
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,14 +25,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kape.data.QUICK_CONNECT_MAX_SERVERS
 import com.kape.data.vpnserver.VpnServer
 import com.kape.ui.R
 import com.kape.ui.mobile.text.QuickConnectText
 import com.kape.ui.mobile.text.TileTitleText
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-
-const val MAX_SERVERS = 5
 
 @Composable
 fun QuickConnect(
@@ -49,11 +48,11 @@ fun QuickConnect(
         Spacer(modifier = Modifier.height(8.dp))
         Row {
             if (servers.isEmpty()) {
-                for (index in 1..MAX_SERVERS) {
+                for (index in 1..QUICK_CONNECT_MAX_SERVERS) {
                     QuickConnectItem(modifier = Modifier.weight(1f))
                 }
             } else {
-                for (index in 0 until MAX_SERVERS) {
+                for (index in 0 until QUICK_CONNECT_MAX_SERVERS) {
                     val server = servers.keys.toList().getOrNull(index)
                     server?.let { current ->
                         QuickConnectItem(

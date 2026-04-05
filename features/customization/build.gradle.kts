@@ -54,6 +54,7 @@ dependencies {
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":capabilities:sharedui"))
     implementation(project(":features:appbar"))
     implementation(project(":features:connection"))
 }
