@@ -1,16 +1,13 @@
 package com.kape.login.domain
 
-import app.cash.turbine.test
+import com.kape.data.auth.ApiError
+import com.kape.data.auth.ApiResult
 import com.kape.login.BaseTest
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.LoginState
 import com.kape.contracts.AuthenticationDataSource
-import com.kape.contracts.data.auth.ApiError
-import com.kape.contracts.data.auth.ApiResult
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
@@ -19,7 +16,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
-@ExperimentalCoroutinesApi
 internal class LoginUseCaseTest : BaseTest() {
 
     private val source = mockk<AuthenticationDataSource>()
@@ -34,40 +30,25 @@ internal class LoginUseCaseTest : BaseTest() {
     @ParameterizedTest(name = "repo: {0}, expected: {1}")
     @MethodSource("useCaseLogin")
     fun login(result: ApiResult, expected: LoginState) = runTest {
-        coEvery { source.login(any(), any()) } returns flow {
-            emit(result)
-        }
-        useCase.login("user", "pass").test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        coEvery { source.login(any(), any()) } returns result
+        val actual = useCase.login("user", "pass")
+        assertEquals(expected, actual)
     }
 
     @ParameterizedTest(name = "repo: {0}, expected: {1}")
     @MethodSource("useCaseLogin")
     fun loginWithEmail(result: ApiResult, expected: LoginState) = runTest {
-        coEvery { source.loginWithEmail(any()) } returns flow {
-            emit(result)
-        }
-        useCase.loginWithEmail("email").test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        coEvery { source.loginWithEmail(any()) } returns result
+        val actual = useCase.loginWithEmail("email")
+        assertEquals(expected, actual)
     }
 
     @ParameterizedTest(name = "repo: {0}, expected: {1}")
     @MethodSource("useCaseLogin")
     fun loginWithReceipt(result: ApiResult, expected: LoginState) = runTest {
-        coEvery { source.loginWithReceipt(any(), any(), any()) } returns flow {
-            emit(result)
-        }
-        useCase.loginWithReceipt("token", "product", "package").test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        coEvery { source.loginWithReceipt(any(), any(), any()) } returns result
+        val actual = useCase.loginWithReceipt("token", "product", "package")
+        assertEquals(expected, actual)
     }
 
     companion object {

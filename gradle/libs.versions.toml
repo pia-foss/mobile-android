@@ -37,7 +37,6 @@ kape-obfuscator = "0.1.1"
 kape-vpn-manager = "0.4.7-pia"
 test-junit = "4.13.2"
 test-mockk = "1.14.9"
-test-turbine = "1.2.1"
 test-jupiter-params = "6.1.0-M1"
 test-runtime = "6.1.0-M1"
 test-ui-automator = "2.4.0-alpha07"
@@ -94,7 +93,6 @@ billing-amazon = { module = "com.amazon.device:amazon-appstore-sdk", version.ref
 spongycastle = { module = "com.madgag.spongycastle:core", version.ref = "spongy-castle" }
 junit = { module = "junit:junit", version.ref = "test-junit" }
 mockk = { module = "io.mockk:mockk-android", version.ref = "test-mockk" }
-turbine = { module = "app.cash.turbine:turbine", version.ref = "test-turbine" }
 params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "test-jupiter-params" }
 launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "test-runtime" }
 uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "test-ui-automator" }
@@ -141,7 +139,7 @@ kointest = ["koin-testjunit5", "koin-testandroid"]
 koinandroidtest = ["koin-testandroid", "koin-andoridtest"]
 serialization = ["serialization-core", "serialization-json", "datetime"]
 ktor = ["ktorHttp", "ktorCore"]
-test = ["junit", "mockk", "turbine", "params"]
+test = ["junit", "mockk", "params"]
 androidtest = ["uiautomator", "testrunner"]
 coroutines-androidtest = ["coroutines", "coroutines-test"]
 glance = ["glance", "glancematerial", "material3"]

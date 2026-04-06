@@ -1,34 +1,30 @@
 package com.kape.vpnregions.data
 
-import app.cash.turbine.test
+import com.kape.contracts.ConnectionConfigurationUseCase
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.DipPrefs
-import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.domain.ConnectionConfigurationUseCase
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.model.VpnRegionsResponse
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.koin.test.KoinTest
 import java.util.stream.Stream
 
-class VpnRegionRepositoryTest : KoinTest {
+class VpnRegionRepositoryTest {
     private val source: VpnRegionDataSource = mockk()
     private val dipPrefs: DipPrefs = mockk()
     private val connectionPrefs: ConnectionPrefs = mockk(relaxed = true)
-    private val connectionUseCase: ConnectionUseCase = mockk(relaxed = true)
-    private val connectionConfigurationUseCase: ConnectionConfigurationUseCase =
-        mockk(relaxed = true)
+    private val connectionInfoProvider: ConnectionInfoProvider = mockk(relaxed = true)
+    private val connectionConfigurationUseCase: ConnectionConfigurationUseCase = mockk(relaxed = true)
 
     private lateinit var repository: VpnRegionRepository
 
@@ -38,22 +34,19 @@ class VpnRegionRepositoryTest : KoinTest {
             source,
             dipPrefs,
             connectionPrefs,
-            connectionUseCase,
-            connectionConfigurationUseCase,
+            lazy { connectionInfoProvider },
+            lazy { connectionConfigurationUseCase },
         )
     }
 
     @ParameterizedTest(name = "response: {0}, expected: {1}")
     @MethodSource("regions")
     fun fetchRegions(response: VpnRegionsResponse?, expected: List<VpnServer>) = runTest {
-        coEvery { source.fetchVpnRegions(any()) } returns flow { emit(response) }
+        coEvery { source.fetchVpnRegions(any()) } returns response
         every { dipPrefs.getDedicatedIps() } returns emptyList()
 
-        repository.fetchVpnRegions("en").test {
-            val actual = awaitItem()
-            awaitComplete()
-            Assertions.assertEquals(expected, actual)
-        }
+        val actual = repository.fetchVpnRegions("en")
+        Assertions.assertEquals(expected, actual)
     }
 
     @ParameterizedTest(name = "response: {0}, expected: {1}")
@@ -62,19 +55,15 @@ class VpnRegionRepositoryTest : KoinTest {
         regionsResponse: VpnRegionsResponse?,
         response: List<RegionLowerLatencyInformation>?,
         expected: List<VpnServer>,
-    ) =
-        runTest {
-            coEvery { source.fetchVpnRegions(any()) } returns flow { emit(regionsResponse) }
-            coEvery { source.pingRequests() } returns flow { emit(response) }
-            every { dipPrefs.getDedicatedIps() } returns emptyList()
+    ) = runTest {
+        coEvery { source.fetchVpnRegions(any()) } returns regionsResponse
+        coEvery { source.pingRequests() } returns response
+        every { dipPrefs.getDedicatedIps() } returns emptyList()
 
-            repository.fetchVpnRegions("en").collect()
-            repository.fetchLatencies(false).test {
-                val actual = awaitItem()
-                awaitComplete()
-                Assertions.assertEquals(expected, actual)
-            }
-        }
+        repository.fetchVpnRegions("en")
+        val actual = repository.fetchLatencies(false)
+        Assertions.assertEquals(expected, actual)
+    }
 
     companion object {
         private val response = VpnRegionsResponse()

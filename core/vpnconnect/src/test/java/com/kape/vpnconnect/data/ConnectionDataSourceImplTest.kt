@@ -1,8 +1,6 @@
 package com.kape.vpnconnect.data
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import app.cash.turbine.test
+import androidx.work.WorkManager
 import com.kape.contracts.KpiDataSource
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
@@ -22,9 +20,6 @@ import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.dsl.module
 import kotlin.test.assertEquals
 
 internal class ConnectionDataSourceImplTest {
@@ -36,11 +31,7 @@ internal class ConnectionDataSourceImplTest {
         every { clearPortBindingInfo() } returns Unit
         every { setGateway(any()) } returns Unit
     }
-    private val alarmManager: AlarmManager = mockk<AlarmManager>().apply {
-        every { cancel(any<PendingIntent>()) } returns Unit
-        every { setRepeating(any(), any(), any(), any()) } returns Unit
-    }
-    private val portForwardingIntent: PendingIntent = mockk()
+    private val workManager: WorkManager = mockk(relaxed = true)
     private val settingsPrefs: SettingsPrefs = mockk<SettingsPrefs>().apply {
         every { isHelpImprovePiaEnabled() } returns false
         every { getSelectedProtocol() } returns VpnProtocols.WireGuard
@@ -60,24 +51,16 @@ internal class ConnectionDataSourceImplTest {
     }
     private lateinit var source: ConnectionDataSource
 
-    private val appModule = module {
-        single { connectionApi }
-        single { authenticationApi }
-    }
-
     @BeforeEach
     internal fun setUp() {
-        stopKoin()
-        startKoin {}
         source = ConnectionDataSourceImpl(
             connectionApi,
             authenticationApi,
             connectionPrefs,
-            alarmManager,
+            workManager,
             settingsPrefs,
             kpiDataSource,
             usageProvider,
-            portForwardingIntent,
             csiPrefs,
         )
     }
@@ -87,18 +70,14 @@ internal class ConnectionDataSourceImplTest {
         coEvery { connectionApi.addConnectionListener(any(), any()) } returns Unit
         coEvery { connectionApi.startConnection(any(), any()) } answers {
             lastArg<(Result<ServerPeerInformation?>) -> Unit>().invoke(
-                Result.success(
-                    ServerPeerInformation("", "gateway"),
-                ),
+                Result.success(ServerPeerInformation("", "gateway")),
             )
         }
         every { settingsPrefs.isHelpImprovePiaEnabled() } returns true
-        source.startConnection(clientConfiguration, connectionListener).test {
-            verify { kpiDataSource.start() }
-            verify { connectionPrefs.setGateway("gateway") }
-            val actual = awaitItem()
-            assertEquals(true, actual)
-        }
+        val actual = source.startConnection(clientConfiguration, connectionListener)
+        verify { kpiDataSource.start() }
+        verify { connectionPrefs.setGateway("gateway") }
+        assertEquals(true, actual)
     }
 
     @Test
@@ -108,11 +87,9 @@ internal class ConnectionDataSourceImplTest {
             lastArg<(Result<ServerPeerInformation?>) -> Unit>().invoke(Result.success(null))
         }
         every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
-        source.startConnection(clientConfiguration, connectionListener).test {
-            verify { kpiDataSource.stop() }
-            val actual = awaitItem()
-            assertEquals(true, actual)
-        }
+        val actual = source.startConnection(clientConfiguration, connectionListener)
+        verify { kpiDataSource.stop() }
+        assertEquals(true, actual)
     }
 
     @Test
@@ -120,10 +97,8 @@ internal class ConnectionDataSourceImplTest {
         coEvery { connectionApi.startConnection(any(), any()) } answers {
             lastArg<(Result<ServerPeerInformation?>) -> Unit>().invoke(Result.failure(Exception()))
         }
-        source.startConnection(clientConfiguration, connectionListener).test {
-            val actual = awaitItem()
-            assertEquals(false, actual)
-        }
+        val actual = source.startConnection(clientConfiguration, connectionListener)
+        assertEquals(false, actual)
     }
 
     @Test
@@ -131,10 +106,8 @@ internal class ConnectionDataSourceImplTest {
         coEvery { connectionApi.stopConnection(any()) } answers {
             lastArg<(Result<ServerPeerInformation?>) -> Unit>().invoke(Result.success(null))
         }
-        source.stopConnection().test {
-            val actual = awaitItem()
-            assertEquals(true, actual)
-        }
+        val actual = source.stopConnection()
+        assertEquals(true, actual)
     }
 
     @Test
@@ -142,10 +115,8 @@ internal class ConnectionDataSourceImplTest {
         coEvery { connectionApi.stopConnection(any()) } answers {
             lastArg<(Result<ServerPeerInformation?>) -> Unit>().invoke(Result.failure(Exception()))
         }
-        source.stopConnection().test {
-            val actual = awaitItem()
-            assertEquals(false, actual)
-        }
+        val actual = source.stopConnection()
+        assertEquals(false, actual)
     }
 
     @Test
@@ -170,11 +141,9 @@ internal class ConnectionDataSourceImplTest {
         coEvery { connectionApi.getVpnProtocolLogs(any(), any()) } answers {
             lastArg<(Result<List<String>>) -> Unit>().invoke(Result.success(expected))
         }
-        source.getDebugLogs().test {
-            val actual = awaitItem()
-            assertEquals(expected, actual)
-            assertEquals(2, actual.size)
-        }
+        val actual = source.getDebugLogs()
+        assertEquals(expected, actual)
+        assertEquals(2, actual.size)
     }
 
     @Test
@@ -183,16 +152,14 @@ internal class ConnectionDataSourceImplTest {
         coEvery { connectionApi.getVpnProtocolLogs(any(), any()) } answers {
             lastArg<(Result<List<String>>) -> Unit>().invoke(Result.failure(Exception()))
         }
-        source.getDebugLogs().test {
-            val actual = awaitItem()
-            assertEquals(expected, actual)
-            assertEquals(0, actual.size)
-        }
+        val actual = source.getDebugLogs()
+        assertEquals(expected, actual)
+        assertEquals(0, actual.size)
     }
 
     @Test
-    fun `startPortForwarding() sets an alarm`() = runTest {
+    fun `startPortForwarding() enqueues periodic work`() = runTest {
         source.startPortForwarding()
-        verify(exactly = 1) { alarmManager.setRepeating(any(), any(), any(), any()) }
+        verify(exactly = 1) { workManager.enqueueUniquePeriodicWork(any(), any(), any()) }
     }
 }

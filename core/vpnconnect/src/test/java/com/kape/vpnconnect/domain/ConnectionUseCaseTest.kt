@@ -1,219 +1,177 @@
 package com.kape.vpnconnect.domain
 
-import android.app.Notification
-import android.app.PendingIntent
-import app.cash.turbine.test
 import com.kape.contracts.ConnectionConfigurationUseCase
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionStatusProvider
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.SettingsPrefs
-import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
-import com.kape.obfuscator.domain.StartObfuscatorProcess
-import com.kape.obfuscator.domain.StopObfuscatorProcess
-import com.kape.portforwarding.data.model.PortForwardingStatus
-import com.kape.portforwarding.domain.PortForwardingUseCase
-import com.kape.settings.data.DnsOptions
-import com.kape.settings.data.OpenVpnSettings
-import com.kape.settings.data.VpnProtocols
-import com.kape.settings.data.WireGuardSettings
-import com.kape.utils.vpnserver.VpnServer
-import io.mockk.Runs
+import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.dsl.module
-import kotlin.test.assertEquals
 
 internal class ConnectionUseCaseTest {
 
-    private val connectionDataSource: ConnectionDataSource = mockk<ConnectionDataSource>().apply {
-        every { stopPortForwarding() } returns Unit
-    }
-    private val clientStateDataSource: ClientStateDataSource =
-        mockk<ClientStateDataSource>().apply {
-            every { getClientStatus(any()) } returns flow {
-                emit(true)
-            }
-            every { resetVpnIp() } just Runs
-        }
-    private val server: VpnServer = mockk<VpnServer>(relaxed = true).apply {
-        every { endpoints } returns emptyMap()
-        every { latency } returns "0"
-        every { name } returns "name"
-    }
-    private val certificate: String = "mockCertificate"
-    private val connectionManager: ConnectionManager = mockk<ConnectionManager>().apply {
-        every { isManualConnection } returns true
-        every { isManualConnection = any() } returns Unit
-    }
-    private val settingsPrefs: SettingsPrefs = mockk<SettingsPrefs>().apply {
-        every { getSelectedProtocol() } returns VpnProtocols.WireGuard
-        every { getSelectedDnsOption() } returns DnsOptions.PIA
-        every { getVpnExcludedApps() } returns emptyList()
-        every { isAllowLocalTrafficEnabled() } returns false
-        every { getOpenVpnSettings() } returns OpenVpnSettings()
-        every { getWireGuardSettings() } returns WireGuardSettings()
-        every { isMaceEnabled() } returns true
-        every { isPortForwardingEnabled() } returns false
-        every { isShadowsocksObfuscationEnabled() } returns false
-        every { isExternalProxyAppEnabled() } returns false
-    }
-    private val connectionPrefs: ConnectionPrefs = mockk<ConnectionPrefs>().apply {
-        every { setSelectedVpnServer(any()) } returns Unit
-        every { getClientIp() } returns "clientIp"
-        every { getVpnIp() } returns "vpnIp"
-    }
-    private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs = mockk<ShadowsocksRegionPrefs>()
-    private val intent: PendingIntent = mockk()
-    private val context: android.content.Context = mockk()
-    private val notificationBuilder: Notification.Builder = mockk<Notification.Builder>().apply {
-        every { setContentTitle(any()) } returns Notification.Builder(context, "")
-        every { setContentText(any()) } returns Notification.Builder(context, "")
-        every { setContentIntent(any()) } returns Notification.Builder(context, "")
-        every { build() } returns Notification()
-    }
-    private val portForwardingUseCase: PortForwardingUseCase =
-        mockk<PortForwardingUseCase>().apply {
-            every { portForwardingStatus } returns MutableStateFlow(PortForwardingStatus.NoPortForwarding)
-            every { port } returns MutableStateFlow("")
-            every { clearBindPort() } returns Unit
-        }
-
+    private val connectionSource: ConnectionDataSource = mockk(relaxed = true)
+    private val connectionInfoProvider: ConnectionInfoProvider = mockk(relaxed = true)
+    private val connectionPrefs: ConnectionPrefs = mockk(relaxed = true)
+    private val startShadowsocksUseCase: StartShadowsocksUseCase = mockk()
+    private val stopShadowsocksUseCase: StopShadowsocksUseCase = mockk(relaxed = true)
     private val connectionConfigurationUseCase: ConnectionConfigurationUseCase = mockk(relaxed = true)
+    private val connectionStatusProvider: ConnectionStatusProvider = mockk(
+        relaxed = true,
+        extraInterfaces = arrayOf(VPNManagerConnectionListener::class),
+    )
+    private val startPortForwardingUseCase: StartPortForwardingUseCase = mockk(relaxed = true)
+    private val stopPortForwardingUseCase: StopPortForwardingUseCase = mockk(relaxed = true)
 
-    private lateinit var useCase: ConnectionUseCase
-    private val getActiveInterfaceDnsUseCase = mockk<GetActiveInterfaceDnsUseCase>()
-    private val startObfuscatorProcess: StartObfuscatorProcess = mockk(relaxed = true)
-    private val stopObfuscatorProcess: StopObfuscatorProcess = mockk(relaxed = true)
-    private val automationPendingIntent: PendingIntent = mockk(relaxed = true)
+    private val server: VpnServer = mockk(relaxed = true)
 
-    private val appModule = module {
-        single { "certificate" }
-    }
+    private lateinit var startConnectionUseCase: StartConnectionUseCase
+    private lateinit var stopConnectionUseCase: StopConnectionUseCase
+    private lateinit var reconnectUseCase: ReconnectUseCase
 
     @BeforeEach
-    internal fun setUp() {
-        stopKoin()
-        startKoin {}
-        useCase = ConnectionUseCaseImpl(
-            connectionDataSource,
-            clientStateDataSource,
-            connectionManager,
+    fun setUp() {
+        startConnectionUseCase = StartConnectionUseCase(
+            connectionSource,
+            connectionInfoProvider,
             connectionPrefs,
-            settingsPrefs,
-            shadowsocksRegionPrefs,
-            startObfuscatorProcess,
-            stopObfuscatorProcess,
-            portForwardingUseCase,
-            connectionConfigurationUseCase
+            startShadowsocksUseCase,
+            stopShadowsocksUseCase,
+            connectionConfigurationUseCase,
+            connectionStatusProvider,
+            startPortForwardingUseCase,
         )
-        every { connectionManager.setConnectedServerName(any(), any()) } returns Unit
+        stopConnectionUseCase = StopConnectionUseCase(
+            connectionInfoProvider,
+            connectionSource,
+            stopShadowsocksUseCase,
+            stopPortForwardingUseCase,
+        )
+        reconnectUseCase = ReconnectUseCase(
+            startConnectionUseCase,
+            stopConnectionUseCase,
+            connectionInfoProvider,
+        )
+    }
+
+    // region StartConnectionUseCase
+
+    @Test
+    fun `startConnection - not in connect state - shadowsocks ok - returns connection result`() = runTest {
+        every { connectionInfoProvider.isInConnectState() } returns false
+        coEvery { startShadowsocksUseCase() } returns true
+        coEvery { connectionSource.startConnection(any(), any()) } returns true
+
+        val result = startConnectionUseCase(server, true)
+
+        assertEquals(true, result)
     }
 
     @Test
-    fun `startConnection - success`() = runTest {
-        val expected = true
-        every { settingsPrefs.isAutomationEnabled() } returns false
-        every { connectionDataSource.startConnection(any(), any()) } returns flow {
-            emit(expected)
-        }
-        every { connectionDataSource.getVpnToken() } returns "username:password"
+    fun `startConnection - not in connect state - connection fails - stops shadowsocks`() = runTest {
+        every { connectionInfoProvider.isInConnectState() } returns false
+        coEvery { startShadowsocksUseCase() } returns true
+        coEvery { connectionSource.startConnection(any(), any()) } returns false
 
-        useCase.startConnection(server, true).test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        val result = startConnectionUseCase(server, true)
+
+        assertEquals(false, result)
+        coVerify(exactly = 1) { stopShadowsocksUseCase() }
     }
 
     @Test
-    fun `startConnection - failure`() = runTest {
-        val expected = false
-        every { settingsPrefs.isAutomationEnabled() } returns false
-        every { connectionDataSource.startConnection(any(), any()) } returns flow {
-            emit(expected)
-        }
-        every { connectionDataSource.getVpnToken() } returns "username:password"
+    fun `startConnection - not in connect state - shadowsocks fails - returns false`() = runTest {
+        every { connectionInfoProvider.isInConnectState() } returns false
+        coEvery { startShadowsocksUseCase() } returns false
 
-        useCase.startConnection(server, true).test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        val result = startConnectionUseCase(server, true)
+
+        assertEquals(false, result)
+        coVerify(exactly = 0) { connectionSource.startConnection(any(), any()) }
     }
 
     @Test
-    fun `stopConnection - success`() = runTest {
-        val expected = true
-        every { connectionDataSource.stopConnection() } returns flow {
-            emit(expected)
-        }
-        every { stopObfuscatorProcess.invoke() } returns flow {
-            emit(Result.success(Unit))
-        }
-        every { connectionDataSource.getVpnToken() } returns "username:password"
+    fun `startConnection - already in connect state - returns false`() = runTest {
+        every { connectionInfoProvider.isInConnectState() } returns true
 
-        useCase.stopConnection().test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        val result = startConnectionUseCase(server, true)
+
+        assertEquals(false, result)
+        coVerify(exactly = 0) { startShadowsocksUseCase() }
+    }
+
+    // endregion
+
+    // region StopConnectionUseCase
+
+    @Test
+    fun `stopConnection - in connect state - returns connection source result`() = runTest {
+        every { connectionInfoProvider.isInConnectState() } returns true
+        coEvery { connectionSource.stopConnection() } returns true
+
+        val result = stopConnectionUseCase()
+
+        assertEquals(true, result)
     }
 
     @Test
-    fun `stopConnection - failure`() = runTest {
-        val expected = false
-        every { connectionDataSource.stopConnection() } returns flow {
-            emit(expected)
-        }
-        every { stopObfuscatorProcess.invoke() } returns flow {
-            emit(Result.failure(IllegalStateException("Failure")))
-        }
-        every { connectionDataSource.getVpnToken() } returns "username:password"
+    fun `stopConnection - in connect state - resets info and stops shadowsocks and port forwarding`() = runTest {
+        every { connectionInfoProvider.isInConnectState() } returns true
+        coEvery { connectionSource.stopConnection() } returns false
 
-        useCase.stopConnection().test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        stopConnectionUseCase()
+
+        verify(exactly = 1) { connectionInfoProvider.resetConnectionInfo() }
+        coVerify(exactly = 1) { stopShadowsocksUseCase() }
+        verify(exactly = 1) { stopPortForwardingUseCase() }
     }
 
     @Test
-    fun `reconnect - when connected - disconnect`() = runTest {
-        every { connectionManager.isConnected() } returns true
-        every { connectionDataSource.stopConnection() } returns flow {
-            emit(true)
-        }
-        every { connectionDataSource.stopPortForwarding() } returns Unit
+    fun `stopConnection - not in connect state - returns false`() = runTest {
+        every { connectionInfoProvider.isInConnectState() } returns false
 
-        useCase.reconnect(server).test {
-            awaitComplete()
-            verify(exactly = 1) { connectionDataSource.stopConnection() }
-            verify(exactly = 1) { connectionDataSource.stopPortForwarding() }
-        }
+        val result = stopConnectionUseCase()
+
+        assertEquals(false, result)
+        coVerify(exactly = 0) { connectionSource.stopConnection() }
+    }
+
+    // endregion
+
+    // region ReconnectUseCase
+
+    @Test
+    fun `reconnect - when in connect state - stops then starts`() = runTest {
+        every { connectionInfoProvider.isInConnectState() } returnsMany listOf(true, false, false)
+        coEvery { connectionSource.stopConnection() } returns true
+        coEvery { startShadowsocksUseCase() } returns true
+        coEvery { connectionSource.startConnection(any(), any()) } returns true
+
+        reconnectUseCase(server)
+
+        coVerify(exactly = 1) { connectionSource.stopConnection() }
+        coVerify(exactly = 1) { connectionSource.startConnection(any(), any()) }
     }
 
     @Test
-    fun `reconnect - when NOT connected - connect`() = runTest {
-        every { settingsPrefs.isAutomationEnabled() } returns false
-        every { connectionManager.isConnected() } returns false
-        every { connectionDataSource.getVpnToken() } returns "username:password"
-        every { connectionDataSource.startConnection(any(), any()) } returns flow {
-            emit(true)
-        }
-        every { connectionDataSource.stopPortForwarding() } returns Unit
+    fun `reconnect - when not in connect state - starts directly`() = runTest {
+        every { connectionInfoProvider.isInConnectState() } returns false
+        coEvery { startShadowsocksUseCase() } returns true
+        coEvery { connectionSource.startConnection(any(), any()) } returns true
 
-        useCase.reconnect(server).test {
-            awaitItem()
-            awaitComplete()
-            verify(exactly = 1) { connectionDataSource.startConnection(any(), any()) }
-        }
+        reconnectUseCase(server)
+
+        coVerify(exactly = 0) { connectionSource.stopConnection() }
+        coVerify(exactly = 1) { connectionSource.startConnection(any(), any()) }
     }
+
+    // endregion
 }

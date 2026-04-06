@@ -1,9 +1,7 @@
 package com.kape.signup.domain
 
-import app.cash.turbine.test
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
@@ -26,13 +24,9 @@ internal class SetEmailUseCaseTest {
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("booleans")
     fun `test set email`(expected: Boolean) = runTest {
-        coEvery { source.setEmail(any()) } returns flow { emit(expected) }
-
-        useCase.setEmail("email").test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        coEvery { source.setEmail(any()) } returns expected
+        val actual = useCase.setEmail("email")
+        assertEquals(expected, actual)
     }
 
     companion object {

@@ -1,6 +1,5 @@
 package com.kape.dedicatedip.data
 
-import app.cash.turbine.test
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.localprefs.prefs.DipPrefs
@@ -17,9 +16,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.dsl.module
 import java.util.stream.Stream
 
 class DipDataSourceImplTest {
@@ -30,74 +26,58 @@ class DipDataSourceImplTest {
 
     private lateinit var source: DipDataSource
 
-    private val appModule = module {
-        single { api }
-    }
-
     @BeforeEach
     internal fun setUp() {
-        stopKoin()
-        startKoin {}
         source = DipDataSourceImpl(context, api, prefs)
     }
 
     @Test
-    fun activateSuccess() {
-        runTest {
-            val dipInfo = DedicatedIPInformationResponse.DedicatedIPInformation(
-                id = "id",
-                ip = "ip",
-                cn = "cn",
-                groups = null,
-                dip_expire = null,
-                dipToken = "ipToken",
-                status = DedicatedIPInformationResponse.Status.active,
+    fun activateSuccess() = runTest {
+        val dipInfo = DedicatedIPInformationResponse.DedicatedIPInformation(
+            id = "id",
+            ip = "ip",
+            cn = "cn",
+            groups = null,
+            dip_expire = null,
+            dipToken = "ipToken",
+            status = DedicatedIPInformationResponse.Status.active,
+        )
+        every { prefs.addDedicatedIp(any()) } returns Unit
+        coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
+            lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
+                listOf(dipInfo),
+                emptyList(),
             )
-            every { prefs.addDedicatedIp(any()) } returns Unit
-            coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
-                lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
-                    listOf(dipInfo),
-                    emptyList(),
-                )
-            }
-
-            source.activate("ipToken").test {
-                val actual = awaitItem()
-                assertEquals(DipApiResult.Active, actual)
-            }
         }
+
+        val actual = source.activate("ipToken")
+        assertEquals(DipApiResult.Active, actual)
     }
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun activateFail(errorList: List<AccountRequestError>, expected: DipApiResult) =
-        runTest {
-            coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
-                lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
-                    emptyList(),
-                    errorList,
-                )
-            }
-
-            source.activate("ipToken").test {
-                val actual = awaitItem()
-                assertEquals(expected, actual)
-            }
+    fun activateFail(errorList: List<AccountRequestError>, expected: DipApiResult) = runTest {
+        coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
+            lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
+                emptyList(),
+                errorList,
+            )
         }
+
+        val actual = source.activate("ipToken")
+        assertEquals(expected, actual)
+    }
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun renew(errorList: List<AccountRequestError>, expected: DipApiResult) =
-        runTest {
-            coEvery { api.renewDedicatedIP(any(), any()) } answers {
-                lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
-            }
-
-            source.renew("ipToken").test {
-                val actual = awaitItem()
-                kotlin.test.assertEquals(expected, actual)
-            }
+    fun renew(errorList: List<AccountRequestError>, expected: DipApiResult) = runTest {
+        coEvery { api.renewDedicatedIP(any(), any()) } answers {
+            lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
         }
+
+        val actual = source.renew("ipToken")
+        assertEquals(expected, actual)
+    }
 
     companion object {
 

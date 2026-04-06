@@ -1,13 +1,12 @@
 package com.kape.dedicatedip.data
 
-import app.cash.turbine.test
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.localprefs.prefs.DipPrefs
 import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -36,17 +35,13 @@ class DipSignupRepositoryTest {
             status = "fetched",
         )
         every { dipPrefs.getDedicatedIpSignupPlans() } returns null
-        every { dipDataSource.signupPlans() } returns flow {
-            emit(fetchedDedicatedIpSignupPlansMock)
-        }
+        coEvery { dipDataSource.signupPlans() } returns fetchedDedicatedIpSignupPlansMock
 
         // when
-        dipSignupRepository.signupPlans().test {
-            val actual = awaitItem()
+        val actual = dipSignupRepository.signupPlans()
 
-            // then
-            Assertions.assertEquals(fetchedDedicatedIpSignupPlansMock, actual)
-        }
+        // then
+        Assertions.assertEquals(fetchedDedicatedIpSignupPlansMock, actual)
     }
 
     @Test
@@ -63,12 +58,10 @@ class DipSignupRepositoryTest {
         every { dipPrefs.getDedicatedIpSignupPlans() } returns dedicatedIpSignupPlans
 
         // when
-        dipSignupRepository.signupPlans().test {
-            val actual = awaitItem()
+        val actual = dipSignupRepository.signupPlans()
 
-            // then
-            Assertions.assertEquals(fetchedDedicatedIpSignupPlansMock, actual)
-        }
+        // then
+        Assertions.assertEquals(fetchedDedicatedIpSignupPlansMock, actual)
     }
 
     @Test
@@ -87,16 +80,12 @@ class DipSignupRepositoryTest {
             signupPlans = outdatedFetchedDedicatedIpSignupPlansMock,
         )
         every { dipPrefs.getDedicatedIpSignupPlans() } returns dedicatedIpSignupPlans
-        every { dipDataSource.signupPlans() } returns flow {
-            emit(updatedFetchedDedicatedIpSignupPlansMock)
-        }
+        coEvery { dipDataSource.signupPlans() } returns updatedFetchedDedicatedIpSignupPlansMock
 
         // when
-        dipSignupRepository.signupPlans().test {
-            val actual = awaitItem()
+        val actual = dipSignupRepository.signupPlans()
 
-            // then
-            Assertions.assertEquals(updatedFetchedDedicatedIpSignupPlansMock, actual)
-        }
+        // then
+        Assertions.assertEquals(updatedFetchedDedicatedIpSignupPlansMock, actual)
     }
 }

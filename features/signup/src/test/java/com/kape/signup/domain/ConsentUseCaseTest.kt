@@ -9,10 +9,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.koin.test.KoinTest
 import java.util.stream.Stream
 
-class ConsentUseCaseTest : KoinTest {
+class ConsentUseCaseTest {
     private val prefs: ConsentPrefs = mockk()
 
     private lateinit var useCase: ConsentUseCase
