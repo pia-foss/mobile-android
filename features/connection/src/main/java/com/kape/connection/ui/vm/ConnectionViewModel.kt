@@ -34,6 +34,7 @@ import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
+import com.kape.vpnconnect.domain.ReconnectUseCase
 import com.kape.vpnconnect.domain.StartConnectionUseCase
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
@@ -54,6 +55,7 @@ class ConnectionViewModel(
     private val shadowsocksListProvider: ShadowsocksListProvider,
     private val startConnectionUseCase: StartConnectionUseCase,
     private val stopConnectionUseCase: StopConnectionUseCase,
+    private val reconnectUseCase: ReconnectUseCase,
     private val prefs: ConnectionPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val snoozeHandler: SnoozeHandler,
@@ -262,9 +264,11 @@ class ConnectionViewModel(
     }
 
     fun quickConnect(server: VpnServer) {
-        vpnRegionPrefs.selectVpnServer(server)
-//        updateState(state.value.server, false)
-        connect()
+        viewModelScope.launch {
+            _state.update { it.copy(server = server) }
+            vpnRegionPrefs.selectVpnServer(server)
+            reconnectUseCase(server)
+        }
     }
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()

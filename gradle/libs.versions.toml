@@ -45,9 +45,6 @@ test-orchestrator = "1.6.1"
 junit5 = "1.14.0.0"
 shortcuts = "1.1.0"
 androidx-work = "2.10.0"
-junit = "1.1.5"
-espresso-core = "3.5.1"
-material = "1.10.0"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "plugin-gradle" }
@@ -114,9 +111,6 @@ constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compos
 shortcuts = { module = "androidx.core:core-google-shortcuts", version.ref = "shortcuts" }
 work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 application = { id = "com.android.application", version.ref = "plugin-gradle" }

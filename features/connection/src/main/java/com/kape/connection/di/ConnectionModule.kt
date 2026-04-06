@@ -14,6 +14,7 @@ import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.rating.utils.RatingTool
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
+import com.kape.vpnconnect.domain.ReconnectUseCase
 import com.kape.vpnconnect.domain.StartConnectionUseCase
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
@@ -33,6 +34,7 @@ class ConnectionModule {
         startConnectionUseCase: StartConnectionUseCase,
         stopConnectionUseCase: StopConnectionUseCase,
         connectionInfoProvider: ConnectionInfoProvider,
+        reconnectUseCase: ReconnectUseCase,
         prefs: ConnectionPrefs,
         settingsPrefs: SettingsPrefs,
         snoozeHandler: SnoozeHandler,
@@ -51,6 +53,7 @@ class ConnectionModule {
         shadowsocksListProvider,
         startConnectionUseCase,
         stopConnectionUseCase,
+        reconnectUseCase,
         prefs,
         settingsPrefs,
         snoozeHandler,
