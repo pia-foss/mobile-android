@@ -91,7 +91,7 @@ class ConnectionInfoProviderImpl(
         }
     }
 
-    override fun isConnected(): Boolean = connectionState.value == ConnectionStatus.CONNECTED
+    override fun isConnected(): Boolean = connectionState.value.status == ConnectionStatus.CONNECTED
 
     override fun isInConnectState(): Boolean = listOf(
         ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING,
