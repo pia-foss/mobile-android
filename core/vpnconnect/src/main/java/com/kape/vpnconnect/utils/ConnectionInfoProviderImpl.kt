@@ -11,6 +11,7 @@ import com.kape.data.VpnConnectionInfo
 import com.kape.data.kpi.KpiConnectionStatus
 import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
@@ -24,9 +25,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Named
 
 class ConnectionInfoProviderImpl(
@@ -34,9 +37,11 @@ class ConnectionInfoProviderImpl(
     private val clientStateDataSource: ClientStateDataSource,
     private val connectionPrefs: ConnectionPrefs,
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
+    private val portForwardingUseCase: PortForwardingUseCase,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) : ConnectionInfoProvider {
+    private val ioScope = CoroutineScope(ioDispatcher)
     override val connectionState = connectionStatusProvider.state
     private val defaultState = VpnConnectionInfo(publicIp = connectionPrefs.getClientIp())
     private val _connectionInfoState: MutableStateFlow<VpnConnectionInfo> = MutableStateFlow(
@@ -45,7 +50,7 @@ class ConnectionInfoProviderImpl(
     override val state: StateFlow<VpnConnectionInfo> = _connectionInfoState.asStateFlow()
 
     init {
-        CoroutineScope(ioDispatcher).launch {
+        ioScope.launch {
             connectionStatusProvider.state
                 .distinctUntilChangedBy { it.status == ConnectionStatus.CONNECTED || it.status == ConnectionStatus.DISCONNECTED }
                 .collectLatest {
@@ -57,13 +62,32 @@ class ConnectionInfoProviderImpl(
                     }
                     if (it.status == ConnectionStatus.DISCONNECTED) {
                         val ip = clientStateDataSource.getPublicIp()
-                        _connectionInfoState.update { it.copy(publicIp = ip, vpnIp = NO_IP) }
+                        withContext(mainDispatcher) {
+                            _connectionInfoState.update { it.copy(publicIp = ip, vpnIp = NO_IP) }
+                        }
                     }
                     if (it.status == ConnectionStatus.CONNECTED) {
                         val vpnIp = clientStateDataSource.getVpnIp()
-                        _connectionInfoState.update { it.copy(vpnIp = vpnIp) }
+                        withContext(mainDispatcher) {
+                            _connectionInfoState.update { it.copy(vpnIp = vpnIp) }
+                        }
                     }
                 }
+        }
+        ioScope.launch {
+            combine(
+                portForwardingUseCase.portForwardingStatus,
+                portForwardingUseCase.port,
+            ) { status, port ->
+                withContext(mainDispatcher) {
+                    _connectionInfoState.update {
+                        it.copy(
+                            portforwardingStatus = status,
+                            port = port,
+                        )
+                    }
+                }
+            }.collect {}
         }
     }
 

@@ -90,6 +90,7 @@ class VpnConnectModule {
         clientStateDataSource: ClientStateDataSource,
         connectionPrefs: ConnectionPrefs,
         submitKpiEventUseCase: SubmitKpiEventUseCase,
+        portForwardingUseCase: PortForwardingUseCase,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): ConnectionInfoProvider =
@@ -98,6 +99,7 @@ class VpnConnectModule {
             clientStateDataSource,
             connectionPrefs,
             submitKpiEventUseCase,
+            portForwardingUseCase,
             ioDispatcher,
             mainDispatcher,
         )
