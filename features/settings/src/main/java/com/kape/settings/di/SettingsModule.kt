@@ -15,7 +15,6 @@ import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.domain.ReconnectUseCase
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.data.VpnRegionRepository
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module

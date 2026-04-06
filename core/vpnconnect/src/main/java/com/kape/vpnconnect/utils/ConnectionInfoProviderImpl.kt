@@ -36,8 +36,9 @@ class ConnectionInfoProviderImpl(
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
-): ConnectionInfoProvider {
+) : ConnectionInfoProvider {
     override val connectionState = connectionStatusProvider.state
+    private val defaultState = VpnConnectionInfo(publicIp = connectionPrefs.getClientIp())
     private val _connectionInfoState: MutableStateFlow<VpnConnectionInfo> = MutableStateFlow(
         VpnConnectionInfo(),
     )
@@ -80,10 +81,10 @@ class ConnectionInfoProviderImpl(
     }
 
     override fun resetConnectionInfo() {
-        _connectionInfoState.update { VpnConnectionInfo() }
+        _connectionInfoState.update { defaultState }
     }
 
-    fun getTopBarConnectionColor(scheme: ColorScheme): Color {
+    override fun getTopBarConnectionColor(scheme: ColorScheme): Color {
         return when (connectionState.value.status) {
             ConnectionStatus.ERROR -> scheme.statusBarError()
             ConnectionStatus.CONNECTED -> scheme.statusBarConnected()

@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.customization.data.Element
 import com.kape.data.ConnectionStatus
 import com.kape.data.vpnserver.VpnServer
@@ -36,7 +37,6 @@ import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.tiles.QuickConnect
 import com.kape.ui.tv.tiles.VpnLocationPicker
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.util.Locale
@@ -44,7 +44,7 @@ import java.util.Locale
 @Composable
 fun TvConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
     val state by connectionInfoProvider.connectionState.collectAsState()
     val isConnected = viewModel.isConnected.collectAsState()
     val topStartHeaderFocusRequester = remember { FocusRequester() }

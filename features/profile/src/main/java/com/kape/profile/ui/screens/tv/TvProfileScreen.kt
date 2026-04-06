@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.profile.ui.vm.ProfileViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -42,14 +43,13 @@ import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.tv.text.SettingsL2Text
 import com.kape.ui.tv.text.SettingsL2TextDescription
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
 fun TvProfileScreen() = Screen {
     val viewModel: ProfileViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
 
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
     val logoutDialogVisible = remember { mutableStateOf(false) }

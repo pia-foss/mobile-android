@@ -18,15 +18,14 @@ class RegionListProvider(
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) {
     private val locale = Locale.getDefault().language
-    private val isDefaultList = MutableStateFlow(true)
+    private val _isDefaultList = MutableStateFlow(true)
+    val isDefaultList: StateFlow<Boolean> = _isDefaultList
     private val _servers: MutableStateFlow<List<VpnServer>> = MutableStateFlow(emptyList())
     val servers: StateFlow<List<VpnServer>> = _servers
 
     init {
         setRegionsListToDefault()
     }
-
-    fun isDefaultList(): Boolean = isDefaultList.value
 
     fun getOptimalServer(): VpnServer {
         if (_servers.value.isEmpty()) {
@@ -76,12 +75,12 @@ class RegionListProvider(
                 server.latency ?: VPN_REGIONS_PING_TIMEOUT.toString()
         }
         _servers.value = updatedServers
-        isDefaultList.value = false
+        _isDefaultList.value = false
         return updatedServers
     }
 
     private fun setRegionsListToDefault() {
         _servers.value = readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
-        isDefaultList.value = true
+        _isDefaultList.value = true
     }
 }

@@ -70,11 +70,12 @@ class ConnectionViewModel(
     private var loadVpnServersJob: Job? = null
     private var loadShadowsocksServersJob: Job? = null
     private var updateStateJob: Job? = null
+    private val isAutoMode get() = prefs.getSelectedVpnServer() == null
     private val defaultState = ConnectionScreenState(
         server = prefs.getSelectedVpnServer() ?: regionListProvider.getOptimalServer(),
         quickConnectServers = getQuickConnectVpnServers(),
-        isCurrentServerOptimal = false,
-        showOptimalLocationInfo = prefs.getSelectedVpnServer() == null,
+        isCurrentServerOptimal = isAutoMode,
+        showOptimalLocationInfo = isAutoMode && regionListProvider.isDefaultList.value,
         ratingDialogType = ratingTool.showRating.value,
     )
     private val _state: MutableStateFlow<ConnectionScreenState> = MutableStateFlow(defaultState)
@@ -91,6 +92,20 @@ class ConnectionViewModel(
         viewModelScope.launch {
             connectionInfoProvider.state.collectLatest {
                 println("--- connectionInfoState: $it")
+            }
+        }
+
+        viewModelScope.launch {
+            regionListProvider.isDefaultList.collectLatest { isDefault ->
+                if (isAutoMode) {
+                    _state.update {
+                        it.copy(
+                            server = regionListProvider.getOptimalServer(),
+                            isCurrentServerOptimal = true,
+                            showOptimalLocationInfo = isDefault,
+                        )
+                    }
+                }
             }
         }
 
@@ -355,7 +370,14 @@ class ConnectionViewModel(
         _state.update { it.copy(ratingDialogType = null) }
     }
 
-    fun refreshState() =
-        _state.update { it.copy(quickConnectServers = getQuickConnectVpnServers()) }
+    fun refreshState() = _state.update {
+        val selectedServer = prefs.getSelectedVpnServer()
+        it.copy(
+            server = selectedServer ?: regionListProvider.getOptimalServer(),
+            quickConnectServers = getQuickConnectVpnServers(),
+            isCurrentServerOptimal = selectedServer == null,
+            showOptimalLocationInfo = selectedServer == null && regionListProvider.isDefaultList.value,
+        )
+    }
 
 }

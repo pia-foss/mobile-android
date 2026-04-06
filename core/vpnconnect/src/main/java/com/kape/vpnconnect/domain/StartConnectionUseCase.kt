@@ -5,8 +5,6 @@ import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
-import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 
 class StartConnectionUseCase(

@@ -1,5 +1,7 @@
 package com.kape.contracts
 
+import androidx.compose.material3.ColorScheme
+import androidx.compose.ui.graphics.Color
 import com.kape.data.VpnConnectionInfo
 import com.kape.data.VpnConnectionStatus
 import kotlinx.coroutines.flow.StateFlow
@@ -12,4 +14,5 @@ interface ConnectionInfoProvider {
     fun isNotDisconnected(): Boolean
     fun updateInfo(name: String, iso: String, isManual: Boolean)
     fun resetConnectionInfo()
+    fun getTopBarConnectionColor(scheme: ColorScheme): Color
 }

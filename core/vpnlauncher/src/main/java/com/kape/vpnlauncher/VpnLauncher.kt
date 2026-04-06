@@ -11,6 +11,7 @@ import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import kotlin.coroutines.CoroutineContext
@@ -43,7 +44,7 @@ class VpnLauncher(
                     server?.let {
                         initiateConnection(it)
                     } ?: run {
-                        if (regionListProvider.isDefaultList().not()) {
+                        if (regionListProvider.isDefaultList.first().not()) {
                             initiateConnection(regionListProvider.getOptimalServer())
                         } else {
                             regionListProvider.updateServerLatencies(

@@ -16,6 +16,7 @@ import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
@@ -36,7 +37,7 @@ class SplashViewModel(
     private var updateUrl: String = ""
 
     fun load() {
-        if (regionListProvider.isDefaultList()) {
+        if (regionListProvider.isDefaultList.value) {
             regionListProvider.loadVpnServerLatencies()
         }
         viewModelScope.launch(ioDispatcher) {

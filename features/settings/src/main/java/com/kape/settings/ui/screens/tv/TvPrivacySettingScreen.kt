@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
 import com.kape.settings.ui.screens.mobile.WarningDialog
@@ -32,14 +33,13 @@ import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
 fun TvPrivacySettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
     val initialFocusRequester = remember { FocusRequester() }
     val showWarning = remember { mutableStateOf(false) }
 

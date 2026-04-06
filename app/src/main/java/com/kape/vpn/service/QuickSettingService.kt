@@ -5,7 +5,6 @@ import android.service.quicksettings.TileService
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.ui.R
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnlauncher.VpnLauncher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

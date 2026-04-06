@@ -18,18 +18,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.elements.AboutButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TvAboutScreen(licences: List<String>) = Screen {
-    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
 
     Box(
         modifier = Modifier

@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.data.ConnectionStatus
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
@@ -50,7 +51,6 @@ import com.kape.ui.tv.text.DedicatedIpDescription
 import com.kape.ui.tv.text.DedicatedIpTitle
 import com.kape.ui.tv.text.Input
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -59,7 +59,7 @@ fun TvDedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
         loadDedicatedIps()
     }
-    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
     val showActivationDialog = remember { mutableStateOf(false) }
     val showDeletionDialog = remember { mutableStateOf(false) }
     val text = remember { mutableStateOf("") }

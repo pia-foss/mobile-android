@@ -35,7 +35,6 @@ import com.kape.contracts.ConnectionInfoProvider
 import com.kape.data.ConnectionStatus
 import com.kape.ui.utils.getFlagResource
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnlauncher.VpnLauncher
 
 class Widget(

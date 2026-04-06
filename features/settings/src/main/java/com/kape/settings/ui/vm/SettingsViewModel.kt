@@ -41,7 +41,6 @@ import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.domain.ReconnectUseCase
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

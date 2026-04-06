@@ -9,7 +9,6 @@ import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.Router
 import com.kape.data.ConnectionStatus
 import com.kape.utils.NetworkConnectionListener
-import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 

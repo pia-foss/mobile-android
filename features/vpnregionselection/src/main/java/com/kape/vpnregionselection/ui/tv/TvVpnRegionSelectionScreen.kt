@@ -38,13 +38,13 @@ import androidx.core.os.ConfigurationCompat
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import com.kape.appbar.view.tv.TvHomeHeaderItem
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.regions.data.ServerData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.elements.Search
 import com.kape.ui.tv.text.RegionSelectionGridSectionText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
 import com.kape.vpnregionselection.util.ItemType
@@ -59,7 +59,7 @@ fun TvVpnRegionSelectionScreen() = Screen {
     val allButtonFocusRequester = remember { FocusRequester() }
     val favoriteButtonFocusRequester = remember { FocusRequester() }
     val searchButtonFocusRequester = remember { FocusRequester() }
-    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
     val status by connectionInfoProvider.connectionState.collectAsState()
     val isFavoriteSelected = remember { mutableStateOf(false) }
     val isSearchEnabled = remember { mutableStateOf(false) }

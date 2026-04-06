@@ -42,6 +42,7 @@ import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
@@ -50,7 +51,6 @@ import com.kape.ui.mobile.elements.Search
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.tv.text.SecondaryButtonText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -60,7 +60,7 @@ fun TvPerAppSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
         getInstalledApplications(packageManager)
     }
-    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
     val initialFocusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }

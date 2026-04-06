@@ -27,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.data.ConnectionStatus
 import com.kape.sidemenu.ui.vm.SideMenuViewModel
 import com.kape.ui.R
@@ -38,14 +39,13 @@ import com.kape.ui.theme.statusBarError
 import com.kape.ui.tv.elements.SecondaryButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
 fun TvSideMenuScreen() = Screen {
     val viewModel: SideMenuViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProviderImpl = koinInject()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
     val initialFocusRequester = remember { FocusRequester() }
 
     LaunchedEffect(key1 = Unit) {

@@ -78,7 +78,6 @@ import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.di.VpnConnectModule
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import com.kape.vpnlauncher.di.VpnLauncherModule
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder

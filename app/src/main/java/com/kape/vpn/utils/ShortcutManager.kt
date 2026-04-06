@@ -14,7 +14,6 @@ import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_DISCONNECT
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.vpn.MainActivity
-import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

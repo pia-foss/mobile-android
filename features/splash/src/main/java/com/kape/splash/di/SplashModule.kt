@@ -9,7 +9,6 @@ import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.splash.ui.vm.SplashViewModel
 import com.kape.utils.PlatformUtils
 import com.kape.vpnconnect.domain.StopConnectionUseCase
-import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
