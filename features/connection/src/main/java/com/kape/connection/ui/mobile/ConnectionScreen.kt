@@ -76,6 +76,7 @@ import com.kape.sharedui.tiles.ConnectionInfo
 import com.kape.sharedui.tiles.IPTile
 import com.kape.sharedui.tiles.QuickConnect
 import com.kape.sharedui.tiles.QuickSettings
+import com.kape.sharedui.tiles.ShadowsocksLocationPicker
 import com.kape.sharedui.tiles.Snooze
 import com.kape.sharedui.tiles.Traffic
 import com.kape.sharedui.tiles.VpnLocationPicker
@@ -122,8 +123,6 @@ fun ConnectionScreen() = Screen {
     }
 
     LaunchedEffect(key1 = Unit) {
-//        viewModel.loadVpnServers(locale)
-//        viewModel.loadShadowsocksServers(locale)
         viewModel.shouldShowDedicatedIpSignupBanner()
         viewModel.autoConnect()
     }
@@ -368,12 +367,12 @@ private fun DisplayComponent(
             }
 
             Element.ShadowsocksRegionSelection -> {
-//                ShadowsocksLocationPicker(
-//                    server = viewModel.getSelectedShadowsocksServer(),
-//                    isConnected = connectionStatus == ConnectionStatus.CONNECTED,
-//                ) {
-//                    viewModel.showShadowsocksRegionSelection()
-//                }
+                ShadowsocksLocationPicker(
+                    server = viewModel.getSelectedShadowsocksServer(),
+                    isConnected = connectionStatus == ConnectionStatus.CONNECTED,
+                ) {
+                    viewModel.showShadowsocksRegionSelection()
+                }
             }
 
             Element.Snooze -> {

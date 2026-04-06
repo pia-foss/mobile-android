@@ -32,12 +32,14 @@ import com.kape.rating.data.RatingDialogType
 import com.kape.rating.utils.RatingTool
 import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
+import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnconnect.domain.StartConnectionUseCase
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnregions.utils.RegionListProvider
+import com.kape.vpnregions.utils.ShadowsocksListProvider
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,6 +52,7 @@ import org.koin.core.annotation.KoinViewModel
 class ConnectionViewModel(
     private val router: Router,
     private val regionListProvider: RegionListProvider,
+    private val shadowsocksListProvider: ShadowsocksListProvider,
     private val startConnectionUseCase: StartConnectionUseCase,
     private val stopConnectionUseCase: StopConnectionUseCase,
     private val prefs: ConnectionPrefs,
@@ -242,6 +245,8 @@ class ConnectionViewModel(
     fun showVpnRegionSelection() {
         router.updateDestination(VpnRegionSelection)
     }
+
+    fun getSelectedShadowsocksServer() = shadowsocksListProvider.getSelected()
 
     fun showShadowsocksRegionSelection() {
         router.updateDestination(ShadowsocksRegionSelection)

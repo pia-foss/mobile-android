@@ -18,6 +18,7 @@ import com.kape.vpnconnect.domain.StartConnectionUseCase
 import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnregions.utils.RegionListProvider
+import com.kape.vpnregions.utils.ShadowsocksListProvider
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
 
@@ -28,6 +29,7 @@ class ConnectionModule {
     fun provideConnectionViewModel(
         router: Router,
         regionListProvider: RegionListProvider,
+        shadowsocksListProvider: ShadowsocksListProvider,
         startConnectionUseCase: StartConnectionUseCase,
         stopConnectionUseCase: StopConnectionUseCase,
         connectionInfoProvider: ConnectionInfoProvider,
@@ -44,9 +46,23 @@ class ConnectionModule {
         buildConfigProvider: BuildConfigProvider,
         networkConnectionListener: NetworkConnectionListener,
     ): ConnectionViewModel = ConnectionViewModel(
-        router, regionListProvider, startConnectionUseCase, stopConnectionUseCase,
-        prefs, settingsPrefs, snoozeHandler, usageProvider, dipPrefs,
-        renewDipUseCase, customizationPrefs, vpnRegionPrefs, ratingTool,
-        shortcutPrefs, buildConfigProvider, connectionInfoProvider, networkConnectionListener,
+        router,
+        regionListProvider,
+        shadowsocksListProvider,
+        startConnectionUseCase,
+        stopConnectionUseCase,
+        prefs,
+        settingsPrefs,
+        snoozeHandler,
+        usageProvider,
+        dipPrefs,
+        renewDipUseCase,
+        customizationPrefs,
+        vpnRegionPrefs,
+        ratingTool,
+        shortcutPrefs,
+        buildConfigProvider,
+        connectionInfoProvider,
+        networkConnectionListener,
     )
 }

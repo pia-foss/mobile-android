@@ -37,6 +37,7 @@ import com.kape.sharedui.tiles.ConnectionInfo
 import com.kape.sharedui.tiles.IPTile
 import com.kape.sharedui.tiles.QuickConnect
 import com.kape.sharedui.tiles.QuickSettings
+import com.kape.sharedui.tiles.ShadowsocksLocationPicker
 import com.kape.sharedui.tiles.Snooze
 import com.kape.sharedui.tiles.Traffic
 import com.kape.sharedui.tiles.VpnLocationPicker
@@ -213,11 +214,11 @@ private fun DisplayComponent(
         }
 
         Element.ShadowsocksRegionSelection -> {
-//            ShadowsocksLocationPicker(
-//                modifier = modifier,
-//                server = viewModel.getSelectedShadowsocksServer(),
-//                isConnected = connectionState == ConnectionStatus.CONNECTED,
-//            ) {}
+            ShadowsocksLocationPicker(
+                modifier = modifier,
+                server = viewModel.getSelectedShadowsocksServer(),
+                isConnected = connectionState == ConnectionStatus.CONNECTED,
+            ) {}
         }
 
         Element.Snooze -> {
