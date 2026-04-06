@@ -9,7 +9,6 @@ class ReconnectUseCase(
     private val connectionInfoProvider: ConnectionInfoProvider,
 ) {
     operator suspend fun invoke(server: VpnServer): Boolean {
-        println("--- reconnect to ${server.name}")
         if (connectionInfoProvider.isInConnectState()) {
             stopConnectionUseCase()
         }
