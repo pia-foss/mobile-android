@@ -122,6 +122,10 @@ fun ConnectionScreen() = Screen {
         }
     }
 
+    LaunchedEffect(connectionState.status) {
+        viewModel.refreshState()
+    }
+
     LaunchedEffect(key1 = Unit) {
         viewModel.shouldShowDedicatedIpSignupBanner()
         viewModel.autoConnect()
