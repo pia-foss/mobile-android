@@ -23,12 +23,13 @@ import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.contracts.ConnectionConfigurationUseCase
+import com.kape.contracts.ConnectionManager
 import com.kape.vpnconnect.domain.ConnectionConfigurationUseCaseImpl
 import com.kape.vpnconnect.domain.ConnectionDataSource
+import com.kape.vpnconnect.domain.ConnectionManagerImpl
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
-import com.kape.vpnconnect.domain.ReconnectUseCase
 import com.kape.vpnconnect.domain.StartConnectionUseCase
 import com.kape.vpnconnect.domain.StartPortForwardingUseCase
 import com.kape.vpnconnect.domain.StartShadowsocksUseCase
@@ -127,9 +128,10 @@ class VpnConnectModule {
         kpiDataSource: KpiDataSource,
         usageProvider: UsageProvider,
         csiPrefs: CsiPrefs,
+        connectionStatusProvider: ConnectionStatusProvider,
     ): ConnectionDataSource = ConnectionDataSourceImpl(
         vpnApi, accountApi, connectionPrefs, workManager, settingsPrefs,
-        kpiDataSource, usageProvider, csiPrefs,
+        kpiDataSource, usageProvider, csiPrefs, connectionStatusProvider,
     )
 
     @Singleton(binds = [ConnectionConfigurationUseCase::class])
@@ -154,7 +156,7 @@ class VpnConnectModule {
         GetLogsUseCase(connectionSource)
 
     @Singleton
-    fun provideStartPortForwardingUseCase(
+    internal fun provideStartPortForwardingUseCase(
         connectionDataSource: ConnectionDataSource,
         portForwardingUseCase: PortForwardingUseCase,
         settingsPrefs: SettingsPrefs,
@@ -162,7 +164,7 @@ class VpnConnectModule {
         StartPortForwardingUseCase(connectionDataSource, portForwardingUseCase, settingsPrefs)
 
     @Singleton
-    fun provideStartShadowsocksUseCase(
+    internal fun provideStartShadowsocksUseCase(
         settingsPrefs: SettingsPrefs,
         shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
         startObfuscatorProcess: StartObfuscatorProcess,
@@ -177,18 +179,18 @@ class VpnConnectModule {
     )
 
     @Singleton
-    fun provideStopShadowsocksUseCase(stopObfuscatorProcess: StopObfuscatorProcess): StopShadowsocksUseCase =
+    internal fun provideStopShadowsocksUseCase(stopObfuscatorProcess: StopObfuscatorProcess): StopShadowsocksUseCase =
         StopShadowsocksUseCase(stopObfuscatorProcess)
 
     @Singleton
-    fun provideStopPortForwardingUseCase(
+    internal fun provideStopPortForwardingUseCase(
         connectionSource: ConnectionDataSource,
         portForwardingUseCase: PortForwardingUseCase,
     ): StopPortForwardingUseCase =
         StopPortForwardingUseCase(connectionSource, portForwardingUseCase)
 
     @Singleton
-    fun provideStartConnectionUseCase(
+    internal fun provideStartConnectionUseCase(
         connectionSource: ConnectionDataSource,
         startShadowsocksUseCase: StartShadowsocksUseCase,
         startPortForwardingUseCase: StartPortForwardingUseCase,
@@ -204,12 +206,11 @@ class VpnConnectModule {
         startShadowsocksUseCase,
         stopShadowsocksUseCase,
         connectionConfigurationUseCase,
-        connectionStatusProvider,
         startPortForwardingUseCase,
     )
 
     @Singleton
-    fun provideStopConnectionUseCase(
+    internal fun provideStopConnectionUseCase(
         connectionSource: ConnectionDataSource,
         stopShadowsocksUseCase: StopShadowsocksUseCase,
         stopPortForwardingUseCase: StopPortForwardingUseCase,
@@ -221,11 +222,6 @@ class VpnConnectModule {
         stopPortForwardingUseCase,
     )
 
-    @Singleton
-    fun provideReconnectUseCase(
-        startConnectionUseCase: StartConnectionUseCase,
-        stopConnectionUseCase: StopConnectionUseCase,
-        connectionInfoProvider: ConnectionInfoProvider,
-    ): ReconnectUseCase =
-        ReconnectUseCase(startConnectionUseCase, stopConnectionUseCase, connectionInfoProvider)
+    @Singleton([ConnectionManager::class])
+    fun provideConnectionManager(): ConnectionManager = ConnectionManagerImpl()
 }

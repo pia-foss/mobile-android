@@ -6,6 +6,8 @@ import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.annotation.Singleton
 import java.text.SimpleDateFormat
@@ -25,13 +27,16 @@ class PortForwardingUseCase(
     val port = MutableStateFlow<String>("")
 
     suspend fun bindPort(vpnToken: String) {
+        val context = currentCoroutineContext()
+        context.ensureActive()
         portForwardingStatus.value = PortForwardingStatus.Requesting
         val gateway = connectionPrefs.getGateway()
         if (gateway.isEmpty()) {
             portForwardingStatus.value = PortForwardingStatus.Error
+            return
         }
 
-        // Set the gateway's CN for the selected protocol before the binding request
+        // Set known endpoint CN
         val server = connectionPrefs.getSelectedVpnServer()
         server?.let {
             it.endpoints[getServerGroup()]?.let { serverEndpointDetails ->
@@ -43,13 +48,15 @@ class PortForwardingUseCase(
             }
         }
 
+        context.ensureActive()
         if (vpnToken.isEmpty()) {
             portForwardingStatus.value = PortForwardingStatus.Error
+            return
         }
 
-        // If there is active data persisted. Send the bind port reminder request to keep the NAT
-        // on the server rather than requesting a new port
         connectionPrefs.getPortBindingInfo()?.let { portBindingInfo ->
+            context.ensureActive()
+
             if (tokenExpirationDateDaysLeft(portBindingInfo.decodedPayload.expirationDate) > MIN_EXPIRATION_DAYS) {
                 portForwardingStatus.value = PortForwardingStatus.Requesting
                 val successful = api.bindPort(
@@ -58,6 +65,7 @@ class PortForwardingUseCase(
                     portBindingInfo.signature,
                     gateway,
                 )
+                context.ensureActive()
                 if (successful) {
                     portForwardingStatus.value = PortForwardingStatus.Success
                     port.value = portBindingInfo.decodedPayload.port.toString()
@@ -66,11 +74,16 @@ class PortForwardingUseCase(
                 }
             }
         } ?: run {
+            context.ensureActive()
             portForwardingStatus.value = PortForwardingStatus.Requesting
+
             val it = api.getPayloadAndSignature(vpnToken, gateway)
+            context.ensureActive()
             connectionPrefs.setPortBindingInformation(it)
+
             if (it != null) {
                 val successful = api.bindPort(it.decodedPayload.token, it.payload, it.signature, gateway)
+                context.ensureActive()
                 if (successful) {
                     portForwardingStatus.value = PortForwardingStatus.Success
                     port.value = it.decodedPayload.port.toString()

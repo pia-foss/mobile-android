@@ -8,7 +8,6 @@ import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 interface ConnectionDataSource {
     suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
-        listener: VPNManagerConnectionListener,
     ): Boolean
 
     suspend fun stopConnection(): Boolean

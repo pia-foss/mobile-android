@@ -22,6 +22,7 @@ class StartObfuscatorProcess(
         obfuscatorProcessInformation: ObfuscatorProcessInformation,
         obfuscatorProcessListener: ObfuscatorProcessListener,
     ): Result<Unit> = suspendCancellableCoroutine { continuation ->
+        var isCompleted = false
         obfuscatorAPI.start(
             commandLineParams = listOf(
                 "-vvv", "--log-without-time",
@@ -33,8 +34,10 @@ class StartObfuscatorProcess(
             obfuscatorProcessEventHandler = startObfuscatorProcessEventHandler(
                 obfuscatorProcessListener = obfuscatorProcessListener,
             ),
-        ) {
-            it.fold(
+        ) { result ->
+            if (!continuation.isActive || isCompleted) return@start
+            isCompleted = true
+            result.fold(
                 onSuccess = {
                     continuation.resume(Result.success(Unit))
                 },
@@ -42,6 +45,15 @@ class StartObfuscatorProcess(
                     continuation.resume(Result.failure(throwable))
                 },
             )
+        }
+
+        // 🔥 Cancellation hook
+        continuation.invokeOnCancellation {
+            if (isCompleted) return@invokeOnCancellation
+            isCompleted = true
+            obfuscatorAPI.stop {
+                // Optional: log result, but DO NOT resume continuation here
+            }
         }
     }
 }

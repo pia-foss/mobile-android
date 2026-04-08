@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
 import com.kape.data.AUTO_KEY
 import com.kape.data.Connection
@@ -14,7 +15,6 @@ import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.regions.data.ServerData
-import com.kape.vpnconnect.domain.ReconnectUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
@@ -29,7 +29,7 @@ class VpnRegionSelectionViewModel(
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val connectionInfoProvider: ConnectionInfoProvider,
-    private val reconnectUseCase: ReconnectUseCase
+    private val connectionManager: ConnectionManager
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<ServerItem>())
     val sorted = mutableStateOf(emptyList<ServerItem>())
@@ -53,7 +53,7 @@ class VpnRegionSelectionViewModel(
     }
 
     fun onVpnRegionSelected(server: VpnServer) = viewModelScope.launch {
-        reconnectUseCase(server)
+        connectionManager.reconnect(server)
         router.navigateBack()
     }
 

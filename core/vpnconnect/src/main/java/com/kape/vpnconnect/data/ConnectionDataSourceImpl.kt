@@ -3,6 +3,7 @@ package com.kape.vpnconnect.data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -34,28 +35,41 @@ class ConnectionDataSourceImpl(
     private val kpiDataSource: KpiDataSource,
     private val usageProvider: UsageProvider,
     private val csiPrefs: CsiPrefs,
+    private val connectionStatusProvider: ConnectionStatusProvider
 ) : ConnectionDataSource, KoinComponent {
+
+    init {
+        connectionApi.addConnectionListener(connectionStatusProvider as VPNManagerConnectionListener) {}
+    }
 
     override suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
-        listener: VPNManagerConnectionListener,
     ): Boolean = suspendCancellableCoroutine { cont ->
-        connectionApi.addConnectionListener(listener) {}
         if (settingsPrefs.isHelpImprovePiaEnabled()) {
             kpiDataSource.start()
         } else {
             kpiDataSource.stop()
         }
-        connectionApi.startConnection(clientConfiguration) {
-            it.getOrNull()?.let { serverPeerInfo ->
+
+        // Handle cancellation
+        cont.invokeOnCancellation {
+            connectionApi.stopConnection(){} // 👈 IMPORTANT (if available)
+        }
+
+        connectionApi.startConnection(clientConfiguration) { result ->
+
+            if (!cont.isActive) return@startConnection // 👈 avoid resume after cancel
+
+            result.getOrNull()?.let { serverPeerInfo ->
                 connectionPrefs.setGateway(serverPeerInfo.gateway)
             } ?: run {
                 csiPrefs.addCustomDebugLogs(
-                    "startConnection failed: $it",
+                    "startConnection failed: $result",
                     settingsPrefs.isDebugLoggingEnabled(),
                 )
             }
-            cont.resume(it.isSuccess)
+
+            cont.resume(result.isSuccess)
         }
     }
 

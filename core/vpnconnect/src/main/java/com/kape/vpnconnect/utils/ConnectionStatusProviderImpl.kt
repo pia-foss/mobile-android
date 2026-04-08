@@ -33,6 +33,7 @@ class ConnectionStatusProviderImpl(
     override val state: StateFlow<VpnConnectionStatus> = _state.asStateFlow()
 
     override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
+        println("--- handleConnectionStatusChange: $status")
         val currentStatus = when (status) {
             VPNManagerConnectionStatus.Disconnecting -> {
                 cancelTimerJob()
@@ -54,13 +55,11 @@ class ConnectionStatusProviderImpl(
             }
         }
 
-        _state.update { it.copy(status = currentStatus, vpnManagerConnectionStatus = status) }
-
         if (currentStatus != _state.value.status) {
             notificationHandler.update(currentStatus.toString())
         }
-
         setConnectionValuesTitle(timer)
+        _state.update { it.copy(status = currentStatus, vpnManagerConnectionStatus = status) }
     }
 
     private fun cancelTimerJob() {

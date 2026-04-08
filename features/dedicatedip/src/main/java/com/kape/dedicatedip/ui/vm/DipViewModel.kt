@@ -8,6 +8,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
 import com.kape.data.DedicatedIpActivateToken
 import com.kape.data.DedicatedIpLocationSelection
@@ -31,7 +32,6 @@ import com.kape.localprefs.prefs.DipPrefs
 import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
-import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,7 +54,7 @@ class DipViewModel(
     private val dipPrefs: DipPrefs,
     private val connectionPrefs: ConnectionPrefs,
     private val buildConfigProvider: BuildConfigProvider,
-    private val stopConnectionUseCase: StopConnectionUseCase,
+    private val connectionManager: ConnectionManager,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<DedicatedIpStep?>(null)
@@ -317,7 +317,7 @@ class DipViewModel(
     }
 
     private fun disconnect() = viewModelScope.launch {
-        stopConnectionUseCase()
+        connectionManager.disconnect()
     }
 
     private fun navigateToDedicatedIpPurchaseSuccess() = viewModelScope.launch {

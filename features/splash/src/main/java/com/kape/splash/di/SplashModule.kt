@@ -1,6 +1,7 @@
 package com.kape.splash.di
 
 import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
 import com.kape.data.DI
@@ -8,7 +9,6 @@ import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.splash.ui.vm.SplashViewModel
 import com.kape.utils.PlatformUtils
-import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
@@ -25,7 +25,7 @@ class SplashModule {
         forceUpdateUseCase: ForceUpdateUseCase,
         getWebsiteDownloadLink: GetWebsiteDownloadLink,
         @Named(DI.UPDATE_URL) appUpdateUrl: String,
-        stopConnectionUseCase: StopConnectionUseCase,
+        connectionManager: ConnectionManager,
         connectionInfoProvider: ConnectionInfoProvider,
         isUserLoggedIn: IsUserLoggedInUseCase,
         platformUtils: PlatformUtils,
@@ -36,7 +36,7 @@ class SplashModule {
         forceUpdateUseCase,
         getWebsiteDownloadLink,
         appUpdateUrl,
-        stopConnectionUseCase,
+        connectionManager,
         connectionInfoProvider,
         isUserLoggedIn,
         platformUtils,

@@ -1,6 +1,7 @@
 package com.kape.login.domain.mobile
 
 import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.LogoutUseCase
 import com.kape.data.auth.ApiResult
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -15,7 +16,6 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.payments.SubscriptionPrefs
-import com.kape.vpnconnect.domain.StopConnectionUseCase
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -33,14 +33,14 @@ class LogoutUseCaseImpl(
     private val kpiPrefs: KpiPrefs,
     private val consentPrefs: ConsentPrefs,
     private val ratingPrefs: RatingPrefs,
-    private val stopConnectionUseCase: StopConnectionUseCase,
+    private val connectionManager: ConnectionManager,
 ) : LogoutUseCase {
 
     override suspend fun logout(): Boolean {
         if (settingsPrefs.isAutomationEnabled()) {
             connectionPrefs.disconnectedByUser(true)
         }
-        stopConnectionUseCase()
+        connectionManager.disconnect()
         return performLogout()
     }
 

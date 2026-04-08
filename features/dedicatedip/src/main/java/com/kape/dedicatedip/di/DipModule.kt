@@ -2,6 +2,7 @@ package com.kape.dedicatedip.di
 
 import android.content.Context
 import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
 import com.kape.dedicatedip.data.DipDataSourceImpl
 import com.kape.dedicatedip.data.DipSignupRepository
@@ -20,7 +21,6 @@ import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.ui.utils.PriceFormatter
-import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.AndroidAccountAPI
 import org.koin.core.annotation.KoinViewModel
@@ -98,11 +98,11 @@ class DipModule {
         dipPrefs: DipPrefs,
         connectionPrefs: ConnectionPrefs,
         buildConfigProvider: BuildConfigProvider,
-        stopConnectionUseCase: StopConnectionUseCase,
+        connectionManager: ConnectionManager,
     ): DipViewModel = DipViewModel(
         router, regionListProvider, activateDipUseCase, getDipSupportedCountries,
         getDipMonthlyPlan, getDipYearlyPlan, validateDipSignup, fetchSignupDipToken,
         vpnSubscriptionPaymentProvider, dipSubscriptionPaymentProvider, dipPrefs,
-        connectionPrefs, buildConfigProvider, stopConnectionUseCase,
+        connectionPrefs, buildConfigProvider, connectionManager,
     )
 }

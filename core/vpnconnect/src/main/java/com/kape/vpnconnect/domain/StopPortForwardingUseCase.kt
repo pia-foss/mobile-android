@@ -2,13 +2,20 @@ package com.kape.vpnconnect.domain
 
 import com.kape.portforwarding.domain.PortForwardingUseCase
 
-class StopPortForwardingUseCase(
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+
+internal class StopPortForwardingUseCase(
     private val connectionDataSource: ConnectionDataSource,
     private val portForwardingUseCase: PortForwardingUseCase,
 ) {
 
-    operator fun invoke() {
+    operator suspend fun invoke() {
+        val context = currentCoroutineContext()
+        context.ensureActive()
         connectionDataSource.stopPortForwarding()
+
+        context.ensureActive()
         portForwardingUseCase.clearBindPort()
     }
 }
