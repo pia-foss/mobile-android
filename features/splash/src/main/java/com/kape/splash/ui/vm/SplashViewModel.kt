@@ -3,7 +3,6 @@ package com.kape.splash.ui.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.ConnectionInfoProvider
-import com.kape.contracts.ConnectionManager
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
 import com.kape.data.Connection
@@ -14,8 +13,10 @@ import com.kape.data.Update
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.utils.PlatformUtils
+import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
@@ -27,7 +28,7 @@ class SplashViewModel(
     private val forceUpdateUseCase: ForceUpdateUseCase,
     private val getWebsiteDownloadLink: GetWebsiteDownloadLink,
     @Named(DI.UPDATE_URL) private val appUpdateUrl: String,
-    private val connectionManager: ConnectionManager,
+    private val stopConnectionUseCase: StopConnectionUseCase,
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val isUserLoggedIn: IsUserLoggedInUseCase,
     private val platformUtils: PlatformUtils,
@@ -56,7 +57,7 @@ class SplashViewModel(
 
     fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) {
         viewModelScope.launch {
-            connectionManager.disconnect()
+            stopConnectionUseCase()
         }
         launchUpdate(appUpdateUrl.ifEmpty { updateUrl })
     }

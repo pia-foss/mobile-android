@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.AppInfo
 import com.kape.contracts.ConnectionInfoProvider
-import com.kape.contracts.ConnectionManager
 import com.kape.contracts.KpiDataSource
 import com.kape.contracts.Router
 import com.kape.csi.domain.SendLogUseCase
@@ -41,6 +40,7 @@ import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
+import com.kape.vpnconnect.domain.ReconnectUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -62,7 +62,7 @@ class SettingsViewModel(
     private val sendLogUseCase: SendLogUseCase,
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
     private val locationPermissionManager: LocationPermissionManager,
-    private val connectionManager: ConnectionManager,
+    private val reconnectUseCase: ReconnectUseCase,
     private val connectionInfoProvider: ConnectionInfoProvider,
 ) : ViewModel() {
 
@@ -398,7 +398,7 @@ class SettingsViewModel(
     fun reconnect() {
         viewModelScope.launch {
             connectionPrefs.getSelectedVpnServer()?.let {
-                connectionManager.reconnect(it)
+                reconnectUseCase(it)
             }
         }
     }

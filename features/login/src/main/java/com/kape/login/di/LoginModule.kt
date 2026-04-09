@@ -2,7 +2,6 @@ package com.kape.login.di
 
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.AuthenticationDataSource
-import com.kape.contracts.ConnectionManager
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
@@ -31,6 +30,7 @@ import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.utils.NetworkConnectionListener
+import com.kape.vpnconnect.domain.StopConnectionUseCase
 import com.privateinternetaccess.account.AndroidAccountAPI
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
@@ -62,11 +62,11 @@ class LoginModule {
         kpiPrefs: KpiPrefs,
         consentPrefs: ConsentPrefs,
         ratingPrefs: RatingPrefs,
-        connectionManager: ConnectionManager,
+        stopConnectionUseCase: StopConnectionUseCase,
     ): LogoutUseCase = LogoutUseCaseImpl(
         source, connectionPrefs, csiPrefs, customizationPrefs, dipPrefs,
         networkManagementPrefs, subscriptionPrefs, shadowsocksRegionPrefs, vpnRegionPrefs,
-        settingsPrefs, kpiPrefs, consentPrefs, ratingPrefs, connectionManager,
+        settingsPrefs, kpiPrefs, consentPrefs, ratingPrefs, stopConnectionUseCase,
     )
 
     @Singleton
