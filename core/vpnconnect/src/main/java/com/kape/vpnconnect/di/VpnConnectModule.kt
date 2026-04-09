@@ -6,7 +6,9 @@ import android.app.PendingIntent
 import android.content.Context
 import androidx.work.WorkManager
 import com.kape.contracts.ConfigInfo
+import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.data.ConnectionStatus
@@ -15,35 +17,24 @@ import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
-import com.kape.obfuscator.domain.StartObfuscatorProcess
-import com.kape.obfuscator.domain.StopObfuscatorProcess
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnconnect.domain.ClientStateDataSource
-import com.kape.contracts.ConnectionConfigurationUseCase
-import com.kape.contracts.ConnectionManager
 import com.kape.vpnconnect.domain.ConnectionConfigurationUseCaseImpl
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionManagerImpl
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
-import com.kape.vpnconnect.domain.ReconnectUseCase
-import com.kape.vpnconnect.domain.StartConnectionUseCase
-import com.kape.vpnconnect.domain.StartPortForwardingUseCase
-import com.kape.vpnconnect.domain.StartShadowsocksUseCase
-import com.kape.vpnconnect.domain.StopConnectionUseCase
-import com.kape.vpnconnect.domain.StopPortForwardingUseCase
-import com.kape.vpnconnect.domain.StopShadowsocksUseCase
 import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import com.kape.vpnconnect.utils.NotificationHandler
-import com.privateinternetaccess.account.AndroidAccountAPI
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
@@ -63,7 +54,7 @@ class VpnConnectModule {
         values[ConnectionStatus.DISCONNECTED] =
             context.getString(com.kape.ui.R.string.vpn_not_protected)
         values[ConnectionStatus.DISCONNECTING] =
-            context.getString(com.kape.ui.R.string.not_connected)
+            context.getString(com.kape.ui.R.string.vpn_not_protected)
         values[ConnectionStatus.RECONNECTING] =
             context.getString(com.kape.ui.R.string.reconnecting)
         return values
@@ -129,9 +120,10 @@ class VpnConnectModule {
         kpiDataSource: KpiDataSource,
         usageProvider: UsageProvider,
         csiPrefs: CsiPrefs,
+        connectionStatusProvider: ConnectionStatusProvider,
     ): ConnectionDataSource = ConnectionDataSourceImpl(
         vpnApi, accountApi, connectionPrefs, workManager, settingsPrefs,
-        kpiDataSource, usageProvider, csiPrefs,
+        kpiDataSource, usageProvider, csiPrefs, connectionStatusProvider,
     )
 
     @Singleton(binds = [ConnectionConfigurationUseCase::class])
@@ -158,79 +150,4 @@ class VpnConnectModule {
     @Singleton([ConnectionManager::class])
     fun provideConnectionManager(): ConnectionManager = ConnectionManagerImpl()
 
-//    @Singleton
-//    fun provideStartPortForwardingUseCase(
-//        connectionDataSource: ConnectionDataSource,
-//        portForwardingUseCase: PortForwardingUseCase,
-//        settingsPrefs: SettingsPrefs,
-//    ): StartPortForwardingUseCase =
-//        StartPortForwardingUseCase(connectionDataSource, portForwardingUseCase, settingsPrefs)
-//
-//    @Singleton
-//    fun provideStartShadowsocksUseCase(
-//        settingsPrefs: SettingsPrefs,
-//        shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
-//        startObfuscatorProcess: StartObfuscatorProcess,
-//        stopConnectionUseCase: StopConnectionUseCase,
-//        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-//    ): StartShadowsocksUseCase = StartShadowsocksUseCase(
-//        settingsPrefs,
-//        shadowsocksRegionPrefs,
-//        startObfuscatorProcess,
-//        stopConnectionUseCase,
-//        ioDispatcher,
-//    )
-//
-//    @Singleton
-//    fun provideStopShadowsocksUseCase(stopObfuscatorProcess: StopObfuscatorProcess): StopShadowsocksUseCase =
-//        StopShadowsocksUseCase(stopObfuscatorProcess)
-//
-//    @Singleton
-//    fun provideStopPortForwardingUseCase(
-//        connectionSource: ConnectionDataSource,
-//        portForwardingUseCase: PortForwardingUseCase,
-//    ): StopPortForwardingUseCase =
-//        StopPortForwardingUseCase(connectionSource, portForwardingUseCase)
-//
-//    @Singleton
-//    fun provideStartConnectionUseCase(
-//        connectionSource: ConnectionDataSource,
-//        startShadowsocksUseCase: StartShadowsocksUseCase,
-//        startPortForwardingUseCase: StartPortForwardingUseCase,
-//        stopShadowsocksUseCase: StopShadowsocksUseCase,
-//        connectionConfigurationUseCase: ConnectionConfigurationUseCase,
-//        connectionPrefs: ConnectionPrefs,
-//        connectionStatusProvider: ConnectionStatusProvider,
-//        connectionInfoProvider: ConnectionInfoProvider,
-//    ): StartConnectionUseCase = StartConnectionUseCase(
-//        connectionSource,
-//        connectionInfoProvider,
-//        connectionPrefs,
-//        startShadowsocksUseCase,
-//        stopShadowsocksUseCase,
-//        connectionConfigurationUseCase,
-//        connectionStatusProvider,
-//        startPortForwardingUseCase,
-//    )
-//
-//    @Singleton
-//    fun provideStopConnectionUseCase(
-//        connectionSource: ConnectionDataSource,
-//        stopShadowsocksUseCase: StopShadowsocksUseCase,
-//        stopPortForwardingUseCase: StopPortForwardingUseCase,
-//        connectionInfoProvider: ConnectionInfoProvider,
-//    ): StopConnectionUseCase = StopConnectionUseCase(
-//        connectionInfoProvider,
-//        connectionSource,
-//        stopShadowsocksUseCase,
-//        stopPortForwardingUseCase,
-//    )
-//
-//    @Singleton
-//    fun provideReconnectUseCase(
-//        startConnectionUseCase: StartConnectionUseCase,
-//        stopConnectionUseCase: StopConnectionUseCase,
-//        connectionInfoProvider: ConnectionInfoProvider,
-//    ): ReconnectUseCase =
-//        ReconnectUseCase(startConnectionUseCase, stopConnectionUseCase, connectionInfoProvider)
 }

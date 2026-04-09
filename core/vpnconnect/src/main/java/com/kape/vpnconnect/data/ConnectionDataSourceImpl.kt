@@ -3,6 +3,8 @@ package com.kape.vpnconnect.data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.kape.contracts.ConnectionManager
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -18,11 +20,14 @@ import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import com.privateinternetaccess.account.AndroidAccountAPI
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @Singleton(binds = [ConnectionDataSource::class])
 class ConnectionDataSourceImpl(
@@ -34,13 +39,21 @@ class ConnectionDataSourceImpl(
     private val kpiDataSource: KpiDataSource,
     private val usageProvider: UsageProvider,
     private val csiPrefs: CsiPrefs,
+    private val connectionStatusProvider: ConnectionStatusProvider,
 ) : ConnectionDataSource, KoinComponent {
+
+    init {
+        connectionApi.addConnectionListener(connectionStatusProvider as VPNManagerConnectionListener) {}
+    }
 
     override suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
-        listener: VPNManagerConnectionListener,
+        scope: CoroutineScope
     ): Boolean = suspendCancellableCoroutine { cont ->
-        connectionApi.addConnectionListener(listener) {}
+        cont.invokeOnCancellation {
+            println("--- stop connection on cancellation")
+            stopConnection()
+        }
         if (settingsPrefs.isHelpImprovePiaEnabled()) {
             kpiDataSource.start()
         } else {
@@ -59,11 +72,12 @@ class ConnectionDataSourceImpl(
         }
     }
 
-    override suspend fun stopConnection(): Boolean = suspendCancellableCoroutine { cont ->
+    override fun stopConnection() {
+        println("--- something calls stop connection multiple times")
         connectionApi.stopConnection {
+            println("--- stop connection succeeded")
             usageProvider.reset()
             stopPortForwarding()
-            cont.resume(it.isSuccess)
             if (it.isFailure) {
                 csiPrefs.addCustomDebugLogs(
                     "stop connection failed: ${it.exceptionOrNull()}",
@@ -78,7 +92,6 @@ class ConnectionDataSourceImpl(
     }
 
     override fun startPortForwarding() {
-        // TODO: handle how to pass status
         val workRequest = PeriodicWorkRequestBuilder<PortForwardingWorker>(
             15,
             TimeUnit.MINUTES,
@@ -91,7 +104,6 @@ class ConnectionDataSourceImpl(
     }
 
     override fun stopPortForwarding() {
-        // TODO: handle how to pass status
         connectionPrefs.clearGateway()
         connectionPrefs.clearPortBindingInfo()
         workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER)
@@ -111,9 +123,10 @@ class ConnectionDataSourceImpl(
         }
     }
 
-    override suspend fun updateConfigurationServers(servers: ServerList): Boolean = suspendCancellableCoroutine { cont ->
-        connectionApi.updateConfigurationServers(servers) {
-            cont.resume(it.isSuccess)
+    override suspend fun updateConfigurationServers(servers: ServerList): Boolean =
+        suspendCancellableCoroutine { cont ->
+            connectionApi.updateConfigurationServers(servers) {
+                cont.resume(it.isSuccess)
+            }
         }
-    }
 }

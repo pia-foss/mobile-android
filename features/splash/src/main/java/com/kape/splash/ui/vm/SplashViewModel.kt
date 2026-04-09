@@ -32,8 +32,8 @@ class SplashViewModel(
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val isUserLoggedIn: IsUserLoggedInUseCase,
     private val platformUtils: PlatformUtils,
-    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher
-) : ViewModel(){
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+) : ViewModel() {
     private var updateUrl: String = ""
 
     fun load() {
@@ -55,7 +55,7 @@ class SplashViewModel(
         handleSplashExit()
     }
 
-    fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) {
+    fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) = viewModelScope.launch {
         connectionManager.disconnect()
         launchUpdate(appUpdateUrl.ifEmpty { updateUrl })
     }

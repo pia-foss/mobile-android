@@ -54,11 +54,10 @@ class ConnectionStatusProviderImpl(
             }
         }
 
-        _state.update { it.copy(status = currentStatus, vpnManagerConnectionStatus = status) }
-
         if (currentStatus != _state.value.status) {
             notificationHandler.update(currentStatus.toString())
         }
+        _state.update { it.copy(status = currentStatus, vpnManagerConnectionStatus = status) }
 
         setConnectionValuesTitle(timer)
     }

@@ -316,7 +316,7 @@ class DipViewModel(
         }
     }
 
-    private fun disconnect() = connectionManager.disconnect()
+    private fun disconnect() = viewModelScope.launch { connectionManager.disconnect() }
 
     private fun navigateToDedicatedIpPurchaseSuccess() = viewModelScope.launch {
         _state.emit(DedicatedIpStep.SignupSuccess)

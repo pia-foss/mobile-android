@@ -4,14 +4,15 @@ import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.presenters.VPNManagerCallback
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import kotlinx.coroutines.CoroutineScope
 
 interface ConnectionDataSource {
     suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
-        listener: VPNManagerConnectionListener,
+        scope: CoroutineScope
     ): Boolean
 
-    suspend fun stopConnection(): Boolean
+    fun stopConnection()
     fun getVpnToken(): String
     fun startPortForwarding()
     fun stopPortForwarding()

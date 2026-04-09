@@ -58,7 +58,10 @@ class VpnLauncher(
         }
     }
 
-    private suspend fun initiateConnection(server: VpnServer) = connectionManager.connect(server, false)
+    private suspend fun initiateConnection(server: VpnServer) =
+        connectionManager.connect(server, false)
 
-    fun stopVpn() = connectionManager.disconnect()
+    fun stopVpn() = launch {
+        connectionManager.disconnect()
+    }
 }

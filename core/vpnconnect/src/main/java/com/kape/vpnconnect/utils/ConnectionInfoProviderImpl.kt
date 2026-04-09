@@ -52,7 +52,6 @@ class ConnectionInfoProviderImpl(
     init {
         ioScope.launch {
             connectionStatusProvider.state
-                .distinctUntilChangedBy { it.status == ConnectionStatus.CONNECTED || it.status == ConnectionStatus.DISCONNECTED }
                 .collectLatest {
                     it.vpnManagerConnectionStatus?.let {
                         submitKpiEventUseCase.submitConnectionEvent(
