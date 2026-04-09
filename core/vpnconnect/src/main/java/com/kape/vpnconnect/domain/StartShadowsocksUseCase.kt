@@ -11,7 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
 
-class StartShadowsocksUseCase(
+internal class StartShadowsocksUseCase(
     private val settingsPrefs: SettingsPrefs,
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
     private val startObfuscatorProcess: StartObfuscatorProcess,

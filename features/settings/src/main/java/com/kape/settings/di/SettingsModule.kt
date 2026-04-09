@@ -2,6 +2,7 @@ package com.kape.settings.di
 
 import com.kape.contracts.AppInfo
 import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.KpiDataSource
 import com.kape.contracts.Router
 import com.kape.csi.domain.SendLogUseCase
@@ -14,7 +15,6 @@ import com.kape.settings.domain.IsNumericIpAddressUseCaseImpl
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
-import com.kape.vpnconnect.domain.ReconnectUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
@@ -41,11 +41,11 @@ class SettingsModule {
         sendLogUseCase: SendLogUseCase,
         isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
         locationPermissionManager: LocationPermissionManager,
-        reconnectUseCase: ReconnectUseCase,
+        connectionManager: ConnectionManager,
         connectionInfoProvider: ConnectionInfoProvider,
     ): SettingsViewModel = SettingsViewModel(
         router, appInfo, prefs, connectionPrefs, csiPrefs, regionsRepository, kpiDataSource,
         connectionDataSource, getDebugLogsUseCase, sendLogUseCase, isNumericIpAddressUseCase,
-        locationPermissionManager, reconnectUseCase, connectionInfoProvider,
+        locationPermissionManager, connectionManager, connectionInfoProvider,
     )
 }

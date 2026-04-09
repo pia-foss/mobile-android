@@ -2,7 +2,7 @@ package com.kape.vpnconnect.domain
 
 import com.kape.contracts.ConnectionInfoProvider
 
-class StopConnectionUseCase(
+internal class StopConnectionUseCase(
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val connectionSource: ConnectionDataSource,
     private val stopShadowsocksUseCase: StopShadowsocksUseCase,

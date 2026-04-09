@@ -23,8 +23,10 @@ import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.contracts.ConnectionConfigurationUseCase
+import com.kape.contracts.ConnectionManager
 import com.kape.vpnconnect.domain.ConnectionConfigurationUseCaseImpl
 import com.kape.vpnconnect.domain.ConnectionDataSource
+import com.kape.vpnconnect.domain.ConnectionManagerImpl
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
@@ -153,79 +155,82 @@ class VpnConnectModule {
     fun provideGetLogsUseCase(connectionSource: ConnectionDataSource): GetLogsUseCase =
         GetLogsUseCase(connectionSource)
 
-    @Singleton
-    fun provideStartPortForwardingUseCase(
-        connectionDataSource: ConnectionDataSource,
-        portForwardingUseCase: PortForwardingUseCase,
-        settingsPrefs: SettingsPrefs,
-    ): StartPortForwardingUseCase =
-        StartPortForwardingUseCase(connectionDataSource, portForwardingUseCase, settingsPrefs)
+    @Singleton([ConnectionManager::class])
+    fun provideConnectionManager(): ConnectionManager = ConnectionManagerImpl()
 
-    @Singleton
-    fun provideStartShadowsocksUseCase(
-        settingsPrefs: SettingsPrefs,
-        shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
-        startObfuscatorProcess: StartObfuscatorProcess,
-        stopConnectionUseCase: StopConnectionUseCase,
-        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-    ): StartShadowsocksUseCase = StartShadowsocksUseCase(
-        settingsPrefs,
-        shadowsocksRegionPrefs,
-        startObfuscatorProcess,
-        stopConnectionUseCase,
-        ioDispatcher,
-    )
-
-    @Singleton
-    fun provideStopShadowsocksUseCase(stopObfuscatorProcess: StopObfuscatorProcess): StopShadowsocksUseCase =
-        StopShadowsocksUseCase(stopObfuscatorProcess)
-
-    @Singleton
-    fun provideStopPortForwardingUseCase(
-        connectionSource: ConnectionDataSource,
-        portForwardingUseCase: PortForwardingUseCase,
-    ): StopPortForwardingUseCase =
-        StopPortForwardingUseCase(connectionSource, portForwardingUseCase)
-
-    @Singleton
-    fun provideStartConnectionUseCase(
-        connectionSource: ConnectionDataSource,
-        startShadowsocksUseCase: StartShadowsocksUseCase,
-        startPortForwardingUseCase: StartPortForwardingUseCase,
-        stopShadowsocksUseCase: StopShadowsocksUseCase,
-        connectionConfigurationUseCase: ConnectionConfigurationUseCase,
-        connectionPrefs: ConnectionPrefs,
-        connectionStatusProvider: ConnectionStatusProvider,
-        connectionInfoProvider: ConnectionInfoProvider,
-    ): StartConnectionUseCase = StartConnectionUseCase(
-        connectionSource,
-        connectionInfoProvider,
-        connectionPrefs,
-        startShadowsocksUseCase,
-        stopShadowsocksUseCase,
-        connectionConfigurationUseCase,
-        connectionStatusProvider,
-        startPortForwardingUseCase,
-    )
-
-    @Singleton
-    fun provideStopConnectionUseCase(
-        connectionSource: ConnectionDataSource,
-        stopShadowsocksUseCase: StopShadowsocksUseCase,
-        stopPortForwardingUseCase: StopPortForwardingUseCase,
-        connectionInfoProvider: ConnectionInfoProvider,
-    ): StopConnectionUseCase = StopConnectionUseCase(
-        connectionInfoProvider,
-        connectionSource,
-        stopShadowsocksUseCase,
-        stopPortForwardingUseCase,
-    )
-
-    @Singleton
-    fun provideReconnectUseCase(
-        startConnectionUseCase: StartConnectionUseCase,
-        stopConnectionUseCase: StopConnectionUseCase,
-        connectionInfoProvider: ConnectionInfoProvider,
-    ): ReconnectUseCase =
-        ReconnectUseCase(startConnectionUseCase, stopConnectionUseCase, connectionInfoProvider)
+//    @Singleton
+//    fun provideStartPortForwardingUseCase(
+//        connectionDataSource: ConnectionDataSource,
+//        portForwardingUseCase: PortForwardingUseCase,
+//        settingsPrefs: SettingsPrefs,
+//    ): StartPortForwardingUseCase =
+//        StartPortForwardingUseCase(connectionDataSource, portForwardingUseCase, settingsPrefs)
+//
+//    @Singleton
+//    fun provideStartShadowsocksUseCase(
+//        settingsPrefs: SettingsPrefs,
+//        shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
+//        startObfuscatorProcess: StartObfuscatorProcess,
+//        stopConnectionUseCase: StopConnectionUseCase,
+//        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+//    ): StartShadowsocksUseCase = StartShadowsocksUseCase(
+//        settingsPrefs,
+//        shadowsocksRegionPrefs,
+//        startObfuscatorProcess,
+//        stopConnectionUseCase,
+//        ioDispatcher,
+//    )
+//
+//    @Singleton
+//    fun provideStopShadowsocksUseCase(stopObfuscatorProcess: StopObfuscatorProcess): StopShadowsocksUseCase =
+//        StopShadowsocksUseCase(stopObfuscatorProcess)
+//
+//    @Singleton
+//    fun provideStopPortForwardingUseCase(
+//        connectionSource: ConnectionDataSource,
+//        portForwardingUseCase: PortForwardingUseCase,
+//    ): StopPortForwardingUseCase =
+//        StopPortForwardingUseCase(connectionSource, portForwardingUseCase)
+//
+//    @Singleton
+//    fun provideStartConnectionUseCase(
+//        connectionSource: ConnectionDataSource,
+//        startShadowsocksUseCase: StartShadowsocksUseCase,
+//        startPortForwardingUseCase: StartPortForwardingUseCase,
+//        stopShadowsocksUseCase: StopShadowsocksUseCase,
+//        connectionConfigurationUseCase: ConnectionConfigurationUseCase,
+//        connectionPrefs: ConnectionPrefs,
+//        connectionStatusProvider: ConnectionStatusProvider,
+//        connectionInfoProvider: ConnectionInfoProvider,
+//    ): StartConnectionUseCase = StartConnectionUseCase(
+//        connectionSource,
+//        connectionInfoProvider,
+//        connectionPrefs,
+//        startShadowsocksUseCase,
+//        stopShadowsocksUseCase,
+//        connectionConfigurationUseCase,
+//        connectionStatusProvider,
+//        startPortForwardingUseCase,
+//    )
+//
+//    @Singleton
+//    fun provideStopConnectionUseCase(
+//        connectionSource: ConnectionDataSource,
+//        stopShadowsocksUseCase: StopShadowsocksUseCase,
+//        stopPortForwardingUseCase: StopPortForwardingUseCase,
+//        connectionInfoProvider: ConnectionInfoProvider,
+//    ): StopConnectionUseCase = StopConnectionUseCase(
+//        connectionInfoProvider,
+//        connectionSource,
+//        stopShadowsocksUseCase,
+//        stopPortForwardingUseCase,
+//    )
+//
+//    @Singleton
+//    fun provideReconnectUseCase(
+//        startConnectionUseCase: StartConnectionUseCase,
+//        stopConnectionUseCase: StopConnectionUseCase,
+//        connectionInfoProvider: ConnectionInfoProvider,
+//    ): ReconnectUseCase =
+//        ReconnectUseCase(startConnectionUseCase, stopConnectionUseCase, connectionInfoProvider)
 }

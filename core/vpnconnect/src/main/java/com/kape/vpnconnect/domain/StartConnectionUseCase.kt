@@ -7,7 +7,7 @@ import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 
-class StartConnectionUseCase(
+internal class StartConnectionUseCase(
     private val connectionSource: ConnectionDataSource,
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val connectionPrefs: ConnectionPrefs,
