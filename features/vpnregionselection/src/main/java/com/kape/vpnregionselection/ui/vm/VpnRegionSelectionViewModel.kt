@@ -29,7 +29,7 @@ class VpnRegionSelectionViewModel(
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val connectionInfoProvider: ConnectionInfoProvider,
-    private val connectionManager: ConnectionManager
+    private val connectionManager: ConnectionManager,
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<ServerItem>())
     val sorted = mutableStateOf(emptyList<ServerItem>())
@@ -47,14 +47,22 @@ class VpnRegionSelectionViewModel(
         if (displayLoading) {
             isLoading.value = true
         }
-        val servers = regionListProvider.updateServerLatencies(isVpnConnectionActive(), displayLoading)
+        val servers =
+            regionListProvider.updateServerLatencies(isVpnConnectionActive(), displayLoading)
         arrangeVpnServers(servers)
         isLoading.value = false
     }
 
-    fun onVpnRegionSelected(server: VpnServer) = viewModelScope.launch {
-        connectionManager.reconnect(server)
-        router.navigateBack()
+    fun onVpnRegionSelected(server: VpnServer) {
+        connectionManager.connectJob = viewModelScope.launch {
+            connectionManager.disconnect().getOrThrow()
+            connectionManager.connect(server, true, ::callback)
+            router.navigateBack()
+        }
+    }
+
+    private fun callback() {
+        viewModelScope.launch { connectionManager.disconnect().getOrThrow() }
     }
 
     fun onFavoriteVpnClicked(serverData: ServerData) {

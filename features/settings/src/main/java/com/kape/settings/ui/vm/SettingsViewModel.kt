@@ -396,11 +396,16 @@ class SettingsViewModel(
     }
 
     fun reconnect() {
-        viewModelScope.launch {
-            connectionPrefs.getSelectedVpnServer()?.let {
-                connectionManager.reconnect(it)
+        connectionPrefs.getSelectedVpnServer()?.let {
+            connectionManager.connectJob = viewModelScope.launch {
+                connectionManager.disconnect().getOrThrow()
+                connectionManager.connect(it, true, ::callback)
             }
         }
+    }
+
+    private fun callback() {
+        viewModelScope.launch { connectionManager.disconnect().getOrThrow() }
     }
 
     fun isConnected() = connectionInfoProvider.isConnected()

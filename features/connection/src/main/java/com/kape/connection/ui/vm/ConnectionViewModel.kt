@@ -44,6 +44,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
@@ -144,9 +146,13 @@ class ConnectionViewModel(
             if (settingsPrefs.isConnectOnLaunchEnabled() || shortcutPrefs.isShortcutConnectToVpn()) {
                 shortcutPrefs.setShortcutConnectToVpn(false)
                 prefs.getSelectedVpnServer()?.let {
-                    connectionManager.connect(it, false)
+                    connectionManager.connect(it, false, ::callback)
                 } ?: run {
-                    connectionManager.connect(regionListProvider.getOptimalServer(), false)
+                    connectionManager.connect(
+                        regionListProvider.getOptimalServer(),
+                        false,
+                        ::callback,
+                    )
                 }
             }
             if (shortcutPrefs.isShortcutDisconnectVpn()) {
@@ -259,10 +265,11 @@ class ConnectionViewModel(
     }
 
     fun quickConnect(server: VpnServer) {
-        viewModelScope.launch {
-            _state.update { it.copy(server = server) }
-            vpnRegionPrefs.selectVpnServer(server)
-            connectionManager.reconnect(server)
+        _state.update { it.copy(server = server) }
+        vpnRegionPrefs.selectVpnServer(server)
+        connectionManager.connectJob = viewModelScope.launch {
+            connectionManager.disconnect().getOrThrow()
+            connectionManager.connect(server, true, ::callback)
         }
     }
 
@@ -273,19 +280,24 @@ class ConnectionViewModel(
     }
 
     private fun connect() {
-        viewModelScope.launch {
-            prefs.setSelectedVpnServer(state.value.server)
-            prefs.addToQuickConnect(state.value.server.key, state.value.server.isDedicatedIp)
-            snoozeHandler.cancelSnooze()
-            connectionManager.connect(server = state.value.server, true)
+        prefs.setSelectedVpnServer(state.value.server)
+        prefs.addToQuickConnect(state.value.server.key, state.value.server.isDedicatedIp)
+        snoozeHandler.cancelSnooze()
+        connectionManager.connectJob?.cancel()
+        connectionManager.connectJob = viewModelScope.launch {
+            connectionManager.connect(server = state.value.server, true, ::callback)
         }
     }
 
-    private fun disconnect() = viewModelScope.launch {
+    private fun disconnect() {
         if (settingsPrefs.isAutomationEnabled()) {
             prefs.disconnectedByUser(true)
         }
-        connectionManager.disconnect()
+        connectionManager.connectJob?.cancel()
+        connectionManager.connectJob = null
+        viewModelScope.launch {
+            connectionManager.disconnect()
+        }
     }
 
     private fun isOptimalLocation(serverKey: String): Boolean {
@@ -317,4 +329,9 @@ class ConnectionViewModel(
         )
     }
 
+    private fun callback() {
+        viewModelScope.launch {
+            connectionManager.disconnect().getOrThrow()
+        }
+    }
 }

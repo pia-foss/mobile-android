@@ -120,10 +120,9 @@ class VpnConnectModule {
         kpiDataSource: KpiDataSource,
         usageProvider: UsageProvider,
         csiPrefs: CsiPrefs,
-        connectionStatusProvider: ConnectionStatusProvider,
     ): ConnectionDataSource = ConnectionDataSourceImpl(
         vpnApi, accountApi, connectionPrefs, workManager, settingsPrefs,
-        kpiDataSource, usageProvider, csiPrefs, connectionStatusProvider,
+        kpiDataSource, usageProvider, csiPrefs,
     )
 
     @Singleton(binds = [ConnectionConfigurationUseCase::class])

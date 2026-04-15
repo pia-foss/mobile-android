@@ -1,5 +1,6 @@
 package com.kape.vpnconnect.domain
 
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.presenters.VPNManagerCallback
@@ -9,10 +10,10 @@ import kotlinx.coroutines.CoroutineScope
 interface ConnectionDataSource {
     suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
-        scope: CoroutineScope
-    ): Boolean
+        connectionStatusProvider: ConnectionStatusProvider
+    ): Result<Unit>
 
-    fun stopConnection()
+    suspend fun stopConnection(): Result<Unit>
     fun getVpnToken(): String
     fun startPortForwarding()
     fun stopPortForwarding()

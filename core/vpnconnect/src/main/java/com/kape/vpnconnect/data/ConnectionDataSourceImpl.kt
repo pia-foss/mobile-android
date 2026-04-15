@@ -39,53 +39,60 @@ class ConnectionDataSourceImpl(
     private val kpiDataSource: KpiDataSource,
     private val usageProvider: UsageProvider,
     private val csiPrefs: CsiPrefs,
-    private val connectionStatusProvider: ConnectionStatusProvider,
 ) : ConnectionDataSource, KoinComponent {
-
-    init {
-        connectionApi.addConnectionListener(connectionStatusProvider as VPNManagerConnectionListener) {}
-    }
 
     override suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
-        scope: CoroutineScope
-    ): Boolean = suspendCancellableCoroutine { cont ->
+        connectionStatusProvider: ConnectionStatusProvider
+    ): Result<Unit> = suspendCancellableCoroutine { cont ->
         cont.invokeOnCancellation {
-            println("--- stop connection on cancellation")
-            stopConnection()
+            CoroutineScope(cont.context).launch {
+                stopConnection().getOrThrow()
+            }
         }
+        connectionApi.addConnectionListener(
+            connectionStatusProvider as VPNManagerConnectionListener
+        ) {}
+
         if (settingsPrefs.isHelpImprovePiaEnabled()) {
             kpiDataSource.start()
         } else {
             kpiDataSource.stop()
         }
-        connectionApi.startConnection(clientConfiguration) {
-            it.getOrNull()?.let { serverPeerInfo ->
+
+        connectionApi.startConnection(clientConfiguration) { result ->
+            result.getOrNull()?.let { serverPeerInfo ->
                 connectionPrefs.setGateway(serverPeerInfo.gateway)
             } ?: run {
                 csiPrefs.addCustomDebugLogs(
-                    "startConnection failed: $it",
+                    "startConnection failed: $result",
                     settingsPrefs.isDebugLoggingEnabled(),
                 )
             }
-            cont.resume(it.isSuccess)
+            if (cont.isActive) {
+                // Convert Result<ServerPeerInfo> → Result<Unit>
+                cont.resume(result.map { Unit })
+            }
         }
     }
 
-    override fun stopConnection() {
-        println("--- something calls stop connection multiple times")
-        connectionApi.stopConnection {
-            println("--- stop connection succeeded")
-            usageProvider.reset()
-            stopPortForwarding()
-            if (it.isFailure) {
-                csiPrefs.addCustomDebugLogs(
-                    "stop connection failed: ${it.exceptionOrNull()}",
-                    settingsPrefs.isDebugLoggingEnabled(),
-                )
+    override suspend fun stopConnection(): Result<Unit> =
+        suspendCancellableCoroutine { continuation ->
+            connectionApi.stopConnection { result ->
+                usageProvider.reset()
+                stopPortForwarding()
+                if (result.isFailure) {
+                    csiPrefs.addCustomDebugLogs(
+                        "stop connection failed: ${result.exceptionOrNull()}",
+                        settingsPrefs.isDebugLoggingEnabled(),
+                    )
+                }
+                // Resume coroutine with result
+                if (continuation.isActive) {
+                    continuation.resume(result)
+                }
             }
         }
-    }
 
     override fun getVpnToken(): String {
         return accountApi.vpnToken() ?: ""
