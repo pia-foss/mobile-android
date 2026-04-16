@@ -1,6 +1,7 @@
 package com.kape.login.domain
 
 import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.ConnectionManager
 import com.kape.data.auth.ApiError
 import com.kape.data.auth.ApiResult
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -17,7 +18,6 @@ import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.login.BaseTest
 import com.kape.login.domain.mobile.LogoutUseCaseImpl
 import com.kape.payments.SubscriptionPrefs
-import com.kape.vpnconnect.domain.StopConnectionUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -31,7 +31,7 @@ import java.util.stream.Stream
 
 internal class LogoutUseCaseTest : BaseTest() {
     private val source = mockk<AuthenticationDataSource>()
-    private val stopConnectionUseCase = mockk<StopConnectionUseCase>(relaxed = true)
+    private val connectionManager = mockk<ConnectionManager>(relaxed = true)
     private val connectionPrefs = mockk<ConnectionPrefs>()
     private val csiPrefs = mockk<CsiPrefs>()
     private val customizationPrefs = mockk<CustomizationPrefs>()
@@ -63,7 +63,7 @@ internal class LogoutUseCaseTest : BaseTest() {
             kpiPrefs,
             consentPrefs,
             ratingPrefs,
-            stopConnectionUseCase,
+            connectionManager,
         )
     }
 
@@ -75,7 +75,7 @@ internal class LogoutUseCaseTest : BaseTest() {
         expected: Boolean,
     ) = runTest {
         coEvery { source.logout() } returns result
-        coEvery { stopConnectionUseCase() } returns true
+        coEvery { connectionManager.disconnect() } returns Result.success(Unit)
         every { settingsPrefs.isAutomationEnabled() } returns isAutomationEnabled
         every { connectionPrefs.disconnectedByUser(any()) } returns Unit
         every { connectionPrefs.clear() } returns Unit
