@@ -24,16 +24,14 @@ class ClientStateDataSourceImpl(
     private val settingsPrefs: SettingsPrefs,
 ) : ClientStateDataSource {
 
-    override suspend fun getPublicIp(): String = suspendCancellableCoroutine { continuation ->
-        accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT) { clientStatusInfo, errors ->
-            clientStatusInfo?.let {
-                if (!it.connected) {
-                    connectionPrefs.setClientIp(it.ip)
-                    connectionPrefs.setVpnIp(NO_IP)
-                }
-                continuation.resume(it.ip)
-            } ?: continuation.resume(NO_IP)
+    override suspend fun getPublicIp(): String {
+        repeat(3) { attempt ->
+            val ip = getPublicIpOnce()
+            if (ip != NO_IP) return ip
+
+            delay(DELAY_BETWEEN_RETRY)
         }
+        return NO_IP
     }
 
     override suspend fun getVpnIp(): String {
@@ -56,4 +54,15 @@ class ClientStateDataSourceImpl(
                 continuation.resume(ip)
             }
         }
+
+    private suspend fun getPublicIpOnce(): String = suspendCancellableCoroutine { continuation ->
+        accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT) { clientStatusInfo, errors ->
+            val ip = clientStatusInfo?.ip ?: NO_IP
+            if (clientStatusInfo?.connected == false) {
+                connectionPrefs.setClientIp(ip)
+                connectionPrefs.setVpnIp(NO_IP)
+            }
+            continuation.resume(ip)
+        }
+    }
 }

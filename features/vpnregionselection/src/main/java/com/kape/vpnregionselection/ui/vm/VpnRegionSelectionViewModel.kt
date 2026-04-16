@@ -55,14 +55,16 @@ class VpnRegionSelectionViewModel(
 
     fun onVpnRegionSelected(server: VpnServer) {
         connectionManager.connectJob = viewModelScope.launch {
-            connectionManager.disconnect().getOrThrow()
+            if (connectionManager.isConnectionInProgress()) {
+                connectionManager.disconnect().getOrNull()
+            }
             connectionManager.connect(server, true, ::callback)
             router.navigateBack()
         }
     }
 
     private fun callback() {
-        viewModelScope.launch { connectionManager.disconnect().getOrThrow() }
+        viewModelScope.launch { connectionManager.disconnect().getOrNull() }
     }
 
     fun onFavoriteVpnClicked(serverData: ServerData) {

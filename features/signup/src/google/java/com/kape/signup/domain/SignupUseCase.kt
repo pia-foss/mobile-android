@@ -31,7 +31,6 @@ class SignupUseCase(
             val successful = emailDataSource.setEmail(email)
             if (successful) credentials else null
         } else {
-            // TODO: emit error
             null
         }
     }

@@ -63,7 +63,7 @@ class VpnLauncher(
 
     fun stopVpn() {
         launch {
-            connectionManager.disconnect()
+            connectionManager.disconnect().getOrNull()
         }
     }
 }

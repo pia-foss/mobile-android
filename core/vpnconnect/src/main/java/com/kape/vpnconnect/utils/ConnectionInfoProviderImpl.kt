@@ -45,13 +45,16 @@ class ConnectionInfoProviderImpl(
     override val connectionState = connectionStatusProvider.state
     private val defaultState = VpnConnectionInfo(publicIp = connectionPrefs.getClientIp())
     private val _connectionInfoState: MutableStateFlow<VpnConnectionInfo> = MutableStateFlow(
-        VpnConnectionInfo(),
+        VpnConnectionInfo(
+            publicIp = connectionPrefs.getClientIp(),
+        ),
     )
     override val state: StateFlow<VpnConnectionInfo> = _connectionInfoState.asStateFlow()
 
     init {
         ioScope.launch {
             connectionStatusProvider.state
+                .distinctUntilChangedBy { it.status == ConnectionStatus.CONNECTED || it.status == ConnectionStatus.DISCONNECTED }
                 .collectLatest {
                     it.vpnManagerConnectionStatus?.let {
                         submitKpiEventUseCase.submitConnectionEvent(
@@ -68,7 +71,12 @@ class ConnectionInfoProviderImpl(
                     if (it.status == ConnectionStatus.CONNECTED) {
                         val vpnIp = clientStateDataSource.getVpnIp()
                         withContext(mainDispatcher) {
-                            _connectionInfoState.update { it.copy(vpnIp = vpnIp) }
+                            _connectionInfoState.update {
+                                it.copy(
+                                    publicIp = connectionPrefs.getClientIp(),
+                                    vpnIp = vpnIp,
+                                )
+                            }
                         }
                     }
                 }

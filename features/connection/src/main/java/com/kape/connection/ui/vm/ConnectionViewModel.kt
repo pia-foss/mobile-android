@@ -157,7 +157,7 @@ class ConnectionViewModel(
             }
             if (shortcutPrefs.isShortcutDisconnectVpn()) {
                 shortcutPrefs.setShortcutDisconnectVpn(false)
-                connectionManager.disconnect()
+                connectionManager.disconnect().getOrNull()
             }
         }
     }
@@ -265,12 +265,11 @@ class ConnectionViewModel(
     }
 
     fun quickConnect(server: VpnServer) {
-        _state.update { it.copy(server = server) }
         vpnRegionPrefs.selectVpnServer(server)
         connectionManager.connectJob = viewModelScope.launch {
-            connectionManager.disconnect().getOrThrow()
-            connectionManager.connect(server, true, ::callback)
+            connectionManager.reconnect(server, ::callback)
         }
+        _state.update { it.copy(server = server, quickConnectServers = getQuickConnectVpnServers()) }
     }
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
@@ -296,7 +295,7 @@ class ConnectionViewModel(
         connectionManager.connectJob?.cancel()
         connectionManager.connectJob = null
         viewModelScope.launch {
-            connectionManager.disconnect()
+            connectionManager.disconnect().getOrNull()
         }
     }
 
@@ -331,7 +330,7 @@ class ConnectionViewModel(
 
     private fun callback() {
         viewModelScope.launch {
-            connectionManager.disconnect().getOrThrow()
+            connectionManager.disconnect().getOrNull()
         }
     }
 }

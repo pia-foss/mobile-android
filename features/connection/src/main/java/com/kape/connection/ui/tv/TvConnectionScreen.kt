@@ -26,6 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
@@ -51,15 +54,21 @@ fun TvConnectionScreen() = Screen {
     val topEndHeaderFocusRequester = remember { FocusRequester() }
     val startQuickConnectFocusRequester = remember { FocusRequester() }
     val locale = Locale.getDefault().language
+    val lifecycleOwner = LocalLifecycleOwner.current
     val activity = LocalActivity.current
 
     BackHandler {
         activity?.finish()
     }
 
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewModel.refreshState()
+        }
+    }
+
     LaunchedEffect(key1 = Unit) {
         topStartHeaderFocusRequester.requestFocus()
-//        viewModel.loadVpnServers(locale)
         viewModel.autoConnect()
     }
 
@@ -153,7 +162,7 @@ private fun DisplayComponent(
                 },
                 server = state.server,
                 vpnIp = vpnState.vpnIp,
-                isConnected = connectionState == ConnectionStatus.CONNECTED,
+                isConnected = connectionState.status == ConnectionStatus.CONNECTED,
                 isOptimal = state.isCurrentServerOptimal,
             ) {
                 viewModel.showVpnRegionSelection()

@@ -43,15 +43,15 @@ class ConnectionDataSourceImpl(
 
     override suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
-        connectionStatusProvider: ConnectionStatusProvider
+        connectionStatusProvider: ConnectionStatusProvider,
     ): Result<Unit> = suspendCancellableCoroutine { cont ->
         cont.invokeOnCancellation {
             CoroutineScope(cont.context).launch {
-                stopConnection().getOrThrow()
+                stopConnection().getOrNull()
             }
         }
         connectionApi.addConnectionListener(
-            connectionStatusProvider as VPNManagerConnectionListener
+            connectionStatusProvider as VPNManagerConnectionListener,
         ) {}
 
         if (settingsPrefs.isHelpImprovePiaEnabled()) {

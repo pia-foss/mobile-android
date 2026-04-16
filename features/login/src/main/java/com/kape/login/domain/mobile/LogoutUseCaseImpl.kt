@@ -40,7 +40,9 @@ class LogoutUseCaseImpl(
         if (settingsPrefs.isAutomationEnabled()) {
             connectionPrefs.disconnectedByUser(true)
         }
-        connectionManager.disconnect()
+        if (connectionManager.isConnectionInProgress()) {
+            connectionManager.disconnect().getOrNull()
+        }
         return performLogout()
     }
 
