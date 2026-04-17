@@ -5,10 +5,9 @@ import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.utils.yearlySubscription
 import com.kape.ui.utils.PriceFormatter
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
+import kotlin.coroutines.resume
 
 @Singleton
 class GetDipYearlyPlan(
@@ -17,29 +16,21 @@ class GetDipYearlyPlan(
     private val formatter: PriceFormatter,
 ) {
 
-    operator fun invoke(): Flow<DedicatedIpYearlyPlan?> = callbackFlow {
-        dipSignupRepository.signupPlans().collect { subscriptions ->
-            if (subscriptions == null) {
-                trySend(null)
-                return@collect
-            }
+    suspend operator fun invoke(): DedicatedIpYearlyPlan? {
+        val subscriptions = dipSignupRepository.signupPlans() ?: return null
 
-            val yearlySubscription = subscriptions.availableProducts.firstOrNull { product ->
-                product.plan.lowercase() == yearlySubscription.lowercase()
-            }
+        val yearlySubscription = subscriptions.availableProducts.firstOrNull { product ->
+            product.plan.lowercase() == yearlySubscription.lowercase()
+        } ?: return null
 
-            if (yearlySubscription == null) {
-                trySend(null)
-                return@collect
-            }
-
+        return suspendCancellableCoroutine { cont ->
             dipSubscriptionPaymentProvider.productsDetails(
                 productIds = listOf(yearlySubscription.id),
             ) { result ->
                 result.fold(
                     onSuccess = { pairs ->
                         val productDetails = pairs.first()
-                        trySend(
+                        cont.resume(
                             DedicatedIpYearlyPlan(
                                 id = productDetails.first,
                                 yearlyPrice = formatter.formatYearlyPlan(productDetails.second),
@@ -48,11 +39,10 @@ class GetDipYearlyPlan(
                         )
                     },
                     onFailure = {
-                        trySend(null)
+                        cont.resume(null)
                     },
                 )
             }
         }
-        awaitClose { channel.close() }
     }
 }

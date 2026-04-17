@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":core:payments"))
     implementation(project(":core:contracts"))
     implementation(project(":core:utils"))
+    implementation(project(":core:data"))
 
     implementation(project(":features:login"))
     implementation(project(":features:permissions"))

@@ -1,15 +1,9 @@
 package com.kape.signup.domain
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class SetEmailUseCase(private val source: EmailDataSource) {
 
-    suspend fun setEmail(email: String): Flow<Boolean> = flow {
-        source.setEmail(email).collect {
-            emit(it)
-        }
-    }
+    suspend fun setEmail(email: String): Boolean = source.setEmail(email)
 }

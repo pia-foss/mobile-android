@@ -2,8 +2,6 @@ package com.kape.dedicatedip.domain
 
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.data.DipPurchaseData
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -12,9 +10,9 @@ class ValidateDipSignup(
     private val dataSource: DipDataSource,
 ) {
 
-    operator fun invoke(
+    suspend operator fun invoke(
         dipPurchaseData: DipPurchaseData?,
-    ): Flow<Result<Unit>> = flow {
+    ): Result<Unit> {
         val unwrappedDipPurchaseData = dipPurchaseData?.let {
             it
         } ?: run {
@@ -22,21 +20,17 @@ class ValidateDipSignup(
         }
 
         if (unwrappedDipPurchaseData == null) {
-            emit(Result.failure(IllegalStateException("Unknown purchase data")))
-            return@flow
+            return Result.failure(IllegalStateException("Unknown purchase data"))
         }
 
         subscriptionPrefs.storeDipPurchaseData(unwrappedDipPurchaseData)
-        dataSource.signup(dipPurchaseData = unwrappedDipPurchaseData).collect { result ->
-            result.fold(
-                onSuccess = {
-                    subscriptionPrefs.removeDipPurchaseData()
-                    emit(result)
-                },
-                onFailure = {
-                    emit(result)
-                },
-            )
-        }
+        val result = dataSource.signup(dipPurchaseData = unwrappedDipPurchaseData)
+        result.fold(
+            onSuccess = {
+                subscriptionPrefs.removeDipPurchaseData()
+            },
+            onFailure = {},
+        )
+        return result
     }
 }

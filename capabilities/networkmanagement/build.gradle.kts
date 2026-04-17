@@ -11,7 +11,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:utils"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
     implementation(project(":capabilities:ui"))

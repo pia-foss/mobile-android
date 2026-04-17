@@ -14,7 +14,6 @@ dependencies {
     coreLibraryDesugaring(libs.desugar)
 
     implementation(libs.kape.account)
-    implementation(project(":core:utils"))
 
     implementation(libs.bundles.serialization)
     implementation(libs.bundles.koin)

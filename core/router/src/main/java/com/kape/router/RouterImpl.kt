@@ -1,12 +1,11 @@
 package com.kape.router
 
 import com.kape.contracts.Router
-import com.kape.contracts.data.ComposeDestination
+import com.kape.data.ComposeDestination
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.koin.core.annotation.Single
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [Router::class])

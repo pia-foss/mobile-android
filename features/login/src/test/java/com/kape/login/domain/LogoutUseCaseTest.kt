@@ -1,6 +1,9 @@
 package com.kape.login.domain
 
-import app.cash.turbine.test
+import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.ConnectionManager
+import com.kape.data.auth.ApiError
+import com.kape.data.auth.ApiResult
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
@@ -15,14 +18,9 @@ import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.login.BaseTest
 import com.kape.login.domain.mobile.LogoutUseCaseImpl
 import com.kape.payments.SubscriptionPrefs
-import com.kape.contracts.AuthenticationDataSource
-import com.kape.contracts.data.auth.ApiError
-import com.kape.contracts.data.auth.ApiResult
-import com.kape.vpnconnect.domain.ConnectionUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -33,7 +31,7 @@ import java.util.stream.Stream
 
 internal class LogoutUseCaseTest : BaseTest() {
     private val source = mockk<AuthenticationDataSource>()
-    private val connectionUseCase = mockk<ConnectionUseCase>()
+    private val connectionManager = mockk<ConnectionManager>(relaxed = true)
     private val connectionPrefs = mockk<ConnectionPrefs>()
     private val csiPrefs = mockk<CsiPrefs>()
     private val customizationPrefs = mockk<CustomizationPrefs>()
@@ -54,7 +52,6 @@ internal class LogoutUseCaseTest : BaseTest() {
         useCase = LogoutUseCaseImpl(
             source,
             connectionPrefs,
-            connectionUseCase,
             csiPrefs,
             customizationPrefs,
             dipPrefs,
@@ -66,24 +63,21 @@ internal class LogoutUseCaseTest : BaseTest() {
             kpiPrefs,
             consentPrefs,
             ratingPrefs,
+            connectionManager,
         )
     }
 
-    @ParameterizedTest(name = "automationEnabled: {0}, connectionActive: {1}, result: {2}, expected: {3}")
+    @ParameterizedTest(name = "automationEnabled: {0}, result: {1}, expected: {2}")
     @MethodSource("data")
     fun logout(
         isAutomationEnabled: Boolean,
-        isConnectionActive: Boolean,
         result: ApiResult,
         expected: Boolean,
     ) = runTest {
-        coEvery { source.logout() } returns flow {
-            emit(result)
-        }
-        coEvery { connectionUseCase.stopConnection() } returns flow {
-            emit(true)
-        }
-        every { connectionUseCase.isConnected() } returns isConnectionActive
+        coEvery { source.logout() } returns result
+        coEvery { connectionManager.disconnect() } returns Result.success(Unit)
+        every { settingsPrefs.isAutomationEnabled() } returns isAutomationEnabled
+        every { connectionPrefs.disconnectedByUser(any()) } returns Unit
         every { connectionPrefs.clear() } returns Unit
         every { csiPrefs.clear() } returns Unit
         every { customizationPrefs.clear() } returns Unit
@@ -96,27 +90,20 @@ internal class LogoutUseCaseTest : BaseTest() {
         every { kpiPrefs.clear() } returns Unit
         every { consentPrefs.clear() } returns Unit
         every { ratingPrefs.clear() } returns Unit
-        every { settingsPrefs.isAutomationEnabled() } returns isAutomationEnabled
-        every { connectionPrefs.disconnectedByUser(any()) } returns Unit
 
-        useCase.logout().test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        val actual = useCase.logout()
+        assertEquals(expected, actual)
     }
 
     companion object {
         @JvmStatic
         fun data() = Stream.of(
-            Arguments.of(true, true, ApiResult.Success, true),
-            Arguments.of(true, false, ApiResult.Success, true),
-            Arguments.of(false, true, ApiResult.Success, true),
-            Arguments.of(false, false, ApiResult.Success, true),
-            Arguments.of(true, true, ApiResult.Error(ApiError.AuthFailed), false),
-            Arguments.of(false, false, ApiResult.Error(ApiError.AccountExpired), false),
-            Arguments.of(true, false, ApiResult.Error(ApiError.Throttled), false),
-            Arguments.of(false, true, ApiResult.Error(ApiError.Unknown), false),
+            Arguments.of(true, ApiResult.Success, true),
+            Arguments.of(false, ApiResult.Success, true),
+            Arguments.of(true, ApiResult.Error(ApiError.AuthFailed), false),
+            Arguments.of(false, ApiResult.Error(ApiError.AccountExpired), false),
+            Arguments.of(true, ApiResult.Error(ApiError.Throttled), false),
+            Arguments.of(false, ApiResult.Error(ApiError.Unknown), false),
         )
     }
 }

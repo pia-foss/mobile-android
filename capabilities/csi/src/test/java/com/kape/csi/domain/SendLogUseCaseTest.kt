@@ -1,9 +1,7 @@
 package com.kape.csi.domain
 
-import app.cash.turbine.test
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -23,23 +21,17 @@ class SendLogUseCaseTest {
     @Test
     fun `send - success`() = runTest {
         val expected = "OK"
-        every { dataSource.send() } returns flow { emit(expected) }
-        useCase.sendLog().test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        coEvery { dataSource.send() } returns expected
+        val actual = useCase.sendLog()
+        assertEquals(expected, actual)
     }
 
     @Test
     fun `send - failure`() = runTest {
         val expected = ""
-        every { dataSource.send() } returns flow { emit(expected) }
-        useCase.sendLog().test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-            assertTrue(actual.isEmpty())
-        }
+        coEvery { dataSource.send() } returns expected
+        val actual = useCase.sendLog()
+        assertEquals(expected, actual)
+        assertTrue(actual.isEmpty())
     }
 }

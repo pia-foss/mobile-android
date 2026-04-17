@@ -1,44 +1,34 @@
 package com.kape.login.domain.mobile
 
 import com.kape.contracts.AuthenticationDataSource
-import com.kape.contracts.data.auth.ApiError
-import com.kape.contracts.data.auth.ApiResult
+import com.kape.data.auth.ApiError
+import com.kape.data.auth.ApiResult
 import com.kape.login.utils.LoginState
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class LoginUseCase(private val source: AuthenticationDataSource) {
 
-    suspend fun login(username: String, password: String): Flow<LoginState> = flow {
-        source.login(username, password).collect {
-            when (it) {
-                ApiResult.Success -> emit(LoginState.Successful)
-                is ApiResult.Error -> {
-                    when (it.error) {
-                        ApiError.AccountExpired -> emit(LoginState.Expired)
-                        ApiError.AuthFailed -> emit(LoginState.Failed)
-                        ApiError.Throttled -> emit(LoginState.Throttled)
-                        ApiError.Unknown -> emit(LoginState.Failed)
-                    }
-                }
+    suspend fun login(username: String, password: String): LoginState {
+        return when (val result = source.login(username, password)) {
+            ApiResult.Success -> LoginState.Successful
+            is ApiResult.Error -> when (result.error) {
+                ApiError.AccountExpired -> LoginState.Expired
+                ApiError.AuthFailed -> LoginState.Failed
+                ApiError.Throttled -> LoginState.Throttled
+                ApiError.Unknown -> LoginState.Failed
             }
         }
     }
 
-    suspend fun loginWithEmail(email: String): Flow<LoginState> = flow {
-        source.loginWithEmail(email).collect {
-            when (it) {
-                ApiResult.Success -> emit(LoginState.Successful)
-                is ApiResult.Error -> {
-                    when (it.error) {
-                        ApiError.AccountExpired -> emit(LoginState.Expired)
-                        ApiError.AuthFailed -> emit(LoginState.Failed)
-                        ApiError.Throttled -> emit(LoginState.Throttled)
-                        ApiError.Unknown -> emit(LoginState.Failed)
-                    }
-                }
+    suspend fun loginWithEmail(email: String): LoginState {
+        return when (val result = source.loginWithEmail(email)) {
+            ApiResult.Success -> LoginState.Successful
+            is ApiResult.Error -> when (result.error) {
+                ApiError.AccountExpired -> LoginState.Expired
+                ApiError.AuthFailed -> LoginState.Failed
+                ApiError.Throttled -> LoginState.Throttled
+                ApiError.Unknown -> LoginState.Failed
             }
         }
     }
@@ -47,18 +37,14 @@ class LoginUseCase(private val source: AuthenticationDataSource) {
         receiptToken: String,
         productId: String,
         packageName: String,
-    ): Flow<LoginState> = flow {
-        source.loginWithReceipt(receiptToken, productId, packageName).collect {
-            when (it) {
-                ApiResult.Success -> emit(LoginState.Successful)
-                is ApiResult.Error -> {
-                    when (it.error) {
-                        ApiError.AccountExpired -> emit(LoginState.Expired)
-                        ApiError.AuthFailed -> emit(LoginState.Failed)
-                        ApiError.Throttled -> emit(LoginState.Throttled)
-                        ApiError.Unknown -> emit(LoginState.Failed)
-                    }
-                }
+    ): LoginState {
+        return when (val result = source.loginWithReceipt(receiptToken, productId, packageName)) {
+            ApiResult.Success -> LoginState.Successful
+            is ApiResult.Error -> when (result.error) {
+                ApiError.AccountExpired -> LoginState.Expired
+                ApiError.AuthFailed -> LoginState.Failed
+                ApiError.Throttled -> LoginState.Throttled
+                ApiError.Unknown -> LoginState.Failed
             }
         }
     }

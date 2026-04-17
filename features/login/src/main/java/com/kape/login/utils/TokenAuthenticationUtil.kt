@@ -31,9 +31,8 @@ class TokenAuthenticationUtil(
         val token = openUri.getQueryParameter("token")
         token?.let {
             launch {
-                dataSource.migrateToken(it).collect {
-                    router.updateDestination(permissionUtil.getNextDestination())
-                }
+                dataSource.migrateToken(it)
+                router.updateDestination(permissionUtil.getNextDestination())
             }
         }
     }

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -34,29 +33,23 @@ import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.profile.ui.vm.ProfileViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.theme.statusBarConnected
-import com.kape.ui.theme.statusBarConnecting
-import com.kape.ui.theme.statusBarDefault
-import com.kape.ui.theme.statusBarError
 import com.kape.ui.tiles.LogoutDialog
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.tv.text.SettingsL2Text
 import com.kape.ui.tv.text.SettingsL2TextDescription
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionManager
-import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
 fun TvProfileScreen() = Screen {
     val viewModel: ProfileViewModel = koinViewModel()
-    val connectionManager: ConnectionManager = koinInject()
-    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
 
     val state by remember(viewModel) { viewModel.screenState }.collectAsState()
     val logoutDialogVisible = remember { mutableStateOf(false) }
@@ -68,8 +61,7 @@ fun TvProfileScreen() = Screen {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 4.dp,
-            color = getTopBarConnectionColor(
-                status = connectionStatus.value,
+            color = connectionInfoProvider.getTopBarConnectionColor(
                 scheme = LocalColors.current,
             ),
         )
@@ -188,15 +180,5 @@ fun TvProfileItem(
                 SettingsL2TextDescription(content = it)
             }
         }
-    }
-}
-
-@Composable
-private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
-    return when (status) {
-        ConnectionStatus.ERROR -> scheme.statusBarError()
-        ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
-        ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }

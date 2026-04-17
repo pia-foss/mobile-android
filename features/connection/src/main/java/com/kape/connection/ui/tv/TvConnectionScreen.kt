@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,23 +25,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.connection.ui.ConnectButton
 import com.kape.connection.ui.vm.ConnectionViewModel
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.customization.data.Element
+import com.kape.data.ConnectionStatus
+import com.kape.data.vpnserver.VpnServer
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.theme.statusBarConnected
-import com.kape.ui.theme.statusBarConnecting
-import com.kape.ui.theme.statusBarDefault
-import com.kape.ui.theme.statusBarError
 import com.kape.ui.tv.tiles.QuickConnect
 import com.kape.ui.tv.tiles.VpnLocationPicker
 import com.kape.ui.utils.LocalColors
-import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.utils.ConnectionManager
-import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.util.Locale
@@ -50,22 +47,28 @@ import java.util.Locale
 @Composable
 fun TvConnectionScreen() = Screen {
     val viewModel: ConnectionViewModel = koinViewModel()
-    val connectionManager: ConnectionManager = koinInject()
-    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+    val state by connectionInfoProvider.connectionState.collectAsState()
     val isConnected = viewModel.isConnected.collectAsState()
     val topStartHeaderFocusRequester = remember { FocusRequester() }
     val topEndHeaderFocusRequester = remember { FocusRequester() }
     val startQuickConnectFocusRequester = remember { FocusRequester() }
     val locale = Locale.getDefault().language
+    val lifecycleOwner = LocalLifecycleOwner.current
     val activity = LocalActivity.current
 
     BackHandler {
         activity?.finish()
     }
 
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            viewModel.refreshState()
+        }
+    }
+
     LaunchedEffect(key1 = Unit) {
         topStartHeaderFocusRequester.requestFocus()
-        viewModel.loadVpnServers(locale)
         viewModel.autoConnect()
     }
 
@@ -77,8 +80,7 @@ fun TvConnectionScreen() = Screen {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 4.dp,
-            color = getTopBarConnectionColor(
-                status = connectionStatus.value,
+            color = connectionInfoProvider.getTopBarConnectionColor(
                 scheme = LocalColors.current,
             ),
         )
@@ -91,7 +93,7 @@ fun TvConnectionScreen() = Screen {
             verticalArrangement = Arrangement.Center,
         ) {
             TvHomeHeaderItem(
-                connectionStatus = connectionStatus,
+                connectionStatus = state.status,
                 defaultSelectedTabIndex = 0,
                 topStartHeaderFocusRequester = topStartHeaderFocusRequester,
                 topEndHeaderFocusRequester = topEndHeaderFocusRequester,
@@ -112,7 +114,7 @@ fun TvConnectionScreen() = Screen {
             ) {
                 Spacer(modifier = Modifier.height(32.dp))
                 ConnectButton(
-                    status = if (isConnected.value) connectionStatus.value else ConnectionStatus.ERROR,
+                    status = if (isConnected.value) state.status else ConnectionStatus.ERROR,
                     onTvLayout = true,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
@@ -149,6 +151,8 @@ private fun DisplayComponent(
     }
 
     val state by viewModel.state.collectAsState()
+    val connectionState by viewModel.connectionInfoProvider.connectionState.collectAsState()
+    val vpnState by viewModel.connectionInfoProvider.state.collectAsState()
 
     when (screenElement) {
         Element.VpnRegionSelection -> {
@@ -157,8 +161,8 @@ private fun DisplayComponent(
                     down = startQuickConnectFocusRequester
                 },
                 server = state.server,
-                vpnIp = state.connectionData.vpnIp,
-                isConnected = viewModel.isConnectionActive(),
+                vpnIp = vpnState.vpnIp,
+                isConnected = connectionState.status == ConnectionStatus.CONNECTED,
                 isOptimal = state.isCurrentServerOptimal,
             ) {
                 viewModel.showVpnRegionSelection()
@@ -188,15 +192,5 @@ private fun DisplayComponent(
         -> {
             // Continue. Not showing them on TV.
         }
-    }
-}
-
-@Composable
-private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
-    return when (status) {
-        ConnectionStatus.ERROR -> scheme.statusBarError()
-        ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(scheme)
-        ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
 }

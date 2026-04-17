@@ -4,32 +4,29 @@ import com.kape.profile.data.models.Profile
 import com.kape.profile.data.models.Subscription
 import com.kape.profile.domain.ProfileDatasource
 import com.privateinternetaccess.account.AndroidAccountAPI
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 
 @Singleton([ProfileDatasource::class])
 class ProfileDatasourceImpl(private val api: AndroidAccountAPI) : ProfileDatasource {
 
-    override fun accountDetails(): Flow<Profile?> = callbackFlow {
+    override suspend fun accountDetails(): Profile? = suspendCancellableCoroutine { cont ->
         api.accountDetails { details, errorList ->
             if (details != null) {
                 val subscription =
                     Subscription(details.expired, details.daysRemaining, details.expireAlert)
-                trySend(Profile(details.username, subscription))
+                cont.resume(Profile(details.username, subscription))
             } else {
-                trySend(null)
+                cont.resume(null)
             }
         }
-        awaitClose { channel.close() }
     }
 
-    override fun deleteAccount(): Flow<Boolean> = callbackFlow {
+    override suspend fun deleteAccount(): Boolean = suspendCancellableCoroutine { cont ->
         api.deleteAccount {
-            trySend(it.isEmpty())
+            cont.resume(it.isEmpty())
         }
-        awaitClose { channel.close() }
     }
 }

@@ -41,11 +41,9 @@ dependencies {
     coreLibraryDesugaring(libs.desugar)
 
     implementation(libs.kape.account)
-    implementation(project(":core:utils"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
 
-    implementation(libs.crypto)
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)

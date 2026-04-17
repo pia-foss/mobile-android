@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
-import com.kape.contracts.data.AccountDeleted
-import com.kape.contracts.data.LoginWithCredentials
-import com.kape.contracts.data.Splash
-import com.kape.contracts.data.Subscribe
-import com.kape.contracts.data.WebDestination
+import com.kape.data.AccountDeleted
+import com.kape.data.LoginWithCredentials
+import com.kape.data.Splash
+import com.kape.data.Subscribe
+import com.kape.data.WebDestination
 import com.kape.profile.data.models.Profile
 import com.kape.profile.domain.DeleteAccountUseCase
 import com.kape.profile.domain.GetProfileUseCase
@@ -39,9 +39,8 @@ class ProfileViewModel(
     }
 
     fun logout() = viewModelScope.launch {
-        logoutUseCase.logout().collect {
-            router.updateDestination(Splash)
-        }
+        logoutUseCase.logout()
+        router.updateDestination(Splash)
     }
 
     fun navigateToLogin() = router.updateDestination(LoginWithCredentials)
@@ -51,12 +50,11 @@ class ProfileViewModel(
 
     private fun loadProfile() = viewModelScope.launch {
         _state.emit(LOADING)
-        useCase.getProfile().collect { profile ->
-            if (profile == null) {
-                _state.emit(IDLE)
-            } else {
-                _state.emit(getState(profile))
-            }
+        val profile = useCase.getProfile()
+        if (profile == null) {
+            _state.emit(IDLE)
+        } else {
+            _state.emit(getState(profile))
         }
     }
 

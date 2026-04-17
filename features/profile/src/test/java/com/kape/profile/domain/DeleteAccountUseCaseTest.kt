@@ -1,19 +1,16 @@
 package com.kape.profile.domain
 
-import app.cash.turbine.test
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.koin.test.KoinTest
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
-class DeleteAccountUseCaseTest : KoinTest {
+class DeleteAccountUseCaseTest {
 
     private val dataSource: ProfileDatasource = mockk()
 
@@ -27,13 +24,9 @@ class DeleteAccountUseCaseTest : KoinTest {
     @ParameterizedTest(name = "result: {0}, expected: {1}")
     @MethodSource("data")
     fun deleteAccount(result: Boolean, expected: Boolean) = runTest {
-        every { dataSource.deleteAccount() } returns flow { emit(result) }
-
-        useCase.deleteAccount().test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        coEvery { dataSource.deleteAccount() } returns result
+        val actual = useCase.deleteAccount()
+        assertEquals(expected, actual)
     }
 
     companion object {

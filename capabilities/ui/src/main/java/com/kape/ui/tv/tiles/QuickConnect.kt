@@ -29,14 +29,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kape.data.QUICK_CONNECT_MAX_SERVERS
+import com.kape.data.vpnserver.VpnServer
 import com.kape.ui.R
 import com.kape.ui.tv.elements.TileButton
 import com.kape.ui.tv.text.QuickConnectText
 import com.kape.ui.tv.text.TileTitleText
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.vpnserver.VpnServer
-
-const val MAX_SERVERS = 5
 
 @Composable
 fun QuickConnect(
@@ -53,7 +52,7 @@ fun QuickConnect(
         TileTitleText(content = stringResource(id = R.string.quick_connect))
         Spacer(modifier = Modifier.height(8.dp))
         Row {
-            for (index in 0 until MAX_SERVERS) {
+            for (index in 0 until QUICK_CONNECT_MAX_SERVERS) {
                 val itemModifier = if (index == 0) {
                     Modifier.focusRequester(startQuickConnectFocusRequester)
                 } else {
@@ -78,7 +77,7 @@ fun QuickConnect(
                             .focusProperties { canFocus = false },
                     )
                 }
-                if (index < MAX_SERVERS - 1) {
+                if (index < QUICK_CONNECT_MAX_SERVERS - 1) {
                     Spacer(modifier = Modifier.width(16.dp))
                 }
             }
@@ -124,7 +123,9 @@ private fun QuickConnectItem(
                     content = serverText,
                 )
                 Row(
-                    modifier = Modifier.fillMaxWidth().height(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(16.dp),
                     horizontalArrangement = Arrangement.End,
                 ) {
                     server?.let {

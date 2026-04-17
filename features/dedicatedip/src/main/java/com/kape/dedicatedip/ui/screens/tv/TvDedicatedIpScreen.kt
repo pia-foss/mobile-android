@@ -17,7 +17,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,6 +31,8 @@ import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.data.ConnectionStatus
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.ui.R
@@ -50,8 +51,6 @@ import com.kape.ui.tv.text.DedicatedIpDescription
 import com.kape.ui.tv.text.DedicatedIpTitle
 import com.kape.ui.tv.text.Input
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionManager
-import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -60,8 +59,7 @@ fun TvDedicatedIpScreen() = Screen {
     val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
         loadDedicatedIps()
     }
-    val connectionManager: ConnectionManager = koinInject()
-    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
     val showActivationDialog = remember { mutableStateOf(false) }
     val showDeletionDialog = remember { mutableStateOf(false) }
     val text = remember { mutableStateOf("") }
@@ -73,8 +71,7 @@ fun TvDedicatedIpScreen() = Screen {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 4.dp,
-            color = getTopBarConnectionColor(
-                status = connectionStatus.value,
+            color = connectionInfoProvider.getTopBarConnectionColor(
                 scheme = LocalColors.current,
             ),
         )

@@ -55,6 +55,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.data.vpnserver.VpnServer
 import com.kape.dedicatedip.R
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
@@ -65,7 +66,6 @@ import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.vpnserver.VpnServer
 import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
 import org.koin.androidx.compose.koinViewModel
 

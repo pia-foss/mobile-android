@@ -1,8 +1,8 @@
 package com.kape.vpn.provider
 
-import com.kape.contracts.data.GenericEndpoint
+import com.kape.data.GenericEndpoint
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.utils.RegionListProvider
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent

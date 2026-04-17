@@ -3,11 +3,10 @@ package com.kape.payments.data
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.domain.SubscriptionDataSource
 import com.privateinternetaccess.account.AndroidAccountAPI
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
+import kotlin.coroutines.resume
 
 @Singleton([SubscriptionDataSource::class])
 class SubscriptionDataSourceImpl(
@@ -15,10 +14,10 @@ class SubscriptionDataSourceImpl(
     private val api: AndroidAccountAPI,
 ) : SubscriptionDataSource, KoinComponent {
 
-    override fun getAvailableVpnSubscriptions(): Flow<List<Subscription>> = callbackFlow {
+    override suspend fun getAvailableVpnSubscriptions(): List<Subscription> = suspendCancellableCoroutine { cont ->
         api.vpnSubscriptions { details, error ->
             if (error.isNotEmpty() || details == null) {
-                trySend(emptyList())
+                cont.resume(emptyList())
                 return@vpnSubscriptions
             }
             val data = mutableListOf<Subscription>()
@@ -26,8 +25,7 @@ class SubscriptionDataSourceImpl(
                 data.add(Subscription(item.id, item.legacy, item.plan, item.price, null))
             }
             prefs.storeVpnSubscriptions(data)
-            trySend(prefs.getVpnSubscriptions())
+            cont.resume(prefs.getVpnSubscriptions())
         }
-        awaitClose { channel.close() }
     }
 }

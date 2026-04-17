@@ -15,9 +15,11 @@ import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.connection.di.ConnectionModule
 import com.kape.contracts.AppInfo
 import com.kape.contracts.ConfigInfo
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.NetworkManager
 import com.kape.csi.di.CsiModule
 import com.kape.customization.di.CustomizationModule
+import com.kape.data.DI
 import com.kape.dedicatedip.di.DipModule
 import com.kape.featureflags.di.FeatureFlagsModule
 import com.kape.httpclient.data.CertificatePinningClientImpl
@@ -56,7 +58,6 @@ import com.kape.tvwelcome.di.TvWelcomeModule
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_AUTOMATION
 import com.kape.ui.utils.PriceFormatter
 import com.kape.utils.AutomationManager
-import com.kape.utils.DI
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.di.UtilsModule
 import com.kape.vpn.BuildConfig
@@ -77,7 +78,6 @@ import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.di.VpnConnectModule
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnlauncher.di.VpnLauncherModule
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
@@ -96,6 +96,7 @@ import com.privateinternetaccess.kpi.internals.utils.KTimeUnit
 import com.privateinternetaccess.regions.PlatformInstancesProvider
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.RegionsBuilder
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
@@ -135,7 +136,7 @@ import java.io.BufferedReader
         VpnConnectModule::class,
         PortForwardingModule::class,
         VpnLauncherModule::class,
-        SideMenuModule::class
+        SideMenuModule::class,
     ],
 )
 @ComponentScan("com.kape.vpn", "com.kape.obfuscator")
@@ -168,6 +169,20 @@ class AppModule {
     @Singleton
     @Named(DI.UPDATE_URL)
     fun provideUpdateUrl(configInfo: ConfigInfo): String = configInfo.updateUrl
+
+    @Singleton
+    @Named(DI.MAIN_DISPATCHER)
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @Singleton
+    @Named(DI.IO_DISPATCHER)
+    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Singleton
+    fun provideNotificationManager(context: Context): NotificationManager =
+        context.getSystemService(
+            Context.NOTIFICATION_SERVICE,
+        ) as NotificationManager
 
     @Singleton
     fun provideBuildConfigProvider(appInfo: AppInfo): BuildConfigProvider =
@@ -324,9 +339,10 @@ class AppModule {
 
     @Singleton
     fun provideRatingTool(
-        connectionManager: ConnectionManager,
+        connectionStatusProvider: ConnectionStatusProvider,
         ratingPrefs: RatingPrefs,
-    ): RatingTool = RatingTool(connectionManager, ratingPrefs)
+        @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
+    ): RatingTool = RatingTool(connectionStatusProvider, ratingPrefs, mainDispatcher)
 
     @Singleton
     fun provideNotificationPermissionManager(context: Context): NotificationPermissionManager =

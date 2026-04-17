@@ -2,6 +2,9 @@ package com.kape.vpnconnect.domain
 
 import android.app.Notification
 import android.app.PendingIntent
+import com.kape.contracts.ConnectionConfigurationUseCase
+import com.kape.data.NOTIFICATION_ID
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
@@ -12,8 +15,6 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.ProtocolSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
-import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.utils.NOTIFICATION_ID
 import com.kape.vpnmanager.api.OpenVpnSocksProxyDetails
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.DnsInformation
@@ -23,8 +24,6 @@ import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.data.models.TransportProtocol
 import com.kape.vpnmanager.data.models.WireguardClientConfiguration
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.Clock
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
@@ -93,7 +92,7 @@ class ConnectionConfigurationUseCaseImpl(
         )
     }
 
-    override fun updateServerConfig(server: VpnServer): Flow<Boolean> =
+    override suspend fun updateServerConfig(server: VpnServer): Boolean =
         connectionSource.updateConfigurationServers(ServerList(getEndpoints(server)))
 
     private fun getServerGroup(): VpnServer.ServerGroup =

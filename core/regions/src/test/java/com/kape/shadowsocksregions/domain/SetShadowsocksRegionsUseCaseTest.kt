@@ -1,17 +1,16 @@
 package com.kape.shadowsocksregions.domain
 
+import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.shadowsocksregions.data.ShadowsocksRegionRepository
-import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.koin.test.KoinTest
 import kotlin.test.assertEquals
 
-internal class SetShadowsocksRegionsUseCaseTest : KoinTest {
+internal class SetShadowsocksRegionsUseCaseTest {
 
     private val shadowsocksRegionRepository: ShadowsocksRegionRepository = mockk(relaxed = true)
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs = mockk()
@@ -38,7 +37,7 @@ internal class SetShadowsocksRegionsUseCaseTest : KoinTest {
 
     @Test
     fun `set shadowsocks servers list`() = runTest {
-        val expected = ShadowsocksServer("", "", "", 0, "", "")
+        val expected = ShadowsocksServer(region = "", host = "", key = "", port = 0, cipher = "")
         every { shadowsocksRegionPrefs.setSelectShadowsocksServer(any()) } returns Unit
         every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns expected
         every { shadowsocksRegionPrefs.getShadowsocksServers() } returns listOf(expected)

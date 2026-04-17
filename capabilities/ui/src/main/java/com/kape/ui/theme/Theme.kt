@@ -1,7 +1,5 @@
 package com.kape.ui.theme
 
-import android.app.Activity
-import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -17,11 +15,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.kape.contracts.Router
-import com.kape.contracts.data.DestinationNavOptions
+import com.kape.data.DestinationNavOptions
 import com.kape.router.LocalNavigator
 import com.kape.router.Navigator
 import com.kape.ui.utils.LocalColors
-import com.kape.utils.PlatformUtils
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

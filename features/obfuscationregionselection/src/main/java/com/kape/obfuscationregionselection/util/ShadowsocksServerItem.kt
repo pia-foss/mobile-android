@@ -1,6 +1,7 @@
 package com.kape.obfuscationregionselection.util
 
-import com.kape.utils.shadowsocksserver.ShadowsocksServer
+import com.kape.data.shadowsocksserver.ShadowsocksServer
+
 
 data class ShadowsocksServerItem(val type: ItemType)
 

@@ -1,11 +1,10 @@
 package com.kape.profile.domain
 
 import com.kape.profile.data.models.Profile
-import kotlinx.coroutines.flow.Flow
 
 interface ProfileDatasource {
 
-    fun accountDetails(): Flow<Profile?>
+    suspend fun accountDetails(): Profile?
 
-    fun deleteAccount(): Flow<Boolean>
+    suspend fun deleteAccount(): Boolean
 }

@@ -1,8 +1,6 @@
 package com.kape.signup.data
 
-import app.cash.turbine.test
 import com.kape.signup.data.models.Credentials
-import com.kape.signup.di.signupModule
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.SignUpInformation
 import io.mockk.coEvery
@@ -12,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.dsl.module
 import kotlin.test.assertEquals
 
 internal class SignupDataSourceImplTest {
@@ -21,16 +18,10 @@ internal class SignupDataSourceImplTest {
 
     private lateinit var source: SignupDataSourceImpl
 
-    private val appModule = module {
-        single { api }
-    }
-
     @BeforeEach
     internal fun setUp() {
         stopKoin()
-        startKoin {
-            modules(appModule, signupModule(appModule))
-        }
+        startKoin {}
         source = SignupDataSourceImpl(api)
     }
 
@@ -41,21 +32,16 @@ internal class SignupDataSourceImplTest {
         coEvery { api.amazonSignUp(any(), any()) } answers {
             lastArg<(SignUpInformation?, List<Error>) -> Unit>().invoke(signupInfo, emptyList())
         }
-        source.signup("userId", "receiptId", "email").test {
-            val actual = awaitItem()
-            assertEquals(expected, actual)
-        }
+        val actual = source.vpnSignup("userId", "receiptId", "email")
+        assertEquals(expected, actual)
     }
 
     @Test
     fun `signup fails`() = runTest {
-        val expected = null
         coEvery { api.amazonSignUp(any(), any()) } answers {
-            lastArg<(SignUpInformation?, List<Error>) -> Unit>().invoke(expected, listOf(Error()))
+            lastArg<(SignUpInformation?, List<Error>) -> Unit>().invoke(null, listOf(Error()))
         }
-        source.signup("userId", "receiptId", "email").test {
-            val actual = awaitItem()
-            assertEquals(expected, actual)
-        }
+        val actual = source.vpnSignup("userId", "receiptId", "email")
+        assertEquals(null, actual)
     }
 }

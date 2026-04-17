@@ -2,23 +2,21 @@ package com.kape.signup.data
 
 import com.kape.signup.domain.EmailDataSource
 import com.privateinternetaccess.account.AndroidAccountAPI
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
+import kotlin.coroutines.resume
 
 @Singleton([EmailDataSource::class])
 class EmailDataSourceImpl(private val api: AndroidAccountAPI) : EmailDataSource {
 
-    override fun setEmail(email: String): Flow<Boolean> = callbackFlow {
+    override suspend fun setEmail(email: String): Boolean = suspendCancellableCoroutine { cont ->
         api.setEmail(email, false) { temporaryPassword, error ->
             if (error.isNotEmpty()) {
-                trySend(false)
+                cont.resume(false)
                 return@setEmail
             }
-            trySend(true)
+            cont.resume(true)
         }
-        awaitClose { channel.close() }
     }
 }

@@ -17,6 +17,7 @@ android {
 dependencies {
     implementation(project(":core:contracts"))
     implementation(project(":core:utils"))
+    implementation(project(":core:data"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
     implementation(project(":capabilities:ui"))

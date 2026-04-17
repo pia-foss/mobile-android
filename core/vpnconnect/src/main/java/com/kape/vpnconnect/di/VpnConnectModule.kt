@@ -1,36 +1,41 @@
 package com.kape.vpnconnect.di
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import androidx.work.WorkManager
 import com.kape.contracts.ConfigInfo
+import com.kape.contracts.ConnectionConfigurationUseCase
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionManager
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
+import com.kape.data.ConnectionStatus
+import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
-import com.kape.obfuscator.domain.StartObfuscatorProcess
-import com.kape.obfuscator.domain.StopObfuscatorProcess
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
-import com.kape.utils.DI
 import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnconnect.domain.ClientStateDataSource
-import com.kape.vpnconnect.domain.ConnectionConfigurationUseCase
 import com.kape.vpnconnect.domain.ConnectionConfigurationUseCaseImpl
 import com.kape.vpnconnect.domain.ConnectionDataSource
-import com.kape.vpnconnect.domain.ConnectionUseCase
-import com.kape.vpnconnect.domain.ConnectionUseCaseImpl
+import com.kape.vpnconnect.domain.ConnectionManagerImpl
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
-import com.kape.vpnconnect.utils.ConnectionManager
-import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnconnect.provider.UsageProvider
-import com.privateinternetaccess.account.AndroidAccountAPI
+import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
+import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
+import com.kape.vpnconnect.utils.NotificationHandler
 import com.kape.vpnmanager.presenters.VPNManagerAPI
+import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import com.privateinternetaccess.account.AndroidAccountAPI
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
@@ -49,7 +54,7 @@ class VpnConnectModule {
         values[ConnectionStatus.DISCONNECTED] =
             context.getString(com.kape.ui.R.string.vpn_not_protected)
         values[ConnectionStatus.DISCONNECTING] =
-            context.getString(com.kape.ui.R.string.not_connected)
+            context.getString(com.kape.ui.R.string.vpn_not_protected)
         values[ConnectionStatus.RECONNECTING] =
             context.getString(com.kape.ui.R.string.reconnecting)
         return values
@@ -59,12 +64,38 @@ class VpnConnectModule {
     fun provideUsageProvider(context: Context): UsageProvider = UsageProvider(context)
 
     @Singleton
-    fun provideConnectionManager(
-        context: Context,
-        connectionValues: Map<ConnectionStatus, String>,
-        submitKpiEventUseCase: SubmitKpiEventUseCase,
+    fun provideNotificationHandler(
+        notificationManager: NotificationManager,
         notificationBuilder: Notification.Builder,
-    ): ConnectionManager = ConnectionManager(context, connectionValues, submitKpiEventUseCase, notificationBuilder)
+    ): NotificationHandler =
+        NotificationHandler(notificationManager, notificationBuilder)
+
+    @Singleton([ConnectionStatusProvider::class, VPNManagerConnectionListener::class])
+    fun provideConnectionStatusProvider(
+        connectionValues: Map<ConnectionStatus, String>,
+        notificationHandler: NotificationHandler,
+    ): ConnectionStatusProvider =
+        ConnectionStatusProviderImpl(connectionValues, notificationHandler)
+
+    @Singleton([ConnectionInfoProvider::class])
+    fun provideConnectionInfoProvider(
+        connectionStatusProvider: ConnectionStatusProvider,
+        clientStateDataSource: ClientStateDataSource,
+        connectionPrefs: ConnectionPrefs,
+        submitKpiEventUseCase: SubmitKpiEventUseCase,
+        portForwardingUseCase: PortForwardingUseCase,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+        @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
+    ): ConnectionInfoProvider =
+        ConnectionInfoProviderImpl(
+            connectionStatusProvider,
+            clientStateDataSource,
+            connectionPrefs,
+            submitKpiEventUseCase,
+            portForwardingUseCase,
+            ioDispatcher,
+            mainDispatcher,
+        )
 
     @Singleton(binds = [GetActiveInterfaceDnsUseCase::class])
     fun provideGetActiveInterfaceDnsUseCase(context: Context): GetActiveInterfaceDnsUseCase =
@@ -76,7 +107,8 @@ class VpnConnectModule {
         connectionPrefs: ConnectionPrefs,
         csiPrefs: CsiPrefs,
         settingsPrefs: SettingsPrefs,
-    ): ClientStateDataSource = ClientStateDataSourceImpl(accountApi, connectionPrefs, csiPrefs, settingsPrefs)
+    ): ClientStateDataSource =
+        ClientStateDataSourceImpl(accountApi, connectionPrefs, csiPrefs, settingsPrefs)
 
     @Singleton(binds = [ConnectionDataSource::class])
     fun provideConnectionDataSource(
@@ -110,25 +142,11 @@ class VpnConnectModule {
         configureIntent, automationPendingIntent,
     )
 
-    @Singleton(binds = [ConnectionUseCase::class])
-    fun provideConnectionUseCase(
-        connectionSource: ConnectionDataSource,
-        clientStateDataSource: ClientStateDataSource,
-        connectionManager: ConnectionManager,
-        connectionPrefs: ConnectionPrefs,
-        settingsPrefs: SettingsPrefs,
-        shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
-        startObfuscatorProcess: StartObfuscatorProcess,
-        stopObfuscatorProcess: StopObfuscatorProcess,
-        portForwardingUseCase: PortForwardingUseCase,
-        connectionConfigurationUseCase: ConnectionConfigurationUseCase,
-    ): ConnectionUseCase = ConnectionUseCaseImpl(
-        connectionSource, clientStateDataSource, connectionManager, connectionPrefs, settingsPrefs,
-        shadowsocksRegionPrefs, startObfuscatorProcess, stopObfuscatorProcess,
-        portForwardingUseCase, connectionConfigurationUseCase,
-    )
-
     @Singleton
     fun provideGetLogsUseCase(connectionSource: ConnectionDataSource): GetLogsUseCase =
         GetLogsUseCase(connectionSource)
+
+    @Singleton([ConnectionManager::class])
+    fun provideConnectionManager(): ConnectionManager = ConnectionManagerImpl()
+
 }

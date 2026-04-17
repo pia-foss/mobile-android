@@ -1,23 +1,23 @@
 package com.kape.contracts
 
-import com.kape.contracts.data.auth.ApiResult
-import kotlinx.coroutines.flow.Flow
+import com.kape.data.auth.ApiResult
+
 
 interface AuthenticationDataSource {
 
     fun isUserLoggedIn(): Boolean
 
-    fun login(username: String, password: String): Flow<ApiResult>
+    suspend fun login(username: String, password: String): ApiResult
 
-    fun logout(): Flow<ApiResult>
+    suspend fun logout(): ApiResult
 
-    fun loginWithEmail(email: String): Flow<ApiResult>
+    suspend fun loginWithEmail(email: String): ApiResult
 
-    fun loginWithReceipt(
+    suspend fun loginWithReceipt(
         receiptToken: String,
         productId: String,
         packageName: String,
-    ): Flow<ApiResult>
+    ): ApiResult
 
-    fun migrateToken(apiToken: String): Flow<ApiResult>
+    suspend fun migrateToken(apiToken: String): ApiResult
 }

@@ -10,7 +10,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:data"))
     implementation(libs.coroutines)
     implementation(libs.bundles.serialization)
-    implementation(libs.kape.kpi)
+    implementation(libs.kape.vpnmanager)
+    implementation(libs.compose.ui.graphics)
+    implementation(libs.material3)
 }

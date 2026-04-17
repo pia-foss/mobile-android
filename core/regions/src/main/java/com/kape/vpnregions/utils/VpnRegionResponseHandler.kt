@@ -1,7 +1,7 @@
 package com.kape.vpnregions.utils
 
-import com.kape.utils.vpnserver.VpnServer
-import com.kape.utils.vpnserver.VpnServerInfo
+import com.kape.data.vpnserver.VpnServer
+import com.kape.data.vpnserver.VpnServerInfo
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import com.privateinternetaccess.regions.RegionsProtocol
 import com.privateinternetaccess.regions.model.VpnRegionsResponse

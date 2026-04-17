@@ -3,8 +3,8 @@ package com.kape.permissions.ui.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
-import com.kape.contracts.data.Connection
-import com.kape.contracts.data.NotificationPermission
+import com.kape.data.Connection
+import com.kape.data.NotificationPermission
 import com.kape.permissions.utils.GRANTED
 import com.kape.permissions.utils.IDLE
 import com.kape.permissions.utils.NOT_GRANTED
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class PermissionsViewModel(

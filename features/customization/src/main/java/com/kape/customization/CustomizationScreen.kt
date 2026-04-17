@@ -29,22 +29,23 @@ import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.customization.data.Element
-import com.kape.portforwarding.data.model.PortForwardingStatus
+import com.kape.data.ConnectionStatus
+import com.kape.data.portforwarding.PortForwardingStatus
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.data.customization.ScreenElement
+import com.kape.sharedui.tiles.ConnectionInfo
+import com.kape.sharedui.tiles.IPTile
+import com.kape.sharedui.tiles.QuickConnect
+import com.kape.sharedui.tiles.QuickSettings
+import com.kape.sharedui.tiles.ShadowsocksLocationPicker
+import com.kape.sharedui.tiles.Snooze
+import com.kape.sharedui.tiles.Traffic
+import com.kape.sharedui.tiles.VpnLocationPicker
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.elements.Visibility
-import com.kape.ui.mobile.tiles.ConnectionInfo
-import com.kape.ui.mobile.tiles.IPTile
-import com.kape.ui.mobile.tiles.QuickConnect
-import com.kape.ui.mobile.tiles.QuickSettings
-import com.kape.ui.mobile.tiles.ShadowsocksLocationPicker
-import com.kape.ui.mobile.tiles.Snooze
-import com.kape.ui.mobile.tiles.Traffic
-import com.kape.ui.mobile.tiles.VpnLocationPicker
 import com.kape.ui.utils.LocalColors
-import com.kape.utils.vpnserver.VpnServer
 import org.koin.androidx.compose.koinViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -148,6 +149,9 @@ private fun DisplayComponent(
     viewModel: ConnectionViewModel,
 ) {
     val state = viewModel.state.collectAsState()
+    val vpnState by viewModel.connectionInfoProvider.state.collectAsState()
+    val connectionState by viewModel.connectionInfoProvider.connectionState.collectAsState()
+
     when (screenElement.element) {
         Element.ConnectionInfo -> {
             val settings = viewModel.getConnectionSettings()
@@ -167,13 +171,13 @@ private fun DisplayComponent(
             IPTile(
                 modifier = modifier,
                 isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                publicIp = state.connectionData.clientIp,
-                vpnIp = state.connectionData.vpnIp,
-                portForwardingStatus = when (state.connectionData.portForwardingStatus) {
+                publicIp = vpnState.publicIp,
+                vpnIp = vpnState.vpnIp,
+                portForwardingStatus = when (vpnState.portforwardingStatus) {
                     PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
                     PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
                     PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                    PortForwardingStatus.Success -> state.connectionData.port
+                    PortForwardingStatus.Success -> vpnState.port
                 },
             )
         }
@@ -204,7 +208,7 @@ private fun DisplayComponent(
             VpnLocationPicker(
                 modifier = modifier,
                 server = state.value.server,
-                isConnected = viewModel.isConnectionActive(),
+                isConnected = connectionState == ConnectionStatus.CONNECTED,
                 state.value.isCurrentServerOptimal,
             ) {}
         }
@@ -213,7 +217,7 @@ private fun DisplayComponent(
             ShadowsocksLocationPicker(
                 modifier = modifier,
                 server = viewModel.getSelectedShadowsocksServer(),
-                isConnected = viewModel.isConnectionActive(),
+                isConnected = connectionState == ConnectionStatus.CONNECTED,
             ) {}
         }
 

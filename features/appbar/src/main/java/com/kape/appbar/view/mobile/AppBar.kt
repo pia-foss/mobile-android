@@ -18,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -35,6 +36,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.data.ConnectionStatus
 import com.kape.ui.R
 import com.kape.ui.mobile.text.AppBarConnectionTextDefault
 import com.kape.ui.mobile.text.AppBarTitleText
@@ -42,7 +44,6 @@ import com.kape.ui.theme.connectedGradient
 import com.kape.ui.theme.connectingGradient
 import com.kape.ui.theme.errorGradient
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionStatus
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -52,12 +53,12 @@ fun AppBar(
     onLeftIconClick: () -> Unit = viewModel::navigateBack,
     onRightIconClick: () -> Unit = {},
 ) {
-    val isConnected = viewModel.isConnected.collectAsState()
+    val isConnected by viewModel.isConnected.collectAsState()
 
     AppBarContent(
         type = type,
-        status = if (isConnected.value) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
-        if (isConnected.value) viewModel.appBarText else stringResource(id = R.string.no_internet_connection),
+        status = if (isConnected) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
+        if (isConnected) viewModel.appBarText else stringResource(id = R.string.no_internet_connection),
         onLeftIconClick,
         onRightIconClick,
     )

@@ -1,8 +1,9 @@
 package com.kape.login.domain.mobile
 
 import com.kape.contracts.AuthenticationDataSource
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.LogoutUseCase
-import com.kape.contracts.data.auth.ApiResult
+import com.kape.data.auth.ApiResult
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
@@ -15,16 +16,12 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.payments.SubscriptionPrefs
-import com.kape.vpnconnect.domain.ConnectionUseCase
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class LogoutUseCaseImpl(
     private val source: AuthenticationDataSource,
     private val connectionPrefs: ConnectionPrefs,
-    private val connectionUseCase: ConnectionUseCase,
     private val csiPrefs: CsiPrefs,
     private val customizationPrefs: CustomizationPrefs,
     private val dipPrefs: DipPrefs,
@@ -36,32 +33,24 @@ class LogoutUseCaseImpl(
     private val kpiPrefs: KpiPrefs,
     private val consentPrefs: ConsentPrefs,
     private val ratingPrefs: RatingPrefs,
+    private val connectionManager: ConnectionManager,
 ) : LogoutUseCase {
 
-    override fun logout(): Flow<Boolean> = flow {
+    override suspend fun logout(): Boolean {
         if (settingsPrefs.isAutomationEnabled()) {
             connectionPrefs.disconnectedByUser(true)
         }
-        if (connectionUseCase.isConnected()) {
-            connectionUseCase.stopConnection().collect {
-                performLogout().collect {
-                    emit(it)
-                }
-            }
-        } else {
-            performLogout().collect {
-                emit(it)
-            }
+        if (connectionManager.isConnectionInProgress()) {
+            connectionManager.disconnect().getOrNull()
         }
+        return performLogout()
     }
 
-    private fun performLogout(): Flow<Boolean> = flow {
+    private suspend fun performLogout(): Boolean {
         clearPrefs()
-        source.logout().collect {
-            when (it) {
-                ApiResult.Success -> emit(true)
-                is ApiResult.Error -> emit(false)
-            }
+        return when (source.logout()) {
+            ApiResult.Success -> true
+            is ApiResult.Error -> false
         }
     }
 

@@ -26,7 +26,7 @@ fun SignupScreensFlow() {
         SignupStep.Default -> {
             when (connectionState) {
                 true -> {
-                    if (viewModel.subscriptionData.value == null) {
+                    if (state.subscriptionData == null) {
                         viewModel.loadPrices()
                     }
                 }
@@ -55,16 +55,7 @@ fun SignupScreensFlow() {
         }
 
         is SignupStep.Subscriptions -> {
-            when (connectionState) {
-                true -> {
-                    if (viewModel.subscriptionData.value == null) {
-                        viewModel.loadPrices()
-                    }
-                }
-
-                false -> viewModel.loadEmptyPrices()
-            }
-            SignUpScreen(viewModel = viewModel, viewModel.subscriptionData.value)
+            SignUpScreen(viewModel = viewModel, state.subscriptionData)
         }
 
         SignupStep.LoadingPlans -> {

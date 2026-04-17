@@ -1,6 +1,5 @@
 package com.kape.signup.domain
 
-import app.cash.turbine.test
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.LoginState
 import com.kape.payments.data.PurchaseData
@@ -9,17 +8,15 @@ import com.kape.signup.data.models.Credentials
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.koin.test.KoinTest
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
-internal class SignupUseCaseTest : KoinTest {
+internal class SignupUseCaseTest {
 
     private val signupDataSource: SignupDataSource = mockk()
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase = mockk()
@@ -31,7 +28,13 @@ internal class SignupUseCaseTest : KoinTest {
 
     @BeforeEach
     fun setUp() {
-        useCase = SignupUseCase(signupDataSource, loginUseCase, emailDataSource, purchaseDetailsUseCase, getObfuscatedDeviceIdentifierUseCase)
+        useCase = SignupUseCase(
+            signupDataSource,
+            loginUseCase,
+            emailDataSource,
+            purchaseDetailsUseCase,
+            getObfuscatedDeviceIdentifierUseCase,
+        )
     }
 
     @ParameterizedTest(name = "expected: {0}, data: {1}")
@@ -39,31 +42,24 @@ internal class SignupUseCaseTest : KoinTest {
     fun `test signup`(expected: Credentials?, purchaseData: PurchaseData?) = runTest {
         every { purchaseDetailsUseCase.getPurchaseDetails() } returns purchaseData
         every { getObfuscatedDeviceIdentifierUseCase.obfuscatedDeviceIdentifier() } returns Result.success("obfuscatedDeviceId")
-        coEvery { loginUseCase.login(any(), any()) } returns flow {
-            emit(LoginState.Successful)
-        }
-        every { emailDataSource.setEmail(any()) } returns flow {
-            emit(true)
-        }
-        coEvery { signupDataSource.vpnSignup(any(), any(), any(), any()) } returns flow {
-            emit(expected)
-        }
+        coEvery { loginUseCase.login(any(), any()) } returns LoginState.Successful
+        coEvery { emailDataSource.setEmail(any()) } returns true
+        coEvery { signupDataSource.vpnSignup(*anyVararg()) } returns expected
 
-        useCase.vpnSignup("email").test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        val actual = useCase.vpnSignup("email")
+        assertEquals(expected, actual)
     }
 
     companion object {
-
         val credentials = Credentials("status", "username", "password")
         val nullCredentials: Credentials? = null
         val purchaseData = PurchaseData("token", "productId", "orderId")
         val missingPurchaseData: PurchaseData? = null
 
         @JvmStatic
-        fun arguments() = Stream.of(Arguments.of(credentials, purchaseData), Arguments.of(nullCredentials, missingPurchaseData))
+        fun arguments() = Stream.of(
+            Arguments.of(credentials, purchaseData),
+            Arguments.of(nullCredentials, missingPurchaseData),
+        )
     }
 }

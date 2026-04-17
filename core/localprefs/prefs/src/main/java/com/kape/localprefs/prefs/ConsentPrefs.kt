@@ -1,7 +1,7 @@
 package com.kape.localprefs.prefs
 
 import android.content.Context
-import com.kape.utils.Prefs
+import com.kape.localprefs.Prefs
 import org.koin.core.annotation.Singleton
 
 private const val SHARE_EVENTS_CONSENT = "share-events-consent"

@@ -1,7 +1,7 @@
 package com.kape.router
 
 import com.kape.contracts.Router
-import com.kape.contracts.data.ComposeDestination
+import com.kape.data.ComposeDestination
 
 class Navigator(private val router: Router) {
 

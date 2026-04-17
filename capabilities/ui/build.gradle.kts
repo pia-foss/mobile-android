@@ -21,7 +21,7 @@ dependencies {
 
     implementation(project(":core:contracts"))
     implementation(project(":core:router"))
-    implementation(project(":core:utils"))
+    implementation(project(":core:data"))
 
     implementation(libs.bundles.compose)
     implementation(libs.bundles.koin)
