@@ -1,5 +1,5 @@
 [versions]
-plugin-gradle = "9.1.0"
+plugin-gradle = "9.1.1"
 plugin-kotlin = "2.3.20"
 plugin-ktlint = "14.2.0"
 compose-bom = "2026.03.00"
