@@ -70,9 +70,19 @@ class ConnectionViewModel(
     private var loadShadowsocksServersJob: Job? = null
     private var updateStateJob: Job? = null
     private val isAutoMode get() = prefs.getSelectedVpnServer() == null
+    private val selectedLocation = prefs.getSelectedVpnServer()
+    private val serverToConnectTo =
+        selectedLocation?.let {
+            if (it.endpoints.isNotEmpty()) {
+                it
+            } else {
+                regionListProvider.getOptimalServer()
+            }
+        } ?: regionListProvider.getOptimalServer()
+
     private val defaultState =
         ConnectionScreenState(
-            server = prefs.getSelectedVpnServer() ?: regionListProvider.getOptimalServer(),
+            server = serverToConnectTo,
             quickConnectServers = getQuickConnectVpnServers(),
             isCurrentServerOptimal = isAutoMode,
             showOptimalLocationInfo = isAutoMode && regionListProvider.isDefaultList.value,
@@ -274,7 +284,12 @@ class ConnectionViewModel(
             viewModelScope.launch {
                 connectionManager.reconnect(server, ::callback)
             }
-        _state.update { it.copy(server = server, quickConnectServers = getQuickConnectVpnServers()) }
+        _state.update {
+            it.copy(
+                server = server,
+                quickConnectServers = getQuickConnectVpnServers(),
+            )
+        }
     }
 
     fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
@@ -285,13 +300,21 @@ class ConnectionViewModel(
     ): Boolean = vpnRegionPrefs.isFavorite(serverName, isDip)
 
     private fun connect() {
-        prefs.setSelectedVpnServer(state.value.server)
-        prefs.addToQuickConnect(state.value.server.key, state.value.server.isDedicatedIp)
+        val connectTo =
+            if (state.value.server.endpoints
+                    .isEmpty()
+            ) {
+                regionListProvider.getOptimalServer()
+            } else {
+                state.value.server
+            }
+        prefs.setSelectedVpnServer(connectTo)
+        prefs.addToQuickConnect(connectTo.key, connectTo.isDedicatedIp)
         snoozeHandler.cancelSnooze()
         connectionManager.connectJob?.cancel()
         connectionManager.connectJob =
             viewModelScope.launch {
-                connectionManager.connect(server = state.value.server, true, ::callback)
+                connectionManager.connect(server = connectTo, true, ::callback)
             }
     }
 
