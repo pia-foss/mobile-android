@@ -1,6 +1,5 @@
 package com.kape.shareevents
 
-import app.cash.turbine.test
 import com.kape.contracts.ConfigInfo
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
@@ -15,9 +14,6 @@ import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.dsl.module
 import kotlin.test.assertTrue
 
 internal class KpiDataSourceImplTest {
@@ -28,15 +24,9 @@ internal class KpiDataSourceImplTest {
 
     private lateinit var source: KpiDataSource
 
-    private val appModule = module {
-        single { api }
-    }
-
     @BeforeEach
     internal fun setUp() {
         every { configInfo.userAgent } returns "user-agent"
-        stopKoin()
-        startKoin {}
         source = KpiDataSourceImpl(configInfo, api, prefs)
     }
 
@@ -70,9 +60,7 @@ internal class KpiDataSourceImplTest {
         coEvery { api.recentEvents(any()) } answers {
             lastArg<(List<String>) -> Unit>().invoke(emptyList())
         }
-        source.recentEvents().test {
-            val actual = awaitItem()
-            assertTrue(actual.isEmpty())
-        }
+        val actual = source.recentEvents()
+        assertTrue(actual.isEmpty())
     }
 }

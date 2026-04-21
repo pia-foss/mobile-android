@@ -16,7 +16,7 @@ dependencies {
     androidTestImplementation(libs.bundles.koinandroidtest)
     implementation(libs.bundles.android)
 
-    implementation(project(":core:utils"))
+    implementation(project(":core:data"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:vpnlauncher"))
 }

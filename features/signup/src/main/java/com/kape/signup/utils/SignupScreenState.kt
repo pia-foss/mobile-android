@@ -7,6 +7,7 @@ data class SignupScreenState(
     val loading: Boolean,
     val step: SignupStep,
     val error: SignupError? = null,
+    val subscriptionData: SubscriptionData? = null,
 )
 
 val DEFAULT = SignupScreenState(loading = false, SignupStep.Default)
@@ -24,7 +25,10 @@ val ERROR_REGISTRATION = SignupScreenState(
     SignupStep.Default,
     error = SignupError.RegistrationFailed,
 )
-val SUBSCRIPTIONS = SignupScreenState(loading = false, SignupStep.Subscriptions(true))
+
+fun SUBSCRIPTIONS(data: SubscriptionData) =
+    SignupScreenState(loading = false, SignupStep.Subscriptions(true), subscriptionData = data)
+
 val SUBSCRIPTIONS_FAILED_TO_LOAD = SignupScreenState(
     loading = false,
     SignupStep.Subscriptions(supportsSubscription = true, displaySubscribeButton = false),

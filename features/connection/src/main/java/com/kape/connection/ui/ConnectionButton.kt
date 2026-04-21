@@ -28,10 +28,10 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.kape.connection.R
+import com.kape.data.ConnectionStatus
 import com.kape.ui.theme.connectionDefault
 import com.kape.ui.theme.connectionError
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionStatus
 
 @Composable
 fun ConnectButton(

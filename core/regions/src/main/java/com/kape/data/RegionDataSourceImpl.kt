@@ -6,11 +6,10 @@ import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.model.ShadowsocksRegionsResponse
 import com.privateinternetaccess.regions.model.VpnRegionsResponse
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
+import kotlin.coroutines.resume
 
 @Singleton([VpnRegionDataSource::class, ShadowsocksRegionDataSource::class])
 class RegionDataSourceImpl(
@@ -18,41 +17,41 @@ class RegionDataSourceImpl(
 ) : VpnRegionDataSource, ShadowsocksRegionDataSource, KoinComponent {
 
     // region VpnRegionDataSource
-    override fun fetchVpnRegions(locale: String): Flow<VpnRegionsResponse?> = callbackFlow {
-        api.fetchVpnRegions(locale) { response, error ->
-            if (error != null) {
-                trySend(null)
-                return@fetchVpnRegions
+    override suspend fun fetchVpnRegions(locale: String): VpnRegionsResponse? =
+        suspendCancellableCoroutine { cont ->
+            api.fetchVpnRegions(locale) { response, error ->
+                if (error != null) {
+                    cont.resume(null)
+                    return@fetchVpnRegions
+                }
+                cont.resume(response)
             }
-            trySend(response)
         }
-        awaitClose { channel.close() }
-    }
 
-    override fun pingRequests(): Flow<List<RegionLowerLatencyInformation>> = callbackFlow {
-        api.pingRequests { response, error ->
-            if (error != null) {
-                trySend(emptyList())
-                return@pingRequests
+    override suspend fun pingRequests(): List<RegionLowerLatencyInformation>? =
+        suspendCancellableCoroutine { cont ->
+            api.pingRequests { response, error ->
+                if (error != null) {
+                    cont.resume(null)
+                    return@pingRequests
+                }
+                cont.resume(response)
             }
-            trySend(response)
         }
-        awaitClose { channel.close() }
-    }
     // endregion
 
     // region ShadowsocksRegionDataSource
-    override fun fetchShadowsocksRegions(
+    override suspend fun fetchShadowsocksRegions(
         locale: String,
-    ): Flow<List<ShadowsocksRegionsResponse>> = callbackFlow {
-        api.fetchShadowsocksRegions(locale) { response, error ->
-            if (error != null) {
-                trySend(emptyList())
-                return@fetchShadowsocksRegions
+    ): List<ShadowsocksRegionsResponse> =
+        suspendCancellableCoroutine { cont ->
+            api.fetchShadowsocksRegions(locale) { response, error ->
+                if (error != null) {
+                    cont.resume(emptyList())
+                    return@fetchShadowsocksRegions
+                }
+                cont.resume(response)
             }
-            trySend(response)
         }
-        awaitClose { channel.close() }
-    }
     // endregion
 }

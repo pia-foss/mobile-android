@@ -1,10 +1,8 @@
 package com.kape.payments.domain
 
-import app.cash.turbine.test
-import com.kape.payments.data.models.Subscription
-import io.mockk.every
+import com.kape.payments.data.Subscription
+import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,26 +25,15 @@ internal class GetSubscriptionsUseCaseTest {
             Subscription("id", false, "monthly", 3.99),
             Subscription("id", false, "yearly", 49.99),
         )
-        every { source.getAvailableVpnSubscriptions() } returns flow {
-            emit(expected)
-        }
-        useCase.getVpnSubscriptions().test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        coEvery { source.getAvailableVpnSubscriptions() } returns expected
+        val actual = useCase.getVpnSubscriptions()
+        assertEquals(expected, actual)
     }
 
     @Test
     fun `getSubscriptions() - failed`() = runTest {
-        val expected = emptyList<Subscription>()
-        every { source.getAvailableVpnSubscriptions() } returns flow {
-            emit(expected)
-        }
-        useCase.getVpnSubscriptions().test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+        coEvery { source.getAvailableVpnSubscriptions() } returns emptyList()
+        val actual = useCase.getVpnSubscriptions()
+        assertEquals(emptyList(), actual)
     }
 }

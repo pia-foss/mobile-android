@@ -1,10 +1,8 @@
 package com.kape.shadowsocksregions.domain
 
+import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.shadowsocksregions.data.ShadowsocksRegionRepository
-import com.kape.utils.shadowsocksserver.ShadowsocksServer
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -15,11 +13,9 @@ class GetShadowsocksRegionsUseCase(
     private val setShadowsocksRegionsUseCase: SetShadowsocksRegionsUseCase,
 ) {
 
-    fun fetchShadowsocksServers(locale: String): Flow<List<ShadowsocksServer>> = flow {
-        shadowsocksRegionRepository.fetchShadowsocksServers(locale).collect {
-            emit(it)
-        }
-    }
+    suspend fun fetchShadowsocksServers(locale: String): List<ShadowsocksServer> =
+        shadowsocksRegionRepository.fetchShadowsocksServers(locale)
+
     fun getSelectedShadowsocksServer(): ShadowsocksServer =
         getShadowsocksServers().firstOrNull {
             it.host == shadowsocksRegionPrefs.getSelectedShadowsocksServer()?.host

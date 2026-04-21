@@ -4,19 +4,18 @@ import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.payments.data.DipPurchaseData
 import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
-import kotlinx.coroutines.flow.Flow
 
 interface DipDataSource {
 
-    fun activate(ipToken: String): Flow<DipApiResult>
+    suspend fun activate(ipToken: String): DipApiResult
 
-    fun renew(ipToken: String): Flow<DipApiResult>
+    suspend fun renew(ipToken: String): DipApiResult
 
-    fun supportedCountries(): Flow<DipCountriesResponse?>
+    suspend fun supportedCountries(): DipCountriesResponse?
 
-    fun signupPlans(): Flow<AndroidAddonsSubscriptionsInformation?>
+    suspend fun signupPlans(): AndroidAddonsSubscriptionsInformation?
 
-    fun signup(dipPurchaseData: DipPurchaseData): Flow<Result<Unit>>
+    suspend fun signup(dipPurchaseData: DipPurchaseData): Result<Unit>
 
-    fun fetchToken(countryCode: String, regionName: String): Flow<Result<String>>
+    suspend fun fetchToken(countryCode: String, regionName: String): Result<String>
 }

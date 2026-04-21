@@ -5,36 +5,33 @@ import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import com.kape.contracts.ConnectionStatusProvider
+import com.kape.data.ConnectionStatus
+import com.kape.data.DI
 import com.kape.ui.R
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_CONNECT
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_DISCONNECT
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.vpn.MainActivity
-import com.kape.vpnconnect.utils.ConnectionManager
-import com.kape.vpnconnect.utils.ConnectionStatus
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
-import org.koin.core.component.KoinComponent
-import kotlin.coroutines.CoroutineContext
 
 @Singleton
 class ShortcutManager(
     private val context: Context,
-    private val connectionManager: ConnectionManager,
-) : CoroutineScope, KoinComponent {
-    private val job = Job()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.IO
-
+    private val connectionStatusProvider: ConnectionStatusProvider,
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+    @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
+) {
     init {
-        launch {
-            connectionManager.connectionStatus.collect {
+        CoroutineScope(ioDispatcher).launch {
+            connectionStatusProvider.state.collect {
                 when (it) {
                     ConnectionStatus.CONNECTED,
                     ConnectionStatus.DISCONNECTED,
@@ -51,7 +48,7 @@ class ShortcutManager(
     }
 
     fun createDynamicShortcuts() {
-        val isConnected = connectionManager.isConnected()
+        val isConnected = connectionStatusProvider.state.value == ConnectionStatus.CONNECTED
         val connect = ShortcutInfoCompat.Builder(context, CONNECT)
             .setShortLabel(context.getString(if (isConnected) R.string.qs_disconnect_nolocation else R.string.qs_title))
             .setLongLabel(context.getString(if (isConnected) R.string.qs_disconnect_nolocation else R.string.qs_title))

@@ -10,10 +10,9 @@ import com.privateinternetaccess.account.model.request.AndroidAddonSignupInforma
 import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
+import kotlin.coroutines.resume
 
 @Singleton([DipDataSource::class])
 class DipDataSourceImpl(
@@ -26,10 +25,10 @@ class DipDataSourceImpl(
         private const val STORE = "google_play"
     }
 
-    override fun activate(ipToken: String): Flow<DipApiResult> = callbackFlow {
+    override suspend fun activate(ipToken: String): DipApiResult = suspendCancellableCoroutine { cont ->
         accountApi.redeemDedicatedIPs(listOf(ipToken)) { details, errors ->
             if (errors.isNotEmpty()) {
-                trySend(DipApiResult.Error)
+                cont.resume(DipApiResult.Error)
                 return@redeemDedicatedIPs
             }
             val activated = details.firstOrNull { it.dipToken == ipToken }
@@ -37,63 +36,59 @@ class DipDataSourceImpl(
                 when (it.status) {
                     DedicatedIPInformationResponse.Status.active -> {
                         dipPrefs.addDedicatedIp(it)
-                        trySend(DipApiResult.Active)
+                        cont.resume(DipApiResult.Active)
                     }
 
                     DedicatedIPInformationResponse.Status.expired -> {
-                        trySend(DipApiResult.Expired)
+                        cont.resume(DipApiResult.Expired)
                     }
 
                     DedicatedIPInformationResponse.Status.invalid -> {
-                        trySend(DipApiResult.Invalid)
+                        cont.resume(DipApiResult.Invalid)
                     }
 
                     DedicatedIPInformationResponse.Status.error -> {
-                        trySend(DipApiResult.Error)
+                        cont.resume(DipApiResult.Error)
                     }
                 }
             } ?: run {
-                trySend(DipApiResult.Error)
+                cont.resume(DipApiResult.Error)
             }
         }
-        awaitClose { channel.close() }
     }
 
-    override fun renew(ipToken: String): Flow<DipApiResult> = callbackFlow {
+    override suspend fun renew(ipToken: String): DipApiResult = suspendCancellableCoroutine { cont ->
         accountApi.renewDedicatedIP(ipToken) {
             if (it.isNotEmpty()) {
-                trySend(DipApiResult.Error)
+                cont.resume(DipApiResult.Error)
                 return@renewDedicatedIP
             }
             // todo: update if needed once implemented
-            trySend(DipApiResult.Active)
+            cont.resume(DipApiResult.Active)
         }
-        awaitClose { channel.close() }
     }
 
-    override fun supportedCountries(): Flow<DipCountriesResponse?> = callbackFlow {
+    override suspend fun supportedCountries(): DipCountriesResponse? = suspendCancellableCoroutine { cont ->
         accountApi.supportedDedicatedIPCountries { details, errors ->
             if (errors.isNotEmpty()) {
-                trySend(null)
+                cont.resume(null)
                 return@supportedDedicatedIPCountries
             }
-            trySend(details)
+            cont.resume(details)
         }
-        awaitClose { channel.close() }
     }
 
-    override fun signupPlans(): Flow<AndroidAddonsSubscriptionsInformation?> = callbackFlow {
+    override suspend fun signupPlans(): AndroidAddonsSubscriptionsInformation? = suspendCancellableCoroutine { cont ->
         accountApi.addonsSubscriptions { details, errors ->
             if (errors.isNotEmpty()) {
-                trySend(null)
+                cont.resume(null)
                 return@addonsSubscriptions
             }
-            trySend(details)
+            cont.resume(details)
         }
-        awaitClose { channel.close() }
     }
 
-    override fun signup(dipPurchaseData: DipPurchaseData): Flow<Result<Unit>> = callbackFlow {
+    override suspend fun signup(dipPurchaseData: DipPurchaseData): Result<Unit> = suspendCancellableCoroutine { cont ->
         accountApi.addonSignUp(
             AndroidAddonSignupInformation(
                 receipt = AndroidAddonSignupInformation.Receipt(
@@ -106,28 +101,26 @@ class DipDataSourceImpl(
             ),
         ) { errors ->
             if (errors.isNotEmpty()) {
-                trySend(Result.failure(IllegalStateException("Signup validation failed")))
+                cont.resume(Result.failure(IllegalStateException("Signup validation failed")))
                 return@addonSignUp
             }
-            trySend(Result.success(Unit))
+            cont.resume(Result.success(Unit))
         }
-        awaitClose { channel.close() }
     }
 
-    override fun fetchToken(
+    override suspend fun fetchToken(
         countryCode: String,
         regionName: String,
-    ): Flow<Result<String>> = callbackFlow {
+    ): Result<String> = suspendCancellableCoroutine { cont ->
         accountApi.getDedicatedIP(
             countryCode = countryCode,
             regionName = regionName,
         ) { details, errors ->
             if (details == null || errors.isNotEmpty()) {
-                trySend(Result.failure(IllegalStateException("Fetch token failed")))
+                cont.resume(Result.failure(IllegalStateException("Fetch token failed")))
                 return@getDedicatedIP
             }
-            trySend(Result.success(details.token))
+            cont.resume(Result.success(details.token))
         }
-        awaitClose { channel.close() }
     }
 }

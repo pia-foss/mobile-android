@@ -1,29 +1,12 @@
 package com.kape.login
 
-import com.kape.contracts.data.auth.ApiError
-import com.kape.contracts.data.auth.ApiResult
+import com.kape.data.auth.ApiError
+import com.kape.data.auth.ApiResult
 import com.privateinternetaccess.account.AccountRequestError
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.resetMain
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.params.provider.Arguments
-import org.koin.test.KoinTest
 import java.util.stream.Stream
 
-@OptIn(ExperimentalCoroutinesApi::class)
-open class BaseTest : KoinTest {
-
-    @OptIn(DelicateCoroutinesApi::class)
-    val mainThreadSurrogate = newSingleThreadContext("UI thread")
-
-    @AfterEach
-    internal fun tearDown() {
-        Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
-        mainThreadSurrogate.close()
-    }
+open class BaseTest {
 
     companion object {
 
@@ -43,9 +26,7 @@ open class BaseTest : KoinTest {
             ),
             Arguments.of(
                 listOf(AccountRequestError(code = 402, message = null)),
-                ApiResult.Error(
-                    ApiError.AccountExpired,
-                ),
+                ApiResult.Error(ApiError.AccountExpired),
             ),
             Arguments.of(emptyList<AccountRequestError>(), ApiResult.Success),
         )

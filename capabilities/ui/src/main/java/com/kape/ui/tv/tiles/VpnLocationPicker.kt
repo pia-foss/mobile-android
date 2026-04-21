@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
+import com.kape.data.vpnserver.VpnServer
 import com.kape.ui.R
 import com.kape.ui.tv.elements.TileButton
 import com.kape.ui.tv.text.RegionSelectionDipText
@@ -28,7 +29,6 @@ import com.kape.ui.tv.text.RegionSelectionVpnIpText
 import com.kape.ui.tv.text.SelectedRegionServerText
 import com.kape.ui.tv.text.SelectedRegionTitleText
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.vpnserver.VpnServer
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable

@@ -4,8 +4,6 @@ import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.LoginState
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.signup.data.models.Credentials
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -17,34 +15,23 @@ class SignupUseCase(
     private val getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase,
 ) {
 
-    suspend fun vpnSignup(email: String): Flow<Credentials?> = flow {
-        val purchaseData = purchaseDetailsUseCase.getPurchaseDetails()
-        if (purchaseData == null) {
-            emit(null)
-            return@flow
-        }
+    suspend fun vpnSignup(email: String): Credentials? {
+        val purchaseData = purchaseDetailsUseCase.getPurchaseDetails() ?: return null
         val obfuscatedDeviceIdentifier = getObfuscatedDeviceIdentifierUseCase.obfuscatedDeviceIdentifier().getOrElse {
-            emit(null)
-            return@flow
+            return null
         }
-        signupDataSource.vpnSignup(purchaseData.orderId, purchaseData.token, purchaseData.productId, obfuscatedDeviceIdentifier)
-            .collect { credentials ->
-                credentials?.let { data ->
-                    loginUseCase.login(data.username, data.password).collect { loginState ->
-                        if (loginState == LoginState.Successful) {
-                            emailDataSource.setEmail(email).collect { successful ->
-                                if (successful) {
-                                    emit(credentials)
-                                } else {
-                                    emit(null)
-                                }
-                            }
-                        } else {
-                            // TODO: emit error
-                            emit(null)
-                        }
-                    }
-                } ?: emit(null)
-            }
+        val credentials = signupDataSource.vpnSignup(
+            purchaseData.orderId,
+            purchaseData.token,
+            purchaseData.productId,
+            obfuscatedDeviceIdentifier,
+        ) ?: return null
+        val loginState = loginUseCase.login(credentials.username, credentials.password)
+        return if (loginState == LoginState.Successful) {
+            val successful = emailDataSource.setEmail(email)
+            if (successful) credentials else null
+        } else {
+            null
+        }
     }
 }

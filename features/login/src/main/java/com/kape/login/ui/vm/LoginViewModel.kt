@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.Router
-import com.kape.contracts.data.LoginWithEmail
-import com.kape.login.domain.mobile.GetUserLoggedInUseCase
+import com.kape.data.LoginWithEmail
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.FAILED
 import com.kape.login.utils.IDLE
@@ -22,7 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class LoginViewModel(
@@ -47,11 +45,10 @@ class LoginViewModel(
             _state.emit(INVALID)
             return@launch
         }
-        loginUseCase.login(username, password).collect {
-            if (it == LoginState.Successful) {
-                router.updateDestination(permissionsUtil.getNextDestination())
-                return@collect
-            }
+        val it = loginUseCase.login(username, password)
+        if (it == LoginState.Successful) {
+            router.updateDestination(permissionsUtil.getNextDestination())
+        } else {
             _state.emit(getScreenState(it))
         }
     }
@@ -71,16 +68,17 @@ class LoginViewModel(
             vpnSubscriptionPaymentProvider.purchaseHistoryState.collect {
                 _state.emit(LOADING)
                 when (it) {
-                    is PurchaseHistoryState.PurchaseHistorySuccess -> loginUseCase.loginWithReceipt(
-                        it.purchaseToken,
-                        it.productId,
-                        packageName,
-                    ).collect { state ->
+                    is PurchaseHistoryState.PurchaseHistorySuccess -> {
+                        val state = loginUseCase.loginWithReceipt(
+                            it.purchaseToken,
+                            it.productId,
+                            packageName,
+                        )
                         if (state == LoginState.Successful) {
                             router.updateDestination(permissionsUtil.getNextDestination())
-                            return@collect
+                        } else {
+                            _state.emit(getScreenState(state))
                         }
-                        _state.emit(getScreenState(state))
                     }
 
                     PurchaseHistoryState.Default -> {

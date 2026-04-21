@@ -4,31 +4,32 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
-import com.kape.contracts.data.Connection
-import com.kape.contracts.data.HelpSettings
-import com.kape.contracts.data.TvSideMenu
+import com.kape.data.AUTO_KEY
+import com.kape.data.Connection
+import com.kape.data.HelpSettings
+import com.kape.data.TvSideMenu
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.regions.data.ServerData
-import com.kape.utils.AUTO_KEY
-import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 import java.util.Collections
 
 @KoinViewModel
 class VpnRegionSelectionViewModel(
     private val router: Router,
     private val regionListProvider: RegionListProvider,
-    private val connectionUseCase: ConnectionUseCase,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val settingsPrefs: SettingsPrefs,
+    private val connectionInfoProvider: ConnectionInfoProvider,
+    private val connectionManager: ConnectionManager,
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<ServerItem>())
     val sorted = mutableStateOf(emptyList<ServerItem>())
@@ -46,19 +47,24 @@ class VpnRegionSelectionViewModel(
         if (displayLoading) {
             isLoading.value = true
         }
-        regionListProvider
-            .updateServerLatencies(
-                isVpnConnectionActive(),
-                displayLoading,
-            ).collect {
-                arrangeVpnServers(it)
-                isLoading.value = false
-            }
+        val servers =
+            regionListProvider.updateServerLatencies(isVpnConnectionActive(), displayLoading)
+        arrangeVpnServers(servers)
+        isLoading.value = false
     }
 
     fun onVpnRegionSelected(server: VpnServer) {
-        vpnRegionPrefs.selectVpnServer(server)
-        router.navigateBack()
+        connectionManager.connectJob = viewModelScope.launch {
+            if (connectionManager.isConnectionInProgress()) {
+                connectionManager.disconnect().getOrNull()
+            }
+            connectionManager.connect(server, true, ::callback)
+            router.navigateBack()
+        }
+    }
+
+    private fun callback() {
+        viewModelScope.launch { connectionManager.disconnect().getOrNull() }
     }
 
     fun onFavoriteVpnClicked(serverData: ServerData) {
@@ -130,7 +136,7 @@ class VpnRegionSelectionViewModel(
         return mutableStateOf(sorted.value.subList(autoRegionIndex, sorted.value.size))
     }
 
-    fun isVpnConnectionActive(): Boolean = connectionUseCase.isConnected()
+    fun isVpnConnectionActive(): Boolean = connectionInfoProvider.isConnected()
 
     private fun isVpnServerFavorite(serverData: ServerData): Boolean =
         vpnRegionPrefs.isFavorite(serverData)

@@ -3,7 +3,7 @@ package com.kape.localprefs.prefs
 import android.content.Context
 import com.kape.customization.data.Element
 import com.kape.localprefs.data.customization.ScreenElement
-import com.kape.utils.Prefs
+import com.kape.localprefs.Prefs
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.json.JSONArray

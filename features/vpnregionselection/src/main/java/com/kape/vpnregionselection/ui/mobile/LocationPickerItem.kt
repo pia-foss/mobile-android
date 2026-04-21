@@ -27,6 +27,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import com.kape.data.vpnserver.VpnServer
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.FavoriteIcon
 import com.kape.ui.mobile.elements.Separator
@@ -37,7 +38,6 @@ import com.kape.ui.mobile.text.RegionSelectionText
 import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.utils.vpnserver.VpnServer
 import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
 
 @OptIn(ExperimentalComposeUiApi::class)

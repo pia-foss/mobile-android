@@ -2,7 +2,7 @@ package com.kape.vpnregions.domain
 
 import com.kape.data.RegionInputStream
 import com.kape.data.RegionSerialization
-import com.kape.utils.vpnserver.VpnServer
+import com.kape.data.vpnserver.VpnServer
 import com.kape.vpnregions.utils.adaptVpnServers
 import org.koin.core.annotation.Singleton
 

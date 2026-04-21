@@ -3,6 +3,7 @@ package com.kape.widget
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,16 +31,16 @@ import androidx.glance.layout.size
 import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.data.ConnectionStatus
 import com.kape.ui.utils.getFlagResource
 import com.kape.vpnconnect.provider.UsageProvider
-import com.kape.vpnconnect.utils.ConnectionManager
-import com.kape.vpnconnect.utils.ConnectionStatus
 import com.kape.vpnlauncher.VpnLauncher
 
 class Widget(
     private val vpnLauncher: VpnLauncher,
-    private val connectionManager: ConnectionManager,
     private val usageProvider: UsageProvider,
+    private val connectionInfoProvider: ConnectionInfoProvider,
 ) : GlanceAppWidget() {
     companion object {
         private val size1 = DpSize(80.dp, 106.dp)
@@ -53,27 +54,27 @@ class Widget(
         id: GlanceId,
     ) {
         provideContent {
-            val connectionState = connectionManager.connectionStatus.collectAsState()
-            val name = connectionManager.serverName.collectAsState()
-            val iso = connectionManager.serverIso.collectAsState()
+            val connectionState by connectionInfoProvider.connectionState.collectAsState()
+            val infoState by connectionInfoProvider.state.collectAsState()
+
             val downloadSpeed = usageProvider.widgetDownloadSpeed.value
             val uploadSpeed = usageProvider.widgetUploadSpeed.value
             when (LocalSize.current) {
-                size1 -> Size1WidgetContent(connectionState.value)
-                size2 -> Size2WidgetContent(connectionState.value, name.value)
+                size1 -> Size1WidgetContent(connectionState.status)
+                size2 -> Size2WidgetContent(connectionState.status, infoState.name)
                 size3 ->
                     Size3WidgetContent(
-                        connectionState.value,
-                        name.value,
+                        connectionState.status,
+                        infoState.name,
                         downloadSpeed,
                         uploadSpeed,
                     )
 
                 size4 ->
                     Size4WidgetContent(
-                        connectionState.value,
-                        name.value,
-                        iso.value,
+                        connectionState.status,
+                        infoState.name,
+                        infoState.iso,
                         downloadSpeed,
                         uploadSpeed,
                     )
@@ -94,11 +95,11 @@ class Widget(
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier =
-                GlanceModifier
-                    .background(GlanceTheme.colors.background)
-                    .padding(8.dp)
-                    .width(80.dp)
-                    .height(106.dp),
+                    GlanceModifier
+                        .background(GlanceTheme.colors.background)
+                        .padding(8.dp)
+                        .width(80.dp)
+                        .height(106.dp),
                 horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
             ) {
                 Image(
@@ -107,7 +108,7 @@ class Widget(
                     modifier = GlanceModifier.width(40.dp),
                 )
                 Spacer(modifier = GlanceModifier.height(4.dp))
-                WidgetConnectButton(status)
+                WidgetConnectButton(status, connectionInfoProvider.isConnected())
             }
         }
     }
@@ -120,11 +121,11 @@ class Widget(
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier =
-                GlanceModifier
-                    .background(GlanceTheme.colors.background)
-                    .padding(8.dp)
-                    .width(160.dp)
-                    .height(106.dp),
+                    GlanceModifier
+                        .background(GlanceTheme.colors.background)
+                        .padding(8.dp)
+                        .width(160.dp)
+                        .height(106.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
@@ -140,13 +141,13 @@ class Widget(
                     Text(
                         text = name,
                         style =
-                        TextStyle(
-                            color = GlanceTheme.colors.onSurface,
-                            fontSize = 14.sp,
-                        ),
+                            TextStyle(
+                                color = GlanceTheme.colors.onSurface,
+                                fontSize = 14.sp,
+                            ),
                         modifier = GlanceModifier.width(80.dp),
                     )
-                    WidgetConnectButton(status)
+                    WidgetConnectButton(status, connectionInfoProvider.isConnected())
                 }
             }
         }
@@ -162,11 +163,11 @@ class Widget(
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier =
-                GlanceModifier
-                    .background(GlanceTheme.colors.background)
-                    .padding(8.dp)
-                    .width(160.dp)
-                    .height(186.dp),
+                    GlanceModifier
+                        .background(GlanceTheme.colors.background)
+                        .padding(8.dp)
+                        .width(160.dp)
+                        .height(186.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
@@ -182,22 +183,22 @@ class Widget(
                     Text(
                         text = name,
                         style =
-                        TextStyle(
-                            color = GlanceTheme.colors.onSurface,
-                            fontSize = 14.sp,
-                        ),
+                            TextStyle(
+                                color = GlanceTheme.colors.onSurface,
+                                fontSize = 14.sp,
+                            ),
                         modifier = GlanceModifier.width(80.dp),
                     )
-                    WidgetConnectButton(status)
+                    WidgetConnectButton(status, connectionInfoProvider.isConnected())
                 }
                 Spacer(modifier = GlanceModifier.height(16.dp))
                 Box(
                     modifier =
-                    GlanceModifier
-                        .height(0.5.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .background(GlanceTheme.colors.outline),
+                        GlanceModifier
+                            .height(0.5.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                            .background(GlanceTheme.colors.outline),
                 ) {}
                 Spacer(modifier = GlanceModifier.height(16.dp))
                 Row(
@@ -215,10 +216,10 @@ class Widget(
                         Text(
                             text = downloadSpeed,
                             style =
-                            TextStyle(
-                                color = GlanceTheme.colors.primary,
-                                fontSize = 12.sp,
-                            ),
+                                TextStyle(
+                                    color = GlanceTheme.colors.primary,
+                                    fontSize = 12.sp,
+                                ),
                         )
                     }
                     Column(
@@ -232,10 +233,10 @@ class Widget(
                         Text(
                             text = uploadSpeed,
                             style =
-                            TextStyle(
-                                color = GlanceTheme.colors.primary,
-                                fontSize = 12.sp,
-                            ),
+                                TextStyle(
+                                    color = GlanceTheme.colors.primary,
+                                    fontSize = 12.sp,
+                                ),
                         )
                     }
                 }
@@ -254,11 +255,11 @@ class Widget(
         GlanceTheme(colors = WidgetColors.colors) {
             Column(
                 modifier =
-                GlanceModifier
-                    .background(GlanceTheme.colors.background)
-                    .padding(8.dp)
-                    .width(240.dp)
-                    .height(186.dp),
+                    GlanceModifier
+                        .background(GlanceTheme.colors.background)
+                        .padding(8.dp)
+                        .width(240.dp)
+                        .height(186.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
@@ -282,27 +283,27 @@ class Widget(
                     Text(
                         text = name,
                         style =
-                        TextStyle(
-                            color = GlanceTheme.colors.onSurface,
-                            fontSize = 14.sp,
-                        ),
+                            TextStyle(
+                                color = GlanceTheme.colors.onSurface,
+                                fontSize = 14.sp,
+                            ),
                         modifier = GlanceModifier.width(100.dp).padding(start = 16.dp),
                     )
                     Row(
                         modifier = GlanceModifier.fillMaxWidth().padding(end = 16.dp),
                         horizontalAlignment = Alignment.Horizontal.End,
                     ) {
-                        WidgetConnectButton(status)
+                        WidgetConnectButton(status, connectionInfoProvider.isConnected())
                     }
                 }
                 Spacer(modifier = GlanceModifier.height(16.dp))
                 Box(
                     modifier =
-                    GlanceModifier
-                        .height(0.5.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp)
-                        .background(GlanceTheme.colors.outline),
+                        GlanceModifier
+                            .height(0.5.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp)
+                            .background(GlanceTheme.colors.outline),
                 ) {}
                 Spacer(modifier = GlanceModifier.height(16.dp))
                 Row(
@@ -315,22 +316,22 @@ class Widget(
                     ) {
                         Text(
                             text =
-                            LocalContext.current
-                                .getString(com.kape.ui.R.string.download)
-                                .uppercase(),
+                                LocalContext.current
+                                    .getString(com.kape.ui.R.string.download)
+                                    .uppercase(),
                             style =
-                            TextStyle(
-                                color = GlanceTheme.colors.onSurface,
-                                fontSize = 12.sp,
-                            ),
+                                TextStyle(
+                                    color = GlanceTheme.colors.onSurface,
+                                    fontSize = 12.sp,
+                                ),
                         )
                         Text(
                             text = downloadSpeed,
                             style =
-                            TextStyle(
-                                color = GlanceTheme.colors.primary,
-                                fontSize = 12.sp,
-                            ),
+                                TextStyle(
+                                    color = GlanceTheme.colors.primary,
+                                    fontSize = 12.sp,
+                                ),
                         )
                     }
                     Column(
@@ -339,22 +340,22 @@ class Widget(
                     ) {
                         Text(
                             text =
-                            LocalContext.current
-                                .getString(com.kape.ui.R.string.upload)
-                                .uppercase(),
+                                LocalContext.current
+                                    .getString(com.kape.ui.R.string.upload)
+                                    .uppercase(),
                             style =
-                            TextStyle(
-                                color = GlanceTheme.colors.onSurface,
-                                fontSize = 12.sp,
-                            ),
+                                TextStyle(
+                                    color = GlanceTheme.colors.onSurface,
+                                    fontSize = 12.sp,
+                                ),
                         )
                         Text(
                             text = uploadSpeed,
                             style =
-                            TextStyle(
-                                color = GlanceTheme.colors.primary,
-                                fontSize = 12.sp,
-                            ),
+                                TextStyle(
+                                    color = GlanceTheme.colors.primary,
+                                    fontSize = 12.sp,
+                                ),
                         )
                     }
                 }
@@ -363,29 +364,29 @@ class Widget(
     }
 
     @Composable
-    fun WidgetConnectButton(status: ConnectionStatus) {
+    fun WidgetConnectButton(status: ConnectionStatus, isConnected: Boolean) {
         GlanceTheme(colors = WidgetColors.colors) {
             Box(
                 modifier =
-                GlanceModifier
-                    .width(48.dp)
-                    .height(48.dp)
-                    .background(getBackgroundForStatus(status))
-                    .clickable {
-                        if (vpnLauncher.isVpnConnected()) {
-                            vpnLauncher.stopVpn()
-                        } else {
-                            vpnLauncher.launchVpn()
-                        }
-                    },
+                    GlanceModifier
+                        .width(48.dp)
+                        .height(48.dp)
+                        .background(getBackgroundForStatus(status))
+                        .clickable {
+                            if (isConnected) {
+                                vpnLauncher.stopVpn()
+                            } else {
+                                vpnLauncher.launchVpn()
+                            }
+                        },
                 contentAlignment = Alignment.Center,
             ) {
                 Box(
                     modifier =
-                    GlanceModifier
-                        .width(44.dp)
-                        .height(44.dp)
-                        .background(getOutlineForStatus(status)),
+                        GlanceModifier
+                            .width(44.dp)
+                            .height(44.dp)
+                            .background(getOutlineForStatus(status)),
                     contentAlignment = Alignment.Center,
                 ) {
                     Image(
@@ -405,7 +406,7 @@ class Widget(
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
-            -> ImageProvider(R.drawable.background_yellow)
+                -> ImageProvider(R.drawable.background_yellow)
 
             ConnectionStatus.ERROR -> ImageProvider(R.drawable.background_red)
         }
@@ -417,7 +418,7 @@ class Widget(
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
-            -> ImageProvider(R.drawable.outline_yellow)
+                -> ImageProvider(R.drawable.outline_yellow)
 
             ConnectionStatus.ERROR -> ImageProvider(R.drawable.outline_red)
         }
@@ -429,7 +430,7 @@ class Widget(
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
-            -> ImageProvider(R.drawable.ic_power_yellow)
+                -> ImageProvider(R.drawable.ic_power_yellow)
 
             ConnectionStatus.ERROR -> ImageProvider(R.drawable.ic_power_red)
         }

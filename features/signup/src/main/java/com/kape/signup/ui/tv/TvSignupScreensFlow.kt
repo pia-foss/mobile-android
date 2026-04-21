@@ -19,7 +19,7 @@ fun TvSignupScreensFlow() {
         SignupStep.Default -> {
             when (connectionState) {
                 true -> {
-                    if (viewModel.subscriptionData.value == null) {
+                    if (state.subscriptionData == null) {
                         viewModel.loadPrices()
                     }
                 }

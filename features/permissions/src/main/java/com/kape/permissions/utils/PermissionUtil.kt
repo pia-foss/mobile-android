@@ -1,10 +1,9 @@
 package com.kape.permissions.utils
 
-import androidx.navigation.NavController
-import com.kape.contracts.data.ComposeDestination
-import com.kape.contracts.data.Connection
-import com.kape.contracts.data.NotificationPermission
-import com.kape.contracts.data.VpnPermission
+import com.kape.data.ComposeDestination
+import com.kape.data.Connection
+import com.kape.data.NotificationPermission
+import com.kape.data.VpnPermission
 import com.kape.notifications.data.NotificationPermissionManager
 import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import org.koin.core.annotation.Singleton

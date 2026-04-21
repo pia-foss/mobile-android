@@ -2,23 +2,24 @@ package com.kape.splash.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
-import com.kape.contracts.data.Connection
-import com.kape.contracts.data.Subscribe
-import com.kape.contracts.data.TvWelcome
-import com.kape.contracts.data.Update
+import com.kape.data.Connection
+import com.kape.data.DI
+import com.kape.data.Subscribe
+import com.kape.data.TvWelcome
+import com.kape.data.Update
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.httpclient.domain.GetWebsiteDownloadLink
-import com.kape.utils.DI
 import com.kape.utils.PlatformUtils
-import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class SplashViewModel(
@@ -27,46 +28,41 @@ class SplashViewModel(
     private val forceUpdateUseCase: ForceUpdateUseCase,
     private val getWebsiteDownloadLink: GetWebsiteDownloadLink,
     @Named(DI.UPDATE_URL) private val appUpdateUrl: String,
-    private val connectionUseCase: ConnectionUseCase,
+    private val connectionManager: ConnectionManager,
+    private val connectionInfoProvider: ConnectionInfoProvider,
     private val isUserLoggedIn: IsUserLoggedInUseCase,
     private val platformUtils: PlatformUtils,
-) : ViewModel(){
-
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+) : ViewModel() {
     private var updateUrl: String = ""
 
     fun load() {
-        if (regionListProvider.isDefaultList()) {
+        if (regionListProvider.isDefaultList.value) {
             regionListProvider.loadVpnServerLatencies()
         }
-        if (isUserLoggedIn.invoke()) {
-            handleSplashExit()
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            forceUpdateUseCase.requiresForceUpdate().collect { requiresUpdate ->
-                if (requiresUpdate) {
-                    viewModelScope.launch {
-                        getWebsiteDownloadLink.invoke().collect {
-                            updateUrl = it
-                            if (updateUrl.isNotEmpty()) {
-                                router.updateDestination(Update)
-                            }
-                        }
-                    }
-                } else if (!isUserLoggedIn.invoke()) {
-                    handleSplashExit()
+        viewModelScope.launch(ioDispatcher) {
+            val requiresUpdate = forceUpdateUseCase.requiresForceUpdate()
+            if (requiresUpdate) {
+                val url = getWebsiteDownloadLink.invoke()
+                updateUrl = url
+                if (updateUrl.isNotEmpty()) {
+                    router.updateDestination(Update)
                 }
+            } else if (!isUserLoggedIn.invoke()) {
+                handleSplashExit()
             }
         }
+        handleSplashExit()
     }
 
-    fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) {
-        viewModelScope.launch {
-            connectionUseCase.stopConnection().collect {}
+    fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) = viewModelScope.launch {
+        if (connectionManager.isConnectionInProgress()) {
+            connectionManager.disconnect().getOrNull()
         }
         launchUpdate(appUpdateUrl.ifEmpty { updateUrl })
     }
 
-    fun isConnected(): Boolean = connectionUseCase.isConnected()
+    fun isConnected() = connectionInfoProvider.isConnected()
 
     private fun handleSplashExit() {
         if (isUserLoggedIn.invoke()) {

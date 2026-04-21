@@ -2,16 +2,15 @@ package com.kape.vpnlauncher
 
 import android.content.Context
 import android.net.VpnService
+import com.kape.contracts.ConnectionManager
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
-import com.kape.utils.DI
-import com.kape.utils.vpnserver.VpnServer
-import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import kotlin.coroutines.CoroutineContext
@@ -19,11 +18,10 @@ import kotlin.coroutines.CoroutineContext
 class VpnLauncher(
     private val context: Context,
     private val connectionPrefs: ConnectionPrefs,
-    private val connectionUseCase: ConnectionUseCase,
     private val settingsPrefs: SettingsPrefs,
     private val regionListProvider: RegionListProvider,
-) : CoroutineScope,
-    KoinComponent {
+    private val connectionManager: ConnectionManager,
+) : CoroutineScope, KoinComponent {
     private val job = Job()
 
     override val coroutineContext: CoroutineContext
@@ -39,22 +37,18 @@ class VpnLauncher(
                 return
             } else {
                 val server: VpnServer? = connectionPrefs.getSelectedVpnServer()
-                if (!connectionUseCase.isConnected()) {
-                    launch {
-                        server?.let {
-                            initiateConnection(it)
-                        } ?: run {
-                            if (regionListProvider.isDefaultList().not()) {
-                                initiateConnection(regionListProvider.getOptimalServer())
-                            } else {
-                                regionListProvider
-                                    .updateServerLatencies(
-                                        isConnected = false,
-                                        isUserInitiated = false,
-                                    ).collect {
-                                        initiateConnection(regionListProvider.getOptimalServer())
-                                    }
-                            }
+                launch {
+                    server?.let {
+                        initiateConnection(it)
+                    } ?: run {
+                        if (regionListProvider.isDefaultList.first().not()) {
+                            initiateConnection(regionListProvider.getOptimalServer())
+                        } else {
+                            regionListProvider.updateServerLatencies(
+                                isConnected = false,
+                                isUserInitiated = false,
+                            )
+                            initiateConnection(regionListProvider.getOptimalServer())
                         }
                     }
                 }
@@ -64,16 +58,12 @@ class VpnLauncher(
         }
     }
 
-    private suspend fun initiateConnection(server: VpnServer) = connectionUseCase
-        .startConnection(
-            server,
-            false,
-        ).collect()
+    private suspend fun initiateConnection(server: VpnServer) =
+        connectionManager.connect(server, false, ::stopVpn)
 
-    fun stopVpn() =
+    fun stopVpn() {
         launch {
-            connectionUseCase.stopConnection().collect()
+            connectionManager.disconnect().getOrNull()
         }
-
-    fun isVpnConnected() = connectionUseCase.isConnected()
+    }
 }

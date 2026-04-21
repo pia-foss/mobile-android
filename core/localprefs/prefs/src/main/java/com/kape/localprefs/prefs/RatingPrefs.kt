@@ -2,7 +2,7 @@ package com.kape.localprefs.prefs
 
 import android.content.Context
 import com.kape.rating.data.RatingState
-import com.kape.utils.Prefs
+import com.kape.localprefs.Prefs
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 

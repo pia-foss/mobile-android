@@ -7,9 +7,7 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.ui.R
-import com.kape.utils.DI
 import com.kape.vpnlauncher.VpnLauncher
-import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Singleton([NetworkManager::class])

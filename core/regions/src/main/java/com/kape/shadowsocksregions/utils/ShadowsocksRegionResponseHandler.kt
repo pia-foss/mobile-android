@@ -1,6 +1,6 @@
 package com.kape.shadowsocksregions.utils
 
-import com.kape.utils.shadowsocksserver.ShadowsocksServer
+import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.privateinternetaccess.regions.model.ShadowsocksRegionsResponse
 
 fun adaptShadowsocksServers(

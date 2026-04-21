@@ -1,22 +1,23 @@
 package com.kape.vpnconnect.domain
 
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.presenters.VPNManagerCallback
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.CoroutineScope
 
 interface ConnectionDataSource {
-    fun startConnection(
+    suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
-        listener: VPNManagerConnectionListener,
-    ): Flow<Boolean>
+        connectionStatusProvider: ConnectionStatusProvider
+    ): Result<Unit>
 
-    fun stopConnection(): Flow<Boolean>
+    suspend fun stopConnection(): Result<Unit>
     fun getVpnToken(): String
     fun startPortForwarding()
     fun stopPortForwarding()
-    fun getDebugLogs(): Flow<List<String>>
-    fun updateConfigurationServers(servers: ServerList): Flow<Boolean>
+    suspend fun getDebugLogs(): List<String>
+    suspend fun updateConfigurationServers(servers: ServerList): Boolean
 
 }

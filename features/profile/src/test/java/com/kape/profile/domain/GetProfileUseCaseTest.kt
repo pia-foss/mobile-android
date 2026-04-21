@@ -1,20 +1,17 @@
 package com.kape.profile.domain
 
-import app.cash.turbine.test
 import com.kape.profile.data.models.Profile
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.koin.test.KoinTest
 import java.util.stream.Stream
 import kotlin.test.assertEquals
 
-class GetProfileUseCaseTest : KoinTest {
+class GetProfileUseCaseTest {
 
     private val dataSource: ProfileDatasource = mockk()
 
@@ -27,17 +24,10 @@ class GetProfileUseCaseTest : KoinTest {
 
     @ParameterizedTest(name = "result: {0}, expected: {1}")
     @MethodSource("data")
-    fun getProfile(
-        result: Profile?,
-        expected: Profile?,
-    ) = runTest {
-        every { dataSource.accountDetails() } returns flow { emit(result) }
-
-        useCase.getProfile().test {
-            val actual = awaitItem()
-            awaitComplete()
-            assertEquals(expected, actual)
-        }
+    fun getProfile(result: Profile?, expected: Profile?) = runTest {
+        coEvery { dataSource.accountDetails() } returns result
+        val actual = useCase.getProfile()
+        assertEquals(expected, actual)
     }
 
     companion object {

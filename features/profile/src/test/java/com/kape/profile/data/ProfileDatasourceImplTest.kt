@@ -1,56 +1,28 @@
 package com.kape.profile.data
 
-import app.cash.turbine.test
 import com.kape.profile.domain.ProfileDatasource
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.AccountInformation
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import org.koin.dsl.module
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class ProfileDatasourceImplTest {
-
-    @OptIn(DelicateCoroutinesApi::class)
-    val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     private val api: AndroidAccountAPI = mockk(relaxed = true)
     private lateinit var dataSource: ProfileDatasource
 
-    private val appModule = module {
-        single { api }
-    }
-
     @BeforeEach
     internal fun setUp() {
-        Dispatchers.setMain(mainThreadSurrogate)
-        stopKoin()
-        startKoin {}
         dataSource = ProfileDatasourceImpl(api)
-    }
-
-    @AfterEach
-    internal fun tearDown() {
-        Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
-        mainThreadSurrogate.close()
     }
 
     @Test
@@ -78,11 +50,9 @@ internal class ProfileDatasourceImplTest {
                 emptyList(),
             )
         }
-        dataSource.accountDetails().test {
-            val actual = awaitItem()
-            assertNotNull(actual)
-            assertEquals(accountInformation.username, actual.username)
-        }
+        val actual = dataSource.accountDetails()
+        assertNotNull(actual)
+        assertEquals(accountInformation.username, actual.username)
     }
 
     @Test
@@ -93,10 +63,8 @@ internal class ProfileDatasourceImplTest {
                 emptyList(),
             )
         }
-        dataSource.accountDetails().test {
-            val actual = awaitItem()
-            assertNull(actual)
-        }
+        val actual = dataSource.accountDetails()
+        assertNull(actual)
     }
 
     @Test
@@ -104,22 +72,16 @@ internal class ProfileDatasourceImplTest {
         coEvery { api.deleteAccount(any()) } answers {
             lastArg<(List<AccountRequestError>) -> Unit>().invoke(emptyList())
         }
-
-        dataSource.deleteAccount().test {
-            val actual = awaitItem()
-            assertTrue(actual)
-        }
+        val actual = dataSource.deleteAccount()
+        assertTrue(actual)
     }
 
     @Test
-    fun `deleteAccount - failute`() = runTest {
+    fun `deleteAccount - failure`() = runTest {
         coEvery { api.deleteAccount(any()) } answers {
             lastArg<(List<AccountRequestError>) -> Unit>().invoke(listOf(mockk()))
         }
-
-        dataSource.deleteAccount().test {
-            val actual = awaitItem()
-            assertFalse(actual)
-        }
+        val actual = dataSource.deleteAccount()
+        assertFalse(actual)
     }
 }

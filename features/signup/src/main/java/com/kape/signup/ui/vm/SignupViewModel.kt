@@ -2,15 +2,14 @@ package com.kape.signup.ui.vm
 
 import android.app.Activity
 import android.util.Patterns
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.Router
-import com.kape.contracts.data.LoginWithCredentials
-import com.kape.contracts.data.TvWelcome
-import com.kape.contracts.data.WebDestination
+import com.kape.data.LoginWithCredentials
+import com.kape.data.TvWelcome
+import com.kape.data.WebDestination
 import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
@@ -40,7 +39,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 import java.util.Locale
 
 @KoinViewModel
@@ -55,11 +53,10 @@ class SignupViewModel(
     private val buildConfigProvider: BuildConfigProvider,
     private val permissionUtil: PermissionUtil,
     networkConnectionListener: NetworkConnectionListener,
-) : ViewModel(){
-
+) : ViewModel() {
+    private var subscriptionData: SubscriptionData? = null
     private val _state = MutableStateFlow(DEFAULT)
     val state: StateFlow<SignupScreenState> = _state
-    val subscriptionData: MutableState<SubscriptionData?> = mutableStateOf(null)
 
     val isConnected = networkConnectionListener.isConnected
 
@@ -128,9 +125,15 @@ class SignupViewModel(
                             false,
                             mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
                         )
-                        subscriptionData.value =
-                            SubscriptionData(mutableStateOf(yearly), yearly, monthly)
-                        _state.emit(SUBSCRIPTIONS)
+                        val data = SubscriptionData(
+                            mutableStateOf(yearly),
+                            yearly,
+                            monthly,
+                        )
+                        subscriptionData = data
+                        _state.emit(
+                            SUBSCRIPTIONS(data),
+                        )
                     }
 
                     PurchaseState.PurchaseFailed -> {
@@ -142,8 +145,8 @@ class SignupViewModel(
                             _state.emit(CONSENT)
                         } else if (it == PurchaseState.PurchaseFailed) {
                             // TODO: handle error?
-                            subscriptionData.value?.let { subscriptionData ->
-                                _state.emit(SUBSCRIPTIONS)
+                            subscriptionData?.let { subscriptionData ->
+                                _state.emit(SUBSCRIPTIONS(subscriptionData))
                             }
                         }
                     }
@@ -175,17 +178,16 @@ class SignupViewModel(
         }
         if (subscriptionPrefs.getVpnSubscriptions().isEmpty()) {
             _state.emit(LOADING)
-            subscriptionsUseCase.getVpnSubscriptions().collect {
-                _state.emit(DEFAULT)
-                vpnSubscriptionPaymentProvider.loadProducts()
-            }
+            subscriptionsUseCase.getVpnSubscriptions()
+            _state.emit(DEFAULT)
+            vpnSubscriptionPaymentProvider.loadProducts()
         } else {
             vpnSubscriptionPaymentProvider.loadProducts()
         }
     }
 
     fun loadEmptyPrices() = viewModelScope.launch {
-        _state.emit(SUBSCRIPTIONS)
+        _state.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
     }
 
     fun purchase(id: String) = viewModelScope.launch {
@@ -229,12 +231,11 @@ class SignupViewModel(
             return@launch
         }
         _state.emit(IN_PROCESS)
-        useCase.vpnSignup(email).collect {
-            if (it == null) {
-                _state.emit(ERROR_REGISTRATION)
-            } else {
-                _state.emit(signedUp(it))
-            }
+        val result = useCase.vpnSignup(email)
+        if (result == null) {
+            _state.emit(ERROR_REGISTRATION)
+        } else {
+            _state.emit(signedUp(result))
         }
     }
 

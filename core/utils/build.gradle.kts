@@ -16,9 +16,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar)
     implementation(project(":core:contracts"))
-    implementation(libs.crypto)
     implementation(libs.coroutines)
-    implementation(libs.kape.vpnmanager)
     implementation(libs.bundles.serialization)
     implementation(libs.bundles.koin)
 }

@@ -15,6 +15,7 @@ android {
 
 dependencies {
     implementation(project(":core:contracts"))
+    implementation(project(":core:data"))
     implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:ui"))
 

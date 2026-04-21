@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:utils"))
+    implementation(project(":core:data"))
     implementation(project(":core:contracts"))
     implementation(project(":core:regions"))
     implementation(project(":core:payments"))

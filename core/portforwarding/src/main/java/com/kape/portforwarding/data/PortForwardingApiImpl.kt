@@ -9,8 +9,6 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 import java.io.IOException
@@ -24,53 +22,53 @@ class PortForwardingApiImpl(
     private val client = certificatePinningClient.client()
 
     @Throws(IOException::class)
-    override fun getPayloadAndSignature(
+    override suspend fun getPayloadAndSignature(
         vpnToken: String,
         gateway: String,
-    ): Flow<PortBindInformation?> = flow {
+    ): PortBindInformation? {
         val urlEncodedEndpoint: String = Uri.parse("https://$gateway:19999/getSignature")
             .buildUpon()
             .appendQueryParameter("token", vpnToken)
             .build().toString()
-        try {
+        return try {
             val response = client.get(urlEncodedEndpoint) {
                 header("User-Agent", userAgent)
             }
             if (response.status != HttpStatusCode.OK) {
-                emit(null)
+                return null
             }
             val jsonString = response.body<String>()
             val portBindingInfo = Json.decodeFromString<PortBindInformation>(jsonString)
             if (portBindingInfo.status != "OK") {
-                emit(null)
+                null
             } else {
-                emit(portBindingInfo)
+                portBindingInfo
             }
         } catch (exception: Exception) {
-            emit(null)
+            null
         }
     }
 
     @Throws(IOException::class, IllegalStateException::class)
-    override fun bindPort(
+    override suspend fun bindPort(
         token: String,
         payload: String,
         signature: String,
         endpoint: String,
-    ): Flow<Boolean> = flow {
+    ): Boolean {
         val urlEncodedEndpoint: String = Uri.parse("https://$endpoint:19999/bindPort")
             .buildUpon()
             .appendQueryParameter("payload", payload)
             .appendQueryParameter("signature", signature)
             .build().toString()
-        try {
+        return try {
             val response = client.get(urlEncodedEndpoint) {
                 header(HttpHeaders.UserAgent, userAgent)
                 header(HttpHeaders.Authorization, token)
             }
-            emit(response.status == HttpStatusCode.OK)
+            response.status == HttpStatusCode.OK
         } catch (exception: Exception) {
-            emit(false)
+            false
         }
     }
 

@@ -2,8 +2,8 @@ package com.kape.shadowsocksregions.domain
 
 import com.kape.data.RegionInputStream
 import com.kape.data.RegionSerialization
+import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.shadowsocksregions.utils.adaptShadowsocksServers
-import com.kape.utils.shadowsocksserver.ShadowsocksServer
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import org.koin.core.annotation.Singleton
 

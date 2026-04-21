@@ -1,6 +1,6 @@
 package com.kape.contracts
 
-import com.kape.contracts.data.ComposeDestination
+import com.kape.data.ComposeDestination
 import kotlinx.coroutines.flow.StateFlow
 
 interface Router {

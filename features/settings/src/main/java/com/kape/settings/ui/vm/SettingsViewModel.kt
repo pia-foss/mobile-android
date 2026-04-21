@@ -6,22 +6,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.AppInfo
+import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.KpiDataSource
 import com.kape.contracts.Router
-import com.kape.contracts.data.About
-import com.kape.contracts.data.AutomationSettings
-import com.kape.contracts.data.ConnectionStats
-import com.kape.contracts.data.DebugLogs
-import com.kape.contracts.data.ExternalAppList
-import com.kape.contracts.data.GeneralSettings
-import com.kape.contracts.data.HelpSettings
-import com.kape.contracts.data.KillSwitchSettings
-import com.kape.contracts.data.NetworkSettings
-import com.kape.contracts.data.ObfuscationSettings
-import com.kape.contracts.data.PrivacySettings
-import com.kape.contracts.data.ProtocolSettings
-import com.kape.contracts.data.WebDestination
 import com.kape.csi.domain.SendLogUseCase
+import com.kape.data.About
+import com.kape.data.AutomationSettings
+import com.kape.data.ConnectionStats
+import com.kape.data.DebugLogs
+import com.kape.data.ExternalAppList
+import com.kape.data.GeneralSettings
+import com.kape.data.HelpSettings
+import com.kape.data.KillSwitchSettings
+import com.kape.data.NetworkSettings
+import com.kape.data.ObfuscationSettings
+import com.kape.data.PrivacySettings
+import com.kape.data.ProtocolSettings
+import com.kape.data.WebDestination
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -38,7 +40,6 @@ import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.vpnconnect.domain.ConnectionDataSource
-import com.kape.vpnconnect.domain.ConnectionUseCase
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.Dispatchers
@@ -46,7 +47,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.component.KoinComponent
 
 @KoinViewModel
 class SettingsViewModel(
@@ -62,8 +62,9 @@ class SettingsViewModel(
     private val sendLogUseCase: SendLogUseCase,
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
     private val locationPermissionManager: LocationPermissionManager,
-    private val connectionUseCase: ConnectionUseCase,
-) : ViewModel(){
+    private val connectionManager: ConnectionManager,
+    private val connectionInfoProvider: ConnectionInfoProvider,
+) : ViewModel() {
 
     companion object {
         private const val GET_INSTALLED_APPS_DELAY_MS = 1000L
@@ -363,25 +364,19 @@ class SettingsViewModel(
     }
 
     fun getRecentEvents() = viewModelScope.launch {
-        kpiDataSource.recentEvents().collect {
-            eventList.value = it
-        }
+        eventList.value = kpiDataSource.recentEvents()
     }
 
     fun getDebugLogs() = viewModelScope.launch {
-        getDebugLogsUseCase.getDebugLogs().collect {
-            debugLogs.value = it
-        }
+        debugLogs.value = getDebugLogsUseCase.getDebugLogs()
     }
 
     fun sendLogs() = viewModelScope.launch {
-        connectionDataSource.getDebugLogs().collect {
-            csiPrefs.setProtocolDebugLogs(it.joinToString(separator = "\n"))
-            sendLogUseCase.sendLog().collect {
-                requestId.value = it
-                csiPrefs.clearCustomDebugLogs()
-            }
-        }
+        val logs = connectionDataSource.getDebugLogs()
+        csiPrefs.setProtocolDebugLogs(logs.joinToString(separator = "\n"))
+        val result = sendLogUseCase.sendLog()
+        requestId.value = result
+        csiPrefs.clearCustomDebugLogs()
     }
 
     fun resetRequestId() {
@@ -389,7 +384,7 @@ class SettingsViewModel(
     }
 
     fun showReconnectDialogIfVpnConnected() {
-        if (isConnected()) {
+        if (connectionInfoProvider.isConnected()) {
             reconnectDialogVisible.value = true
         }
     }
@@ -400,17 +395,22 @@ class SettingsViewModel(
         }
     }
 
-    fun isConnected(): Boolean {
-        return connectionUseCase.isConnected()
-    }
-
     fun reconnect() {
-        viewModelScope.launch {
-            connectionPrefs.getSelectedVpnServer()?.let {
-                connectionUseCase.reconnect(it).collect {}
+        connectionPrefs.getSelectedVpnServer()?.let {
+            connectionManager.connectJob = viewModelScope.launch {
+                if (connectionManager.isConnectionInProgress()) {
+                    connectionManager.disconnect().getOrNull()
+                }
+                connectionManager.connect(it, true, ::callback)
             }
         }
     }
+
+    private fun callback() {
+        viewModelScope.launch { connectionManager.disconnect().getOrNull() }
+    }
+
+    fun isConnected() = connectionInfoProvider.isConnected()
 
     fun getAppVersion(): String = "${appInfo.versionName} (${appInfo.versionCode})"
 }

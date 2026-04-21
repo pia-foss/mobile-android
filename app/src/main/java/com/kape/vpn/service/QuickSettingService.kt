@@ -2,9 +2,9 @@ package com.kape.vpn.service
 
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.ui.R
-import com.kape.vpnconnect.utils.ConnectionManager
 import com.kape.vpnlauncher.VpnLauncher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +19,7 @@ import kotlin.coroutines.CoroutineContext
 @Singleton
 class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
 
-    private val connectionManager: ConnectionManager by inject()
+    private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val vpnLauncher: VpnLauncher by inject()
     private val isUserLoggedIn: IsUserLoggedInUseCase by inject()
 
@@ -30,7 +30,7 @@ class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
 
     init {
         launch {
-            connectionManager.connectionStatus.collect {
+            connectionInfoProvider.connectionState.collect {
                 withContext(Dispatchers.Main) {
                     updateTile()
                 }
@@ -56,7 +56,7 @@ class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
 
     private fun onClickAction() {
         if (isUserLoggedIn.invoke()) {
-            if (vpnLauncher.isVpnConnected()) {
+            if (connectionInfoProvider.isConnected()) {
                 vpnLauncher.stopVpn()
             } else {
                 vpnLauncher.launchVpn()
@@ -71,12 +71,12 @@ class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
 
     private fun updateTile() {
         qsTile?.let {
-            if (connectionManager.isConnected()) {
+            if (connectionInfoProvider.isConnected()) {
                 it.state = Tile.STATE_ACTIVE
-                it.label = if (connectionManager.serverName.value.isEmpty()) {
+                it.label = if (connectionInfoProvider.state.value.name.isEmpty()) {
                     getString(R.string.qs_disconnect_nolocation)
                 } else {
-                    getString(R.string.qs_disconnect, connectionManager.serverName.value)
+                    getString(R.string.qs_disconnect, connectionInfoProvider.state.value.name)
                 }
             } else {
                 if (!isUserLoggedIn.invoke()) {

@@ -24,7 +24,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +42,7 @@ import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
@@ -51,7 +51,6 @@ import com.kape.ui.mobile.elements.Search
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.tv.text.SecondaryButtonText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnconnect.utils.ConnectionManager
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -61,8 +60,7 @@ fun TvPerAppSettingsScreen() = Screen {
     val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
         getInstalledApplications(packageManager)
     }
-    val connectionManager: ConnectionManager = koinInject()
-    val connectionStatus = connectionManager.connectionStatus.collectAsState()
+    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
     val initialFocusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
@@ -78,8 +76,7 @@ fun TvPerAppSettingsScreen() = Screen {
         HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
             thickness = 4.dp,
-            color = getTopBarConnectionColor(
-                status = connectionStatus.value,
+            color = connectionInfoProvider.getTopBarConnectionColor(
                 scheme = LocalColors.current,
             ),
         )
@@ -255,7 +252,11 @@ private fun PerAppSettingPackageItem(
     }
 }
 
-private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>, navigateBack: () -> Unit) {
+private fun onBackPressed(
+    viewModel: SettingsViewModel,
+    lastExcludedApps: List<String>,
+    navigateBack: () -> Unit,
+) {
     if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {

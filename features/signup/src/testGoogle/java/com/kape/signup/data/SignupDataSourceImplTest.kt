@@ -1,6 +1,5 @@
 package com.kape.signup.data
 
-import app.cash.turbine.test
 import com.kape.signup.data.models.Credentials
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.VpnSignUpInformation
@@ -11,17 +10,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import org.koin.dsl.module
+import kotlin.test.assertEquals
 
 internal class SignupDataSourceImplTest {
 
     private val api: AndroidAccountAPI = mockk(relaxed = true)
 
     private lateinit var source: SignupDataSourceImpl
-
-    private val appModule = module {
-        single { api }
-    }
 
     @BeforeEach
     internal fun setUp() {
@@ -37,21 +32,16 @@ internal class SignupDataSourceImplTest {
         coEvery { api.vpnSignUp(any(), any()) } answers {
             lastArg<(VpnSignUpInformation?, List<Error>) -> Unit>().invoke(signupInfo, emptyList())
         }
-        source.vpnSignup("orderId", "token", "productId", "obfuscatedDeviceId").test {
-            val actual = awaitItem()
-            kotlin.test.assertEquals(expected, actual)
-        }
+        val actual = source.vpnSignup("orderId", "token", "productId", "obfuscatedDeviceId")
+        assertEquals(expected, actual)
     }
 
     @Test
     fun `signup fails`() = runTest {
-        val expected = null
         coEvery { api.vpnSignUp(any(), any()) } answers {
-            lastArg<(VpnSignUpInformation?, List<Error>) -> Unit>().invoke(expected, listOf(Error()))
+            lastArg<(VpnSignUpInformation?, List<Error>) -> Unit>().invoke(null, listOf(Error()))
         }
-        source.vpnSignup("orderId", "token", "productId", "obfuscatedDeviceId").test {
-            val actual = awaitItem()
-            kotlin.test.assertEquals(expected, actual)
-        }
+        val actual = source.vpnSignup("orderId", "token", "productId", "obfuscatedDeviceId")
+        assertEquals(null, actual)
     }
 }
