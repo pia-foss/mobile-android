@@ -20,8 +20,9 @@ private const val DIP_SIGNUP_SELECTED_PRODUCT_ID = "dip-signup-selected-product-
 private const val DIP_SIGNUP_SELECTED_COUNTRY = "dip-signup-selected-country"
 
 @Singleton
-class DipPrefs(context: Context) : Prefs(context, "dip") {
-
+class DipPrefs(
+    context: Context,
+) : Prefs(context, "dip") {
     fun getDedicatedIps(): List<DedicatedIPInformationResponse.DedicatedIPInformation> {
         val dips = mutableListOf<DedicatedIPInformationResponse.DedicatedIPInformation>()
         for (dip in getDips()) {
@@ -47,18 +48,18 @@ class DipPrefs(context: Context) : Prefs(context, "dip") {
         prefs.edit().putString(DIP_SIGNUP_PURCHASED_TOKEN, dipToken).apply()
     }
 
-    fun getPurchasedSignupDipToken(): String =
-        prefs.getString(DIP_SIGNUP_PURCHASED_TOKEN, "") ?: ""
+    fun getPurchasedSignupDipToken(): String = prefs.getString(DIP_SIGNUP_PURCHASED_TOKEN, "") ?: ""
 
     fun removePurchasedSignupDipToken() {
         prefs.edit().remove(DIP_SIGNUP_PURCHASED_TOKEN).apply()
     }
 
-    fun isDipSignupEnabled(isGoogleFlavor: Boolean) = if (isGoogleFlavor) {
-        prefs.getBoolean(DIP_SIGNUP_ENABLED, false)
-    } else {
-        false
-    }
+    fun isDipSignupEnabled(isGoogleFlavor: Boolean) =
+        if (isGoogleFlavor) {
+            prefs.getBoolean(DIP_SIGNUP_ENABLED, false)
+        } else {
+            false
+        }
 
     fun showDedicatedIpHomeBanner() = prefs.getBoolean(DIP_SIGNUP_HOME_BANNER_VISIBLE, false)
 
@@ -67,7 +68,9 @@ class DipPrefs(context: Context) : Prefs(context, "dip") {
     }
 
     fun setDedicatedIpSignupPlans(dedicatedIpSignupPlans: DedicatedIpSignupPlans) {
-        prefs.edit().putString(DIP_SIGNUP_PLANS, Json.encodeToString(dedicatedIpSignupPlans))
+        prefs
+            .edit()
+            .putString(DIP_SIGNUP_PLANS, Json.encodeToString(dedicatedIpSignupPlans))
             .apply()
     }
 
@@ -76,13 +79,13 @@ class DipPrefs(context: Context) : Prefs(context, "dip") {
             Json.decodeFromString(it)
         }
 
-    fun setDedicatedIpSupportedCountries(
-        dedicatedIpSupportedCountries: DedicatedIpSupportedCountries,
-    ) {
-        prefs.edit().putString(
-            DIP_SUPPORTED_COUNTRIES,
-            Json.encodeToString(dedicatedIpSupportedCountries),
-        ).apply()
+    fun setDedicatedIpSupportedCountries(dedicatedIpSupportedCountries: DedicatedIpSupportedCountries) {
+        prefs
+            .edit()
+            .putString(
+                DIP_SUPPORTED_COUNTRIES,
+                Json.encodeToString(dedicatedIpSupportedCountries),
+            ).apply()
     }
 
     fun getDedicatedIpSupportedCountries(): DedicatedIpSupportedCountries? =
@@ -91,17 +94,21 @@ class DipPrefs(context: Context) : Prefs(context, "dip") {
         }
 
     fun setSelectedDipSignupProductId(productId: String) {
-        prefs.edit().putString(
-            DIP_SIGNUP_SELECTED_PRODUCT_ID,
-            productId,
-        ).apply()
+        prefs
+            .edit()
+            .putString(
+                DIP_SIGNUP_SELECTED_PRODUCT_ID,
+                productId,
+            ).apply()
     }
 
     fun setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) {
-        prefs.edit().putString(
-            DIP_SIGNUP_SELECTED_COUNTRY,
-            Json.encodeToString(dedicatedIpSelectedCountry),
-        ).apply()
+        prefs
+            .edit()
+            .putString(
+                DIP_SIGNUP_SELECTED_COUNTRY,
+                Json.encodeToString(dedicatedIpSelectedCountry),
+            ).apply()
     }
 
     fun getDedicatedIpSelectedCountry(): DedicatedIpSelectedCountry? =
@@ -109,11 +116,9 @@ class DipPrefs(context: Context) : Prefs(context, "dip") {
             Json.decodeFromString(it)
         }
 
-    fun getSelectedDipSignupProductId(): String =
-        prefs.getString(DIP_SIGNUP_SELECTED_PRODUCT_ID, "") ?: ""
+    fun getSelectedDipSignupProductId(): String = prefs.getString(DIP_SIGNUP_SELECTED_PRODUCT_ID, "") ?: ""
 
     private fun getDips() = prefs.getStringSet(DEDICATED_IPS, emptySet()) ?: emptySet()
 
-    private fun saveDedicatedIps(dips: Set<String>) =
-        prefs.edit().putStringSet(DEDICATED_IPS, dips).apply()
+    private fun saveDedicatedIps(dips: Set<String>) = prefs.edit().putStringSet(DEDICATED_IPS, dips).apply()
 }

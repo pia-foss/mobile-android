@@ -33,7 +33,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ConnectionDataSourceImplTest {
-
     private val connectionApi = mockk<VPNManagerAPI>()
     private val accountApi = mockk<AndroidAccountAPI>()
     private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)
@@ -43,134 +42,142 @@ class ConnectionDataSourceImplTest {
     private val usageProvider = mockk<UsageProvider>(relaxed = true)
     private val csiPrefs = mockk<CsiPrefs>(relaxed = true)
 
-    private val connectionStatusProvider = object : ConnectionStatusProvider, VPNManagerConnectionListener {
-        override val state: StateFlow<VpnConnectionStatus> =
-            MutableStateFlow(VpnConnectionStatus(ConnectionStatus.DISCONNECTED, ""))
+    private val connectionStatusProvider =
+        object : ConnectionStatusProvider, VPNManagerConnectionListener {
+            override val state: StateFlow<VpnConnectionStatus> =
+                MutableStateFlow(VpnConnectionStatus(ConnectionStatus.DISCONNECTED, ""))
 
-        override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {}
-    }
+            override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {}
+        }
 
     private lateinit var dataSource: ConnectionDataSourceImpl
 
     @BeforeEach
     fun setUp() {
-        dataSource = ConnectionDataSourceImpl(
-            connectionApi = connectionApi,
-            accountApi = accountApi,
-            connectionPrefs = connectionPrefs,
-            workManager = workManager,
-            settingsPrefs = settingsPrefs,
-            kpiDataSource = kpiDataSource,
-            usageProvider = usageProvider,
-            csiPrefs = csiPrefs,
-        )
+        dataSource =
+            ConnectionDataSourceImpl(
+                connectionApi = connectionApi,
+                accountApi = accountApi,
+                connectionPrefs = connectionPrefs,
+                workManager = workManager,
+                settingsPrefs = settingsPrefs,
+                kpiDataSource = kpiDataSource,
+                usageProvider = usageProvider,
+                csiPrefs = csiPrefs,
+            )
     }
 
     // region startConnection
 
     @Test
-    fun `startConnection - success - sets gateway and returns success`() = runTest {
-        val clientConfiguration = mockk<ClientConfiguration>()
-        val serverPeerInfo = ServerPeerInformation(networkInterface = "wg0", gateway = "10.0.0.1")
-        val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
+    fun `startConnection - success - sets gateway and returns success`() =
+        runTest {
+            val clientConfiguration = mockk<ClientConfiguration>()
+            val serverPeerInfo = ServerPeerInformation(networkInterface = "wg0", gateway = "10.0.0.1")
+            val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-        every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
-        every { connectionApi.addConnectionListener(any(), any()) } answers { }
-        every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
-            slot.captured.invoke(Result.success(serverPeerInfo))
+            every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
+            every { connectionApi.addConnectionListener(any(), any()) } answers { }
+            every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
+                slot.captured.invoke(Result.success(serverPeerInfo))
+            }
+
+            val result = dataSource.startConnection(clientConfiguration, connectionStatusProvider)
+
+            assertTrue(result.isSuccess)
+            verify { connectionPrefs.setGateway("10.0.0.1") }
         }
-
-        val result = dataSource.startConnection(clientConfiguration, connectionStatusProvider)
-
-        assertTrue(result.isSuccess)
-        verify { connectionPrefs.setGateway("10.0.0.1") }
-    }
 
     @Test
-    fun `startConnection - failure - logs error and returns failure`() = runTest {
-        val clientConfiguration = mockk<ClientConfiguration>()
-        val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
+    fun `startConnection - failure - logs error and returns failure`() =
+        runTest {
+            val clientConfiguration = mockk<ClientConfiguration>()
+            val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-        every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
-        every { settingsPrefs.isDebugLoggingEnabled() } returns false
-        every { connectionApi.addConnectionListener(any(), any()) } answers { }
-        every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
-            slot.captured.invoke(Result.failure(RuntimeException("connection failed")))
+            every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
+            every { settingsPrefs.isDebugLoggingEnabled() } returns false
+            every { connectionApi.addConnectionListener(any(), any()) } answers { }
+            every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
+                slot.captured.invoke(Result.failure(RuntimeException("connection failed")))
+            }
+
+            val result = dataSource.startConnection(clientConfiguration, connectionStatusProvider)
+
+            assertTrue(result.isFailure)
+            verify { csiPrefs.addCustomDebugLogs(any(), false) }
         }
-
-        val result = dataSource.startConnection(clientConfiguration, connectionStatusProvider)
-
-        assertTrue(result.isFailure)
-        verify { csiPrefs.addCustomDebugLogs(any(), false) }
-    }
 
     @Test
-    fun `startConnection - help improve PIA enabled - starts KPI`() = runTest {
-        val clientConfiguration = mockk<ClientConfiguration>()
-        val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
+    fun `startConnection - help improve PIA enabled - starts KPI`() =
+        runTest {
+            val clientConfiguration = mockk<ClientConfiguration>()
+            val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-        every { settingsPrefs.isHelpImprovePiaEnabled() } returns true
-        every { connectionApi.addConnectionListener(any(), any()) } answers { }
-        every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
-            slot.captured.invoke(Result.success(mockk(relaxed = true)))
+            every { settingsPrefs.isHelpImprovePiaEnabled() } returns true
+            every { connectionApi.addConnectionListener(any(), any()) } answers { }
+            every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
+                slot.captured.invoke(Result.success(mockk(relaxed = true)))
+            }
+
+            dataSource.startConnection(clientConfiguration, connectionStatusProvider)
+
+            verify { kpiDataSource.start() }
         }
-
-        dataSource.startConnection(clientConfiguration, connectionStatusProvider)
-
-        verify { kpiDataSource.start() }
-    }
 
     @Test
-    fun `startConnection - help improve PIA disabled - stops KPI`() = runTest {
-        val clientConfiguration = mockk<ClientConfiguration>()
-        val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
+    fun `startConnection - help improve PIA disabled - stops KPI`() =
+        runTest {
+            val clientConfiguration = mockk<ClientConfiguration>()
+            val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-        every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
-        every { connectionApi.addConnectionListener(any(), any()) } answers { }
-        every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
-            slot.captured.invoke(Result.success(mockk(relaxed = true)))
+            every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
+            every { connectionApi.addConnectionListener(any(), any()) } answers { }
+            every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
+                slot.captured.invoke(Result.success(mockk(relaxed = true)))
+            }
+
+            dataSource.startConnection(clientConfiguration, connectionStatusProvider)
+
+            verify { kpiDataSource.stop() }
         }
-
-        dataSource.startConnection(clientConfiguration, connectionStatusProvider)
-
-        verify { kpiDataSource.stop() }
-    }
 
     // endregion
 
     // region stopConnection
 
     @Test
-    fun `stopConnection - success - resets usage, stops port forwarding, returns success`() = runTest {
-        val slot = slot<(Result<Unit>) -> Unit>()
+    fun `stopConnection - success - resets usage, stops port forwarding, returns success`() =
+        runTest {
+            val slot = slot<(Result<Unit>) -> Unit>()
 
-        every { connectionApi.stopConnection(capture(slot)) } answers {
-            slot.captured.invoke(Result.success(Unit))
+            every { connectionApi.stopConnection(capture(slot)) } answers {
+                slot.captured.invoke(Result.success(Unit))
+            }
+
+            val result = dataSource.stopConnection()
+
+            assertTrue(result.isSuccess)
+            verify { usageProvider.reset() }
+            verify { connectionPrefs.clearGateway() }
+            verify { connectionPrefs.clearPortBindingInfo() }
+            verify { workManager.cancelUniqueWork(any()) }
         }
-
-        val result = dataSource.stopConnection()
-
-        assertTrue(result.isSuccess)
-        verify { usageProvider.reset() }
-        verify { connectionPrefs.clearGateway() }
-        verify { connectionPrefs.clearPortBindingInfo() }
-        verify { workManager.cancelUniqueWork(any()) }
-    }
 
     @Test
-    fun `stopConnection - failure - logs error and returns failure`() = runTest {
-        val slot = slot<(Result<Unit>) -> Unit>()
+    fun `stopConnection - failure - logs error and returns failure`() =
+        runTest {
+            val slot = slot<(Result<Unit>) -> Unit>()
 
-        every { settingsPrefs.isDebugLoggingEnabled() } returns true
-        every { connectionApi.stopConnection(capture(slot)) } answers {
-            slot.captured.invoke(Result.failure(RuntimeException("stop failed")))
+            every { settingsPrefs.isDebugLoggingEnabled() } returns true
+            every { connectionApi.stopConnection(capture(slot)) } answers {
+                slot.captured.invoke(Result.failure(RuntimeException("stop failed")))
+            }
+
+            val result = dataSource.stopConnection()
+
+            assertTrue(result.isFailure)
+            verify { csiPrefs.addCustomDebugLogs(any(), true) }
         }
-
-        val result = dataSource.stopConnection()
-
-        assertTrue(result.isFailure)
-        verify { csiPrefs.addCustomDebugLogs(any(), true) }
-    }
 
     // endregion
 
@@ -223,80 +230,85 @@ class ConnectionDataSourceImplTest {
     // region getDebugLogs
 
     @Test
-    fun `getDebugLogs - WireGuard protocol - success - returns log list`() = runTest {
-        val logs = listOf("wg_log1", "wg_log2")
-        val slot = slot<(Result<List<String>>) -> Unit>()
+    fun `getDebugLogs - WireGuard protocol - success - returns log list`() =
+        runTest {
+            val logs = listOf("wg_log1", "wg_log2")
+            val slot = slot<(Result<List<String>>) -> Unit>()
 
-        every { settingsPrefs.getSelectedProtocol() } returns VpnProtocols.WireGuard
-        every { connectionApi.getVpnProtocolLogs(VPNManagerProtocolTarget.WIREGUARD, capture(slot)) } answers {
-            slot.captured.invoke(Result.success(logs))
+            every { settingsPrefs.getSelectedProtocol() } returns VpnProtocols.WireGuard
+            every { connectionApi.getVpnProtocolLogs(VPNManagerProtocolTarget.WIREGUARD, capture(slot)) } answers {
+                slot.captured.invoke(Result.success(logs))
+            }
+
+            val result = dataSource.getDebugLogs()
+
+            assertEquals(logs, result)
         }
-
-        val result = dataSource.getDebugLogs()
-
-        assertEquals(logs, result)
-    }
 
     @Test
-    fun `getDebugLogs - OpenVPN protocol - success - returns log list`() = runTest {
-        val logs = listOf("ovpn_log1")
-        val slot = slot<(Result<List<String>>) -> Unit>()
+    fun `getDebugLogs - OpenVPN protocol - success - returns log list`() =
+        runTest {
+            val logs = listOf("ovpn_log1")
+            val slot = slot<(Result<List<String>>) -> Unit>()
 
-        every { settingsPrefs.getSelectedProtocol() } returns VpnProtocols.OpenVPN
-        every { connectionApi.getVpnProtocolLogs(VPNManagerProtocolTarget.OPENVPN, capture(slot)) } answers {
-            slot.captured.invoke(Result.success(logs))
+            every { settingsPrefs.getSelectedProtocol() } returns VpnProtocols.OpenVPN
+            every { connectionApi.getVpnProtocolLogs(VPNManagerProtocolTarget.OPENVPN, capture(slot)) } answers {
+                slot.captured.invoke(Result.success(logs))
+            }
+
+            val result = dataSource.getDebugLogs()
+
+            assertEquals(logs, result)
         }
-
-        val result = dataSource.getDebugLogs()
-
-        assertEquals(logs, result)
-    }
 
     @Test
-    fun `getDebugLogs - failure - returns empty list`() = runTest {
-        val slot = slot<(Result<List<String>>) -> Unit>()
+    fun `getDebugLogs - failure - returns empty list`() =
+        runTest {
+            val slot = slot<(Result<List<String>>) -> Unit>()
 
-        every { settingsPrefs.getSelectedProtocol() } returns VpnProtocols.WireGuard
-        every { connectionApi.getVpnProtocolLogs(any(), capture(slot)) } answers {
-            slot.captured.invoke(Result.failure(RuntimeException("logs unavailable")))
+            every { settingsPrefs.getSelectedProtocol() } returns VpnProtocols.WireGuard
+            every { connectionApi.getVpnProtocolLogs(any(), capture(slot)) } answers {
+                slot.captured.invoke(Result.failure(RuntimeException("logs unavailable")))
+            }
+
+            val result = dataSource.getDebugLogs()
+
+            assertEquals(emptyList<String>(), result)
         }
-
-        val result = dataSource.getDebugLogs()
-
-        assertEquals(emptyList<String>(), result)
-    }
 
     // endregion
 
     // region updateConfigurationServers
 
     @Test
-    fun `updateConfigurationServers - success - returns true`() = runTest {
-        val servers = mockk<ServerList>()
-        val slot = slot<(Result<Unit>) -> Unit>()
+    fun `updateConfigurationServers - success - returns true`() =
+        runTest {
+            val servers = mockk<ServerList>()
+            val slot = slot<(Result<Unit>) -> Unit>()
 
-        every { connectionApi.updateConfigurationServers(servers, capture(slot)) } answers {
-            slot.captured.invoke(Result.success(Unit))
+            every { connectionApi.updateConfigurationServers(servers, capture(slot)) } answers {
+                slot.captured.invoke(Result.success(Unit))
+            }
+
+            val result = dataSource.updateConfigurationServers(servers)
+
+            assertTrue(result)
         }
-
-        val result = dataSource.updateConfigurationServers(servers)
-
-        assertTrue(result)
-    }
 
     @Test
-    fun `updateConfigurationServers - failure - returns false`() = runTest {
-        val servers = mockk<ServerList>()
-        val slot = slot<(Result<Unit>) -> Unit>()
+    fun `updateConfigurationServers - failure - returns false`() =
+        runTest {
+            val servers = mockk<ServerList>()
+            val slot = slot<(Result<Unit>) -> Unit>()
 
-        every { connectionApi.updateConfigurationServers(servers, capture(slot)) } answers {
-            slot.captured.invoke(Result.failure(RuntimeException("update failed")))
+            every { connectionApi.updateConfigurationServers(servers, capture(slot)) } answers {
+                slot.captured.invoke(Result.failure(RuntimeException("update failed")))
+            }
+
+            val result = dataSource.updateConfigurationServers(servers)
+
+            assertFalse(result)
         }
-
-        val result = dataSource.updateConfigurationServers(servers)
-
-        assertFalse(result)
-    }
 
     // endregion
 }

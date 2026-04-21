@@ -15,7 +15,6 @@ import org.koin.core.annotation.Named
 
 @Module
 class AutomationModule {
-
     @KoinViewModel
     fun provideAutomationViewModel(
         router: Router,
@@ -25,8 +24,14 @@ class AutomationModule {
         networkConnectionListener: NetworkConnectionListener,
         @Named(DI.RULES_UPDATED_INTENT) broadcastIntent: Intent,
         automationManager: AutomationManager,
-    ): AutomationViewModel = AutomationViewModel(
-        router, locationPermissionManager, settingsPrefs, networkRulesManager,
-        networkConnectionListener, broadcastIntent, automationManager,
-    )
+    ): AutomationViewModel =
+        AutomationViewModel(
+            router,
+            locationPermissionManager,
+            settingsPrefs,
+            networkRulesManager,
+            networkConnectionListener,
+            broadcastIntent,
+            automationManager,
+        )
 }

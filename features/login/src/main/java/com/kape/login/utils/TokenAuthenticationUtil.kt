@@ -17,7 +17,6 @@ class TokenAuthenticationUtil(
     private val router: Router,
     private val permissionUtil: PermissionUtil,
 ) : CoroutineScope {
-
     private val job = Job()
 
     override val coroutineContext: CoroutineContext

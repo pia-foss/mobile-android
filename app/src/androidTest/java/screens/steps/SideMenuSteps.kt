@@ -1,10 +1,9 @@
 package screens.steps
 
 import androidx.test.uiautomator.UiAutomatorTestScope
-import screens.helpers.UiAutomatorHelpers.findByResId
+import screens.helpers.UiAutomatorHelper.findByResId
 
 object SideMenuSteps {
-
     const val SETTINGS_BUTTON = ":SideMenu:Settings"
     const val DEDICATED_IP = ":SideMenu:DedicatedIP"
     const val LOGOUT_BUTTON = ":SideMenu:Logout"

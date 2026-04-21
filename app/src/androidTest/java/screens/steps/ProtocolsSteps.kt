@@ -3,12 +3,11 @@ package screens.steps
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiAutomatorTestScope
 import androidx.test.uiautomator.Until
-import screens.helpers.UiAutomatorHelpers.DEFAULT_TIMEOUT
-import screens.helpers.UiAutomatorHelpers.click
-import screens.helpers.UiAutomatorHelpers.findByResId
+import screens.helpers.UiAutomatorHelper.DEFAULT_TIMEOUT
+import screens.helpers.UiAutomatorHelper.click
+import screens.helpers.UiAutomatorHelper.findByResId
 
 object ProtocolsSteps {
-
     const val PROTOCOL_SELECTION_BUTTON = ":ProtocolSettingsScreen:protocol_selection"
     const val OPEN_VPN_BUTTON = ":OptionsDialog:OpenVPN"
     const val WIRE_GUARD_BUTTON = ":OptionsDialog:WireGuard"
@@ -35,7 +34,7 @@ object ProtocolsSteps {
     fun UiAutomatorTestScope.smallPacketToggleChecked(desiredState: Boolean) {
         val toggle = findByResId(SMALL_PACKETS_TOGGLE) ?: return
         if (toggle.isChecked != desiredState) {
-            toggle.click()  // use the same reference, not a fresh lookup
+            toggle.click() // use the same reference, not a fresh lookup
             device.waitForIdle()
         }
     }

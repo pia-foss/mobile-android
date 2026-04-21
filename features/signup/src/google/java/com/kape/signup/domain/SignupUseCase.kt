@@ -14,18 +14,19 @@ class SignupUseCase(
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
     private val getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase,
 ) {
-
     suspend fun vpnSignup(email: String): Credentials? {
         val purchaseData = purchaseDetailsUseCase.getPurchaseDetails() ?: return null
-        val obfuscatedDeviceIdentifier = getObfuscatedDeviceIdentifierUseCase.obfuscatedDeviceIdentifier().getOrElse {
-            return null
-        }
-        val credentials = signupDataSource.vpnSignup(
-            purchaseData.orderId,
-            purchaseData.token,
-            purchaseData.productId,
-            obfuscatedDeviceIdentifier,
-        ) ?: return null
+        val obfuscatedDeviceIdentifier =
+            getObfuscatedDeviceIdentifierUseCase.obfuscatedDeviceIdentifier().getOrElse {
+                return null
+            }
+        val credentials =
+            signupDataSource.vpnSignup(
+                purchaseData.orderId,
+                purchaseData.token,
+                purchaseData.productId,
+                obfuscatedDeviceIdentifier,
+            ) ?: return null
         val loginState = loginUseCase.login(credentials.username, credentials.password)
         return if (loginState == LoginState.Successful) {
             val successful = emailDataSource.setEmail(email)

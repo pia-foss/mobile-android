@@ -14,7 +14,9 @@ import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 
 @Singleton
-class AutomationService : Service(), KoinComponent {
+class AutomationService :
+    Service(),
+    KoinComponent {
     private val automationManager: AutomationManager by inject()
     private val networkConnectionListener: NetworkConnectionListener by inject()
     private val automationPendingIntent: PendingIntent by inject(named("automation-pending-intent"))
@@ -44,7 +46,5 @@ class AutomationService : Service(), KoinComponent {
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
+    override fun onBind(intent: Intent?): IBinder? = null
 }

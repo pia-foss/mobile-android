@@ -4,7 +4,6 @@ import android.app.Activity
 import com.kape.payments.data.DipPurchaseData
 
 interface DipSubscriptionPaymentProvider {
-
     /**
      * It queries the productIds against those known by the billing library, and returns the known
      * ones, along with their formatted price.

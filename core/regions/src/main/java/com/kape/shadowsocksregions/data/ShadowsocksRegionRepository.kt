@@ -9,7 +9,6 @@ import org.koin.core.annotation.Singleton
 class ShadowsocksRegionRepository(
     private val shadowsocksRegionDataSource: ShadowsocksRegionDataSource,
 ) {
-
     private var response: List<ShadowsocksServer> = emptyList()
     private var lastUpdate: Long = 0
 
@@ -17,8 +16,8 @@ class ShadowsocksRegionRepository(
         private const val UPDATE_INTERVAL_MS = 30000 // (30 seconds)
     }
 
-    suspend fun fetchShadowsocksServers(locale: String): List<ShadowsocksServer> {
-        return if (response.isEmpty() || System.currentTimeMillis() - lastUpdate >= UPDATE_INTERVAL_MS) {
+    suspend fun fetchShadowsocksServers(locale: String): List<ShadowsocksServer> =
+        if (response.isEmpty() || System.currentTimeMillis() - lastUpdate >= UPDATE_INTERVAL_MS) {
             val regions = shadowsocksRegionDataSource.fetchShadowsocksRegions(locale)
             lastUpdate = System.currentTimeMillis()
             if (regions.isEmpty()) {
@@ -30,5 +29,4 @@ class ShadowsocksRegionRepository(
         } else {
             response
         }
-    }
 }

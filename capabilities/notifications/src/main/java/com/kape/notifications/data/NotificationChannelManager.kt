@@ -13,7 +13,6 @@ import org.koin.core.component.KoinComponent
 class NotificationChannelManager(
     private val context: Context,
 ) : KoinComponent {
-
     fun createVpnChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager: NotificationManager =

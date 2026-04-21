@@ -55,171 +55,182 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvDedicatedIpScreen() = Screen {
-    val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
-        loadDedicatedIps()
-    }
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-    val showActivationDialog = remember { mutableStateOf(false) }
-    val showDeletionDialog = remember { mutableStateOf(false) }
-    val text = remember { mutableStateOf("") }
+fun TvDedicatedIpScreen() =
+    Screen {
+        val viewModel: DipViewModel =
+            koinViewModel<DipViewModel>().apply {
+                loadDedicatedIps()
+            }
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val showActivationDialog = remember { mutableStateOf(false) }
+        val showDeletionDialog = remember { mutableStateOf(false) }
+        val text = remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
-            Row(
+            HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 16.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.dedicated_ip),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.dedicated_ip),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 48.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        if (viewModel.dipList.isEmpty()) {
+                            ActivateDedicatedIpContent(
+                                viewModel = viewModel,
+                                text = text,
+                            )
+                        } else {
+                            DedicatedIpDetailsContent(
+                                viewModel = viewModel,
+                                showDeletionDialog = showDeletionDialog,
+                            )
+                        }
+                    }
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.tv_welcome),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
+                    }
+                }
+            }
+        }
+
+        showActivationDialog.value = viewModel.activationState.value != null
+        if (showActivationDialog.value) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black.copy(alpha = 0.6f),
+            ) {
+                when (viewModel.activationState.value) {
+                    DipApiResult.Active -> {
+                        Dialog(
+                            title = stringResource(id = R.string.you_are_all_set),
+                            text = stringResource(id = R.string.your_dedicated_ip_is_now_active),
+                            onConfirmButtonText = stringResource(id = R.string.ok),
+                            onConfirm = {
+                                viewModel.resetActivationState()
+                            },
+                        )
+                    }
+
+                    DipApiResult.Expired -> {
+                        Dialog(
+                            title = stringResource(id = R.string.something_went_wrong),
+                            text = stringResource(id = R.string.dip_expired_warning),
+                            onConfirmButtonText = stringResource(id = R.string.try_again),
+                            onDismissButtonText = stringResource(id = R.string.cancel),
+                            onConfirm = {
+                                viewModel.resetActivationState()
+                            },
+                            onDismiss = {
+                                viewModel.resetActivationState()
+                                viewModel.navigateBack()
+                            },
+                        )
+                    }
+
+                    DipApiResult.Error,
+                    DipApiResult.Invalid,
+                    null,
+                    -> {
+                        Dialog(
+                            title = stringResource(id = R.string.something_went_wrong),
+                            text = stringResource(id = R.string.dip_invalid),
+                            onConfirmButtonText = stringResource(id = R.string.try_again),
+                            onDismissButtonText = stringResource(id = R.string.cancel),
+                            onConfirm = {
+                                viewModel.resetActivationState()
+                            },
+                            onDismiss = {
+                                viewModel.resetActivationState()
+                                viewModel.navigateBack()
+                            },
+                        )
+                    }
+                }
+            }
+        }
+
+        if (showDeletionDialog.value) {
+            val server = viewModel.dipList.toList().first()
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black.copy(alpha = 0.6f),
+            ) {
+                Dialog(
+                    title = stringResource(id = R.string.account_deletion_dialog_title),
+                    text =
+                        String.format(
+                            stringResource(id = R.string.dip_remove_description),
+                            server.name,
+                            server.dedicatedIp,
+                        ),
+                    onConfirmButtonText = stringResource(id = R.string.account_deletion_dialog_positive_action),
+                    onDismissButtonText = stringResource(id = R.string.cancel),
+                    onConfirm = {
+                        showDeletionDialog.value = false
+                        server.dipToken?.let {
+                            viewModel.removeDip(server.key, it)
+                        }
+                    },
+                    onDismiss = {
+                        showDeletionDialog.value = false
+                    },
                 )
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 48.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
-                ) {
-                    if (viewModel.dipList.isEmpty()) {
-                        ActivateDedicatedIpContent(
-                            viewModel = viewModel,
-                            text = text,
-                        )
-                    } else {
-                        DedicatedIpDetailsContent(
-                            viewModel = viewModel,
-                            showDeletionDialog = showDeletionDialog,
-                        )
-                    }
-                }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.tv_welcome),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
-                    )
-                }
-            }
         }
     }
-
-    showActivationDialog.value = viewModel.activationState.value != null
-    if (showActivationDialog.value) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.Black.copy(alpha = 0.6f),
-        ) {
-            when (viewModel.activationState.value) {
-                DipApiResult.Active -> {
-                    Dialog(
-                        title = stringResource(id = R.string.you_are_all_set),
-                        text = stringResource(id = R.string.your_dedicated_ip_is_now_active),
-                        onConfirmButtonText = stringResource(id = R.string.ok),
-                        onConfirm = {
-                            viewModel.resetActivationState()
-                        },
-                    )
-                }
-
-                DipApiResult.Expired -> {
-                    Dialog(
-                        title = stringResource(id = R.string.something_went_wrong),
-                        text = stringResource(id = R.string.dip_expired_warning),
-                        onConfirmButtonText = stringResource(id = R.string.try_again),
-                        onDismissButtonText = stringResource(id = R.string.cancel),
-                        onConfirm = {
-                            viewModel.resetActivationState()
-                        },
-                        onDismiss = {
-                            viewModel.resetActivationState()
-                            viewModel.navigateBack()
-                        },
-                    )
-                }
-
-                DipApiResult.Error,
-                DipApiResult.Invalid,
-                null,
-                -> {
-                    Dialog(
-                        title = stringResource(id = R.string.something_went_wrong),
-                        text = stringResource(id = R.string.dip_invalid),
-                        onConfirmButtonText = stringResource(id = R.string.try_again),
-                        onDismissButtonText = stringResource(id = R.string.cancel),
-                        onConfirm = {
-                            viewModel.resetActivationState()
-                        },
-                        onDismiss = {
-                            viewModel.resetActivationState()
-                            viewModel.navigateBack()
-                        },
-                    )
-                }
-            }
-        }
-    }
-
-    if (showDeletionDialog.value) {
-        val server = viewModel.dipList.toList().first()
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.Black.copy(alpha = 0.6f),
-        ) {
-            Dialog(
-                title = stringResource(id = R.string.account_deletion_dialog_title),
-                text = String.format(
-                    stringResource(id = R.string.dip_remove_description),
-                    server.name,
-                    server.dedicatedIp,
-                ),
-                onConfirmButtonText = stringResource(id = R.string.account_deletion_dialog_positive_action),
-                onDismissButtonText = stringResource(id = R.string.cancel),
-                onConfirm = {
-                    showDeletionDialog.value = false
-                    server.dipToken?.let {
-                        viewModel.removeDip(server.key, it)
-                    }
-                },
-                onDismiss = {
-                    showDeletionDialog.value = false
-                },
-            )
-        }
-    }
-}
 
 @Composable
-private fun ActivateDedicatedIpContent(viewModel: DipViewModel, text: MutableState<String>) {
+private fun ActivateDedicatedIpContent(
+    viewModel: DipViewModel,
+    text: MutableState<String>,
+) {
     DedicatedIpTitle(
         modifier = Modifier.fillMaxWidth(),
         content = stringResource(id = R.string.tv_dedicated_ip_title),
@@ -235,15 +246,17 @@ private fun ActivateDedicatedIpContent(viewModel: DipViewModel, text: MutableSta
         label = stringResource(id = R.string.tv_dedicated_ip_textfield),
         maskInput = false,
         keyboard = KeyboardType.Text,
-        keyboardActions = KeyboardActions(
-            onDone = {
-                viewModel.activateDedicatedIp(mutableStateOf(TextFieldValue(text.value)))
-            },
-        ),
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    viewModel.activateDedicatedIp(mutableStateOf(TextFieldValue(text.value)))
+                },
+            ),
         imeAction = ImeAction.Done,
-        platformImeOptions = PlatformImeOptions(
-            privateImeOptions = "horizontalAlignment=left",
-        ),
+        platformImeOptions =
+            PlatformImeOptions(
+                privateImeOptions = "horizontalAlignment=left",
+            ),
         content = text,
     )
 }
@@ -264,7 +277,11 @@ private fun DedicatedIpDetailsContent(
         Spacer(modifier = Modifier.height(8.dp))
         DedicatedIpAddressDetailsSubtitle(
             modifier = Modifier.fillMaxWidth(),
-            content = viewModel.dipList.toList().first().dedicatedIp!!,
+            content =
+                viewModel.dipList
+                    .toList()
+                    .first()
+                    .dedicatedIp!!,
         )
         Spacer(modifier = Modifier.height(16.dp))
         DedicatedIpAddressDetailsTitle(
@@ -274,7 +291,11 @@ private fun DedicatedIpDetailsContent(
         Spacer(modifier = Modifier.height(8.dp))
         DedicatedIpAddressDetailsSubtitle(
             modifier = Modifier.fillMaxWidth(),
-            content = viewModel.dipList.toList().first().name,
+            content =
+                viewModel.dipList
+                    .toList()
+                    .first()
+                    .name,
         )
     }
     Spacer(modifier = Modifier.height(32.dp))
@@ -288,14 +309,17 @@ private fun DedicatedIpDetailsContent(
 }
 
 @Composable
-private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
-    return when (status) {
+private fun getTopBarConnectionColor(
+    status: ConnectionStatus,
+    scheme: ColorScheme,
+): Color =
+    when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
-            scheme,
-        )
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING ->
+            scheme.statusBarDefault(
+                scheme,
+            )
 
         ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
-}

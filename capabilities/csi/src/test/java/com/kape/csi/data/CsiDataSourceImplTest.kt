@@ -22,24 +22,26 @@ class CsiDataSourceImplTest {
     }
 
     @Test
-    fun `send - success`() = runTest {
-        val expected = "requestId"
-        coEvery { api.send(any(), any()) } answers {
-            lastArg<(String?, List<CSIRequestError>) -> Unit>().invoke(expected, emptyList())
+    fun `send - success`() =
+        runTest {
+            val expected = "requestId"
+            coEvery { api.send(any(), any()) } answers {
+                lastArg<(String?, List<CSIRequestError>) -> Unit>().invoke(expected, emptyList())
+            }
+            val actual = csiDataSource.send()
+            assertEquals(expected, actual)
         }
-        val actual = csiDataSource.send()
-        assertEquals(expected, actual)
-    }
 
     @Test
-    fun `send - failure`() = runTest {
-        coEvery { api.send(any(), any()) } answers {
-            lastArg<(String?, List<CSIRequestError>) -> Unit>().invoke(
-                null,
-                listOf(CSIRequestError(false, CSIInternalErrorCode.ERROR_HTTP_ENGINE, null, null)),
-            )
+    fun `send - failure`() =
+        runTest {
+            coEvery { api.send(any(), any()) } answers {
+                lastArg<(String?, List<CSIRequestError>) -> Unit>().invoke(
+                    null,
+                    listOf(CSIRequestError(false, CSIInternalErrorCode.ERROR_HTTP_ENGINE, null, null)),
+                )
+            }
+            val actual = csiDataSource.send()
+            assertTrue(actual.isEmpty())
         }
-        val actual = csiDataSource.send()
-        assertTrue(actual.isEmpty())
-    }
 }

@@ -35,9 +35,10 @@ class ShortcutManager(
                 when (it) {
                     ConnectionStatus.CONNECTED,
                     ConnectionStatus.DISCONNECTED,
-                        -> withContext(Dispatchers.Main) {
-                        createDynamicShortcuts()
-                    }
+                    ->
+                        withContext(Dispatchers.Main) {
+                            createDynamicShortcuts()
+                        }
 
                     else -> {
                         // no-op
@@ -49,46 +50,48 @@ class ShortcutManager(
 
     fun createDynamicShortcuts() {
         val isConnected = connectionStatusProvider.state.value == ConnectionStatus.CONNECTED
-        val connect = ShortcutInfoCompat.Builder(context, CONNECT)
-            .setShortLabel(context.getString(if (isConnected) R.string.qs_disconnect_nolocation else R.string.qs_title))
-            .setLongLabel(context.getString(if (isConnected) R.string.qs_disconnect_nolocation else R.string.qs_title))
-            .setIcon(IconCompat.createWithResource(context, com.kape.vpn.R.drawable.ic_protected))
-            .setIntent(
-                Intent(context, MainActivity::class.java).apply {
-                    action = if (isConnected) ACTION_DISCONNECT else ACTION_CONNECT
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                },
-            )
-            .build()
+        val connect =
+            ShortcutInfoCompat
+                .Builder(context, CONNECT)
+                .setShortLabel(context.getString(if (isConnected) R.string.qs_disconnect_nolocation else R.string.qs_title))
+                .setLongLabel(context.getString(if (isConnected) R.string.qs_disconnect_nolocation else R.string.qs_title))
+                .setIcon(IconCompat.createWithResource(context, com.kape.vpn.R.drawable.ic_protected))
+                .setIntent(
+                    Intent(context, MainActivity::class.java).apply {
+                        action = if (isConnected) ACTION_DISCONNECT else ACTION_CONNECT
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    },
+                ).build()
 
-        val servers = ShortcutInfoCompat.Builder(context, CHANGE_SERVER)
-            .setShortLabel(context.getString(R.string.change_server))
-            .setLongLabel(context.getString(R.string.change_server))
-            .setIcon(
-                IconCompat.createWithResource(
-                    context,
-                    com.kape.sidemenu.R.drawable.ic_drawer_region,
-                ),
-            )
-            .setIntent(
-                Intent(context, MainActivity::class.java).apply {
-                    action = ACTION_SERVER_SELECTION
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                },
-            )
-            .build()
+        val servers =
+            ShortcutInfoCompat
+                .Builder(context, CHANGE_SERVER)
+                .setShortLabel(context.getString(R.string.change_server))
+                .setLongLabel(context.getString(R.string.change_server))
+                .setIcon(
+                    IconCompat.createWithResource(
+                        context,
+                        com.kape.sidemenu.R.drawable.ic_drawer_region,
+                    ),
+                ).setIntent(
+                    Intent(context, MainActivity::class.java).apply {
+                        action = ACTION_SERVER_SELECTION
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    },
+                ).build()
 
-        val settings = ShortcutInfoCompat.Builder(context, SETTINGS)
-            .setShortLabel(context.getString(R.string.settings))
-            .setLongLabel(context.getString(R.string.settings))
-            .setIcon(IconCompat.createWithResource(context, com.kape.ui.R.drawable.ic_settings))
-            .setIntent(
-                Intent(context, MainActivity::class.java).apply {
-                    action = ACTION_SETTINGS
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                },
-            )
-            .build()
+        val settings =
+            ShortcutInfoCompat
+                .Builder(context, SETTINGS)
+                .setShortLabel(context.getString(R.string.settings))
+                .setLongLabel(context.getString(R.string.settings))
+                .setIcon(IconCompat.createWithResource(context, com.kape.ui.R.drawable.ic_settings))
+                .setIntent(
+                    Intent(context, MainActivity::class.java).apply {
+                        action = ACTION_SETTINGS
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    },
+                ).build()
 
         ShortcutManagerCompat.setDynamicShortcuts(context, listOf(connect, servers, settings))
     }

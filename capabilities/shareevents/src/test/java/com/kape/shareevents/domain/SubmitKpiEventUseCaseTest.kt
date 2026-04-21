@@ -46,37 +46,38 @@ class SubmitKpiEventUseCaseTest : KoinTest {
 
     companion object {
         @JvmStatic
-        fun data() = Stream.of(
-            Arguments.of(
-                KpiConnectionStatus.Connected,
-                true,
-                KpiConnectionEvent.ConnectionEstablished,
-            ),
-            Arguments.of(
-                KpiConnectionStatus.Connecting,
-                true,
-                KpiConnectionEvent.ConnectionAttempt,
-            ),
-            Arguments.of(
-                KpiConnectionStatus.NotConnected,
-                true,
-                KpiConnectionEvent.ConnectionCancelled,
-            ),
-            Arguments.of(
-                KpiConnectionStatus.Connected,
-                false,
-                KpiConnectionEvent.ConnectionEstablished,
-            ),
-            Arguments.of(
-                KpiConnectionStatus.Connecting,
-                false,
-                KpiConnectionEvent.ConnectionAttempt,
-            ),
-            Arguments.of(
-                KpiConnectionStatus.NotConnected,
-                false,
-                KpiConnectionEvent.ConnectionCancelled,
-            ),
-        )
+        fun data() =
+            Stream.of(
+                Arguments.of(
+                    KpiConnectionStatus.Connected,
+                    true,
+                    KpiConnectionEvent.ConnectionEstablished,
+                ),
+                Arguments.of(
+                    KpiConnectionStatus.Connecting,
+                    true,
+                    KpiConnectionEvent.ConnectionAttempt,
+                ),
+                Arguments.of(
+                    KpiConnectionStatus.NotConnected,
+                    true,
+                    KpiConnectionEvent.ConnectionCancelled,
+                ),
+                Arguments.of(
+                    KpiConnectionStatus.Connected,
+                    false,
+                    KpiConnectionEvent.ConnectionEstablished,
+                ),
+                Arguments.of(
+                    KpiConnectionStatus.Connecting,
+                    false,
+                    KpiConnectionEvent.ConnectionAttempt,
+                ),
+                Arguments.of(
+                    KpiConnectionStatus.NotConnected,
+                    false,
+                    KpiConnectionEvent.ConnectionCancelled,
+                ),
+            )
     }
 }

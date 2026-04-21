@@ -11,13 +11,18 @@ import org.koin.core.component.inject
 import kotlin.getValue
 
 @Singleton
-class WidgetProviderService : VpnService(), KoinComponent {
-
+class WidgetProviderService :
+    VpnService(),
+    KoinComponent {
     private val authenticationDataSource: AuthenticationDataSource by inject()
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val vpnLauncher: VpnLauncher by inject()
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
         if (authenticationDataSource.isUserLoggedIn()) {
             if (connectionInfoProvider.isConnected()) {
                 vpnLauncher.stopVpn()

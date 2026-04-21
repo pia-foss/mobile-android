@@ -10,12 +10,16 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 @Singleton
-class OnBootReceiver : BroadcastReceiver(), KoinComponent {
-
+class OnBootReceiver :
+    BroadcastReceiver(),
+    KoinComponent {
     private val settingsPrefs: SettingsPrefs by inject()
     private val vpnLauncher: VpnLauncher by inject()
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         if (settingsPrefs.isLaunchOnStartupEnabled()) {
             vpnLauncher.launchVpn()
         }

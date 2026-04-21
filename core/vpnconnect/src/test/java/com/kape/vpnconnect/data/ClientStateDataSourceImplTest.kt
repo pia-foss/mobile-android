@@ -18,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ClientStateDataSourceImplTest {
-
     private val accountAPI = mockk<AndroidAccountAPI>()
     private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)
     private val csiPrefs = mockk<CsiPrefs>(relaxed = true)
@@ -28,95 +27,102 @@ class ClientStateDataSourceImplTest {
 
     @BeforeEach
     fun setUp() {
-        dataSource = ClientStateDataSourceImpl(
-            accountAPI = accountAPI,
-            connectionPrefs = connectionPrefs,
-            csiPrefs = csiPrefs,
-            settingsPrefs = settingsPrefs,
-        )
+        dataSource =
+            ClientStateDataSourceImpl(
+                accountAPI = accountAPI,
+                connectionPrefs = connectionPrefs,
+                csiPrefs = csiPrefs,
+                settingsPrefs = settingsPrefs,
+            )
     }
 
     // region getPublicIp
 
     @Test
-    fun `getPublicIp - disconnected - returns IP, sets client IP and clears VPN IP`() = runTest {
-        val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-        every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
-            slot.captured.invoke(ClientStatusInformation(connected = false, ip = "192.168.1.1"), emptyList())
+    fun `getPublicIp - disconnected - returns IP, sets client IP and clears VPN IP`() =
+        runTest {
+            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
+            every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
+                slot.captured.invoke(ClientStatusInformation(connected = false, ip = "192.168.1.1"), emptyList())
+            }
+
+            val result = dataSource.getPublicIp()
+
+            assertEquals("192.168.1.1", result)
+            verify { connectionPrefs.setClientIp("192.168.1.1") }
+            verify { connectionPrefs.setVpnIp(NO_IP) }
         }
-
-        val result = dataSource.getPublicIp()
-
-        assertEquals("192.168.1.1", result)
-        verify { connectionPrefs.setClientIp("192.168.1.1") }
-        verify { connectionPrefs.setVpnIp(NO_IP) }
-    }
 
     @Test
-    fun `getPublicIp - connected - returns IP without setting client IP`() = runTest {
-        val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-        every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
-            slot.captured.invoke(ClientStatusInformation(connected = true, ip = "10.0.0.1"), emptyList())
+    fun `getPublicIp - connected - returns IP without setting client IP`() =
+        runTest {
+            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
+            every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
+                slot.captured.invoke(ClientStatusInformation(connected = true, ip = "10.0.0.1"), emptyList())
+            }
+
+            val result = dataSource.getPublicIp()
+
+            assertEquals("10.0.0.1", result)
+            verify(exactly = 0) { connectionPrefs.setClientIp(any()) }
         }
-
-        val result = dataSource.getPublicIp()
-
-        assertEquals("10.0.0.1", result)
-        verify(exactly = 0) { connectionPrefs.setClientIp(any()) }
-    }
 
     @Test
-    fun `getPublicIp - null response - returns NO_IP`() = runTest {
-        val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-        every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
-            slot.captured.invoke(null, emptyList())
+    fun `getPublicIp - null response - returns NO_IP`() =
+        runTest {
+            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
+            every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
+                slot.captured.invoke(null, emptyList())
+            }
+
+            val result = dataSource.getPublicIp()
+
+            assertEquals(NO_IP, result)
         }
-
-        val result = dataSource.getPublicIp()
-
-        assertEquals(NO_IP, result)
-    }
 
     // endregion
 
     // region getVpnIp
 
     @Test
-    fun `getVpnIp - connected on first attempt - returns VPN IP`() = runTest {
-        val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-        every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
-            slot.captured.invoke(ClientStatusInformation(connected = true, ip = "10.8.0.1"), emptyList())
+    fun `getVpnIp - connected on first attempt - returns VPN IP`() =
+        runTest {
+            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
+            every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
+                slot.captured.invoke(ClientStatusInformation(connected = true, ip = "10.8.0.1"), emptyList())
+            }
+
+            val result = dataSource.getVpnIp()
+
+            assertEquals("10.8.0.1", result)
+            verify { connectionPrefs.setVpnIp("10.8.0.1") }
         }
-
-        val result = dataSource.getVpnIp()
-
-        assertEquals("10.8.0.1", result)
-        verify { connectionPrefs.setVpnIp("10.8.0.1") }
-    }
 
     @Test
-    fun `getVpnIp - never connected - returns NO_IP after retries`() = runTest {
-        val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-        every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
-            slot.captured.invoke(ClientStatusInformation(connected = false, ip = NO_IP), emptyList())
+    fun `getVpnIp - never connected - returns NO_IP after retries`() =
+        runTest {
+            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
+            every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
+                slot.captured.invoke(ClientStatusInformation(connected = false, ip = NO_IP), emptyList())
+            }
+
+            val result = dataSource.getVpnIp()
+
+            assertEquals(NO_IP, result)
         }
-
-        val result = dataSource.getVpnIp()
-
-        assertEquals(NO_IP, result)
-    }
 
     @Test
-    fun `getVpnIp - null response - returns NO_IP`() = runTest {
-        val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-        every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
-            slot.captured.invoke(null, emptyList())
+    fun `getVpnIp - null response - returns NO_IP`() =
+        runTest {
+            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
+            every { accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT, capture(slot)) } answers {
+                slot.captured.invoke(null, emptyList())
+            }
+
+            val result = dataSource.getVpnIp()
+
+            assertEquals(NO_IP, result)
         }
-
-        val result = dataSource.getVpnIp()
-
-        assertEquals(NO_IP, result)
-    }
 
     // endregion
 }

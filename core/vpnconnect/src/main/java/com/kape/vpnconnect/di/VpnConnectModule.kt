@@ -44,7 +44,6 @@ import org.koin.core.annotation.Singleton
 @Module
 @ComponentScan("com.kape.vpnconnect.worker")
 class VpnConnectModule {
-
     @Singleton
     fun provideConnectionStatusValues(context: Context): Map<ConnectionStatus, String> {
         val values = mutableMapOf<ConnectionStatus, String>()
@@ -67,15 +66,13 @@ class VpnConnectModule {
     fun provideNotificationHandler(
         notificationManager: NotificationManager,
         notificationBuilder: Notification.Builder,
-    ): NotificationHandler =
-        NotificationHandler(notificationManager, notificationBuilder)
+    ): NotificationHandler = NotificationHandler(notificationManager, notificationBuilder)
 
     @Singleton([ConnectionStatusProvider::class, VPNManagerConnectionListener::class])
     fun provideConnectionStatusProvider(
         connectionValues: Map<ConnectionStatus, String>,
         notificationHandler: NotificationHandler,
-    ): ConnectionStatusProvider =
-        ConnectionStatusProviderImpl(connectionValues, notificationHandler)
+    ): ConnectionStatusProvider = ConnectionStatusProviderImpl(connectionValues, notificationHandler)
 
     @Singleton([ConnectionInfoProvider::class])
     fun provideConnectionInfoProvider(
@@ -98,8 +95,7 @@ class VpnConnectModule {
         )
 
     @Singleton(binds = [GetActiveInterfaceDnsUseCase::class])
-    fun provideGetActiveInterfaceDnsUseCase(context: Context): GetActiveInterfaceDnsUseCase =
-        GetActiveInterfaceDnsUseCaseImpl(context)
+    fun provideGetActiveInterfaceDnsUseCase(context: Context): GetActiveInterfaceDnsUseCase = GetActiveInterfaceDnsUseCaseImpl(context)
 
     @Singleton(binds = [ClientStateDataSource::class])
     fun provideClientStateDataSource(
@@ -107,8 +103,7 @@ class VpnConnectModule {
         connectionPrefs: ConnectionPrefs,
         csiPrefs: CsiPrefs,
         settingsPrefs: SettingsPrefs,
-    ): ClientStateDataSource =
-        ClientStateDataSourceImpl(accountApi, connectionPrefs, csiPrefs, settingsPrefs)
+    ): ClientStateDataSource = ClientStateDataSourceImpl(accountApi, connectionPrefs, csiPrefs, settingsPrefs)
 
     @Singleton(binds = [ConnectionDataSource::class])
     fun provideConnectionDataSource(
@@ -120,10 +115,17 @@ class VpnConnectModule {
         kpiDataSource: KpiDataSource,
         usageProvider: UsageProvider,
         csiPrefs: CsiPrefs,
-    ): ConnectionDataSource = ConnectionDataSourceImpl(
-        vpnApi, accountApi, connectionPrefs, workManager, settingsPrefs,
-        kpiDataSource, usageProvider, csiPrefs,
-    )
+    ): ConnectionDataSource =
+        ConnectionDataSourceImpl(
+            vpnApi,
+            accountApi,
+            connectionPrefs,
+            workManager,
+            settingsPrefs,
+            kpiDataSource,
+            usageProvider,
+            csiPrefs,
+        )
 
     @Singleton(binds = [ConnectionConfigurationUseCase::class])
     fun provideConnectionConfigurationUseCase(
@@ -136,17 +138,22 @@ class VpnConnectModule {
         notificationBuilder: Notification.Builder,
         configureIntent: PendingIntent,
         @Named(DI.AUTOMATION_PENDING_INTENT) automationPendingIntent: PendingIntent,
-    ): ConnectionConfigurationUseCase = ConnectionConfigurationUseCaseImpl(
-        connectionSource, configInfo.certificate, settingsPrefs, connectionPrefs,
-        shadowsocksRegionPrefs, getActiveInterfaceDnsUseCase, notificationBuilder,
-        configureIntent, automationPendingIntent,
-    )
+    ): ConnectionConfigurationUseCase =
+        ConnectionConfigurationUseCaseImpl(
+            connectionSource,
+            configInfo.certificate,
+            settingsPrefs,
+            connectionPrefs,
+            shadowsocksRegionPrefs,
+            getActiveInterfaceDnsUseCase,
+            notificationBuilder,
+            configureIntent,
+            automationPendingIntent,
+        )
 
     @Singleton
-    fun provideGetLogsUseCase(connectionSource: ConnectionDataSource): GetLogsUseCase =
-        GetLogsUseCase(connectionSource)
+    fun provideGetLogsUseCase(connectionSource: ConnectionDataSource): GetLogsUseCase = GetLogsUseCase(connectionSource)
 
     @Singleton([ConnectionManager::class])
     fun provideConnectionManager(): ConnectionManager = ConnectionManagerImpl()
-
 }

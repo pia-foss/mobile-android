@@ -2,12 +2,15 @@ package com.kape.vpnregionselection.util
 
 import com.kape.data.vpnserver.VpnServer
 
-
-data class ServerItem(val type: ItemType)
+data class ServerItem(
+    val type: ItemType,
+)
 
 sealed class ItemType {
     data object HeadingFavorites : ItemType()
+
     data object HeadingAll : ItemType()
+
     data class Content(
         val isFavorite: Boolean,
         val enableFavorite: Boolean = true,

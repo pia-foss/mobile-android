@@ -12,7 +12,6 @@ class GetShadowsocksRegionsUseCase(
     private val readShadowsocksRegionsDetailsUseCase: ReadShadowsocksRegionsDetailsUseCase,
     private val setShadowsocksRegionsUseCase: SetShadowsocksRegionsUseCase,
 ) {
-
     suspend fun fetchShadowsocksServers(locale: String): List<ShadowsocksServer> =
         shadowsocksRegionRepository.fetchShadowsocksServers(locale)
 

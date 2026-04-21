@@ -31,18 +31,18 @@ class AutomationViewModel(
     private val networkConnectionListener: NetworkConnectionListener,
     @Named(DI.RULES_UPDATED_INTENT) private val broadcastIntent: Intent,
     private val automationManager: AutomationManager,
-) : ViewModel(){
-
-    private val _state = MutableStateFlow<AutomationState>(
-        AutomationState(
-            isEnabled = settingsPrefs.isAutomationEnabled(),
-            locationPermissionGranted = locationPermissionManager.isFineLocationPermissionGranted(),
-            backgroundLocationPermissionGranted = locationPermissionManager.isBackgroundLocationPermissionGranted(),
-            rules = networkRulesManager.getRules(),
-        ),
-    )
-    val automationState = _state.asStateFlow()
-    val availableNetwork = networkConnectionListener.currentSSID
+) : ViewModel() {
+    private val _state =
+        MutableStateFlow<AutomationState>(
+            AutomationState(
+                isEnabled = settingsPrefs.isAutomationEnabled(),
+                locationPermissionGranted = locationPermissionManager.isFineLocationPermissionGranted(),
+                backgroundLocationPermissionGranted = locationPermissionManager.isBackgroundLocationPermissionGranted(),
+                rules = networkRulesManager.getRules(),
+            ),
+        )
+    val state = _state.asStateFlow()
+    val availableNetwork = networkConnectionListener.ssid
 
     fun onLocationPermissionGranted() {
         _state.update { it.copy(locationPermissionGranted = true) }
@@ -93,16 +93,22 @@ class AutomationViewModel(
 
     private fun areLocationPermissionsGranted() =
         locationPermissionManager.isFineLocationPermissionGranted() &&
-                locationPermissionManager.isBackgroundLocationPermissionGranted()
+            locationPermissionManager.isBackgroundLocationPermissionGranted()
 
     fun scanNetworks() = networkConnectionListener.triggerUpdate()
 
-    fun updateRule(rule: NetworkItem, behavior: NetworkBehavior) {
+    fun updateRule(
+        rule: NetworkItem,
+        behavior: NetworkBehavior,
+    ) {
         networkRulesManager.updateRule(rule, behavior)
         _state.update { it.copy(rules = networkRulesManager.getRules()) }
     }
 
-    fun addRule(ssid: String, behavior: NetworkBehavior) {
+    fun addRule(
+        ssid: String,
+        behavior: NetworkBehavior,
+    ) {
         networkRulesManager.addRule(ssid, behavior)
         _state.update { it.copy(rules = networkRulesManager.getRules()) }
     }
@@ -113,12 +119,16 @@ class AutomationViewModel(
     }
 
     private fun navigateToAutomationLocation() = router.updateDestination(AutomationLocation)
-    private fun navigateToAutomationBackgroundLocation() = router.updateDestination(
-        AutomationBackgroundLocation,
-    )
+
+    private fun navigateToAutomationBackgroundLocation() =
+        router.updateDestination(
+            AutomationBackgroundLocation,
+        )
 
     private fun navigateToAutomationMain() = router.updateDestination(AutomationMain)
+
     fun navigateToAutomationAddNewRule() = router.updateDestination(AutomationAddRule)
+
     private fun navigateToLocationPermissionRequests() {
         if (!locationPermissionManager.isFineLocationPermissionGranted()) {
             router.updateDestination(AutomationLocation)

@@ -32,73 +32,79 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun KillSwitchSettingScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.privacy_kill_switch_title))
-    }
-    val context = LocalContext.current
+fun KillSwitchSettingScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.privacy_kill_switch_title))
+            }
+        val context = LocalContext.current
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        Column(
-            Modifier
-                .padding(it)
-                .fillMaxSize()
-                .background(LocalColors.current.background),
-            horizontalAlignment = CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                Spacer(modifier = Modifier.height(48.dp))
-                Image(
-                    painter = painterResource(id = com.kape.settings.R.drawable.ic_vpn_permission),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(CenterHorizontally)
-                        .width(80.dp),
-                )
-                Spacer(modifier = Modifier.height(48.dp))
-                Text(
-                    text = stringResource(id = R.string.kill_switch_title),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .align(CenterHorizontally),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = stringResource(id = R.string.kill_switch_description),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .align(CenterHorizontally),
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                PrimaryButton(
-                    text = stringResource(id = R.string.kill_switch_action),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                ) {
-                    context.startActivity(Intent(Settings.ACTION_VPN_SETTINGS))
+            Column(
+                Modifier
+                    .padding(it)
+                    .fillMaxSize()
+                    .background(LocalColors.current.background),
+                horizontalAlignment = CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    Spacer(modifier = Modifier.height(48.dp))
+                    Image(
+                        painter = painterResource(id = com.kape.settings.R.drawable.ic_vpn_permission),
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .align(CenterHorizontally)
+                                .width(80.dp),
+                    )
+                    Spacer(modifier = Modifier.height(48.dp))
+                    Text(
+                        text = stringResource(id = R.string.kill_switch_title),
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 16.dp)
+                                .align(CenterHorizontally),
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = stringResource(id = R.string.kill_switch_description),
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 16.dp)
+                                .align(CenterHorizontally),
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    PrimaryButton(
+                        text = stringResource(id = R.string.kill_switch_action),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                    ) {
+                        context.startActivity(Intent(Settings.ACTION_VPN_SETTINGS))
 
-                    // There is no way for us to know if the settings have changed
-                    // We always show the dialog
-                    viewModel.showReconnectDialogIfVpnConnected()
+                        // There is no way for us to know if the settings have changed
+                        // We always show the dialog
+                        viewModel.showReconnectDialogIfVpnConnected()
+                    }
                 }
             }
-        }
-        if (viewModel.reconnectDialogVisible.value) {
-            ReconnectDialog(
-                onReconnect = {
-                    viewModel.reconnect()
-                    viewModel.reconnectDialogVisible.value = false
-                },
-                onLater = {
-                    viewModel.reconnectDialogVisible.value = false
-                },
-            )
+            if (viewModel.reconnectDialogVisible.value) {
+                ReconnectDialog(
+                    onReconnect = {
+                        viewModel.reconnect()
+                        viewModel.reconnectDialogVisible.value = false
+                    },
+                    onLater = {
+                        viewModel.reconnectDialogVisible.value = false
+                    },
+                )
+            }
         }
     }
-}

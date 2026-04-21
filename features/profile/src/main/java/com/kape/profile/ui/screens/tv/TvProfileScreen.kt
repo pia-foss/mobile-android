@@ -47,112 +47,125 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvProfileScreen() = Screen {
-    val viewModel: ProfileViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+fun TvProfileScreen() =
+    Screen {
+        val viewModel: ProfileViewModel = koinViewModel()
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
 
-    val state by remember(viewModel) { viewModel.screenState }.collectAsState()
-    val logoutDialogVisible = remember { mutableStateOf(false) }
+        val state by remember(viewModel) { viewModel.state }.collectAsState()
+        val logoutDialogVisible = remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
-            Row(
+            HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.account),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 64.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    if (state.loading) {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                        }
-                    } else {
-                        TvProfileItem(
-                            title = stringResource(id = R.string.username),
-                            subtitle = state.username,
-                            onClick = { },
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        TvProfileItem(
-                            title = stringResource(id = R.string.message_expiration),
-                            subtitle = if (state.expired) stringResource(id = R.string.subscription_status_expired) else state.expirationDate,
-                            onClick = { },
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        PrimaryButton(
-                            text = stringResource(id = R.string.drawer_item_title_logout),
-                            textAlign = TextAlign.Start,
-                        ) {
-                            logoutDialogVisible.value = true
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.account),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 64.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        if (state.loading) {
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                            }
+                        } else {
+                            TvProfileItem(
+                                title = stringResource(id = R.string.username),
+                                subtitle = state.username,
+                                onClick = { },
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            TvProfileItem(
+                                title = stringResource(id = R.string.message_expiration),
+                                subtitle =
+                                    if (state.expired) {
+                                        stringResource(
+                                            id = R.string.subscription_status_expired,
+                                        )
+                                    } else {
+                                        state.expirationDate
+                                    },
+                                onClick = { },
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            PrimaryButton(
+                                text = stringResource(id = R.string.drawer_item_title_logout),
+                                textAlign = TextAlign.Start,
+                            ) {
+                                logoutDialogVisible.value = true
+                            }
                         }
                     }
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_tv_settings),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
+                    }
                 }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+            }
+
+            if (logoutDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_tv_settings),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
+                    LogoutDialog(
+                        onDismiss = {
+                            logoutDialogVisible.value = false
+                        },
+                        onConfirm = {
+                            viewModel.logout()
+                            logoutDialogVisible.value = false
+                        },
                     )
                 }
             }
         }
-
-        if (logoutDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                LogoutDialog(
-                    onDismiss = {
-                        logoutDialogVisible.value = false
-                    },
-                    onConfirm = {
-                        viewModel.logout()
-                        logoutDialogVisible.value = false
-                    },
-                )
-            }
-        }
     }
-}
 
 @Composable
 fun TvProfileItem(
@@ -163,15 +176,17 @@ fun TvProfileItem(
 ) {
     Button(
         modifier = modifier.fillMaxWidth(),
-        shape = ButtonDefaults.shape(
-            shape = RoundedCornerShape(12.dp),
-        ),
-        colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.background,
-            contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = LocalColors.current.primary,
-            focusedContentColor = LocalColors.current.onPrimary,
-        ),
+        shape =
+            ButtonDefaults.shape(
+                shape = RoundedCornerShape(12.dp),
+            ),
+        colors =
+            ButtonDefaults.colors(
+                containerColor = LocalColors.current.background,
+                contentColor = LocalColors.current.onSurfaceVariant,
+                focusedContainerColor = LocalColors.current.primary,
+                focusedContentColor = LocalColors.current.onPrimary,
+            ),
         onClick = onClick,
     ) {
         Column(modifier = Modifier.weight(1f)) {

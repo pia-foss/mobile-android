@@ -29,7 +29,6 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class DipModule {
-
     @Singleton(binds = [DipDataSource::class])
     fun provideDipDataSource(
         context: Context,
@@ -44,12 +43,10 @@ class DipModule {
     ): DipSignupRepository = DipSignupRepository(dipDataSource, dipPrefs)
 
     @Singleton
-    fun provideActivateDipUseCase(dataSource: DipDataSource): ActivateDipUseCase =
-        ActivateDipUseCase(dataSource)
+    fun provideActivateDipUseCase(dataSource: DipDataSource): ActivateDipUseCase = ActivateDipUseCase(dataSource)
 
     @Singleton
-    fun provideRenewDipUseCase(dataSource: DipDataSource): RenewDipUseCase =
-        RenewDipUseCase(dataSource)
+    fun provideRenewDipUseCase(dataSource: DipDataSource): RenewDipUseCase = RenewDipUseCase(dataSource)
 
     @Singleton
     fun provideValidateDipSignup(
@@ -58,30 +55,25 @@ class DipModule {
     ): ValidateDipSignup = ValidateDipSignup(subscriptionPrefs, dataSource)
 
     @Singleton
-    fun provideGetDipSupportedCountries(
-        dipSignupRepository: DipSignupRepository,
-    ): GetDipSupportedCountries = GetDipSupportedCountries(dipSignupRepository)
+    fun provideGetDipSupportedCountries(dipSignupRepository: DipSignupRepository): GetDipSupportedCountries =
+        GetDipSupportedCountries(dipSignupRepository)
 
     @Singleton
     fun provideGetDipMonthlyPlan(
         dipSignupRepository: DipSignupRepository,
         dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
         formatter: PriceFormatter,
-    ): GetDipMonthlyPlan =
-        GetDipMonthlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider, formatter)
+    ): GetDipMonthlyPlan = GetDipMonthlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider, formatter)
 
     @Singleton
     fun provideGetDipYearlyPlan(
         dipSignupRepository: DipSignupRepository,
         dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
         formatter: PriceFormatter,
-    ): GetDipYearlyPlan =
-        GetDipYearlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider, formatter)
+    ): GetDipYearlyPlan = GetDipYearlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider, formatter)
 
     @Singleton
-    fun provideFetchSignupDipToken(
-        dipDataSource: DipDataSource,
-    ): FetchSignupDipToken = FetchSignupDipToken(dipDataSource)
+    fun provideFetchSignupDipToken(dipDataSource: DipDataSource): FetchSignupDipToken = FetchSignupDipToken(dipDataSource)
 
     @KoinViewModel
     fun provideDipViewModel(
@@ -99,10 +91,21 @@ class DipModule {
         connectionPrefs: ConnectionPrefs,
         buildConfigProvider: BuildConfigProvider,
         connectionManager: ConnectionManager,
-    ): DipViewModel = DipViewModel(
-        router, regionListProvider, activateDipUseCase, getDipSupportedCountries,
-        getDipMonthlyPlan, getDipYearlyPlan, validateDipSignup, fetchSignupDipToken,
-        vpnSubscriptionPaymentProvider, dipSubscriptionPaymentProvider, dipPrefs,
-        connectionPrefs, buildConfigProvider, connectionManager,
-    )
+    ): DipViewModel =
+        DipViewModel(
+            router,
+            regionListProvider,
+            activateDipUseCase,
+            getDipSupportedCountries,
+            getDipMonthlyPlan,
+            getDipYearlyPlan,
+            validateDipSignup,
+            fetchSignupDipToken,
+            vpnSubscriptionPaymentProvider,
+            dipSubscriptionPaymentProvider,
+            dipPrefs,
+            connectionPrefs,
+            buildConfigProvider,
+            connectionManager,
+        )
 }

@@ -21,9 +21,10 @@ class RenewDipUseCaseTest : DataForTest() {
 
     @ParameterizedTest(name = "result: {0}")
     @MethodSource("data")
-    fun renew(result: DipApiResult) = runTest {
-        coEvery { dataSource.renew(any()) } returns result
-        val actual = useCase.renew("ipToken")
-        Assertions.assertEquals(result, actual)
-    }
+    fun renew(result: DipApiResult) =
+        runTest {
+            coEvery { dataSource.renew(any()) } returns result
+            val actual = useCase.renew("ipToken")
+            Assertions.assertEquals(result, actual)
+        }
 }

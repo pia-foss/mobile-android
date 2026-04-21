@@ -9,10 +9,10 @@ import kotlin.coroutines.resume
 class StopObfuscatorProcess(
     private val obfuscatorAPI: ObfuscatorAPI,
 ) {
-
-    suspend operator fun invoke(): Result<Unit> = suspendCancellableCoroutine { continuation ->
-        obfuscatorAPI.stop {
-            continuation.resume(it)
+    suspend operator fun invoke(): Result<Unit> =
+        suspendCancellableCoroutine { continuation ->
+            obfuscatorAPI.stop {
+                continuation.resume(it)
+            }
         }
-    }
 }

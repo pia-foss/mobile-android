@@ -44,126 +44,135 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TvCredentialsScreen(credentials: Credentials) = Screen {
-    val viewModel: SignupViewModel = koinViewModel()
-    val initialFocusRequester = remember { FocusRequester() }
+fun TvCredentialsScreen(credentials: Credentials) =
+    Screen {
+        val viewModel: SignupViewModel = koinViewModel()
+        val initialFocusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
+        }
 
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalColors.current.background),
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(64.dp),
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(LocalColors.current.background),
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(64.dp),
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_logo_large),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(40.dp),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                SignUpTitleText(
-                    content = stringResource(id = R.string.success),
-                )
-                Spacer(modifier = Modifier.height(64.dp))
-                Card(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = LocalColors.current.onPrimaryContainer,
-                    ),
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.img_success),
-                        contentScale = ContentScale.Fit,
+                        painter = painterResource(id = R.drawable.ic_logo_large),
                         contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(32.dp),
+                        modifier =
+                            Modifier
+                                .width(100.dp)
+                                .height(40.dp),
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    SignUpTitleText(
+                        content = stringResource(id = R.string.success),
+                    )
+                    Spacer(modifier = Modifier.height(64.dp))
+                    Card(
+                        modifier =
+                            Modifier
+                                .fillMaxSize(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = LocalColors.current.onPrimaryContainer,
+                            ),
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.img_success),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(32.dp),
+                        )
+                    }
+                }
+            }
+            VerticalDivider(
+                modifier =
+                    Modifier
+                        .fillMaxHeight()
+                        .padding(vertical = 64.dp)
+                        .width(0.5.dp),
+                color = LocalColors.current.primaryContainer,
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(45.dp)
+                        .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                SignupSuccessTitleText(
+                    content = stringResource(id = R.string.credentials_title),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                SignupSuccessDescriptionText(
+                    content = stringResource(id = R.string.credentials_text),
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .border(
+                                width = 2.dp,
+                                shape = OutlineBackground,
+                                color = LocalColors.current.outline,
+                            ).padding(16.dp)
+                            .semantics(mergeDescendants = true) { },
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.username),
+                        color = LocalColors.current.outlineVariant,
+                        fontSize = 14.sp,
+                    )
+                    Text(text = credentials.username, fontSize = 22.sp)
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .border(
+                                width = 2.dp,
+                                shape = OutlineBackground,
+                                color = LocalColors.current.outline,
+                            ).padding(16.dp)
+                            .semantics(mergeDescendants = true) { },
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.password),
+                        color = LocalColors.current.outlineVariant,
+                        fontSize = 14.sp,
+                    )
+                    Text(text = credentials.password, fontSize = 22.sp)
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                PrimaryButton(
+                    text = stringResource(id = R.string.get_started),
+                    modifier = Modifier.focusRequester(initialFocusRequester),
+                ) {
+                    viewModel.completeSubscription()
                 }
             }
         }
-        VerticalDivider(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(vertical = 64.dp)
-                .width(0.5.dp),
-            color = LocalColors.current.primaryContainer,
-        )
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(45.dp)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            SignupSuccessTitleText(
-                content = stringResource(id = R.string.credentials_title),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            SignupSuccessDescriptionText(
-                content = stringResource(id = R.string.credentials_text),
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 2.dp,
-                        shape = OutlineBackground,
-                        color = LocalColors.current.outline,
-                    )
-                    .padding(16.dp)
-                    .semantics(mergeDescendants = true) { },
-            ) {
-                Text(
-                    text = stringResource(id = R.string.username),
-                    color = LocalColors.current.outlineVariant,
-                    fontSize = 14.sp,
-                )
-                Text(text = credentials.username, fontSize = 22.sp)
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = 2.dp,
-                        shape = OutlineBackground,
-                        color = LocalColors.current.outline,
-                    )
-                    .padding(16.dp)
-                    .semantics(mergeDescendants = true) { },
-            ) {
-                Text(
-                    text = stringResource(id = R.string.password),
-                    color = LocalColors.current.outlineVariant,
-                    fontSize = 14.sp,
-                )
-                Text(text = credentials.password, fontSize = 22.sp)
-            }
-            Spacer(modifier = Modifier.height(32.dp))
-            PrimaryButton(
-                text = stringResource(id = R.string.get_started),
-                modifier = Modifier.focusRequester(initialFocusRequester),
-            ) {
-                viewModel.completeSubscription()
-            }
-        }
     }
-}

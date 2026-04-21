@@ -13,12 +13,17 @@ import org.koin.core.component.inject
  * so that the app can start a connection using the vpn manager.
  */
 @Singleton
-class VpnAlwaysOnService : VpnService(), KoinComponent {
-
+class VpnAlwaysOnService :
+    VpnService(),
+    KoinComponent {
     private val authenticationDataSource: AuthenticationDataSource by inject()
     private val vpnLauncher: VpnLauncher by inject()
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
         if (authenticationDataSource.isUserLoggedIn()) {
             vpnLauncher.launchVpn()
         }

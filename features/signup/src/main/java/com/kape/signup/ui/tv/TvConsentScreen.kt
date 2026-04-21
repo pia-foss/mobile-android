@@ -39,14 +39,16 @@ fun TvConsentScreen() {
     val viewModel: SignupViewModel = koinViewModel()
 
     Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalColors.current.background),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(LocalColors.current.background),
     ) {
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(64.dp),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(64.dp),
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -55,9 +57,10 @@ fun TvConsentScreen() {
                 Image(
                     painter = painterResource(id = R.drawable.ic_logo_large),
                     contentDescription = null,
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(40.dp),
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(40.dp),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SignUpTitleText(
@@ -65,36 +68,41 @@ fun TvConsentScreen() {
                 )
                 Spacer(modifier = Modifier.height(64.dp))
                 Card(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = LocalColors.current.onPrimaryContainer,
-                    ),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = LocalColors.current.onPrimaryContainer,
+                        ),
                 ) {
                     Image(
                         painter = painterResource(id = com.kape.login.R.drawable.ic_tv_onboarding),
                         contentScale = ContentScale.Fit,
                         contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 8.dp, vertical = 16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 8.dp, vertical = 16.dp),
                     )
                 }
             }
         }
         VerticalDivider(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(vertical = 64.dp)
-                .width(0.5.dp),
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .padding(vertical = 64.dp)
+                    .width(0.5.dp),
             color = LocalColors.current.primaryContainer,
         )
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(64.dp)
-                .fillMaxSize(),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(64.dp)
+                    .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -115,16 +123,18 @@ fun TvConsentScreen() {
             Spacer(modifier = Modifier.height(32.dp))
             PrimaryButton(
                 text = stringResource(id = R.string.accept),
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
             ) {
                 viewModel.allowEventSharing(true)
             }
             Spacer(modifier = Modifier.height(8.dp))
             SecondaryButton(
                 text = stringResource(id = R.string.no_thanks),
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
             ) {
                 viewModel.allowEventSharing(false)
             }

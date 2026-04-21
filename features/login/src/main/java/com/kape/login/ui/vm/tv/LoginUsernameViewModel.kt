@@ -12,8 +12,7 @@ import org.koin.core.annotation.KoinViewModel
 class LoginUsernameViewModel(
     private val router: Router,
     private val loginUsernameUseCase: LoginUsernameUseCase,
-) : ViewModel(){
-
+) : ViewModel() {
     private var username: MutableState<String> = mutableStateOf("")
 
     fun setLoginUsername(loginUsername: String) {
@@ -24,9 +23,7 @@ class LoginUsernameViewModel(
         router.updateDestination(TvLoginPassword)
     }
 
-    fun isValidUsername(): Boolean =
-        username.value.isNotEmpty()
+    fun isValidUsername(): Boolean = username.value.isNotEmpty()
 
-    fun getUsername(): MutableState<String> =
-        username
+    fun getUsername(): MutableState<String> = username
 }

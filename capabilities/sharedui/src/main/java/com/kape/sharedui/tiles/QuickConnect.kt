@@ -40,9 +40,10 @@ fun QuickConnect(
     onClick: (server: VpnServer) -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp, vertical = 16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
         TileTitleText(content = stringResource(id = R.string.quick_connect))
         Spacer(modifier = Modifier.height(8.dp))
@@ -58,13 +59,14 @@ fun QuickConnect(
                         QuickConnectItem(
                             server = current,
                             isFavorite = servers[current] ?: false,
-                            modifier = Modifier
-                                .weight(1f)
-                                .clickable {
-                                    servers.keys.toList()[index]?.let {
-                                        onClick(it)
-                                    }
-                                }.testTag(":QuickConnect:server_$index"),
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .clickable {
+                                        servers.keys.toList()[index]?.let {
+                                            onClick(it)
+                                        }
+                                    }.testTag(":QuickConnect:server_$index"),
                         )
                     } ?: run {
                         QuickConnectItem(modifier = Modifier.weight(1f))
@@ -84,22 +86,26 @@ private fun QuickConnectItem(
     Column(modifier = modifier, horizontalAlignment = CenterHorizontally) {
         Box {
             Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(LocalColors.current.surfaceVariant, CircleShape)
-                    .padding(8.dp),
+                modifier =
+                    Modifier
+                        .size(40.dp)
+                        .background(LocalColors.current.surfaceVariant, CircleShape)
+                        .padding(8.dp),
             ) {
                 Image(
-                    painter = painterResource(
-                        id = server?.let { getFlagResource(LocalContext.current, it.iso) }
-                            ?: R.drawable.ic_map_empty,
-                    ),
+                    painter =
+                        painterResource(
+                            id =
+                                server?.let { getFlagResource(LocalContext.current, it.iso) }
+                                    ?: R.drawable.ic_map_empty,
+                        ),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(36.dp)
-                        .align(Alignment.Center),
+                    modifier =
+                        Modifier
+                            .clip(CircleShape)
+                            .size(36.dp)
+                            .align(Alignment.Center),
                 )
             }
             server?.let {
@@ -108,9 +114,10 @@ private fun QuickConnectItem(
                         painter = painterResource(id = R.drawable.ic_dip_badge),
                         contentDescription = null,
                         tint = Color.Unspecified,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .size(12.dp),
+                        modifier =
+                            Modifier
+                                .align(Alignment.BottomEnd)
+                                .size(12.dp),
                     )
                 }
                 if (isFavorite) {
@@ -118,9 +125,10 @@ private fun QuickConnectItem(
                         painter = painterResource(id = R.drawable.ic_favorite),
                         contentDescription = null,
                         tint = Color.Unspecified,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .size(12.dp),
+                        modifier =
+                            Modifier
+                                .align(Alignment.BottomEnd)
+                                .size(12.dp),
                     )
                 }
             }

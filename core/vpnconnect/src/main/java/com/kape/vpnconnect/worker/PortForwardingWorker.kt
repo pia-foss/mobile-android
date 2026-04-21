@@ -15,9 +15,8 @@ class PortForwardingWorker(
     private val portForwardingUseCase: PortForwardingUseCase,
     private val connectionDataSource: ConnectionDataSource,
 ) : CoroutineWorker(context, params) {
-
-    override suspend fun doWork(): Result {
-        return try {
+    override suspend fun doWork(): Result =
+        try {
             portForwardingUseCase.bindPort(connectionDataSource.getVpnToken())
             Result.success()
         } catch (exception: IOException) {
@@ -25,5 +24,4 @@ class PortForwardingWorker(
         } catch (exception: IllegalStateException) {
             Result.failure()
         }
-    }
 }

@@ -40,23 +40,25 @@ fun SettingsToggle(
 ) {
     val isChecked = remember { stateEnabled }
     Column(
-        modifier = Modifier
-            .defaultMinSize(minHeight = 56.dp)
-            .padding(top = 8.dp),
+        modifier =
+            Modifier
+                .defaultMinSize(minHeight = 56.dp)
+                .padding(top = 8.dp),
     ) {
         Row(
-            modifier = Modifier
-                .defaultMinSize(minHeight = 56.dp)
-                .padding(end = 16.dp)
-                .semantics(mergeDescendants = true) { }
-                .testTag(testTag)
-                .selectable(
-                    selected = isChecked.value,
-                    onClick = {
-                        isChecked.value = !isChecked.value
-                        toggle(isChecked.value)
-                    },
-                ),
+            modifier =
+                Modifier
+                    .defaultMinSize(minHeight = 56.dp)
+                    .padding(end = 16.dp)
+                    .semantics(mergeDescendants = true) { }
+                    .testTag(testTag)
+                    .selectable(
+                        selected = isChecked.value,
+                        onClick = {
+                            isChecked.value = !isChecked.value
+                            toggle(isChecked.value)
+                        },
+                    ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             iconId?.let {
@@ -69,9 +71,10 @@ fun SettingsToggle(
             }
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 16.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(horizontal = 16.dp),
             ) {
                 SettingsL2Text(content = stringResource(id = titleId))
 

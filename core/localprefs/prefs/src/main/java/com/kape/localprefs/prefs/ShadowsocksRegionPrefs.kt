@@ -2,8 +2,8 @@ package com.kape.localprefs.prefs
 
 import android.content.Context
 import com.kape.data.shadowsocksserver.ShadowsocksServer
-import com.kape.regions.data.ServerData
 import com.kape.localprefs.Prefs
+import com.kape.regions.data.ServerData
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
@@ -12,8 +12,9 @@ private const val SHADOWSOCKS_SELECTED_SERVER = "shadowsocks-selected-server"
 private const val SHADOWSOCKS_SERVERS = "shadowsocks-servers"
 
 @Singleton
-class ShadowsocksRegionPrefs(context: Context) : Prefs(context, "shadowsocks-regions") {
-
+class ShadowsocksRegionPrefs(
+    context: Context,
+) : Prefs(context, "shadowsocks-regions") {
     fun addToFavorites(shadowsocksServerName: String) {
         val favorites = getFavoriteShadowsocksServers().toMutableList()
         favorites.add(ServerData(shadowsocksServerName, false))
@@ -32,14 +33,17 @@ class ShadowsocksRegionPrefs(context: Context) : Prefs(context, "shadowsocks-reg
     }
 
     private fun getFavoriteShadowsocksServers(): List<ServerData> {
-        val list: List<ServerData> = prefs.getString(SHADOWSOCKS_VPN_FAVORITES, null)?.let {
-            Json.decodeFromString(it)
-        } ?: emptyList()
+        val list: List<ServerData> =
+            prefs.getString(SHADOWSOCKS_VPN_FAVORITES, null)?.let {
+                Json.decodeFromString(it)
+            } ?: emptyList()
         return list
     }
 
     fun setSelectShadowsocksServer(shadowsocksServer: ShadowsocksServer) =
-        prefs.edit().putString(SHADOWSOCKS_SELECTED_SERVER, Json.encodeToString(shadowsocksServer))
+        prefs
+            .edit()
+            .putString(SHADOWSOCKS_SELECTED_SERVER, Json.encodeToString(shadowsocksServer))
             .apply()
 
     fun getSelectedShadowsocksServer(): ShadowsocksServer? =

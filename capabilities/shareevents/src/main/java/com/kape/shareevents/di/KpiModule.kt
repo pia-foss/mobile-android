@@ -11,7 +11,6 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class KpiModule {
-
     @Singleton(binds = [KpiDataSource::class])
     fun provideKpiDataSource(
         configInfo: ConfigInfo,
@@ -20,6 +19,5 @@ class KpiModule {
     ): KpiDataSource = KpiDataSourceImpl(configInfo, api, settingsPrefs)
 
     @Singleton
-    fun provideSubmitKpiEventUseCase(kpiDataSource: KpiDataSource): SubmitKpiEventUseCase =
-        SubmitKpiEventUseCase(kpiDataSource)
+    fun provideSubmitKpiEventUseCase(kpiDataSource: KpiDataSource): SubmitKpiEventUseCase = SubmitKpiEventUseCase(kpiDataSource)
 }

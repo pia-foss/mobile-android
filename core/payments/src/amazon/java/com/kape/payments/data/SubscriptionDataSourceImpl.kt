@@ -12,20 +12,21 @@ import kotlin.coroutines.resume
 class SubscriptionDataSourceImpl(
     private val prefs: SubscriptionPrefs,
     private val api: AndroidAccountAPI,
-) : SubscriptionDataSource, KoinComponent {
-
-    override suspend fun getAvailableVpnSubscriptions(): List<Subscription> = suspendCancellableCoroutine { cont ->
-        api.amazonSubscriptions { details, error ->
-            if (error.isNotEmpty() || details == null) {
-                cont.resume(emptyList())
-                return@amazonSubscriptions
+) : SubscriptionDataSource,
+    KoinComponent {
+    override suspend fun getAvailableVpnSubscriptions(): List<Subscription> =
+        suspendCancellableCoroutine { cont ->
+            api.amazonSubscriptions { details, error ->
+                if (error.isNotEmpty() || details == null) {
+                    cont.resume(emptyList())
+                    return@amazonSubscriptions
+                }
+                val data = mutableListOf<Subscription>()
+                for (item in details.availableProducts) {
+                    data.add(Subscription(item.id, item.legacy, item.plan, item.price))
+                }
+                prefs.storeVpnSubscriptions(data)
+                cont.resume(prefs.getVpnSubscriptions())
             }
-            val data = mutableListOf<Subscription>()
-            for (item in details.availableProducts) {
-                data.add(Subscription(item.id, item.legacy, item.plan, item.price))
-            }
-            prefs.storeVpnSubscriptions(data)
-            cont.resume(prefs.getVpnSubscriptions())
         }
-    }
 }

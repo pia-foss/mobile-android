@@ -10,7 +10,6 @@ class AutomationManager(
     private val automationServiceIntent: Intent,
     val notificationBuilder: Notification.Builder,
 ) {
-
     fun startAutomationService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.applicationContext.startForegroundService(automationServiceIntent)

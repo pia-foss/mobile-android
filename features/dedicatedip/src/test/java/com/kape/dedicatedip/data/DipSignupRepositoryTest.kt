@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class DipSignupRepositoryTest {
-
     private val dipPrefs: DipPrefs = mockk(relaxed = true)
     private val dipDataSource: DipDataSource = mockk(relaxed = true)
 
@@ -21,71 +20,81 @@ class DipSignupRepositoryTest {
 
     @BeforeEach
     internal fun setUp() {
-        dipSignupRepository = DipSignupRepository(
-            dipDataSource = dipDataSource,
-            dipPrefs = dipPrefs,
-        )
+        dipSignupRepository =
+            DipSignupRepository(
+                dipDataSource = dipDataSource,
+                dipPrefs = dipPrefs,
+            )
     }
 
     @Test
-    fun `If there are no persisted signup plans - Fetch it`() = runTest {
-        // given
-        val fetchedDedicatedIpSignupPlansMock = AndroidAddonsSubscriptionsInformation(
-            availableProducts = emptyList(),
-            status = "fetched",
-        )
-        every { dipPrefs.getDedicatedIpSignupPlans() } returns null
-        coEvery { dipDataSource.signupPlans() } returns fetchedDedicatedIpSignupPlansMock
+    fun `If there are no persisted signup plans - Fetch it`() =
+        runTest {
+            // given
+            val fetchedDedicatedIpSignupPlansMock =
+                AndroidAddonsSubscriptionsInformation(
+                    availableProducts = emptyList(),
+                    status = "fetched",
+                )
+            every { dipPrefs.getDedicatedIpSignupPlans() } returns null
+            coEvery { dipDataSource.signupPlans() } returns fetchedDedicatedIpSignupPlansMock
 
-        // when
-        val actual = dipSignupRepository.signupPlans()
+            // when
+            val actual = dipSignupRepository.signupPlans()
 
-        // then
-        Assertions.assertEquals(fetchedDedicatedIpSignupPlansMock, actual)
-    }
-
-    @Test
-    fun `If there are persisted signup plans only 12 hours old - Return it`() = runTest {
-        // given
-        val fetchedDedicatedIpSignupPlansMock = AndroidAddonsSubscriptionsInformation(
-            availableProducts = emptyList(),
-            status = "0.5days",
-        )
-        val dedicatedIpSignupPlans = DedicatedIpSignupPlans(
-            persistedTimestamp = System.currentTimeMillis() - (1L * 12 * 60 * 60 * 1000),
-            signupPlans = fetchedDedicatedIpSignupPlansMock,
-        )
-        every { dipPrefs.getDedicatedIpSignupPlans() } returns dedicatedIpSignupPlans
-
-        // when
-        val actual = dipSignupRepository.signupPlans()
-
-        // then
-        Assertions.assertEquals(fetchedDedicatedIpSignupPlansMock, actual)
-    }
+            // then
+            Assertions.assertEquals(fetchedDedicatedIpSignupPlansMock, actual)
+        }
 
     @Test
-    fun `If there are persisted signup plans 2 days old - Fetch it`() = runTest {
-        // given
-        val outdatedFetchedDedicatedIpSignupPlansMock = AndroidAddonsSubscriptionsInformation(
-            availableProducts = emptyList(),
-            status = "2days",
-        )
-        val updatedFetchedDedicatedIpSignupPlansMock = AndroidAddonsSubscriptionsInformation(
-            availableProducts = emptyList(),
-            status = "fetched",
-        )
-        val dedicatedIpSignupPlans = DedicatedIpSignupPlans(
-            persistedTimestamp = System.currentTimeMillis() - (2L * 24 * 60 * 60 * 1000),
-            signupPlans = outdatedFetchedDedicatedIpSignupPlansMock,
-        )
-        every { dipPrefs.getDedicatedIpSignupPlans() } returns dedicatedIpSignupPlans
-        coEvery { dipDataSource.signupPlans() } returns updatedFetchedDedicatedIpSignupPlansMock
+    fun `If there are persisted signup plans only 12 hours old - Return it`() =
+        runTest {
+            // given
+            val fetchedDedicatedIpSignupPlansMock =
+                AndroidAddonsSubscriptionsInformation(
+                    availableProducts = emptyList(),
+                    status = "0.5days",
+                )
+            val dedicatedIpSignupPlans =
+                DedicatedIpSignupPlans(
+                    persistedTimestamp = System.currentTimeMillis() - (1L * 12 * 60 * 60 * 1000),
+                    signupPlans = fetchedDedicatedIpSignupPlansMock,
+                )
+            every { dipPrefs.getDedicatedIpSignupPlans() } returns dedicatedIpSignupPlans
 
-        // when
-        val actual = dipSignupRepository.signupPlans()
+            // when
+            val actual = dipSignupRepository.signupPlans()
 
-        // then
-        Assertions.assertEquals(updatedFetchedDedicatedIpSignupPlansMock, actual)
-    }
+            // then
+            Assertions.assertEquals(fetchedDedicatedIpSignupPlansMock, actual)
+        }
+
+    @Test
+    fun `If there are persisted signup plans 2 days old - Fetch it`() =
+        runTest {
+            // given
+            val outdatedFetchedDedicatedIpSignupPlansMock =
+                AndroidAddonsSubscriptionsInformation(
+                    availableProducts = emptyList(),
+                    status = "2days",
+                )
+            val updatedFetchedDedicatedIpSignupPlansMock =
+                AndroidAddonsSubscriptionsInformation(
+                    availableProducts = emptyList(),
+                    status = "fetched",
+                )
+            val dedicatedIpSignupPlans =
+                DedicatedIpSignupPlans(
+                    persistedTimestamp = System.currentTimeMillis() - (2L * 24 * 60 * 60 * 1000),
+                    signupPlans = outdatedFetchedDedicatedIpSignupPlansMock,
+                )
+            every { dipPrefs.getDedicatedIpSignupPlans() } returns dedicatedIpSignupPlans
+            coEvery { dipDataSource.signupPlans() } returns updatedFetchedDedicatedIpSignupPlansMock
+
+            // when
+            val actual = dipSignupRepository.signupPlans()
+
+            // then
+            Assertions.assertEquals(updatedFetchedDedicatedIpSignupPlansMock, actual)
+        }
 }

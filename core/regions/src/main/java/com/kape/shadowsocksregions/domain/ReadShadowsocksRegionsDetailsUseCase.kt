@@ -13,16 +13,16 @@ class ReadShadowsocksRegionsDetailsUseCase(
     private val regionSerialization: RegionSerialization,
     private val readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
 ) {
-
     companion object {
         private const val SHADOWSOCKS_REGIONS_FILENAME = "shadowsocks-regions.json"
     }
 
     fun readShadowsocksRegionsDetailsFromAssetsFolder(): List<ShadowsocksServer> {
         val servers = regionInputStream.readAssetsFile(filename = SHADOWSOCKS_REGIONS_FILENAME)
-        val shadowSocksRegionsResponse = regionSerialization.decodeShadowsocksRegionsFromString(
-            servers.split("\n\n").first(),
-        )
+        val shadowSocksRegionsResponse =
+            regionSerialization.decodeShadowsocksRegionsFromString(
+                servers.split("\n\n").first(),
+            )
 
         // The shadowsocks API only offers the regions id which we then need to use with the
         // vpn regions response to get the details for that particular region.

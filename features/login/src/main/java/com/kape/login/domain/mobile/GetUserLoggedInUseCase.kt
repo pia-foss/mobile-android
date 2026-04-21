@@ -5,7 +5,8 @@ import com.kape.contracts.IsUserLoggedInUseCase
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class GetUserLoggedInUseCase(private val source: AuthenticationDataSource) : IsUserLoggedInUseCase {
-
+class GetUserLoggedInUseCase(
+    private val source: AuthenticationDataSource,
+) : IsUserLoggedInUseCase {
     override fun invoke() = source.isUserLoggedIn()
 }

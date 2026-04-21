@@ -47,66 +47,71 @@ fun TvColumnSelectionItem(
         val focusRequester: FocusRequester,
     )
 
-    val buttons = listOf(
-        ButtonDetails(
-            title = stringResource(id = com.kape.ui.R.string.all),
-            contentColor = remember { mutableStateOf(colorScheme.onSurface) },
-            containerColor = remember { mutableStateOf(colorScheme.background) },
-            focusRequester = onAllFocusRequester,
-        ),
-        ButtonDetails(
-            title = stringResource(id = com.kape.ui.R.string.favorite),
-            contentColor = remember { mutableStateOf(colorScheme.onSurface) },
-            containerColor = remember { mutableStateOf(colorScheme.background) },
-            focusRequester = onFavoriteFocusRequester,
-        ),
-        ButtonDetails(
-            title = stringResource(id = com.kape.ui.R.string.search),
-            contentColor = remember { mutableStateOf(colorScheme.onSurface) },
-            containerColor = remember { mutableStateOf(colorScheme.background) },
-            focusRequester = onSearchFocusRequester,
-        ),
-    )
+    val buttons =
+        listOf(
+            ButtonDetails(
+                title = stringResource(id = com.kape.ui.R.string.all),
+                contentColor = remember { mutableStateOf(colorScheme.onSurface) },
+                containerColor = remember { mutableStateOf(colorScheme.background) },
+                focusRequester = onAllFocusRequester,
+            ),
+            ButtonDetails(
+                title = stringResource(id = com.kape.ui.R.string.favorite),
+                contentColor = remember { mutableStateOf(colorScheme.onSurface) },
+                containerColor = remember { mutableStateOf(colorScheme.background) },
+                focusRequester = onFavoriteFocusRequester,
+            ),
+            ButtonDetails(
+                title = stringResource(id = com.kape.ui.R.string.search),
+                contentColor = remember { mutableStateOf(colorScheme.onSurface) },
+                containerColor = remember { mutableStateOf(colorScheme.background) },
+                focusRequester = onSearchFocusRequester,
+            ),
+        )
 
     Column(
-        modifier = modifier
-            .onFocusChanged {
-                buttons.forEachIndexed { index, buttonDetails ->
-                    if (it.hasFocus.not() && selectedIndex.intValue == index) {
-                        buttonDetails.containerColor.value = colorScheme.onPrimaryContainer
-                        buttonDetails.contentColor.value = colorScheme.onSurface
-                    } else {
-                        buttonDetails.containerColor.value = colorScheme.background
-                        buttonDetails.contentColor.value = colorScheme.onSurface
+        modifier =
+            modifier
+                .onFocusChanged {
+                    buttons.forEachIndexed { index, buttonDetails ->
+                        if (it.hasFocus.not() && selectedIndex.intValue == index) {
+                            buttonDetails.containerColor.value = colorScheme.onPrimaryContainer
+                            buttonDetails.contentColor.value = colorScheme.onSurface
+                        } else {
+                            buttonDetails.containerColor.value = colorScheme.background
+                            buttonDetails.contentColor.value = colorScheme.onSurface
+                        }
                     }
-                }
-            },
+                },
     ) {
         buttons.forEachIndexed { index, buttonDetails ->
             Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(buttonDetails.focusRequester)
-                    .onFocusChanged {
-                        if (it.hasFocus) {
-                            selectedIndex.intValue = index
-                            when (selectedIndex.intValue) {
-                                0 -> onAllSelected()
-                                1 -> onFavoriteSelected()
-                                2 -> onSearchSelected()
-                                else -> throw IllegalStateException("Unsupported TV State")
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .focusRequester(buttonDetails.focusRequester)
+                        .onFocusChanged {
+                            if (it.hasFocus) {
+                                selectedIndex.intValue = index
+                                when (selectedIndex.intValue) {
+                                    0 -> onAllSelected()
+                                    1 -> onFavoriteSelected()
+                                    2 -> onSearchSelected()
+                                    else -> throw IllegalStateException("Unsupported TV State")
+                                }
                             }
-                        }
-                    },
-                shape = ButtonDefaults.shape(
-                    shape = RoundedCornerShape(12.dp),
-                ),
-                colors = ButtonDefaults.colors(
-                    containerColor = buttonDetails.containerColor.value,
-                    contentColor = buttonDetails.contentColor.value,
-                    focusedContainerColor = colorScheme.primary,
-                    focusedContentColor = colorScheme.onPrimary,
-                ),
+                        },
+                shape =
+                    ButtonDefaults.shape(
+                        shape = RoundedCornerShape(12.dp),
+                    ),
+                colors =
+                    ButtonDefaults.colors(
+                        containerColor = buttonDetails.containerColor.value,
+                        contentColor = buttonDetails.contentColor.value,
+                        focusedContainerColor = colorScheme.primary,
+                        focusedContentColor = colorScheme.onPrimary,
+                    ),
                 onClick = { },
             ) {
                 Text(

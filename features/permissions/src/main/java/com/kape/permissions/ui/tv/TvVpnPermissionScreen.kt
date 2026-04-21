@@ -43,50 +43,52 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TvVpnPermissionScreen() = Screen {
-    val viewModel: PermissionsViewModel = koinViewModel()
-    val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsState()
-    val initialFocusRequester = remember { FocusRequester() }
-    val startForResult =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            viewModel.onVpnProfileStateChange()
+fun TvVpnPermissionScreen() =
+    Screen {
+        val viewModel: PermissionsViewModel = koinViewModel()
+        val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsState()
+        val initialFocusRequester = remember { FocusRequester() }
+        val startForResult =
+            rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                viewModel.onVpnProfileStateChange()
+            }
+
+        when (state) {
+            IDLE -> {
+                ShowTvVpnPermissionScreen(
+                    viewModel = viewModel,
+                    initialFocusRequester = initialFocusRequester,
+                )
+            }
+            REQUEST -> {
+                ShowTvVpnPermissionScreen(
+                    viewModel = viewModel,
+                    initialFocusRequester = initialFocusRequester,
+                )
+                val intent = VpnService.prepare(LocalContext.current)
+                startForResult.launch(intent)
+            }
+            GRANTED -> {
+                // Do nothing. The viewmodel is handling the navigation on success.
+            }
+            NOT_GRANTED -> {
+                ShowTvVpnPermissionScreen(
+                    viewModel = viewModel,
+                    initialFocusRequester = initialFocusRequester,
+                )
+                Toast
+                    .makeText(
+                        LocalContext.current,
+                        getVpnProfileToastText(granted = false),
+                        Toast.LENGTH_LONG,
+                    ).show()
+            }
         }
 
-    when (state) {
-        IDLE -> {
-            ShowTvVpnPermissionScreen(
-                viewModel = viewModel,
-                initialFocusRequester = initialFocusRequester,
-            )
-        }
-        REQUEST -> {
-            ShowTvVpnPermissionScreen(
-                viewModel = viewModel,
-                initialFocusRequester = initialFocusRequester,
-            )
-            val intent = VpnService.prepare(LocalContext.current)
-            startForResult.launch(intent)
-        }
-        GRANTED -> {
-            // Do nothing. The viewmodel is handling the navigation on success.
-        }
-        NOT_GRANTED -> {
-            ShowTvVpnPermissionScreen(
-                viewModel = viewModel,
-                initialFocusRequester = initialFocusRequester,
-            )
-            Toast.makeText(
-                LocalContext.current,
-                getVpnProfileToastText(granted = false),
-                Toast.LENGTH_LONG,
-            ).show()
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
         }
     }
-
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
-}
 
 @Composable
 fun ShowTvVpnPermissionScreen(
@@ -94,50 +96,57 @@ fun ShowTvVpnPermissionScreen(
     initialFocusRequester: FocusRequester,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalColors.current.background),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(LocalColors.current.background),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(64.dp),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(64.dp),
         ) {
             Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
                 OnboardingTitleText(
                     content = stringResource(id = R.string.vpn_permission_title),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
                 )
                 OnboardingDescriptionText(
                     content = stringResource(id = R.string.vpn_permission_description),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
                 )
                 OnboardingFooterText(
                     content = stringResource(id = R.string.vpn_permission_footer),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
                 )
             }
             PrimaryButton(
                 text = stringResource(id = R.string.ok),
-                modifier = Modifier
-                    .focusRequester(initialFocusRequester)
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .focusRequester(initialFocusRequester)
+                        .padding(16.dp),
             ) {
                 viewModel.onOkButtonClicked()
             }
         }
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(64.dp),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(64.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {

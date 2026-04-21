@@ -31,229 +31,233 @@ import com.kape.ui.mobile.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ObfuscationSettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.obfuscation))
-    }
-    val obfuscationOptions = mutableMapOf(
-        ObfuscationOptions.PIA to stringResource(id = R.string.pia),
-    )
-    viewModel.getCustomObfuscation()?.let {
-        obfuscationOptions[ObfuscationOptions.CUSTOM] =
-            "${stringResource(id = R.string.network_dns_selection_custom)} ${it.host}:${it.port}"
-    }
+fun ObfuscationSettingsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.obfuscation))
+            }
+        val obfuscationOptions =
+            mutableMapOf(
+                ObfuscationOptions.PIA to stringResource(id = R.string.pia),
+            )
+        viewModel.getCustomObfuscation()?.let {
+            obfuscationOptions[ObfuscationOptions.CUSTOM] =
+                "${stringResource(id = R.string.network_dns_selection_custom)} ${it.host}:${it.port}"
+        }
 
-    val customObfuscationDialogVisible = remember { mutableStateOf(false) }
-    val obfuscationDialogVisible = remember { mutableStateOf(false) }
-    val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
-    val tcpTransportDialogVisible = remember { mutableStateOf(false) }
-    val externalProxyAppDialogVisible = remember { mutableStateOf(false) }
-    val externalProxyPortDialogVisible = remember { mutableStateOf(false) }
+        val customObfuscationDialogVisible = remember { mutableStateOf(false) }
+        val obfuscationDialogVisible = remember { mutableStateOf(false) }
+        val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
+        val tcpTransportDialogVisible = remember { mutableStateOf(false) }
+        val externalProxyAppDialogVisible = remember { mutableStateOf(false) }
+        val externalProxyPortDialogVisible = remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel, onRightIconClick = appBarViewModel::navigateBack)
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth()
-                .semantics {},
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel, onRightIconClick = appBarViewModel::navigateBack)
+            },
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                SettingsToggle(
-                    titleId = R.string.obfuscation_external_proxy_app_title,
-                    subtitleId = R.string.obfuscation_external_proxy_app_description,
-                    stateEnabled = viewModel.externalProxyAppEnabled,
-                    toggle = {
-                        if (it && viewModel.externalProxyAppPackageName.value.isEmpty()) {
-                            externalProxyAppDialogVisible.value = true
-                        } else {
-                            viewModel.toggleExternalProxyApp(it)
-                        }
-                    },
-                )
-                if (viewModel.externalProxyAppEnabled.value && viewModel.externalProxyAppPackageName.value.isNotEmpty()) {
-                    SettingsItem(
-                        titleId = R.string.selected_proxy_app,
-                        subtitle = viewModel.externalProxyAppPackageName.value,
-                        onClick = {
-                            viewModel.navigateToExternalAppList()
+            Column(
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth()
+                        .semantics {},
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    SettingsToggle(
+                        titleId = R.string.obfuscation_external_proxy_app_title,
+                        subtitleId = R.string.obfuscation_external_proxy_app_description,
+                        stateEnabled = viewModel.externalProxyAppEnabled,
+                        toggle = {
+                            if (it && viewModel.externalProxyAppPackageName.value.isEmpty()) {
+                                externalProxyAppDialogVisible.value = true
+                            } else {
+                                viewModel.toggleExternalProxyApp(it)
+                            }
                         },
                     )
-                    SettingsItem(
-                        titleId = R.string.proxy_port,
-                        subtitle = viewModel.externalProxyAppPort.value,
-                        onClick = {
-                            externalProxyPortDialogVisible.value = true
+                    if (viewModel.externalProxyAppEnabled.value && viewModel.externalProxyAppPackageName.value.isNotEmpty()) {
+                        SettingsItem(
+                            titleId = R.string.selected_proxy_app,
+                            subtitle = viewModel.externalProxyAppPackageName.value,
+                            onClick = {
+                                viewModel.navigateToExternalAppList()
+                            },
+                        )
+                        SettingsItem(
+                            titleId = R.string.proxy_port,
+                            subtitle = viewModel.externalProxyAppPort.value,
+                            onClick = {
+                                externalProxyPortDialogVisible.value = true
+                            },
+                        )
+                    }
+                    SettingsToggle(
+                        titleId = R.string.obfuscation_shadowsocks_title,
+                        subtitleId = R.string.obfuscation_shadowsocks_description,
+                        stateEnabled = viewModel.shadowsocksObfuscationEnabled,
+                        toggle = { enabled ->
+                            viewModel.toggleShadowsocksObfuscation(enabled)
+                            if (viewModel.isAllowLocalTrafficEnabled.value.not()) {
+                                allowLocalTrafficDialogVisible.value = true
+                            } else if (viewModel.getTransport() != Transport.TCP) {
+                                tcpTransportDialogVisible.value = true
+                            }
                         },
                     )
-                }
-                SettingsToggle(
-                    titleId = R.string.obfuscation_shadowsocks_title,
-                    subtitleId = R.string.obfuscation_shadowsocks_description,
-                    stateEnabled = viewModel.shadowsocksObfuscationEnabled,
-                    toggle = { enabled ->
-                        viewModel.toggleShadowsocksObfuscation(enabled)
-                        if (viewModel.isAllowLocalTrafficEnabled.value.not()) {
-                            allowLocalTrafficDialogVisible.value = true
-                        } else if (viewModel.getTransport() != Transport.TCP) {
-                            tcpTransportDialogVisible.value = true
-                        }
-                    },
-                )
-                if (viewModel.shadowsocksObfuscationEnabled.value) {
-                    SettingsItem(
-                        titleId = R.string.obfuscation_shadowsocks_subtitle,
-                        onClick = {
-                            obfuscationDialogVisible.value = !obfuscationDialogVisible.value
-                        },
-                    )
+                    if (viewModel.shadowsocksObfuscationEnabled.value) {
+                        SettingsItem(
+                            titleId = R.string.obfuscation_shadowsocks_subtitle,
+                            onClick = {
+                                obfuscationDialogVisible.value = !obfuscationDialogVisible.value
+                            },
+                        )
+                    }
                 }
             }
         }
-    }
 
-    if (obfuscationDialogVisible.value) {
-        ObfuscationSelectionDialog(
-            options = obfuscationOptions,
-            selection = viewModel.getSelectedObfuscationOption(),
-            onConfirm = {
-                obfuscationDialogVisible.value = false
-                val hasCustomOptionChanged = viewModel.getSelectedObfuscationOption() != it
-                viewModel.setSelectedObfuscationOption(it)
+        if (obfuscationDialogVisible.value) {
+            ObfuscationSelectionDialog(
+                options = obfuscationOptions,
+                selection = viewModel.getSelectedObfuscationOption(),
+                onConfirm = {
+                    obfuscationDialogVisible.value = false
+                    val hasCustomOptionChanged = viewModel.getSelectedObfuscationOption() != it
+                    viewModel.setSelectedObfuscationOption(it)
 
-                if (hasCustomOptionChanged &&
-                    (viewModel.shadowsocksObfuscationEnabled.value && it == ObfuscationOptions.PIA)
-                ) {
+                    if (hasCustomOptionChanged &&
+                        (viewModel.shadowsocksObfuscationEnabled.value && it == ObfuscationOptions.PIA)
+                    ) {
+                        viewModel.showReconnectDialogIfVpnConnected()
+                    }
+                },
+                onDismiss = {
+                    obfuscationDialogVisible.value = false
+                },
+                onEdit = {
+                    customObfuscationDialogVisible.value = true
+                    obfuscationDialogVisible.value = false
+                },
+            )
+        }
+
+        if (customObfuscationDialogVisible.value) {
+            CustomObfuscationDialog(
+                customObfuscation = viewModel.getCustomObfuscation(),
+                onConfirm = {
+                    customObfuscationDialogVisible.value = false
+                    val hasCustomObfuscationChanged = viewModel.getCustomObfuscation() != it
+                    viewModel.setCustomObfuscation(customObfuscation = it)
+                    viewModel.setSelectedObfuscationOption(ObfuscationOptions.CUSTOM)
+
+                    if (hasCustomObfuscationChanged) {
+                        viewModel.showReconnectDialogIfVpnConnected()
+                    }
+                },
+                onDismiss = {
+                    customObfuscationDialogVisible.value = false
+                },
+                isNumericIpAddress = {
+                    viewModel.isNumericIpAddress(it)
+                },
+                isPortValid = {
+                    viewModel.isPortValid(it)
+                },
+            )
+        }
+
+        if (viewModel.reconnectDialogVisible.value) {
+            ReconnectDialog(
+                onReconnect = {
+                    viewModel.reconnect()
+                    viewModel.reconnectDialogVisible.value = false
+                },
+                onLater = {
+                    viewModel.reconnectDialogVisible.value = false
+                },
+            )
+        }
+
+        if (allowLocalTrafficDialogVisible.value) {
+            AllowLanDialog(
+                titleId = R.string.obfuscation_shadowsocks_title,
+                descriptionId = R.string.obfuscation_shadowsocks_lan_requirement,
+                viewModel = viewModel,
+                allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
+                onDismiss = {
+                    viewModel.toggleShadowsocksObfuscation(false)
+                },
+                onConfirm = {
+                    if (viewModel.getTransport() != Transport.TCP) {
+                        tcpTransportDialogVisible.value = true
+                    }
+                },
+            )
+        }
+
+        if (tcpTransportDialogVisible.value) {
+            UpdateOpenVPNTransportToTcpDialog(
+                titleId = R.string.obfuscation_shadowsocks_title,
+                descriptionId = R.string.obfuscation_shadowsocks_tcp_requirement,
+                viewModel = viewModel,
+                tcpTransportDialogVisible = tcpTransportDialogVisible,
+                onDismiss = {
+                    viewModel.toggleShadowsocksObfuscation(false)
+                },
+            )
+        }
+
+        if (externalProxyAppDialogVisible.value) {
+            ExternalProxyAppDialog(
+                titleId = R.string.enable_proxy_dialog_title,
+                descriptionId = R.string.enable_proxy_dialog_message,
+                onConfirm = {
+                    externalProxyAppDialogVisible.value = false
+                    viewModel.navigateToExternalAppList()
+                },
+                onDismiss = {
+                    externalProxyAppDialogVisible.value = false
+                    viewModel.toggleExternalProxyApp(false)
+                },
+            )
+        }
+
+        if (externalProxyPortDialogVisible.value) {
+            ProxyPortDialog(
+                currentPort = viewModel.externalProxyAppPort.value,
+                onConfirm = {
+                    viewModel.setExternalProxyPort(it)
+                    externalProxyPortDialogVisible.value = false
                     viewModel.showReconnectDialogIfVpnConnected()
-                }
-            },
-            onDismiss = {
-                obfuscationDialogVisible.value = false
-            },
-            onEdit = {
-                customObfuscationDialogVisible.value = true
-                obfuscationDialogVisible.value = false
-            },
-        )
-    }
-
-    if (customObfuscationDialogVisible.value) {
-        CustomObfuscationDialog(
-            customObfuscation = viewModel.getCustomObfuscation(),
-            onConfirm = {
-                customObfuscationDialogVisible.value = false
-                val hasCustomObfuscationChanged = viewModel.getCustomObfuscation() != it
-                viewModel.setCustomObfuscation(customObfuscation = it)
-                viewModel.setSelectedObfuscationOption(ObfuscationOptions.CUSTOM)
-
-                if (hasCustomObfuscationChanged) {
+                },
+                onDefault = {
+                    viewModel.setExternalProxyPort(null)
+                    externalProxyPortDialogVisible.value = false
                     viewModel.showReconnectDialogIfVpnConnected()
-                }
-            },
-            onDismiss = {
-                customObfuscationDialogVisible.value = false
-            },
-            isNumericIpAddress = {
-                viewModel.isNumericIpAddress(it)
-            },
-            isPortValid = {
-                viewModel.isPortValid(it)
-            },
-        )
-    }
+                },
+                onDismiss = {
+                    externalProxyPortDialogVisible.value = false
+                },
+            )
+        }
 
-    if (viewModel.reconnectDialogVisible.value) {
-        ReconnectDialog(
-            onReconnect = {
-                viewModel.reconnect()
-                viewModel.reconnectDialogVisible.value = false
-            },
-            onLater = {
-                viewModel.reconnectDialogVisible.value = false
-            },
-        )
+        if (viewModel.externalProxyTcpDialogVisible.value) {
+            UpdateOpenVPNTransportToTcpDialog(
+                titleId = R.string.external_proxy_problem_title,
+                descriptionId = R.string.external_proxy_problem_message,
+                viewModel = viewModel,
+                tcpTransportDialogVisible = viewModel.externalProxyTcpDialogVisible,
+                onDismiss = {
+                    viewModel.toggleExternalProxyApp(false)
+                },
+            )
+        }
     }
-
-    if (allowLocalTrafficDialogVisible.value) {
-        AllowLanDialog(
-            titleId = R.string.obfuscation_shadowsocks_title,
-            descriptionId = R.string.obfuscation_shadowsocks_lan_requirement,
-            viewModel = viewModel,
-            allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
-            onDismiss = {
-                viewModel.toggleShadowsocksObfuscation(false)
-            },
-            onConfirm = {
-                if (viewModel.getTransport() != Transport.TCP) {
-                    tcpTransportDialogVisible.value = true
-                }
-            },
-        )
-    }
-
-    if (tcpTransportDialogVisible.value) {
-        UpdateOpenVPNTransportToTcpDialog(
-            titleId = R.string.obfuscation_shadowsocks_title,
-            descriptionId = R.string.obfuscation_shadowsocks_tcp_requirement,
-            viewModel = viewModel,
-            tcpTransportDialogVisible = tcpTransportDialogVisible,
-            onDismiss = {
-                viewModel.toggleShadowsocksObfuscation(false)
-            },
-        )
-    }
-
-    if (externalProxyAppDialogVisible.value) {
-        ExternalProxyAppDialog(
-            titleId = R.string.enable_proxy_dialog_title,
-            descriptionId = R.string.enable_proxy_dialog_message,
-            onConfirm = {
-                externalProxyAppDialogVisible.value = false
-                viewModel.navigateToExternalAppList()
-            },
-            onDismiss = {
-                externalProxyAppDialogVisible.value = false
-                viewModel.toggleExternalProxyApp(false)
-            },
-        )
-    }
-
-    if (externalProxyPortDialogVisible.value) {
-        ProxyPortDialog(
-            currentPort = viewModel.externalProxyAppPort.value,
-            onConfirm = {
-                viewModel.setExternalProxyPort(it)
-                externalProxyPortDialogVisible.value = false
-                viewModel.showReconnectDialogIfVpnConnected()
-            },
-            onDefault = {
-                viewModel.setExternalProxyPort(null)
-                externalProxyPortDialogVisible.value = false
-                viewModel.showReconnectDialogIfVpnConnected()
-            },
-            onDismiss = {
-                externalProxyPortDialogVisible.value = false
-            },
-        )
-    }
-
-    if (viewModel.externalProxyTcpDialogVisible.value) {
-        UpdateOpenVPNTransportToTcpDialog(
-            titleId = R.string.external_proxy_problem_title,
-            descriptionId = R.string.external_proxy_problem_message,
-            viewModel = viewModel,
-            tcpTransportDialogVisible = viewModel.externalProxyTcpDialogVisible,
-            onDismiss = {
-                viewModel.toggleExternalProxyApp(false)
-            },
-        )
-    }
-}
 
 @Composable
 fun UpdateOpenVPNTransportToTcpDialog(

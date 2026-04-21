@@ -54,7 +54,7 @@ class Widget(
         id: GlanceId,
     ) {
         provideContent {
-            val connectionState by connectionInfoProvider.connectionState.collectAsState()
+            val connectionState by connectionInfoProvider.connectionInfoState.collectAsState()
             val infoState by connectionInfoProvider.state.collectAsState()
 
             val downloadSpeed = usageProvider.widgetDownloadSpeed.value
@@ -364,7 +364,10 @@ class Widget(
     }
 
     @Composable
-    fun WidgetConnectButton(status: ConnectionStatus, isConnected: Boolean) {
+    fun WidgetConnectButton(
+        status: ConnectionStatus,
+        isConnected: Boolean,
+    ) {
         GlanceTheme(colors = WidgetColors.colors) {
             Box(
                 modifier =
@@ -406,7 +409,7 @@ class Widget(
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
-                -> ImageProvider(R.drawable.background_yellow)
+            -> ImageProvider(R.drawable.background_yellow)
 
             ConnectionStatus.ERROR -> ImageProvider(R.drawable.background_red)
         }
@@ -418,7 +421,7 @@ class Widget(
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
-                -> ImageProvider(R.drawable.outline_yellow)
+            -> ImageProvider(R.drawable.outline_yellow)
 
             ConnectionStatus.ERROR -> ImageProvider(R.drawable.outline_red)
         }
@@ -430,7 +433,7 @@ class Widget(
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
-                -> ImageProvider(R.drawable.ic_power_yellow)
+            -> ImageProvider(R.drawable.ic_power_yellow)
 
             ConnectionStatus.ERROR -> ImageProvider(R.drawable.ic_power_red)
         }

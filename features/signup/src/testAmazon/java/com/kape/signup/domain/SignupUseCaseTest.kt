@@ -16,7 +16,6 @@ import java.util.stream.Stream
 import kotlin.test.assertEquals
 
 internal class SignupUseCaseTest {
-
     private val signupDataSource: SignupDataSource = mockk()
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase = mockk()
     private val loginUseCase: LoginUseCase = mockk()
@@ -27,18 +26,22 @@ internal class SignupUseCaseTest {
 
     @BeforeEach
     fun setUp() {
-        useCase = SignupUseCase(
-            signupDataSource,
-            loginUseCase,
-            emailDataSource,
-            purchaseDetailsUseCase,
-            getObfuscatedDeviceIdentifierUseCase,
-        )
+        useCase =
+            SignupUseCase(
+                signupDataSource,
+                loginUseCase,
+                emailDataSource,
+                purchaseDetailsUseCase,
+                getObfuscatedDeviceIdentifierUseCase,
+            )
     }
 
     @ParameterizedTest(name = "expected: {0}, data: {1}")
     @MethodSource("arguments")
-    fun `test signup`(expected: Credentials?, purchaseData: PurchaseData?) = runTest {
+    fun `test signup`(
+        expected: Credentials?,
+        purchaseData: PurchaseData?,
+    ) = runTest {
         every { purchaseDetailsUseCase.getPurchaseDetails() } returns purchaseData
         coEvery { signupDataSource.vpnSignup(*anyVararg()) } returns expected
 
@@ -53,9 +56,10 @@ internal class SignupUseCaseTest {
         val missingPurchaseData: PurchaseData? = null
 
         @JvmStatic
-        fun arguments() = Stream.of(
-            Arguments.of(credentials, purchaseData),
-            Arguments.of(nullCredentials, missingPurchaseData),
-        )
+        fun arguments() =
+            Stream.of(
+                Arguments.of(credentials, purchaseData),
+                Arguments.of(nullCredentials, missingPurchaseData),
+            )
     }
 }

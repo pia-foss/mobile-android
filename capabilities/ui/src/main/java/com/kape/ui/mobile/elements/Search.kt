@@ -18,7 +18,10 @@ import com.kape.ui.mobile.text.SearchInputLabelText
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun Search(modifier: Modifier, onTextChanged: (text: String) -> Unit) {
+fun Search(
+    modifier: Modifier,
+    onTextChanged: (text: String) -> Unit,
+) {
     val query = remember { mutableStateOf("") }
 
     OutlinedTextField(
@@ -45,21 +48,23 @@ fun Search(modifier: Modifier, onTextChanged: (text: String) -> Unit) {
                     painter = painterResource(id = R.drawable.ic_close),
                     contentDescription = null,
                     tint = Color.Unspecified,
-                    modifier = Modifier.clickable {
-                        query.value = ""
-                        onTextChanged("")
-                    },
+                    modifier =
+                        Modifier.clickable {
+                            query.value = ""
+                            onTextChanged("")
+                        },
                 )
             }
         },
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedContainerColor = LocalColors.current.surfaceVariant,
-            unfocusedContainerColor = LocalColors.current.surfaceVariant,
-            disabledContainerColor = LocalColors.current.surfaceVariant,
-            focusedBorderColor = LocalColors.current.onSurfaceVariant,
-            errorBorderColor = LocalColors.current.error,
-            cursorColor = LocalColors.current.onSurface,
-        ),
+        colors =
+            OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = LocalColors.current.surfaceVariant,
+                unfocusedContainerColor = LocalColors.current.surfaceVariant,
+                disabledContainerColor = LocalColors.current.surfaceVariant,
+                focusedBorderColor = LocalColors.current.onSurfaceVariant,
+                errorBorderColor = LocalColors.current.error,
+                cursorColor = LocalColors.current.onSurface,
+            ),
         singleLine = true,
     )
 }

@@ -18,7 +18,6 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class PrefsModule {
-
     @Singleton
     fun provideSettingsPrefs(context: Context): SettingsPrefs = SettingsPrefs(context)
 

@@ -57,14 +57,16 @@ fun TvEmailScreen() {
     }
 
     Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalColors.current.background),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(LocalColors.current.background),
     ) {
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(64.dp),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(64.dp),
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -73,9 +75,10 @@ fun TvEmailScreen() {
                 Image(
                     painter = painterResource(id = R.drawable.ic_logo_large),
                     contentDescription = null,
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(40.dp),
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(40.dp),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 SignUpTitleText(
@@ -83,40 +86,46 @@ fun TvEmailScreen() {
                 )
                 Spacer(modifier = Modifier.height(64.dp))
                 Card(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = LocalColors.current.onPrimaryContainer,
-                    ),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = LocalColors.current.onPrimaryContainer,
+                        ),
                 ) {
                     Image(
                         painter = painterResource(id = com.kape.login.R.drawable.ic_tv_onboarding),
                         contentScale = ContentScale.Fit,
                         contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 8.dp, vertical = 16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 8.dp, vertical = 16.dp),
                     )
                 }
             }
         }
         VerticalDivider(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(vertical = 64.dp)
-                .width(0.5.dp),
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .padding(vertical = 64.dp)
+                    .width(0.5.dp),
             color = LocalColors.current.primaryContainer,
         )
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(64.dp),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(64.dp),
         ) {
             Row(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = 32.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(top = 32.dp),
             ) {
                 Column {
                     EnterEmailScreenTitleText(
@@ -128,18 +137,20 @@ fun TvEmailScreen() {
                         modifier = Modifier,
                         maskInput = false,
                         keyboard = KeyboardType.Email,
-                        keyboardActions = KeyboardActions(
-                            onNext = {
-                                evaluateEmailError.value = true
-                                if (viewModel.isValidEmail(email = email.value)) {
-                                    viewModel.register(email = email.value)
-                                }
-                            },
-                        ),
+                        keyboardActions =
+                            KeyboardActions(
+                                onNext = {
+                                    evaluateEmailError.value = true
+                                    if (viewModel.isValidEmail(email = email.value)) {
+                                        viewModel.register(email = email.value)
+                                    }
+                                },
+                            ),
                         imeAction = ImeAction.Next,
-                        platformImeOptions = PlatformImeOptions(
-                            privateImeOptions = "horizontalAlignment=right",
-                        ),
+                        platformImeOptions =
+                            PlatformImeOptions(
+                                privateImeOptions = "horizontalAlignment=right",
+                            ),
                         content = email,
                         errorMessage = showEmailErrorIfNeeded(),
                     )

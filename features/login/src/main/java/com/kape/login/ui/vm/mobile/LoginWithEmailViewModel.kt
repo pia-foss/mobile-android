@@ -22,20 +22,20 @@ class LoginWithEmailViewModel(
     private val useCase: LoginUseCase,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(IDLE)
-    val loginState: StateFlow<LoginScreenState> = _state
+    val state: StateFlow<LoginScreenState> = _state
     val isConnected = networkConnectionListener.isConnected
 
-    fun loginWithEmail(email: String) = viewModelScope.launch {
-        _state.emit(LOADING)
-        if (email.isEmpty()) {
-            _state.emit(INVALID)
-            return@launch
+    fun loginWithEmail(email: String) =
+        viewModelScope.launch {
+            _state.emit(LOADING)
+            if (email.isEmpty()) {
+                _state.emit(INVALID)
+                return@launch
+            }
+            useCase.loginWithEmail(email)
+            _state.emit(SUCCESS)
         }
-        useCase.loginWithEmail(email)
-        _state.emit(SUCCESS)
-    }
 
     fun navigateToLoginWithCredentials() = router.updateDestination(LoginWithCredentials)
 }

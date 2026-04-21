@@ -13,13 +13,17 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 @Singleton
-class OnAppUpdatedReceiver : BroadcastReceiver(), KoinComponent {
-
+class OnAppUpdateReceiver :
+    BroadcastReceiver(),
+    KoinComponent {
     private val settingsPrefs: SettingsPrefs by inject()
     private val userLoggedInUseCase: IsUserLoggedInUseCase by inject()
     private val vpnLauncher: VpnLauncher by inject()
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         WebStorage.getInstance().deleteAllData()
         CookieManager.getInstance().removeAllCookies(null)
 

@@ -5,8 +5,9 @@ import android.net.ConnectivityManager
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [GetActiveInterfaceDnsUseCase::class])
-class GetActiveInterfaceDnsUseCaseImpl(private val context: Context) : GetActiveInterfaceDnsUseCase {
-
+class GetActiveInterfaceDnsUseCaseImpl(
+    private val context: Context,
+) : GetActiveInterfaceDnsUseCase {
     override fun invoke(): List<String> {
         val result = mutableListOf<String>()
         val connectivityManager: ConnectivityManager =

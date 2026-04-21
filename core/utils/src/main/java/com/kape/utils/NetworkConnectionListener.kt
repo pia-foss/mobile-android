@@ -12,7 +12,6 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import com.kape.contracts.NetworkManager
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 class NetworkConnectionListener(
     context: Context,
@@ -32,7 +31,8 @@ class NetworkConnectionListener(
 
                 override fun onLost(network: Network) {
                     _isConnected.value =
-                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                        connectivityManager
+                            .getNetworkCapabilities(connectivityManager.activeNetwork)
                             ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
                 }
 
@@ -67,7 +67,8 @@ class NetworkConnectionListener(
 
                 override fun onLost(network: Network) {
                     _isConnected.value =
-                        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                        connectivityManager
+                            .getNetworkCapabilities(connectivityManager.activeNetwork)
                             ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
                 }
 
@@ -87,17 +88,20 @@ class NetworkConnectionListener(
             }
         }
 
-    private val networkRequest = NetworkRequest.Builder()
-        .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-        .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-        .build()
+    private val networkRequest =
+        NetworkRequest
+            .Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .build()
 
     private val _isConnected = MutableStateFlow(false)
-    val isConnected: StateFlow<Boolean> = _isConnected
+
+    val isConnected = _isConnected
 
     private val _ssid = MutableStateFlow<String?>(null)
-    val currentSSID: StateFlow<String?> = _ssid
+    val ssid = _ssid
 
     init {
         connectivityManager.registerDefaultNetworkCallback(defaultCallback)
@@ -109,11 +113,10 @@ class NetworkConnectionListener(
         connectivityManager.requestNetwork(networkRequest, defaultCallback)
     }
 
-    private fun getSSID(networkCapabilities: NetworkCapabilities): String {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+    private fun getSSID(networkCapabilities: NetworkCapabilities): String =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             (networkCapabilities.transportInfo as WifiInfo).ssid
         } else {
             wifiManager.connectionInfo.ssid
         }
-    }
 }

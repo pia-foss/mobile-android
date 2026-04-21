@@ -8,6 +8,7 @@ interface ComposeDestination {
 
 sealed interface DestinationNavOptions {
     data object None : DestinationNavOptions
+
     data class PopUpTo(
         val destination: ComposeDestination,
         val inclusive: Boolean = true,
@@ -64,8 +65,7 @@ object Subscribe : ComposeDestination {
 }
 
 @Serializable
-object TvSubscribe : ComposeDestination {
-}
+object TvSubscribe : ComposeDestination
 
 @Serializable
 object Settings : ComposeDestination
@@ -167,7 +167,9 @@ object DebugLogs : ComposeDestination
 object ConnectionStats : ComposeDestination
 
 @Serializable
-sealed class WebDestination(val destination: String) : ComposeDestination {
+sealed class WebDestination(
+    val destination: String,
+) : ComposeDestination {
     @Serializable
     object Terms : WebDestination("web-screen-terms")
 

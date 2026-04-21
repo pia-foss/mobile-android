@@ -49,22 +49,23 @@ internal class LogoutUseCaseTest : BaseTest() {
 
     @BeforeEach
     internal fun setUp() {
-        useCase = LogoutUseCaseImpl(
-            source,
-            connectionPrefs,
-            csiPrefs,
-            customizationPrefs,
-            dipPrefs,
-            networkManagementPrefs,
-            subscriptionPrefs,
-            shadowsocksRegionPrefs,
-            vpnRegionPrefs,
-            settingsPrefs,
-            kpiPrefs,
-            consentPrefs,
-            ratingPrefs,
-            connectionManager,
-        )
+        useCase =
+            LogoutUseCaseImpl(
+                source,
+                connectionPrefs,
+                csiPrefs,
+                customizationPrefs,
+                dipPrefs,
+                networkManagementPrefs,
+                subscriptionPrefs,
+                shadowsocksRegionPrefs,
+                vpnRegionPrefs,
+                settingsPrefs,
+                kpiPrefs,
+                consentPrefs,
+                ratingPrefs,
+                connectionManager,
+            )
     }
 
     @ParameterizedTest(name = "automationEnabled: {0}, result: {1}, expected: {2}")
@@ -97,13 +98,14 @@ internal class LogoutUseCaseTest : BaseTest() {
 
     companion object {
         @JvmStatic
-        fun data() = Stream.of(
-            Arguments.of(true, ApiResult.Success, true),
-            Arguments.of(false, ApiResult.Success, true),
-            Arguments.of(true, ApiResult.Error(ApiError.AuthFailed), false),
-            Arguments.of(false, ApiResult.Error(ApiError.AccountExpired), false),
-            Arguments.of(true, ApiResult.Error(ApiError.Throttled), false),
-            Arguments.of(false, ApiResult.Error(ApiError.Unknown), false),
-        )
+        fun data() =
+            Stream.of(
+                Arguments.of(true, ApiResult.Success, true),
+                Arguments.of(false, ApiResult.Success, true),
+                Arguments.of(true, ApiResult.Error(ApiError.AuthFailed), false),
+                Arguments.of(false, ApiResult.Error(ApiError.AccountExpired), false),
+                Arguments.of(true, ApiResult.Error(ApiError.Throttled), false),
+                Arguments.of(false, ApiResult.Error(ApiError.Unknown), false),
+            )
     }
 }

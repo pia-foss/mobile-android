@@ -19,7 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
 class DipDataSourceImplTest {
-
     private val api: AndroidAccountAPI = mockk(relaxed = true)
     private val prefs: DipPrefs = mockk()
     private val context: android.content.Context = mockk()
@@ -32,31 +31,36 @@ class DipDataSourceImplTest {
     }
 
     @Test
-    fun activateSuccess() = runTest {
-        val dipInfo = DedicatedIPInformationResponse.DedicatedIPInformation(
-            id = "id",
-            ip = "ip",
-            cn = "cn",
-            groups = null,
-            dip_expire = null,
-            dipToken = "ipToken",
-            status = DedicatedIPInformationResponse.Status.active,
-        )
-        every { prefs.addDedicatedIp(any()) } returns Unit
-        coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
-            lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
-                listOf(dipInfo),
-                emptyList(),
-            )
-        }
+    fun activateSuccess() =
+        runTest {
+            val dipInfo =
+                DedicatedIPInformationResponse.DedicatedIPInformation(
+                    id = "id",
+                    ip = "ip",
+                    cn = "cn",
+                    groups = null,
+                    dip_expire = null,
+                    dipToken = "ipToken",
+                    status = DedicatedIPInformationResponse.Status.active,
+                )
+            every { prefs.addDedicatedIp(any()) } returns Unit
+            coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
+                lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
+                    listOf(dipInfo),
+                    emptyList(),
+                )
+            }
 
-        val actual = source.activate("ipToken")
-        assertEquals(DipApiResult.Active, actual)
-    }
+            val actual = source.activate("ipToken")
+            assertEquals(DipApiResult.Active, actual)
+        }
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun activateFail(errorList: List<AccountRequestError>, expected: DipApiResult) = runTest {
+    fun activateFail(
+        errorList: List<AccountRequestError>,
+        expected: DipApiResult,
+    ) = runTest {
         coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
             lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
                 emptyList(),
@@ -70,7 +74,10 @@ class DipDataSourceImplTest {
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun renew(errorList: List<AccountRequestError>, expected: DipApiResult) = runTest {
+    fun renew(
+        errorList: List<AccountRequestError>,
+        expected: DipApiResult,
+    ) = runTest {
         coEvery { api.renewDedicatedIP(any(), any()) } answers {
             lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
         }
@@ -80,25 +87,25 @@ class DipDataSourceImplTest {
     }
 
     companion object {
-
         @JvmStatic
-        fun accountApiResults() = Stream.of(
-            Arguments.of(
-                listOf(AccountRequestError(code = 600, message = null)),
-                DipApiResult.Error,
-            ),
-            Arguments.of(
-                listOf(AccountRequestError(code = 429, message = null)),
-                DipApiResult.Error,
-            ),
-            Arguments.of(
-                listOf(AccountRequestError(code = 401, message = null)),
-                DipApiResult.Error,
-            ),
-            Arguments.of(
-                listOf(AccountRequestError(code = 402, message = null)),
-                DipApiResult.Error,
-            ),
-        )
+        fun accountApiResults() =
+            Stream.of(
+                Arguments.of(
+                    listOf(AccountRequestError(code = 600, message = null)),
+                    DipApiResult.Error,
+                ),
+                Arguments.of(
+                    listOf(AccountRequestError(code = 429, message = null)),
+                    DipApiResult.Error,
+                ),
+                Arguments.of(
+                    listOf(AccountRequestError(code = 401, message = null)),
+                    DipApiResult.Error,
+                ),
+                Arguments.of(
+                    listOf(AccountRequestError(code = 402, message = null)),
+                    DipApiResult.Error,
+                ),
+            )
     }
 }

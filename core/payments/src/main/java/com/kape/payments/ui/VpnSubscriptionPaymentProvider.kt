@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 interface VpnSubscriptionPaymentProvider {
-
     val purchaseState: MutableStateFlow<PurchaseState>
 
     val purchaseHistoryState: MutableStateFlow<PurchaseHistoryState>

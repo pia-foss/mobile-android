@@ -1,10 +1,10 @@
 package screens.steps
 
 import androidx.test.uiautomator.UiAutomatorTestScope
-import screens.helpers.UiAutomatorHelpers.CONNECTION_TIMEOUT
-import screens.helpers.UiAutomatorHelpers.LONG_TIMEOUT
-import screens.helpers.UiAutomatorHelpers.click
-import screens.helpers.UiAutomatorHelpers.waitUntilConnectionIsEstablished
+import screens.helpers.UiAutomatorHelper.CONNECTION_TIMEOUT
+import screens.helpers.UiAutomatorHelper.LONG_TIMEOUT
+import screens.helpers.UiAutomatorHelper.click
+import screens.helpers.UiAutomatorHelper.waitUntilConnectionIsEstablished
 
 object MainScreenSteps {
     const val CONNECT_BUTTON = ":ConnectionScreen:connection_button"

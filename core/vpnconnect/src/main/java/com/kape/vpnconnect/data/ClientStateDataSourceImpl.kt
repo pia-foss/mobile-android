@@ -6,11 +6,8 @@ import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.utils.DELAY_BETWEEN_RETRY
-import com.kape.vpnconnect.utils.SHORT_DELAY
 import com.kape.vpnconnect.utils.STATUS_REQUEST_LONG_TIMEOUT
-import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
-import com.privateinternetaccess.account.model.response.ClientStatusInformation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
@@ -23,7 +20,6 @@ class ClientStateDataSourceImpl(
     private val csiPrefs: CsiPrefs,
     private val settingsPrefs: SettingsPrefs,
 ) : ClientStateDataSource {
-
     override suspend fun getPublicIp(): String {
         repeat(3) { attempt ->
             val ip = getPublicIpOnce()
@@ -55,14 +51,15 @@ class ClientStateDataSourceImpl(
             }
         }
 
-    private suspend fun getPublicIpOnce(): String = suspendCancellableCoroutine { continuation ->
-        accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT) { clientStatusInfo, errors ->
-            val ip = clientStatusInfo?.ip ?: NO_IP
-            if (clientStatusInfo?.connected == false) {
-                connectionPrefs.setClientIp(ip)
-                connectionPrefs.setVpnIp(NO_IP)
+    private suspend fun getPublicIpOnce(): String =
+        suspendCancellableCoroutine { continuation ->
+            accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT) { clientStatusInfo, errors ->
+                val ip = clientStatusInfo?.ip ?: NO_IP
+                if (clientStatusInfo?.connected == false) {
+                    connectionPrefs.setClientIp(ip)
+                    connectionPrefs.setVpnIp(NO_IP)
+                }
+                continuation.resume(ip)
             }
-            continuation.resume(ip)
         }
-    }
 }

@@ -33,82 +33,86 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ProtocolSettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.protocols))
-    }
-    val protocolDialogVisible = remember { mutableStateOf(false) }
-    val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
+fun ProtocolSettingsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.protocols))
+            }
+        val protocolDialogVisible = remember { mutableStateOf(false) }
+        val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth()
-                .semantics {
-                    testTagsAsResourceId = true
-                },
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                when (viewModel.getSelectedProtocol()) {
-                    VpnProtocols.OpenVPN -> {
-                        OpenVpnProtocolSettingsScreen(
-                            viewModel = viewModel,
-                            protocolDialogVisible = protocolDialogVisible,
-                        )
+            Column(
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth()
+                        .semantics {
+                            testTagsAsResourceId = true
+                        },
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    when (viewModel.getSelectedProtocol()) {
+                        VpnProtocols.OpenVPN -> {
+                            OpenVpnProtocolSettingsScreen(
+                                viewModel = viewModel,
+                                protocolDialogVisible = protocolDialogVisible,
+                            )
+                        }
+
+                        VpnProtocols.WireGuard -> {
+                            WireGuardProtocolSettingsScreen(
+                                viewModel = viewModel,
+                                protocolDialogVisible = protocolDialogVisible,
+                            )
+                        }
                     }
 
-                    VpnProtocols.WireGuard -> {
-                        WireGuardProtocolSettingsScreen(
-                            viewModel = viewModel,
-                            protocolDialogVisible = protocolDialogVisible,
+                    if (protocolDialogVisible.value) {
+                        OptionsDialog(
+                            titleId = R.string.protocol_selection_title,
+                            options =
+                                mapOf(
+                                    VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
+                                    VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
+                                ),
+                            buttons = getDefaultButtons(),
+                            onDismiss = { protocolDialogVisible.value = false },
+                            onConfirm = {
+                                val hasProtocolChanged = protocolSelection.value != it
+                                viewModel.selectProtocol(it)
+                                protocolSelection.value = it
+                                protocolDialogVisible.value = false
+
+                                if (hasProtocolChanged) {
+                                    viewModel.showReconnectDialogIfVpnConnected()
+                                }
+                            },
+                            selection = protocolSelection.value,
                         )
                     }
-                }
-
-                if (protocolDialogVisible.value) {
-                    OptionsDialog(
-                        titleId = R.string.protocol_selection_title,
-                        options = mapOf(
-                            VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
-                            VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
-                        ),
-                        buttons = getDefaultButtons(),
-                        onDismiss = { protocolDialogVisible.value = false },
-                        onConfirm = {
-                            val hasProtocolChanged = protocolSelection.value != it
-                            viewModel.selectProtocol(it)
-                            protocolSelection.value = it
-                            protocolDialogVisible.value = false
-
-                            if (hasProtocolChanged) {
-                                viewModel.showReconnectDialogIfVpnConnected()
-                            }
-                        },
-                        selection = protocolSelection.value,
-                    )
-                }
-                if (viewModel.reconnectDialogVisible.value) {
-                    ReconnectDialog(
-                        onReconnect = {
-                            viewModel.reconnect()
-                            viewModel.reconnectDialogVisible.value = false
-                        },
-                        onLater = {
-                            viewModel.reconnectDialogVisible.value = false
-                        },
-                    )
+                    if (viewModel.reconnectDialogVisible.value) {
+                        ReconnectDialog(
+                            onReconnect = {
+                                viewModel.reconnect()
+                                viewModel.reconnectDialogVisible.value = false
+                            },
+                            onLater = {
+                                viewModel.reconnectDialogVisible.value = false
+                            },
+                        )
+                    }
                 }
             }
         }
     }
-}
 
 @Composable
 fun OpenVpnProtocolSettingsScreen(
@@ -192,7 +196,10 @@ fun WireGuardProtocolSettingsScreen(
 }
 
 @Composable
-fun ProtocolSelectionLine(name: String, visibility: MutableState<Boolean>) {
+fun ProtocolSelectionLine(
+    name: String,
+    visibility: MutableState<Boolean>,
+) {
     SettingsItem(
         titleId = R.string.protocol_selection_title,
         subtitle = name,
@@ -203,7 +210,10 @@ fun ProtocolSelectionLine(name: String, visibility: MutableState<Boolean>) {
 }
 
 @Composable
-fun UseSmallPacketsLine(enabled: Boolean, onClick: (enabled: Boolean) -> Unit) {
+fun UseSmallPacketsLine(
+    enabled: Boolean,
+    onClick: (enabled: Boolean) -> Unit,
+) {
     SettingsToggle(
         titleId = R.string.protocol_use_small_packets_title,
         subtitleId = R.string.protocol_use_small_packets_description,
@@ -252,10 +262,11 @@ fun EncryptionSelectionDialog(
 ) {
     OptionsDialog(
         R.string.protocol_data_encryption_title,
-        options = mapOf(
-            DataEncryption.AES_128_GCM to DataEncryption.AES_128_GCM.value,
-            DataEncryption.AES_256_GCM to DataEncryption.AES_256_GCM.value,
-        ),
+        options =
+            mapOf(
+                DataEncryption.AES_128_GCM to DataEncryption.AES_128_GCM.value,
+                DataEncryption.AES_256_GCM to DataEncryption.AES_256_GCM.value,
+            ),
         buttons = getDefaultButtons(),
         onDismiss = {
             encryptionDialogVisible.value = false

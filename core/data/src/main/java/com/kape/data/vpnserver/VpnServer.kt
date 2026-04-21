@@ -31,24 +31,16 @@ data class VpnServer(
     @Serializable
     enum class ServerGroup {
         OPENVPN_TCP {
-            override fun toString(): String {
-                return "openvpn_tcp"
-            }
+            override fun toString(): String = "openvpn_tcp"
         },
         OPENVPN_UDP {
-            override fun toString(): String {
-                return "openvpn_udp"
-            }
+            override fun toString(): String = "openvpn_udp"
         },
         WIREGUARD {
-            override fun toString(): String {
-                return "wireguard"
-            }
+            override fun toString(): String = "wireguard"
         },
         META {
-            override fun toString(): String {
-                return "meta"
-            }
+            override fun toString(): String = "meta"
         },
     }
 

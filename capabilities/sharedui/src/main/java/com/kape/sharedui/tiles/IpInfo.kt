@@ -46,9 +46,10 @@ fun IPTile(
             painter = painterResource(id = R.drawable.ic_arrow),
             contentDescription = null,
             tint = LocalColors.current.onSurface,
-            modifier = Modifier
-                .align(CenterVertically)
-                .weight(0.2f),
+            modifier =
+                Modifier
+                    .align(CenterVertically)
+                    .weight(0.2f),
         )
 
         Column(
@@ -65,8 +66,9 @@ fun IPTile(
                         painter = painterResource(id = R.drawable.ic_port_forwarding),
                         contentDescription = null,
                         tint = Color.Unspecified,
-                        modifier = Modifier
-                            .size(16.dp),
+                        modifier =
+                            Modifier
+                                .size(16.dp),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(

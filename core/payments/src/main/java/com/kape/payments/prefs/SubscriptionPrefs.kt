@@ -1,11 +1,11 @@
 package com.kape.payments
 
 import android.content.Context
+import com.kape.localprefs.Prefs
 import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
 import com.kape.payments.data.SubscriptionPlan
-import com.kape.localprefs.Prefs
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 import kotlin.toString
@@ -16,8 +16,9 @@ private const val VPN_PURCHASE_DATA = "purchase-data"
 private const val DIP_PURCHASE_DATA = "dip-purchase-data"
 
 @Singleton
-class SubscriptionPrefs(context: Context) : Prefs(context, "subscriptions") {
-
+class SubscriptionPrefs(
+    context: Context,
+) : Prefs(context, "subscriptions") {
     fun storeVpnSubscriptions(available: List<Subscription>) {
         val validData = mutableSetOf<String>()
         for (item in available) {

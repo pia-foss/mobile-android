@@ -13,22 +13,31 @@ import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 
 @KoinViewModel
-class CustomizationViewModel(private val prefs: CustomizationPrefs, val router: Router) :
-    ViewModel(), KoinComponent {
-
+class CustomizationViewModel(
+    private val prefs: CustomizationPrefs,
+    val router: Router,
+) : ViewModel(),
+    KoinComponent {
     private var items by mutableStateOf(prefs.getOrderedElements())
 
     fun getOrderedElements(): List<ScreenElement> = items
 
-    fun onMove(from: LazyListItemInfo, to: LazyListItemInfo) {
-        items = items.toMutableList().apply {
-            add(to.index, removeAt(from.index))
-        }
+    fun onMove(
+        from: LazyListItemInfo,
+        to: LazyListItemInfo,
+    ) {
+        items =
+            items.toMutableList().apply {
+                add(to.index, removeAt(from.index))
+            }
     }
 
     fun saveOrder() = prefs.setOrderedElements(items)
 
-    fun toggleVisibility(element: Element, isVisible: Boolean) {
+    fun toggleVisibility(
+        element: Element,
+        isVisible: Boolean,
+    ) {
         items.first { it.element == element }.apply {
             this.isVisible = isVisible
         }

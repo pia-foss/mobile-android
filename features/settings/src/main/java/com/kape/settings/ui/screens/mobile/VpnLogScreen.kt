@@ -24,38 +24,42 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun VpnLogScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.debug_logs_title))
-    }
-
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            LaunchedEffect(key1 = Unit) {
-                viewModel.getDebugLogs()
+fun VpnLogScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.debug_logs_title))
             }
-            LazyColumn(modifier = Modifier.widthIn(max = 520.dp)) {
-                items(viewModel.debugLogs.value) {
-                    Text(
-                        text = it,
-                        color = LocalColors.current.outlineVariant,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp),
-                        textAlign = TextAlign.Start,
-                    )
+
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
+        ) {
+            Column(
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                LaunchedEffect(key1 = Unit) {
+                    viewModel.getDebugLogs()
+                }
+                LazyColumn(modifier = Modifier.widthIn(max = 520.dp)) {
+                    items(viewModel.debugLogs.value) {
+                        Text(
+                            text = it,
+                            color = LocalColors.current.outlineVariant,
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(4.dp),
+                            textAlign = TextAlign.Start,
+                        )
+                    }
                 }
             }
         }
     }
-}

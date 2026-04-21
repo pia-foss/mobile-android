@@ -37,78 +37,91 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ProfileScreen() = Screen {
-    val viewModel: ProfileViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.account))
-    }
-    val state by remember(viewModel) { viewModel.screenState }.collectAsState()
-
-    Column {
-        AppBar(viewModel = appBarViewModel)
-        if (state.loading) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+fun ProfileScreen() =
+    Screen {
+        val viewModel: ProfileViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.account))
             }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Column(
-                    modifier = Modifier
-                        .widthIn(max = 520.dp)
-                        .background(LocalColors.current.surfaceVariant)
-                        .padding(horizontal = 16.dp),
-                ) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Column(modifier = Modifier.semantics(mergeDescendants = true) {}) {
-                        SettingsL2Text(content = stringResource(id = R.string.username))
-                        Text(
-                            color = LocalColors.current.onSurfaceVariant,
-                            text = state.username,
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
-                    SettingsL2TextDescription(content = stringResource(id = R.string.message_other_devices))
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
-                        Text(
-                            color = LocalColors.current.outlineVariant,
-                            text = stringResource(id = if (state.expired) R.string.message_expired else R.string.message_expiration),
-                            fontSize = 12.sp,
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            color = LocalColors.current.onSurface,
-                            text = if (state.expired) stringResource(id = R.string.subscription_status_expired) else state.expirationDate,
-                            fontSize = 12.sp,
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
+        val state by remember(viewModel) { viewModel.state }.collectAsState()
+
+        Column {
+            AppBar(viewModel = appBarViewModel)
+            if (state.loading) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
-                Separator()
+            } else {
                 Column(
-                    modifier = Modifier
-                        .widthIn(max = 520.dp)
-                        .background(LocalColors.current.surfaceVariant)
-                        .padding(horizontal = 16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    SettingsL2Text(content = stringResource(id = R.string.account_deletion_title))
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SettingsL2TextDescription(content = stringResource(id = R.string.account_deletion_description))
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HyperlinkRed(
-                        content = stringResource(id = R.string.account_deletion_action),
-                        modifier = Modifier.clickable {
-                            viewModel.navigateToDeleteAccount()
-                        },
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Column(
+                        modifier =
+                            Modifier
+                                .widthIn(max = 520.dp)
+                                .background(LocalColors.current.surfaceVariant)
+                                .padding(horizontal = 16.dp),
+                    ) {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        Column(modifier = Modifier.semantics(mergeDescendants = true) {}) {
+                            SettingsL2Text(content = stringResource(id = R.string.username))
+                            Text(
+                                color = LocalColors.current.onSurfaceVariant,
+                                text = state.username,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(24.dp))
+                        SettingsL2TextDescription(content = stringResource(id = R.string.message_other_devices))
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
+                            Text(
+                                color = LocalColors.current.outlineVariant,
+                                text = stringResource(id = if (state.expired) R.string.message_expired else R.string.message_expiration),
+                                fontSize = 12.sp,
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                color = LocalColors.current.onSurface,
+                                text =
+                                    if (state.expired) {
+                                        stringResource(
+                                            id = R.string.subscription_status_expired,
+                                        )
+                                    } else {
+                                        state.expirationDate
+                                    },
+                                fontSize = 12.sp,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                    Separator()
+                    Column(
+                        modifier =
+                            Modifier
+                                .widthIn(max = 520.dp)
+                                .background(LocalColors.current.surfaceVariant)
+                                .padding(horizontal = 16.dp),
+                    ) {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        SettingsL2Text(content = stringResource(id = R.string.account_deletion_title))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SettingsL2TextDescription(content = stringResource(id = R.string.account_deletion_description))
+                        Spacer(modifier = Modifier.height(8.dp))
+                        HyperlinkRed(
+                            content = stringResource(id = R.string.account_deletion_action),
+                            modifier =
+                                Modifier.clickable {
+                                    viewModel.navigateToDeleteAccount()
+                                },
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
         }
     }
-}

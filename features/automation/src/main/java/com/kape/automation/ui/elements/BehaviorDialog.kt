@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.RadioButton
@@ -42,37 +41,39 @@ fun BehaviorDialog(
         modifier = Modifier.background(LocalColors.current.surfaceVariant),
         properties = DialogProperties(),
         content = {
-            val radioOptions = mutableListOf(
-                stringResource(id = R.string.nmt_connect),
-                stringResource(id = R.string.nmt_disconnect),
-                stringResource(id = R.string.nmt_retain),
-            )
+            val radioOptions =
+                mutableListOf(
+                    stringResource(id = R.string.nmt_connect),
+                    stringResource(id = R.string.nmt_disconnect),
+                    stringResource(id = R.string.nmt_retain),
+                )
 
             if (showRemoveOption) {
                 radioOptions.add(stringResource(id = com.kape.ui.R.string.nmt_remove_rule))
             }
 
-            val selectedOption = remember {
-                mutableStateOf(
-                    radioOptions[
-                        radioOptions.indexOf(
-                            status,
-                        ),
-                    ],
-                )
-            }
+            val selectedOption =
+                remember {
+                    mutableStateOf(
+                        radioOptions[
+                            radioOptions.indexOf(
+                                status,
+                            ),
+                        ],
+                    )
+                }
 
             Column(
                 Modifier.fillMaxWidth(),
             ) {
                 DialogTitleText(
                     content = stringResource(id = R.string.dialog_title),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            LocalColors.current.surface,
-                        )
-                        .padding(16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .background(
+                                LocalColors.current.surface,
+                            ).padding(16.dp),
                 )
                 radioOptions.forEach { text ->
                     Row(
@@ -84,8 +85,7 @@ fun BehaviorDialog(
                                     selectedOption.value = text
                                 },
                                 role = Role.RadioButton,
-                            )
-                            .padding(vertical = 14.dp, horizontal = 10.dp),
+                            ).padding(vertical = 14.dp, horizontal = 10.dp),
                     ) {
                         RadioButton(
                             selected = (text == selectedOption.value),
@@ -99,26 +99,29 @@ fun BehaviorDialog(
                 }
 
                 Row(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(16.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.End)
+                            .padding(16.dp),
                 ) {
                     DialogActionText(
                         content = stringResource(id = android.R.string.cancel),
-                        modifier = Modifier.clickable {
-                            showDialog.value = false
-                        },
+                        modifier =
+                            Modifier.clickable {
+                                showDialog.value = false
+                            },
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     DialogActionText(
                         content = stringResource(id = android.R.string.ok),
-                        modifier = Modifier.clickable {
-                            onItemSelected(selectedOption.value)
-                            showDialog.value = false
-                        },
+                        modifier =
+                            Modifier.clickable {
+                                onItemSelected(selectedOption.value)
+                                showDialog.value = false
+                            },
                     )
                 }
             }
-        }
+        },
     )
 }

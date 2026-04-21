@@ -21,28 +21,31 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) = Screen {
-    val activity = LocalActivity.current
-    BackHandler {
-        activity?.finish()
-    }
+fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) =
+    Screen {
+        val activity = LocalActivity.current
+        BackHandler {
+            activity?.finish()
+        }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalColors.current.background),
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_logo_large),
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .width(200.dp)
-                .height(80.dp),
-        )
-    }
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(LocalColors.current.background),
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_logo_large),
+                contentDescription = null,
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .width(200.dp)
+                        .height(80.dp),
+            )
+        }
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.load()
+        LaunchedEffect(key1 = Unit) {
+            viewModel.load()
+        }
     }
-}

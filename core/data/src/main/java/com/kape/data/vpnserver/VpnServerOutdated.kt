@@ -21,21 +21,22 @@ data class VpnServerOutdated(
     val dedicatedIp: String?,
     val isDedicatedIp: Boolean = !dedicatedIp.isNullOrEmpty(),
 ) {
-    fun toVpnServer(): VpnServer = VpnServer(
-        name,
-        iso,
-        dns,
-        latency,
-        endpoints,
-        key,
-        latitude,
-        longitude,
-        isGeo,
-        isOffline,
-        allowsPortForwarding,
-        false,
-        dipToken,
-        dedicatedIp,
-        isDedicatedIp,
-    )
+    fun toVpnServer(): VpnServer =
+        VpnServer(
+            name,
+            iso,
+            dns,
+            latency,
+            endpoints,
+            key,
+            latitude,
+            longitude,
+            isGeo,
+            isOffline,
+            allowsPortForwarding,
+            false,
+            dipToken,
+            dedicatedIp,
+            isDedicatedIp,
+        )
 }

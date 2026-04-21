@@ -68,16 +68,18 @@ fun <T> OptionsDialog(
                     modifier = Modifier.testTag(":OptionsDialog:Ok"),
                 ) {
                     Text(
-                        text = buttons[ButtonType.Positive]?.label
-                            ?: stringResource(id = R.string.ok),
+                        text =
+                            buttons[ButtonType.Positive]?.label
+                                ?: stringResource(id = R.string.ok),
                     )
                 }
             }
         },
-        modifier = Modifier
-            .semantics {
-                testTagsAsResourceId = true
-            },
+        modifier =
+            Modifier
+                .semantics {
+                    testTagsAsResourceId = true
+                },
         title = {
             Text(text = stringResource(id = titleId), style = MaterialTheme.typography.titleMedium)
         },
@@ -94,8 +96,7 @@ fun <T> OptionsDialog(
                                 onClick = {
                                     selected.value = it.key
                                 },
-                            )
-                            .padding(vertical = 8.dp)
+                            ).padding(vertical = 8.dp)
                             .semantics {
                                 testTagsAsResourceId = true
                             },

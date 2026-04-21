@@ -13,8 +13,5 @@ data class SubscriptionPlan(
     val freeTrialDuration: String?,
     val plan: String,
 ) {
-
-    override fun toString(): String {
-        return Json.encodeToString(this)
-    }
+    override fun toString(): String = Json.encodeToString(this)
 }

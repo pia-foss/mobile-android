@@ -31,9 +31,10 @@ fun ConnectionInfo(
     handshake: String,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp, vertical = 16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
         TileTitleText(stringResource(id = R.string.connection))
         Spacer(modifier = Modifier.height(4.dp))
@@ -55,7 +56,10 @@ fun ConnectionInfo(
 }
 
 @Composable
-fun InfoRow(iconId: Int, label: String) {
+fun InfoRow(
+    iconId: Int,
+    label: String,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 8.dp),

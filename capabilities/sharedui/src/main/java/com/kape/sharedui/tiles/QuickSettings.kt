@@ -40,51 +40,61 @@ fun QuickSettings(
             QuickSettingItem(
                 iconId = R.drawable.ic_quick_automation,
                 labelId = R.string.automation,
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable {
-                        onAutomationClick()
-                    },
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .clickable {
+                            onAutomationClick()
+                        },
             )
 
             QuickSettingItem(
                 iconId = R.drawable.ic_quick_killswitch,
                 labelId = R.string.vpn_kill_switch,
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable {
-                        onKillSwitchClick()
-                    },
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .clickable {
+                            onKillSwitchClick()
+                        },
             )
 
             QuickSettingItem(
                 iconId = R.drawable.ic_quick_protocols,
                 labelId = R.string.protocols,
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { onProtocolsClick() },
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .clickable { onProtocolsClick() },
             )
         }
     }
 }
 
 @Composable
-private fun QuickSettingItem(iconId: Int, labelId: Int, modifier: Modifier) {
+private fun QuickSettingItem(
+    iconId: Int,
+    labelId: Int,
+    modifier: Modifier,
+) {
     Column(modifier = modifier, horizontalAlignment = CenterHorizontally) {
         Box(
-            modifier = Modifier
-                .size(40.dp)
-                .background(LocalColors.current.surfaceVariant, CircleShape)
-                .padding(4.dp),
+            modifier =
+                Modifier
+                    .size(40.dp)
+                    .background(LocalColors.current.surfaceVariant, CircleShape)
+                    .padding(4.dp),
         ) {
             Icon(
-                painter = painterResource(
-                    id = iconId,
-                ),
+                painter =
+                    painterResource(
+                        id = iconId,
+                    ),
                 contentDescription = null,
-                modifier = Modifier
-                    .size(24.dp)
-                    .align(Alignment.Center),
+                modifier =
+                    Modifier
+                        .size(24.dp)
+                        .align(Alignment.Center),
                 tint = LocalColors.current.onSurface,
             )
         }

@@ -15,14 +15,12 @@ import org.koin.core.annotation.Singleton
 @Module
 @ComponentScan("com.kape.vpnregions", "com.kape.data")
 class VpnServersModule {
-
     @Singleton
     fun provideRegionListProvider(
         regionRepository: VpnRegionRepository,
         readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-    ): RegionListProvider =
-        RegionListProvider(regionRepository, readVpnRegionsDetailsUseCase, ioDispatcher)
+    ): RegionListProvider = RegionListProvider(regionRepository, readVpnRegionsDetailsUseCase, ioDispatcher)
 
     @Singleton
     fun provideShadowsocksListProvider(

@@ -11,14 +11,15 @@ import kotlin.coroutines.resume
 private const val STORE = "google_play"
 
 @Singleton(binds = [AuthenticationDataSource::class])
-class AuthenticationDataSourceImpl(private val api: AndroidAccountAPI) :
-    AuthenticationDataSource {
+class AuthenticationDataSourceImpl(
+    private val api: AndroidAccountAPI,
+) : AuthenticationDataSource {
+    override fun isUserLoggedIn(): Boolean = !api.apiToken().isNullOrEmpty() && !api.vpnToken().isNullOrEmpty()
 
-    override fun isUserLoggedIn(): Boolean {
-        return !api.apiToken().isNullOrEmpty() && !api.vpnToken().isNullOrEmpty()
-    }
-
-    override suspend fun login(username: String, password: String): ApiResult =
+    override suspend fun login(
+        username: String,
+        password: String,
+    ): ApiResult =
         suspendCancellableCoroutine { cont ->
             api.loginWithCredentials(username, password) {
                 if (it.isNotEmpty()) {
@@ -29,15 +30,16 @@ class AuthenticationDataSourceImpl(private val api: AndroidAccountAPI) :
             }
         }
 
-    override suspend fun logout(): ApiResult = suspendCancellableCoroutine { cont ->
-        api.logout {
-            if (it.isNotEmpty()) {
-                cont.resume(ApiResult.Error(getApiError(it.last().code)))
-                return@logout
+    override suspend fun logout(): ApiResult =
+        suspendCancellableCoroutine { cont ->
+            api.logout {
+                if (it.isNotEmpty()) {
+                    cont.resume(ApiResult.Error(getApiError(it.last().code)))
+                    return@logout
+                }
+                cont.resume(ApiResult.Success)
             }
-            cont.resume(ApiResult.Success)
         }
-    }
 
     override suspend fun loginWithEmail(email: String): ApiResult =
         suspendCancellableCoroutine { cont ->
@@ -54,15 +56,16 @@ class AuthenticationDataSourceImpl(private val api: AndroidAccountAPI) :
         receiptToken: String,
         productId: String,
         packageName: String,
-    ): ApiResult = suspendCancellableCoroutine { cont ->
-        api.loginWithReceipt(STORE, receiptToken, productId, packageName) {
-            if (it.isNotEmpty()) {
-                cont.resume(ApiResult.Error(getApiError(it.last().code)))
-                return@loginWithReceipt
+    ): ApiResult =
+        suspendCancellableCoroutine { cont ->
+            api.loginWithReceipt(STORE, receiptToken, productId, packageName) {
+                if (it.isNotEmpty()) {
+                    cont.resume(ApiResult.Error(getApiError(it.last().code)))
+                    return@loginWithReceipt
+                }
+                cont.resume(ApiResult.Success)
             }
-            cont.resume(ApiResult.Success)
         }
-    }
 
     override suspend fun migrateToken(apiToken: String): ApiResult =
         suspendCancellableCoroutine { cont ->

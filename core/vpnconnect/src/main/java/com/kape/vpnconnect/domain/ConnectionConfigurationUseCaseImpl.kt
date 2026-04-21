@@ -43,14 +43,15 @@ class ConnectionConfigurationUseCaseImpl(
     private val notificationBuilder: Notification.Builder,
     private val configureIntent: PendingIntent,
     private val automationPendingIntent: PendingIntent,
-) : ConnectionConfigurationUseCase, KoinComponent {
-
+) : ConnectionConfigurationUseCase,
+    KoinComponent {
     override fun generateConnectionConfiguration(server: VpnServer): ClientConfiguration {
-        val cipher = when (settingsPrefs.getOpenVpnSettings().dataEncryption) {
-            DataEncryption.AES_128_GCM -> "AES-128-GCM"
-            DataEncryption.AES_256_GCM -> "AES-256-GCM"
-            DataEncryption.CHA_CHA_20 -> "CHACHA20-POLY1305"
-        }
+        val cipher =
+            when (settingsPrefs.getOpenVpnSettings().dataEncryption) {
+                DataEncryption.AES_128_GCM -> "AES-128-GCM"
+                DataEncryption.AES_256_GCM -> "AES-256-GCM"
+                DataEncryption.CHA_CHA_20 -> "CHACHA20-POLY1305"
+            }
 
         var additionalOpenVpnParams = "--cipher $cipher "
         if (server.isDedicatedIp) {
@@ -78,17 +79,19 @@ class ConnectionConfigurationUseCaseImpl(
             disallowedApplicationPackages = settingsPrefs.getVpnExcludedApps(),
             allowLocalNetworkAccess = settingsPrefs.isAllowLocalTrafficEnabled(),
             serverList = ServerList(servers = getEndpoints(server)),
-            openVpnClientConfiguration = OpenVpnClientConfiguration(
-                caCertificate = certificate,
-                username = getUsernameAndPassword().first,
-                password = getUsernameAndPassword().second,
-                socksProxy = getProxyDetails(),
-                additionalParameters = additionalOpenVpnParams,
-            ),
-            wireguardClientConfiguration = WireguardClientConfiguration(
-                token = connectionSource.getVpnToken(),
-                pinningCertificate = certificate,
-            ),
+            openVpnClientConfiguration =
+                OpenVpnClientConfiguration(
+                    caCertificate = certificate,
+                    username = getUsernameAndPassword().first,
+                    password = getUsernameAndPassword().second,
+                    socksProxy = getProxyDetails(),
+                    additionalParameters = additionalOpenVpnParams,
+                ),
+            wireguardClientConfiguration =
+                WireguardClientConfiguration(
+                    token = connectionSource.getVpnToken(),
+                    pinningCertificate = certificate,
+                ),
         )
     }
 
@@ -120,8 +123,8 @@ class ConnectionConfigurationUseCaseImpl(
         return Pair(username, password)
     }
 
-    private fun getDnsList(): List<String> {
-        return if (settingsPrefs.isMaceEnabled()) {
+    private fun getDnsList(): List<String> =
+        if (settingsPrefs.isMaceEnabled()) {
             listOf(MACE_DNS)
         } else {
             when (settingsPrefs.getSelectedDnsOption()) {
@@ -146,7 +149,6 @@ class ConnectionConfigurationUseCaseImpl(
                 }
             }
         }
-    }
 
     private fun getProtocolInfo(): Pair<VPNManagerProtocolTarget, ProtocolSettings> {
         val protocolTarget: VPNManagerProtocolTarget
@@ -189,22 +191,24 @@ class ConnectionConfigurationUseCaseImpl(
     private fun getProxyDetails(): OpenVpnSocksProxyDetails? {
         var proxyDetails: OpenVpnSocksProxyDetails? = null
         if (settingsPrefs.isShadowsocksObfuscationEnabled()) {
-            proxyDetails = shadowsocksRegionPrefs.getSelectedShadowsocksServer()?.let {
-                OpenVpnSocksProxyDetails(
-                    clientProxyAddress = OBFUSCATOR_PROXY_HOST,
-                    clientProxyPort = OBFUSCATOR_PROXY_PORT,
-                    serverProxyAddress = it.host,
-                )
-            }
+            proxyDetails =
+                shadowsocksRegionPrefs.getSelectedShadowsocksServer()?.let {
+                    OpenVpnSocksProxyDetails(
+                        clientProxyAddress = OBFUSCATOR_PROXY_HOST,
+                        clientProxyPort = OBFUSCATOR_PROXY_PORT,
+                        serverProxyAddress = it.host,
+                    )
+                }
         }
         if (settingsPrefs.isExternalProxyAppEnabled()) {
-            proxyDetails = connectionPrefs.getSelectedVpnServer()?.let {
-                OpenVpnSocksProxyDetails(
-                    clientProxyAddress = OBFUSCATOR_PROXY_HOST,
-                    clientProxyPort = connectionPrefs.getProxyPort().toInt(),
-                    serverProxyAddress = OBFUSCATOR_PROXY_HOST,
-                )
-            }
+            proxyDetails =
+                connectionPrefs.getSelectedVpnServer()?.let {
+                    OpenVpnSocksProxyDetails(
+                        clientProxyAddress = OBFUSCATOR_PROXY_HOST,
+                        clientProxyPort = connectionPrefs.getProxyPort().toInt(),
+                        serverProxyAddress = OBFUSCATOR_PROXY_HOST,
+                    )
+                }
         }
         return proxyDetails
     }
@@ -215,25 +219,27 @@ class ConnectionConfigurationUseCaseImpl(
         port: Int,
         server: VpnServer,
         dnsList: List<String>,
-    ): ServerList.Server {
-        return ServerList.Server(
+    ): ServerList.Server =
+        ServerList.Server(
             ip = ip,
             port = port,
             commonOrDistinguishedName = cn,
-            transport = when (settingsPrefs.getOpenVpnSettings().transport) {
-                Transport.UDP -> TransportProtocol.UDP
-                Transport.TCP -> TransportProtocol.TCP
-            },
-            ciphers = when (settingsPrefs.getOpenVpnSettings().dataEncryption) {
-                DataEncryption.AES_128_GCM -> listOf(ProtocolCipher.AES_128_GCM)
-                DataEncryption.AES_256_GCM -> listOf(ProtocolCipher.AES_256_GCM)
-                DataEncryption.CHA_CHA_20 -> listOf(ProtocolCipher.CHA_CHA_20)
-            },
+            transport =
+                when (settingsPrefs.getOpenVpnSettings().transport) {
+                    Transport.UDP -> TransportProtocol.UDP
+                    Transport.TCP -> TransportProtocol.TCP
+                },
+            ciphers =
+                when (settingsPrefs.getOpenVpnSettings().dataEncryption) {
+                    DataEncryption.AES_128_GCM -> listOf(ProtocolCipher.AES_128_GCM)
+                    DataEncryption.AES_256_GCM -> listOf(ProtocolCipher.AES_256_GCM)
+                    DataEncryption.CHA_CHA_20 -> listOf(ProtocolCipher.CHA_CHA_20)
+                },
             latency = server.latency?.toLong(),
-            dnsInformation = DnsInformation(
-                dnsList = dnsList,
-                systemDnsResolverEnabled = settingsPrefs.getSelectedDnsOption() == DnsOptions.SYSTEM,
-            ),
+            dnsInformation =
+                DnsInformation(
+                    dnsList = dnsList,
+                    systemDnsResolverEnabled = settingsPrefs.getSelectedDnsOption() == DnsOptions.SYSTEM,
+                ),
         )
-    }
 }

@@ -37,19 +37,21 @@ fun Input(
     content: MutableState<String>,
     errorMessage: String? = null,
 ) {
-    val trailingIcon: @Composable (() -> Unit)? = errorMessage?.let {
-        @Composable {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_error),
-                contentDescription = null,
-                tint = Color.Unspecified,
-            )
+    val trailingIcon: @Composable (() -> Unit)? =
+        errorMessage?.let {
+            @Composable {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_error),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                )
+            }
         }
-    }
     Column(modifier = modifier) {
         OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
             enabled = enabled,
             value = content.value,
             onValueChange = {
@@ -63,20 +65,22 @@ fun Input(
             singleLine = singleLine,
             shape = RoundedCornerShape(12.dp),
             trailingIcon = trailingIcon,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = LocalColors.current.onPrimary,
-                unfocusedContainerColor = LocalColors.current.onPrimary,
-                disabledContainerColor = LocalColors.current.onPrimary,
-                focusedBorderColor = LocalColors.current.outlineVariant,
-                errorBorderColor = LocalColors.current.error,
-            ),
+            colors =
+                OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = LocalColors.current.onPrimary,
+                    unfocusedContainerColor = LocalColors.current.onPrimary,
+                    disabledContainerColor = LocalColors.current.onPrimary,
+                    focusedBorderColor = LocalColors.current.outlineVariant,
+                    errorBorderColor = LocalColors.current.error,
+                ),
             visualTransformation = if (maskInput) PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(
-                autoCorrect = false,
-                keyboardType = keyboard,
-                imeAction = imeAction,
-                platformImeOptions = platformImeOptions,
-            ),
+            keyboardOptions =
+                KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = keyboard,
+                    imeAction = imeAction,
+                    platformImeOptions = platformImeOptions,
+                ),
             keyboardActions = keyboardActions,
             isError = errorMessage != null,
         )

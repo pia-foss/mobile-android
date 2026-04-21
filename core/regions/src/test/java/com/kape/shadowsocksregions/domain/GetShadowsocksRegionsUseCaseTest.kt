@@ -16,7 +16,6 @@ import java.util.stream.Stream
 import kotlin.test.assertEquals
 
 internal class GetShadowsocksRegionsUseCaseTest {
-
     private val shadowsocksRegionRepository: ShadowsocksRegionRepository = mockk(relaxed = true)
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs = mockk()
     private val readShadowsocksRegionsDetailsUseCase: ReadShadowsocksRegionsDetailsUseCase = mockk(relaxed = true)
@@ -26,21 +25,23 @@ internal class GetShadowsocksRegionsUseCaseTest {
 
     @BeforeEach
     internal fun setUp() {
-        getShadowsocksRegionsUseCase = GetShadowsocksRegionsUseCase(
-            shadowsocksRegionRepository,
-            shadowsocksRegionPrefs,
-            readShadowsocksRegionsDetailsUseCase,
-            setShadowsocksRegionsUseCase,
-        )
+        getShadowsocksRegionsUseCase =
+            GetShadowsocksRegionsUseCase(
+                shadowsocksRegionRepository,
+                shadowsocksRegionPrefs,
+                readShadowsocksRegionsDetailsUseCase,
+                setShadowsocksRegionsUseCase,
+            )
     }
 
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("shadowsocksListData")
-    fun `fetch shadowsocks regions`(expected: List<ShadowsocksServer>) = runTest {
-        coEvery { shadowsocksRegionRepository.fetchShadowsocksServers(any()) } returns expected
-        val actual = getShadowsocksRegionsUseCase.fetchShadowsocksServers("")
-        assertEquals(expected, actual)
-    }
+    fun `fetch shadowsocks regions`(expected: List<ShadowsocksServer>) =
+        runTest {
+            coEvery { shadowsocksRegionRepository.fetchShadowsocksServers(any()) } returns expected
+            val actual = getShadowsocksRegionsUseCase.fetchShadowsocksServers("")
+            assertEquals(expected, actual)
+        }
 
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("shadowsocksListData")
@@ -59,25 +60,26 @@ internal class GetShadowsocksRegionsUseCaseTest {
 
     companion object {
         @JvmStatic
-        fun shadowsocksListData(): Stream<Arguments> = Stream.of(
-            Arguments.of(
-                listOf(
-                    ShadowsocksServer(
-                        region = "region1",
-                        host = "host",
-                        port = 8080,
-                        key = "key",
-                        cipher = "cipher",
-                    ),
-                    ShadowsocksServer(
-                        region = "region2",
-                        host = "host",
-                        port = 8080,
-                        key = "key",
-                        cipher = "cipher",
+        fun shadowsocksListData(): Stream<Arguments> =
+            Stream.of(
+                Arguments.of(
+                    listOf(
+                        ShadowsocksServer(
+                            region = "region1",
+                            host = "host",
+                            port = 8080,
+                            key = "key",
+                            cipher = "cipher",
+                        ),
+                        ShadowsocksServer(
+                            region = "region2",
+                            host = "host",
+                            port = 8080,
+                            key = "key",
+                            cipher = "cipher",
+                        ),
                     ),
                 ),
-            ),
-        )
+            )
     }
 }

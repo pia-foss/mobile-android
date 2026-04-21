@@ -5,10 +5,7 @@ data class VpnServerInfo(
     var udpPorts: List<Int>? = null,
     var tcpPorts: List<Int>? = null,
 ) {
-
-    fun isValid(): Boolean {
-        return !autoRegions.isNullOrEmpty() && !udpPorts.isNullOrEmpty() && !tcpPorts.isNullOrEmpty()
-    }
+    fun isValid(): Boolean = !autoRegions.isNullOrEmpty() && !udpPorts.isNullOrEmpty() && !tcpPorts.isNullOrEmpty()
 
     override fun toString() = "PIAServerInfo { autoRegions: $autoRegions, udpPorts: $udpPorts, tcpPorts: $tcpPorts }"
 }

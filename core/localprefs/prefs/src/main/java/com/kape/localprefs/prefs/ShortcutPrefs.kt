@@ -75,6 +75,5 @@ class ShortcutPrefs(
         }
     }
 
-
     fun isShortcutSettings(): Boolean = prefs.getBoolean(SHORTCUT_SETTINGS, false)
 }

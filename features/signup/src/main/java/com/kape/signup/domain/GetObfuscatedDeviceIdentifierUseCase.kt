@@ -9,7 +9,6 @@ class GetObfuscatedDeviceIdentifierUseCase(
     private val identifier: Identifier,
     private val obfuscator: Obfuscator,
 ) {
-
     fun obfuscatedDeviceIdentifier(): Result<String> =
         identifier().mapCatching {
             obfuscator(value = it).getOrThrow()

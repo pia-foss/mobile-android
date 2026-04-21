@@ -23,7 +23,6 @@ import org.koin.core.annotation.Module
 
 @Module
 class ConnectionModule {
-
     @KoinViewModel
     fun provideConnectionViewModel(
         router: Router,
@@ -43,23 +42,24 @@ class ConnectionModule {
         shortcutPrefs: ShortcutPrefs,
         buildConfigProvider: BuildConfigProvider,
         networkConnectionListener: NetworkConnectionListener,
-    ): ConnectionViewModel = ConnectionViewModel(
-        router,
-        regionListProvider,
-        shadowsocksListProvider,
-        connectionManager,
-        prefs,
-        settingsPrefs,
-        snoozeHandler,
-        usageProvider,
-        dipPrefs,
-        renewDipUseCase,
-        customizationPrefs,
-        vpnRegionPrefs,
-        ratingTool,
-        shortcutPrefs,
-        buildConfigProvider,
-        connectionInfoProvider,
-        networkConnectionListener,
-    )
+    ): ConnectionViewModel =
+        ConnectionViewModel(
+            router,
+            regionListProvider,
+            shadowsocksListProvider,
+            connectionManager,
+            prefs,
+            settingsPrefs,
+            snoozeHandler,
+            usageProvider,
+            dipPrefs,
+            renewDipUseCase,
+            customizationPrefs,
+            vpnRegionPrefs,
+            ratingTool,
+            shortcutPrefs,
+            buildConfigProvider,
+            connectionInfoProvider,
+            networkConnectionListener,
+        )
 }

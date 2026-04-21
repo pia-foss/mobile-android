@@ -81,8 +81,8 @@ import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.di.VpnLauncherModule
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
-import com.kape.vpnregionselection.di.VpnRegionModule
 import com.kape.vpnregions.di.VpnServersModule
+import com.kape.vpnregionselection.di.VpnRegionModule
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
@@ -141,26 +141,32 @@ import java.io.BufferedReader
 )
 @ComponentScan("com.kape.vpn", "com.kape.obfuscator")
 class AppModule {
-
     @Singleton(binds = [AppInfo::class])
-    fun provideAppInfo(): AppInfo = object : AppInfo {
-        override val buildFlavor: String = BuildConfig.FLAVOR
-        override val buildType: String = BuildConfig.BUILD_TYPE
-        override val versionName: String = BuildConfig.VERSION_NAME
-        override val versionCode: Int = BuildConfig.VERSION_CODE
-    }
+    fun provideAppInfo(): AppInfo =
+        object : AppInfo {
+            override val buildFlavor: String = BuildConfig.FLAVOR
+            override val buildType: String = BuildConfig.BUILD_TYPE
+            override val versionName: String = BuildConfig.VERSION_NAME
+            override val versionCode: Int = BuildConfig.VERSION_CODE
+        }
 
     @Singleton(binds = [ConfigInfo::class])
-    fun provideConfigInfo(context: Context): ConfigInfo = object : ConfigInfo {
-        override val certificate: String =
-            context.assets.open("rsa4096.pem").bufferedReader().use(BufferedReader::readText)
-        override val userAgent: String =
-            "privateinternetaccess.com Android Client/${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE}))"
-        override val updateUrl: String = BuildConfig.UPDATE_URL
-        override val licences: List<String> =
-            context.assets.open("acknowledgements.txt").bufferedReader()
-                .use(BufferedReader::readLines)
-    }
+    fun provideConfigInfo(context: Context): ConfigInfo =
+        object : ConfigInfo {
+            override val certificate: String =
+                context.assets
+                    .open("rsa4096.pem")
+                    .bufferedReader()
+                    .use(BufferedReader::readText)
+            override val userAgent: String =
+                "privateinternetaccess.com Android Client/${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE}))"
+            override val updateUrl: String = BuildConfig.UPDATE_URL
+            override val licences: List<String> =
+                context.assets
+                    .open("acknowledgements.txt")
+                    .bufferedReader()
+                    .use(BufferedReader::readLines)
+        }
 
     @Singleton
     @Named("licences")
@@ -185,8 +191,7 @@ class AppModule {
         ) as NotificationManager
 
     @Singleton
-    fun provideBuildConfigProvider(appInfo: AppInfo): BuildConfigProvider =
-        BuildConfigProvider(appInfo)
+    fun provideBuildConfigProvider(appInfo: AppInfo): BuildConfigProvider = BuildConfigProvider(appInfo)
 
     @Singleton(binds = [CertificatePinningClient::class])
     fun provideCertificatePinningClient(configInfo: ConfigInfo): CertificatePinningClient =
@@ -212,32 +217,32 @@ class AppModule {
     fun provideAccountStateProvider(
         configInfo: ConfigInfo,
         metaEndpointsProvider: MetaEndpointsProvider,
-    ): AccountModuleStateProvider =
-        AccountModuleStateProvider(configInfo.certificate, metaEndpointsProvider, USE_STAGING)
+    ): AccountModuleStateProvider = AccountModuleStateProvider(configInfo.certificate, metaEndpointsProvider, USE_STAGING)
 
     @Singleton(binds = [AndroidAccountAPI::class])
     fun provideAndroidAccountApi(
         provider: AccountModuleStateProvider,
         configInfo: ConfigInfo,
-    ): AndroidAccountAPI {
-        return AccountBuilder<AndroidAccountAPI>()
+    ): AndroidAccountAPI =
+        AccountBuilder<AndroidAccountAPI>()
             .setEndpointProvider(provider)
             .setCertificate(provider.certificate)
             .setPlatform(Platform.ANDROID)
             .setUserAgentValue(configInfo.userAgent)
             .build()
-    }
 
     @Singleton
     fun provideKpiStateProvider(
         configInfo: ConfigInfo,
         accountAPI: AndroidAccountAPI,
-    ): KpiModuleStateProvider =
-        KpiModuleStateProvider(configInfo.certificate, accountAPI, USE_STAGING)
+    ): KpiModuleStateProvider = KpiModuleStateProvider(configInfo.certificate, accountAPI, USE_STAGING)
 
     @Singleton(binds = [KPIAPI::class])
-    fun provideKpiApi(provider: KpiModuleStateProvider, configInfo: ConfigInfo): KPIAPI {
-        return KPIBuilder()
+    fun provideKpiApi(
+        provider: KpiModuleStateProvider,
+        configInfo: ConfigInfo,
+    ): KPIAPI =
+        KPIBuilder()
             .setKPIClientStateProvider(provider)
             .setKPIFlushEventMode(KPISendEventsMode.PER_BATCH)
             .setEventTimeRoundGranularity(KTimeUnit.HOURS)
@@ -247,22 +252,20 @@ class AppModule {
             .setUserAgent(configInfo.userAgent)
             .setCertificate(provider.certificate)
             .build()
-    }
 
     @Singleton
     fun provideRegionsStateProvider(
         configInfo: ConfigInfo,
         metaEndpointsProvider: MetaEndpointsProvider,
-    ): RegionsModuleStateProvider =
-        RegionsModuleStateProvider(configInfo.certificate, metaEndpointsProvider, USE_STAGING)
+    ): RegionsModuleStateProvider = RegionsModuleStateProvider(configInfo.certificate, metaEndpointsProvider, USE_STAGING)
 
     @Singleton([RegionsAPI::class])
     fun provideRegionsApi(
         provider: RegionsModuleStateProvider,
         platformProvider: PlatformInstancesProvider,
         configInfo: ConfigInfo,
-    ): RegionsAPI {
-        return RegionsBuilder()
+    ): RegionsAPI =
+        RegionsBuilder()
             .setEndpointProvider(provider)
             .setCertificate(provider.certificate)
             .setUserAgent(configInfo.userAgent)
@@ -271,22 +274,20 @@ class AppModule {
             .setShadowsocksRegionsRequestPath("/shadow_socks")
             .setPlatformInstancesProvider(platformProvider)
             .build()
-    }
 
     @Singleton([VPNManagerAPI::class])
     fun provideVpnManagerApi(
         context: Context,
         usageProvider: UsageProvider,
         vpnManagerProvider: VpnManagerProvider,
-    ): VPNManagerAPI {
-        return VPNManagerBuilder()
+    ): VPNManagerAPI =
+        VPNManagerBuilder()
             .setContext(context)
             .setClientCoroutineContext(Dispatchers.Main)
             .setProtocolByteCountDependency(usageProvider)
             .setPermissionsDependency(vpnManagerProvider)
             .setDebugLoggingDependency(vpnManagerProvider)
             .build()
-    }
 
     @Singleton
     fun provideCsiEndpoints(): CsiEndpointProvider = CsiEndpointProvider(USE_STAGING)
@@ -303,8 +304,8 @@ class AppModule {
         configInfo: ConfigInfo,
         endpointProvider: CsiEndpointProvider,
         csiDataProvider: CsiDataProvider,
-    ): CSIAPI {
-        return CSIBuilder()
+    ): CSIAPI =
+        CSIBuilder()
             .setTeamIdentifier(CSI_TEAM_IDENTIFIER)
             .setAppVersion(BuildConfig.VERSION_NAME)
             .setCertificate(configInfo.certificate)
@@ -319,9 +320,7 @@ class AppModule {
                 csiDataProvider.userSettingsProvider,
                 csiDataProvider.protocolDebugLogsProvider,
                 csiDataProvider.debugLogProvider,
-            )
-            .build()
-    }
+            ).build()
 
     @Singleton
     fun provideAutomationManager(
@@ -345,24 +344,23 @@ class AppModule {
     ): RatingTool = RatingTool(connectionStatusProvider, ratingPrefs, mainDispatcher)
 
     @Singleton
-    fun provideNotificationPermissionManager(context: Context): NotificationPermissionManager =
-        NotificationPermissionManager(context)
+    fun provideNotificationPermissionManager(context: Context): NotificationPermissionManager = NotificationPermissionManager(context)
 
     @Singleton
     fun providePriceFormatter(context: Context): PriceFormatter = PriceFormatter(context)
 
     @Singleton
     @Named(DI.RULES_UPDATED_INTENT)
-    fun providesRulesUpdatedIntent(context: Context): Intent =
-        Intent(context, OnRulesChangedReceiver::class.java)
+    fun providesRulesUpdatedIntent(context: Context): Intent = Intent(context, OnRulesChangedReceiver::class.java)
 
     @Singleton
     @Named(DI.AUTOMATION_PENDING_INTENT)
     fun provideAutomationPendingIntent(context: Context): PendingIntent {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            action = ACTION_AUTOMATION
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-        }
+        val intent =
+            Intent(context, MainActivity::class.java).apply {
+                action = ACTION_AUTOMATION
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
         return PendingIntent.getActivity(
             context,
             0,
@@ -373,26 +371,25 @@ class AppModule {
 
     @Singleton
     @Named(DI.AUTOMATION_SERVICE_INTENT)
-    fun provideAutomationServiceIntent(context: Context): Intent {
-        return Intent(context, AutomationService::class.java)
-    }
+    fun provideAutomationServiceIntent(context: Context): Intent = Intent(context, AutomationService::class.java)
 
     @Singleton
-    fun provideLauncherIntent(context: Context): Intent {
-        return Intent(context, MainActivity::class.java).apply {
+    fun provideLauncherIntent(context: Context): Intent =
+        Intent(context, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-    }
 
     @Singleton
-    fun providePendingIntent(context: Context, intent: Intent): PendingIntent {
-        return PendingIntent.getActivity(
+    fun providePendingIntent(
+        context: Context,
+        intent: Intent,
+    ): PendingIntent =
+        PendingIntent.getActivity(
             context,
             123,
             intent,
             PendingIntent.FLAG_IMMUTABLE,
         )
-    }
 
     @Singleton
     fun provideNotification(context: Context): Notification.Builder {
@@ -410,15 +407,13 @@ class AppModule {
 
     @Singleton
     @Named(DI.WIDGET_PENDING_INTENT)
-    fun provideWidgetServiceIntent(context: Context): PendingIntent {
-        return PendingIntent.getService(
+    fun provideWidgetServiceIntent(context: Context): PendingIntent =
+        PendingIntent.getService(
             context,
             0,
             Intent(context, WidgetProviderService::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-    }
-
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

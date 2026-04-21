@@ -54,7 +54,10 @@ import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
 
 @Composable
-fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?) = Screen {
+fun SignUpScreen(
+    viewModel: SignupViewModel,
+    subscriptionData: SubscriptionData?,
+) = Screen {
     val screenState by viewModel.state.collectAsState()
     val context = LocalContext.current
     val activity = LocalActivity.current
@@ -68,60 +71,66 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .paint(
-                painter = painterResource(com.kape.signup.R.drawable.map),
-                contentScale = ContentScale.FillBounds,
-            )
-            .semantics {
-                testTagsAsResourceId = true
-            },
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .paint(
+                    painter = painterResource(com.kape.signup.R.drawable.map),
+                    contentScale = ContentScale.FillBounds,
+                ).semantics {
+                    testTagsAsResourceId = true
+                },
     ) {
         Column(
-            modifier = Modifier
-                .padding(WindowInsets.systemBars.asPaddingValues())
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .padding(WindowInsets.systemBars.asPaddingValues())
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.pia_medium),
                 contentDescription = stringResource(id = R.string.pia_signup),
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(40.dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .height(40.dp)
+                        .fillMaxWidth(),
             )
             Image(
                 painter = painterResource(id = com.kape.signup.R.drawable.ic_globe),
                 contentDescription = null,
-                modifier = Modifier
-                    .padding(20.dp)
-                    .fillMaxWidth()
-                    .size(150.dp),
+                modifier =
+                    Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth()
+                        .size(150.dp),
             )
             Column(
                 modifier = Modifier.widthIn(max = 520.dp),
             ) {
                 OnboardingTitleText(
                     content = stringResource(id = R.string.subscribe_screen_title),
-                    modifier = Modifier
-                        .align(CenterHorizontally),
+                    modifier =
+                        Modifier
+                            .align(CenterHorizontally),
                 )
                 OnboardingDescriptionText(
-                    content = if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
-                        stringResource(id = R.string.subscribe_screen_description_no_in_app)
-                    } else {
-                        "${
-                        stringResource(id = R.string.subscribe_screen_description).format(
-                            subscriptionData?.yearly?.mainPrice,
-                        )
-                        } ${stringResource(id = R.string.subscribe_screen_description_cancel_anytime)}"
-                    },
-                    modifier = Modifier
-                        .align(CenterHorizontally)
-                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                    content =
+                        if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
+                            stringResource(id = R.string.subscribe_screen_description_no_in_app)
+                        } else {
+                            "${
+                                stringResource(id = R.string.subscribe_screen_description).format(
+                                    subscriptionData?.yearly?.mainPrice,
+                                )
+                            } ${stringResource(id = R.string.subscribe_screen_description_cancel_anytime)}"
+                        },
+                    modifier =
+                        Modifier
+                            .align(CenterHorizontally)
+                            .padding(horizontal = 20.dp, vertical = 8.dp),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Column(modifier = Modifier.alpha(determineProductsAlpha(screenState))) {
@@ -130,10 +139,11 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                         selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
                         price = subscriptionData?.yearly?.mainPrice ?: "",
                         perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .semantics { contentDescription = subscriptionOptions },
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .semantics { contentDescription = subscriptionOptions },
                     ) {
                         subscriptionData?.let {
                             subscriptionData.selected.value = subscriptionData.yearly
@@ -143,10 +153,11 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                     MonthlySubscriptionCard(
                         selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
                         price = subscriptionData?.monthly?.mainPrice ?: "",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .semantics { contentDescription = subscriptionOptions },
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .semantics { contentDescription = subscriptionOptions },
                     ) {
                         subscriptionData?.let {
                             subscriptionData.selected.value = subscriptionData.monthly
@@ -158,19 +169,21 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                 } else {
                     Spacer(modifier = Modifier.height(16.dp))
                     OnboardingDescriptionPaymentText(
-                        modifier = Modifier
-                            .align(CenterHorizontally)
-                            .padding(horizontal = 20.dp),
+                        modifier =
+                            Modifier
+                                .align(CenterHorizontally)
+                                .padding(horizontal = 20.dp),
                         content = stringResource(id = R.string.subscribe_screen_description_payment),
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 PrimaryButton(
                     text = stringResource(id = R.string.subscribe_now),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .alpha(determineSubscribeButtonAlpha(screenState)),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .alpha(determineSubscribeButtonAlpha(screenState)),
                 ) {
                     subscriptionData?.let {
                         viewModel.purchase(subscriptionData.selected.value.id)
@@ -181,10 +194,11 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
                 Spacer(modifier = Modifier.height(8.dp))
                 SecondaryButton(
                     text = stringResource(id = R.string.login),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .testTag(":SignUpScreen:Login"),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .testTag(":SignUpScreen:Login"),
                 ) {
                     viewModel.navigateToLogin()
                 }
@@ -192,27 +206,26 @@ fun SignUpScreen(viewModel: SignupViewModel, subscriptionData: SubscriptionData?
 
             Spacer(modifier = Modifier.weight(1f))
             Footer(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(CenterHorizontally),
+                modifier =
+                    Modifier
+                        .padding(8.dp)
+                        .align(CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
-private fun determineProductsAlpha(state: SignupScreenState): Float {
-    return if (state == NO_IN_APP_SUBSCRIPTIONS || state == SUBSCRIPTIONS_FAILED_TO_LOAD) {
+private fun determineProductsAlpha(state: SignupScreenState): Float =
+    if (state == NO_IN_APP_SUBSCRIPTIONS || state == SUBSCRIPTIONS_FAILED_TO_LOAD) {
         0f
     } else {
         1f
     }
-}
 
-private fun determineSubscribeButtonAlpha(state: SignupScreenState): Float {
-    return if (state == SUBSCRIPTIONS_FAILED_TO_LOAD || state == META_SUBSCRIPTIONS) {
+private fun determineSubscribeButtonAlpha(state: SignupScreenState): Float =
+    if (state == SUBSCRIPTIONS_FAILED_TO_LOAD || state == META_SUBSCRIPTIONS) {
         0f
     } else {
         1f
     }
-}

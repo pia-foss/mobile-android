@@ -1,10 +1,10 @@
 package com.kape.localprefs.prefs
 
 import android.content.Context
+import com.kape.localprefs.Prefs
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
-import com.kape.localprefs.Prefs
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
@@ -12,14 +12,19 @@ import org.koin.core.annotation.Singleton
 private const val NETWORK_RULES = "network-rules"
 
 @Singleton
-class NetworkManagementPrefs(context: Context) : Prefs(context, "network-management") {
-
-    fun addRuleForNetwork(ssid: String, behavior: NetworkBehavior) {
-        val rule = NetworkItem(
-            networkName = ssid,
-            networkType = NetworkType.WifiCustom,
-            networkBehavior = behavior,
-        )
+class NetworkManagementPrefs(
+    context: Context,
+) : Prefs(context, "network-management") {
+    fun addRuleForNetwork(
+        ssid: String,
+        behavior: NetworkBehavior,
+    ) {
+        val rule =
+            NetworkItem(
+                networkName = ssid,
+                networkType = NetworkType.WifiCustom,
+                networkBehavior = behavior,
+            )
         addNetworkItem(rule)
     }
 
@@ -33,15 +38,19 @@ class NetworkManagementPrefs(context: Context) : Prefs(context, "network-managem
         prefs.edit().putStringSet(NETWORK_RULES, newRules.toSet()).apply()
     }
 
-    fun updateRuleForNetwork(rule: NetworkItem, behavior: NetworkBehavior) {
-        val updatedRule = NetworkItem(
-            networkName = rule.networkName,
-            networkBehavior = behavior,
-            networkType = rule.networkType,
-            isDefaultForMobile = rule.isDefaultForMobile,
-            isDefaultForOpen = rule.isDefaultForOpen,
-            isDefaultForSecure = rule.isDefaultForSecure,
-        )
+    fun updateRuleForNetwork(
+        rule: NetworkItem,
+        behavior: NetworkBehavior,
+    ) {
+        val updatedRule =
+            NetworkItem(
+                networkName = rule.networkName,
+                networkBehavior = behavior,
+                networkType = rule.networkType,
+                isDefaultForMobile = rule.isDefaultForMobile,
+                isDefaultForOpen = rule.isDefaultForOpen,
+                isDefaultForSecure = rule.isDefaultForSecure,
+            )
         removeRuleForNetwork(rule)
         addNetworkItem(updatedRule)
     }
@@ -54,9 +63,7 @@ class NetworkManagementPrefs(context: Context) : Prefs(context, "network-managem
         return rules
     }
 
-    fun getRuleForNetwork(ssid: String): NetworkItem? {
-        return getAllRules().filter { it.networkName == ssid }.getOrNull(0)
-    }
+    fun getRuleForNetwork(ssid: String): NetworkItem? = getAllRules().filter { it.networkName == ssid }.getOrNull(0)
 
     private fun addNetworkItem(item: NetworkItem) {
         val newRules = mutableSetOf<String>()

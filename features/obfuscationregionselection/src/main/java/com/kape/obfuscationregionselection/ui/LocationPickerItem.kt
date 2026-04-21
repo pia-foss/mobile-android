@@ -34,22 +34,24 @@ fun LocationPickerItem(
 ) {
     Column {
         Row(
-            modifier = Modifier
-                .clickable {
-                    onClick(server)
-                }
-                .defaultMinSize(minHeight = 56.dp)
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .clickable {
+                        onClick(server)
+                    }.defaultMinSize(minHeight = 56.dp)
+                    .padding(16.dp),
         ) {
             Image(
-                painter = painterResource(
-                    id = getFlagResource(LocalContext.current, server.iso),
-                ),
+                painter =
+                    painterResource(
+                        id = getFlagResource(LocalContext.current, server.iso),
+                    ),
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(24.dp),
+                modifier =
+                    Modifier
+                        .clip(CircleShape)
+                        .size(24.dp),
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.align(CenterVertically).weight(12f)) {
@@ -60,11 +62,12 @@ fun LocationPickerItem(
             if (enableFavorite) {
                 FavoriteIcon(
                     isChecked = isFavorite,
-                    modifier = Modifier
-                        .align(CenterVertically)
-                        .clickable {
-                            onFavoriteShadowsocksClick(server.region)
-                        },
+                    modifier =
+                        Modifier
+                            .align(CenterVertically)
+                            .clickable {
+                                onFavoriteShadowsocksClick(server.region)
+                            },
                 )
             }
         }

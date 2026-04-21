@@ -39,108 +39,115 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun VpnRegionSelectionScreen() = Screen {
-    val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
-    val isLoading = remember { mutableStateOf(false) }
-    val viewModel: VpnRegionSelectionViewModel =
-        koinViewModel<VpnRegionSelectionViewModel>().apply {
-            autoRegionIso = stringResource(id = R.string.automatic_iso)
-            autoRegionName = stringResource(id = R.string.optimal_vpn_region)
-            LaunchedEffect(Unit) {
-                locale?.let {
-                    loadVpnRegions(it, isLoading, false)
+fun VpnRegionSelectionScreen() =
+    Screen {
+        val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
+        val isLoading = remember { mutableStateOf(false) }
+        val viewModel: VpnRegionSelectionViewModel =
+            koinViewModel<VpnRegionSelectionViewModel>().apply {
+                autoRegionIso = stringResource(id = R.string.automatic_iso)
+                autoRegionName = stringResource(id = R.string.optimal_vpn_region)
+                LaunchedEffect(Unit) {
+                    locale?.let {
+                        loadVpnRegions(it, isLoading, false)
+                    }
                 }
             }
-        }
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.location_selection_title))
-    }
-    val isSearchEnabled = remember { mutableStateOf(false) }
-    val showToast = remember { mutableStateOf(false) }
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.location_selection_title))
+            }
+        val isSearchEnabled = remember { mutableStateOf(false) }
+        val showToast = remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .background(LocalColors.current.surfaceVariant)
-            .fillMaxWidth()
-            .semantics { testTagsAsResourceId = true },
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        AppBar(appBarViewModel)
-        Column(modifier = Modifier.widthIn(max = 520.dp)) {
-            Search(
-                modifier = Modifier
+        Column(
+            modifier =
+                Modifier
+                    .background(LocalColors.current.surfaceVariant)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .testTag(":VpnRegionSelectionScreen:searchBar"),
-            ) {
-                viewModel.filterByName(it, isSearchEnabled)
-            }
+                    .semantics { testTagsAsResourceId = true },
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            AppBar(appBarViewModel)
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                Search(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                            .testTag(":VpnRegionSelectionScreen:searchBar"),
+                ) {
+                    viewModel.filterByName(it, isSearchEnabled)
+                }
 
-            val context: Context = LocalContext.current
-            val message = stringResource(id = R.string.error_pinging_while_connected)
+                val context: Context = LocalContext.current
+                val message = stringResource(id = R.string.error_pinging_while_connected)
 
-            PullToRefreshBox(
-                state = rememberPullToRefreshState(),
-                isRefreshing = isLoading.value,
-                onRefresh = {
-                    showToast.value = viewModel.isVpnConnectionActive()
-                    if (showToast.value) {
-                        Toast.makeText(
-                            context,
-                            message,
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                    } else {
-                        locale?.let {
-                            viewModel.loadVpnRegions(locale, isLoading, true)
+                PullToRefreshBox(
+                    state = rememberPullToRefreshState(),
+                    isRefreshing = isLoading.value,
+                    onRefresh = {
+                        showToast.value = viewModel.isVpnConnectionActive()
+                        if (showToast.value) {
+                            Toast
+                                .makeText(
+                                    context,
+                                    message,
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                        } else {
+                            locale?.let {
+                                viewModel.loadVpnRegions(locale, isLoading, true)
+                            }
                         }
-                    }
-                },
-            ) {
-                LazyColumn {
-                    val items = if (isSearchEnabled.value) {
-                        viewModel.sorted.value
-                    } else {
-                        viewModel.servers.value
-                    }
-                    items(items.size) { index ->
-                        val item = items[index]
-                        when (item.type) {
-                            is ItemType.Content -> {
-                                LocationPickerItem(
-                                    server = item.type.server,
-                                    isFavorite = item.type.isFavorite,
-                                    enableFavorite = item.type.enableFavorite,
-                                    isPortForwardingEnabled = viewModel.isPortForwardingEnabled,
-                                    isOffline = item.type.server.isOffline,
-                                    onClick = {
-                                        viewModel.onVpnRegionSelected(it)
-                                        appBarViewModel.navigateBack()
-                                    },
-                                    onFavoriteVpnClick = {
-                                        viewModel.onFavoriteVpnClicked(
-                                            ServerData(
-                                                item.type.server.name,
-                                                item.type.server.isDedicatedIp,
-                                            ),
-                                        )
-                                    },
-                                    testTag = ":VpnRegionSelectionScreen:locationItem_$index",
-                                )
+                    },
+                ) {
+                    LazyColumn {
+                        val items =
+                            if (isSearchEnabled.value) {
+                                viewModel.sorted.value
+                            } else {
+                                viewModel.servers.value
                             }
+                        items(items.size) { index ->
+                            val item = items[index]
+                            when (item.type) {
+                                is ItemType.Content -> {
+                                    LocationPickerItem(
+                                        server = item.type.server,
+                                        isFavorite = item.type.isFavorite,
+                                        enableFavorite = item.type.enableFavorite,
+                                        isPortForwardingEnabled = viewModel.isPortForwardingEnabled,
+                                        isOffline = item.type.server.isOffline,
+                                        onClick = {
+                                            viewModel.onVpnRegionSelected(it)
+                                            appBarViewModel.navigateBack()
+                                        },
+                                        onFavoriteVpnClick = {
+                                            viewModel.onFavoriteVpnClicked(
+                                                ServerData(
+                                                    item.type.server.name,
+                                                    item.type.server.isDedicatedIp,
+                                                ),
+                                            )
+                                        },
+                                        testTag = ":VpnRegionSelectionScreen:locationItem_$index",
+                                    )
+                                }
 
-                            ItemType.HeadingAll -> {
-                                MenuText(
-                                    content = stringResource(id = R.string.all_locations),
-                                    modifier = Modifier.padding(16.dp),
-                                )
-                            }
+                                ItemType.HeadingAll -> {
+                                    MenuText(
+                                        content = stringResource(id = R.string.all_locations),
+                                        modifier = Modifier.padding(16.dp),
+                                    )
+                                }
 
-                            ItemType.HeadingFavorites -> {
-                                MenuText(
-                                    content = stringResource(id = R.string.favorite),
-                                    modifier = Modifier.padding(16.dp),
-                                )
+                                ItemType.HeadingFavorites -> {
+                                    MenuText(
+                                        content = stringResource(id = R.string.favorite),
+                                        modifier = Modifier.padding(16.dp),
+                                    )
+                                }
                             }
                         }
                     }
@@ -148,4 +155,3 @@ fun VpnRegionSelectionScreen() = Screen {
             }
         }
     }
-}

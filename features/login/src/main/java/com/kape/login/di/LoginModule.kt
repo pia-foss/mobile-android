@@ -38,14 +38,11 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class LoginModule {
-
     @Singleton(binds = [AuthenticationDataSource::class])
-    fun provideAuthenticationDataSource(api: AndroidAccountAPI): AuthenticationDataSource =
-        AuthenticationDataSourceImpl(api)
+    fun provideAuthenticationDataSource(api: AndroidAccountAPI): AuthenticationDataSource = AuthenticationDataSourceImpl(api)
 
     @Singleton
-    fun provideLoginUseCase(source: AuthenticationDataSource): LoginUseCase =
-        LoginUseCase(source)
+    fun provideLoginUseCase(source: AuthenticationDataSource): LoginUseCase = LoginUseCase(source)
 
     @Singleton
     fun provideLogoutUseCase(
@@ -63,19 +60,29 @@ class LoginModule {
         consentPrefs: ConsentPrefs,
         ratingPrefs: RatingPrefs,
         connectionManager: ConnectionManager,
-    ): LogoutUseCase = LogoutUseCaseImpl(
-        source, connectionPrefs, csiPrefs, customizationPrefs, dipPrefs,
-        networkManagementPrefs, subscriptionPrefs, shadowsocksRegionPrefs, vpnRegionPrefs,
-        settingsPrefs, kpiPrefs, consentPrefs, ratingPrefs, connectionManager,
-    )
+    ): LogoutUseCase =
+        LogoutUseCaseImpl(
+            source,
+            connectionPrefs,
+            csiPrefs,
+            customizationPrefs,
+            dipPrefs,
+            networkManagementPrefs,
+            subscriptionPrefs,
+            shadowsocksRegionPrefs,
+            vpnRegionPrefs,
+            settingsPrefs,
+            kpiPrefs,
+            consentPrefs,
+            ratingPrefs,
+            connectionManager,
+        )
 
     @Singleton
-    fun provideGetUserLoggedInUseCase(source: AuthenticationDataSource): IsUserLoggedInUseCase =
-        GetUserLoggedInUseCase(source)
+    fun provideGetUserLoggedInUseCase(source: AuthenticationDataSource): IsUserLoggedInUseCase = GetUserLoggedInUseCase(source)
 
     @Singleton
-    fun provideLoginUsernameUseCase(): LoginUsernameUseCase =
-        LoginUsernameUseCase()
+    fun provideLoginUsernameUseCase(): LoginUsernameUseCase = LoginUsernameUseCase()
 
     @Singleton
     fun provideTokenAuthenticationUtil(
@@ -92,10 +99,15 @@ class LoginModule {
         buildConfigProvider: BuildConfigProvider,
         permissionsUtil: PermissionUtil,
         networkConnectionListener: NetworkConnectionListener,
-    ): LoginViewModel = LoginViewModel(
-        router, loginUseCase, vpnSubscriptionPaymentProvider,
-        buildConfigProvider, permissionsUtil, networkConnectionListener,
-    )
+    ): LoginViewModel =
+        LoginViewModel(
+            router,
+            loginUseCase,
+            vpnSubscriptionPaymentProvider,
+            buildConfigProvider,
+            permissionsUtil,
+            networkConnectionListener,
+        )
 
     @KoinViewModel
     fun provideLoginUsernameViewModel(
@@ -104,9 +116,8 @@ class LoginModule {
     ): LoginUsernameViewModel = LoginUsernameViewModel(router, loginUsernameUseCase)
 
     @KoinViewModel
-    fun provideLoginPasswordViewModel(
-        loginUsernameUseCase: LoginUsernameUseCase,
-    ): LoginPasswordViewModel = LoginPasswordViewModel(loginUsernameUseCase)
+    fun provideLoginPasswordViewModel(loginUsernameUseCase: LoginUsernameUseCase): LoginPasswordViewModel =
+        LoginPasswordViewModel(loginUsernameUseCase)
 
     @KoinViewModel
     fun provideLoginWithEmailViewModel(

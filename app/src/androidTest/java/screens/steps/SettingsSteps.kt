@@ -1,7 +1,7 @@
 package screens.steps
 
 import androidx.test.uiautomator.UiAutomatorTestScope
-import screens.helpers.UiAutomatorHelpers.click
+import screens.helpers.UiAutomatorHelper.click
 
 object SettingsSteps {
     const val PROTOCOLS_BUTTON = ":SettingsScreen:Protocols"

@@ -39,12 +39,13 @@ fun PrimaryButton(
         modifier = modifier.heightIn(min = 48.dp),
         shape = RoundedCornerShape(12.dp),
         enabled = enabled,
-        colors = ButtonDefaults.textButtonColors(
-            containerColor = LocalColors.current.primary,
-            contentColor = LocalColors.current.onPrimary,
-            disabledContainerColor = LocalColors.current.onSurfaceVariant,
-            disabledContentColor = LocalColors.current.outlineVariant,
-        ),
+        colors =
+            ButtonDefaults.textButtonColors(
+                containerColor = LocalColors.current.primary,
+                contentColor = LocalColors.current.onPrimary,
+                disabledContainerColor = LocalColors.current.onSurfaceVariant,
+                disabledContentColor = LocalColors.current.outlineVariant,
+            ),
     ) {
         if (isLoading) {
             CircularProgressIndicator(
@@ -68,9 +69,10 @@ fun SecondaryButton(
         modifier = modifier.height(48.dp),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, LocalColors.current.primary),
-        colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = LocalColors.current.primary,
-        ),
+        colors =
+            ButtonDefaults.outlinedButtonColors(
+                contentColor = LocalColors.current.primary,
+            ),
     ) {
         if (isLoading) {
             CircularProgressIndicator(
@@ -93,10 +95,11 @@ fun TertiaryButton(
         onClick = onClick,
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, LocalColors.current.surfaceVariant),
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = LocalColors.current.surfaceVariant,
-            contentColor = LocalColors.current.inverseSurface,
-        ),
+        colors =
+            ButtonDefaults.outlinedButtonColors(
+                containerColor = LocalColors.current.surfaceVariant,
+                contentColor = LocalColors.current.inverseSurface,
+            ),
     ) {
         TertiaryButtonText(content = text)
     }
@@ -106,9 +109,10 @@ fun TertiaryButton(
 fun RoundIconButton(
     modifier: Modifier = Modifier,
     painterId: Int,
-    iconButtonColors: IconButtonColors = IconButtonDefaults.iconButtonColors(
-        contentColor = LocalColors.current.surfaceVariant,
-    ),
+    iconButtonColors: IconButtonColors =
+        IconButtonDefaults.iconButtonColors(
+            contentColor = LocalColors.current.surfaceVariant,
+        ),
     onClick: () -> Unit,
 ) {
     IconButton(
@@ -124,7 +128,10 @@ fun RoundIconButton(
 }
 
 @Composable
-fun OptionButton(selected: Boolean, modifier: Modifier) {
+fun OptionButton(
+    selected: Boolean,
+    modifier: Modifier,
+) {
     Icon(
         painter = painterResource(id = if (selected) R.drawable.ic_radio_button_selected else R.drawable.ic_radio_button_default),
         contentDescription = null,
@@ -141,20 +148,24 @@ fun Toggle(
     Switch(
         checked = isOn,
         onCheckedChange = onCheckedChange,
-        colors = SwitchDefaults.colors(
-            uncheckedBorderColor = LocalColors.current.onSurfaceVariant,
-            checkedBorderColor = Color.Unspecified,
-            uncheckedTrackColor = LocalColors.current.onPrimary,
-            checkedTrackColor = LocalColors.current.primary,
-            uncheckedIconColor = LocalColors.current.onSurfaceVariant,
-            checkedIconColor = LocalColors.current.onPrimary,
-            uncheckedThumbColor = LocalColors.current.onSurfaceVariant,
-        ),
+        colors =
+            SwitchDefaults.colors(
+                uncheckedBorderColor = LocalColors.current.onSurfaceVariant,
+                checkedBorderColor = Color.Unspecified,
+                uncheckedTrackColor = LocalColors.current.onPrimary,
+                checkedTrackColor = LocalColors.current.primary,
+                uncheckedIconColor = LocalColors.current.onSurfaceVariant,
+                checkedIconColor = LocalColors.current.onPrimary,
+                uncheckedThumbColor = LocalColors.current.onSurfaceVariant,
+            ),
     )
 }
 
 @Composable
-fun FavoriteIcon(isChecked: Boolean, modifier: Modifier) {
+fun FavoriteIcon(
+    isChecked: Boolean,
+    modifier: Modifier,
+) {
     Icon(
         painter = painterResource(id = if (isChecked) R.drawable.ic_heart_selected else R.drawable.ic_heart_default),
         contentDescription = stringResource(id = if (isChecked) R.string.remove_from_favorites else R.string.add_to_favorites),
@@ -164,7 +175,10 @@ fun FavoriteIcon(isChecked: Boolean, modifier: Modifier) {
 }
 
 @Composable
-fun Check(isChecked: Boolean, modifier: Modifier) {
+fun Check(
+    isChecked: Boolean,
+    modifier: Modifier,
+) {
     Icon(
         painter = painterResource(id = if (isChecked) R.drawable.ic_check_ticked else R.drawable.ic_check_default),
         contentDescription = null,
@@ -174,7 +188,10 @@ fun Check(isChecked: Boolean, modifier: Modifier) {
 }
 
 @Composable
-fun Visibility(isChecked: Boolean, modifier: Modifier) {
+fun Visibility(
+    isChecked: Boolean,
+    modifier: Modifier,
+) {
     Icon(
         painter = painterResource(id = if (isChecked) R.drawable.ic_visibility_on else R.drawable.ic_visibility_off),
         contentDescription = null,

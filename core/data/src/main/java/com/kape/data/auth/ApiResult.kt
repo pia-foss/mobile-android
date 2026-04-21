@@ -5,7 +5,9 @@ sealed class ApiResult {
         override fun toString() = "ApiResult.Success"
     }
 
-    data class Error(val error: ApiError) : ApiResult() {
+    data class Error(
+        val error: ApiError,
+    ) : ApiResult() {
         override fun toString() = "$error"
     }
 }
@@ -28,9 +30,10 @@ sealed class ApiError {
     }
 }
 
-fun getApiError(code: Int?) = when (code) {
-    401 -> ApiError.AuthFailed
-    402 -> ApiError.AccountExpired
-    429 -> ApiError.Throttled
-    else -> ApiError.Unknown
-}
+fun getApiError(code: Int?) =
+    when (code) {
+        401 -> ApiError.AuthFailed
+        402 -> ApiError.AccountExpired
+        429 -> ApiError.Throttled
+        else -> ApiError.Unknown
+    }

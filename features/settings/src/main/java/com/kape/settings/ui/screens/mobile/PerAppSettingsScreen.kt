@@ -44,90 +44,93 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PerAppSettingsScreen() = Screen {
-    val packageManager = LocalContext.current.packageManager
-    val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.per_app_settings))
-    }
-    val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
+fun PerAppSettingsScreen() =
+    Screen {
+        val packageManager = LocalContext.current.packageManager
+        val viewModel: SettingsViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.per_app_settings))
+            }
+        val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.getInstalledApplications(packageManager)
-    }
+        LaunchedEffect(key1 = Unit) {
+            viewModel.getInstalledApplications(packageManager)
+        }
 
-    BackHandler {
-        onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
-    }
+        BackHandler {
+            onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
+        }
 
-    Scaffold(
-        topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                onLeftIconClick = {
-                    onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
-                },
-            )
-        },
-    ) {
-        Column(
-            Modifier
-                .padding(it)
-                .fillMaxWidth()
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(
+                    viewModel = appBarViewModel,
+                    onLeftIconClick = {
+                        onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
+                    },
+                )
+            },
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                Search(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                ) {
-                    viewModel.filterAppsByName(it, packageManager)
-                }
-                if (viewModel.appList.value.isEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            Column(
+                Modifier
+                    .padding(it)
+                    .fillMaxWidth()
+                    .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    Search(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                    ) {
+                        viewModel.filterAppsByName(it, packageManager)
                     }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                LazyColumn {
-                    val items = viewModel.appList.value
-                    items(items.size) { index ->
-                        val item = items[index]
-                        val isExcluded =
-                            viewModel.vpnExcludedApps.value.contains(item.packageName)
-                        ApplicationRow(
-                            icon = item.loadIcon(packageManager),
-                            name = item.loadLabel(packageManager).toString(),
-                            isExcluded = isExcluded,
-                            onClick = { name, isChecked ->
-                                if (isChecked) {
-                                    viewModel.addToVpnExcludedApps(item.packageName)
-                                } else {
-                                    viewModel.removeFromVpnExcludedApps(item.packageName)
-                                }
-                            },
-                        )
+                    if (viewModel.appList.value.isEmpty()) {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    LazyColumn {
+                        val items = viewModel.appList.value
+                        items(items.size) { index ->
+                            val item = items[index]
+                            val isExcluded =
+                                viewModel.vpnExcludedApps.value.contains(item.packageName)
+                            ApplicationRow(
+                                icon = item.loadIcon(packageManager),
+                                name = item.loadLabel(packageManager).toString(),
+                                isExcluded = isExcluded,
+                                onClick = { name, isChecked ->
+                                    if (isChecked) {
+                                        viewModel.addToVpnExcludedApps(item.packageName)
+                                    } else {
+                                        viewModel.removeFromVpnExcludedApps(item.packageName)
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
             }
-        }
-        if (viewModel.reconnectDialogVisible.value) {
-            ReconnectDialog(
-                onReconnect = {
-                    viewModel.reconnect()
-                    viewModel.reconnectDialogVisible.value = false
-                    appBarViewModel.navigateBack()
-                },
-                onLater = {
-                    viewModel.reconnectDialogVisible.value = false
-                    appBarViewModel.navigateBack()
-                },
-            )
+            if (viewModel.reconnectDialogVisible.value) {
+                ReconnectDialog(
+                    onReconnect = {
+                        viewModel.reconnect()
+                        viewModel.reconnectDialogVisible.value = false
+                        appBarViewModel.navigateBack()
+                    },
+                    onLater = {
+                        viewModel.reconnectDialogVisible.value = false
+                        appBarViewModel.navigateBack()
+                    },
+                )
+            }
         }
     }
-}
 
 @Composable
 private fun ApplicationRow(
@@ -137,66 +140,72 @@ private fun ApplicationRow(
     onClick: (name: String, isExcluded: Boolean) -> Unit,
 ) {
     ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 56.dp)
-            .selectable(
-                selected = !isExcluded,
-                onClick = {
-                    onClick(name, !isExcluded)
-                },
-            ),
-
-        ) {
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 56.dp)
+                .selectable(
+                    selected = !isExcluded,
+                    onClick = {
+                        onClick(name, !isExcluded)
+                    },
+                ),
+    ) {
         val (image, text, button) = createRefs()
 
         Icon(
             painter = rememberDrawablePainter(drawable = icon),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier
-                .constrainAs(image) {
-                    start.linkTo(parent.start, margin = 16.dp)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                }
-                .size(48.dp),
+            modifier =
+                Modifier
+                    .constrainAs(image) {
+                        start.linkTo(parent.start, margin = 16.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }.size(48.dp),
         )
 
         Text(
             text = name,
             textAlign = TextAlign.Start,
-            modifier = Modifier
-                .constrainAs(text) {
-                    start.linkTo(image.end, margin = 16.dp)
-                    end.linkTo(button.start, margin = 16.dp)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    width = Dimension.fillToConstraints
-                },
+            modifier =
+                Modifier
+                    .constrainAs(text) {
+                        start.linkTo(image.end, margin = 16.dp)
+                        end.linkTo(button.start, margin = 16.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        width = Dimension.fillToConstraints
+                    },
         )
 
         SelectedCheckBox(
             checked = isExcluded,
-            modifier = Modifier.constrainAs(button) {
-                end.linkTo(parent.end, margin = 16.dp)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            },
+            modifier =
+                Modifier.constrainAs(button) {
+                    end.linkTo(parent.end, margin = 16.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                },
         )
     }
 }
 
 @Composable
-private fun SelectedCheckBox(checked: Boolean, modifier: Modifier) {
+private fun SelectedCheckBox(
+    checked: Boolean,
+    modifier: Modifier,
+) {
     Icon(
-        painter = if (checked) {
-            painterResource(id = com.kape.settings.R.drawable.ic_locket_open)
-        } else {
-            painterResource(
-                id = com.kape.settings.R.drawable.ic_locket_closed,
-            )
-        },
+        painter =
+            if (checked) {
+                painterResource(id = com.kape.settings.R.drawable.ic_locket_open)
+            } else {
+                painterResource(
+                    id = com.kape.settings.R.drawable.ic_locket_closed,
+                )
+            },
         contentDescription = null,
         tint = Color.Unspecified,
         modifier = modifier.size(24.dp),

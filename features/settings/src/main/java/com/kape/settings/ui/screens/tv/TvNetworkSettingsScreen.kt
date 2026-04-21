@@ -45,239 +45,246 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvNetworkSettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-    val initialFocusRequester = remember { FocusRequester() }
+fun TvNetworkSettingsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val initialFocusRequester = remember { FocusRequester() }
 
-    val dnsOptions = mutableMapOf(
-        DnsOptions.PIA to stringResource(id = R.string.pia),
-        DnsOptions.SYSTEM to stringResource(id = R.string.network_dns_selection_system),
-    )
-    if (viewModel.getCustomDns().isInUse()) {
-        dnsOptions[DnsOptions.CUSTOM] =
-            "${stringResource(id = R.string.network_dns_selection_custom)} ${
-                getCustomDnsInfo(
-                    viewModel.getCustomDns(),
-                )
-            }"
-    }
+        val dnsOptions =
+            mutableMapOf(
+                DnsOptions.PIA to stringResource(id = R.string.pia),
+                DnsOptions.SYSTEM to stringResource(id = R.string.network_dns_selection_system),
+            )
+        if (viewModel.getCustomDns().isInUse()) {
+            dnsOptions[DnsOptions.CUSTOM] =
+                "${stringResource(id = R.string.network_dns_selection_custom)} ${
+                    getCustomDnsInfo(
+                        viewModel.getCustomDns(),
+                    )
+                }"
+        }
 
-    val dnsSelection =
-        remember { mutableStateOf(dnsOptions.getValue(viewModel.getSelectedDnsOption())) }
-    val dnsDialogVisible = remember { mutableStateOf(false) }
-    val customDnsDialogVisible = remember { mutableStateOf(false) }
-    val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
-    val dnsWarningDialogVisible = remember { mutableStateOf(false) }
+        val dnsSelection =
+            remember { mutableStateOf(dnsOptions.getValue(viewModel.getSelectedDnsOption())) }
+        val dnsDialogVisible = remember { mutableStateOf(false) }
+        val customDnsDialogVisible = remember { mutableStateOf(false) }
+        val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
+        val dnsWarningDialogVisible = remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
+        }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
-            Row(
+            HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.networks),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 64.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TvSettingsItem(
-                        modifier = Modifier.focusRequester(initialFocusRequester),
-                        titleId = R.string.network_dns_title,
-                        subtitle = dnsOptions[viewModel.getSelectedDnsOption()],
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.networks),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 64.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
                     ) {
-                        dnsDialogVisible.value = !dnsDialogVisible.value
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    TvSettingsToggle(
-                        titleId = R.string.network_port_forwarding_title,
-                        subtitleId = R.string.network_port_forwarding_description,
-                        enabled = viewModel.isPortForwardingEnabled(),
-                        toggle = {
-                            viewModel.toggleEnablePortForwarding(it)
-                            viewModel.showReconnectDialogIfVpnConnected()
-                        },
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    TvSettingsToggle(
-                        titleId = R.string.network_allow_lan_traffic_title,
-                        subtitleId = R.string.network_allow_lan_traffic_description,
-                        stateEnabled = viewModel.isAllowLocalTrafficEnabled,
-                        toggle = {
-                            viewModel.toggleAllowLocalNetwork(it)
-                            viewModel.showReconnectDialogIfVpnConnected()
-                        },
-                    )
-                }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_tv_settings),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
-                    )
-                }
-            }
-        }
-
-        if (dnsDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                DnsSelectionDialog(
-                    options = dnsOptions,
-                    selection = viewModel.getSelectedDnsOption(),
-                    onConfirm = {
-                        val hasDnsOptionChanged = viewModel.getSelectedDnsOption() != it
-                        val previousDnsSelectionWasPIA =
-                            viewModel.getSelectedDnsOption() == DnsOptions.PIA
-                        dnsDialogVisible.value = false
-                        viewModel.setSelectedDnsOption(it)
-
-                        if (it == DnsOptions.SYSTEM &&
-                            viewModel.isAllowLocalTrafficEnabled.value.not()
+                        TvSettingsItem(
+                            modifier = Modifier.focusRequester(initialFocusRequester),
+                            titleId = R.string.network_dns_title,
+                            subtitle = dnsOptions[viewModel.getSelectedDnsOption()],
                         ) {
-                            allowLocalTrafficDialogVisible.value = true
+                            dnsDialogVisible.value = !dnsDialogVisible.value
                         }
-
-                        if (hasDnsOptionChanged) {
-                            // Only show the warning dialog if the user was on a safe DNS option (PIA DNS)
-                            if (previousDnsSelectionWasPIA) {
-                                dnsWarningDialogVisible.value = true
-                            } else {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TvSettingsToggle(
+                            titleId = R.string.network_port_forwarding_title,
+                            subtitleId = R.string.network_port_forwarding_description,
+                            enabled = viewModel.isPortForwardingEnabled(),
+                            toggle = {
+                                viewModel.toggleEnablePortForwarding(it)
                                 viewModel.showReconnectDialogIfVpnConnected()
-                            }
-                            if (it != DnsOptions.PIA) {
-                                viewModel.toggleMace(false)
-                            }
-                        }
-                    },
-                    onDismiss = {
-                        dnsDialogVisible.value = false
-                    },
-                    onEdit = {
-                        customDnsDialogVisible.value = true
-                        dnsDialogVisible.value = false
-                    },
-                )
-            }
-        }
-
-        if (customDnsDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                CustomDnsDialog(
-                    customDns = viewModel.getCustomDns(),
-                    displayFootnote = viewModel.maceEnabled.value,
-                    onConfirm = {
-                        customDnsDialogVisible.value = false
-                        val hasCustomDnsChanged = viewModel.getCustomDns() != it
-                        viewModel.setCustomDns(
-                            customDns = it,
+                            },
                         )
-                        if (it.isInUse()) {
-                            viewModel.setSelectedDnsOption(DnsOptions.CUSTOM)
-                            if (hasCustomDnsChanged) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TvSettingsToggle(
+                            titleId = R.string.network_allow_lan_traffic_title,
+                            subtitleId = R.string.network_allow_lan_traffic_description,
+                            stateEnabled = viewModel.isAllowLocalTrafficEnabled,
+                            toggle = {
+                                viewModel.toggleAllowLocalNetwork(it)
+                                viewModel.showReconnectDialogIfVpnConnected()
+                            },
+                        )
+                    }
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_tv_settings),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
+                    }
+                }
+            }
+
+            if (dnsDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
+                ) {
+                    DnsSelectionDialog(
+                        options = dnsOptions,
+                        selection = viewModel.getSelectedDnsOption(),
+                        onConfirm = {
+                            val hasDnsOptionChanged = viewModel.getSelectedDnsOption() != it
+                            val previousDnsSelectionWasPIA =
+                                viewModel.getSelectedDnsOption() == DnsOptions.PIA
+                            dnsDialogVisible.value = false
+                            viewModel.setSelectedDnsOption(it)
+
+                            if (it == DnsOptions.SYSTEM &&
+                                viewModel.isAllowLocalTrafficEnabled.value.not()
+                            ) {
+                                allowLocalTrafficDialogVisible.value = true
+                            }
+
+                            if (hasDnsOptionChanged) {
+                                // Only show the warning dialog if the user was on a safe DNS option (PIA DNS)
+                                if (previousDnsSelectionWasPIA) {
+                                    dnsWarningDialogVisible.value = true
+                                } else {
+                                    viewModel.showReconnectDialogIfVpnConnected()
+                                }
+                                if (it != DnsOptions.PIA) {
+                                    viewModel.toggleMace(false)
+                                }
+                            }
+                        },
+                        onDismiss = {
+                            dnsDialogVisible.value = false
+                        },
+                        onEdit = {
+                            customDnsDialogVisible.value = true
+                            dnsDialogVisible.value = false
+                        },
+                    )
+                }
+            }
+
+            if (customDnsDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
+                ) {
+                    CustomDnsDialog(
+                        customDns = viewModel.getCustomDns(),
+                        displayFootnote = viewModel.maceEnabled.value,
+                        onConfirm = {
+                            customDnsDialogVisible.value = false
+                            val hasCustomDnsChanged = viewModel.getCustomDns() != it
+                            viewModel.setCustomDns(
+                                customDns = it,
+                            )
+                            if (it.isInUse()) {
+                                viewModel.setSelectedDnsOption(DnsOptions.CUSTOM)
+                                if (hasCustomDnsChanged) {
+                                    viewModel.showReconnectDialogIfVpnConnected()
+                                }
+                            } else {
+                                viewModel.setSelectedDnsOption(DnsOptions.PIA)
                                 viewModel.showReconnectDialogIfVpnConnected()
                             }
-                        } else {
+                        },
+                        onDismiss = { customDnsDialogVisible.value = false },
+                        isDnsNumeric = { viewModel.isNumericIpAddress(it) },
+                    )
+                }
+            }
+
+            if (viewModel.reconnectDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
+                ) {
+                    ReconnectDialog(
+                        onReconnect = {
+                            viewModel.reconnect()
+                            viewModel.reconnectDialogVisible.value = false
+                        },
+                        onLater = {
+                            viewModel.reconnectDialogVisible.value = false
+                        },
+                    )
+                }
+            }
+
+            if (allowLocalTrafficDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
+                ) {
+                    AllowLanDialog(
+                        titleId = R.string.network_dns_selection_system,
+                        descriptionId = R.string.network_dns_selection_system_lan_requirement,
+                        viewModel = viewModel,
+                        allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
+                        onDismiss = {
+                            dnsSelection.value = DnsOptions.PIA.value
                             viewModel.setSelectedDnsOption(DnsOptions.PIA)
-                            viewModel.showReconnectDialogIfVpnConnected()
-                        }
-                    },
-                    onDismiss = { customDnsDialogVisible.value = false },
-                    isDnsNumeric = { viewModel.isNumericIpAddress(it) },
-                )
+                        },
+                    )
+                }
             }
-        }
 
-        if (viewModel.reconnectDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                ReconnectDialog(
-                    onReconnect = {
-                        viewModel.reconnect()
-                        viewModel.reconnectDialogVisible.value = false
-                    },
-                    onLater = {
-                        viewModel.reconnectDialogVisible.value = false
-                    },
-                )
-            }
-        }
-
-        if (allowLocalTrafficDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                AllowLanDialog(
-                    titleId = R.string.network_dns_selection_system,
-                    descriptionId = R.string.network_dns_selection_system_lan_requirement,
-                    viewModel = viewModel,
-                    allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
-                    onDismiss = {
-                        dnsSelection.value = DnsOptions.PIA.value
-                        viewModel.setSelectedDnsOption(DnsOptions.PIA)
-                    },
-                )
-            }
-        }
-
-        if (dnsWarningDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                UnsafeDnsWarningDialog(
-                    viewModel = viewModel,
-                    dnsWarningDialogVisible = dnsWarningDialogVisible,
-                    allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
-                )
+            if (dnsWarningDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
+                ) {
+                    UnsafeDnsWarningDialog(
+                        viewModel = viewModel,
+                        dnsWarningDialogVisible = dnsWarningDialogVisible,
+                        allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
+                    )
+                }
             }
         }
     }
-}

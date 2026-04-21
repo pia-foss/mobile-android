@@ -34,97 +34,103 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvGeneralSettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-    val initialFocusRequester = remember { FocusRequester() }
+fun TvGeneralSettingsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val initialFocusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
+        }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
-            Row(
+            HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.general),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 64.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TvSettingsToggle(
-                        modifier = Modifier.focusRequester(initialFocusRequester),
-                        titleId = R.string.connect_on_boot_title,
-                        subtitleId = R.string.connect_on_boot_description,
-                        enabled = viewModel.launchOnBootEnabled.value,
-                        toggle = {
-                            viewModel.toggleLaunchOnBoot(it)
-                        },
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    TvSettingsToggle(
-                        titleId = R.string.connect_on_launch_title,
-                        subtitleId = R.string.connect_on_launch_description,
-                        enabled = viewModel.connectOnStart.value,
-                        toggle = {
-                            viewModel.toggleConnectOnStart(it)
-                        },
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    TvSettingsToggle(
-                        titleId = R.string.connect_on_update_title,
-                        subtitleId = R.string.connect_on_update_description,
-                        enabled = viewModel.connectOnUpdate.value,
-                        toggle = {
-                            viewModel.toggleConnectOnUpdate(it)
-                        },
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.general),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_tv_settings),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
-                    )
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 64.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        TvSettingsToggle(
+                            modifier = Modifier.focusRequester(initialFocusRequester),
+                            titleId = R.string.connect_on_boot_title,
+                            subtitleId = R.string.connect_on_boot_description,
+                            enabled = viewModel.launchOnBootEnabled.value,
+                            toggle = {
+                                viewModel.toggleLaunchOnBoot(it)
+                            },
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TvSettingsToggle(
+                            titleId = R.string.connect_on_launch_title,
+                            subtitleId = R.string.connect_on_launch_description,
+                            enabled = viewModel.connectOnStart.value,
+                            toggle = {
+                                viewModel.toggleConnectOnStart(it)
+                            },
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TvSettingsToggle(
+                            titleId = R.string.connect_on_update_title,
+                            subtitleId = R.string.connect_on_update_description,
+                            enabled = viewModel.connectOnUpdate.value,
+                            toggle = {
+                                viewModel.toggleConnectOnUpdate(it)
+                            },
+                        )
+                    }
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_tv_settings),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         }
     }
-}

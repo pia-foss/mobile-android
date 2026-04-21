@@ -9,12 +9,10 @@ import org.koin.core.annotation.Module
 
 @Module
 class AppBarModule {
-
     @KoinViewModel
     fun provideAppBarViewModel(
         router: Router,
         connectionStatusProvider: ConnectionStatusProvider,
         networkConnectionListener: NetworkConnectionListener,
-    ): AppBarViewModel =
-        AppBarViewModel(router, connectionStatusProvider, networkConnectionListener)
+    ): AppBarViewModel = AppBarViewModel(router, connectionStatusProvider, networkConnectionListener)
 }

@@ -34,9 +34,10 @@ fun Snooze(
     onResumeClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp, vertical = 16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
         TileTitleText(content = stringResource(id = R.string.vpn_snooze))
         Spacer(modifier = Modifier.height(8.dp))
@@ -46,40 +47,44 @@ fun Snooze(
                     iconId = R.drawable.ic_snooze_resume,
                     label = timeUntilResume,
                     isActive = true,
-                    modifier = Modifier
-                        .clickable {
-                            onResumeClick()
-                        },
+                    modifier =
+                        Modifier
+                            .clickable {
+                                onResumeClick()
+                            },
                 )
             } else {
                 SnoozeItem(
                     iconId = R.drawable.ic_snooze,
                     label = stringResource(id = R.string.snooze_5_minutes),
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable {
-                            onClick(SnoozeIntervals.FIVE_MINUTES)
-                        },
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .clickable {
+                                onClick(SnoozeIntervals.FIVE_MINUTES)
+                            },
                 )
 
                 SnoozeItem(
                     iconId = R.drawable.ic_snooze,
                     label = stringResource(id = R.string.snooze_15_minutes),
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable {
-                            onClick(SnoozeIntervals.FIFTEEN_MINUTES)
-                        },
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .clickable {
+                                onClick(SnoozeIntervals.FIFTEEN_MINUTES)
+                            },
                 )
 
                 SnoozeItem(
                     iconId = R.drawable.ic_snooze,
                     label = stringResource(id = R.string.snooze_1_hour),
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable {
-                            onClick(SnoozeIntervals.SIXTY_MINUTES)
-                        },
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .clickable {
+                                onClick(SnoozeIntervals.SIXTY_MINUTES)
+                            },
                 )
             }
         }
@@ -87,22 +92,30 @@ fun Snooze(
 }
 
 @Composable
-private fun SnoozeItem(iconId: Int, label: String, isActive: Boolean = false, modifier: Modifier) {
+private fun SnoozeItem(
+    iconId: Int,
+    label: String,
+    isActive: Boolean = false,
+    modifier: Modifier,
+) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
-            modifier = Modifier
-                .size(40.dp)
-                .background(LocalColors.current.onPrimary, CircleShape)
-                .padding(4.dp),
+            modifier =
+                Modifier
+                    .size(40.dp)
+                    .background(LocalColors.current.onPrimary, CircleShape)
+                    .padding(4.dp),
         ) {
             Icon(
-                painter = painterResource(
-                    id = iconId,
-                ),
+                painter =
+                    painterResource(
+                        id = iconId,
+                    ),
                 contentDescription = null,
-                modifier = Modifier
-                    .size(24.dp)
-                    .align(Alignment.Center),
+                modifier =
+                    Modifier
+                        .size(24.dp)
+                        .align(Alignment.Center),
                 tint = if (isActive) LocalColors.current.primary else LocalColors.current.onSurface,
             )
         }

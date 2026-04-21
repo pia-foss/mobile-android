@@ -17,7 +17,6 @@ import org.koin.core.annotation.Named
 
 @Module
 class SplashModule {
-
     @KoinViewModel
     fun provideSplashViewModel(
         router: Router,
@@ -30,16 +29,17 @@ class SplashModule {
         isUserLoggedIn: IsUserLoggedInUseCase,
         platformUtils: PlatformUtils,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-    ): SplashViewModel = SplashViewModel(
-        router,
-        regionListProvider,
-        forceUpdateUseCase,
-        getWebsiteDownloadLink,
-        appUpdateUrl,
-        connectionManager,
-        connectionInfoProvider,
-        isUserLoggedIn,
-        platformUtils,
-        ioDispatcher,
-    )
+    ): SplashViewModel =
+        SplashViewModel(
+            router,
+            regionListProvider,
+            forceUpdateUseCase,
+            getWebsiteDownloadLink,
+            appUpdateUrl,
+            connectionManager,
+            connectionInfoProvider,
+            isUserLoggedIn,
+            platformUtils,
+            ioDispatcher,
+        )
 }

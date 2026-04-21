@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.compose)
     alias(libs.plugins.configuration)
     alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.ktlint)
 }
 
 val googleAppVersionCode = 701
@@ -96,7 +97,6 @@ configure<ApplicationExtension> {
         getByName("google").manifest.srcFile("google/AndroidManifest.xml")
         getByName("noinapp").manifest.srcFile("noinapp/AndroidManifest.xml")
         getByName("meta").manifest.srcFile("meta/AndroidManifest.xml")
-
     }
 
     compileOptions {
@@ -196,35 +196,44 @@ dependencies {
     "androidTestUtil"(libs.orchestrator)
 }
 
-val fetchRegionsInformation = tasks.register("fetchRegionsInformation") {
-    group = "custom"
-    description = "Fetches VPN and Shadowsocks region metadata"
-
-    doLast {
-        val assetsDir = File("$rootDir/app/src/main/assets")
-        if (!assetsDir.exists()) assetsDir.mkdirs()
-
-        fun fetchFile(urlString: String, targetFile: File) {
-            val url = URI(urlString).toURL()
-            targetFile.writeText(url.readText())
-        }
-
-        fetchFile(
-            "https://serverlist.piaservers.net/vpninfo/regions/v2",
-            File(assetsDir, "metadata-regions.json"),
-        )
-        fetchFile(
-            "https://serverlist.piaservers.net/vpninfo/servers/v6",
-            File(assetsDir, "vpn-regions.json"),
-        )
-        fetchFile(
-            "https://serverlist.piaservers.net/shadow_socks",
-            File(assetsDir, "shadowsocks-regions.json"),
-        )
-
-        println("Region information files updated successfully!")
-    }
+ktlint {
+    android.set(true)
+    outputColorName.set("RED")
 }
+
+val fetchRegionsInformation =
+    tasks.register("fetchRegionsInformation") {
+        group = "custom"
+        description = "Fetches VPN and Shadowsocks region metadata"
+
+        doLast {
+            val assetsDir = File("$rootDir/app/src/main/assets")
+            if (!assetsDir.exists()) assetsDir.mkdirs()
+
+            fun fetchFile(
+                urlString: String,
+                targetFile: File,
+            ) {
+                val url = URI(urlString).toURL()
+                targetFile.writeText(url.readText())
+            }
+
+            fetchFile(
+                "https://serverlist.piaservers.net/vpninfo/regions/v2",
+                File(assetsDir, "metadata-regions.json"),
+            )
+            fetchFile(
+                "https://serverlist.piaservers.net/vpninfo/servers/v6",
+                File(assetsDir, "vpn-regions.json"),
+            )
+            fetchFile(
+                "https://serverlist.piaservers.net/shadow_socks",
+                File(assetsDir, "shadowsocks-regions.json"),
+            )
+
+            println("Region information files updated successfully!")
+        }
+    }
 
 // Hook the task to run before every build
 tasks.named("preBuild") {

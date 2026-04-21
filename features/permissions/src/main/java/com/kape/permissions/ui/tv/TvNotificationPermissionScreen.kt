@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.permissions.ui.vm.PermissionsViewModel
-import com.kape.permissions.utils.PermissionUtil
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.elements.PrimaryButton
@@ -43,70 +41,80 @@ fun TvNotificationPermissionScreen() {
 
     Screen {
         val initialFocusRequester = remember { FocusRequester() }
-        val launcher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
-            onResult = {
-                viewModel.navigateToConnection()
-            },
-        )
+        val launcher =
+            rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+                onResult = {
+                    viewModel.navigateToConnection()
+                },
+            )
 
         Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(LocalColors.current.background),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(LocalColors.current.background),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(64.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(64.dp),
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .semantics(mergeDescendants = true) { },
+                    modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .semantics(mergeDescendants = true) { },
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_logo_large),
                         contentDescription = null,
                         contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(40.dp),
+                        modifier =
+                            Modifier
+                                .width(100.dp)
+                                .height(40.dp),
                     )
                     Spacer(modifier = Modifier.height(32.dp))
                     OnboardingTitleText(
                         content = stringResource(id = R.string.notifications_title),
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth(),
                     )
                     OnboardingDescriptionText(
                         content = stringResource(id = R.string.notifications_description),
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth(),
                     )
                 }
                 PrimaryButton(
                     text = stringResource(id = R.string.accept),
-                    modifier = Modifier
-                        .focusRequester(initialFocusRequester)
-                        .padding(16.dp),
+                    modifier =
+                        Modifier
+                            .focusRequester(initialFocusRequester)
+                            .padding(16.dp),
                 ) {
                     launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
                 PrimaryButton(
                     text = stringResource(id = R.string.logjn_continue),
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp),
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 16.dp),
                 ) {
                     viewModel.navigateToConnection()
                 }
             }
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(64.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(64.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
@@ -114,8 +122,9 @@ fun TvNotificationPermissionScreen() {
                     painter = painterResource(id = com.kape.permissions.R.drawable.image_bell),
                     contentScale = ContentScale.Fit,
                     contentDescription = null,
-                    modifier = Modifier
-                        .size(256.dp),
+                    modifier =
+                        Modifier
+                            .size(256.dp),
                 )
             }
         }

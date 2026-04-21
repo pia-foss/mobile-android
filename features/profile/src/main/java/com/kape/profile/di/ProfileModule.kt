@@ -14,18 +14,14 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class ProfileModule {
-
     @Singleton(binds = [ProfileDatasource::class])
-    fun provideProfileDatasource(api: AndroidAccountAPI): ProfileDatasource =
-        ProfileDatasourceImpl(api)
+    fun provideProfileDatasource(api: AndroidAccountAPI): ProfileDatasource = ProfileDatasourceImpl(api)
 
     @Singleton
-    fun provideGetProfileUseCase(profile: ProfileDatasource): GetProfileUseCase =
-        GetProfileUseCase(profile)
+    fun provideGetProfileUseCase(profile: ProfileDatasource): GetProfileUseCase = GetProfileUseCase(profile)
 
     @Singleton
-    fun provideDeleteAccountUseCase(profile: ProfileDatasource): DeleteAccountUseCase =
-        DeleteAccountUseCase(profile)
+    fun provideDeleteAccountUseCase(profile: ProfileDatasource): DeleteAccountUseCase = DeleteAccountUseCase(profile)
 
     @KoinViewModel
     fun provideProfileViewModel(

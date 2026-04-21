@@ -14,15 +14,12 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class PermissionsModule {
-
     @Singleton(binds = [VpnPermissionDataSource::class])
-    fun provideVpnPermissionDataSource(context: Context): VpnPermissionDataSource =
-        VpnPermissionDataSourceImpl(context)
+    fun provideVpnPermissionDataSource(context: Context): VpnPermissionDataSource = VpnPermissionDataSourceImpl(context)
 
     @Singleton
-    fun provideIsVpnProfileInstalledUseCase(
-        dataSource: VpnPermissionDataSource,
-    ): IsVpnProfileInstalledUseCase = IsVpnProfileInstalledUseCase(dataSource)
+    fun provideIsVpnProfileInstalledUseCase(dataSource: VpnPermissionDataSource): IsVpnProfileInstalledUseCase =
+        IsVpnProfileInstalledUseCase(dataSource)
 
     @Singleton
     fun providePermissionUtil(

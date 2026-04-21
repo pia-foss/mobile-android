@@ -9,13 +9,15 @@ import org.koin.core.annotation.Module
 
 @Module
 class ShadowsocksRegionModule {
-
     @KoinViewModel
     fun provideShadowsocksRegionSelectionViewModel(
         router: Router,
         getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
         shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
-    ): ShadowsocksRegionSelectionViewModel = ShadowsocksRegionSelectionViewModel(
-        router, getShadowsocksRegionsUseCase, shadowsocksRegionPrefs,
-    )
+    ): ShadowsocksRegionSelectionViewModel =
+        ShadowsocksRegionSelectionViewModel(
+            router,
+            getShadowsocksRegionsUseCase,
+            shadowsocksRegionPrefs,
+        )
 }

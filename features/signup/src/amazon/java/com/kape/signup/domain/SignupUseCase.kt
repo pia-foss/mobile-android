@@ -13,7 +13,6 @@ class SignupUseCase(
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
     private val getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase,
 ) {
-
     suspend fun vpnSignup(email: String): Credentials? {
         val purchaseData = purchaseDetailsUseCase.getPurchaseDetails() ?: return null
         return signupDataSource.vpnSignup(purchaseData.userId, purchaseData.receiptId, email)

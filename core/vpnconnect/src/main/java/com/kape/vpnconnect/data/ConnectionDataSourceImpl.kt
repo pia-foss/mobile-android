@@ -3,7 +3,6 @@ package com.kape.vpnconnect.data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.kape.contracts.ConnectionManager
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.data.WorkerTags
@@ -27,7 +26,6 @@ import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 @Singleton(binds = [ConnectionDataSource::class])
 class ConnectionDataSourceImpl(
@@ -39,42 +37,43 @@ class ConnectionDataSourceImpl(
     private val kpiDataSource: KpiDataSource,
     private val usageProvider: UsageProvider,
     private val csiPrefs: CsiPrefs,
-) : ConnectionDataSource, KoinComponent {
-
+) : ConnectionDataSource,
+    KoinComponent {
     override suspend fun startConnection(
         clientConfiguration: ClientConfiguration,
         connectionStatusProvider: ConnectionStatusProvider,
-    ): Result<Unit> = suspendCancellableCoroutine { cont ->
-        cont.invokeOnCancellation {
-            CoroutineScope(cont.context).launch {
-                stopConnection().getOrNull()
+    ): Result<Unit> =
+        suspendCancellableCoroutine { cont ->
+            cont.invokeOnCancellation {
+                CoroutineScope(cont.context).launch {
+                    stopConnection().getOrNull()
+                }
             }
-        }
-        connectionApi.addConnectionListener(
-            connectionStatusProvider as VPNManagerConnectionListener,
-        ) {}
+            connectionApi.addConnectionListener(
+                connectionStatusProvider as VPNManagerConnectionListener,
+            ) {}
 
-        if (settingsPrefs.isHelpImprovePiaEnabled()) {
-            kpiDataSource.start()
-        } else {
-            kpiDataSource.stop()
-        }
+            if (settingsPrefs.isHelpImprovePiaEnabled()) {
+                kpiDataSource.start()
+            } else {
+                kpiDataSource.stop()
+            }
 
-        connectionApi.startConnection(clientConfiguration) { result ->
-            result.getOrNull()?.let { serverPeerInfo ->
-                connectionPrefs.setGateway(serverPeerInfo.gateway)
-            } ?: run {
-                csiPrefs.addCustomDebugLogs(
-                    "startConnection failed: $result",
-                    settingsPrefs.isDebugLoggingEnabled(),
-                )
-            }
-            if (cont.isActive) {
-                // Convert Result<ServerPeerInfo> → Result<Unit>
-                cont.resume(result.map { Unit })
+            connectionApi.startConnection(clientConfiguration) { result ->
+                result.getOrNull()?.let { serverPeerInfo ->
+                    connectionPrefs.setGateway(serverPeerInfo.gateway)
+                } ?: run {
+                    csiPrefs.addCustomDebugLogs(
+                        "startConnection failed: $result",
+                        settingsPrefs.isDebugLoggingEnabled(),
+                    )
+                }
+                if (cont.isActive) {
+                    // Convert Result<ServerPeerInfo> → Result<Unit>
+                    cont.resume(result.map { Unit })
+                }
             }
         }
-    }
 
     override suspend fun stopConnection(): Result<Unit> =
         suspendCancellableCoroutine { continuation ->
@@ -94,15 +93,14 @@ class ConnectionDataSourceImpl(
             }
         }
 
-    override fun getVpnToken(): String {
-        return accountApi.vpnToken() ?: ""
-    }
+    override fun getVpnToken(): String = accountApi.vpnToken() ?: ""
 
     override fun startPortForwarding() {
-        val workRequest = PeriodicWorkRequestBuilder<PortForwardingWorker>(
-            15,
-            TimeUnit.MINUTES,
-        ).build()
+        val workRequest =
+            PeriodicWorkRequestBuilder<PortForwardingWorker>(
+                15,
+                TimeUnit.MINUTES,
+            ).build()
         workManager.enqueueUniquePeriodicWork(
             WorkerTags.PORT_FORWARDING_WORKER,
             ExistingPeriodicWorkPolicy.KEEP,
@@ -116,19 +114,21 @@ class ConnectionDataSourceImpl(
         workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER)
     }
 
-    override suspend fun getDebugLogs(): List<String> = suspendCancellableCoroutine { cont ->
-        val target = when (settingsPrefs.getSelectedProtocol()) {
-            VpnProtocols.WireGuard -> VPNManagerProtocolTarget.WIREGUARD
-            VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
-        }
-        connectionApi.getVpnProtocolLogs(target) {
-            if (it.isSuccess) {
-                cont.resume(it.getOrDefault(emptyList()))
-            } else {
-                cont.resume(emptyList())
+    override suspend fun getDebugLogs(): List<String> =
+        suspendCancellableCoroutine { cont ->
+            val target =
+                when (settingsPrefs.getSelectedProtocol()) {
+                    VpnProtocols.WireGuard -> VPNManagerProtocolTarget.WIREGUARD
+                    VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
+                }
+            connectionApi.getVpnProtocolLogs(target) {
+                if (it.isSuccess) {
+                    cont.resume(it.getOrDefault(emptyList()))
+                } else {
+                    cont.resume(emptyList())
+                }
             }
         }
-    }
 
     override suspend fun updateConfigurationServers(servers: ServerList): Boolean =
         suspendCancellableCoroutine { cont ->

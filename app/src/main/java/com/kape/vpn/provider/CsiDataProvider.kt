@@ -23,124 +23,132 @@ class CsiDataProvider(
     private val settingsPrefs: SettingsPrefs,
     private val userAgent: String,
 ) {
-
     init {
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             csiPrefs.setLastKnownException(throwable.stackTraceToString())
         }
     }
 
-    val protocolInformationProvider = object : ICSIProvider {
-        override val filename: String
-            get() = CSI_PROTOCOL_INFORMATION_FILENAME
-        override val isPersistedData: Boolean
-            get() = false
-        override val providerType: ProviderType
-            get() = ProviderType.PROTOCOL_INFORMATION
-        override val reportType: ReportType
-            get() = ReportType.DIAGNOSTIC
-        override val value: String
-            get() = getProtocolInformation()
-    }
+    val protocolInformationProvider =
+        object : ICSIProvider {
+            override val filename: String
+                get() = CSI_PROTOCOL_INFORMATION_FILENAME
+            override val isPersistedData: Boolean
+                get() = false
+            override val providerType: ProviderType
+                get() = ProviderType.PROTOCOL_INFORMATION
+            override val reportType: ReportType
+                get() = ReportType.DIAGNOSTIC
+            override val value: String
+                get() = getProtocolInformation()
+        }
 
-    val regionInformationProvider = object : ICSIProvider {
-        override val filename: String
-            get() = CSI_REGION_INFORMATION_FILENAME
-        override val isPersistedData: Boolean
-            get() = true
-        override val providerType: ProviderType
-            get() = ProviderType.REGION_INFORMATION
-        override val reportType: ReportType
-            get() = ReportType.DIAGNOSTIC
-        override val value: String
-            get() = getRegionsInformation()
-    }
+    val regionInformationProvider =
+        object : ICSIProvider {
+            override val filename: String
+                get() = CSI_REGION_INFORMATION_FILENAME
+            override val isPersistedData: Boolean
+                get() = true
+            override val providerType: ProviderType
+                get() = ProviderType.REGION_INFORMATION
+            override val reportType: ReportType
+                get() = ReportType.DIAGNOSTIC
+            override val value: String
+                get() = getRegionsInformation()
+        }
 
-    val userSettingsProvider = object : ICSIProvider {
-        override val filename: String
-            get() = CSI_USER_SETTINGS_FILENAME
-        override val isPersistedData: Boolean
-            get() = true
-        override val providerType: ProviderType
-            get() = ProviderType.USER_SETTINGS
-        override val reportType: ReportType
-            get() = ReportType.DIAGNOSTIC
-        override val value: String
-            get() = getUserSettings()
-    }
+    val userSettingsProvider =
+        object : ICSIProvider {
+            override val filename: String
+                get() = CSI_USER_SETTINGS_FILENAME
+            override val isPersistedData: Boolean
+                get() = true
+            override val providerType: ProviderType
+                get() = ProviderType.USER_SETTINGS
+            override val reportType: ReportType
+                get() = ReportType.DIAGNOSTIC
+            override val value: String
+                get() = getUserSettings()
+        }
 
-    val lastKnownExceptionProvider = object : ICSIProvider {
-        override val filename: String
-            get() = CSI_LAST_KNOWN_EXCEPTION_FILENAME
-        override val isPersistedData: Boolean
-            get() = true
-        override val providerType: ProviderType
-            get() = ProviderType.LAST_KNOWN_EXCEPTION
-        override val reportType: ReportType
-            get() = ReportType.CRASH
-        override val value: String
-            get() = getLastKnownException()
-    }
+    val lastKnownExceptionProvider =
+        object : ICSIProvider {
+            override val filename: String
+                get() = CSI_LAST_KNOWN_EXCEPTION_FILENAME
+            override val isPersistedData: Boolean
+                get() = true
+            override val providerType: ProviderType
+                get() = ProviderType.LAST_KNOWN_EXCEPTION
+            override val reportType: ReportType
+                get() = ReportType.CRASH
+            override val value: String
+                get() = getLastKnownException()
+        }
 
-    val applicationInformationProvider = object : ICSIProvider {
-        override val filename: String
-            get() = CSI_APPLICATION_INFORMATION_FILENAME
-        override val isPersistedData: Boolean
-            get() = false
-        override val providerType: ProviderType
-            get() = ProviderType.APPLICATION_INFORMATION
-        override val reportType: ReportType
-            get() = ReportType.DIAGNOSTIC
-        override val value: String
-            get() = getApplicationInformation()
-    }
+    val applicationInformationProvider =
+        object : ICSIProvider {
+            override val filename: String
+                get() = CSI_APPLICATION_INFORMATION_FILENAME
+            override val isPersistedData: Boolean
+                get() = false
+            override val providerType: ProviderType
+                get() = ProviderType.APPLICATION_INFORMATION
+            override val reportType: ReportType
+                get() = ReportType.DIAGNOSTIC
+            override val value: String
+                get() = getApplicationInformation()
+        }
 
-    val deviceInformationProvider = object : ICSIProvider {
-        override val filename: String
-            get() = CSI_DEVICE_INFORMATION_FILENAME
-        override val isPersistedData: Boolean
-            get() = false
-        override val providerType: ProviderType
-            get() = ProviderType.DEVICE_INFORMATION
-        override val reportType: ReportType
-            get() = ReportType.DIAGNOSTIC
-        override val value: String
-            get() = getDeviceInformation()
-    }
+    val deviceInformationProvider =
+        object : ICSIProvider {
+            override val filename: String
+                get() = CSI_DEVICE_INFORMATION_FILENAME
+            override val isPersistedData: Boolean
+                get() = false
+            override val providerType: ProviderType
+                get() = ProviderType.DEVICE_INFORMATION
+            override val reportType: ReportType
+                get() = ReportType.DIAGNOSTIC
+            override val value: String
+                get() = getDeviceInformation()
+        }
 
-    val protocolDebugLogsProvider = object : ICSIProvider {
-        override val filename: String
-            get() = CSI_PROTOCOL_DEBUG_LOGS_FILENAME
-        override val isPersistedData: Boolean
-            get() = false
-        override val providerType: ProviderType
-            get() = ProviderType.LOGGING_INFORMATION
-        override val reportType: ReportType
-            get() = ReportType.LOG
-        override val value: String
-            get() = redactIPsFromString(csiPrefs.getProtocolDebugLogs())
-    }
+    val protocolDebugLogsProvider =
+        object : ICSIProvider {
+            override val filename: String
+                get() = CSI_PROTOCOL_DEBUG_LOGS_FILENAME
+            override val isPersistedData: Boolean
+                get() = false
+            override val providerType: ProviderType
+                get() = ProviderType.LOGGING_INFORMATION
+            override val reportType: ReportType
+                get() = ReportType.LOG
+            override val value: String
+                get() = redactIPsFromString(csiPrefs.getProtocolDebugLogs())
+        }
 
-    val debugLogProvider = object: ICSIProvider {
-        override val filename: String?
-            get() = CSI_DEBUG_LOGS_FILENAME
-        override val isPersistedData: Boolean
-            get() = false
-        override val providerType: ProviderType
-            get() = ProviderType.EXPERIMENTS_INFORMATION
-        override val reportType: ReportType
-            get() = ReportType.DIAGNOSTIC
-        override val value: String
-            get() = redactIPsFromString(getDebugLogs())
-    }
+    val debugLogProvider =
+        object : ICSIProvider {
+            override val filename: String?
+                get() = CSI_DEBUG_LOGS_FILENAME
+            override val isPersistedData: Boolean
+                get() = false
+            override val providerType: ProviderType
+                get() = ProviderType.EXPERIMENTS_INFORMATION
+            override val reportType: ReportType
+                get() = ReportType.DIAGNOSTIC
+            override val value: String
+                get() = redactIPsFromString(getDebugLogs())
+        }
 
     // region private
     private fun getProtocolInformation(): String {
         val activeProtocol = settingsPrefs.getSelectedProtocol()
-        val settings = when (activeProtocol) {
-            VpnProtocols.WireGuard -> settingsPrefs.getWireGuardSettings()
-            VpnProtocols.OpenVPN -> settingsPrefs.getOpenVpnSettings()
-        }
+        val settings =
+            when (activeProtocol) {
+                VpnProtocols.WireGuard -> settingsPrefs.getWireGuardSettings()
+                VpnProtocols.OpenVPN -> settingsPrefs.getOpenVpnSettings()
+            }
         val sb = StringBuilder()
         sb.append("~~ Connection Settings ~~\n")
         sb.append("Connection Type: ${settings.transport}\n")
@@ -160,12 +168,19 @@ class CsiDataProvider(
         sb.append("\n~~ Encryption Settings ~~\n\n")
 
         sb.append("Data Encryption: ${settings.dataEncryption.value}\n")
-        sb.append(
-            "Data Authentication: " + if (settings.dataEncryption.value.lowercase(
-                    Locale.ENGLISH,
-                ).contains("gcm")
-            ) settings.dataEncryption.value else "",
-        ).append("\n")
+        sb
+            .append(
+                "Data Authentication: " +
+                    if (settings.dataEncryption.value
+                            .lowercase(
+                                Locale.ENGLISH,
+                            ).contains("gcm")
+                    ) {
+                        settings.dataEncryption.value
+                    } else {
+                        ""
+                    },
+            ).append("\n")
 
         sb.append("OpenVPN Handshake: ${settings.handshake}\n")
         sb.append("Wireguard Handshake: ${settings.handshake}\n")
@@ -181,26 +196,19 @@ class CsiDataProvider(
     }
 
     // TODO: implement as part of https://polymoon.atlassian.net/browse/PIA-606
-    private fun getRegionsInformation(): String {
-        return ""
-    }
+    private fun getRegionsInformation(): String = ""
 
     // TODO: implement as part of https://polymoon.atlassian.net/browse/PIA-606
-    private fun getUserSettings(): String {
-        return ""
-    }
+    private fun getUserSettings(): String = ""
 
-    private fun getLastKnownException(): String {
-        return csiPrefs.getLastKnownException()
-    }
+    private fun getLastKnownException(): String = csiPrefs.getLastKnownException()
 
-    private fun getApplicationInformation(): String {
-        return userAgent
-    }
+    private fun getApplicationInformation(): String = userAgent
 
     private fun getDeviceInformation(): String {
         val sb = StringBuilder()
-        sb.append("OS Version: ${System.getProperty("os.version")}(${Build.VERSION.INCREMENTAL}")
+        sb
+            .append("OS Version: ${System.getProperty("os.version")}(${Build.VERSION.INCREMENTAL}")
             .append("\n")
         sb.append("API Level: ${Build.VERSION.SDK_INT}").append("\n")
         sb.append("Device: ${Build.DEVICE}").append("\n")
@@ -209,11 +217,7 @@ class CsiDataProvider(
         return sb.toString()
     }
 
-    private fun getDebugLogs(): String {
-        return csiPrefs.getCustomDebugLogs()
-    }
+    private fun getDebugLogs(): String = csiPrefs.getCustomDebugLogs()
 
-    private fun redactIPsFromString(redact: String): String {
-        return redact.replace("\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b".toRegex(), "REDACTED")
-    }
+    private fun redactIPsFromString(redact: String): String = redact.replace("\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b".toRegex(), "REDACTED")
 }

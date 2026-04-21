@@ -23,51 +23,56 @@ import kotlin.coroutines.CoroutineContext
 @Singleton([DipSubscriptionPaymentProvider::class])
 class DipSubscriptionPaymentProviderImpl(
     private val context: Context,
-) : DipSubscriptionPaymentProvider, CoroutineScope {
-
+) : DipSubscriptionPaymentProvider,
+    CoroutineScope {
     private val availableProducts: MutableList<ProductDetails> = mutableListOf()
     private var purchaseCompletableDeferred: CompletableDeferred<Result<DipPurchaseData>>? = null
-    private val purchasesUpdatedListener = PurchasesUpdatedListener { result, purchases ->
-        if (purchases == null || result.responseCode != BillingClient.BillingResponseCode.OK) {
-            purchaseCompletableDeferred?.complete(Result.failure(IllegalStateException("Billing failed")))
-            return@PurchasesUpdatedListener
-        }
-
-        val knownPurchase = purchases.firstOrNull {
-            it.products.any { productId ->
-                availableProducts.any { knownProductDetails ->
-                    productId == knownProductDetails.productId
-                }
-            }
-        }
-        val orderId = knownPurchase?.orderId
-
-        if (knownPurchase != null && orderId != null) {
-            val knownProduct = knownPurchase.products.first { productId ->
-                availableProducts.any { knownProductDetails ->
-                    productId == knownProductDetails.productId
-                }
+    private val purchasesUpdatedListener =
+        PurchasesUpdatedListener { result, purchases ->
+            if (purchases == null || result.responseCode != BillingClient.BillingResponseCode.OK) {
+                purchaseCompletableDeferred?.complete(Result.failure(IllegalStateException("Billing failed")))
+                return@PurchasesUpdatedListener
             }
 
-            purchaseCompletableDeferred?.complete(
-                Result.success(
-                    DipPurchaseData(
-                        token = knownPurchase.purchaseToken,
-                        productId = knownProduct,
-                        orderId = orderId,
+            val knownPurchase =
+                purchases.firstOrNull {
+                    it.products.any { productId ->
+                        availableProducts.any { knownProductDetails ->
+                            productId == knownProductDetails.productId
+                        }
+                    }
+                }
+            val orderId = knownPurchase?.orderId
+
+            if (knownPurchase != null && orderId != null) {
+                val knownProduct =
+                    knownPurchase.products.first { productId ->
+                        availableProducts.any { knownProductDetails ->
+                            productId == knownProductDetails.productId
+                        }
+                    }
+
+                purchaseCompletableDeferred?.complete(
+                    Result.success(
+                        DipPurchaseData(
+                            token = knownPurchase.purchaseToken,
+                            productId = knownProduct,
+                            orderId = orderId,
+                        ),
                     ),
-                ),
-            )
-        } else {
-            purchaseCompletableDeferred?.complete(
-                Result.failure(IllegalStateException("Unknown product purchase")),
-            )
+                )
+            } else {
+                purchaseCompletableDeferred?.complete(
+                    Result.failure(IllegalStateException("Unknown product purchase")),
+                )
+            }
         }
-    }
-    private val billingClient: BillingClient = BillingClient.newBuilder(context)
-        .setListener(purchasesUpdatedListener)
-        .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
-        .build()
+    private val billingClient: BillingClient =
+        BillingClient
+            .newBuilder(context)
+            .setListener(purchasesUpdatedListener)
+            .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
+            .build()
 
     init {
         launch {
@@ -93,16 +98,19 @@ class DipSubscriptionPaymentProviderImpl(
             val productList = mutableListOf<QueryProductDetailsParams.Product>()
             for (productId in productIds) {
                 productList.add(
-                    QueryProductDetailsParams.Product.newBuilder()
+                    QueryProductDetailsParams.Product
+                        .newBuilder()
                         .setProductId(productId)
                         .setProductType(BillingClient.ProductType.SUBS)
                         .build(),
                 )
             }
 
-            val queryProductDetailsParams = QueryProductDetailsParams.newBuilder()
-                .setProductList(productList)
-                .build()
+            val queryProductDetailsParams =
+                QueryProductDetailsParams
+                    .newBuilder()
+                    .setProductList(productList)
+                    .build()
 
             billingClient.queryProductDetailsAsync(
                 queryProductDetailsParams,
@@ -118,7 +126,11 @@ class DipSubscriptionPaymentProviderImpl(
                             result.add(
                                 Pair(
                                     product.productId,
-                                    it.last().pricingPhases.pricingPhaseList.first().formattedPrice,
+                                    it
+                                        .last()
+                                        .pricingPhases.pricingPhaseList
+                                        .first()
+                                        .formattedPrice,
                                 ),
                             )
                         }
@@ -140,9 +152,11 @@ class DipSubscriptionPaymentProviderImpl(
                 connectBilling()
             }
 
-            val queryPurchasesParams = QueryPurchasesParams.newBuilder()
-                .setProductType(BillingClient.ProductType.SUBS)
-                .build()
+            val queryPurchasesParams =
+                QueryPurchasesParams
+                    .newBuilder()
+                    .setProductType(BillingClient.ProductType.SUBS)
+                    .build()
 
             billingClient.queryPurchasesAsync(queryPurchasesParams) { billingResult, purchases ->
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
@@ -182,16 +196,20 @@ class DipSubscriptionPaymentProviderImpl(
             purchaseCompletableDeferred = CompletableDeferred()
             val offerToken =
                 productDetails.subscriptionOfferDetails?.firstOrNull()?.offerToken ?: ""
-            val productList: List<BillingFlowParams.ProductDetailsParams> = listOf(
-                BillingFlowParams.ProductDetailsParams.newBuilder()
-                    .setProductDetails(productDetails)
-                    .setOfferToken(offerToken)
-                    .build(),
-            )
+            val productList: List<BillingFlowParams.ProductDetailsParams> =
+                listOf(
+                    BillingFlowParams.ProductDetailsParams
+                        .newBuilder()
+                        .setProductDetails(productDetails)
+                        .setOfferToken(offerToken)
+                        .build(),
+                )
 
-            val billingFlowParams = BillingFlowParams.newBuilder()
-                .setProductDetailsParamsList(productList)
-                .build()
+            val billingFlowParams =
+                BillingFlowParams
+                    .newBuilder()
+                    .setProductDetailsParamsList(productList)
+                    .build()
 
             billingClient.launchBillingFlow(activity, billingFlowParams)
 

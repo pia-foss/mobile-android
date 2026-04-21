@@ -52,55 +52,56 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LoginPasswordScreen() = Screen {
-    val loginPasswordViewModel: LoginPasswordViewModel = koinViewModel()
-    val loginViewModel: LoginViewModel = koinViewModel()
+fun LoginPasswordScreen() =
+    Screen {
+        val loginPasswordViewModel: LoginPasswordViewModel = koinViewModel()
+        val loginViewModel: LoginViewModel = koinViewModel()
 
-    val evaluatePasswordError = remember { mutableStateOf(false) }
-    val loginState by remember(loginViewModel) { loginViewModel.loginState }.collectAsState()
+        val evaluatePasswordError = remember { mutableStateOf(false) }
+        val loginState by remember(loginViewModel) { loginViewModel.state }.collectAsState()
 
-    when (loginState) {
-        IDLE -> {
-            ShowLoginPasswordScreen(
-                loginViewModel = loginViewModel,
-                loginPasswordViewModel = loginPasswordViewModel,
-                evaluatePasswordError = evaluatePasswordError,
-                isLoggingIn = false,
-                loginError = null,
-            )
-        }
+        when (loginState) {
+            IDLE -> {
+                ShowLoginPasswordScreen(
+                    loginViewModel = loginViewModel,
+                    loginPasswordViewModel = loginPasswordViewModel,
+                    evaluatePasswordError = evaluatePasswordError,
+                    isLoggingIn = false,
+                    loginError = null,
+                )
+            }
 
-        LOADING -> {
-            ShowLoginPasswordScreen(
-                loginViewModel = loginViewModel,
-                loginPasswordViewModel = loginPasswordViewModel,
-                evaluatePasswordError = evaluatePasswordError,
-                isLoggingIn = true,
-                loginError = null,
-            )
-        }
+            LOADING -> {
+                ShowLoginPasswordScreen(
+                    loginViewModel = loginViewModel,
+                    loginPasswordViewModel = loginPasswordViewModel,
+                    evaluatePasswordError = evaluatePasswordError,
+                    isLoggingIn = true,
+                    loginError = null,
+                )
+            }
 
-        SUCCESS -> {
-            // Do nothing. The viewmodel is handling the navigation on success.
-        }
+            SUCCESS -> {
+                // Do nothing. The viewmodel is handling the navigation on success.
+            }
 
-        THROTTLED,
-        FAILED,
-        EXPIRED,
-        INVALID,
-        SERVICE_UNAVAILABLE,
+            THROTTLED,
+            FAILED,
+            EXPIRED,
+            INVALID,
+            SERVICE_UNAVAILABLE,
             -> {
-            evaluatePasswordError.value = true
-            ShowLoginPasswordScreen(
-                loginViewModel = loginViewModel,
-                loginPasswordViewModel = loginPasswordViewModel,
-                evaluatePasswordError = evaluatePasswordError,
-                isLoggingIn = false,
-                loginError = loginState.error,
-            )
+                evaluatePasswordError.value = true
+                ShowLoginPasswordScreen(
+                    loginViewModel = loginViewModel,
+                    loginPasswordViewModel = loginPasswordViewModel,
+                    evaluatePasswordError = evaluatePasswordError,
+                    isLoggingIn = false,
+                    loginError = loginState.error,
+                )
+            }
         }
     }
-}
 
 @Composable
 fun ShowLoginPasswordScreen(
@@ -128,7 +129,7 @@ fun ShowLoginPasswordScreen(
                 LoginError.Failed,
                 LoginError.Expired,
                 LoginError.ServiceUnavailable,
-                    ->
+                ->
                     loginFailedErrorMessage
             }
         }
@@ -141,9 +142,10 @@ fun ShowLoginPasswordScreen(
     }
 
     Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalColors.current.background),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(LocalColors.current.background),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -164,9 +166,10 @@ fun ShowLoginPasswordScreen(
             }
         } else {
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(64.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(64.dp),
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -175,9 +178,10 @@ fun ShowLoginPasswordScreen(
                     Image(
                         painter = painterResource(id = R.drawable.ic_logo_large),
                         contentDescription = null,
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(40.dp),
+                        modifier =
+                            Modifier
+                                .width(100.dp)
+                                .height(40.dp),
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     EnterUsernameScreenTitleText(
@@ -185,40 +189,46 @@ fun ShowLoginPasswordScreen(
                     )
                     Spacer(modifier = Modifier.height(64.dp))
                     Card(
-                        modifier = Modifier
-                            .fillMaxSize(),
+                        modifier =
+                            Modifier
+                                .fillMaxSize(),
                         shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = LocalColors.current.onPrimaryContainer,
-                        ),
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = LocalColors.current.onPrimaryContainer,
+                            ),
                     ) {
                         Image(
                             painter = painterResource(id = com.kape.login.R.drawable.ic_tv_onboarding),
                             contentScale = ContentScale.Fit,
                             contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 8.dp, vertical = 16.dp),
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 8.dp, vertical = 16.dp),
                         )
                     }
                 }
             }
             VerticalDivider(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(vertical = 64.dp)
-                    .width(0.5.dp),
+                modifier =
+                    Modifier
+                        .fillMaxHeight()
+                        .padding(vertical = 64.dp)
+                        .width(0.5.dp),
                 color = LocalColors.current.primaryContainer,
             )
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(64.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(64.dp),
             ) {
                 Row(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(top = 32.dp),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .padding(top = 32.dp),
                 ) {
                     Column {
                         EnterUsernameScreenTitleText(
@@ -227,25 +237,28 @@ fun ShowLoginPasswordScreen(
                         )
                         Spacer(modifier = Modifier.height(32.dp))
                         Input(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp),
+                            modifier =
+                                Modifier
+                                    .padding(horizontal = 16.dp),
                             maskInput = true,
                             keyboard = KeyboardType.Password,
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    evaluatePasswordError.value = true
-                                    if (loginPasswordViewModel.isValidPassword()) {
-                                        loginViewModel.login(
-                                            username = loginPasswordViewModel.getLoginUsername(),
-                                            password = loginPasswordViewModel.getPassword().value,
-                                        )
-                                    }
-                                },
-                            ),
+                            keyboardActions =
+                                KeyboardActions(
+                                    onDone = {
+                                        evaluatePasswordError.value = true
+                                        if (loginPasswordViewModel.isValidPassword()) {
+                                            loginViewModel.login(
+                                                username = loginPasswordViewModel.getLoginUsername(),
+                                                password = loginPasswordViewModel.getPassword().value,
+                                            )
+                                        }
+                                    },
+                                ),
                             imeAction = ImeAction.Done,
-                            platformImeOptions = PlatformImeOptions(
-                                privateImeOptions = "horizontalAlignment=right",
-                            ),
+                            platformImeOptions =
+                                PlatformImeOptions(
+                                    privateImeOptions = "horizontalAlignment=right",
+                                ),
                             content = loginPasswordViewModel.getPassword(),
                             errorMessage = showPasswordErrorIfNeeded(),
                         )

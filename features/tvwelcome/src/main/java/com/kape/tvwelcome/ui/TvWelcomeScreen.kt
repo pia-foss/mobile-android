@@ -32,63 +32,67 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TvWelcomeScreen() = Screen {
-    val welcomeViewModel: TvWelcomeViewModel = koinViewModel()
-    val initialFocusRequester = remember { FocusRequester() }
-    val activity = LocalActivity.current
+fun TvWelcomeScreen() =
+    Screen {
+        val welcomeViewModel: TvWelcomeViewModel = koinViewModel()
+        val initialFocusRequester = remember { FocusRequester() }
+        val activity = LocalActivity.current
 
-    BackHandler {
-        activity?.finish()
-    }
+        BackHandler {
+            activity?.finish()
+        }
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
+        }
 
-    Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalColors.current.background),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(64.dp),
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(LocalColors.current.background),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_logo_large),
-                contentDescription = null,
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(40.dp),
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            WelcomeTitleText(
-                content = stringResource(id = R.string.fast_and_secure_streaming),
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(32.dp))
-            PrimaryButton(
-                text = stringResource(id = R.string.login),
-                modifier = Modifier.focusRequester(initialFocusRequester),
+            Column(
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .padding(64.dp),
             ) {
-                welcomeViewModel.login()
-            }
-            if (welcomeViewModel.shouldShowSubscribeButton) {
-                Spacer(modifier = Modifier.height(8.dp))
-                PrimaryButton(text = stringResource(id = R.string.subscribe_now)) {
-                    welcomeViewModel.signup()
+                Image(
+                    painter = painterResource(id = R.drawable.ic_logo_large),
+                    contentDescription = null,
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                WelcomeTitleText(
+                    content = stringResource(id = R.string.fast_and_secure_streaming),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                PrimaryButton(
+                    text = stringResource(id = R.string.login),
+                    modifier = Modifier.focusRequester(initialFocusRequester),
+                ) {
+                    welcomeViewModel.login()
+                }
+                if (welcomeViewModel.shouldShowSubscribeButton) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    PrimaryButton(text = stringResource(id = R.string.subscribe_now)) {
+                        welcomeViewModel.signup()
+                    }
                 }
             }
-        }
-        Spacer(modifier = Modifier.width(64.dp))
-        Column(modifier = Modifier.weight(1f)) {
-            Image(
-                painter = painterResource(id = R.drawable.tv_welcome),
-                contentDescription = null,
-            )
+            Spacer(modifier = Modifier.width(64.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Image(
+                    painter = painterResource(id = R.drawable.tv_welcome),
+                    contentDescription = null,
+                )
+            }
         }
     }
-}

@@ -57,7 +57,7 @@ class RatingTool(
                         ConnectionStatus.DISCONNECTING,
                         ConnectionStatus.ERROR,
                         ConnectionStatus.RECONNECTING,
-                            -> {
+                        -> {
                             // no-op
                         }
                     }
@@ -98,9 +98,7 @@ class RatingTool(
         }
     }
 
-    private fun daysPassedSinceNotEnjoyingReply(
-        dateString: String?,
-    ): Long {
+    private fun daysPassedSinceNotEnjoyingReply(dateString: String?): Long {
         return dateString?.let {
             val dateFormat = SimpleDateFormat(DATE_FORMAT)
             val date = dateFormat.parse(dateString)

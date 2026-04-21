@@ -11,7 +11,6 @@ import java.util.stream.Stream
 import kotlin.test.assertEquals
 
 internal class SetEmailUseCaseTest {
-
     private val source: EmailDataSource = mockk(relaxed = true)
 
     private lateinit var useCase: SetEmailUseCase
@@ -23,11 +22,12 @@ internal class SetEmailUseCaseTest {
 
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("booleans")
-    fun `test set email`(expected: Boolean) = runTest {
-        coEvery { source.setEmail(any()) } returns expected
-        val actual = useCase.setEmail("email")
-        assertEquals(expected, actual)
-    }
+    fun `test set email`(expected: Boolean) =
+        runTest {
+            coEvery { source.setEmail(any()) } returns expected
+            val actual = useCase.setEmail("email")
+            assertEquals(expected, actual)
+        }
 
     companion object {
         @JvmStatic

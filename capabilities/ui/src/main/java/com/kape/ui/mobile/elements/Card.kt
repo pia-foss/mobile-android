@@ -58,25 +58,29 @@ fun YearlySubscriptionCard(
     onClick: () -> Unit,
 ) {
     Card(
-        modifier = modifier
-            .semantics(mergeDescendants = true) { }
-            .selectable(selected = selected, role = Role.RadioButton, onClick = onClick),
+        modifier =
+            modifier
+                .semantics(mergeDescendants = true) { }
+                .selectable(selected = selected, role = Role.RadioButton, onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (selected) LocalColors.current.surface else Color.Transparent,
-        ),
-        border = if (selected) {
-            BorderStroke(2.dp, LocalColors.current.primary)
-        } else {
-            BorderStroke(1.dp, LocalColors.current.onSurface)
-        },
+        colors =
+            CardDefaults.cardColors(
+                containerColor = if (selected) LocalColors.current.surface else Color.Transparent,
+            ),
+        border =
+            if (selected) {
+                BorderStroke(2.dp, LocalColors.current.primary)
+            } else {
+                BorderStroke(1.dp, LocalColors.current.onSurface)
+            },
     ) {
         Row {
             OptionButton(
                 selected = selected,
-                modifier = Modifier
-                    .align(CenterVertically)
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .align(CenterVertically)
+                        .padding(16.dp),
             )
             Column {
                 SignUpDurationText(
@@ -95,13 +99,14 @@ fun YearlySubscriptionCard(
                     )
                 }
                 Box(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .wrapContentWidth()
-                        .background(
-                            LocalColors.current.warning30(),
-                            shape = RoundedCornerShape(4.dp),
-                        ),
+                    modifier =
+                        Modifier
+                            .padding(vertical = 16.dp)
+                            .wrapContentWidth()
+                            .background(
+                                LocalColors.current.warning30(),
+                                shape = RoundedCornerShape(4.dp),
+                            ),
                 ) {
                     BestValueBannerText(
                         content = stringResource(id = R.string.best_value),
@@ -121,26 +126,29 @@ fun MonthlySubscriptionCard(
     onClick: () -> Unit,
 ) {
     Card(
-        modifier = modifier
-            .semantics(mergeDescendants = true) { }
-            .selectable(selected = selected, enabled = true, role = Role.RadioButton, onClick = onClick),
+        modifier =
+            modifier
+                .semantics(mergeDescendants = true) { }
+                .selectable(selected = selected, enabled = true, role = Role.RadioButton, onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (selected) LocalColors.current.surface else Color.Transparent,
-        ),
-        border = if (selected) {
-            BorderStroke(2.dp, LocalColors.current.primary)
-        } else {
-            BorderStroke(1.dp, LocalColors.current.onSurface)
-        },
+        colors =
+            CardDefaults.cardColors(
+                containerColor = if (selected) LocalColors.current.surface else Color.Transparent,
+            ),
+        border =
+            if (selected) {
+                BorderStroke(2.dp, LocalColors.current.primary)
+            } else {
+                BorderStroke(1.dp, LocalColors.current.onSurface)
+            },
     ) {
         Row {
             OptionButton(
                 selected = selected,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(CenterVertically),
-
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .align(CenterVertically),
             )
             Column {
                 SignUpDurationText(
@@ -158,13 +166,17 @@ fun MonthlySubscriptionCard(
 }
 
 @Composable
-fun ErrorCard(content: String, modifier: Modifier) {
+fun ErrorCard(
+    content: String,
+    modifier: Modifier,
+) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = LocalColors.current.errorBackground(),
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = LocalColors.current.errorBackground(),
+            ),
         border = BorderStroke(1.dp, LocalColors.current.errorOutline()),
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
@@ -180,13 +192,17 @@ fun ErrorCard(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun WarningCard(content: String, modifier: Modifier) {
+fun WarningCard(
+    content: String,
+    modifier: Modifier,
+) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = LocalColors.current.warningBackground(),
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = LocalColors.current.warningBackground(),
+            ),
         border = BorderStroke(1.dp, LocalColors.current.warningOutline()),
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
@@ -202,13 +218,17 @@ fun WarningCard(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun InfoCard(content: String, modifier: Modifier) {
+fun InfoCard(
+    content: String,
+    modifier: Modifier,
+) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = LocalColors.current.infoBackground(),
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = LocalColors.current.infoBackground(),
+            ),
         border = BorderStroke(1.dp, LocalColors.current.infoOutline()),
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
@@ -224,13 +244,17 @@ fun InfoCard(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun SuccessCard(content: String, modifier: Modifier) {
+fun SuccessCard(
+    content: String,
+    modifier: Modifier,
+) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = LocalColors.current.successBackground(),
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = LocalColors.current.successBackground(),
+            ),
         border = BorderStroke(1.dp, LocalColors.current.successBackground()),
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
@@ -255,20 +279,24 @@ fun NetworkCard(
     onClick: () -> Unit,
 ) {
     Card(
-        modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp)
-            .clickable {
-                onClick()
-            },
+        modifier =
+            Modifier
+                .padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp)
+                .clickable {
+                    onClick()
+                },
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = LocalColors.current.surfaceVariant,
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = LocalColors.current.surfaceVariant,
+            ),
     ) {
         Box(
-            modifier = Modifier
-                .height(4.dp)
-                .fillMaxWidth()
-                .background(color),
+            modifier =
+                Modifier
+                    .height(4.dp)
+                    .fillMaxWidth()
+                    .background(color),
         )
         Column(modifier = Modifier.padding(16.dp)) {
             Row {

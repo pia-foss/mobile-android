@@ -26,7 +26,6 @@ class SideMenuViewModel(
     private val appInfo: AppInfo,
     private val router: Router,
 ) : ViewModel() {
-
     val username = mutableStateOf("")
     val showExpire = mutableStateOf(false)
     val daysRemaining = mutableIntStateOf(0)
@@ -42,10 +41,11 @@ class SideMenuViewModel(
         }
     }
 
-    fun logout() = viewModelScope.launch {
-        logoutUseCase.logout()
-        router.updateDestination(Splash)
-    }
+    fun logout() =
+        viewModelScope.launch {
+            logoutUseCase.logout()
+            router.updateDestination(Splash)
+        }
 
     fun navigateToVpnConnect() {
         router.updateDestination(Connection)

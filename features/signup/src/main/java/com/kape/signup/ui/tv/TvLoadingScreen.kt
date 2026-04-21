@@ -21,9 +21,10 @@ import com.kape.ui.utils.LocalColors
 @Composable
 fun TvLoadingScreen() {
     Row(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LocalColors.current.background),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(LocalColors.current.background),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {

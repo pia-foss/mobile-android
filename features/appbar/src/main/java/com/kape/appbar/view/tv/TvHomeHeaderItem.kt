@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,14 +49,16 @@ fun TvHomeHeaderItem(
     onSettingsSelected: () -> Unit = { },
     onHelpSelected: () -> Unit = { },
 ) {
-    val tabs = listOf(
-        stringResource(id = R.string.app_name),
-        stringResource(id = R.string.location),
-    )
-    val focusRequesters = listOf(
-        remember { FocusRequester() },
-        remember { FocusRequester() },
-    )
+    val tabs =
+        listOf(
+            stringResource(id = R.string.app_name),
+            stringResource(id = R.string.location),
+        )
+    val focusRequesters =
+        listOf(
+            remember { FocusRequester() },
+            remember { FocusRequester() },
+        )
     val colorScheme = LocalColors.current
     val selectedTabIndex = remember { mutableIntStateOf(defaultSelectedTabIndex) }
     val tabPillActiveColor = remember { mutableStateOf(colorScheme.primary) }
@@ -72,25 +73,24 @@ fun TvHomeHeaderItem(
             horizontalArrangement = Arrangement.Start,
         ) {
             TabRow(
-                modifier = modifier
-                    .focusRequester(topStartHeaderFocusRequester)
-                    .background(
-                        color = LocalColors.current.primaryContainer,
-                        shape = CircleShape,
-                    )
-                    .onFocusChanged {
-                        if (it.hasFocus) {
-                            tabPillActiveColor.value = colorScheme.primary
-                            tabPillActiveTextColor.value = colorScheme.onPrimary
-                            tabPillInactiveColor.value = colorScheme.primaryContainer
-                            focusRequesters[selectedTabIndex.intValue].requestFocus()
-                        } else {
-                            tabPillActiveColor.value = colorScheme.onPrimaryContainer
-                            tabPillActiveTextColor.value = colorScheme.onSurface
-                            tabPillInactiveColor.value = colorScheme.primaryContainer
-                        }
-                    }
-                    .padding(4.dp),
+                modifier =
+                    modifier
+                        .focusRequester(topStartHeaderFocusRequester)
+                        .background(
+                            color = LocalColors.current.primaryContainer,
+                            shape = CircleShape,
+                        ).onFocusChanged {
+                            if (it.hasFocus) {
+                                tabPillActiveColor.value = colorScheme.primary
+                                tabPillActiveTextColor.value = colorScheme.onPrimary
+                                tabPillInactiveColor.value = colorScheme.primaryContainer
+                                focusRequesters[selectedTabIndex.intValue].requestFocus()
+                            } else {
+                                tabPillActiveColor.value = colorScheme.onPrimaryContainer
+                                tabPillActiveTextColor.value = colorScheme.onSurface
+                                tabPillInactiveColor.value = colorScheme.primaryContainer
+                            }
+                        }.padding(4.dp),
                 selectedTabIndex = selectedTabIndex.intValue,
                 indicator = { tabPositions, _ ->
                     tabs.forEachIndexed { index, _ ->
@@ -105,9 +105,10 @@ fun TvHomeHeaderItem(
             ) {
                 tabs.forEachIndexed { index, tab ->
                     Tab(
-                        modifier = Modifier
-                            .padding(vertical = 8.dp, horizontal = 16.dp)
-                            .focusRequester(focusRequesters[index]),
+                        modifier =
+                            Modifier
+                                .padding(vertical = 8.dp, horizontal = 16.dp)
+                                .focusRequester(focusRequesters[index]),
                         selected = index == selectedTabIndex.intValue,
                         onFocus = {
                             selectedTabIndex.intValue = index
@@ -128,15 +129,17 @@ fun TvHomeHeaderItem(
             }
         }
         AppBarTitleText(
-            content = title ?: getTopTextConnectionString(
-                status = connectionStatus,
-            ),
-            textColor = title?.let {
-                LocalColors.current.onSurface
-            } ?: getTopTextConnectionColor(
-                status = connectionStatus,
-                scheme = LocalColors.current,
-            ),
+            content =
+                title ?: getTopTextConnectionString(
+                    status = connectionStatus,
+                ),
+            textColor =
+                title?.let {
+                    LocalColors.current.onSurface
+                } ?: getTopTextConnectionColor(
+                    status = connectionStatus,
+                    scheme = LocalColors.current,
+                ),
             isError = false,
             modifier = Modifier.weight(0.5f),
         )
@@ -145,16 +148,18 @@ fun TvHomeHeaderItem(
             horizontalArrangement = Arrangement.End,
         ) {
             RoundIconButton(
-                modifier = Modifier
-                    .focusRequester(topEndHeaderFocusRequester)
-                    .padding(horizontal = 4.dp),
+                modifier =
+                    Modifier
+                        .focusRequester(topEndHeaderFocusRequester)
+                        .padding(horizontal = 4.dp),
                 painterId = R.drawable.ic_settings,
             ) {
                 onSettingsSelected()
             }
             RoundIconButton(
-                modifier = Modifier
-                    .padding(horizontal = 4.dp),
+                modifier =
+                    Modifier
+                        .padding(horizontal = 4.dp),
                 painterId = R.drawable.ic_help,
             ) {
                 onHelpSelected()
@@ -164,8 +169,11 @@ fun TvHomeHeaderItem(
 }
 
 @Composable
-private fun getTopTextConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
-    return when (status) {
+private fun getTopTextConnectionColor(
+    status: ConnectionStatus,
+    scheme: ColorScheme,
+): Color =
+    when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
         ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> LocalColors.current.onSurface
@@ -173,11 +181,10 @@ private fun getTopTextConnectionColor(status: ConnectionStatus, scheme: ColorSch
         ConnectionStatus.CONNECTING,
         -> scheme.statusBarConnecting()
     }
-}
 
 @Composable
-private fun getTopTextConnectionString(status: ConnectionStatus): String {
-    return when (status) {
+private fun getTopTextConnectionString(status: ConnectionStatus): String =
+    when (status) {
         ConnectionStatus.ERROR -> stringResource(id = com.kape.ui.R.string.connection_error)
         ConnectionStatus.CONNECTED -> stringResource(id = com.kape.ui.R.string.connected)
         ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> stringResource(id = com.kape.ui.R.string.not_connected)
@@ -185,4 +192,3 @@ private fun getTopTextConnectionString(status: ConnectionStatus): String {
         ConnectionStatus.CONNECTING,
         -> stringResource(id = com.kape.ui.R.string.connecting)
     }
-}

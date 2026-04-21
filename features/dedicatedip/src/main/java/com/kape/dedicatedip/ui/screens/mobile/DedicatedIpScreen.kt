@@ -71,181 +71,200 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun DedicatedIpScreen() = Screen {
-    val viewModel: DipViewModel = koinViewModel<DipViewModel>().apply {
-        loadDedicatedIps()
-    }
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = com.kape.ui.R.string.dedicated_ip_title))
-    }
-    val showToast = remember { mutableStateOf(false) }
-    val showDialog = remember { mutableStateOf(false) }
-    val showSpinner = remember { mutableStateOf(false) }
-    val serverForDeletion = remember { mutableStateOf<VpnServer?>(null) }
-    val context = LocalContext.current
+fun DedicatedIpScreen() =
+    Screen {
+        val viewModel: DipViewModel =
+            koinViewModel<DipViewModel>().apply {
+                loadDedicatedIps()
+            }
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = com.kape.ui.R.string.dedicated_ip_title))
+            }
+        val showToast = remember { mutableStateOf(false) }
+        val showDialog = remember { mutableStateOf(false) }
+        val showSpinner = remember { mutableStateOf(false) }
+        val serverForDeletion = remember { mutableStateOf<VpnServer?>(null) }
+        val context = LocalContext.current
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth()
-                .semantics {
-                    testTagsAsResourceId = true
-                },
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
         ) {
             Column(
-                modifier = Modifier
-                    .widthIn(max = 520.dp)
-                    .background(LocalColors.current.onPrimary)
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth()
+                        .semantics {
+                            testTagsAsResourceId = true
+                        },
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = stringResource(id = com.kape.ui.R.string.dedicated_ip_title),
-                    fontSize = 18.sp,
-                    color = LocalColors.current.onSurface,
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = stringResource(id = if (viewModel.dipList.isEmpty()) com.kape.ui.R.string.dedicated_ip_description else com.kape.ui.R.string.dip_summary),
-                    fontSize = 12.sp,
-                    color = LocalColors.current.onSurface,
-                )
-                if (viewModel.dipList.isEmpty()) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Card(
-                        border = BorderStroke(1.dp, color = LocalColors.current.primary),
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        val text = remember {
-                            mutableStateOf(TextFieldValue(""))
-                        }
-                        Row {
-                            TextField(
-                                value = text.value,
-                                onValueChange = {
-                                    text.value = it
-                                },
-                                placeholder = {
-                                    Text(
-                                        text = stringResource(id = com.kape.ui.R.string.dedicated_ip_hint),
-                                        color = LocalColors.current.onSurface,
-                                    )
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(6.0f)
-                                    .testTag(":DedicatedIPScreen:dip_text_field"),
-                                singleLine = true,
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    unfocusedTextColor = LocalColors.current.onSurface,
-                                    focusedBorderColor = Color.Transparent,
-                                ),
-                            )
-                            if (showSpinner.value) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier
-                                        .align(CenterVertically)
-                                        .padding(8.dp),
-                                )
-                            } else {
-                                Button(
-                                    onClick = {
-                                        if (text.value.text.isNotEmpty()) {
-                                            showSpinner.value = true
-                                            viewModel.activateDedicatedIp(text)
-                                        }
+                Column(
+                    modifier =
+                        Modifier
+                            .widthIn(max = 520.dp)
+                            .background(LocalColors.current.onPrimary)
+                            .padding(16.dp),
+                ) {
+                    Text(
+                        text = stringResource(id = com.kape.ui.R.string.dedicated_ip_title),
+                        fontSize = 18.sp,
+                        color = LocalColors.current.onSurface,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text =
+                            stringResource(
+                                id =
+                                    if (viewModel.dipList.isEmpty()) {
+                                        com.kape.ui.R.string.dedicated_ip_description
+                                    } else {
+                                        com.kape.ui.R.string.dip_summary
                                     },
-                                    modifier = Modifier
-                                        .padding(end = 8.dp)
-                                        .align(CenterVertically)
-                                        .weight(4.0f)
-                                        .testTag(":DedicatedIPScreen:activate_button"),
-                                    shape = RoundedCornerShape(4.dp),
-                                ) {
-                                    Text(
-                                        text = stringResource(id = com.kape.ui.R.string.activate),
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        color = LocalColors.current.onPrimary,
+                            ),
+                        fontSize = 12.sp,
+                        color = LocalColors.current.onSurface,
+                    )
+                    if (viewModel.dipList.isEmpty()) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Card(
+                            border = BorderStroke(1.dp, color = LocalColors.current.primary),
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            val text =
+                                remember {
+                                    mutableStateOf(TextFieldValue(""))
+                                }
+                            Row {
+                                TextField(
+                                    value = text.value,
+                                    onValueChange = {
+                                        text.value = it
+                                    },
+                                    placeholder = {
+                                        Text(
+                                            text = stringResource(id = com.kape.ui.R.string.dedicated_ip_hint),
+                                            color = LocalColors.current.onSurface,
+                                        )
+                                    },
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .weight(6.0f)
+                                            .testTag(":DedicatedIPScreen:dip_text_field"),
+                                    singleLine = true,
+                                    colors =
+                                        OutlinedTextFieldDefaults.colors(
+                                            unfocusedTextColor = LocalColors.current.onSurface,
+                                            focusedBorderColor = Color.Transparent,
+                                        ),
+                                )
+                                if (showSpinner.value) {
+                                    CircularProgressIndicator(
+                                        modifier =
+                                            Modifier
+                                                .align(CenterVertically)
+                                                .padding(8.dp),
                                     )
+                                } else {
+                                    Button(
+                                        onClick = {
+                                            if (text.value.text.isNotEmpty()) {
+                                                showSpinner.value = true
+                                                viewModel.activateDedicatedIp(text)
+                                            }
+                                        },
+                                        modifier =
+                                            Modifier
+                                                .padding(end = 8.dp)
+                                                .align(CenterVertically)
+                                                .weight(4.0f)
+                                                .testTag(":DedicatedIPScreen:activate_button"),
+                                        shape = RoundedCornerShape(4.dp),
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = com.kape.ui.R.string.activate),
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            color = LocalColors.current.onPrimary,
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (viewModel.showDedicatedIpSignupBanner()) {
-                        DedicatedIpSignupBanner(
-                            onAcceptTapped = {
-                                viewModel.navigateToDedicatedIpPlans()
-                            },
-                        )
+                        if (viewModel.showDedicatedIpSignupBanner()) {
+                            DedicatedIpSignupBanner(
+                                onAcceptTapped = {
+                                    viewModel.navigateToDedicatedIpPlans()
+                                },
+                            )
+                        }
                     }
                 }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            if (viewModel.dipList.isNotEmpty()) {
-                Text(
-                    text = stringResource(id = com.kape.ui.R.string.owned_dedicated_ips),
-                    fontSize = 18.sp,
-                    color = LocalColors.current.primary,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                )
-
                 Spacer(modifier = Modifier.height(16.dp))
+                if (viewModel.dipList.isNotEmpty()) {
+                    Text(
+                        text = stringResource(id = com.kape.ui.R.string.owned_dedicated_ips),
+                        fontSize = 18.sp,
+                        color = LocalColors.current.primary,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
 
-                LazyColumn {
-                    val items = viewModel.dipList
-                    items(items.size) { index ->
-                        val item = items[index]
-                        DipItem(server = item, showDialog, serverForDeletion)
-                        Separator()
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    LazyColumn {
+                        val items = viewModel.dipList
+                        items(items.size) { index ->
+                            val item = items[index]
+                            DipItem(server = item, showDialog, serverForDeletion)
+                            Separator()
+                        }
                     }
                 }
-            }
 
-            showToast.value = viewModel.activationState.value != null
-            showSpinner.value = false
+                showToast.value = viewModel.activationState.value != null
+                showSpinner.value = false
 
-            if (showToast.value) {
-                Toast.makeText(
-                    context,
-                    when (viewModel.activationState.value) {
-                        DipApiResult.Active -> stringResource(id = com.kape.ui.R.string.dip_success)
-                        DipApiResult.Error -> stringResource(id = com.kape.ui.R.string.dip_invalid)
-                        DipApiResult.Expired -> stringResource(id = com.kape.ui.R.string.dip_expired_warning)
-                        DipApiResult.Invalid -> stringResource(id = com.kape.ui.R.string.dip_invalid)
-                        null -> ""
-                    },
-                    Toast.LENGTH_LONG,
-                ).show()
-                viewModel.resetActivationState()
-            }
-
-            if (showDialog.value) {
-                serverForDeletion.value?.let { server ->
-                    server.dipToken?.let { dipToken ->
-                        DeleteDipDialog(
-                            showDialog = showDialog,
-                            server = server,
-                            onRemoveClicked = {
-                                viewModel.removeDip(
-                                    serverKey = server.key,
-                                    dipToken = dipToken,
-                                )
+                if (showToast.value) {
+                    Toast
+                        .makeText(
+                            context,
+                            when (viewModel.activationState.value) {
+                                DipApiResult.Active -> stringResource(id = com.kape.ui.R.string.dip_success)
+                                DipApiResult.Error -> stringResource(id = com.kape.ui.R.string.dip_invalid)
+                                DipApiResult.Expired -> stringResource(id = com.kape.ui.R.string.dip_expired_warning)
+                                DipApiResult.Invalid -> stringResource(id = com.kape.ui.R.string.dip_invalid)
+                                null -> ""
                             },
-                            onCancelClicked = { serverForDeletion.value = null },
-                        )
+                            Toast.LENGTH_LONG,
+                        ).show()
+                    viewModel.resetActivationState()
+                }
+
+                if (showDialog.value) {
+                    serverForDeletion.value?.let { server ->
+                        server.dipToken?.let { dipToken ->
+                            DeleteDipDialog(
+                                showDialog = showDialog,
+                                server = server,
+                                onRemoveClicked = {
+                                    viewModel.removeDip(
+                                        serverKey = server.key,
+                                        dipToken = dipToken,
+                                    )
+                                },
+                                onCancelClicked = { serverForDeletion.value = null },
+                            )
+                        }
                     }
                 }
             }
         }
     }
-}
 
 @Composable
 fun DipItem(
@@ -254,43 +273,49 @@ fun DipItem(
     serverForDeletion: MutableState<VpnServer?>,
 ) {
     ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .heightIn(min = 56.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .heightIn(min = 56.dp),
     ) {
         val (icon, name, latency, ip, removeButton) = createRefs()
 
         Box(
-            modifier = Modifier.constrainAs(icon) {
-                start.linkTo(parent.start)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            },
+            modifier =
+                Modifier.constrainAs(icon) {
+                    start.linkTo(parent.start)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                },
         ) {
             Icon(
-                painter = painterResource(
-                    id = getFlagResource(
-                        LocalContext.current,
-                        server.iso,
+                painter =
+                    painterResource(
+                        id =
+                            getFlagResource(
+                                LocalContext.current,
+                                server.iso,
+                            ),
                     ),
-                ),
                 tint = Color.Unspecified,
                 contentDescription = null,
-                modifier = Modifier
-                    .align(Center)
-                    .padding(4.dp)
-                    .width(32.dp)
-                    .height(22.dp)
-                    .testTag(":DedicatedIPScreen:dip_flag"),
+                modifier =
+                    Modifier
+                        .align(Center)
+                        .padding(4.dp)
+                        .width(32.dp)
+                        .height(22.dp)
+                        .testTag(":DedicatedIPScreen:dip_flag"),
             )
             Icon(
                 painter = painterResource(id = com.kape.ui.R.drawable.ic_dip_badge),
                 contentDescription = null,
                 tint = Color.Unspecified,
-                modifier = Modifier
-                    .align(TopEnd)
-                    .size(14.dp),
+                modifier =
+                    Modifier
+                        .align(TopEnd)
+                        .size(14.dp),
             )
         }
 
@@ -299,15 +324,15 @@ fun DipItem(
             fontSize = 14.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .constrainAs(name) {
-                    start.linkTo(icon.end, margin = 8.dp)
-                    end.linkTo(latency.start, margin = 8.dp)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    width = Dimension.fillToConstraints
-                }
-                .testTag(":DedicatedIPScreen:dip_server_name"),
+            modifier =
+                Modifier
+                    .constrainAs(name) {
+                        start.linkTo(icon.end, margin = 8.dp)
+                        end.linkTo(latency.start, margin = 8.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        width = Dimension.fillToConstraints
+                    }.testTag(":DedicatedIPScreen:dip_server_name"),
         )
 
         IconButton(
@@ -315,47 +340,51 @@ fun DipItem(
                 serverForDeletion.value = server
                 showDialog.value = true
             },
-            modifier = Modifier
-                .constrainAs(removeButton) {
-                    end.linkTo(parent.end)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                }
-                .testTag(":DedicatedIPScreen:dip_remove_button"),
+            modifier =
+                Modifier
+                    .constrainAs(removeButton) {
+                        end.linkTo(parent.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }.testTag(":DedicatedIPScreen:dip_remove_button"),
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_close),
                 contentDescription = stringResource(id = com.kape.ui.R.string.dip_remove_title),
-                modifier = Modifier
-                    .width(24.dp)
-                    .height(20.dp),
+                modifier =
+                    Modifier
+                        .width(24.dp)
+                        .height(20.dp),
             )
         }
 
         Text(
             text = server.dedicatedIp ?: "",
-            modifier = Modifier.constrainAs(ip) {
-                end.linkTo(removeButton.start)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            },
+            modifier =
+                Modifier.constrainAs(ip) {
+                    end.linkTo(removeButton.start)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                },
         )
 
         Text(
-            text = if (server.latency != null && server.latency!!.toInt() < REGIONS_PING_TIMEOUT) {
-                stringResource(id = com.kape.ui.R.string.latency_to_format).format(
-                    server.latency,
-                )
-            } else {
-                ""
-            },
+            text =
+                if (server.latency != null && server.latency!!.toInt() < REGIONS_PING_TIMEOUT) {
+                    stringResource(id = com.kape.ui.R.string.latency_to_format).format(
+                        server.latency,
+                    )
+                } else {
+                    ""
+                },
             fontSize = 12.sp,
             color = LocalColors.current.getLatencyColor(server.latency),
-            modifier = Modifier.constrainAs(latency) {
-                end.linkTo(ip.start, margin = 8.dp)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            },
+            modifier =
+                Modifier.constrainAs(latency) {
+                    end.linkTo(ip.start, margin = 8.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                },
         )
     }
 }
@@ -379,11 +408,12 @@ fun DeleteDipDialog(
         },
         text = {
             Text(
-                text = String.format(
-                    stringResource(id = com.kape.ui.R.string.dip_remove_description),
-                    server.name,
-                    server.dedicatedIp,
-                ),
+                text =
+                    String.format(
+                        stringResource(id = com.kape.ui.R.string.dip_remove_description),
+                        server.name,
+                        server.dedicatedIp,
+                    ),
                 fontSize = 14.sp,
             )
         },
@@ -393,8 +423,9 @@ fun DeleteDipDialog(
                     server.dedicatedIp?.let(onRemoveClicked)
                     showDialog.value = false
                 },
-                modifier = Modifier
-                    .testTag(":DedicatedIPScreen:dip_remove_confirm_button"),
+                modifier =
+                    Modifier
+                        .testTag(":DedicatedIPScreen:dip_remove_confirm_button"),
             ) {
                 Text(
                     text = stringResource(id = android.R.string.ok),
@@ -409,8 +440,9 @@ fun DeleteDipDialog(
                     showDialog.value = false
                     onCancelClicked()
                 },
-                modifier = Modifier
-                    .testTag(":DedicatedIPScreen:dip_remove_cancel_button"),
+                modifier =
+                    Modifier
+                        .testTag(":DedicatedIPScreen:dip_remove_cancel_button"),
             ) {
                 Text(
                     text = stringResource(id = android.R.string.cancel),
@@ -431,49 +463,56 @@ fun DedicatedIpSignupBanner(onAcceptTapped: () -> Unit) {
     ) {
         Column(modifier = Modifier.padding(vertical = 8.dp)) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 8.dp),
                 verticalAlignment = CenterVertically,
             ) {
                 Image(
                     modifier = Modifier.size(48.dp),
-                    painter = painterResource(
-                        id = com.kape.ui.R.drawable.dedicated_ip,
-                    ),
+                    painter =
+                        painterResource(
+                            id = com.kape.ui.R.drawable.dedicated_ip,
+                        ),
                     contentScale = ContentScale.Fit,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.weight(1.0f))
             }
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
                 text = stringResource(id = com.kape.ui.R.string.dip_signup_banner_activate_description),
                 color = LocalColors.current.onSurface,
                 style = PiaTypography.subtitle2,
                 textAlign = TextAlign.Start,
             )
             DedicatedIpSignupBenefitItem(
-                text = stringResource(
-                    id = com.kape.ui.R.string.dip_signup_banner_activate_benefit_one,
-                ),
+                text =
+                    stringResource(
+                        id = com.kape.ui.R.string.dip_signup_banner_activate_benefit_one,
+                    ),
             )
             DedicatedIpSignupBenefitItem(
-                text = stringResource(
-                    id = com.kape.ui.R.string.dip_signup_banner_activate_benefit_two,
-                ),
+                text =
+                    stringResource(
+                        id = com.kape.ui.R.string.dip_signup_banner_activate_benefit_two,
+                    ),
             )
             DedicatedIpSignupBenefitItem(
-                text = stringResource(
-                    id = com.kape.ui.R.string.dip_signup_banner_activate_benefit_three,
-                ),
+                text =
+                    stringResource(
+                        id = com.kape.ui.R.string.dip_signup_banner_activate_benefit_three,
+                    ),
             )
             SecondaryButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 text = stringResource(id = com.kape.ui.R.string.get_dedicated_ip),
                 onClick = onAcceptTapped,
             )
@@ -484,23 +523,26 @@ fun DedicatedIpSignupBanner(onAcceptTapped: () -> Unit) {
 @Composable
 fun DedicatedIpSignupBenefitItem(text: String) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
         verticalAlignment = CenterVertically,
     ) {
         Image(
             modifier = Modifier.size(16.dp),
-            painter = painterResource(
-                id = com.kape.ui.R.drawable.checkmark,
-            ),
+            painter =
+                painterResource(
+                    id = com.kape.ui.R.drawable.checkmark,
+                ),
             contentScale = ContentScale.Fit,
             contentDescription = null,
         )
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
             text = text,
             color = LocalColors.current.onSurface,
             style = PiaTypography.body1,

@@ -19,20 +19,20 @@ class ShadowsocksRegionSelectionViewModel(
     private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
 ) : ViewModel() {
-
     val servers = mutableStateOf(emptyList<ShadowsocksServerItem>())
     val sorted = mutableStateOf(emptyList<ShadowsocksServerItem>())
 
-    fun getShadowsocksRegions() =
-        arrangeShadowsocksServers(getShadowsocksRegionsUseCase.getShadowsocksServers())
+    fun getShadowsocksRegions() = arrangeShadowsocksServers(getShadowsocksRegionsUseCase.getShadowsocksServers())
 
-    fun fetchShadowsocksRegions(locale: String, isLoading: MutableState<Boolean>) =
-        viewModelScope.launch {
-            isLoading.value = true
-            val servers = getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale)
-            arrangeShadowsocksServers(servers)
-            isLoading.value = false
-        }
+    fun fetchShadowsocksRegions(
+        locale: String,
+        isLoading: MutableState<Boolean>,
+    ) = viewModelScope.launch {
+        isLoading.value = true
+        val servers = getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale)
+        arrangeShadowsocksServers(servers)
+        isLoading.value = false
+    }
 
     fun onShadowsocksRegionSelected(server: ShadowsocksServer) {
         shadowsocksRegionPrefs.setSelectShadowsocksServer(server)
@@ -47,22 +47,25 @@ class ShadowsocksRegionSelectionViewModel(
         arrangeShadowsocksServers()
     }
 
-    fun filterByName(value: String, isSearchEnabled: MutableState<Boolean>) =
-        viewModelScope.launch {
-            if (value.isNotEmpty()) {
-                isSearchEnabled.value = true
-                sorted.value = servers.value.filter {
-                    it.type is ItemType.Content && it.type.server.region.lowercase()
-                        .contains(value.lowercase())
+    fun filterByName(
+        value: String,
+        isSearchEnabled: MutableState<Boolean>,
+    ) = viewModelScope.launch {
+        if (value.isNotEmpty()) {
+            isSearchEnabled.value = true
+            sorted.value =
+                servers.value.filter {
+                    it.type is ItemType.Content &&
+                        it.type.server.region
+                            .lowercase()
+                            .contains(value.lowercase())
                 }
-            } else {
-                isSearchEnabled.value = false
-            }
+        } else {
+            isSearchEnabled.value = false
         }
-
-    private fun isShadowsocksServerFavorite(serverName: String): Boolean {
-        return shadowsocksRegionPrefs.isFavorite(serverName)
     }
+
+    private fun isShadowsocksServerFavorite(serverName: String): Boolean = shadowsocksRegionPrefs.isFavorite(serverName)
 
     private fun arrangeShadowsocksServers(items: List<ShadowsocksServer>? = null) {
         val list = mutableListOf<ShadowsocksServerItem>()
@@ -73,10 +76,11 @@ class ShadowsocksRegionSelectionViewModel(
                 if (isShadowsocksServerFavorite(server.region)) {
                     favorites.add(
                         ShadowsocksServerItem(
-                            type = ItemType.Content(
-                                isFavorite = true,
-                                server = server,
-                            ),
+                            type =
+                                ItemType.Content(
+                                    isFavorite = true,
+                                    server = server,
+                                ),
                         ),
                     )
                 } else {
@@ -95,10 +99,11 @@ class ShadowsocksRegionSelectionViewModel(
                 if (isShadowsocksServerFavorite((item.type as ItemType.Content).server.region)) {
                     favorites.add(
                         ShadowsocksServerItem(
-                            type = ItemType.Content(
-                                isFavorite = true,
-                                server = item.type.server,
-                            ),
+                            type =
+                                ItemType.Content(
+                                    isFavorite = true,
+                                    server = item.type.server,
+                                ),
                         ),
                     )
                 } else {

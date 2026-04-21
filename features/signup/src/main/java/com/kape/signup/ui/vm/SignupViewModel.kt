@@ -106,30 +106,33 @@ class SignupViewModel(
                                 },
                                 true,
                                 mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice),
-                                secondaryPrice = formatter.formatYearlyPerMonth(
-                                    yearlyPlan.formattedPrice,
-                                    yearlyPlan.currencyCode,
-                                ),
+                                secondaryPrice =
+                                    formatter.formatYearlyPerMonth(
+                                        yearlyPlan.formattedPrice,
+                                        yearlyPlan.currencyCode,
+                                    ),
                             )
-                        val monthly = Plan(
-                            monthlyPlan.id,
-                            monthlyPlan.plan.replaceFirstChar { first ->
-                                if (first.isLowerCase()) {
-                                    first.titlecase(
-                                        Locale.getDefault(),
-                                    )
-                                } else {
-                                    first.toString()
-                                }
-                            },
-                            false,
-                            mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
-                        )
-                        val data = SubscriptionData(
-                            mutableStateOf(yearly),
-                            yearly,
-                            monthly,
-                        )
+                        val monthly =
+                            Plan(
+                                monthlyPlan.id,
+                                monthlyPlan.plan.replaceFirstChar { first ->
+                                    if (first.isLowerCase()) {
+                                        first.titlecase(
+                                            Locale.getDefault(),
+                                        )
+                                    } else {
+                                        first.toString()
+                                    }
+                                },
+                                false,
+                                mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
+                            )
+                        val data =
+                            SubscriptionData(
+                                mutableStateOf(yearly),
+                                yearly,
+                                monthly,
+                            )
                         subscriptionData = data
                         _state.emit(
                             SUBSCRIPTIONS(data),
@@ -163,37 +166,40 @@ class SignupViewModel(
         }
     }
 
-    fun loadPrices() = viewModelScope.launch {
-        if (buildConfigProvider.isAmazonFlavor()) {
-            _state.emit(AMAZON_LOGIN)
-            return@launch
+    fun loadPrices() =
+        viewModelScope.launch {
+            if (buildConfigProvider.isAmazonFlavor()) {
+                _state.emit(AMAZON_LOGIN)
+                return@launch
+            }
+            if (buildConfigProvider.isWebFlavor()) {
+                _state.emit(NO_IN_APP_SUBSCRIPTIONS)
+                return@launch
+            }
+            if (buildConfigProvider.isMetaFlavor()) {
+                _state.emit(META_SUBSCRIPTIONS)
+                return@launch
+            }
+            if (subscriptionPrefs.getVpnSubscriptions().isEmpty()) {
+                _state.emit(LOADING)
+                subscriptionsUseCase.getVpnSubscriptions()
+                _state.emit(DEFAULT)
+                vpnSubscriptionPaymentProvider.loadProducts()
+            } else {
+                vpnSubscriptionPaymentProvider.loadProducts()
+            }
         }
-        if (buildConfigProvider.isWebFlavor()) {
-            _state.emit(NO_IN_APP_SUBSCRIPTIONS)
-            return@launch
-        }
-        if (buildConfigProvider.isMetaFlavor()) {
-            _state.emit(META_SUBSCRIPTIONS)
-            return@launch
-        }
-        if (subscriptionPrefs.getVpnSubscriptions().isEmpty()) {
-            _state.emit(LOADING)
-            subscriptionsUseCase.getVpnSubscriptions()
-            _state.emit(DEFAULT)
-            vpnSubscriptionPaymentProvider.loadProducts()
-        } else {
-            vpnSubscriptionPaymentProvider.loadProducts()
-        }
-    }
 
-    fun loadEmptyPrices() = viewModelScope.launch {
-        _state.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
-    }
+    fun loadEmptyPrices() =
+        viewModelScope.launch {
+            _state.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
+        }
 
-    fun purchase(id: String) = viewModelScope.launch {
-        vpnSubscriptionPaymentProvider.purchaseSelectedProduct(id)
-        vpnSubscriptionPaymentProvider.reset()
-    }
+    fun purchase(id: String) =
+        viewModelScope.launch {
+            vpnSubscriptionPaymentProvider.purchaseSelectedProduct(id)
+            vpnSubscriptionPaymentProvider.reset()
+        }
 
     fun navigateToLogin() {
         router.updateDestination(LoginWithCredentials)
@@ -216,28 +222,29 @@ class SignupViewModel(
         router.updateDestination(WebDestination.NoInAppRegistration)
     }
 
-    fun allowEventSharing(allow: Boolean) = viewModelScope.launch {
-        // TODO: VPN-3101 - add kpi start/stop
-        consentUseCase.setConsent(allow)
-        _state.emit(EMAIL)
-    }
-
-    fun isValidEmail(email: String): Boolean =
-        Patterns.EMAIL_ADDRESS.matcher(email).matches()
-
-    fun register(email: String) = viewModelScope.launch {
-        if (email.isEmpty()) {
-            _state.emit(ERROR_EMAIL_INVALID)
-            return@launch
+    fun allowEventSharing(allow: Boolean) =
+        viewModelScope.launch {
+            // TODO: VPN-3101 - add kpi start/stop
+            consentUseCase.setConsent(allow)
+            _state.emit(EMAIL)
         }
-        _state.emit(IN_PROCESS)
-        val result = useCase.vpnSignup(email)
-        if (result == null) {
-            _state.emit(ERROR_REGISTRATION)
-        } else {
-            _state.emit(signedUp(result))
+
+    fun isValidEmail(email: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
+    fun register(email: String) =
+        viewModelScope.launch {
+            if (email.isEmpty()) {
+                _state.emit(ERROR_EMAIL_INVALID)
+                return@launch
+            }
+            _state.emit(IN_PROCESS)
+            val result = useCase.vpnSignup(email)
+            if (result == null) {
+                _state.emit(ERROR_REGISTRATION)
+            } else {
+                _state.emit(signedUp(result))
+            }
         }
-    }
 
     fun completeSubscription() {
         router.updateDestination(permissionUtil.getNextDestination())
@@ -250,7 +257,8 @@ class SignupViewModel(
         }
     }
 
-    private fun onProductsFailedToLoad() = viewModelScope.launch {
-        _state.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
-    }
+    private fun onProductsFailedToLoad() =
+        viewModelScope.launch {
+            _state.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
+        }
 }

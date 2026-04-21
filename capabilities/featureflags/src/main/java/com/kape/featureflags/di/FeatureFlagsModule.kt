@@ -9,10 +9,8 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class FeatureFlagsModule {
-
     @Singleton(binds = [FeatureFlagsDataSource::class])
-    fun provideFeatureFlagsDataSource(api: AndroidAccountAPI): FeatureFlagsDataSource =
-        FeatureFlagsDataSourceImpl(api)
+    fun provideFeatureFlagsDataSource(api: AndroidAccountAPI): FeatureFlagsDataSource = FeatureFlagsDataSourceImpl(api)
 
     @Singleton
     fun provideForceUpdateUseCase(featureFlagsDataSource: FeatureFlagsDataSource): ForceUpdateUseCase =
