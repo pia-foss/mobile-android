@@ -1,9 +1,9 @@
 package screens.steps
 
 import androidx.test.uiautomator.UiAutomatorTestScope
-import screens.helpers.UiAutomatorHelpers.findByResId
-import screens.helpers.UiAutomatorHelpers.inputText
-import screens.helpers.UiAutomatorHelpers.waitUntilConnectionIsEstablished
+import screens.helpers.UiAutomatorHelper.findByResId
+import screens.helpers.UiAutomatorHelper.inputText
+import screens.helpers.UiAutomatorHelper.waitUntilConnectionIsEstablished
 
 object RegionSelectionSteps {
     const val SEARCH_BAR = ":VpnRegionSelectionScreen:searchBar"

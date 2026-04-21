@@ -12,7 +12,6 @@ import java.util.stream.Stream
 import kotlin.test.assertEquals
 
 class GetProfileUseCaseTest {
-
     private val dataSource: ProfileDatasource = mockk()
 
     lateinit var useCase: GetProfileUseCase
@@ -24,7 +23,10 @@ class GetProfileUseCaseTest {
 
     @ParameterizedTest(name = "result: {0}, expected: {1}")
     @MethodSource("data")
-    fun getProfile(result: Profile?, expected: Profile?) = runTest {
+    fun getProfile(
+        result: Profile?,
+        expected: Profile?,
+    ) = runTest {
         coEvery { dataSource.accountDetails() } returns result
         val actual = useCase.getProfile()
         assertEquals(expected, actual)
@@ -34,9 +36,10 @@ class GetProfileUseCaseTest {
         private val result = Profile(username = "username", subscription = mockk())
 
         @JvmStatic
-        fun data() = Stream.of(
-            Arguments.of(null, null),
-            Arguments.of(result, result),
-        )
+        fun data() =
+            Stream.of(
+                Arguments.of(null, null),
+                Arguments.of(result, result),
+            )
     }
 }

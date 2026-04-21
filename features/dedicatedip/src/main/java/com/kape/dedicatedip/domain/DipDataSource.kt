@@ -6,7 +6,6 @@ import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptio
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
 
 interface DipDataSource {
-
     suspend fun activate(ipToken: String): DipApiResult
 
     suspend fun renew(ipToken: String): DipApiResult
@@ -17,5 +16,8 @@ interface DipDataSource {
 
     suspend fun signup(dipPurchaseData: DipPurchaseData): Result<Unit>
 
-    suspend fun fetchToken(countryCode: String, regionName: String): Result<String>
+    suspend fun fetchToken(
+        countryCode: String,
+        regionName: String,
+    ): Result<String>
 }

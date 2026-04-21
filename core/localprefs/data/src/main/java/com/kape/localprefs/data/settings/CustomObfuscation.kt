@@ -7,7 +7,7 @@ data class CustomObfuscation(
     val host: String,
     val port: String,
     val key: String,
-    val cipher: String
+    val cipher: String,
 ) {
     fun isValid() = host.isNotEmpty() && port.isNotEmpty() && key.isNotEmpty() && cipher.isNotEmpty()
 }

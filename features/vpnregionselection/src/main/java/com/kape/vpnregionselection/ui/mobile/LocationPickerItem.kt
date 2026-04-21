@@ -54,37 +54,39 @@ fun LocationPickerItem(
 ) {
     Column(Modifier.semantics { testTagsAsResourceId = true }) {
         Row(
-            modifier = Modifier
-                .then(
-                    if (!isOffline) {
-                        Modifier.clickable { onClick(server) }
-                    } else {
-                        val offlineDescription = stringResource(id = R.string.offline)
-                        Modifier.semantics(mergeDescendants = true) {
-                            contentDescription = offlineDescription
-                        }
-                    },
-                )
-                .alpha(if (!server.allowsPortForwarding && isPortForwardingEnabled) 0.5f else 1f)
-                .defaultMinSize(minHeight = 56.dp)
-                .padding(16.dp)
-                .testTag(testTag),
-
+            modifier =
+                Modifier
+                    .then(
+                        if (!isOffline) {
+                            Modifier.clickable { onClick(server) }
+                        } else {
+                            val offlineDescription = stringResource(id = R.string.offline)
+                            Modifier.semantics(mergeDescendants = true) {
+                                contentDescription = offlineDescription
+                            }
+                        },
+                    ).alpha(if (!server.allowsPortForwarding && isPortForwardingEnabled) 0.5f else 1f)
+                    .defaultMinSize(minHeight = 56.dp)
+                    .padding(16.dp)
+                    .testTag(testTag),
         ) {
             Icon(
-                painter = painterResource(
-                    id = getFlagResource(LocalContext.current, server.iso),
-                ),
+                painter =
+                    painterResource(
+                        id = getFlagResource(LocalContext.current, server.iso),
+                    ),
                 contentDescription = null,
                 tint = Color.Unspecified,
-                modifier = Modifier
-                    .size(24.dp),
+                modifier =
+                    Modifier
+                        .size(24.dp),
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(
-                modifier = Modifier
-                    .align(CenterVertically)
-                    .weight(12f),
+                modifier =
+                    Modifier
+                        .align(CenterVertically)
+                        .weight(12f),
             ) {
                 Row {
                     RegionSelectionText(content = server.name, isOffline = server.isOffline, testTag = "$testTag:regionName")
@@ -129,13 +131,14 @@ fun LocationPickerItem(
                 server.latency?.let {
                     if (it.toInt() < VPN_REGIONS_PING_TIMEOUT) {
                         Box(
-                            modifier = Modifier
-                                .align(CenterVertically)
-                                .size(8.dp)
-                                .background(
-                                    LocalColors.current.getLatencyColor(server.latency),
-                                    shape = CircleShape,
-                                ),
+                            modifier =
+                                Modifier
+                                    .align(CenterVertically)
+                                    .size(8.dp)
+                                    .background(
+                                        LocalColors.current.getLatencyColor(server.latency),
+                                        shape = CircleShape,
+                                    ),
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         RegionSelectionLatencyText(
@@ -149,11 +152,12 @@ fun LocationPickerItem(
             if (enableFavorite) {
                 FavoriteIcon(
                     isChecked = isFavorite,
-                    modifier = Modifier
-                        .align(CenterVertically)
-                        .clickable {
-                            onFavoriteVpnClick(server.name)
-                        },
+                    modifier =
+                        Modifier
+                            .align(CenterVertically)
+                            .clickable {
+                                onFavoriteVpnClick(server.name)
+                            },
                 )
             }
         }

@@ -45,19 +45,21 @@ fun QuickConnect(
     onClick: (server: VpnServer) -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(16.dp),
     ) {
         TileTitleText(content = stringResource(id = R.string.quick_connect))
         Spacer(modifier = Modifier.height(8.dp))
         Row {
             for (index in 0 until QUICK_CONNECT_MAX_SERVERS) {
-                val itemModifier = if (index == 0) {
-                    Modifier.focusRequester(startQuickConnectFocusRequester)
-                } else {
-                    Modifier
-                }
+                val itemModifier =
+                    if (index == 0) {
+                        Modifier.focusRequester(startQuickConnectFocusRequester)
+                    } else {
+                        Modifier
+                    }
                 val server = servers.keys.toList().getOrNull(index)
                 server?.let { current ->
                     QuickConnectItem(
@@ -72,9 +74,10 @@ fun QuickConnect(
                     )
                 } ?: run {
                     QuickConnectItem(
-                        modifier = itemModifier
-                            .weight(1f)
-                            .focusProperties { canFocus = false },
+                        modifier =
+                            itemModifier
+                                .weight(1f)
+                                .focusProperties { canFocus = false },
                     )
                 }
                 if (index < QUICK_CONNECT_MAX_SERVERS - 1) {
@@ -98,22 +101,26 @@ private fun QuickConnectItem(
     ) {
         Box {
             Column(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .padding(top = 8.dp)
+                        .fillMaxSize(),
                 horizontalAlignment = CenterHorizontally,
             ) {
                 Image(
-                    painter = painterResource(
-                        id = server?.let { getFlagResource(LocalContext.current, it.iso) }
-                            ?: R.drawable.ic_map_empty,
-                    ),
+                    painter =
+                        painterResource(
+                            id =
+                                server?.let { getFlagResource(LocalContext.current, it.iso) }
+                                    ?: R.drawable.ic_map_empty,
+                        ),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
                     alignment = Alignment.Center,
-                    modifier = Modifier
-                        .requiredSize(40.dp)
-                        .clip(CircleShape),
+                    modifier =
+                        Modifier
+                            .requiredSize(40.dp)
+                            .clip(CircleShape),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 val serverText =
@@ -123,9 +130,10 @@ private fun QuickConnectItem(
                     content = serverText,
                 )
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(16.dp),
                     horizontalArrangement = Arrangement.End,
                 ) {
                     server?.let {

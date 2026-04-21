@@ -40,53 +40,57 @@ fun VpnLocationPicker(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                paddingValues = PaddingValues(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 8.dp),
-            )
-            .background(LocalColors.current.surfaceVariant, RoundedCornerShape(12.dp))
-            .height(56.dp)
-            .clickable {
-                onClick()
-            },
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    paddingValues = PaddingValues(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 8.dp),
+                ).background(LocalColors.current.surfaceVariant, RoundedCornerShape(12.dp))
+                .height(56.dp)
+                .clickable {
+                    onClick()
+                },
     ) {
         Image(
-            painter = painterResource(
-                id = if (isOptimal) {
-                    getFlagResource(
-                        LocalContext.current,
-                        "",
-                    )
-                } else {
-                    getFlagResource(LocalContext.current, server.iso)
-                },
-
-            ),
+            painter =
+                painterResource(
+                    id =
+                        if (isOptimal) {
+                            getFlagResource(
+                                LocalContext.current,
+                                "",
+                            )
+                        } else {
+                            getFlagResource(LocalContext.current, server.iso)
+                        },
+                ),
             contentScale = ContentScale.Crop,
             contentDescription = null,
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .clip(CircleShape)
-                .size(24.dp)
-                .align(CenterVertically),
+            modifier =
+                Modifier
+                    .padding(start = 16.dp)
+                    .clip(CircleShape)
+                    .size(24.dp)
+                    .align(CenterVertically),
         )
 
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.align(CenterVertically)) {
-            val heading = if (isOptimal) {
-                R.string.optimal_vpn_region
-            } else {
-                if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region
-            }
+            val heading =
+                if (isOptimal) {
+                    R.string.optimal_vpn_region
+                } else {
+                    if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region
+                }
             SelectedRegionTitleText(content = stringResource(id = heading).uppercase())
 
             Spacer(modifier = Modifier.height(4.dp))
-            val name = if (isOptimal && !isConnected) {
-                stringResource(id = R.string.automatic)
-            } else {
-                server.name
-            }
+            val name =
+                if (isOptimal && !isConnected) {
+                    stringResource(id = R.string.automatic)
+                } else {
+                    server.name
+                }
             SelectedRegionServerText(content = name)
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -94,9 +98,10 @@ fun VpnLocationPicker(
             painter = painterResource(id = R.drawable.ic_more_horizontal),
             contentDescription = null,
             tint = LocalColors.current.onSurface,
-            modifier = Modifier
-                .align(CenterVertically)
-                .padding(end = 16.dp),
+            modifier =
+                Modifier
+                    .align(CenterVertically)
+                    .padding(end = 16.dp),
         )
     }
 }

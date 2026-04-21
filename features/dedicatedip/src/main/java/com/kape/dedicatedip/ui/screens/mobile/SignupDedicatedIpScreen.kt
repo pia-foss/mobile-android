@@ -49,133 +49,153 @@ import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SignupDedicatedIpScreen() = Screen {
-    val viewModel: DipViewModel = koinViewModel()
+fun SignupDedicatedIpScreen() =
+    Screen {
+        val viewModel: DipViewModel = koinViewModel()
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.hasActivePlaystoreSubscription()
-        viewModel.getDipSupportedCountries()
-        viewModel.getDipMonthlyPlan()
-        viewModel.getDipYearlyPlan()
-    }
+        LaunchedEffect(key1 = Unit) {
+            viewModel.hasActivePlaystoreSubscription()
+            viewModel.getDipSupportedCountries()
+            viewModel.getDipMonthlyPlan()
+            viewModel.getDipYearlyPlan()
+        }
 
-    Column(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_dip),
-            tint = LocalColors.current.primary,
-            contentDescription = null,
-            modifier = Modifier
-                .padding(16.dp)
-                .height(40.dp)
-                .fillMaxWidth(),
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        if (viewModel.showFetchingPlansSpinner.value) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 64.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                CircularProgressIndicator(modifier = Modifier.padding(8.dp))
-            }
-        } else {
-            Column {
-                DedicatedIpSignupTitleText(
-                    content = stringResource(id = R.string.dip_signup_addon_title),
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(horizontal = 16.dp),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                DedicatedIpSignupDescriptionText(
-                    content = stringResource(id = R.string.dip_signup_addon_description),
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(horizontal = 16.dp),
-                )
-            }
-            Spacer(modifier = Modifier.height(32.dp))
-            YearlySubscriptionCard(
-                selected = viewModel.selectedPlanProductId.value == viewModel.dipYearlyPlan.value?.id,
-                price = viewModel.dipYearlyPlan.value?.yearlyPrice.toString(),
-                perMonthPrice = viewModel.dipYearlyPlan.value?.monthlyPrice.toString(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            ) {
-                viewModel.dipYearlyPlan.value?.let {
-                    viewModel.selectPlanProductId(it.id)
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-            MonthlySubscriptionCard(
-                selected = viewModel.selectedPlanProductId.value == viewModel.dipMonthlyPlan.value?.id,
-                price = viewModel.dipMonthlyPlan.value?.monthlyPrice.toString(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            ) {
-                viewModel.dipMonthlyPlan.value?.let {
-                    viewModel.selectPlanProductId(it.id)
-                }
-            }
-            Spacer(modifier = Modifier.height(24.dp))
-            PrimaryButton(
-                text = stringResource(id = R.string.logjn_continue),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            ) {
-                viewModel.navigateToDedicatedIpLocationSelection()
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            SecondaryButton(
-                text = stringResource(id = R.string.cancel),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-            ) {
-                viewModel.navigateBack()
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Footer(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.CenterHorizontally),
+        Column(
+            modifier =
+                Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_dip),
+                tint = LocalColors.current.primary,
+                contentDescription = null,
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .height(40.dp)
+                        .fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(16.dp))
+            if (viewModel.showFetchingPlansSpinner.value) {
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 64.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.padding(8.dp))
+                }
+            } else {
+                Column {
+                    DedicatedIpSignupTitleText(
+                        content = stringResource(id = R.string.dip_signup_addon_title),
+                        modifier =
+                            Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(horizontal = 16.dp),
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    DedicatedIpSignupDescriptionText(
+                        content = stringResource(id = R.string.dip_signup_addon_description),
+                        modifier =
+                            Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(horizontal = 16.dp),
+                    )
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                YearlySubscriptionCard(
+                    selected = viewModel.selectedPlanProductId.value == viewModel.dipYearlyPlan.value?.id,
+                    price =
+                        viewModel.dipYearlyPlan.value
+                            ?.yearlyPrice
+                            .toString(),
+                    perMonthPrice =
+                        viewModel.dipYearlyPlan.value
+                            ?.monthlyPrice
+                            .toString(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                ) {
+                    viewModel.dipYearlyPlan.value?.let {
+                        viewModel.selectPlanProductId(it.id)
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                MonthlySubscriptionCard(
+                    selected = viewModel.selectedPlanProductId.value == viewModel.dipMonthlyPlan.value?.id,
+                    price =
+                        viewModel.dipMonthlyPlan.value
+                            ?.monthlyPrice
+                            .toString(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                ) {
+                    viewModel.dipMonthlyPlan.value?.let {
+                        viewModel.selectPlanProductId(it.id)
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                PrimaryButton(
+                    text = stringResource(id = R.string.logjn_continue),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                ) {
+                    viewModel.navigateToDedicatedIpLocationSelection()
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                SecondaryButton(
+                    text = stringResource(id = R.string.cancel),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                ) {
+                    viewModel.navigateBack()
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Footer(
+                    modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .align(Alignment.CenterHorizontally),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
-    }
 
-    if (viewModel.hasAnActivePlaystoreSubscription.value) {
-        if (viewModel.showSupportedCountriesDialog.value) {
-            DipSignupSupportedCountriesDialog(viewModel = viewModel) {
-                viewModel.showSupportedCountriesDialog.value = false
+        if (viewModel.hasAnActivePlaystoreSubscription.value) {
+            if (viewModel.showSupportedCountriesDialog.value) {
+                DipSignupSupportedCountriesDialog(viewModel = viewModel) {
+                    viewModel.showSupportedCountriesDialog.value = false
+                }
+            } else {
+                if (viewModel.showFetchingNeededInformationError.value) {
+                    DipSignupErrorDialog(
+                        message = stringResource(id = R.string.dip_signup_required_information_missing_error),
+                        confirmButtonMessage = stringResource(id = R.string.take_me_back),
+                        onConfirmCallback = viewModel::navigateBack,
+                    )
+                }
             }
         } else {
-            if (viewModel.showFetchingNeededInformationError.value) {
-                DipSignupErrorDialog(
-                    message = stringResource(id = R.string.dip_signup_required_information_missing_error),
-                    confirmButtonMessage = stringResource(id = R.string.take_me_back),
-                    onConfirmCallback = viewModel::navigateBack,
-                )
-            }
+            DipSignupErrorDialog(
+                message = stringResource(id = R.string.dip_signup_error),
+                confirmButtonMessage = stringResource(id = R.string.take_me_back),
+                onConfirmCallback = viewModel::navigateBack,
+            )
         }
-    } else {
-        DipSignupErrorDialog(
-            message = stringResource(id = R.string.dip_signup_error),
-            confirmButtonMessage = stringResource(id = R.string.take_me_back),
-            onConfirmCallback = viewModel::navigateBack,
-        )
     }
-}
 
 @Composable
 private fun DipSignupSupportedCountriesDialog(
@@ -205,9 +225,10 @@ private fun DipSignupSupportedCountriesDialog(
                     }
                 } ?: run {
                     CircularProgressIndicator(
-                        modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .padding(8.dp),
+                        modifier =
+                            Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(8.dp),
                     )
                 }
             }
@@ -270,24 +291,24 @@ fun DipSignupErrorDialog(
 }
 
 @Composable
-fun SupportedCountryItem(
-    country: DipCountriesResponse.DedicatedIpCountriesAvailable,
-) {
+fun SupportedCountryItem(country: DipCountriesResponse.DedicatedIpCountriesAvailable) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Image(
             painter = painterResource(id = getFlagResource(LocalContext.current, country.countryCode)),
             contentScale = ContentScale.Crop,
             contentDescription = null,
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(24.dp)
-                .align(Alignment.CenterVertically),
+            modifier =
+                Modifier
+                    .clip(CircleShape)
+                    .size(24.dp)
+                    .align(Alignment.CenterVertically),
         )
         Spacer(modifier = Modifier.width(16.dp))
         Column(
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .padding(vertical = 8.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(vertical = 8.dp),
         ) {
             SupportedDipRegions(content = country.name)
             Spacer(modifier = Modifier.height(4.dp))
@@ -296,9 +317,10 @@ fun SupportedCountryItem(
         }
     }
     HorizontalDivider(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(0.5.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(0.5.dp),
         color = LocalColors.current.outline,
     )
 }

@@ -44,171 +44,178 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvHelpScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-    val initialFocusRequester = remember { FocusRequester() }
+fun TvHelpScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val initialFocusRequester = remember { FocusRequester() }
 
-    val context = LocalContext.current
-    val showDialog = remember { mutableStateOf(false) }
-    val showToast = remember { mutableStateOf(false) }
-    val showSpinner = remember { mutableStateOf(false) }
+        val context = LocalContext.current
+        val showDialog = remember { mutableStateOf(false) }
+        val showToast = remember { mutableStateOf(false) }
+        val showSpinner = remember { mutableStateOf(false) }
 
-    with(viewModel.requestId.value) {
-        when {
-            this == null -> {
-                showDialog.value = false
-                showToast.value = false
-            }
+        with(viewModel.requestId.value) {
+            when {
+                this == null -> {
+                    showDialog.value = false
+                    showToast.value = false
+                }
 
-            this.isEmpty() -> {
-                showToast.value = true
-            }
+                this.isEmpty() -> {
+                    showToast.value = true
+                }
 
-            this.isNotEmpty() -> {
-                showDialog.value = true
+                this.isNotEmpty() -> {
+                    showDialog.value = true
+                }
             }
         }
-    }
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
+        }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
-            Row(
+            HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.help),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 64.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    if (showSpinner.value) {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                        }
-                    } else {
-                        val appUrl = stringResource(id = R.string.app_url)
-                        TvSettingsItem(
-                            modifier = Modifier.focusRequester(initialFocusRequester),
-                            titleId = R.string.help_version_title,
-                            subtitle = viewModel.getAppVersion(),
-                        ) {
-                            context.startActivity(
-                                Intent(Intent.ACTION_VIEW).apply {
-                                    data = Uri.parse(appUrl)
-                                },
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        TvSettingsToggle(
-                            titleId = R.string.help_improve_pia_title,
-                            subtitleId = R.string.help_improve_pia_description,
-                            enabled = viewModel.improvePiaEnabled.value,
-                            toggle = {
-                                viewModel.toggleImprovePia(it)
-                            },
-                        )
-                        if (viewModel.improvePiaEnabled.value) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            TvSettingsItem(
-                                titleId = R.string.help_view_shared_data_title,
-                            ) {
-                                viewModel.navigateToConnectionStats()
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        TvSettingsItem(
-                            titleId = R.string.about,
-                        ) {
-                            viewModel.navigateToAbout()
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        TvSettingsItem(
-                            titleId = R.string.drawer_item_title_privacy_policy,
-                        ) {
-                            viewModel.navigateToPrivacyPolicy()
-                        }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        TvSettingsItem(
-                            titleId = R.string.help_send_log_title,
-                        ) {
-                            showSpinner.value = true
-                            viewModel.sendLogs()
-                        }
-                    }
-                }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(64.dp),
-                        painter = painterResource(id = com.kape.settings.R.drawable.tv_help),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.help),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
-            }
-        }
-
-        if (showDialog.value) {
-            showSpinner.value = false
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                SuccessDialog(
-                    requestId = viewModel.requestId.value ?: "",
-                    showDialog = showDialog,
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
                 ) {
-                    viewModel.resetRequestId()
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 64.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        if (showSpinner.value) {
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                            }
+                        } else {
+                            val appUrl = stringResource(id = R.string.app_url)
+                            TvSettingsItem(
+                                modifier = Modifier.focusRequester(initialFocusRequester),
+                                titleId = R.string.help_version_title,
+                                subtitle = viewModel.getAppVersion(),
+                            ) {
+                                context.startActivity(
+                                    Intent(Intent.ACTION_VIEW).apply {
+                                        data = Uri.parse(appUrl)
+                                    },
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            TvSettingsToggle(
+                                titleId = R.string.help_improve_pia_title,
+                                subtitleId = R.string.help_improve_pia_description,
+                                enabled = viewModel.improvePiaEnabled.value,
+                                toggle = {
+                                    viewModel.toggleImprovePia(it)
+                                },
+                            )
+                            if (viewModel.improvePiaEnabled.value) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                TvSettingsItem(
+                                    titleId = R.string.help_view_shared_data_title,
+                                ) {
+                                    viewModel.navigateToConnectionStats()
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            TvSettingsItem(
+                                titleId = R.string.about,
+                            ) {
+                                viewModel.navigateToAbout()
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            TvSettingsItem(
+                                titleId = R.string.drawer_item_title_privacy_policy,
+                            ) {
+                                viewModel.navigateToPrivacyPolicy()
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            TvSettingsItem(
+                                titleId = R.string.help_send_log_title,
+                            ) {
+                                showSpinner.value = true
+                                viewModel.sendLogs()
+                            }
+                        }
+                    }
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(64.dp),
+                            painter = painterResource(id = com.kape.settings.R.drawable.tv_help),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
-        }
 
-        if (showToast.value) {
-            Toast.makeText(context, R.string.failure_sending_log, Toast.LENGTH_LONG).show()
-            viewModel.resetRequestId()
-            showSpinner.value = false
-            showToast.value = false
+            if (showDialog.value) {
+                showSpinner.value = false
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
+                ) {
+                    SuccessDialog(
+                        requestId = viewModel.requestId.value ?: "",
+                        showDialog = showDialog,
+                    ) {
+                        viewModel.resetRequestId()
+                    }
+                }
+            }
+
+            if (showToast.value) {
+                Toast.makeText(context, R.string.failure_sending_log, Toast.LENGTH_LONG).show()
+                viewModel.resetRequestId()
+                showSpinner.value = false
+                showToast.value = false
+            }
         }
     }
-}

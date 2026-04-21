@@ -45,99 +45,105 @@ import org.koin.compose.koinInject
 import java.util.Locale
 
 @Composable
-fun TvConnectionScreen() = Screen {
-    val viewModel: ConnectionViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-    val state by connectionInfoProvider.connectionState.collectAsState()
-    val isConnected = viewModel.isConnected.collectAsState()
-    val topStartHeaderFocusRequester = remember { FocusRequester() }
-    val topEndHeaderFocusRequester = remember { FocusRequester() }
-    val startQuickConnectFocusRequester = remember { FocusRequester() }
-    val locale = Locale.getDefault().language
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val activity = LocalActivity.current
+fun TvConnectionScreen() =
+    Screen {
+        val viewModel: ConnectionViewModel = koinViewModel()
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val state by connectionInfoProvider.connectionInfoState.collectAsState()
+        val isConnected = viewModel.isConnected.collectAsState()
+        val topStartHeaderFocusRequester = remember { FocusRequester() }
+        val topEndHeaderFocusRequester = remember { FocusRequester() }
+        val startQuickConnectFocusRequester = remember { FocusRequester() }
+        val locale = Locale.getDefault().language
+        val lifecycleOwner = LocalLifecycleOwner.current
+        val activity = LocalActivity.current
 
-    BackHandler {
-        activity?.finish()
-    }
-
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-            viewModel.refreshState()
+        BackHandler {
+            activity?.finish()
         }
-    }
 
-    LaunchedEffect(key1 = Unit) {
-        topStartHeaderFocusRequester.requestFocus()
-        viewModel.autoConnect()
-    }
+        LaunchedEffect(lifecycleOwner) {
+            lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.refreshState()
+            }
+        }
 
-    Box(
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 32.dp, vertical = 24.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        LaunchedEffect(key1 = Unit) {
+            topStartHeaderFocusRequester.requestFocus()
+            viewModel.autoConnect()
+        }
+
+        Box(
+            modifier =
+                Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize(),
         ) {
-            TvHomeHeaderItem(
-                connectionStatus = state.status,
-                defaultSelectedTabIndex = 0,
-                topStartHeaderFocusRequester = topStartHeaderFocusRequester,
-                topEndHeaderFocusRequester = topEndHeaderFocusRequester,
-                onLocationsSelected = {
-                    viewModel.showVpnRegionSelection()
-                },
-                onSettingsSelected = {
-                    viewModel.navigateToSideMenu()
-                },
-                onHelpSelected = {
-                    viewModel.navigateToHelp()
-                },
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
             )
             Column(
-                modifier = Modifier
-                    .widthIn(max = 520.dp)
-                    .fillMaxHeight(),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 32.dp, vertical = 24.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                Spacer(modifier = Modifier.height(32.dp))
-                ConnectButton(
-                    status = if (isConnected.value) state.status else ConnectionStatus.ERROR,
-                    onTvLayout = true,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .focusProperties {
-                            start = topStartHeaderFocusRequester
-                            end = topEndHeaderFocusRequester
-                        },
+                TvHomeHeaderItem(
+                    connectionStatus = state.status,
+                    defaultSelectedTabIndex = 0,
+                    topStartHeaderFocusRequester = topStartHeaderFocusRequester,
+                    topEndHeaderFocusRequester = topEndHeaderFocusRequester,
+                    onLocationsSelected = {
+                        viewModel.showVpnRegionSelection()
+                    },
+                    onSettingsSelected = {
+                        viewModel.navigateToSideMenu()
+                    },
+                    onHelpSelected = {
+                        viewModel.navigateToHelp()
+                    },
+                )
+                Column(
+                    modifier =
+                        Modifier
+                            .widthIn(max = 520.dp)
+                            .fillMaxHeight(),
                 ) {
-                    viewModel.onConnectionButtonClicked()
-                }
-                Spacer(modifier = Modifier.height(32.dp))
-                viewModel.getOrderedElements().forEach {
-                    DisplayComponent(
-                        screenElement = it.element,
-                        isVisible = viewModel.isScreenElementVisible(it),
-                        viewModel = viewModel,
-                        startQuickConnectFocusRequester = startQuickConnectFocusRequester,
-                    )
+                    Spacer(modifier = Modifier.height(32.dp))
+                    ConnectButton(
+                        status = if (isConnected.value) state.status else ConnectionStatus.ERROR,
+                        onTvLayout = true,
+                        modifier =
+                            Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .focusProperties {
+                                    start = topStartHeaderFocusRequester
+                                    end = topEndHeaderFocusRequester
+                                },
+                    ) {
+                        viewModel.onConnectionButtonClicked()
+                    }
+                    Spacer(modifier = Modifier.height(32.dp))
+                    viewModel.getOrderedElements().forEach {
+                        DisplayComponent(
+                            screenElement = it.element,
+                            isVisible = viewModel.isScreenElementVisible(it),
+                            viewModel = viewModel,
+                            startQuickConnectFocusRequester = startQuickConnectFocusRequester,
+                        )
+                    }
                 }
             }
         }
     }
-}
 
 @Composable
 private fun DisplayComponent(
@@ -151,15 +157,16 @@ private fun DisplayComponent(
     }
 
     val state by viewModel.state.collectAsState()
-    val connectionState by viewModel.connectionInfoProvider.connectionState.collectAsState()
+    val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsState()
     val vpnState by viewModel.connectionInfoProvider.state.collectAsState()
 
     when (screenElement) {
         Element.VpnRegionSelection -> {
             VpnLocationPicker(
-                modifier = Modifier.focusProperties {
-                    down = startQuickConnectFocusRequester
-                },
+                modifier =
+                    Modifier.focusProperties {
+                        down = startQuickConnectFocusRequester
+                    },
                 server = state.server,
                 vpnIp = vpnState.vpnIp,
                 isConnected = connectionState.status == ConnectionStatus.CONNECTED,

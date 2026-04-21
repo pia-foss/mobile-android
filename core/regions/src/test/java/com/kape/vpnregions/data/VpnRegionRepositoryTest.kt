@@ -30,18 +30,22 @@ class VpnRegionRepositoryTest {
 
     @BeforeEach
     fun setUp() {
-        repository = VpnRegionRepository(
-            source,
-            dipPrefs,
-            connectionPrefs,
-            lazy { connectionInfoProvider },
-            lazy { connectionConfigurationUseCase },
-        )
+        repository =
+            VpnRegionRepository(
+                source,
+                dipPrefs,
+                connectionPrefs,
+                lazy { connectionInfoProvider },
+                lazy { connectionConfigurationUseCase },
+            )
     }
 
     @ParameterizedTest(name = "response: {0}, expected: {1}")
     @MethodSource("regions")
-    fun fetchRegions(response: VpnRegionsResponse?, expected: List<VpnServer>) = runTest {
+    fun fetchRegions(
+        response: VpnRegionsResponse?,
+        expected: List<VpnServer>,
+    ) = runTest {
         coEvery { source.fetchVpnRegions(any()) } returns response
         every { dipPrefs.getDedicatedIps() } returns emptyList()
 
@@ -68,74 +72,77 @@ class VpnRegionRepositoryTest {
     companion object {
         private val response = VpnRegionsResponse()
         private val server = VpnRegionsResponse.Region("id", "test", "android")
-        private val anotherResponse = mockk<VpnRegionsResponse>().apply {
-            every { regions } returns listOf(server)
-            every { groups } returns emptyMap()
-        }
+        private val anotherResponse =
+            mockk<VpnRegionsResponse>().apply {
+                every { regions } returns listOf(server)
+                every { groups } returns emptyMap()
+            }
 
         @JvmStatic
-        fun regions() = Stream.of(
-            Arguments.of(response, emptyList<VpnServer>()),
-            Arguments.of(
-                anotherResponse,
-                listOf(
-                    VpnServer(
-                        "test",
-                        "android",
-                        "",
-                        null,
-                        emptyMap(),
-                        "id",
-                        null,
-                        null,
-                        false,
-                        false,
-                        false,
-                        false,
-                        null,
-                        null,
+        fun regions() =
+            Stream.of(
+                Arguments.of(response, emptyList<VpnServer>()),
+                Arguments.of(
+                    anotherResponse,
+                    listOf(
+                        VpnServer(
+                            "test",
+                            "android",
+                            "",
+                            null,
+                            emptyMap(),
+                            "id",
+                            null,
+                            null,
+                            false,
+                            false,
+                            false,
+                            false,
+                            null,
+                            null,
+                        ),
                     ),
                 ),
-            ),
-            Arguments.of(null, emptyList<VpnServer>()),
-        )
+                Arguments.of(null, emptyList<VpnServer>()),
+            )
 
         private val latencyInfo = RegionLowerLatencyInformation("id", 0)
 
         @JvmStatic
-        fun latencies() = Stream.of(
-            Arguments.of(
-                response,
-                emptyList<RegionLowerLatencyInformation>(),
-                emptyList<VpnServer>(),
-            ),
-            Arguments.of(
-                anotherResponse,
-                listOf(latencyInfo),
-                listOf(
-                    VpnServer(
-                        "test",
-                        "android",
-                        "",
-                        "0",
-                        emptyMap(),
-                        "id",
-                        null,
-                        null,
-                        false,
-                        false,
-                        false,
-                        false,
-                        null,
-                        null,
+        fun latencies() =
+            Stream.of(
+                Arguments.of(
+                    response,
+                    emptyList<RegionLowerLatencyInformation>(),
+                    emptyList<VpnServer>(),
+                ),
+                Arguments.of(
+                    anotherResponse,
+                    listOf(latencyInfo),
+                    listOf(
+                        VpnServer(
+                            "test",
+                            "android",
+                            "",
+                            "0",
+                            emptyMap(),
+                            "id",
+                            null,
+                            null,
+                            false,
+                            false,
+                            false,
+                            false,
+                            null,
+                            null,
+                        ),
                     ),
                 ),
-            ),
-            Arguments.of(
-                null,
-                emptyList<RegionLowerLatencyInformation>(),
-                emptyList<VpnServer>(),
-            ),
-        )
+                Arguments.of(
+                    null,
+                    emptyList<RegionLowerLatencyInformation>(),
+                    emptyList<VpnServer>(),
+                ),
+            )
     }
 }

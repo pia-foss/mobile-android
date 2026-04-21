@@ -9,12 +9,9 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class CsiModule {
-
     @Singleton(binds = [CsiDataSource::class])
-    fun provideCsiDataSource(api: CSIAPI): CsiDataSource =
-        CsiDataSourceImpl(api)
+    fun provideCsiDataSource(api: CSIAPI): CsiDataSource = CsiDataSourceImpl(api)
 
     @Singleton
-    fun provideSendLogUseCase(dataSource: CsiDataSource): SendLogUseCase =
-        SendLogUseCase(dataSource)
+    fun provideSendLogUseCase(dataSource: CsiDataSource): SendLogUseCase = SendLogUseCase(dataSource)
 }

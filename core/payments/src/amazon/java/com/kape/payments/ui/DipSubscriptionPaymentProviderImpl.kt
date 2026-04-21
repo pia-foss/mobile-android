@@ -9,7 +9,6 @@ import org.koin.core.annotation.Singleton
 class DipSubscriptionPaymentProviderImpl(
     private val context: Context,
 ) : DipSubscriptionPaymentProvider {
-
     // region DipSubscriptionPaymentProvider
     override fun productsDetails(
         productIds: List<String>,

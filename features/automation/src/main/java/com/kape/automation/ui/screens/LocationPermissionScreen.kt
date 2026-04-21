@@ -35,84 +35,94 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun LocationPermissionScreen() = Screen {
-    val viewModel: AutomationViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
-    }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = {
-            if (it) {
-                viewModel.onLocationPermissionGranted()
+fun LocationPermissionScreen() =
+    Screen {
+        val viewModel: AutomationViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
             }
-        },
-    )
+        val launcher =
+            rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+                onResult = {
+                    if (it) {
+                        viewModel.onLocationPermissionGranted()
+                    }
+                },
+            )
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .verticalScroll(rememberScrollState())
-                .background(LocalColors.current.background),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                Image(
-                    painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .height(40.dp)
-                        .fillMaxWidth(),
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.ic_vpn_permission),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(40.dp)
-                        .height(140.dp)
-                        .fillMaxWidth(),
-                )
-                OnboardingTitleText(
-                    content = stringResource(id = com.kape.ui.R.string.location_permission_title),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(it)
+                        .verticalScroll(rememberScrollState())
+                        .background(LocalColors.current.background),
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    Image(
+                        painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .padding(16.dp)
+                                .height(40.dp)
+                                .fillMaxWidth(),
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_vpn_permission),
+                        contentDescription = null,
+                        modifier =
+                            Modifier
+                                .padding(40.dp)
+                                .height(140.dp)
+                                .fillMaxWidth(),
+                    )
+                    OnboardingTitleText(
+                        content = stringResource(id = com.kape.ui.R.string.location_permission_title),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                    )
 
-                OnboardingDescriptionText(
-                    content = stringResource(id = com.kape.ui.R.string.location_permission_message),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                )
+                    OnboardingDescriptionText(
+                        content = stringResource(id = com.kape.ui.R.string.location_permission_message),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                    )
 
-                Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.weight(1f))
 
-                OnboardingFooterText(
-                    content = stringResource(id = com.kape.ui.R.string.location_permission_footer),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                )
+                    OnboardingFooterText(
+                        content = stringResource(id = com.kape.ui.R.string.location_permission_footer),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                    )
 
-                PrimaryButton(
-                    text = stringResource(id = com.kape.ui.R.string.location_permission_action),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
-                        .align(Alignment.CenterHorizontally),
-                ) {
-                    launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    PrimaryButton(
+                        text = stringResource(id = com.kape.ui.R.string.location_permission_action),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
+                                .align(Alignment.CenterHorizontally),
+                    ) {
+                        launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    }
                 }
             }
         }
     }
-}

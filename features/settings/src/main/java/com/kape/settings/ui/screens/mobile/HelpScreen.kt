@@ -35,129 +35,138 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HelpScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.help))
-    }
+fun HelpScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.help))
+            }
 
-    val context = LocalContext.current
-    val showDialog = remember { mutableStateOf(false) }
-    val showToast = remember { mutableStateOf(false) }
-    val showSpinner = remember { mutableStateOf(false) }
+        val context = LocalContext.current
+        val showDialog = remember { mutableStateOf(false) }
+        val showToast = remember { mutableStateOf(false) }
+        val showSpinner = remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth()
-                .semantics {},
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                with(viewModel.requestId.value) {
-                    when {
-                        this == null -> {
-                            showDialog.value = false
-                            showToast.value = false
-                        }
+            Column(
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth()
+                        .semantics {},
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    with(viewModel.requestId.value) {
+                        when {
+                            this == null -> {
+                                showDialog.value = false
+                                showToast.value = false
+                            }
 
-                        this.isEmpty() -> {
-                            showToast.value = true
-                        }
+                            this.isEmpty() -> {
+                                showToast.value = true
+                            }
 
-                        this.isNotEmpty() -> {
-                            showDialog.value = true
+                            this.isNotEmpty() -> {
+                                showDialog.value = true
+                            }
                         }
                     }
-                }
 
-                val appUrl = stringResource(id = R.string.app_url)
-                SettingsItem(
-                    titleId = R.string.help_version_title,
-                    subtitle = viewModel.getAppVersion(),
-                    onClick = {
-                        context.startActivity(
-                            Intent(Intent.ACTION_VIEW).apply {
-                                data = Uri.parse(appUrl)
-                            },
-                        )
-                    },
-                )
-                SettingsItem(
-                    titleId = R.string.help_view_debug_log_title,
-                    subtitle = stringResource(id = R.string.help_view_debug_log_description),
-                    onClick = {
-                        viewModel.navigateToDebugLogs()
-                    },
-                )
-                SettingsToggle(
-                    titleId = R.string.help_enable_debug_logging_title,
-                    subtitleId = R.string.help_enable_debug_logging_description,
-                    enabled = viewModel.debugLoggingEnabled.value,
-                    toggle = {
-                        viewModel.toggleDebugLogging(it)
-                    },
-                )
-                SettingsItem(
-                    titleId = R.string.help_send_log_title,
-                    onClick = {
-                        showSpinner.value = true
-                        viewModel.sendLogs()
-                    },
-                )
-                SettingsToggle(
-                    titleId = R.string.help_improve_pia_title,
-                    subtitleId = R.string.help_improve_pia_description,
-                    enabled = viewModel.improvePiaEnabled.value,
-                    toggle = {
-                        viewModel.toggleImprovePia(it)
-                    },
-                )
-                if (viewModel.improvePiaEnabled.value) {
+                    val appUrl = stringResource(id = R.string.app_url)
                     SettingsItem(
-                        titleId = R.string.help_view_shared_data_title,
+                        titleId = R.string.help_version_title,
+                        subtitle = viewModel.getAppVersion(),
                         onClick = {
-                            viewModel.navigateToConnectionStats()
+                            context.startActivity(
+                                Intent(Intent.ACTION_VIEW).apply {
+                                    data = Uri.parse(appUrl)
+                                },
+                            )
                         },
                     )
-                }
-
-                if (showSpinner.value) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .size(48.dp),
-                        color = LocalColors.current.primary,
+                    SettingsItem(
+                        titleId = R.string.help_view_debug_log_title,
+                        subtitle = stringResource(id = R.string.help_view_debug_log_description),
+                        onClick = {
+                            viewModel.navigateToDebugLogs()
+                        },
                     )
-                }
+                    SettingsToggle(
+                        titleId = R.string.help_enable_debug_logging_title,
+                        subtitleId = R.string.help_enable_debug_logging_description,
+                        enabled = viewModel.debugLoggingEnabled.value,
+                        toggle = {
+                            viewModel.toggleDebugLogging(it)
+                        },
+                    )
+                    SettingsItem(
+                        titleId = R.string.help_send_log_title,
+                        onClick = {
+                            showSpinner.value = true
+                            viewModel.sendLogs()
+                        },
+                    )
+                    SettingsToggle(
+                        titleId = R.string.help_improve_pia_title,
+                        subtitleId = R.string.help_improve_pia_description,
+                        enabled = viewModel.improvePiaEnabled.value,
+                        toggle = {
+                            viewModel.toggleImprovePia(it)
+                        },
+                    )
+                    if (viewModel.improvePiaEnabled.value) {
+                        SettingsItem(
+                            titleId = R.string.help_view_shared_data_title,
+                            onClick = {
+                                viewModel.navigateToConnectionStats()
+                            },
+                        )
+                    }
 
-                if (showDialog.value) {
-                    showSpinner.value = false
-                    SuccessDialog(
-                        requestId = viewModel.requestId.value ?: "",
-                        showDialog = showDialog,
-                    ) { viewModel.resetRequestId() }
-                }
+                    if (showSpinner.value) {
+                        CircularProgressIndicator(
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .size(48.dp),
+                            color = LocalColors.current.primary,
+                        )
+                    }
 
-                if (showToast.value) {
-                    showSpinner.value = false
-                    Toast.makeText(context, R.string.failure_sending_log, Toast.LENGTH_LONG)
-                        .show()
-                    showToast.value = false
-                    viewModel.resetRequestId()
+                    if (showDialog.value) {
+                        showSpinner.value = false
+                        SuccessDialog(
+                            requestId = viewModel.requestId.value ?: "",
+                            showDialog = showDialog,
+                        ) { viewModel.resetRequestId() }
+                    }
+
+                    if (showToast.value) {
+                        showSpinner.value = false
+                        Toast
+                            .makeText(context, R.string.failure_sending_log, Toast.LENGTH_LONG)
+                            .show()
+                        showToast.value = false
+                        viewModel.resetRequestId()
+                    }
                 }
             }
         }
     }
-}
 
 @Composable
-fun SuccessDialog(requestId: String, showDialog: MutableState<Boolean>, reset: () -> Unit) {
+fun SuccessDialog(
+    requestId: String,
+    showDialog: MutableState<Boolean>,
+    reset: () -> Unit,
+) {
     AlertDialog(
         onDismissRequest = {
             showDialog.value = false
@@ -171,10 +180,11 @@ fun SuccessDialog(requestId: String, showDialog: MutableState<Boolean>, reset: (
         },
         text = {
             Text(
-                text = String.format(
-                    stringResource(id = R.string.log_send_done_msg),
-                    requestId,
-                ),
+                text =
+                    String.format(
+                        stringResource(id = R.string.log_send_done_msg),
+                        requestId,
+                    ),
                 fontSize = 14.sp,
             )
         },

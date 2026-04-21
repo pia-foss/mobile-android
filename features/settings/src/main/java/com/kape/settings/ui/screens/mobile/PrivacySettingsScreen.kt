@@ -29,69 +29,72 @@ import com.kape.ui.mobile.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PrivacySettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.privacy))
-    }
-    val showWarning = remember { mutableStateOf(false) }
+fun PrivacySettingsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.privacy))
+            }
+        val showWarning = remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth()
-                .semantics {},
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                SettingsItem(
-                    titleId = R.string.privacy_kill_switch_title,
-                    subtitle = stringResource(id = R.string.privacy_kill_switch_description),
-                    onClick = {
-                        viewModel.navigateToKillSwitch()
-                    },
-                )
-                SettingsToggle(
-                    titleId = R.string.mace_title,
-                    subtitleId = R.string.mace_description,
-                    enabled = viewModel.maceEnabled.value,
-                    toggle = {
-                        // MACE requires using PIA DNS
-                        if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !viewModel.maceEnabled.value) {
-                            showWarning.value = true
-                        }
-                        viewModel.toggleMace(it)
-                        viewModel.showReconnectDialogIfVpnConnected()
-                    },
-                )
-                if (viewModel.reconnectDialogVisible.value) {
-                    ReconnectDialog(
-                        onReconnect = {
-                            viewModel.reconnect()
-                            viewModel.reconnectDialogVisible.value = false
-                        },
-                        onLater = {
-                            viewModel.reconnectDialogVisible.value = false
+            Column(
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth()
+                        .semantics {},
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    SettingsItem(
+                        titleId = R.string.privacy_kill_switch_title,
+                        subtitle = stringResource(id = R.string.privacy_kill_switch_description),
+                        onClick = {
+                            viewModel.navigateToKillSwitch()
                         },
                     )
-                }
-                if (showWarning.value) {
-                    WarningDialog(
-                        onConfirm = {
-                            viewModel.setSelectedDnsOption(DnsOptions.PIA)
-                            showWarning.value = false
+                    SettingsToggle(
+                        titleId = R.string.mace_title,
+                        subtitleId = R.string.mace_description,
+                        enabled = viewModel.maceEnabled.value,
+                        toggle = {
+                            // MACE requires using PIA DNS
+                            if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !viewModel.maceEnabled.value) {
+                                showWarning.value = true
+                            }
+                            viewModel.toggleMace(it)
+                            viewModel.showReconnectDialogIfVpnConnected()
                         },
                     )
+                    if (viewModel.reconnectDialogVisible.value) {
+                        ReconnectDialog(
+                            onReconnect = {
+                                viewModel.reconnect()
+                                viewModel.reconnectDialogVisible.value = false
+                            },
+                            onLater = {
+                                viewModel.reconnectDialogVisible.value = false
+                            },
+                        )
+                    }
+                    if (showWarning.value) {
+                        WarningDialog(
+                            onConfirm = {
+                                viewModel.setSelectedDnsOption(DnsOptions.PIA)
+                                showWarning.value = false
+                            },
+                        )
+                    }
                 }
             }
         }
     }
-}
 
 @Composable
 fun WarningDialog(onConfirm: () -> Unit) {

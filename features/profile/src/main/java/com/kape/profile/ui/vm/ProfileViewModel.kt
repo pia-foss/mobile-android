@@ -28,41 +28,44 @@ class ProfileViewModel(
     private val deleteAccountUseCase: DeleteAccountUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val router: Router,
-) :
-    ViewModel(), KoinComponent {
-
+) : ViewModel(),
+    KoinComponent {
     private val _state = MutableStateFlow(IDLE)
-    val screenState: StateFlow<ProfileScreenState> = _state
+    val state: StateFlow<ProfileScreenState> = _state
 
     init {
         loadProfile()
     }
 
-    fun logout() = viewModelScope.launch {
-        logoutUseCase.logout()
-        router.updateDestination(Splash)
-    }
+    fun logout() =
+        viewModelScope.launch {
+            logoutUseCase.logout()
+            router.updateDestination(Splash)
+        }
 
     fun navigateToLogin() = router.updateDestination(LoginWithCredentials)
+
     fun navigateToSubscribe() = router.updateDestination(Subscribe)
+
     fun navigateToAccountDeleted() = router.updateDestination(AccountDeleted)
+
     fun navigateToDeleteAccount() = router.updateDestination(WebDestination.DeleteAccount)
 
-    private fun loadProfile() = viewModelScope.launch {
-        _state.emit(LOADING)
-        val profile = useCase.getProfile()
-        if (profile == null) {
-            _state.emit(IDLE)
-        } else {
-            _state.emit(getState(profile))
+    private fun loadProfile() =
+        viewModelScope.launch {
+            _state.emit(LOADING)
+            val profile = useCase.getProfile()
+            if (profile == null) {
+                _state.emit(IDLE)
+            } else {
+                _state.emit(getState(profile))
+            }
         }
-    }
 
-    private fun getState(profile: Profile): ProfileScreenState {
-        return createSuccessState(
+    private fun getState(profile: Profile): ProfileScreenState =
+        createSuccessState(
             profile.username,
             profile.subscription.expirationDate,
             profile.subscription.isExpired,
         )
-    }
 }

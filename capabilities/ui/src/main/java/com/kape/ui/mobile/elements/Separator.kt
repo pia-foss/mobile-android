@@ -12,10 +12,11 @@ import com.kape.ui.utils.LocalColors
 @Composable
 fun Separator() {
     HorizontalDivider(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .height(0.5.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .height(0.5.dp),
         color = LocalColors.current.outline,
     )
 }

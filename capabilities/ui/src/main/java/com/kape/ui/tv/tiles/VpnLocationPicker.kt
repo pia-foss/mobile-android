@@ -41,51 +41,56 @@ fun VpnLocationPicker(
     onClick: () -> Unit,
 ) {
     TileButton(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                paddingValues = PaddingValues(horizontal = 16.dp),
-            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    paddingValues = PaddingValues(horizontal = 16.dp),
+                ),
         onClick = onClick,
     ) {
         Image(
-            painter = painterResource(
-                id = if (isOptimal) {
-                    getFlagResource(
-                        LocalContext.current,
-                        "",
-                    )
-                } else {
-                    getFlagResource(LocalContext.current, server.iso)
-                },
-
-            ),
+            painter =
+                painterResource(
+                    id =
+                        if (isOptimal) {
+                            getFlagResource(
+                                LocalContext.current,
+                                "",
+                            )
+                        } else {
+                            getFlagResource(LocalContext.current, server.iso)
+                        },
+                ),
             contentScale = ContentScale.Crop,
             contentDescription = null,
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .clip(CircleShape)
-                .size(32.dp)
-                .align(CenterVertically),
+            modifier =
+                Modifier
+                    .padding(start = 16.dp)
+                    .clip(CircleShape)
+                    .size(32.dp)
+                    .align(CenterVertically),
         )
 
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.align(CenterVertically)) {
-            val heading = if (isOptimal) {
-                R.string.optimal_vpn_region
-            } else {
-                if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region
-            }
+            val heading =
+                if (isOptimal) {
+                    R.string.optimal_vpn_region
+                } else {
+                    if (isConnected) R.string.current_vpn_region else R.string.selected_vpn_region
+                }
             SelectedRegionTitleText(content = stringResource(id = heading).uppercase())
             Row(
                 verticalAlignment = CenterVertically,
             ) {
                 SelectedRegionServerText(
-                    content = if (isOptimal && !isConnected) {
-                        stringResource(id = R.string.automatic)
-                    } else {
-                        server.name
-                    },
+                    content =
+                        if (isOptimal && !isConnected) {
+                            stringResource(id = R.string.automatic)
+                        } else {
+                            server.name
+                        },
                 )
 
                 if (server.isDedicatedIp) {
@@ -103,9 +108,10 @@ fun VpnLocationPicker(
         Icon(
             painter = painterResource(id = R.drawable.ic_more_horizontal),
             contentDescription = null,
-            modifier = Modifier
-                .align(CenterVertically)
-                .padding(end = 16.dp),
+            modifier =
+                Modifier
+                    .align(CenterVertically)
+                    .padding(end = 16.dp),
         )
     }
 }

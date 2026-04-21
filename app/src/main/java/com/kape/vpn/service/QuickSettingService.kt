@@ -17,8 +17,10 @@ import org.koin.core.component.inject
 import kotlin.coroutines.CoroutineContext
 
 @Singleton
-class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
-
+class QuickSettingService :
+    TileService(),
+    KoinComponent,
+    CoroutineScope {
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val vpnLauncher: VpnLauncher by inject()
     private val isUserLoggedIn: IsUserLoggedInUseCase by inject()
@@ -30,7 +32,7 @@ class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
 
     init {
         launch {
-            connectionInfoProvider.connectionState.collect {
+            connectionInfoProvider.connectionInfoState.collect {
                 withContext(Dispatchers.Main) {
                     updateTile()
                 }
@@ -73,11 +75,14 @@ class QuickSettingService : TileService(), KoinComponent, CoroutineScope {
         qsTile?.let {
             if (connectionInfoProvider.isConnected()) {
                 it.state = Tile.STATE_ACTIVE
-                it.label = if (connectionInfoProvider.state.value.name.isEmpty()) {
-                    getString(R.string.qs_disconnect_nolocation)
-                } else {
-                    getString(R.string.qs_disconnect, connectionInfoProvider.state.value.name)
-                }
+                it.label =
+                    if (connectionInfoProvider.state.value.name
+                            .isEmpty()
+                    ) {
+                        getString(R.string.qs_disconnect_nolocation)
+                    } else {
+                        getString(R.string.qs_disconnect, connectionInfoProvider.state.value.name)
+                    }
             } else {
                 if (!isUserLoggedIn.invoke()) {
                     it.state = Tile.STATE_UNAVAILABLE

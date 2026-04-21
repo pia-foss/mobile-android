@@ -17,16 +17,16 @@ import org.koin.plugin.module.dsl.startKoin
 
 @KoinApplication(modules = [AppModule::class])
 class App : Application() {
-
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val kpiDataSource: KpiDataSource by inject()
 
-    private val lifecycleObserver = object : DefaultLifecycleObserver {
-        override fun onStop(owner: LifecycleOwner) {
-            kpiDataSource.flush()
-            super.onStop(owner)
+    private val lifecycleObserver =
+        object : DefaultLifecycleObserver {
+            override fun onStop(owner: LifecycleOwner) {
+                kpiDataSource.flush()
+                super.onStop(owner)
+            }
         }
-    }
 
     override fun onCreate() {
         super.onCreate()

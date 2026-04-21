@@ -25,8 +25,7 @@ class ShadowsocksListProvider(
         getServers()
     }
 
-    fun getSelected(): ShadowsocksServer =
-        getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
+    fun getSelected(): ShadowsocksServer = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
 
     private fun getServers() {
         CoroutineScope(ioDispatcher).launch {

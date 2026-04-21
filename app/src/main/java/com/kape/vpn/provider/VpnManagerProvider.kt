@@ -8,8 +8,10 @@ import com.kape.vpnmanager.presenters.VPNManagerResultCallback
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class VpnManagerProvider(private val prefs: CsiPrefs, private val settingsPrefs: SettingsPrefs) :
-    VPNManagerPermissionsDependency,
+class VpnManagerProvider(
+    private val prefs: CsiPrefs,
+    private val settingsPrefs: SettingsPrefs,
+) : VPNManagerPermissionsDependency,
     VPNManagerDebugLoggingDependency {
     override fun debugLog(log: String) {
         prefs.addCustomDebugLogs("vpn debug log: $log", settingsPrefs.isDebugLoggingEnabled())

@@ -6,7 +6,6 @@ import java.security.MessageDigest
 
 @Singleton([Obfuscator::class])
 class ObfuscatorImpl : Obfuscator {
-
     // region Obfuscator
     override fun invoke(value: String): Result<String> {
         val bytes = value.toByteArray(Charsets.UTF_8)

@@ -1,7 +1,6 @@
 package com.kape.payments.ui
 
 import android.app.Activity
-import androidx.annotation.Size
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -18,11 +17,11 @@ import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
 import com.kape.payments.data.SubscriptionPlan
 import com.kape.payments.utils.MONTHLY
+import com.kape.payments.utils.MONTHLY_SUBSCRIPTION
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
 import com.kape.payments.utils.YEARLY
-import com.kape.payments.utils.monthlySubscription
-import com.kape.payments.utils.yearlySubscription
+import com.kape.payments.utils.YEARLY_SUBSCRIPTION
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +33,6 @@ class VpnSubscriptionPaymentProviderImpl(
     private val prefs: SubscriptionPrefs,
     private var activity: Activity? = null,
 ) : VpnSubscriptionPaymentProvider {
-
     private lateinit var billingClient: BillingClient
     private var selectedProduct: ProductDetails? = null
 
@@ -46,20 +44,21 @@ class VpnSubscriptionPaymentProviderImpl(
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {
                         val purchase = purchases.first()
-                        purchase.products.firstOrNull {
-                            it == selectedProduct?.productId
-                        }?.let { productId ->
-                            purchase.orderId?.let { orderId ->
-                                prefs.storeVpnPurchaseData(
-                                    PurchaseData(
-                                        purchase.purchaseToken,
-                                        productId,
-                                        orderId,
-                                    ),
-                                )
+                        purchase.products
+                            .firstOrNull {
+                                it == selectedProduct?.productId
+                            }?.let { productId ->
+                                purchase.orderId?.let { orderId ->
+                                    prefs.storeVpnPurchaseData(
+                                        PurchaseData(
+                                            purchase.purchaseToken,
+                                            productId,
+                                            orderId,
+                                        ),
+                                    )
+                                }
+                                purchaseState.value = PurchaseState.PurchaseSuccess
                             }
-                            purchaseState.value = PurchaseState.PurchaseSuccess
-                        }
                     }
 
                     else -> purchaseState.value = PurchaseState.PurchaseFailed
@@ -73,12 +72,13 @@ class VpnSubscriptionPaymentProviderImpl(
 
     override fun register(activity: Activity) {
         this.activity = activity
-        billingClient = BillingClient.newBuilder(activity)
-            .setListener(purchasesUpdatedListener)
-            .enablePendingPurchases(
-                PendingPurchasesParams.newBuilder().enableOneTimeProducts().build(),
-            )
-            .build()
+        billingClient =
+            BillingClient
+                .newBuilder(activity)
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases(
+                    PendingPurchasesParams.newBuilder().enableOneTimeProducts().build(),
+                ).build()
 
         billingClient.startConnection(
             object : BillingClientStateListener {
@@ -98,32 +98,31 @@ class VpnSubscriptionPaymentProviderImpl(
     }
 
     @Deprecated("Deprecated in favor of SubscriptionPlan")
-    override fun getMonthlySubscription(): Subscription? = prefs.getVpnSubscriptions().firstOrNull {
-        it.plan.equals(monthlySubscription, ignoreCase = true)
-    }
+    override fun getMonthlySubscription(): Subscription? =
+        prefs.getVpnSubscriptions().firstOrNull {
+            it.plan.equals(MONTHLY_SUBSCRIPTION, ignoreCase = true)
+        }
 
     @Deprecated("Deprecated in favor of SubscriptionPlan")
-    override fun getYearlySubscription(): Subscription? = prefs.getVpnSubscriptions().firstOrNull {
-        it.plan.equals(yearlySubscription, ignoreCase = true)
-    }
+    override fun getYearlySubscription(): Subscription? =
+        prefs.getVpnSubscriptions().firstOrNull {
+            it.plan.equals(YEARLY_SUBSCRIPTION, ignoreCase = true)
+        }
 
-    override fun getMonthlySubscriptionPlan(): SubscriptionPlan? {
-        return prefs.getVpnSubscriptionPlans().firstOrNull {
+    override fun getMonthlySubscriptionPlan(): SubscriptionPlan? =
+        prefs.getVpnSubscriptionPlans().firstOrNull {
             it.billingPeriod == MONTHLY
         }
-    }
 
-    override fun getYearlySubscriptionPlan(): SubscriptionPlan? {
-        return prefs.getVpnSubscriptionPlans().firstOrNull {
+    override fun getYearlySubscriptionPlan(): SubscriptionPlan? =
+        prefs.getVpnSubscriptionPlans().firstOrNull {
             it.billingPeriod == YEARLY
         }
-    }
 
-    override fun getFreeTrialYearlySubscriptionPlan(): SubscriptionPlan? {
-        return prefs.getVpnSubscriptionPlans().firstOrNull {
+    override fun getFreeTrialYearlySubscriptionPlan(): SubscriptionPlan? =
+        prefs.getVpnSubscriptionPlans().firstOrNull {
             it.billingPeriod == YEARLY && it.freeTrialDuration != null
         }
-    }
 
     override fun loadProducts() {
         if (prefs.getVpnSubscriptions().isEmpty()) {
@@ -135,13 +134,14 @@ class VpnSubscriptionPaymentProviderImpl(
 
     private fun loadProviderProducts() {
         val queryProductDetailsParams =
-            QueryProductDetailsParams.newBuilder()
+            QueryProductDetailsParams
+                .newBuilder()
                 .setProductList(createProductsListForQuery())
                 .build()
 
         billingClient.queryProductDetailsAsync(queryProductDetailsParams) {
-                billingResult,
-                productDetailsList,
+            billingResult,
+            productDetailsList,
             ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                 val data = prefs.getVpnSubscriptions()
@@ -154,20 +154,22 @@ class VpnSubscriptionPaymentProviderImpl(
                                     details.pricingPhases.pricingPhaseList.firstOrNull { it.priceAmountMicros == 0L }
                                 val plan =
                                     details.pricingPhases.pricingPhaseList.first { it.priceAmountMicros != 0L }
-                                val planPeriod = when (plan.billingPeriod) {
-                                    MONTHLY -> monthlySubscription
-                                    YEARLY -> yearlySubscription
-                                    else -> ""
-                                }
-                                val subscriptionPlan = SubscriptionPlan(
-                                    id = item.productId,
-                                    billingPeriod = plan.billingPeriod,
-                                    currencyCode = plan.priceCurrencyCode,
-                                    priceInMicros = plan.priceAmountMicros,
-                                    formattedPrice = plan.formattedPrice,
-                                    freeTrialDuration = freeTrial?.billingPeriod,
-                                    plan = planPeriod,
-                                )
+                                val planPeriod =
+                                    when (plan.billingPeriod) {
+                                        MONTHLY -> MONTHLY_SUBSCRIPTION
+                                        YEARLY -> YEARLY_SUBSCRIPTION
+                                        else -> ""
+                                    }
+                                val subscriptionPlan =
+                                    SubscriptionPlan(
+                                        id = item.productId,
+                                        billingPeriod = plan.billingPeriod,
+                                        currencyCode = plan.priceCurrencyCode,
+                                        priceInMicros = plan.priceAmountMicros,
+                                        formattedPrice = plan.formattedPrice,
+                                        freeTrialDuration = freeTrial?.billingPeriod,
+                                        plan = planPeriod,
+                                    )
                                 if (!plans.contains(subscriptionPlan)) {
                                     plans.add(subscriptionPlan)
                                 }
@@ -190,9 +192,11 @@ class VpnSubscriptionPaymentProviderImpl(
         selectedProduct = availableProducts.first { it.productId == id }
         activity?.let { currentActivity ->
             selectedProduct?.let { productId ->
-                val billingFlowParams = BillingFlowParams.newBuilder()
-                    .setProductDetailsParamsList(createProductQuery(productId))
-                    .build()
+                val billingFlowParams =
+                    BillingFlowParams
+                        .newBuilder()
+                        .setProductDetailsParamsList(createProductQuery(productId))
+                        .build()
 
                 billingClient.launchBillingFlow(currentActivity, billingFlowParams)
             }
@@ -205,65 +209,68 @@ class VpnSubscriptionPaymentProviderImpl(
 
     override fun getPurchaseHistory() {
         val params =
-            QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS)
+            QueryPurchasesParams
+                .newBuilder()
+                .setProductType(BillingClient.ProductType.SUBS)
                 .build()
 
-        val purchaseHistoryListener = object : PurchasesResponseListener {
-            override fun onQueryPurchasesResponse(
-                billingResponse: BillingResult,
-                purchases: MutableList<Purchase>,
-            ) {
-                if (billingResponse.responseCode != BillingClient.BillingResponseCode.OK) {
-                    purchaseHistoryState.value = PurchaseHistoryState.PurchaseHistoryFailed
-                    return
-                }
-                if (purchases.isEmpty()) {
-                    purchaseHistoryState.value = PurchaseHistoryState.PurchaseHistoryFailed
-                    return
-                }
+        val purchaseHistoryListener =
+            object : PurchasesResponseListener {
+                override fun onQueryPurchasesResponse(
+                    billingResponse: BillingResult,
+                    purchases: MutableList<Purchase>,
+                ) {
+                    if (billingResponse.responseCode != BillingClient.BillingResponseCode.OK) {
+                        purchaseHistoryState.value = PurchaseHistoryState.PurchaseHistoryFailed
+                        return
+                    }
+                    if (purchases.isEmpty()) {
+                        purchaseHistoryState.value = PurchaseHistoryState.PurchaseHistoryFailed
+                        return
+                    }
 
-                for (p: Purchase in purchases.sortedByDescending { it.purchaseTime }) {
-                    if (availableProducts.any { it.productId == p.products[0] }) {
-                        purchaseHistoryState.value =
-                            PurchaseHistoryState.PurchaseHistorySuccess(
-                                p.purchaseToken,
-                                p.products[0],
-                            )
-                        break
+                    for (p: Purchase in purchases.sortedByDescending { it.purchaseTime }) {
+                        if (availableProducts.any { it.productId == p.products[0] }) {
+                            purchaseHistoryState.value =
+                                PurchaseHistoryState.PurchaseHistorySuccess(
+                                    p.purchaseToken,
+                                    p.products[0],
+                                )
+                            break
+                        }
                     }
                 }
             }
-        }
         billingClient.queryPurchasesAsync(params, purchaseHistoryListener)
     }
 
-    override fun hasActiveSubscription(): Flow<Boolean> = callbackFlow {
-        val params =
-            QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build()
-        val purchasesListener =
-            PurchasesResponseListener { billingResult: BillingResult, purchases: List<Purchase> ->
-                if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
-                    trySend(false)
-                    return@PurchasesResponseListener
-                }
+    override fun hasActiveSubscription(): Flow<Boolean> =
+        callbackFlow {
+            val params =
+                QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build()
+            val purchasesListener =
+                PurchasesResponseListener { billingResult: BillingResult, purchases: List<Purchase> ->
+                    if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
+                        trySend(false)
+                        return@PurchasesResponseListener
+                    }
 
-                if (purchases.isEmpty()) {
-                    trySend(false)
-                    return@PurchasesResponseListener
-                }
+                    if (purchases.isEmpty()) {
+                        trySend(false)
+                        return@PurchasesResponseListener
+                    }
 
-                val hasActiveSubscription = purchases.any { purchase ->
-                    purchase.isAutoRenewing && purchase.purchaseState == Purchase.PurchaseState.PURCHASED
+                    val hasActiveSubscription =
+                        purchases.any { purchase ->
+                            purchase.isAutoRenewing && purchase.purchaseState == Purchase.PurchaseState.PURCHASED
+                        }
+                    trySend(hasActiveSubscription)
                 }
-                trySend(hasActiveSubscription)
-            }
-        billingClient.queryPurchasesAsync(params, purchasesListener)
-        awaitClose { channel.close() }
-    }
+            billingClient.queryPurchasesAsync(params, purchasesListener)
+            awaitClose { channel.close() }
+        }
 
-    override fun isClientRegistered(): Boolean {
-        return billingClient.isReady
-    }
+    override fun isClientRegistered(): Boolean = billingClient.isReady
 
     override fun reset() {
         purchaseState.value = PurchaseState.Default
@@ -273,7 +280,8 @@ class VpnSubscriptionPaymentProviderImpl(
         val result = mutableListOf<QueryProductDetailsParams.Product>()
         for (product in prefs.getVpnSubscriptions()) {
             result.add(
-                QueryProductDetailsParams.Product.newBuilder()
+                QueryProductDetailsParams.Product
+                    .newBuilder()
                     .setProductId(product.id)
                     .setProductType(BillingClient.ProductType.SUBS)
                     .build(),
@@ -286,7 +294,8 @@ class VpnSubscriptionPaymentProviderImpl(
         val result = mutableListOf<BillingFlowParams.ProductDetailsParams>()
         val offerToken = product.subscriptionOfferDetails?.firstOrNull()?.offerToken ?: ""
         result.add(
-            BillingFlowParams.ProductDetailsParams.newBuilder()
+            BillingFlowParams.ProductDetailsParams
+                .newBuilder()
                 .setProductDetails(product)
                 .setOfferToken(offerToken)
                 .build(),

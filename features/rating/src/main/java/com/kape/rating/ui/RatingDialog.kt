@@ -6,7 +6,10 @@ import com.kape.ui.R
 import com.kape.ui.tiles.Dialog
 
 @Composable
-fun RatingFeedbackDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+fun RatingFeedbackDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
     Dialog(
         title = stringResource(id = R.string.rating_feedback_title),
         text = stringResource(id = R.string.rating_feedback_message),
@@ -18,7 +21,10 @@ fun RatingFeedbackDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun RatingReviewDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+fun RatingReviewDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
     Dialog(
         title = stringResource(id = R.string.rating_review_title),
         text = stringResource(id = R.string.rating_review_message),

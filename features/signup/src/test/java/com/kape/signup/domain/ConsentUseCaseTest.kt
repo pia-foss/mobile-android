@@ -23,7 +23,10 @@ class ConsentUseCaseTest {
 
     @ParameterizedTest(name = "result: {0}, expected: {1}")
     @MethodSource("booleans")
-    fun testConsent(result: Boolean, expected: Boolean) = runTest {
+    fun testConsent(
+        result: Boolean,
+        expected: Boolean,
+    ) = runTest {
         every { prefs.setAllowSharing(any()) } returns Unit
         every { prefs.getAllowSharing() } returns expected
 

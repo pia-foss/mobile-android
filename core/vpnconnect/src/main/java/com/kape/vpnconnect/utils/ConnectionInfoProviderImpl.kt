@@ -9,7 +9,6 @@ import com.kape.data.DI
 import com.kape.data.NO_IP
 import com.kape.data.VpnConnectionInfo
 import com.kape.data.kpi.KpiConnectionStatus
-import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
@@ -22,7 +21,6 @@ import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -42,14 +40,15 @@ class ConnectionInfoProviderImpl(
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) : ConnectionInfoProvider {
     private val ioScope = CoroutineScope(ioDispatcher)
-    override val connectionState = connectionStatusProvider.state
+    override val connectionInfoState = connectionStatusProvider.state
     private val defaultState = VpnConnectionInfo(publicIp = connectionPrefs.getClientIp())
-    private val _connectionInfoState: MutableStateFlow<VpnConnectionInfo> = MutableStateFlow(
-        VpnConnectionInfo(
-            publicIp = connectionPrefs.getClientIp(),
-        ),
-    )
-    override val state: StateFlow<VpnConnectionInfo> = _connectionInfoState.asStateFlow()
+    private val _connectionInfoState =
+        MutableStateFlow(
+            VpnConnectionInfo(
+                publicIp = connectionPrefs.getClientIp(),
+            ),
+        )
+    override val state = _connectionInfoState.asStateFlow()
 
     init {
         ioScope.launch {
@@ -98,16 +97,22 @@ class ConnectionInfoProviderImpl(
         }
     }
 
-    override fun isConnected(): Boolean = connectionState.value.status == ConnectionStatus.CONNECTED
+    override fun isConnected(): Boolean = connectionInfoState.value.status == ConnectionStatus.CONNECTED
 
-    override fun isInConnectState(): Boolean = listOf(
-        ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING,
-        ConnectionStatus.RECONNECTING,
-    ).contains(connectionState.value.status)
+    override fun isInConnectState(): Boolean =
+        listOf(
+            ConnectionStatus.CONNECTED,
+            ConnectionStatus.CONNECTING,
+            ConnectionStatus.RECONNECTING,
+        ).contains(connectionInfoState.value.status)
 
-    override fun isNotDisconnected() = connectionState.value.status != ConnectionStatus.DISCONNECTED
+    override fun isNotDisconnected() = connectionInfoState.value.status != ConnectionStatus.DISCONNECTED
 
-    override fun updateInfo(name: String, iso: String, isManual: Boolean) {
+    override fun updateInfo(
+        name: String,
+        iso: String,
+        isManual: Boolean,
+    ) {
         _connectionInfoState.update { it.copy(name = name, iso = iso, isManual = isManual) }
     }
 
@@ -115,32 +120,31 @@ class ConnectionInfoProviderImpl(
         _connectionInfoState.update { defaultState }
     }
 
-    override fun getTopBarConnectionColor(scheme: ColorScheme): Color {
-        return when (connectionState.value.status) {
+    override fun getTopBarConnectionColor(scheme: ColorScheme): Color =
+        when (connectionInfoState.value.status) {
             ConnectionStatus.ERROR -> scheme.statusBarError()
             ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-            ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
-                scheme,
-            )
+            ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING ->
+                scheme.statusBarDefault(
+                    scheme,
+                )
 
             ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
         }
-    }
 
-    private fun getKpiConnectionStatus(status: VPNManagerConnectionStatus): KpiConnectionStatus {
-        return when (status) {
+    private fun getKpiConnectionStatus(status: VPNManagerConnectionStatus): KpiConnectionStatus =
+        when (status) {
             VPNManagerConnectionStatus.Disconnecting,
             is VPNManagerConnectionStatus.Disconnected,
-                -> KpiConnectionStatus.NotConnected
+            -> KpiConnectionStatus.NotConnected
 
             VPNManagerConnectionStatus.Authenticating,
             VPNManagerConnectionStatus.LinkUp,
             VPNManagerConnectionStatus.Configuring,
             VPNManagerConnectionStatus.Connecting,
-                -> KpiConnectionStatus.Connecting
+            -> KpiConnectionStatus.Connecting
 
             VPNManagerConnectionStatus.Reconnecting -> KpiConnectionStatus.Reconnecting
             is VPNManagerConnectionStatus.Connected -> KpiConnectionStatus.Connected
         }
-    }
 }

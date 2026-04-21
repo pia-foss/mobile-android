@@ -37,99 +37,104 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvPrivacySettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-    val initialFocusRequester = remember { FocusRequester() }
-    val showWarning = remember { mutableStateOf(false) }
+fun TvPrivacySettingsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val initialFocusRequester = remember { FocusRequester() }
+        val showWarning = remember { mutableStateOf(false) }
 
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
+        }
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
-            Row(
+            HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.privacy),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.privacy),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 64.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        TvSettingsToggle(
+                            modifier = Modifier.focusRequester(initialFocusRequester),
+                            titleId = R.string.mace_title,
+                            subtitleId = R.string.mace_description,
+                            enabled = viewModel.maceEnabled.value,
+                            toggle = {
+                                // MACE requires using PIA DNS
+                                if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !viewModel.maceEnabled.value) {
+                                    showWarning.value = true
+                                }
+                                viewModel.toggleMace(it)
+                                viewModel.showReconnectDialogIfVpnConnected()
+                            },
+                        )
+                    }
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_tv_settings),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
+                    }
+                }
+            }
+        }
+        if (showWarning.value) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black.copy(alpha = 0.6f),
+            ) {
+                WarningDialog(
+                    onConfirm = {
+                        viewModel.setSelectedDnsOption(DnsOptions.PIA)
+                        showWarning.value = false
+                    },
                 )
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 64.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
-                ) {
-                    TvSettingsToggle(
-                        modifier = Modifier.focusRequester(initialFocusRequester),
-                        titleId = R.string.mace_title,
-                        subtitleId = R.string.mace_description,
-                        enabled = viewModel.maceEnabled.value,
-                        toggle = {
-                            // MACE requires using PIA DNS
-                            if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !viewModel.maceEnabled.value) {
-                                showWarning.value = true
-                            }
-                            viewModel.toggleMace(it)
-                            viewModel.showReconnectDialogIfVpnConnected()
-                        },
-                    )
-                }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_tv_settings),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
-                    )
-                }
-            }
         }
     }
-    if (showWarning.value) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.Black.copy(alpha = 0.6f),
-        ) {
-            WarningDialog(
-                onConfirm = {
-                    viewModel.setSelectedDnsOption(DnsOptions.PIA)
-                    showWarning.value = false
-                },
-            )
-        }
-    }
-}

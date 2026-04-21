@@ -8,7 +8,6 @@ import org.koin.core.annotation.Module
 
 @Module
 class TvWelcomeModule {
-
     @KoinViewModel
     fun provideTvWelcomeViewModel(
         router: Router,

@@ -32,37 +32,29 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class SignupModule {
-
     @Singleton(binds = [EmailDataSource::class])
-    fun provideEmailDataSource(api: AndroidAccountAPI): EmailDataSource =
-        EmailDataSourceImpl(api)
+    fun provideEmailDataSource(api: AndroidAccountAPI): EmailDataSource = EmailDataSourceImpl(api)
 
     @Singleton(binds = [Identifier::class])
-    fun provideIdentifier(context: Context): Identifier =
-        IdentifierImpl(context)
+    fun provideIdentifier(context: Context): Identifier = IdentifierImpl(context)
 
     @Singleton(binds = [Obfuscator::class])
-    fun provideObfuscator(): Obfuscator =
-        ObfuscatorImpl()
+    fun provideObfuscator(): Obfuscator = ObfuscatorImpl()
 
     @Singleton
-    fun provideConsentUseCase(prefs: ConsentPrefs): ConsentUseCase =
-        ConsentUseCase(prefs)
+    fun provideConsentUseCase(prefs: ConsentPrefs): ConsentUseCase = ConsentUseCase(prefs)
 
     @Singleton
     fun provideGetObfuscatedDeviceIdentifierUseCase(
         identifier: Identifier,
         obfuscator: Obfuscator,
-    ): GetObfuscatedDeviceIdentifierUseCase =
-        GetObfuscatedDeviceIdentifierUseCase(identifier, obfuscator)
+    ): GetObfuscatedDeviceIdentifierUseCase = GetObfuscatedDeviceIdentifierUseCase(identifier, obfuscator)
 
     @Singleton
-    fun provideSetEmailUseCase(source: EmailDataSource): SetEmailUseCase =
-        SetEmailUseCase(source)
+    fun provideSetEmailUseCase(source: EmailDataSource): SetEmailUseCase = SetEmailUseCase(source)
 
     @Singleton(binds = [SignupDataSource::class])
-    fun provideSignupDataSource(api: AndroidAccountAPI): SignupDataSource =
-        SignupDataSourceImpl(api)
+    fun provideSignupDataSource(api: AndroidAccountAPI): SignupDataSource = SignupDataSourceImpl(api)
 
     @Singleton
     fun provideSignupUseCase(
@@ -71,10 +63,14 @@ class SignupModule {
         emailDataSource: EmailDataSource,
         purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
         getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase,
-    ): SignupUseCase = SignupUseCase(
-        signupDataSource, loginUseCase, emailDataSource,
-        purchaseDetailsUseCase, getObfuscatedDeviceIdentifierUseCase,
-    )
+    ): SignupUseCase =
+        SignupUseCase(
+            signupDataSource,
+            loginUseCase,
+            emailDataSource,
+            purchaseDetailsUseCase,
+            getObfuscatedDeviceIdentifierUseCase,
+        )
 
     @KoinViewModel
     fun provideSignupViewModel(
@@ -88,9 +84,17 @@ class SignupModule {
         buildConfigProvider: BuildConfigProvider,
         permissionUtil: PermissionUtil,
         networkConnectionListener: NetworkConnectionListener,
-    ): SignupViewModel = SignupViewModel(
-        router, vpnSubscriptionPaymentProvider, formatter, consentUseCase, useCase,
-        subscriptionPrefs, subscriptionsUseCase, buildConfigProvider, permissionUtil,
-        networkConnectionListener,
-    )
+    ): SignupViewModel =
+        SignupViewModel(
+            router,
+            vpnSubscriptionPaymentProvider,
+            formatter,
+            consentUseCase,
+            useCase,
+            subscriptionPrefs,
+            subscriptionsUseCase,
+            buildConfigProvider,
+            permissionUtil,
+            networkConnectionListener,
+        )
 }

@@ -12,7 +12,10 @@ class SubmitKpiEventUseCase(
 ) {
     private var kpiConnectionStatus: KpiConnectionStatus = KpiConnectionStatus.NotConnected
 
-    fun submitConnectionEvent(status: KpiConnectionStatus, isManualConnection: Boolean) {
+    fun submitConnectionEvent(
+        status: KpiConnectionStatus,
+        isManualConnection: Boolean,
+    ) {
         val connectionSource =
             if (isManualConnection) KpiConnectionSource.Manual else KpiConnectionSource.Automatic
         if (kpiConnectionStatus == status) {

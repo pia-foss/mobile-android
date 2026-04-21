@@ -66,22 +66,25 @@ fun VpnPermissionScreen() =
             }
 
             GRANTED -> {}
-            NOT_GRANTED -> Toast.makeText(
-                LocalContext.current,
-                getVpnProfileToastText(granted = false),
-                Toast.LENGTH_LONG,
-            ).show()
+            NOT_GRANTED ->
+                Toast
+                    .makeText(
+                        LocalContext.current,
+                        getVpnProfileToastText(granted = false),
+                        Toast.LENGTH_LONG,
+                    ).show()
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(WindowInsets.systemBars.asPaddingValues())
-                .background(LocalColors.current.background)
-                .semantics {
-                    testTagsAsResourceId = true
-                },
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(WindowInsets.systemBars.asPaddingValues())
+                    .background(LocalColors.current.background)
+                    .semantics {
+                        testTagsAsResourceId = true
+                    },
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = CenterHorizontally,
         ) {
@@ -89,47 +92,53 @@ fun VpnPermissionScreen() =
                 Image(
                     painter = painterResource(id = com.kape.ui.R.drawable.pia_medium),
                     contentDescription = null,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .height(40.dp)
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .height(40.dp)
+                            .fillMaxWidth(),
                 )
                 Image(
                     painter = painterResource(id = R.drawable.image_lock),
                     contentDescription = null,
-                    modifier = Modifier
-                        .padding(40.dp)
-                        .height(140.dp)
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .padding(40.dp)
+                            .height(140.dp)
+                            .fillMaxWidth(),
                 )
                 Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
                     OnboardingTitleText(
                         content = stringResource(id = com.kape.ui.R.string.vpn_permission_title),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
                     )
                     OnboardingDescriptionText(
                         content = stringResource(id = com.kape.ui.R.string.vpn_permission_description),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     OnboardingFooterText(
                         content = stringResource(id = com.kape.ui.R.string.vpn_permission_footer),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
                     )
                 }
                 PrimaryButton(
                     text = stringResource(id = com.kape.ui.R.string.ok),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
-                        .align(CenterHorizontally)
-                        .testTag(":VpnPermissionScreen:ok"),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
+                            .align(CenterHorizontally)
+                            .testTag(":VpnPermissionScreen:ok"),
                 ) {
                     viewModel.onOkButtonClicked()
                 }
@@ -137,6 +146,5 @@ fun VpnPermissionScreen() =
         }
     }
 
-fun getVpnProfileToastText(granted: Boolean): Int {
-    return if (granted) com.kape.ui.R.string.toast_vpn_profile_granted else com.kape.ui.R.string.toast_vpn_profile_not_granted
-}
+fun getVpnProfileToastText(granted: Boolean): Int =
+    if (granted) com.kape.ui.R.string.toast_vpn_profile_granted else com.kape.ui.R.string.toast_vpn_profile_not_granted

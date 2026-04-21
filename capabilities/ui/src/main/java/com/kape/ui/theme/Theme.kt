@@ -30,15 +30,16 @@ fun PIATheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) DarkColorScheme else dynamicLightColorScheme(context)
-        }
+    val colorScheme =
+        when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
+                if (darkTheme) DarkColorScheme else dynamicLightColorScheme(context)
+            }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+            darkTheme -> DarkColorScheme
+            else -> LightColorScheme
+        }
 
     MaterialTheme(
         colorScheme = colorScheme,
@@ -60,17 +61,19 @@ fun PiaScreen(
     val materialColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val piaColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
 
-    val navigator = remember(router) {
-        Navigator(router = router)
-    }
-
-    val providedValues = remember(navigator, piaColorScheme, compositionLocalValues) {
-        buildList {
-            addAll(compositionLocalValues)
-            add(LocalColors provides piaColorScheme)
-            add(LocalNavigator provides navigator)
+    val navigator =
+        remember(router) {
+            Navigator(router = router)
         }
-    }
+
+    val providedValues =
+        remember(navigator, piaColorScheme, compositionLocalValues) {
+            buildList {
+                addAll(compositionLocalValues)
+                add(LocalColors provides piaColorScheme)
+                add(LocalNavigator provides navigator)
+            }
+        }
 
     CompositionLocalProvider(*providedValues.toTypedArray()) {
         MaterialTheme(
@@ -83,20 +86,22 @@ fun PiaScreen(
                 // Suspend until NavHost has set the graph
                 snapshotFlow {
                     try {
-                        navController.graph; true
+                        navController.graph
+                        true
                     } catch (e: IllegalStateException) {
                         false
                     }
                 }.first { it }
 
                 launch {
-                    router.getNavigationState()
+                    router
+                        .getNavigationState()
                         .filter { it != null }
                         .collect { destination ->
                             val options = destination!!.navOptions
                             navController.navigate(destination) {
                                 when (options) {
-                                    is DestinationNavOptions.None -> { /* no-op */
+                                    is DestinationNavOptions.None -> { // no-op
                                     }
 
                                     is DestinationNavOptions.PopUpTo -> {
@@ -118,7 +123,8 @@ fun PiaScreen(
                 }
 
                 launch {
-                    router.getBackState()
+                    router
+                        .getBackState()
                         .filter { it }
                         .collect {
                             navController.previousBackStackEntry != null && navController.popBackStack()

@@ -16,6 +16,7 @@ class MetaEndpointsProvider(
     private val connectionPrefs: ConnectionPrefs,
 ) : KoinComponent {
     private val regionsListProvider: RegionListProvider by inject()
+
     fun metaEndpoints(): List<GenericEndpoint> {
         val endpoints = mutableListOf<GenericEndpoint>()
 
@@ -26,21 +27,27 @@ class MetaEndpointsProvider(
             regionsListProvider.servers.value.sortedBy { it.latency?.toInt() }
 
         // Filter out invalid latencies. e.g. nil, zero, etc.
-        val regionsWithValidLatency = sortedLatencyRegions.filterNot {
-            it.latency.isNullOrEmpty() || it.latency == "0"
-        }.toMutableList()
+        val regionsWithValidLatency =
+            sortedLatencyRegions
+                .filterNot {
+                    it.latency.isNullOrEmpty() || it.latency == "0"
+                }.toMutableList()
 
         // If there were no regions with valid latencies yet or less than what we need to. Pick random.
         if (regionsWithValidLatency.isEmpty() || regionsWithValidLatency.size < MAX_META_ENDPOINTS) {
             for (i in 2..MAX_META_ENDPOINTS) {
                 if (sortedLatencyRegions.isNotEmpty()) {
                     val region =
-                        if (sortedLatencyRegions.size == 1) sortedLatencyRegions[0] else sortedLatencyRegions[
-                            Random.nextInt(
-                                0,
-                                sortedLatencyRegions.size,
-                            ),
-                        ]
+                        if (sortedLatencyRegions.size == 1) {
+                            sortedLatencyRegions[0]
+                        } else {
+                            sortedLatencyRegions[
+                                Random.nextInt(
+                                    0,
+                                    sortedLatencyRegions.size,
+                                ),
+                            ]
+                        }
                     regionsWithValidLatency.add(region)
                 }
             }

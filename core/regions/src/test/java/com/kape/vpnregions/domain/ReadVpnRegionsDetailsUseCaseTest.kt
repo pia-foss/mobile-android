@@ -24,14 +24,15 @@ class ReadVpnRegionsDetailsUseCaseTest {
     }
 
     @Test
-    fun `test readVpnRegionsDetailsFromAssetsFolder`() = runTest {
-        val response = VpnRegionsResponse()
-        val stringResponse = Json.encodeToString(response)
+    fun `test readVpnRegionsDetailsFromAssetsFolder`() =
+        runTest {
+            val response = VpnRegionsResponse()
+            val stringResponse = Json.encodeToString(response)
 
-        every { regionInputStream.readAssetsFile(any()) } returns stringResponse
-        every { regionSerialization.decodeVpnRegionsFromString(any()) } returns response
+            every { regionInputStream.readAssetsFile(any()) } returns stringResponse
+            every { regionSerialization.decodeVpnRegionsFromString(any()) } returns response
 
-        val actual = useCase.readVpnRegionsDetailsFromAssetsFolder()
-        assertEquals(0, actual.size)
-    }
+            val actual = useCase.readVpnRegionsDetailsFromAssetsFolder()
+            assertEquals(0, actual.size)
+        }
 }

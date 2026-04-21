@@ -18,7 +18,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 
 internal class AuthenticationDataSourceImplTest : BaseTest() {
-
     private val api: AndroidAccountAPI = mockk(relaxed = true)
 
     private lateinit var source: AuthenticationDataSource
@@ -32,7 +31,10 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun login(errorList: List<AccountRequestError>, expected: ApiResult) = runTest {
+    fun login(
+        errorList: List<AccountRequestError>,
+        expected: ApiResult,
+    ) = runTest {
         coEvery { api.loginWithCredentials(any(), any(), any()) } answers {
             lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
         }
@@ -42,7 +44,10 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun logout(errorList: List<AccountRequestError>, expected: ApiResult) = runTest {
+    fun logout(
+        errorList: List<AccountRequestError>,
+        expected: ApiResult,
+    ) = runTest {
         coEvery { api.logout(any()) } answers {
             lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
         }
@@ -52,7 +57,10 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun loginWithEmail(errorList: List<AccountRequestError>, expected: ApiResult) = runTest {
+    fun loginWithEmail(
+        errorList: List<AccountRequestError>,
+        expected: ApiResult,
+    ) = runTest {
         coEvery { api.loginLink(any(), any()) } answers {
             lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
         }
@@ -62,7 +70,10 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun loginWithReceipt(errorList: List<AccountRequestError>, expected: ApiResult) = runTest {
+    fun loginWithReceipt(
+        errorList: List<AccountRequestError>,
+        expected: ApiResult,
+    ) = runTest {
         coEvery { api.loginWithReceipt(any(), any(), any(), any(), any()) } answers {
             lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
         }
@@ -72,7 +83,11 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
 
     @ParameterizedTest(name = "apiToken: {0}, vpnToken: {1}, expected: {2}")
     @MethodSource("tokens")
-    fun isUserLoggedIn(apiToken: String?, vpnToken: String?, expected: Boolean) = runTest {
+    fun isUserLoggedIn(
+        apiToken: String?,
+        vpnToken: String?,
+        expected: Boolean,
+    ) = runTest {
         every { api.apiToken() } returns apiToken
         every { api.vpnToken() } returns vpnToken
         assertEquals(expected, source.isUserLoggedIn())
@@ -80,7 +95,10 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")
-    fun migrateToken(errorList: List<AccountRequestError>, expected: ApiResult) = runTest {
+    fun migrateToken(
+        errorList: List<AccountRequestError>,
+        expected: ApiResult,
+    ) = runTest {
         coEvery { api.migrateApiToken(any(), any()) } answers {
             lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
         }

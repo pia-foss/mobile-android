@@ -46,46 +46,48 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AutomationScreen() = Screen {
-    val viewModel: AutomationViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.trusted_network_plural))
-    }
-    val showDialog = remember { mutableStateOf(false) }
-    val currentItem = remember { mutableStateOf<NetworkItem?>(null) }
-    val context: Context = LocalContext.current
-    val state by viewModel.automationState.collectAsStateWithLifecycle()
+fun AutomationScreen() =
+    Screen {
+        val viewModel: AutomationViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.trusted_network_plural))
+            }
+        val showDialog = remember { mutableStateOf(false) }
+        val currentItem = remember { mutableStateOf<NetworkItem?>(null) }
+        val context: Context = LocalContext.current
+        val state by viewModel.state.collectAsStateWithLifecycle()
 
-    AutomationScreenContent(
-        appBarViewModel,
-        state,
-        onNetworkCardClick = { item ->
-            currentItem.value = item
-            showDialog.value = true
-        },
-        viewModel::navigateToAutomationAddNewRule,
-    )
+        AutomationScreenContent(
+            appBarViewModel,
+            state,
+            onNetworkCardClick = { item ->
+                currentItem.value = item
+                showDialog.value = true
+            },
+            viewModel::navigateToAutomationAddNewRule,
+        )
 
-    if (showDialog.value) {
-        val removeRule = stringResource(id = R.string.nmt_remove_rule)
-        currentItem.value?.let { rule ->
-            BehaviorDialog(
-                status = getStatus(behavior = rule.networkBehavior),
-                showRemoveOption = !rule.isDefault,
-                showDialog,
-            ) {
-                if (it == removeRule) {
-                    viewModel.removeRule(rule)
-                } else {
-                    rule.let { item ->
-                        viewModel.updateRule(item, getRuleForStatus(context, status = it))
+        if (showDialog.value) {
+            val removeRule = stringResource(id = R.string.nmt_remove_rule)
+            currentItem.value?.let { rule ->
+                BehaviorDialog(
+                    status = getStatus(behavior = rule.networkBehavior),
+                    showRemoveOption = !rule.isDefault,
+                    showDialog,
+                ) {
+                    if (it == removeRule) {
+                        viewModel.removeRule(rule)
+                    } else {
+                        rule.let { item ->
+                            viewModel.updateRule(item, getRuleForStatus(context, status = it))
+                        }
                     }
+                    viewModel.sendBroadcast(context)
                 }
-                viewModel.sendBroadcast(context)
             }
         }
     }
-}
 
 @Composable
 fun AutomationScreenContent(
@@ -100,9 +102,10 @@ fun AutomationScreenContent(
         },
     ) {
         Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .padding(it)
+                    .fillMaxWidth(),
             horizontalAlignment = CenterHorizontally,
         ) {
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
@@ -149,26 +152,28 @@ fun AutomationScreenContent(
                             icon = icon,
                             title = title,
                             status = status,
-                            color = when (networkItem.networkBehavior) {
-                                NetworkBehavior.AlwaysConnect -> LocalColors.current.primary
-                                NetworkBehavior.AlwaysDisconnect -> LocalColors.current.error
-                                NetworkBehavior.RetainState -> LocalColors.current.infoBlue()
-                            },
+                            color =
+                                when (networkItem.networkBehavior) {
+                                    NetworkBehavior.AlwaysConnect -> LocalColors.current.primary
+                                    NetworkBehavior.AlwaysDisconnect -> LocalColors.current.error
+                                    NetworkBehavior.RetainState -> LocalColors.current.infoBlue()
+                                },
                             isDefault = networkItem.isDefault,
                             onClick = {
                                 onNetworkCardClick(networkItem)
-                            }
+                            },
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
                 Row(
-                    modifier = Modifier
-                        .align(CenterHorizontally)
-                        .clickable {
-                            navigateToAddRule()
-                        },
+                    modifier =
+                        Modifier
+                            .align(CenterHorizontally)
+                            .clickable {
+                                navigateToAddRule()
+                            },
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_add),
@@ -187,18 +192,19 @@ fun AutomationScreenContent(
 }
 
 @Composable
-private fun getStatus(behavior: NetworkBehavior): String {
-    return when (behavior) {
+private fun getStatus(behavior: NetworkBehavior): String =
+    when (behavior) {
         NetworkBehavior.AlwaysConnect -> stringResource(id = R.string.nmt_connect)
         NetworkBehavior.AlwaysDisconnect -> stringResource(id = R.string.nmt_disconnect)
         NetworkBehavior.RetainState -> stringResource(id = R.string.nmt_retain)
     }
-}
 
-fun getRuleForStatus(context: Context, status: String): NetworkBehavior {
-    return when (status) {
+fun getRuleForStatus(
+    context: Context,
+    status: String,
+): NetworkBehavior =
+    when (status) {
         context.getString(R.string.nmt_retain) -> NetworkBehavior.RetainState
         context.getString(R.string.nmt_disconnect) -> NetworkBehavior.AlwaysDisconnect
         else -> NetworkBehavior.AlwaysConnect
     }
-}

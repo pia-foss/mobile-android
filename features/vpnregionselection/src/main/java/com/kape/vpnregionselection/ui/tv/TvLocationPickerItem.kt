@@ -50,18 +50,21 @@ fun TvLocationPickerItem(
         Box(modifier = Modifier.fillMaxWidth()) {
             Column {
                 Image(
-                    painter = painterResource(
-                        id = getFlagResource(
-                            context = LocalContext.current,
-                            serverIso = vpnServerIso,
+                    painter =
+                        painterResource(
+                            id =
+                                getFlagResource(
+                                    context = LocalContext.current,
+                                    serverIso = vpnServerIso,
+                                ),
                         ),
-                    ),
                     contentScale = ContentScale.Crop,
                     contentDescription = null,
                     alignment = Alignment.Center,
-                    modifier = Modifier
-                        .requiredSize(40.dp)
-                        .clip(CircleShape),
+                    modifier =
+                        Modifier
+                            .requiredSize(40.dp)
+                            .clip(CircleShape),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 RegionSelectionNameText(
@@ -74,14 +77,15 @@ fun TvLocationPickerItem(
                 ) {
                     if (latency.toInt() < vpnServerLatencyTimeout.toInt()) {
                         Box(
-                            modifier = Modifier
-                                .size(8.dp)
-                                .background(
-                                    LocalColors.current.getLatencyColor(
-                                        latency,
+                            modifier =
+                                Modifier
+                                    .size(8.dp)
+                                    .background(
+                                        LocalColors.current.getLatencyColor(
+                                            latency,
+                                        ),
+                                        shape = CircleShape,
                                     ),
-                                    shape = CircleShape,
-                                ),
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         RegionSelectionLatencyText(content = "${latency}ms")
@@ -98,9 +102,10 @@ fun TvLocationPickerItem(
             if (enableFavorite) {
                 FavoriteIcon(
                     isChecked = isFavorite,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .size(28.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopEnd)
+                            .size(28.dp),
                 )
             }
         }

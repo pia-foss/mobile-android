@@ -26,15 +26,17 @@ fun TvSettingsItem(
 ) {
     Button(
         modifier = modifier.fillMaxWidth(),
-        shape = ButtonDefaults.shape(
-            shape = RoundedCornerShape(12.dp),
-        ),
-        colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.background,
-            contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = LocalColors.current.primary,
-            focusedContentColor = LocalColors.current.onPrimary,
-        ),
+        shape =
+            ButtonDefaults.shape(
+                shape = RoundedCornerShape(12.dp),
+            ),
+        colors =
+            ButtonDefaults.colors(
+                containerColor = LocalColors.current.background,
+                contentColor = LocalColors.current.onSurfaceVariant,
+                focusedContainerColor = LocalColors.current.primary,
+                focusedContentColor = LocalColors.current.onPrimary,
+            ),
         onClick = onClick,
     ) {
         Column(modifier = Modifier.weight(1f)) {

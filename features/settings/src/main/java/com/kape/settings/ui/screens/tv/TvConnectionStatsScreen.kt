@@ -33,94 +33,104 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun TvConnectionStatsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
-        getRecentEvents()
-    }
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.connection_stats_title),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+fun TvConnectionStatsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel =
+            koinViewModel<SettingsViewModel>().apply {
+                getRecentEvents()
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
+        ) {
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 64.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    val events = viewModel.eventList.value
-                    if (events.isEmpty()) {
-                        Text(
-                            text = stringResource(id = R.string.connection_stats_no_events),
-                            color = LocalColors.current.outlineVariant,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
-                            textAlign = TextAlign.Center,
-                        )
-                    } else {
-                        LazyColumn {
-                            items(events) { event ->
-                                Text(
-                                    text = event,
-                                    color = LocalColors.current.outlineVariant,
-                                    modifier = Modifier
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.connection_stats_title),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 64.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        val events = viewModel.eventList.value
+                        if (events.isEmpty()) {
+                            Text(
+                                text = stringResource(id = R.string.connection_stats_no_events),
+                                color = LocalColors.current.outlineVariant,
+                                modifier =
+                                    Modifier
                                         .fillMaxWidth()
                                         .padding(4.dp),
-                                    textAlign = TextAlign.Start,
-                                )
+                                textAlign = TextAlign.Center,
+                            )
+                        } else {
+                            LazyColumn {
+                                items(events) { event ->
+                                    Text(
+                                        text = event,
+                                        color = LocalColors.current.outlineVariant,
+                                        modifier =
+                                            Modifier
+                                                .fillMaxWidth()
+                                                .padding(4.dp),
+                                        textAlign = TextAlign.Start,
+                                    )
+                                }
                             }
                         }
                     }
-                }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(64.dp),
-                        painter = painterResource(id = com.kape.settings.R.drawable.tv_help),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
-                    )
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(64.dp),
+                            painter = painterResource(id = com.kape.settings.R.drawable.tv_help),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         }
     }
-}

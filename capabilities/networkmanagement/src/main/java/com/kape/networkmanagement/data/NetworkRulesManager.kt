@@ -9,7 +9,6 @@ class NetworkRulesManager(
     private val prefs: NetworkManagementPrefs,
     private val util: NetworkUtil,
 ) {
-
     fun getRules(): List<NetworkItem> {
         if (prefs.getAllRules().isEmpty()) {
             for (item in util.getDefaultList()) {
@@ -19,11 +18,17 @@ class NetworkRulesManager(
         return prefs.getAllRules().sortedBy { !it.isDefault }
     }
 
-    fun updateRule(rule: NetworkItem, behavior: NetworkBehavior) {
+    fun updateRule(
+        rule: NetworkItem,
+        behavior: NetworkBehavior,
+    ) {
         prefs.updateRuleForNetwork(rule, behavior)
     }
 
-    fun addRule(ssid: String, behavior: NetworkBehavior) {
+    fun addRule(
+        ssid: String,
+        behavior: NetworkBehavior,
+    ) {
         prefs.addRuleForNetwork(ssid, behavior)
     }
 

@@ -23,6 +23,11 @@ dependencies {
     implementation(libs.bundles.koin)
 }
 
+ktlint {
+    android.set(true)
+    outputColorName.set("RED")
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }

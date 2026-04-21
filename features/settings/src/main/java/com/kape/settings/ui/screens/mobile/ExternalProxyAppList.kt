@@ -40,12 +40,14 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun ExternalProxyAppList() {
     val packageManager = LocalContext.current.packageManager
-    val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
-        getInstalledApplications(packageManager)
-    }
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.proxy_selection_title))
-    }
+    val viewModel: SettingsViewModel =
+        koinViewModel<SettingsViewModel>().apply {
+            getInstalledApplications(packageManager)
+        }
+    val appBarViewModel: AppBarViewModel =
+        koinViewModel<AppBarViewModel>().apply {
+            appBarText(stringResource(id = R.string.proxy_selection_title))
+        }
     val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
 
     BackHandler {
@@ -71,9 +73,10 @@ fun ExternalProxyAppList() {
         ) {
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
                 Search(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
                 ) {
                     viewModel.filterAppsByName(it, packageManager)
                 }
@@ -124,12 +127,13 @@ private fun ApplicationRow(
     onClick: (name: String, isSelected: Boolean) -> Unit,
 ) {
     ConstraintLayout(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 56.dp)
-            .clickable {
-                onClick(name, !isSelected)
-            },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 56.dp)
+                .clickable {
+                    onClick(name, !isSelected)
+                },
     ) {
         val (image, text, button) = createRefs()
 
@@ -137,41 +141,46 @@ private fun ApplicationRow(
             painter = rememberDrawablePainter(drawable = icon),
             contentDescription = null,
             tint = Color.Unspecified,
-            modifier = Modifier
-                .constrainAs(image) {
-                    start.linkTo(parent.start, margin = 16.dp)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                }
-                .size(48.dp),
+            modifier =
+                Modifier
+                    .constrainAs(image) {
+                        start.linkTo(parent.start, margin = 16.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                    }.size(48.dp),
         )
 
         Text(
             text = name,
             textAlign = TextAlign.Start,
-            modifier = Modifier
-                .constrainAs(text) {
-                    start.linkTo(image.end, margin = 16.dp)
-                    end.linkTo(button.start, margin = 16.dp)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    width = Dimension.fillToConstraints
-                },
+            modifier =
+                Modifier
+                    .constrainAs(text) {
+                        start.linkTo(image.end, margin = 16.dp)
+                        end.linkTo(button.start, margin = 16.dp)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        width = Dimension.fillToConstraints
+                    },
         )
 
         SelectedCheckBox(
             checked = isSelected,
-            modifier = Modifier.constrainAs(button) {
-                end.linkTo(parent.end, margin = 16.dp)
-                top.linkTo(parent.top)
-                bottom.linkTo(parent.bottom)
-            },
+            modifier =
+                Modifier.constrainAs(button) {
+                    end.linkTo(parent.end, margin = 16.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                },
         )
     }
 }
 
 @Composable
-private fun SelectedCheckBox(checked: Boolean, modifier: Modifier) {
+private fun SelectedCheckBox(
+    checked: Boolean,
+    modifier: Modifier,
+) {
     Icon(
         painter = painterResource(id = com.kape.settings.R.drawable.ic_check),
         contentDescription = null,
@@ -180,7 +189,11 @@ private fun SelectedCheckBox(checked: Boolean, modifier: Modifier) {
     )
 }
 
-private fun onBackPressed(viewModel: SettingsViewModel, lastExcludedApps: List<String>, navigateBack: () -> Unit) {
+private fun onBackPressed(
+    viewModel: SettingsViewModel,
+    lastExcludedApps: List<String>,
+    navigateBack: () -> Unit,
+) {
     if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {

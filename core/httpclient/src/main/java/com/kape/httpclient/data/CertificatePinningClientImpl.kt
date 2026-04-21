@@ -30,8 +30,9 @@ import javax.net.ssl.X509TrustManager
 import javax.security.auth.x500.X500Principal
 
 @Singleton([CertificatePinningClient::class])
-class CertificatePinningClientImpl(private val certificate: String) : CertificatePinningClient {
-
+class CertificatePinningClientImpl(
+    private val certificate: String,
+) : CertificatePinningClient {
     private lateinit var knownEndpointCommonName: List<Pair<String, String>>
 
     override fun client(): HttpClient {
@@ -68,43 +69,44 @@ class CertificatePinningClientImpl(private val certificate: String) : Certificat
             e.printStackTrace()
         }
 
-        val client = HttpClient(OkHttp) {
-            engine {
-                config {
-                    if (trustManager != null && sslSocketFactory != null) {
-                        sslSocketFactory(sslSocketFactory, trustManager)
-                    }
-
-                    hostnameVerifier { endpoint, session ->
-                        var verified = false
-                        try {
-                            val x509CertificateChain =
-                                session.peerCertificates as Array<out X509Certificate>
-                            trustManager?.checkServerTrusted(x509CertificateChain, "RSA")
-                            val sessionCertificate = session.peerCertificates.first()
-                            verified =
-                                verifyCommonName(endpoint, sessionCertificate as X509Certificate)
-                        } catch (e: SSLPeerUnverifiedException) {
-                            e.printStackTrace()
-                        } catch (e: CertificateException) {
-                            e.printStackTrace()
-                        } catch (e: InvalidKeyException) {
-                            e.printStackTrace()
-                        } catch (e: NoSuchAlgorithmException) {
-                            e.printStackTrace()
-                        } catch (e: NoSuchProviderException) {
-                            e.printStackTrace()
-                        } catch (e: SignatureException) {
-                            e.printStackTrace()
+        val client =
+            HttpClient(OkHttp) {
+                engine {
+                    config {
+                        if (trustManager != null && sslSocketFactory != null) {
+                            sslSocketFactory(sslSocketFactory, trustManager)
                         }
-                        verified
+
+                        hostnameVerifier { endpoint, session ->
+                            var verified = false
+                            try {
+                                val x509CertificateChain =
+                                    session.peerCertificates as Array<out X509Certificate>
+                                trustManager?.checkServerTrusted(x509CertificateChain, "RSA")
+                                val sessionCertificate = session.peerCertificates.first()
+                                verified =
+                                    verifyCommonName(endpoint, sessionCertificate as X509Certificate)
+                            } catch (e: SSLPeerUnverifiedException) {
+                                e.printStackTrace()
+                            } catch (e: CertificateException) {
+                                e.printStackTrace()
+                            } catch (e: InvalidKeyException) {
+                                e.printStackTrace()
+                            } catch (e: NoSuchAlgorithmException) {
+                                e.printStackTrace()
+                            } catch (e: NoSuchProviderException) {
+                                e.printStackTrace()
+                            } catch (e: SignatureException) {
+                                e.printStackTrace()
+                            }
+                            verified
+                        }
                     }
                 }
+                install(HttpTimeout) {
+                    requestTimeoutMillis = 8000
+                }
             }
-            install(HttpTimeout) {
-                requestTimeoutMillis = 8000
-            }
-        }
         return client
     }
 
@@ -134,11 +136,17 @@ class CertificatePinningClientImpl(private val certificate: String) : Certificat
         return if (rdns.isEmpty()) {
             null
         } else {
-            rdns.first().first.value.toString()
+            rdns
+                .first()
+                .first.value
+                .toString()
         }
     }
 
-    private fun isEqual(a: ByteArray, b: ByteArray): Boolean {
+    private fun isEqual(
+        a: ByteArray,
+        b: ByteArray,
+    ): Boolean {
         val messageDigest = MessageDigest.getInstance("SHA-256")
         val random = SecureRandom()
         val randomBytes = ByteArray(20)

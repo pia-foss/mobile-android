@@ -3,10 +3,8 @@ package com.kape.shadowsocksregions.utils
 import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.privateinternetaccess.regions.model.ShadowsocksRegionsResponse
 
-fun adaptShadowsocksServers(
-    shadowsocksRegionsResponse: List<ShadowsocksRegionsResponse>,
-): List<ShadowsocksServer> {
-    return shadowsocksRegionsResponse.map {
+fun adaptShadowsocksServers(shadowsocksRegionsResponse: List<ShadowsocksRegionsResponse>): List<ShadowsocksServer> =
+    shadowsocksRegionsResponse.map {
         ShadowsocksServer(
             iso = it.iso,
             region = it.region,
@@ -16,4 +14,3 @@ fun adaptShadowsocksServers(
             cipher = it.cipher,
         )
     }
-}

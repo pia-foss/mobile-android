@@ -33,15 +33,17 @@ fun PrimaryButton(
 ) {
     Button(
         modifier = modifier.fillMaxWidth(),
-        shape = ButtonDefaults.shape(
-            shape = RoundedCornerShape(12.dp),
-        ),
-        colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.primaryContainer,
-            contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = focusedContainerColor,
-            focusedContentColor = focusedContentColor,
-        ),
+        shape =
+            ButtonDefaults.shape(
+                shape = RoundedCornerShape(12.dp),
+            ),
+        colors =
+            ButtonDefaults.colors(
+                containerColor = LocalColors.current.primaryContainer,
+                contentColor = LocalColors.current.onSurfaceVariant,
+                focusedContainerColor = focusedContainerColor,
+                focusedContentColor = focusedContentColor,
+            ),
         onClick = onClick,
     ) {
         PrimaryButtonText(
@@ -60,15 +62,17 @@ fun SecondaryButton(
 ) {
     Button(
         modifier = modifier.fillMaxWidth(),
-        shape = ButtonDefaults.shape(
-            shape = RoundedCornerShape(12.dp),
-        ),
-        colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.background,
-            contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = LocalColors.current.primary,
-            focusedContentColor = LocalColors.current.onPrimary,
-        ),
+        shape =
+            ButtonDefaults.shape(
+                shape = RoundedCornerShape(12.dp),
+            ),
+        colors =
+            ButtonDefaults.colors(
+                containerColor = LocalColors.current.background,
+                contentColor = LocalColors.current.onSurfaceVariant,
+                focusedContainerColor = LocalColors.current.primary,
+                focusedContentColor = LocalColors.current.onPrimary,
+            ),
         onClick = onClick,
     ) {
         SecondaryButtonText(
@@ -87,15 +91,17 @@ fun TertiaryButton(
 ) {
     Button(
         modifier = modifier.fillMaxWidth(),
-        shape = ButtonDefaults.shape(
-            shape = RoundedCornerShape(12.dp),
-        ),
-        colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.background,
-            contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = LocalColors.current.primary,
-            focusedContentColor = LocalColors.current.onPrimary,
-        ),
+        shape =
+            ButtonDefaults.shape(
+                shape = RoundedCornerShape(12.dp),
+            ),
+        colors =
+            ButtonDefaults.colors(
+                containerColor = LocalColors.current.background,
+                contentColor = LocalColors.current.onSurfaceVariant,
+                focusedContainerColor = LocalColors.current.primary,
+                focusedContentColor = LocalColors.current.onPrimary,
+            ),
         onClick = onClick,
     ) {
         TertiaryButtonText(
@@ -113,12 +119,13 @@ fun RoundIconButton(
 ) {
     IconButton(
         modifier = modifier,
-        colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.primaryContainer,
-            contentColor = LocalColors.current.onSurface,
-            focusedContainerColor = LocalColors.current.primary,
-            focusedContentColor = LocalColors.current.onPrimary,
-        ),
+        colors =
+            ButtonDefaults.colors(
+                containerColor = LocalColors.current.primaryContainer,
+                contentColor = LocalColors.current.onSurface,
+                focusedContainerColor = LocalColors.current.primary,
+                focusedContentColor = LocalColors.current.onPrimary,
+            ),
         onClick = onClick,
     ) {
         Icon(
@@ -137,15 +144,17 @@ fun TileButton(
 ) {
     Button(
         modifier = modifier,
-        shape = ButtonDefaults.shape(
-            shape = RoundedCornerShape(12.dp),
-        ),
-        colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.onPrimaryContainer,
-            contentColor = LocalColors.current.onSurface,
-            focusedContainerColor = LocalColors.current.primary,
-            focusedContentColor = LocalColors.current.onPrimaryContainer,
-        ),
+        shape =
+            ButtonDefaults.shape(
+                shape = RoundedCornerShape(12.dp),
+            ),
+        colors =
+            ButtonDefaults.colors(
+                containerColor = LocalColors.current.onPrimaryContainer,
+                contentColor = LocalColors.current.onSurface,
+                focusedContainerColor = LocalColors.current.primary,
+                focusedContentColor = LocalColors.current.onPrimaryContainer,
+            ),
         onClick = onClick,
         onLongClick = onLongClick,
         content = content,
@@ -162,15 +171,17 @@ fun AboutButton(
     Button(
         modifier = modifier,
         scale = ButtonScale.None,
-        shape = ButtonDefaults.shape(
-            shape = RoundedCornerShape(4.dp),
-        ),
-        colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.background,
-            contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = LocalColors.current.primary,
-            focusedContentColor = LocalColors.current.onPrimary,
-        ),
+        shape =
+            ButtonDefaults.shape(
+                shape = RoundedCornerShape(4.dp),
+            ),
+        colors =
+            ButtonDefaults.colors(
+                containerColor = LocalColors.current.background,
+                contentColor = LocalColors.current.onSurfaceVariant,
+                focusedContainerColor = LocalColors.current.primary,
+                focusedContentColor = LocalColors.current.onPrimary,
+            ),
         onClick = onClick,
         onLongClick = onLongClick,
         content = content,

@@ -22,10 +22,8 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class SettingsModule {
-
     @Singleton(binds = [IsNumericIpAddressUseCase::class])
-    fun provideIsNumericIpAddressUseCase(): IsNumericIpAddressUseCase =
-        IsNumericIpAddressUseCaseImpl()
+    fun provideIsNumericIpAddressUseCase(): IsNumericIpAddressUseCase = IsNumericIpAddressUseCaseImpl()
 
     @KoinViewModel
     fun provideSettingsViewModel(
@@ -43,9 +41,21 @@ class SettingsModule {
         locationPermissionManager: LocationPermissionManager,
         connectionManager: ConnectionManager,
         connectionInfoProvider: ConnectionInfoProvider,
-    ): SettingsViewModel = SettingsViewModel(
-        router, appInfo, prefs, connectionPrefs, csiPrefs, regionsRepository, kpiDataSource,
-        connectionDataSource, getDebugLogsUseCase, sendLogUseCase, isNumericIpAddressUseCase,
-        locationPermissionManager, connectionManager, connectionInfoProvider,
-    )
+    ): SettingsViewModel =
+        SettingsViewModel(
+            router,
+            appInfo,
+            prefs,
+            connectionPrefs,
+            csiPrefs,
+            regionsRepository,
+            kpiDataSource,
+            connectionDataSource,
+            getDebugLogsUseCase,
+            sendLogUseCase,
+            isNumericIpAddressUseCase,
+            locationPermissionManager,
+            connectionManager,
+            connectionInfoProvider,
+        )
 }

@@ -40,21 +40,19 @@ fun CustomObfuscationInputFieldDialog(
     val hostErrorMessage = stringResource(id = R.string.obfuscation_shadowsocks_invalid_host)
     val portErrorMessage = stringResource(id = R.string.obfuscation_shadowsocks_invalid_port)
 
-    fun showHostErrorIfNeeded(): String? {
-        return if (host.value.isEmpty() || isNumericIpAddress(host.value)) {
+    fun showHostErrorIfNeeded(): String? =
+        if (host.value.isEmpty() || isNumericIpAddress(host.value)) {
             null
         } else {
             hostErrorMessage
         }
-    }
 
-    fun showPortErrorIfNeeded(): String? {
-        return if (port.value.isEmpty() || isPortValid(port.value)) {
+    fun showPortErrorIfNeeded(): String? =
+        if (port.value.isEmpty() || isPortValid(port.value)) {
             null
         } else {
             portErrorMessage
         }
-    }
 
     fun onConfirmClicked() {
         onConfirm(

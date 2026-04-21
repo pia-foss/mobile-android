@@ -48,21 +48,25 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
+fun SideMenuContent(
+    scope: CoroutineScope,
+    state: DrawerState,
+) {
     val viewModel: SideMenuViewModel = koinViewModel()
     val logoutDialogVisible = remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier
-            .background(color = LocalColors.current.surface)
-            .padding(horizontal = 24.dp, vertical = 24.dp)
-            .width(250.dp)
-            .fillMaxHeight()
-            .focusGroup()
-            .verticalScroll(rememberScrollState())
-            .semantics {
-                testTagsAsResourceId = true
-            },
+        modifier =
+            Modifier
+                .background(color = LocalColors.current.surface)
+                .padding(horizontal = 24.dp, vertical = 24.dp)
+                .width(250.dp)
+                .fillMaxHeight()
+                .focusGroup()
+                .verticalScroll(rememberScrollState())
+                .semantics {
+                    testTagsAsResourceId = true
+                },
     ) {
         SideMenuHeaderItem(
             username = viewModel.username.value,
@@ -176,38 +180,49 @@ fun SideMenuContent(scope: CoroutineScope, state: DrawerState) {
 }
 
 @Composable
-private fun SideMenuHeaderItem(username: String, versionCode: String, versionName: String) {
-    Row(modifier = Modifier
-        .fillMaxWidth()
-        .focusable()) {
+private fun SideMenuHeaderItem(
+    username: String,
+    versionCode: String,
+    versionName: String,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .focusable(),
+    ) {
         Image(
             painter = painterResource(id = R.drawable.drawer_icon),
-            modifier = Modifier
-                .align(CenterVertically)
-                .size(48.dp),
+            modifier =
+                Modifier
+                    .align(CenterVertically)
+                    .size(48.dp),
             contentDescription = null,
         )
         Spacer(modifier = Modifier.width(24.dp))
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(CenterVertically),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .align(CenterVertically),
         ) {
             val usernamePrefix = stringResource(id = com.kape.ui.R.string.username)
             SideMenuUsernameText(
                 content = username,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics {
-                        contentDescription = "$usernamePrefix $username"
-                    },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .semantics {
+                            contentDescription = "$usernamePrefix $username"
+                        },
             )
             Spacer(modifier = Modifier.height(4.dp))
             SideMenuVersionText(
-                content = stringResource(com.kape.ui.R.string.drawer_item_description_app_version_format).format(
-                    versionName,
-                    versionCode,
-                ),
+                content =
+                    stringResource(com.kape.ui.R.string.drawer_item_description_app_version_format).format(
+                        versionName,
+                        versionCode,
+                    ),
                 modifier = Modifier.wrapContentWidth(),
             )
         }
@@ -222,19 +237,20 @@ private fun SideMenuItem(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .clickable {
-                onClick.invoke()
-            }
-            .focusable(),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .clickable {
+                    onClick.invoke()
+                }.focusable(),
     ) {
         Image(
-            modifier = Modifier
-                .align(CenterVertically)
-                .size(24.dp)
-                .testTag(testTag),
+            modifier =
+                Modifier
+                    .align(CenterVertically)
+                    .size(24.dp)
+                    .testTag(testTag),
             painter = painterResource(id = iconId),
             contentScale = ContentScale.Inside,
             contentDescription = null,

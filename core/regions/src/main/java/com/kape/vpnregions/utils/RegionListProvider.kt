@@ -43,9 +43,10 @@ class RegionListProvider(
         _servers.value = regionRepository.getServers(false)
     }
 
-    fun loadVpnServerLatencies() = CoroutineScope(ioDispatcher).launch {
-        updateServerLatencies(locale, false)
-    }
+    fun loadVpnServerLatencies() =
+        CoroutineScope(ioDispatcher).launch {
+            updateServerLatencies(locale, false)
+        }
 
     suspend fun updateServerLatencies(
         isConnected: Boolean,

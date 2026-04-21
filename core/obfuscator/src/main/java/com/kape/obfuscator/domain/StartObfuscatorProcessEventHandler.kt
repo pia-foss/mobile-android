@@ -6,12 +6,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class StartObfuscatorProcessEventHandler : ObfuscatorProcessEventHandler {
-
     private lateinit var obfuscatorProcessListener: ObfuscatorProcessListener
 
-    operator fun invoke(
-        obfuscatorProcessListener: ObfuscatorProcessListener,
-    ): ObfuscatorProcessEventHandler {
+    operator fun invoke(obfuscatorProcessListener: ObfuscatorProcessListener): ObfuscatorProcessEventHandler {
         this.obfuscatorProcessListener = obfuscatorProcessListener
         return this
     }

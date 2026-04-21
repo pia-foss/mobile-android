@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 internal class SetShadowsocksRegionsUseCaseTest {
-
     private val shadowsocksRegionRepository: ShadowsocksRegionRepository = mockk(relaxed = true)
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs = mockk()
     private val readShadowsocksRegionsDetailsUseCase: ReadShadowsocksRegionsDetailsUseCase =
@@ -24,35 +23,39 @@ internal class SetShadowsocksRegionsUseCaseTest {
 
     @BeforeEach
     internal fun setUp() {
-        getShadowsocksRegionsUseCase = GetShadowsocksRegionsUseCase(
-            shadowsocksRegionRepository = shadowsocksRegionRepository,
-            shadowsocksRegionPrefs = shadowsocksRegionPrefs,
-            readShadowsocksRegionsDetailsUseCase = readShadowsocksRegionsDetailsUseCase,
-            setShadowsocksRegionsUseCase = mockSetShadowsocksRegionsUseCase,
-        )
-        setShadowsocksRegionsUseCase = SetShadowsocksRegionsUseCase(
-            shadowsocksRegionPrefs = shadowsocksRegionPrefs,
-        )
+        getShadowsocksRegionsUseCase =
+            GetShadowsocksRegionsUseCase(
+                shadowsocksRegionRepository = shadowsocksRegionRepository,
+                shadowsocksRegionPrefs = shadowsocksRegionPrefs,
+                readShadowsocksRegionsDetailsUseCase = readShadowsocksRegionsDetailsUseCase,
+                setShadowsocksRegionsUseCase = mockSetShadowsocksRegionsUseCase,
+            )
+        setShadowsocksRegionsUseCase =
+            SetShadowsocksRegionsUseCase(
+                shadowsocksRegionPrefs = shadowsocksRegionPrefs,
+            )
     }
 
     @Test
-    fun `set shadowsocks servers list`() = runTest {
-        val expected = ShadowsocksServer(region = "", host = "", key = "", port = 0, cipher = "")
-        every { shadowsocksRegionPrefs.setSelectShadowsocksServer(any()) } returns Unit
-        every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns expected
-        every { shadowsocksRegionPrefs.getShadowsocksServers() } returns listOf(expected)
-        setShadowsocksRegionsUseCase.setSelectShadowsocksServer(expected)
-        val actual = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
-        assertEquals(expected, actual)
-    }
+    fun `set shadowsocks servers list`() =
+        runTest {
+            val expected = ShadowsocksServer(region = "", host = "", key = "", port = 0, cipher = "")
+            every { shadowsocksRegionPrefs.setSelectShadowsocksServer(any()) } returns Unit
+            every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns expected
+            every { shadowsocksRegionPrefs.getShadowsocksServers() } returns listOf(expected)
+            setShadowsocksRegionsUseCase.setSelectShadowsocksServer(expected)
+            val actual = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
+            assertEquals(expected, actual)
+        }
 
     @Test
-    fun `set selected shadowsocks server`() = runTest {
-        val expected: List<ShadowsocksServer> = listOf(mockk())
-        every { shadowsocksRegionPrefs.setShadowsocksServers(any()) } returns Unit
-        every { shadowsocksRegionPrefs.getShadowsocksServers() } returns expected
-        setShadowsocksRegionsUseCase.setShadowsocksServers(expected)
-        val actual = getShadowsocksRegionsUseCase.getShadowsocksServers()
-        assertEquals(expected, actual)
-    }
+    fun `set selected shadowsocks server`() =
+        runTest {
+            val expected: List<ShadowsocksServer> = listOf(mockk())
+            every { shadowsocksRegionPrefs.setShadowsocksServers(any()) } returns Unit
+            every { shadowsocksRegionPrefs.getShadowsocksServers() } returns expected
+            setShadowsocksRegionsUseCase.setShadowsocksServers(expected)
+            val actual = getShadowsocksRegionsUseCase.getShadowsocksServers()
+            assertEquals(expected, actual)
+        }
 }

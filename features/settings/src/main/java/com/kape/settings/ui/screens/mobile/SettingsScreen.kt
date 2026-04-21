@@ -25,86 +25,92 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun SettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = com.kape.ui.R.string.settings))
-    }
-    val shouldShowObfuscation = viewModel.getSelectedProtocol() == VpnProtocols.OpenVPN
+fun SettingsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = com.kape.ui.R.string.settings))
+            }
+        val shouldShowObfuscation = viewModel.getSelectedProtocol() == VpnProtocols.OpenVPN
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth()
-                .semantics {
-                    testTagsAsResourceId = true
-                },
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                SettingsItem(
-                    iconId = R.drawable.ic_settings_general,
-                    titleId = com.kape.ui.R.string.general,
-                    onClick = {
-                        viewModel.navigateToGeneralSettings()
-                    },
-                )
-                SettingsItem(
-                    iconId = R.drawable.ic_settings_protocols,
-                    titleId = com.kape.ui.R.string.protocols,
-                    subtitle = viewModel.getSelectedProtocol().name,
-                    onClick = {
-                        viewModel.navigateToProtocolSettings()
-                    },
-                    testTag = ":SettingsScreen:Protocols",
-                )
-                SettingsItem(
-                    iconId = R.drawable.ic_settings_network,
-                    titleId = com.kape.ui.R.string.networks,
-                    onClick = {
-                        viewModel.navigateToNetworkSettings()
-                    },
-                )
-                SettingsItem(
-                    iconId = R.drawable.ic_settings_privacy,
-                    titleId = com.kape.ui.R.string.privacy,
-                    onClick = {
-                        viewModel.navigateToPrivacySettings()
-                    },
-                )
-                SettingsItem(
-                    iconId = R.drawable.ic_settings_automation,
-                    titleId = com.kape.ui.R.string.automation,
-                    subtitle = stringResource(id = if (viewModel.isAutomationEnabled()) com.kape.ui.R.string.enabled else com.kape.ui.R.string.disabled),
-                    onClick = {
-                        viewModel.navigateToAutomation()
-                    },
-                )
-                if (shouldShowObfuscation) {
+            Column(
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth()
+                        .semantics {
+                            testTagsAsResourceId = true
+                        },
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
                     SettingsItem(
-                        iconId = R.drawable.ic_settings_obfuscation,
-                        titleId = com.kape.ui.R.string.obfuscation,
+                        iconId = R.drawable.ic_settings_general,
+                        titleId = com.kape.ui.R.string.general,
                         onClick = {
-                            viewModel.navigateToObfuscationSettings()
+                            viewModel.navigateToGeneralSettings()
+                        },
+                    )
+                    SettingsItem(
+                        iconId = R.drawable.ic_settings_protocols,
+                        titleId = com.kape.ui.R.string.protocols,
+                        subtitle = viewModel.getSelectedProtocol().name,
+                        onClick = {
+                            viewModel.navigateToProtocolSettings()
+                        },
+                        testTag = ":SettingsScreen:Protocols",
+                    )
+                    SettingsItem(
+                        iconId = R.drawable.ic_settings_network,
+                        titleId = com.kape.ui.R.string.networks,
+                        onClick = {
+                            viewModel.navigateToNetworkSettings()
+                        },
+                    )
+                    SettingsItem(
+                        iconId = R.drawable.ic_settings_privacy,
+                        titleId = com.kape.ui.R.string.privacy,
+                        onClick = {
+                            viewModel.navigateToPrivacySettings()
+                        },
+                    )
+                    SettingsItem(
+                        iconId = R.drawable.ic_settings_automation,
+                        titleId = com.kape.ui.R.string.automation,
+                        subtitle =
+                            stringResource(
+                                id = if (viewModel.isAutomationEnabled()) com.kape.ui.R.string.enabled else com.kape.ui.R.string.disabled,
+                            ),
+                        onClick = {
+                            viewModel.navigateToAutomation()
+                        },
+                    )
+                    if (shouldShowObfuscation) {
+                        SettingsItem(
+                            iconId = R.drawable.ic_settings_obfuscation,
+                            titleId = com.kape.ui.R.string.obfuscation,
+                            onClick = {
+                                viewModel.navigateToObfuscationSettings()
+                            },
+                        )
+                    }
+                    SettingsItem(
+                        iconId = R.drawable.ic_settings_help,
+                        titleId = com.kape.ui.R.string.help,
+                        onClick = {
+                            viewModel.navigateToHelpSettings()
                         },
                     )
                 }
-                SettingsItem(
-                    iconId = R.drawable.ic_settings_help,
-                    titleId = com.kape.ui.R.string.help,
-                    onClick = {
-                        viewModel.navigateToHelpSettings()
-                    },
-                )
             }
         }
     }
-}
 
 @Preview
 @Composable

@@ -13,7 +13,6 @@ class DipSignupRepository(
     private val dipDataSource: DipDataSource,
     private val dipPrefs: DipPrefs,
 ) {
-
     private companion object {
         private const val DIP_SIGNUP_FETCH_PLANS_MIN_CACHE_1_DAY = 1L * 24 * 60 * 60 * 1000
         private const val DIP_SIGNUP_FETCH_PLANS_MIN_CACHE_12_HOURS = 1L * 12 * 60 * 60 * 1000
@@ -46,10 +45,11 @@ class DipSignupRepository(
         val plans = dipDataSource.signupPlans()
         plans?.let {
             dipPrefs.setDedicatedIpSignupPlans(
-                dedicatedIpSignupPlans = DedicatedIpSignupPlans(
-                    persistedTimestamp = System.currentTimeMillis(),
-                    signupPlans = it,
-                ),
+                dedicatedIpSignupPlans =
+                    DedicatedIpSignupPlans(
+                        persistedTimestamp = System.currentTimeMillis(),
+                        signupPlans = it,
+                    ),
             )
         }
         return plans
@@ -59,10 +59,11 @@ class DipSignupRepository(
         val countries = dipDataSource.supportedCountries()
         countries?.let {
             dipPrefs.setDedicatedIpSupportedCountries(
-                dedicatedIpSupportedCountries = DedicatedIpSupportedCountries(
-                    persistedTimestamp = System.currentTimeMillis(),
-                    supportedCountries = it,
-                ),
+                dedicatedIpSupportedCountries =
+                    DedicatedIpSupportedCountries(
+                        persistedTimestamp = System.currentTimeMillis(),
+                        supportedCountries = it,
+                    ),
             )
         }
         return countries

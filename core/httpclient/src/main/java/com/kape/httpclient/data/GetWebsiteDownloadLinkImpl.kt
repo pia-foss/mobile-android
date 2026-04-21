@@ -13,7 +13,8 @@ class GetWebsiteDownloadLinkImpl : GetWebsiteDownloadLink {
     override suspend fun invoke(): String {
         val client = HttpClient(OkHttp)
         val response =
-            client.get(urlString = "https://privateinternetaccess.com/api/client/android/latest_release")
+            client
+                .get(urlString = "https://privateinternetaccess.com/api/client/android/latest_release")
                 .bodyAsText()
         val result = Json.decodeFromString<UpdateClientResponse>(response)
         return result.url

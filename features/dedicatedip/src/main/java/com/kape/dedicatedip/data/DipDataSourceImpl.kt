@@ -20,107 +20,113 @@ class DipDataSourceImpl(
     private val accountApi: AndroidAccountAPI,
     private val dipPrefs: DipPrefs,
 ) : DipDataSource {
-
     companion object {
         private const val STORE = "google_play"
     }
 
-    override suspend fun activate(ipToken: String): DipApiResult = suspendCancellableCoroutine { cont ->
-        accountApi.redeemDedicatedIPs(listOf(ipToken)) { details, errors ->
-            if (errors.isNotEmpty()) {
-                cont.resume(DipApiResult.Error)
-                return@redeemDedicatedIPs
-            }
-            val activated = details.firstOrNull { it.dipToken == ipToken }
-            activated?.let {
-                when (it.status) {
-                    DedicatedIPInformationResponse.Status.active -> {
-                        dipPrefs.addDedicatedIp(it)
-                        cont.resume(DipApiResult.Active)
-                    }
-
-                    DedicatedIPInformationResponse.Status.expired -> {
-                        cont.resume(DipApiResult.Expired)
-                    }
-
-                    DedicatedIPInformationResponse.Status.invalid -> {
-                        cont.resume(DipApiResult.Invalid)
-                    }
-
-                    DedicatedIPInformationResponse.Status.error -> {
-                        cont.resume(DipApiResult.Error)
-                    }
+    override suspend fun activate(ipToken: String): DipApiResult =
+        suspendCancellableCoroutine { cont ->
+            accountApi.redeemDedicatedIPs(listOf(ipToken)) { details, errors ->
+                if (errors.isNotEmpty()) {
+                    cont.resume(DipApiResult.Error)
+                    return@redeemDedicatedIPs
                 }
-            } ?: run {
-                cont.resume(DipApiResult.Error)
+                val activated = details.firstOrNull { it.dipToken == ipToken }
+                activated?.let {
+                    when (it.status) {
+                        DedicatedIPInformationResponse.Status.active -> {
+                            dipPrefs.addDedicatedIp(it)
+                            cont.resume(DipApiResult.Active)
+                        }
+
+                        DedicatedIPInformationResponse.Status.expired -> {
+                            cont.resume(DipApiResult.Expired)
+                        }
+
+                        DedicatedIPInformationResponse.Status.invalid -> {
+                            cont.resume(DipApiResult.Invalid)
+                        }
+
+                        DedicatedIPInformationResponse.Status.error -> {
+                            cont.resume(DipApiResult.Error)
+                        }
+                    }
+                } ?: run {
+                    cont.resume(DipApiResult.Error)
+                }
             }
         }
-    }
 
-    override suspend fun renew(ipToken: String): DipApiResult = suspendCancellableCoroutine { cont ->
-        accountApi.renewDedicatedIP(ipToken) {
-            if (it.isNotEmpty()) {
-                cont.resume(DipApiResult.Error)
-                return@renewDedicatedIP
+    override suspend fun renew(ipToken: String): DipApiResult =
+        suspendCancellableCoroutine { cont ->
+            accountApi.renewDedicatedIP(ipToken) {
+                if (it.isNotEmpty()) {
+                    cont.resume(DipApiResult.Error)
+                    return@renewDedicatedIP
+                }
+                // todo: update if needed once implemented
+                cont.resume(DipApiResult.Active)
             }
-            // todo: update if needed once implemented
-            cont.resume(DipApiResult.Active)
         }
-    }
 
-    override suspend fun supportedCountries(): DipCountriesResponse? = suspendCancellableCoroutine { cont ->
-        accountApi.supportedDedicatedIPCountries { details, errors ->
-            if (errors.isNotEmpty()) {
-                cont.resume(null)
-                return@supportedDedicatedIPCountries
+    override suspend fun supportedCountries(): DipCountriesResponse? =
+        suspendCancellableCoroutine { cont ->
+            accountApi.supportedDedicatedIPCountries { details, errors ->
+                if (errors.isNotEmpty()) {
+                    cont.resume(null)
+                    return@supportedDedicatedIPCountries
+                }
+                cont.resume(details)
             }
-            cont.resume(details)
         }
-    }
 
-    override suspend fun signupPlans(): AndroidAddonsSubscriptionsInformation? = suspendCancellableCoroutine { cont ->
-        accountApi.addonsSubscriptions { details, errors ->
-            if (errors.isNotEmpty()) {
-                cont.resume(null)
-                return@addonsSubscriptions
+    override suspend fun signupPlans(): AndroidAddonsSubscriptionsInformation? =
+        suspendCancellableCoroutine { cont ->
+            accountApi.addonsSubscriptions { details, errors ->
+                if (errors.isNotEmpty()) {
+                    cont.resume(null)
+                    return@addonsSubscriptions
+                }
+                cont.resume(details)
             }
-            cont.resume(details)
         }
-    }
 
-    override suspend fun signup(dipPurchaseData: DipPurchaseData): Result<Unit> = suspendCancellableCoroutine { cont ->
-        accountApi.addonSignUp(
-            AndroidAddonSignupInformation(
-                receipt = AndroidAddonSignupInformation.Receipt(
-                    applicationPackage = context.packageName,
-                    productId = dipPurchaseData.productId,
-                    orderId = dipPurchaseData.orderId,
-                    token = dipPurchaseData.token,
+    override suspend fun signup(dipPurchaseData: DipPurchaseData): Result<Unit> =
+        suspendCancellableCoroutine { cont ->
+            accountApi.addonSignUp(
+                AndroidAddonSignupInformation(
+                    receipt =
+                        AndroidAddonSignupInformation.Receipt(
+                            applicationPackage = context.packageName,
+                            productId = dipPurchaseData.productId,
+                            orderId = dipPurchaseData.orderId,
+                            token = dipPurchaseData.token,
+                        ),
+                    store = STORE,
                 ),
-                store = STORE,
-            ),
-        ) { errors ->
-            if (errors.isNotEmpty()) {
-                cont.resume(Result.failure(IllegalStateException("Signup validation failed")))
-                return@addonSignUp
+            ) { errors ->
+                if (errors.isNotEmpty()) {
+                    cont.resume(Result.failure(IllegalStateException("Signup validation failed")))
+                    return@addonSignUp
+                }
+                cont.resume(Result.success(Unit))
             }
-            cont.resume(Result.success(Unit))
         }
-    }
 
     override suspend fun fetchToken(
         countryCode: String,
         regionName: String,
-    ): Result<String> = suspendCancellableCoroutine { cont ->
-        accountApi.getDedicatedIP(
-            countryCode = countryCode,
-            regionName = regionName,
-        ) { details, errors ->
-            if (details == null || errors.isNotEmpty()) {
-                cont.resume(Result.failure(IllegalStateException("Fetch token failed")))
-                return@getDedicatedIP
+    ): Result<String> =
+        suspendCancellableCoroutine { cont ->
+            accountApi.getDedicatedIP(
+                countryCode = countryCode,
+                regionName = regionName,
+            ) { details, errors ->
+                if (details == null || errors.isNotEmpty()) {
+                    cont.resume(Result.failure(IllegalStateException("Fetch token failed")))
+                    return@getDedicatedIP
+                }
+                cont.resume(Result.success(details.token))
             }
-            cont.resume(Result.success(details.token))
         }
-    }
 }

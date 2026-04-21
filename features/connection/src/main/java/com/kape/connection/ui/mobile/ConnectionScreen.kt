@@ -68,10 +68,10 @@ import com.kape.data.ConnectionStatus
 import com.kape.data.VpnConnectionInfo
 import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.data.vpnserver.VpnServer
+import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.ui.RatingFeedbackDialog
 import com.kape.rating.ui.RatingReviewDialog
-import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.sharedui.tiles.ConnectionInfo
 import com.kape.sharedui.tiles.IPTile
 import com.kape.sharedui.tiles.QuickConnect
@@ -97,187 +97,193 @@ import java.util.Locale
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ConnectionScreen() = Screen {
-    val viewModel: ConnectionViewModel = koinViewModel()
-    val vpnState by viewModel.connectionInfoProvider.state.collectAsStateWithLifecycle()
-    val connectionState by viewModel.connectionInfoProvider.connectionState.collectAsStateWithLifecycle()
-    val appBarViewModel: AppBarViewModel = koinViewModel()
-    val locale = Locale.getDefault().language
-    val scope: CoroutineScope = rememberCoroutineScope()
-    val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    val showRatingGeneralDialog = remember { mutableStateOf(false) }
-    val showRatingReviewDialog = remember { mutableStateOf(false) }
-    val showRatingFeedbackDialog = remember { mutableStateOf(false) }
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val activity = LocalActivity.current
+fun ConnectionScreen() =
+    Screen {
+        val viewModel: ConnectionViewModel = koinViewModel()
+        val vpnState by viewModel.connectionInfoProvider.state.collectAsStateWithLifecycle()
+        val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsStateWithLifecycle()
+        val appBarViewModel: AppBarViewModel = koinViewModel()
+        val locale = Locale.getDefault().language
+        val scope: CoroutineScope = rememberCoroutineScope()
+        val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val showRatingGeneralDialog = remember { mutableStateOf(false) }
+        val showRatingReviewDialog = remember { mutableStateOf(false) }
+        val showRatingFeedbackDialog = remember { mutableStateOf(false) }
+        val lifecycleOwner = LocalLifecycleOwner.current
+        val activity = LocalActivity.current
 
-    BackHandler {
-        activity?.finish()
-    }
+        BackHandler {
+            activity?.finish()
+        }
 
-    LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+        LaunchedEffect(lifecycleOwner) {
+            lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.refreshState()
+            }
+        }
+
+        LaunchedEffect(connectionState.status) {
             viewModel.refreshState()
         }
-    }
 
-    LaunchedEffect(connectionState.status) {
-        viewModel.refreshState()
-    }
+        LaunchedEffect(key1 = Unit) {
+            viewModel.shouldShowDedicatedIpSignupBanner()
+            viewModel.autoConnect()
+        }
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.shouldShowDedicatedIpSignupBanner()
-        viewModel.autoConnect()
-    }
-
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet {
-                SideMenuContent(scope = scope, state = drawerState)
-            }
-        },
-    ) {
-        Scaffold(
-            topBar = {
-                AppBar(
-                    viewModel = appBarViewModel,
-                    type = AppBarType.Connection,
-                    onLeftIconClick = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    },
-                    onRightIconClick = { viewModel.navigateToCustomization() },
-                )
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet {
+                    SideMenuContent(scope = scope, state = drawerState)
+                }
             },
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .semantics {
-                        testTagsAsResourceId = true
-                    },
-                horizontalAlignment = CenterHorizontally,
+            Scaffold(
+                topBar = {
+                    AppBar(
+                        viewModel = appBarViewModel,
+                        type = AppBarType.Connection,
+                        onLeftIconClick = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        },
+                        onRightIconClick = { viewModel.navigateToCustomization() },
+                    )
+                },
             ) {
-                Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                    var connectButtonDescription =
-                        stringResource(id = R.string.toggle_connection_button)
+                Column(
+                    modifier =
+                        Modifier
+                            .padding(it)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .semantics {
+                                testTagsAsResourceId = true
+                            },
+                    horizontalAlignment = CenterHorizontally,
+                ) {
+                    Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                        var connectButtonDescription =
+                            stringResource(id = R.string.toggle_connection_button)
 
-                    connectButtonDescription += when (connectionState.status) {
-                        ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> stringResource(
-                            id = R.string.disconnect_from_vpn,
-                        )
+                        connectButtonDescription +=
+                            when (connectionState.status) {
+                                ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING ->
+                                    stringResource(
+                                        id = R.string.disconnect_from_vpn,
+                                    )
 
-                        else -> stringResource(id = R.string.connect_to_vpn)
-                    }
+                                else -> stringResource(id = R.string.connect_to_vpn)
+                            }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    if (viewModel.showDedicatedIpHomeBanner.value) {
-                        DedicatedIpBanner(
-                            onAcceptClick = {
-                                viewModel.navigateToDedicatedIpPlans()
-                            },
-                            onCancelClick = {
-                                viewModel.hideDedicatedIpSignupBanner()
-                            },
-                        )
-                    }
-                    ConnectButton(
-                        status = connectionState.status,
-                        onTvLayout = false,
-                        modifier = Modifier
-                            .align(CenterHorizontally)
-                            .testTag(":ConnectionScreen:connection_button")
-                            .semantics(mergeDescendants = true) {
-                                role = Role.Button
-                                contentDescription = connectButtonDescription
-                            },
-                    ) {
-                        viewModel.onConnectionButtonClicked()
-                    }
-                    Spacer(modifier = Modifier.height(36.dp))
-                    if (showRatingGeneralDialog.value) {
-                        RatingCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            onClose = {
-                                viewModel.setRatingStateInactive()
-                                showRatingGeneralDialog.value = false
-                            },
-                            onThumbsUp = viewModel::showReviewPrompt,
-                            onThumbsDown = viewModel::showFeedbackPrompt,
-                        )
                         Spacer(modifier = Modifier.height(16.dp))
-                    }
-                    viewModel.getOrderedElements().forEach { screenElement ->
-                        DisplayComponent(
-                            screenElement = screenElement,
-                            isVisible = viewModel.isScreenElementVisible(screenElement),
-                            viewModel = viewModel,
-                            screenState = state,
-                            connectionStatus = connectionState.status,
-                            vpnState = vpnState,
-                        )
-                    }
-                    showRatingGeneralDialog.value =
-                        state.ratingDialogType is RatingDialogType.General
-                    showRatingReviewDialog.value =
-                        state.ratingDialogType is RatingDialogType.Review
-                    showRatingFeedbackDialog.value =
-                        state.ratingDialogType is RatingDialogType.Feedback
+                        if (viewModel.showDedicatedIpHomeBanner.value) {
+                            DedicatedIpBanner(
+                                onAcceptClick = {
+                                    viewModel.navigateToDedicatedIpPlans()
+                                },
+                                onCancelClick = {
+                                    viewModel.hideDedicatedIpSignupBanner()
+                                },
+                            )
+                        }
+                        ConnectButton(
+                            status = connectionState.status,
+                            onTvLayout = false,
+                            modifier =
+                                Modifier
+                                    .align(CenterHorizontally)
+                                    .testTag(":ConnectionScreen:connection_button")
+                                    .semantics(mergeDescendants = true) {
+                                        role = Role.Button
+                                        contentDescription = connectButtonDescription
+                                    },
+                        ) {
+                            viewModel.onConnectionButtonClicked()
+                        }
+                        Spacer(modifier = Modifier.height(36.dp))
+                        if (showRatingGeneralDialog.value) {
+                            RatingCard(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                onClose = {
+                                    viewModel.setRatingStateInactive()
+                                    showRatingGeneralDialog.value = false
+                                },
+                                onThumbsUp = viewModel::showReviewPrompt,
+                                onThumbsDown = viewModel::showFeedbackPrompt,
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                        viewModel.getOrderedElements().forEach { screenElement ->
+                            DisplayComponent(
+                                screenElement = screenElement,
+                                isVisible = viewModel.isScreenElementVisible(screenElement),
+                                viewModel = viewModel,
+                                screenState = state,
+                                connectionStatus = connectionState.status,
+                                vpnState = vpnState,
+                            )
+                        }
+                        showRatingGeneralDialog.value =
+                            state.ratingDialogType is RatingDialogType.General
+                        showRatingReviewDialog.value =
+                            state.ratingDialogType is RatingDialogType.Review
+                        showRatingFeedbackDialog.value =
+                            state.ratingDialogType is RatingDialogType.Feedback
 
-                    if (showRatingReviewDialog.value) {
-                        val url = stringResource(id = R.string.app_url)
-                        val context = LocalContext.current
+                        if (showRatingReviewDialog.value) {
+                            val url = stringResource(id = R.string.app_url)
+                            val context = LocalContext.current
 
-                        RatingReviewDialog(
-                            onConfirm = {
-                                val launchIntent = Intent(Intent.ACTION_VIEW)
-                                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                launchIntent.data = Uri.parse(url)
+                            RatingReviewDialog(
+                                onConfirm = {
+                                    val launchIntent = Intent(Intent.ACTION_VIEW)
+                                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    launchIntent.data = Uri.parse(url)
 
-                                // Silently fail if Google Play Store isn't installed.
-                                if (launchIntent.resolveActivity(context.packageManager) != null) {
-                                    context.startActivity(launchIntent)
-                                }
-                                viewModel.setRatingStateInactive()
-                            },
-                            onDismiss = {
-                                viewModel.setRatingStateInactive()
-                            },
-                        )
-                    }
+                                    // Silently fail if Google Play Store isn't installed.
+                                    if (launchIntent.resolveActivity(context.packageManager) != null) {
+                                        context.startActivity(launchIntent)
+                                    }
+                                    viewModel.setRatingStateInactive()
+                                },
+                                onDismiss = {
+                                    viewModel.setRatingStateInactive()
+                                },
+                            )
+                        }
 
-                    if (showRatingFeedbackDialog.value) {
-                        val url = stringResource(id = R.string.url_support_new_ticket)
-                        val context = LocalContext.current
+                        if (showRatingFeedbackDialog.value) {
+                            val url = stringResource(id = R.string.url_support_new_ticket)
+                            val context = LocalContext.current
 
-                        RatingFeedbackDialog(
-                            onConfirm = {
-                                val launchIntent = Intent(Intent.ACTION_VIEW)
-                                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                launchIntent.data = Uri.parse(url)
+                            RatingFeedbackDialog(
+                                onConfirm = {
+                                    val launchIntent = Intent(Intent.ACTION_VIEW)
+                                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    launchIntent.data = Uri.parse(url)
 
-                                // Silently fail if Google Play Store isn't installed.
-                                if (launchIntent.resolveActivity(context.packageManager) != null) {
-                                    context.startActivity(launchIntent)
-                                }
-                            },
-                            onDismiss = {
-                                viewModel.updateRatingDate()
-                            },
-                        )
+                                    // Silently fail if Google Play Store isn't installed.
+                                    if (launchIntent.resolveActivity(context.packageManager) != null) {
+                                        context.startActivity(launchIntent)
+                                    }
+                                },
+                                onDismiss = {
+                                    viewModel.updateRatingDate()
+                                },
+                            )
+                        }
                     }
                 }
             }
         }
     }
-}
 
 @Composable
 private fun DisplayComponent(
@@ -304,17 +310,17 @@ private fun DisplayComponent(
             }
 
             Element.IpInfo -> {
-
                 IPTile(
                     isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
                     publicIp = vpnState.publicIp,
                     vpnIp = vpnState.vpnIp,
-                    portForwardingStatus = when (vpnState.portforwardingStatus) {
-                        PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
-                        PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
-                        PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                        PortForwardingStatus.Success -> vpnState.port
-                    },
+                    portForwardingStatus =
+                        when (vpnState.portforwardingStatus) {
+                            PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
+                            PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
+                            PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
+                            PortForwardingStatus.Success -> vpnState.port
+                        },
                 )
                 Separator()
             }
@@ -363,9 +369,10 @@ private fun DisplayComponent(
                 if (screenState.showOptimalLocationInfo) {
                     InfoCard(
                         content = stringResource(id = R.string.optimal_location_hint),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
                     )
                 }
             }
@@ -382,17 +389,20 @@ private fun DisplayComponent(
             Element.Snooze -> {
                 Snooze(
                     active = viewModel.isSnoozeActive,
-                    timeUntilResume = when (viewModel.timeUntilResume.intValue) {
-                        1 -> String.format(
-                            stringResource(id = R.string.minute_to_format),
-                            viewModel.timeUntilResume.intValue,
-                        )
+                    timeUntilResume =
+                        when (viewModel.timeUntilResume.intValue) {
+                            1 ->
+                                String.format(
+                                    stringResource(id = R.string.minute_to_format),
+                                    viewModel.timeUntilResume.intValue,
+                                )
 
-                        else -> String.format(
-                            stringResource(id = R.string.minutes_to_format),
-                            viewModel.timeUntilResume.intValue,
-                        )
-                    },
+                            else ->
+                                String.format(
+                                    stringResource(id = R.string.minutes_to_format),
+                                    viewModel.timeUntilResume.intValue,
+                                )
+                        },
                     onClick = {
                         if (connectionStatus == ConnectionStatus.CONNECTED) {
                             viewModel.snooze(it)
@@ -422,10 +432,11 @@ private fun DedicatedIpBanner(
     onCancelClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .background(LocalColors.current.primary)
-            .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp)
-            .fillMaxWidth(),
+        modifier =
+            Modifier
+                .background(LocalColors.current.primary)
+                .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp)
+                .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         DedicatedIpHomeBannerText(
@@ -464,22 +475,24 @@ fun RatingCard(
             Image(
                 painterResource(R.drawable.img_rating),
                 contentDescription = null,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .height(90.dp)
-                    .constrainAs(image) {
-                        start.linkTo(parent.start)
-                        top.linkTo(parent.top)
-                        bottom.linkTo(parent.bottom)
-                    },
+                modifier =
+                    Modifier
+                        .padding(8.dp)
+                        .height(90.dp)
+                        .constrainAs(image) {
+                            start.linkTo(parent.start)
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                        },
             )
             Column(
-                modifier = Modifier.constrainAs(content) {
-                    start.linkTo(image.end)
-                    top.linkTo(parent.top)
-                    bottom.linkTo(parent.bottom)
-                    end.linkTo(closeButton.start)
-                },
+                modifier =
+                    Modifier.constrainAs(content) {
+                        start.linkTo(image.end)
+                        top.linkTo(parent.top)
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(closeButton.start)
+                    },
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
@@ -492,12 +505,12 @@ fun RatingCard(
                 Row {
                     IconButton(
                         onClick = onThumbsDown,
-                        modifier = Modifier
-                            .background(
-                                LocalColors.current.onPrimary,
-                                shape = CircleShape,
-                            )
-                            .padding(2.dp),
+                        modifier =
+                            Modifier
+                                .background(
+                                    LocalColors.current.onPrimary,
+                                    shape = CircleShape,
+                                ).padding(2.dp),
                     ) {
                         Icon(
                             painterResource(R.drawable.ic_thumbs_down),
@@ -508,12 +521,12 @@ fun RatingCard(
                     Spacer(modifier = Modifier.width(8.dp))
                     IconButton(
                         onClick = onThumbsUp,
-                        modifier = Modifier
-                            .background(
-                                LocalColors.current.onPrimary,
-                                shape = CircleShape,
-                            )
-                            .padding(4.dp),
+                        modifier =
+                            Modifier
+                                .background(
+                                    LocalColors.current.onPrimary,
+                                    shape = CircleShape,
+                                ).padding(4.dp),
                     ) {
                         Icon(
                             painterResource(R.drawable.ic_thumbs_up),
@@ -525,10 +538,11 @@ fun RatingCard(
             }
             IconButton(
                 onClick = onClose,
-                modifier = Modifier.constrainAs(closeButton) {
-                    top.linkTo(parent.top)
-                    end.linkTo(parent.end)
-                },
+                modifier =
+                    Modifier.constrainAs(closeButton) {
+                        top.linkTo(parent.top)
+                        end.linkTo(parent.end)
+                    },
             ) {
                 Icon(
                     painterResource(R.drawable.ic_close),

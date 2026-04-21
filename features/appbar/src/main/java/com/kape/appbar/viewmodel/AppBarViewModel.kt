@@ -18,7 +18,6 @@ class AppBarViewModel(
     private val connectionStatusProvider: ConnectionStatusProvider,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
-
     val isConnected = networkConnectionListener.isConnected
 
     var appBarText by mutableStateOf("")
@@ -52,7 +51,5 @@ class AppBarViewModel(
         refreshAppBarTitle(status)
     }
 
-    private fun appBarTitle(status: String): String {
-        return status
-    }
+    private fun appBarTitle(status: String): String = status
 }

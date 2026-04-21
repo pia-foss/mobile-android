@@ -21,7 +21,8 @@ class VpnLauncher(
     private val settingsPrefs: SettingsPrefs,
     private val regionListProvider: RegionListProvider,
     private val connectionManager: ConnectionManager,
-) : CoroutineScope, KoinComponent {
+) : CoroutineScope,
+    KoinComponent {
     private val job = Job()
 
     override val coroutineContext: CoroutineContext
@@ -58,8 +59,7 @@ class VpnLauncher(
         }
     }
 
-    private suspend fun initiateConnection(server: VpnServer) =
-        connectionManager.connect(server, false, ::stopVpn)
+    private suspend fun initiateConnection(server: VpnServer) = connectionManager.connect(server, false, ::stopVpn)
 
     fun stopVpn() {
         launch {

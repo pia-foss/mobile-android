@@ -42,8 +42,10 @@ class VpnRegionRepository(
                 serverInfo = adaptServersInfo(response)
                 serverList.addAll(addDipToServerList(serverMap.values.toList()))
                 if (connectionInfoProvider.isNotDisconnected()) {
-                    serverList.filter { it == connectionPrefs.getSelectedVpnServer() }
-                        .firstOrNull()?.let {
+                    serverList
+                        .filter { it == connectionPrefs.getSelectedVpnServer() }
+                        .firstOrNull()
+                        ?.let {
                             connectionConfigurationUseCase.updateServerConfig(it)
                         }
                 }

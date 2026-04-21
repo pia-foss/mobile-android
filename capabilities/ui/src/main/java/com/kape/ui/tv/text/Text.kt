@@ -60,7 +60,10 @@ fun TertiaryButtonText(
 }
 
 @Composable
-fun PrimaryTabText(content: String, color: Color = LocalColors.current.onPrimary) {
+fun PrimaryTabText(
+    content: String,
+    color: Color = LocalColors.current.onPrimary,
+) {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = content,
@@ -71,7 +74,10 @@ fun PrimaryTabText(content: String, color: Color = LocalColors.current.onPrimary
 }
 
 @Composable
-fun SecondaryTabText(content: String, color: Color = LocalColors.current.onSurface) {
+fun SecondaryTabText(
+    content: String,
+    color: Color = LocalColors.current.onSurface,
+) {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = content,
@@ -82,7 +88,10 @@ fun SecondaryTabText(content: String, color: Color = LocalColors.current.onSurfa
 }
 
 @Composable
-fun WelcomeTitleText(content: String, modifier: Modifier) {
+fun WelcomeTitleText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -93,7 +102,10 @@ fun WelcomeTitleText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun EnterUsernameScreenTitleText(content: String, modifier: Modifier = Modifier) {
+fun EnterUsernameScreenTitleText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Center,
@@ -105,7 +117,10 @@ fun EnterUsernameScreenTitleText(content: String, modifier: Modifier = Modifier)
 }
 
 @Composable
-fun EnterEmailScreenTitleText(content: String, modifier: Modifier = Modifier) {
+fun EnterEmailScreenTitleText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Start,
@@ -117,7 +132,10 @@ fun EnterEmailScreenTitleText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SignUpTitleText(content: String, modifier: Modifier = Modifier) {
+fun SignUpTitleText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Center,
@@ -129,7 +147,10 @@ fun SignUpTitleText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SignupErrorTitleText(content: String, modifier: Modifier = Modifier) {
+fun SignupErrorTitleText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Center,
@@ -141,7 +162,10 @@ fun SignupErrorTitleText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SignupErrorDescriptionText(content: String, modifier: Modifier = Modifier) {
+fun SignupErrorDescriptionText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Start,
@@ -152,7 +176,10 @@ fun SignupErrorDescriptionText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SignupConsentTitleText(content: String, modifier: Modifier = Modifier) {
+fun SignupConsentTitleText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Center,
@@ -164,7 +191,10 @@ fun SignupConsentTitleText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SignupConsentDescriptionText(content: String, modifier: Modifier = Modifier) {
+fun SignupConsentDescriptionText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Start,
@@ -175,7 +205,10 @@ fun SignupConsentDescriptionText(content: String, modifier: Modifier = Modifier)
 }
 
 @Composable
-fun SignupSuccessTitleText(content: String, modifier: Modifier = Modifier) {
+fun SignupSuccessTitleText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Center,
@@ -187,7 +220,10 @@ fun SignupSuccessTitleText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SignupSuccessDescriptionText(content: String, modifier: Modifier = Modifier) {
+fun SignupSuccessDescriptionText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Start,
@@ -198,7 +234,10 @@ fun SignupSuccessDescriptionText(content: String, modifier: Modifier = Modifier)
 }
 
 @Composable
-fun OnboardingTitleText(content: String, modifier: Modifier = Modifier) {
+fun OnboardingTitleText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -210,7 +249,10 @@ fun OnboardingTitleText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun OnboardingDescriptionText(content: String, modifier: Modifier = Modifier) {
+fun OnboardingDescriptionText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -221,7 +263,10 @@ fun OnboardingDescriptionText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun OnboardingFooterText(content: String, modifier: Modifier) {
+fun OnboardingFooterText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurfaceVariant,
@@ -249,7 +294,10 @@ fun AppBarTitleText(
 }
 
 @Composable
-fun QuickConnectText(content: String, modifier: Modifier) {
+fun QuickConnectText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
@@ -270,7 +318,10 @@ fun TileTitleText(content: String) {
 }
 
 @Composable
-fun SelectedRegionTitleText(content: String, modifier: Modifier = Modifier) {
+fun SelectedRegionTitleText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         maxLines = 1,
@@ -281,7 +332,10 @@ fun SelectedRegionTitleText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SelectedRegionServerText(content: String, modifier: Modifier = Modifier) {
+fun SelectedRegionServerText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         maxLines = 1,
@@ -292,7 +346,10 @@ fun SelectedRegionServerText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun RegionSelectionNameText(content: String, modifier: Modifier = Modifier) {
+fun RegionSelectionNameText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Start,
@@ -304,7 +361,10 @@ fun RegionSelectionNameText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun RegionSelectionLatencyText(content: String, modifier: Modifier = Modifier) {
+fun RegionSelectionLatencyText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Start,
@@ -314,7 +374,10 @@ fun RegionSelectionLatencyText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun RegionSelectionGridSectionText(content: String, modifier: Modifier = Modifier) {
+fun RegionSelectionGridSectionText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurfaceVariant,
@@ -330,15 +393,15 @@ fun RegionSelectionDipText(content: String) {
         style = PiaTypography.caption1,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        modifier = Modifier
-            .border(BorderStroke(1.dp, LocalColors.current.outline), RoundedCornerShape(12.dp))
-            .padding(horizontal = 8.dp, vertical = 4.dp),
+        modifier =
+            Modifier
+                .border(BorderStroke(1.dp, LocalColors.current.outline), RoundedCornerShape(12.dp))
+                .padding(horizontal = 8.dp, vertical = 4.dp),
     )
 }
 
 @Composable
-fun RegionSelectionVpnIpText(content: String) =
-    RegionSelectionDipText(content = content)
+fun RegionSelectionVpnIpText(content: String) = RegionSelectionDipText(content = content)
 
 @Composable
 fun SettingsL2Text(content: String) {
@@ -357,7 +420,10 @@ fun SettingsL2TextDescription(content: String) {
 }
 
 @Composable
-fun DedicatedIpTitle(content: String, modifier: Modifier = Modifier) {
+fun DedicatedIpTitle(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         modifier = modifier,
         text = content,
@@ -368,7 +434,10 @@ fun DedicatedIpTitle(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun DedicatedIpDescription(content: String, modifier: Modifier = Modifier) {
+fun DedicatedIpDescription(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         modifier = modifier,
         text = content,
@@ -379,7 +448,10 @@ fun DedicatedIpDescription(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun DedicatedIpAddressDetailsTitle(content: String, modifier: Modifier = Modifier) {
+fun DedicatedIpAddressDetailsTitle(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         modifier = modifier,
         text = content,
@@ -390,7 +462,10 @@ fun DedicatedIpAddressDetailsTitle(content: String, modifier: Modifier = Modifie
 }
 
 @Composable
-fun DedicatedIpAddressDetailsSubtitle(content: String, modifier: Modifier = Modifier) {
+fun DedicatedIpAddressDetailsSubtitle(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         modifier = modifier,
         text = content,

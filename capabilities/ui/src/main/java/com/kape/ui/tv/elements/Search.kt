@@ -20,7 +20,10 @@ import com.kape.ui.mobile.text.SearchInputLabelText
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun Search(modifier: Modifier, onTextChanged: (text: String) -> Unit) {
+fun Search(
+    modifier: Modifier,
+    onTextChanged: (text: String) -> Unit,
+) {
     val query = remember { mutableStateOf("") }
 
     Row(
@@ -45,14 +48,15 @@ fun Search(modifier: Modifier, onTextChanged: (text: String) -> Unit) {
                     tint = Color.Unspecified,
                 )
             },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = LocalColors.current.surfaceVariant,
-                unfocusedContainerColor = LocalColors.current.surfaceVariant,
-                disabledContainerColor = LocalColors.current.surfaceVariant,
-                focusedBorderColor = LocalColors.current.onSurfaceVariant,
-                errorBorderColor = LocalColors.current.error,
-                cursorColor = LocalColors.current.onSurface,
-            ),
+            colors =
+                OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = LocalColors.current.surfaceVariant,
+                    unfocusedContainerColor = LocalColors.current.surfaceVariant,
+                    disabledContainerColor = LocalColors.current.surfaceVariant,
+                    focusedBorderColor = LocalColors.current.onSurfaceVariant,
+                    errorBorderColor = LocalColors.current.error,
+                    cursorColor = LocalColors.current.onSurface,
+                ),
             singleLine = true,
         )
         RoundIconButton(

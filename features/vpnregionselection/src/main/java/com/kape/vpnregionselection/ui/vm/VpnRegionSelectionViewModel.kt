@@ -54,13 +54,14 @@ class VpnRegionSelectionViewModel(
     }
 
     fun onVpnRegionSelected(server: VpnServer) {
-        connectionManager.connectJob = viewModelScope.launch {
-            if (connectionManager.isConnectionInProgress()) {
-                connectionManager.disconnect().getOrNull()
+        connectionManager.connectJob =
+            viewModelScope.launch {
+                if (connectionManager.isConnectionInProgress()) {
+                    connectionManager.disconnect().getOrNull()
+                }
+                connectionManager.connect(server, true, ::callback)
+                router.navigateBack()
             }
-            connectionManager.connect(server, true, ::callback)
-            router.navigateBack()
-        }
     }
 
     private fun callback() {
@@ -86,9 +87,9 @@ class VpnRegionSelectionViewModel(
             sorted.value =
                 servers.value.filter {
                     it.type is ItemType.Content &&
-                            it.type.server.name
-                                .lowercase()
-                                .contains(value.lowercase())
+                        it.type.server.name
+                            .lowercase()
+                            .contains(value.lowercase())
                 }
         } else {
             sorted.value = emptyList()
@@ -112,8 +113,8 @@ class VpnRegionSelectionViewModel(
         var autoRegionIndex =
             servers.value.indexOfFirst { serverItem: ServerItem ->
                 serverItem.type is ItemType.Content &&
-                        serverItem.type.server.iso == autoRegionIso &&
-                        serverItem.type.server.name == autoRegionName
+                    serverItem.type.server.iso == autoRegionIso &&
+                    serverItem.type.server.name == autoRegionName
             }
         if (autoRegionIndex == -1) {
             autoRegionIndex = 0
@@ -125,8 +126,8 @@ class VpnRegionSelectionViewModel(
         var autoRegionIndex =
             sorted.value.indexOfFirst { serverItem: ServerItem ->
                 serverItem.type is ItemType.Content &&
-                        serverItem.type.server.iso == autoRegionIso &&
-                        serverItem.type.server.name == autoRegionName
+                    serverItem.type.server.iso == autoRegionIso &&
+                    serverItem.type.server.name == autoRegionName
             }
         if (autoRegionIndex == -1) {
             autoRegionIndex = 0
@@ -138,8 +139,7 @@ class VpnRegionSelectionViewModel(
 
     fun isVpnConnectionActive(): Boolean = connectionInfoProvider.isConnected()
 
-    private fun isVpnServerFavorite(serverData: ServerData): Boolean =
-        vpnRegionPrefs.isFavorite(serverData)
+    private fun isVpnServerFavorite(serverData: ServerData): Boolean = vpnRegionPrefs.isFavorite(serverData)
 
     private fun arrangeVpnServers(items: List<VpnServer>? = null) {
         val autoRegion = getAutoRegion(autoRegionName, autoRegionIso)

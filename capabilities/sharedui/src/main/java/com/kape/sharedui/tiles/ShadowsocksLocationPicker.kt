@@ -39,33 +39,40 @@ fun ShadowsocksLocationPicker(
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                paddingValues = PaddingValues(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
-            )
-            .background(LocalColors.current.surfaceVariant, RoundedCornerShape(12.dp))
-            .height(56.dp)
-            .clickable {
-                onClick()
-            },
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    paddingValues = PaddingValues(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+                ).background(LocalColors.current.surfaceVariant, RoundedCornerShape(12.dp))
+                .height(56.dp)
+                .clickable {
+                    onClick()
+                },
     ) {
         Image(
-            painter = painterResource(
-                id = getFlagResource(LocalContext.current, server.iso),
-            ),
+            painter =
+                painterResource(
+                    id = getFlagResource(LocalContext.current, server.iso),
+                ),
             contentScale = ContentScale.Crop,
             contentDescription = null,
-            modifier = Modifier
-                .padding(start = 16.dp)
-                .clip(CircleShape)
-                .size(24.dp)
-                .align(CenterVertically),
+            modifier =
+                Modifier
+                    .padding(start = 16.dp)
+                    .clip(CircleShape)
+                    .size(24.dp)
+                    .align(CenterVertically),
         )
 
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.align(CenterVertically)) {
-            SelectedRegionTitleText(content = stringResource(id = if (isConnected) R.string.current_obfuscation_region else R.string.selected_obfuscation_region))
+            SelectedRegionTitleText(
+                content =
+                    stringResource(
+                        id = if (isConnected) R.string.current_obfuscation_region else R.string.selected_obfuscation_region,
+                    ),
+            )
             Spacer(modifier = Modifier.height(4.dp))
             SelectedRegionServerText(content = server.region)
         }
@@ -74,9 +81,10 @@ fun ShadowsocksLocationPicker(
             painter = painterResource(id = R.drawable.ic_more_horizontal),
             contentDescription = null,
             tint = LocalColors.current.onSurface,
-            modifier = Modifier
-                .align(CenterVertically)
-                .padding(end = 16.dp),
+            modifier =
+                Modifier
+                    .align(CenterVertically)
+                    .padding(end = 16.dp),
         )
     }
 }

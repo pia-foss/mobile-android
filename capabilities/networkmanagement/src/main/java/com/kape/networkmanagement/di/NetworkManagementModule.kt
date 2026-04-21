@@ -9,10 +9,8 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class NetworkManagementModule {
-
     @Singleton
-    fun provideNetworkUtil(context: Context): NetworkUtil =
-        NetworkUtil(context)
+    fun provideNetworkUtil(context: Context): NetworkUtil = NetworkUtil(context)
 
     @Singleton
     fun provideNetworkRulesManager(

@@ -17,18 +17,23 @@ val INVALID = LoginScreenState(idle = true, loading = false, error = LoginError.
 val SERVICE_UNAVAILABLE =
     LoginScreenState(idle = true, loading = false, error = LoginError.ServiceUnavailable, flowCompleted = false)
 
-fun getScreenState(state: LoginState): LoginScreenState = when (state) {
-    LoginState.Expired -> EXPIRED
-    LoginState.Failed -> FAILED
-    LoginState.Successful -> SUCCESS
-    LoginState.Throttled -> THROTTLED
-    LoginState.ServiceUnavailable -> SERVICE_UNAVAILABLE
-}
+fun getScreenState(state: LoginState): LoginScreenState =
+    when (state) {
+        LoginState.Expired -> EXPIRED
+        LoginState.Failed -> FAILED
+        LoginState.Successful -> SUCCESS
+        LoginState.Throttled -> THROTTLED
+        LoginState.ServiceUnavailable -> SERVICE_UNAVAILABLE
+    }
 
 sealed class LoginError {
     data object Invalid : LoginError()
+
     data object Throttled : LoginError()
+
     data object Failed : LoginError()
+
     data object Expired : LoginError()
+
     data object ServiceUnavailable : LoginError()
 }

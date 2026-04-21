@@ -55,149 +55,159 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvPerAppSettingsScreen() = Screen {
-    val packageManager = LocalContext.current.packageManager
-    val viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>().apply {
-        getInstalledApplications(packageManager)
-    }
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-    val initialFocusRequester = remember { FocusRequester() }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
-
-    BackHandler {
-        onBackPressed(viewModel, lastExcludedApps, viewModel::navigateBack)
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.per_app_settings),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+fun TvPerAppSettingsScreen() =
+    Screen {
+        val packageManager = LocalContext.current.packageManager
+        val viewModel: SettingsViewModel =
+            koinViewModel<SettingsViewModel>().apply {
+                getInstalledApplications(packageManager)
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val initialFocusRequester = remember { FocusRequester() }
+        val keyboardController = LocalSoftwareKeyboardController.current
+        val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
+
+        BackHandler {
+            onBackPressed(viewModel, lastExcludedApps, viewModel::navigateBack)
+        }
+
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
+        ) {
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 64.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Search(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .focusRequester(initialFocusRequester)
-                            .onFocusChanged {
-                                if (it.hasFocus) {
-                                    keyboardController?.hide()
-                                }
-                            },
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.per_app_settings),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 64.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
                     ) {
-                        viewModel.filterAppsByName(it, packageManager)
-                    }
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(1),
-                        contentPadding = PaddingValues(vertical = 16.dp),
-                    ) {
-                        val applicationPackages = viewModel.appList.value
-                        items(applicationPackages.size) { index ->
-                            val applicationPackage = applicationPackages[index]
-                            val icon = applicationPackage.loadIcon(packageManager)
-                            val name = applicationPackage.loadLabel(packageManager).toString()
-                            val excludedFromTunnel = viewModel.vpnExcludedApps.value.contains(
-                                applicationPackage.packageName,
-                            )
-                            val focusRequester = if (index == 0) {
-                                initialFocusRequester
-                            } else {
-                                FocusRequester.Default
-                            }
-                            PerAppSettingPackageItem(
-                                modifier = Modifier.focusRequester(focusRequester),
-                                icon = icon,
-                                name = name,
-                                excludedFromTunnel = excludedFromTunnel,
-                            ) {
-                                if (excludedFromTunnel) {
-                                    viewModel.removeFromVpnExcludedApps(
+                        Search(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                                    .focusRequester(initialFocusRequester)
+                                    .onFocusChanged {
+                                        if (it.hasFocus) {
+                                            keyboardController?.hide()
+                                        }
+                                    },
+                        ) {
+                            viewModel.filterAppsByName(it, packageManager)
+                        }
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(1),
+                            contentPadding = PaddingValues(vertical = 16.dp),
+                        ) {
+                            val applicationPackages = viewModel.appList.value
+                            items(applicationPackages.size) { index ->
+                                val applicationPackage = applicationPackages[index]
+                                val icon = applicationPackage.loadIcon(packageManager)
+                                val name = applicationPackage.loadLabel(packageManager).toString()
+                                val excludedFromTunnel =
+                                    viewModel.vpnExcludedApps.value.contains(
                                         applicationPackage.packageName,
                                     )
-                                } else {
-                                    viewModel.addToVpnExcludedApps(
-                                        applicationPackage.packageName,
-                                    )
+                                val focusRequester =
+                                    if (index == 0) {
+                                        initialFocusRequester
+                                    } else {
+                                        FocusRequester.Default
+                                    }
+                                PerAppSettingPackageItem(
+                                    modifier = Modifier.focusRequester(focusRequester),
+                                    icon = icon,
+                                    name = name,
+                                    excludedFromTunnel = excludedFromTunnel,
+                                ) {
+                                    if (excludedFromTunnel) {
+                                        viewModel.removeFromVpnExcludedApps(
+                                            applicationPackage.packageName,
+                                        )
+                                    } else {
+                                        viewModel.addToVpnExcludedApps(
+                                            applicationPackage.packageName,
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_tv_settings),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
-                    )
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_tv_settings),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         }
-    }
 
-    if (viewModel.reconnectDialogVisible.value) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = Color.Black.copy(alpha = 0.6f),
-        ) {
-            ReconnectDialog(
-                onReconnect = {
-                    viewModel.reconnect()
-                    viewModel.reconnectDialogVisible.value = false
-                    viewModel.navigateBack()
-                },
-                onLater = {
-                    viewModel.reconnectDialogVisible.value = false
-                    viewModel.navigateBack()
-                },
-            )
+        if (viewModel.reconnectDialogVisible.value) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = Color.Black.copy(alpha = 0.6f),
+            ) {
+                ReconnectDialog(
+                    onReconnect = {
+                        viewModel.reconnect()
+                        viewModel.reconnectDialogVisible.value = false
+                        viewModel.navigateBack()
+                    },
+                    onLater = {
+                        viewModel.reconnectDialogVisible.value = false
+                        viewModel.navigateBack()
+                    },
+                )
+            }
+        }
+
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
         }
     }
-
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
-}
 
 @Composable
 private fun PerAppSettingPackageItem(
@@ -209,15 +219,17 @@ private fun PerAppSettingPackageItem(
 ) {
     Button(
         modifier = modifier.fillMaxWidth(),
-        shape = ButtonDefaults.shape(
-            shape = RoundedCornerShape(12.dp),
-        ),
-        colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.background,
-            contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = LocalColors.current.primary,
-            focusedContentColor = LocalColors.current.onPrimary,
-        ),
+        shape =
+            ButtonDefaults.shape(
+                shape = RoundedCornerShape(12.dp),
+            ),
+        colors =
+            ButtonDefaults.colors(
+                containerColor = LocalColors.current.background,
+                contentColor = LocalColors.current.onSurfaceVariant,
+                focusedContainerColor = LocalColors.current.primary,
+                focusedContentColor = LocalColors.current.onPrimary,
+            ),
         onClick = onClick,
     ) {
         Row(
@@ -238,13 +250,14 @@ private fun PerAppSettingPackageItem(
             Spacer(modifier = Modifier.width(16.dp))
             Image(
                 modifier = Modifier.size(32.dp),
-                painter = if (excludedFromTunnel) {
-                    painterResource(id = com.kape.settings.R.drawable.ic_locket_open)
-                } else {
-                    painterResource(
-                        id = com.kape.settings.R.drawable.ic_locket_closed,
-                    )
-                },
+                painter =
+                    if (excludedFromTunnel) {
+                        painterResource(id = com.kape.settings.R.drawable.ic_locket_open)
+                    } else {
+                        painterResource(
+                            id = com.kape.settings.R.drawable.ic_locket_closed,
+                        )
+                    },
                 contentScale = ContentScale.Fit,
                 contentDescription = null,
             )

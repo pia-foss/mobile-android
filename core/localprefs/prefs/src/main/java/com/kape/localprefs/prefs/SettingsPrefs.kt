@@ -1,6 +1,7 @@
 package com.kape.localprefs.prefs
 
 import android.content.Context
+import com.kape.localprefs.Prefs
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.CustomObfuscation
 import com.kape.settings.data.DnsOptions
@@ -8,7 +9,6 @@ import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
-import com.kape.localprefs.Prefs
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
@@ -36,7 +36,9 @@ private const val AUTOMATION = "setting-automation"
 private const val MACE = "setting-mace"
 
 @Singleton
-class SettingsPrefs(context: Context) : Prefs(context, "settings") {
+class SettingsPrefs(
+    context: Context,
+) : Prefs(context, "settings") {
     fun setEnableLaunchOnStartup(enable: Boolean) {
         prefs.edit().putBoolean(LAUNCH_ON_STARTUP, enable).apply()
     }
@@ -132,8 +134,7 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         prefs.edit().putBoolean(SHADOWSOCKS_OBFUSCATION_ENABLED, enabled).apply()
     }
 
-    fun isShadowsocksObfuscationEnabled(): Boolean =
-        prefs.getBoolean(SHADOWSOCKS_OBFUSCATION_ENABLED, false)
+    fun isShadowsocksObfuscationEnabled(): Boolean = prefs.getBoolean(SHADOWSOCKS_OBFUSCATION_ENABLED, false)
 
     fun setExternalProxyAppEnabled(enabled: Boolean) {
         prefs.edit().putBoolean(EXTERNAL_PROXY_APP_ENABLED, enabled).apply()
@@ -149,8 +150,7 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
                 packageName,
             ).apply()
 
-    fun getExternalProxyAppPackageName(): String =
-        prefs.getString(EXTERNAL_PROXY_APP_PACKAGE_NAME, "") ?: ""
+    fun getExternalProxyAppPackageName(): String = prefs.getString(EXTERNAL_PROXY_APP_PACKAGE_NAME, "") ?: ""
 
     fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) {
         prefs
@@ -184,29 +184,23 @@ class SettingsPrefs(context: Context) : Prefs(context, "settings") {
         }
     }
 
-    fun setHelpImprovePiaEnabled(enable: Boolean) =
-        prefs.edit().putBoolean(HELP_IMPROVE_PIA, enable).apply()
+    fun setHelpImprovePiaEnabled(enable: Boolean) = prefs.edit().putBoolean(HELP_IMPROVE_PIA, enable).apply()
 
     fun isHelpImprovePiaEnabled() = prefs.getBoolean(HELP_IMPROVE_PIA, false)
 
-    fun setDebugLoggingEnabled(enable: Boolean) =
-        prefs.edit().putBoolean(DEBUG_LOGGING, enable).apply()
+    fun setDebugLoggingEnabled(enable: Boolean) = prefs.edit().putBoolean(DEBUG_LOGGING, enable).apply()
 
     fun isDebugLoggingEnabled() = prefs.getBoolean(DEBUG_LOGGING, false)
 
-    fun setVpnExcludedApps(apps: List<String>) =
-        prefs.edit().putStringSet(VPN_EXCLUDED_APPS, apps.toSet()).apply()
+    fun setVpnExcludedApps(apps: List<String>) = prefs.edit().putStringSet(VPN_EXCLUDED_APPS, apps.toSet()).apply()
 
-    fun getVpnExcludedApps() =
-        prefs.getStringSet(VPN_EXCLUDED_APPS, emptySet())?.toList() ?: emptyList()
+    fun getVpnExcludedApps() = prefs.getStringSet(VPN_EXCLUDED_APPS, emptySet())?.toList() ?: emptyList()
 
-    fun setEnablePortForwarding(enable: Boolean) =
-        prefs.edit().putBoolean(PORT_FORWARDING, enable).apply()
+    fun setEnablePortForwarding(enable: Boolean) = prefs.edit().putBoolean(PORT_FORWARDING, enable).apply()
 
     fun isPortForwardingEnabled() = prefs.getBoolean(PORT_FORWARDING, false)
 
-    fun setAllowLocalTrafficEnabled(enable: Boolean) =
-        prefs.edit().putBoolean(ALLOW_LOCAL_TRAFFIC, enable).apply()
+    fun setAllowLocalTrafficEnabled(enable: Boolean) = prefs.edit().putBoolean(ALLOW_LOCAL_TRAFFIC, enable).apply()
 
     fun isAllowLocalTrafficEnabled() = prefs.getBoolean(ALLOW_LOCAL_TRAFFIC, false)
 

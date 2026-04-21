@@ -21,9 +21,10 @@ class ActivateDipUseCaseTest : DataForTest() {
 
     @ParameterizedTest(name = "result: {0}")
     @MethodSource("data")
-    fun activate(result: DipApiResult) = runTest {
-        coEvery { dataSource.activate(any()) } returns result
-        val actual = useCase.activate("ipToken")
-        Assertions.assertEquals(result, actual)
-    }
+    fun activate(result: DipApiResult) =
+        runTest {
+            coEvery { dataSource.activate(any()) } returns result
+            val actual = useCase.activate("ipToken")
+            Assertions.assertEquals(result, actual)
+        }
 }

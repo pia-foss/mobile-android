@@ -43,33 +43,37 @@ fun YearlySubscriptionCard(
     Card(
         modifier = modifier.semantics(mergeDescendants = true) { },
         onClick = onClick,
-        shape = CardDefaults.shape(
-            shape = RoundedCornerShape(12.dp),
-        ),
-        colors = CardDefaults.colors(
-            containerColor = LocalColors.current.onPrimary,
-            contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = LocalColors.current.onPrimaryContainer,
-            focusedContentColor = LocalColors.current.onSurfaceVariant,
-        ),
-        border = if (selected) {
-            CardDefaults.border(
-                border = Border(BorderStroke(2.dp, LocalColors.current.primary)),
-                focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
-            )
-        } else {
-            CardDefaults.border(
-                border = Border(BorderStroke(1.dp, LocalColors.current.onSurface)),
-                focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
-            )
-        },
+        shape =
+            CardDefaults.shape(
+                shape = RoundedCornerShape(12.dp),
+            ),
+        colors =
+            CardDefaults.colors(
+                containerColor = LocalColors.current.onPrimary,
+                contentColor = LocalColors.current.onSurfaceVariant,
+                focusedContainerColor = LocalColors.current.onPrimaryContainer,
+                focusedContentColor = LocalColors.current.onSurfaceVariant,
+            ),
+        border =
+            if (selected) {
+                CardDefaults.border(
+                    border = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+                    focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+                )
+            } else {
+                CardDefaults.border(
+                    border = Border(BorderStroke(1.dp, LocalColors.current.onSurface)),
+                    focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+                )
+            },
     ) {
         Row {
             OptionButton(
                 selected = selected,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterVertically)
+                        .padding(16.dp),
             )
             Column {
                 SignUpDurationText(
@@ -88,13 +92,14 @@ fun YearlySubscriptionCard(
                     )
                 }
                 Box(
-                    modifier = Modifier
-                        .padding(vertical = 16.dp)
-                        .wrapContentWidth()
-                        .background(
-                            LocalColors.current.warning30(),
-                            shape = RoundedCornerShape(4.dp),
-                        ),
+                    modifier =
+                        Modifier
+                            .padding(vertical = 16.dp)
+                            .wrapContentWidth()
+                            .background(
+                                LocalColors.current.warning30(),
+                                shape = RoundedCornerShape(4.dp),
+                            ),
                 ) {
                     BestValueBannerText(
                         content = stringResource(id = R.string.best_value),
@@ -116,34 +121,37 @@ fun MonthlySubscriptionCard(
     Card(
         modifier = modifier.semantics(mergeDescendants = true) { },
         onClick = onClick,
-        shape = CardDefaults.shape(
-            shape = RoundedCornerShape(12.dp),
-        ),
-        colors = CardDefaults.colors(
-            containerColor = LocalColors.current.onPrimary,
-            contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = LocalColors.current.onPrimaryContainer,
-            focusedContentColor = LocalColors.current.onSurfaceVariant,
-        ),
-        border = if (selected) {
-            CardDefaults.border(
-                border = Border(BorderStroke(2.dp, LocalColors.current.primary)),
-                focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
-            )
-        } else {
-            CardDefaults.border(
-                border = Border(BorderStroke(1.dp, LocalColors.current.onSurface)),
-                focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
-            )
-        },
+        shape =
+            CardDefaults.shape(
+                shape = RoundedCornerShape(12.dp),
+            ),
+        colors =
+            CardDefaults.colors(
+                containerColor = LocalColors.current.onPrimary,
+                contentColor = LocalColors.current.onSurfaceVariant,
+                focusedContainerColor = LocalColors.current.onPrimaryContainer,
+                focusedContentColor = LocalColors.current.onSurfaceVariant,
+            ),
+        border =
+            if (selected) {
+                CardDefaults.border(
+                    border = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+                    focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+                )
+            } else {
+                CardDefaults.border(
+                    border = Border(BorderStroke(1.dp, LocalColors.current.onSurface)),
+                    focusedBorder = Border(BorderStroke(2.dp, LocalColors.current.primary)),
+                )
+            },
     ) {
         Row {
             OptionButton(
                 selected = selected,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.CenterVertically),
-
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .align(Alignment.CenterVertically),
             )
             Column {
                 SignUpDurationText(

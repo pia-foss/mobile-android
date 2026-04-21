@@ -52,12 +52,13 @@ class PortForwardingUseCase(
         connectionPrefs.getPortBindingInfo()?.let { portBindingInfo ->
             if (tokenExpirationDateDaysLeft(portBindingInfo.decodedPayload.expirationDate) > MIN_EXPIRATION_DAYS) {
                 portForwardingStatus.value = PortForwardingStatus.Requesting
-                val successful = api.bindPort(
-                    portBindingInfo.decodedPayload.token,
-                    portBindingInfo.payload,
-                    portBindingInfo.signature,
-                    gateway,
-                )
+                val successful =
+                    api.bindPort(
+                        portBindingInfo.decodedPayload.token,
+                        portBindingInfo.payload,
+                        portBindingInfo.signature,
+                        gateway,
+                    )
                 if (successful) {
                     portForwardingStatus.value = PortForwardingStatus.Success
                     port.value = portBindingInfo.decodedPayload.port.toString()

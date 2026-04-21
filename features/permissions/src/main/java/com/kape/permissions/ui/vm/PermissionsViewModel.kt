@@ -20,14 +20,14 @@ import org.koin.core.annotation.KoinViewModel
 class PermissionsViewModel(
     private val permissionUtil: PermissionUtil,
     private val router: Router,
-) : ViewModel(){
-
+) : ViewModel() {
     private val _vpnPermissionState = MutableStateFlow(IDLE)
     val vpnPermissionState: StateFlow<VpnProfileState> = _vpnPermissionState
 
-    fun onOkButtonClicked() = viewModelScope.launch {
-        _vpnPermissionState.emit(REQUEST)
-    }
+    fun onOkButtonClicked() =
+        viewModelScope.launch {
+            _vpnPermissionState.emit(REQUEST)
+        }
 
     fun onVpnProfileStateChange() =
         viewModelScope.launch {

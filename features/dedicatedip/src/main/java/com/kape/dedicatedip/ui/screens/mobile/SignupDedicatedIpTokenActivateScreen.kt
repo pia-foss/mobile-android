@@ -39,127 +39,137 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SignupDedicatedIpTokenActivateScreen() = Screen {
-    val context = LocalContext.current
-    val viewModel: DipViewModel = koinViewModel()
-    val showSpinner = remember { mutableStateOf(false) }
-    val dipToken = remember { mutableStateOf(viewModel.getSignupDipToken()) }
+fun SignupDedicatedIpTokenActivateScreen() =
+    Screen {
+        val context = LocalContext.current
+        val viewModel: DipViewModel = koinViewModel()
+        val showSpinner = remember { mutableStateOf(false) }
+        val dipToken = remember { mutableStateOf(viewModel.getSignupDipToken()) }
 
-    Column(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_dip),
-            tint = LocalColors.current.primary,
-            contentDescription = null,
-            modifier = Modifier
-                .padding(16.dp)
-                .height(40.dp)
-                .fillMaxWidth(),
-        )
-        Spacer(modifier = Modifier.height(16.dp))
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier =
+                Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            DedicatedIpSignupActivateTokenDescriptionText(
-                content = stringResource(id = R.string.dip_signup_activate_token_description),
+            Icon(
+                painter = painterResource(id = R.drawable.ic_dip),
+                tint = LocalColors.current.primary,
+                contentDescription = null,
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .height(40.dp)
+                        .fillMaxWidth(),
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Input(
-                modifier = Modifier.fillMaxWidth(),
-                enabled = false,
-                maskInput = false,
-                keyboard = KeyboardType.Text,
-                content = dipToken,
-                singleLine = true,
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = LocalColors.current.warningBackground(),
-                ),
-                border = BorderStroke(1.dp, color = LocalColors.current.warningOutline()),
-                shape = RoundedCornerShape(8.dp),
-                onClick = { },
+            Column(
+                modifier = Modifier.padding(16.dp),
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
+                DedicatedIpSignupActivateTokenDescriptionText(
+                    content = stringResource(id = R.string.dip_signup_activate_token_description),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Input(
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = false,
+                    maskInput = false,
+                    keyboard = KeyboardType.Text,
+                    content = dipToken,
+                    singleLine = true,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = LocalColors.current.warningBackground(),
+                        ),
+                    border = BorderStroke(1.dp, color = LocalColors.current.warningOutline()),
+                    shape = RoundedCornerShape(8.dp),
+                    onClick = { },
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_error),
-                        contentDescription = null,
-                        tint = LocalColors.current.warningOrange(),
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    DedicatedIpSignupActivateTokenDescriptionText(
-                        modifier = Modifier.fillMaxWidth(),
-                        content = stringResource(id = R.string.dip_signup_activate_token_description_warning),
-                        color = LocalColors.current.warningOrange(),
-                    )
+                    Row(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_error),
+                            contentDescription = null,
+                            tint = LocalColors.current.warningOrange(),
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        DedicatedIpSignupActivateTokenDescriptionText(
+                            modifier = Modifier.fillMaxWidth(),
+                            content = stringResource(id = R.string.dip_signup_activate_token_description_warning),
+                            color = LocalColors.current.warningOrange(),
+                        )
+                    }
                 }
             }
+            Spacer(modifier = Modifier.weight(1.0f))
+            PrimaryButton(
+                enabled = viewModel.activateTokenButtonState.value,
+                isLoading = showSpinner.value,
+                text = stringResource(id = R.string.activate),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+            ) {
+                showSpinner.value = true
+                viewModel.activateDedicatedIp(
+                    mutableStateOf(TextFieldValue(viewModel.getSignupDipToken())),
+                )
+            }
+            Spacer(modifier = Modifier.height(64.dp))
         }
-        Spacer(modifier = Modifier.weight(1.0f))
-        PrimaryButton(
-            enabled = viewModel.activateTokenButtonState.value,
-            isLoading = showSpinner.value,
-            text = stringResource(id = R.string.activate),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-        ) {
-            showSpinner.value = true
-            viewModel.activateDedicatedIp(
-                mutableStateOf(TextFieldValue(viewModel.getSignupDipToken())),
-            )
+
+        when (viewModel.activationState.value) {
+            DipApiResult.Active -> {
+                showToast(
+                    context = context,
+                    message = stringResource(id = R.string.dip_success),
+                )
+                viewModel.resetActivationState()
+                showSpinner.value = false
+                viewModel.navigateToActivateToken()
+            }
+            DipApiResult.Expired -> {
+                showToast(
+                    context = context,
+                    message = stringResource(id = R.string.dip_expired_warning),
+                )
+                viewModel.resetActivationState()
+                showSpinner.value = false
+            }
+            DipApiResult.Invalid,
+            DipApiResult.Error,
+            -> {
+                showToast(
+                    context = context,
+                    message = stringResource(id = R.string.dip_invalid),
+                )
+                viewModel.resetActivationState()
+                showSpinner.value = false
+            }
+            null -> {
+                // do nothing
+            }
         }
-        Spacer(modifier = Modifier.height(64.dp))
     }
 
-    when (viewModel.activationState.value) {
-        DipApiResult.Active -> {
-            showToast(
-                context = context,
-                message = stringResource(id = R.string.dip_success),
-            )
-            viewModel.resetActivationState()
-            showSpinner.value = false
-            viewModel.navigateToActivateToken()
-        }
-        DipApiResult.Expired -> {
-            showToast(
-                context = context,
-                message = stringResource(id = R.string.dip_expired_warning),
-            )
-            viewModel.resetActivationState()
-            showSpinner.value = false
-        }
-        DipApiResult.Invalid,
-        DipApiResult.Error,
-        -> {
-            showToast(
-                context = context,
-                message = stringResource(id = R.string.dip_invalid),
-            )
-            viewModel.resetActivationState()
-            showSpinner.value = false
-        }
-        null -> {
-            // do nothing
-        }
-    }
-}
-
-private fun showToast(context: Context, message: String) {
-    Toast.makeText(
-        context,
-        message,
-        Toast.LENGTH_LONG,
-    ).show()
+private fun showToast(
+    context: Context,
+    message: String,
+) {
+    Toast
+        .makeText(
+            context,
+            message,
+            Toast.LENGTH_LONG,
+        ).show()
 }

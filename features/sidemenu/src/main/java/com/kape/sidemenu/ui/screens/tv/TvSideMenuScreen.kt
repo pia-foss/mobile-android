@@ -43,115 +43,124 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvSideMenuScreen() = Screen {
-    val viewModel: SideMenuViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-    val initialFocusRequester = remember { FocusRequester() }
+fun TvSideMenuScreen() =
+    Screen {
+        val viewModel: SideMenuViewModel = koinViewModel()
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val initialFocusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
+        }
 
-    BackHandler {
-        viewModel.navigateToVpnConnect()
-    }
+        BackHandler {
+            viewModel.navigateToVpnConnect()
+        }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
-            Row(
+            HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.settings),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 64.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    SecondaryButton(
-                        text = stringResource(id = R.string.account),
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier.focusRequester(initialFocusRequester),
-                    ) {
-                        viewModel.navigateToProfile()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.general_settings),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.dedicated_ip),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToDedicatedIp()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.per_app_settings),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToPerAppSettings()
-                    }
-                }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_tv_settings),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.settings),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
                     )
+                }
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 64.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        SecondaryButton(
+                            text = stringResource(id = R.string.account),
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier.focusRequester(initialFocusRequester),
+                        ) {
+                            viewModel.navigateToProfile()
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SecondaryButton(
+                            text = stringResource(id = R.string.general_settings),
+                            textAlign = TextAlign.Start,
+                        ) {
+                            viewModel.navigateToSettings()
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SecondaryButton(
+                            text = stringResource(id = R.string.dedicated_ip),
+                            textAlign = TextAlign.Start,
+                        ) {
+                            viewModel.navigateToDedicatedIp()
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SecondaryButton(
+                            text = stringResource(id = R.string.per_app_settings),
+                            textAlign = TextAlign.Start,
+                        ) {
+                            viewModel.navigateToPerAppSettings()
+                        }
+                    }
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_tv_settings),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         }
     }
-}
 
 @Composable
-private fun getTopBarConnectionColor(status: ConnectionStatus, scheme: ColorScheme): Color {
-    return when (status) {
+private fun getTopBarConnectionColor(
+    status: ConnectionStatus,
+    scheme: ColorScheme,
+): Color =
+    when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> scheme.statusBarDefault(
-            scheme,
-        )
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING ->
+            scheme.statusBarDefault(
+                scheme,
+            )
 
         ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
     }
-}

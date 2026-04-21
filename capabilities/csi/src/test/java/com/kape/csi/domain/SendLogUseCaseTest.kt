@@ -9,7 +9,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class SendLogUseCaseTest {
-
     private val dataSource: CsiDataSource = mockk()
     private lateinit var useCase: SendLogUseCase
 
@@ -19,19 +18,21 @@ class SendLogUseCaseTest {
     }
 
     @Test
-    fun `send - success`() = runTest {
-        val expected = "OK"
-        coEvery { dataSource.send() } returns expected
-        val actual = useCase.sendLog()
-        assertEquals(expected, actual)
-    }
+    fun `send - success`() =
+        runTest {
+            val expected = "OK"
+            coEvery { dataSource.send() } returns expected
+            val actual = useCase.sendLog()
+            assertEquals(expected, actual)
+        }
 
     @Test
-    fun `send - failure`() = runTest {
-        val expected = ""
-        coEvery { dataSource.send() } returns expected
-        val actual = useCase.sendLog()
-        assertEquals(expected, actual)
-        assertTrue(actual.isEmpty())
-    }
+    fun `send - failure`() =
+        runTest {
+            val expected = ""
+            coEvery { dataSource.send() } returns expected
+            val actual = useCase.sendLog()
+            assertEquals(expected, actual)
+            assertTrue(actual.isEmpty())
+        }
 }

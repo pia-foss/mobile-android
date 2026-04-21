@@ -51,59 +51,64 @@ import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @Composable
-fun CustomizationScreen() = Screen {
-    val viewModel: CustomizationViewModel = koinViewModel()
-    val connectionViewModel: ConnectionViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel()
+fun CustomizationScreen() =
+    Screen {
+        val viewModel: CustomizationViewModel = koinViewModel()
+        val connectionViewModel: ConnectionViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel = koinViewModel()
 
-    var list by remember { mutableStateOf(viewModel.getOrderedElements()) }
-    val lazyListState = rememberLazyListState()
-    val reorderableLazyColumnState = rememberReorderableLazyListState(lazyListState) { from, to ->
-        viewModel.onMove(from, to)
-        list = list.toMutableList().apply {
-            add(to.index, removeAt(from.index))
-        }
-    }
+        var list by remember { mutableStateOf(viewModel.getOrderedElements()) }
+        val lazyListState = rememberLazyListState()
+        val reorderableLazyColumnState =
+            rememberReorderableLazyListState(lazyListState) { from, to ->
+                viewModel.onMove(from, to)
+                list =
+                    list.toMutableList().apply {
+                        add(to.index, removeAt(from.index))
+                    }
+            }
 
-    Scaffold(
-        topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                type = AppBarType.Customization,
-                onRightIconClick = {
-                    viewModel.saveOrder()
-                    viewModel.router.navigateBack()
-                },
-            )
-        },
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth(),
-            state = lazyListState,
+        Scaffold(
+            topBar = {
+                AppBar(
+                    viewModel = appBarViewModel,
+                    type = AppBarType.Customization,
+                    onRightIconClick = {
+                        viewModel.saveOrder()
+                        viewModel.router.navigateBack()
+                    },
+                )
+            },
         ) {
-            items(list, key = { it.name }) {
-                ReorderableItem(reorderableLazyColumnState, key = it.name) { dragging ->
-                    val elevation = animateDpAsState(if (dragging) 8.dp else 0.dp)
-                    Column(
-                        modifier = Modifier
-                            .shadow(elevation.value)
-                            .fillMaxWidth()
-                            .background(LocalColors.current.surface),
-                    ) {
-                        CreateCustomizableElement(
-                            screenElement = it,
-                            connectionViewModel = connectionViewModel,
-                            onVisibilityToggled = viewModel::toggleVisibility,
-                            modifier = Modifier.longPressDraggableHandle(),
-                        )
+            LazyColumn(
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth(),
+                state = lazyListState,
+            ) {
+                items(list, key = { it.name }) {
+                    ReorderableItem(reorderableLazyColumnState, key = it.name) { dragging ->
+                        val elevation = animateDpAsState(if (dragging) 8.dp else 0.dp)
+                        Column(
+                            modifier =
+                                Modifier
+                                    .shadow(elevation.value)
+                                    .fillMaxWidth()
+                                    .background(LocalColors.current.surface),
+                        ) {
+                            CreateCustomizableElement(
+                                screenElement = it,
+                                connectionViewModel = connectionViewModel,
+                                onVisibilityToggled = viewModel::toggleVisibility,
+                                modifier = Modifier.longPressDraggableHandle(),
+                            )
+                        }
                     }
                 }
             }
         }
     }
-}
 
 @Composable
 fun CreateCustomizableElement(
@@ -114,20 +119,22 @@ fun CreateCustomizableElement(
 ) {
     val visible = remember { mutableStateOf(screenElement.isVisible) }
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = 16.dp,
-                vertical = 8.dp,
-            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = 16.dp,
+                    vertical = 8.dp,
+                ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Visibility(
             isChecked = visible.value,
-            modifier = Modifier.clickable {
-                visible.value = !visible.value
-                onVisibilityToggled(screenElement.element, !screenElement.isVisible)
-            },
+            modifier =
+                Modifier.clickable {
+                    visible.value = !visible.value
+                    onVisibilityToggled(screenElement.element, !screenElement.isVisible)
+                },
         )
         DisplayComponent(
             modifier = Modifier.weight(1f),
@@ -150,7 +157,7 @@ private fun DisplayComponent(
 ) {
     val state = viewModel.state.collectAsState()
     val vpnState by viewModel.connectionInfoProvider.state.collectAsState()
-    val connectionState by viewModel.connectionInfoProvider.connectionState.collectAsState()
+    val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsState()
 
     when (screenElement.element) {
         Element.ConnectionInfo -> {
@@ -173,12 +180,13 @@ private fun DisplayComponent(
                 isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
                 publicIp = vpnState.publicIp,
                 vpnIp = vpnState.vpnIp,
-                portForwardingStatus = when (vpnState.portforwardingStatus) {
-                    PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
-                    PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
-                    PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                    PortForwardingStatus.Success -> vpnState.port
-                },
+                portForwardingStatus =
+                    when (vpnState.portforwardingStatus) {
+                        PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
+                        PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
+                        PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
+                        PortForwardingStatus.Success -> vpnState.port
+                    },
             )
         }
 
@@ -226,15 +234,17 @@ private fun DisplayComponent(
                 modifier = modifier,
                 viewModel.isSnoozeActive,
                 when (viewModel.timeUntilResume.intValue) {
-                    1 -> String.format(
-                        stringResource(id = R.string.minute_to_format),
-                        viewModel.timeUntilResume.intValue,
-                    )
+                    1 ->
+                        String.format(
+                            stringResource(id = R.string.minute_to_format),
+                            viewModel.timeUntilResume.intValue,
+                        )
 
-                    else -> String.format(
-                        stringResource(id = R.string.minutes_to_format),
-                        viewModel.timeUntilResume.intValue,
-                    )
+                    else ->
+                        String.format(
+                            stringResource(id = R.string.minutes_to_format),
+                            viewModel.timeUntilResume.intValue,
+                        )
                 },
                 onClick = {},
                 onResumeClick = {},

@@ -8,6 +8,5 @@ import org.koin.core.annotation.Singleton
 class GetDipSupportedCountries(
     private val dipSignupRepository: DipSignupRepository,
 ) {
-
     suspend operator fun invoke(): DipCountriesResponse? = dipSignupRepository.dipSupportedCountries()
 }

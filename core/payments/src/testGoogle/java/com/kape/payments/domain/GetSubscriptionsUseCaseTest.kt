@@ -19,20 +19,23 @@ internal class GetSubscriptionsUseCaseTest {
     }
 
     @Test
-    fun `getSubscriptions() - success`() = runTest {
-        val expected = listOf(
-            Subscription("id", false, "monthly", "3.99", "$ 3.99"),
-            Subscription("id", false, "yearly", "49.99", "$ 49.99"),
-        )
-        coEvery { source.getAvailableVpnSubscriptions() } returns expected
-        val actual = useCase.getVpnSubscriptions()
-        assertEquals(expected, actual)
-    }
+    fun `getSubscriptions() - success`() =
+        runTest {
+            val expected =
+                listOf(
+                    Subscription("id", false, "monthly", "3.99", "$ 3.99"),
+                    Subscription("id", false, "yearly", "49.99", "$ 49.99"),
+                )
+            coEvery { source.getAvailableVpnSubscriptions() } returns expected
+            val actual = useCase.getVpnSubscriptions()
+            assertEquals(expected, actual)
+        }
 
     @Test
-    fun `getSubscriptions() - failed`() = runTest {
-        coEvery { source.getAvailableVpnSubscriptions() } returns emptyList()
-        val actual = useCase.getVpnSubscriptions()
-        assertEquals(emptyList(), actual)
-    }
+    fun `getSubscriptions() - failed`() =
+        runTest {
+            coEvery { source.getAvailableVpnSubscriptions() } returns emptyList()
+            val actual = useCase.getVpnSubscriptions()
+            assertEquals(emptyList(), actual)
+        }
 }

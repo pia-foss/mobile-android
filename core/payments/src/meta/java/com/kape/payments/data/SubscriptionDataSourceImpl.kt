@@ -10,7 +10,7 @@ import org.koin.core.component.KoinComponent
 class SubscriptionDataSourceImpl(
     private val prefs: SubscriptionPrefs,
     private val api: AndroidAccountAPI,
-) : SubscriptionDataSource, KoinComponent {
-
+) : SubscriptionDataSource,
+    KoinComponent {
     override suspend fun getAvailableVpnSubscriptions(): List<Subscription> = emptyList()
 }

@@ -12,11 +12,15 @@ import org.koin.core.component.inject
 
 @Singleton(binds = [BroadcastReceiver::class])
 @Named(DI.RULES_UPDATED_BROADCAST)
-class OnRulesChangedReceiver : BroadcastReceiver(), KoinComponent {
-
+class OnRulesChangedReceiver :
+    BroadcastReceiver(),
+    KoinComponent {
     private val networkListener: NetworkConnectionListener by inject()
 
-    override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(
+        context: Context,
+        intent: Intent,
+    ) {
         networkListener.triggerUpdate()
     }
 }

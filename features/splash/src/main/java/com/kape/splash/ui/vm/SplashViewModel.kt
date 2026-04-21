@@ -16,7 +16,6 @@ import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.utils.PlatformUtils
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
@@ -55,12 +54,13 @@ class SplashViewModel(
         handleSplashExit()
     }
 
-    fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) = viewModelScope.launch {
-        if (connectionManager.isConnectionInProgress()) {
-            connectionManager.disconnect().getOrNull()
+    fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) =
+        viewModelScope.launch {
+            if (connectionManager.isConnectionInProgress()) {
+                connectionManager.disconnect().getOrNull()
+            }
+            launchUpdate(appUpdateUrl.ifEmpty { updateUrl })
         }
-        launchUpdate(appUpdateUrl.ifEmpty { updateUrl })
-    }
 
     fun isConnected() = connectionInfoProvider.isConnected()
 

@@ -7,7 +7,6 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class RouterModule {
-
     @Singleton(binds = [Router::class])
     fun provideRouter(): Router = RouterImpl()
 }

@@ -7,11 +7,12 @@ import java.util.stream.Stream
 open class DataForTest {
     companion object {
         @JvmStatic
-        fun data() = Stream.of(
-            Arguments.of(DipApiResult.Active),
-            Arguments.of(DipApiResult.Invalid),
-            Arguments.of(DipApiResult.Expired),
-            Arguments.of(DipApiResult.Error),
-        )
+        fun data() =
+            Stream.of(
+                Arguments.of(DipApiResult.Active),
+                Arguments.of(DipApiResult.Invalid),
+                Arguments.of(DipApiResult.Expired),
+                Arguments.of(DipApiResult.Error),
+            )
     }
 }

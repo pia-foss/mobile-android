@@ -21,7 +21,6 @@ class KpiDataSourceImpl(
     private val api: KPIAPI,
     private val settingsPrefs: SettingsPrefs,
 ) : KpiDataSource {
-
     private var connectionInitiatedTime: Long = 0
     private var connectionEstablishedTime: Long = 0
 
@@ -50,11 +49,12 @@ class KpiDataSourceImpl(
             }
         }
 
-        val event = KPIClientEvent(
-            eventName = connectionEvent.value,
-            eventProperties = getEventProperties(connectionEvent, connectionSource),
-            eventInstant = Clock.System.now(),
-        )
+        val event =
+            KPIClientEvent(
+                eventName = connectionEvent.value,
+                eventProperties = getEventProperties(connectionEvent, connectionSource),
+                eventInstant = Clock.System.now(),
+            )
         api.submit(event) { }
     }
 
@@ -62,11 +62,12 @@ class KpiDataSourceImpl(
         api.flush { }
     }
 
-    override suspend fun recentEvents(): List<String> = suspendCancellableCoroutine { continuation ->
-        api.recentEvents {
-            continuation.resume(it)
+    override suspend fun recentEvents(): List<String> =
+        suspendCancellableCoroutine { continuation ->
+            api.recentEvents {
+                continuation.resume(it)
+            }
         }
-    }
 
     private fun getEventProperties(
         connectionEvent: KpiConnectionEvent,

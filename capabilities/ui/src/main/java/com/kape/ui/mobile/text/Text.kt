@@ -19,7 +19,10 @@ import com.kape.ui.theme.infoBlue
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun SettingsL1Text(content: String, modifier: Modifier) {
+fun SettingsL1Text(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -29,7 +32,10 @@ fun SettingsL1Text(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun SideMenuUsernameText(content: String, modifier: Modifier) {
+fun SideMenuUsernameText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -39,7 +45,10 @@ fun SideMenuUsernameText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun SideMenuVersionText(content: String, modifier: Modifier) {
+fun SideMenuVersionText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -49,7 +58,11 @@ fun SideMenuVersionText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun AppBarConnectionTextDefault(content: String, isError: Boolean, modifier: Modifier) {
+fun AppBarConnectionTextDefault(
+    content: String,
+    isError: Boolean,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = if (isError) LocalColors.current.onPrimary else LocalColors.current.onSurface,
@@ -59,7 +72,11 @@ fun AppBarConnectionTextDefault(content: String, isError: Boolean, modifier: Mod
 }
 
 @Composable
-fun AppBarTitleText(content: String, isError: Boolean, modifier: Modifier) {
+fun AppBarTitleText(
+    content: String,
+    isError: Boolean,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = if (isError) LocalColors.current.onPrimary else LocalColors.current.onSurface,
@@ -87,7 +104,10 @@ fun SettingsL2TextDescription(content: String) {
 }
 
 @Composable
-fun SignInText(content: String, modifier: Modifier) {
+fun SignInText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -97,7 +117,10 @@ fun SignInText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun SignUpDurationText(content: String, modifier: Modifier) {
+fun SignUpDurationText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurfaceVariant,
@@ -107,7 +130,10 @@ fun SignUpDurationText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun SignUpPriceText(content: String, modifier: Modifier) {
+fun SignUpPriceText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -116,7 +142,10 @@ fun SignUpPriceText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun SignUpPricePerMonthText(content: String, modifier: Modifier) {
+fun SignUpPricePerMonthText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurfaceVariant,
@@ -126,7 +155,10 @@ fun SignUpPricePerMonthText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun BestValueBannerText(content: String, modifier: Modifier) {
+fun BestValueBannerText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onTertiary,
@@ -162,7 +194,10 @@ fun TertiaryButtonText(content: String) {
 }
 
 @Composable
-fun ErrorText(content: String, modifier: Modifier) {
+fun ErrorText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.error,
@@ -172,7 +207,10 @@ fun ErrorText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun InfoText(content: String, modifier: Modifier) {
+fun InfoText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.infoBlue(),
@@ -182,7 +220,10 @@ fun InfoText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun OnboardingTitleText(content: String, modifier: Modifier) {
+fun OnboardingTitleText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -193,7 +234,10 @@ fun OnboardingTitleText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun OnboardingDescriptionText(content: String, modifier: Modifier) {
+fun OnboardingDescriptionText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -204,7 +248,10 @@ fun OnboardingDescriptionText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun OnboardingDescriptionPaymentText(content: String, modifier: Modifier = Modifier) {
+fun OnboardingDescriptionPaymentText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -215,7 +262,10 @@ fun OnboardingDescriptionPaymentText(content: String, modifier: Modifier = Modif
 }
 
 @Composable
-fun OnboardingFooterText(content: String, modifier: Modifier) {
+fun OnboardingFooterText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurfaceVariant,
@@ -248,7 +298,10 @@ fun SelectedRegionServerText(content: String) {
 }
 
 @Composable
-fun QuickConnectText(content: String, modifier: Modifier) {
+fun QuickConnectText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         textAlign = TextAlign.Center,
@@ -268,7 +321,10 @@ fun TileTitleText(content: String) {
 }
 
 @Composable
-fun IPText(content: String, testTag: String = "") {
+fun IPText(
+    content: String,
+    testTag: String = "",
+) {
     Text(
         text = content,
         maxLines = 1,
@@ -291,7 +347,11 @@ fun ConnectionInfoText(content: String) {
 }
 
 @Composable
-fun RegionSelectionText(content: String, isOffline: Boolean = false, testTag: String = "") {
+fun RegionSelectionText(
+    content: String,
+    isOffline: Boolean = false,
+    testTag: String = "",
+) {
     Text(
         text = content,
         maxLines = 1,
@@ -329,7 +389,10 @@ fun RegionSelectionDipText(content: String) {
 }
 
 @Composable
-fun RegionSelectionLatencyText(content: String?, modifier: Modifier) {
+fun RegionSelectionLatencyText(
+    content: String?,
+    modifier: Modifier,
+) {
     Text(
         text = "$content",
         color = LocalColors.current.onSurface,
@@ -357,7 +420,10 @@ fun SearchInputLabelText(content: String) {
 }
 
 @Composable
-fun InputErrorText(content: String, modifier: Modifier) {
+fun InputErrorText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.error,
@@ -367,7 +433,10 @@ fun InputErrorText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun MenuText(content: String, modifier: Modifier) {
+fun MenuText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -377,7 +446,10 @@ fun MenuText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun Hyperlink(content: String, modifier: Modifier) {
+fun Hyperlink(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.primary,
@@ -387,7 +459,10 @@ fun Hyperlink(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun HyperlinkRed(content: String, modifier: Modifier) {
+fun HyperlinkRed(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.error,
@@ -398,7 +473,10 @@ fun HyperlinkRed(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun DialogTitleText(content: String, modifier: Modifier) {
+fun DialogTitleText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -408,7 +486,10 @@ fun DialogTitleText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun DialogMessageText(content: String, modifier: Modifier) {
+fun DialogMessageText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -418,7 +499,10 @@ fun DialogMessageText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun DialogActionText(content: String, modifier: Modifier) {
+fun DialogActionText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content.uppercase(),
         color = LocalColors.current.primary,
@@ -428,7 +512,10 @@ fun DialogActionText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun DedicatedIpHomeBannerText(content: String, modifier: Modifier = Modifier) {
+fun DedicatedIpHomeBannerText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         modifier = modifier,
         text = content,
@@ -466,7 +553,10 @@ fun SupportedDipCountryOnly(content: String) {
 }
 
 @Composable
-fun DedicatedIpSignupTitleText(content: String, modifier: Modifier = Modifier) {
+fun DedicatedIpSignupTitleText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -477,7 +567,10 @@ fun DedicatedIpSignupTitleText(content: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun DedicatedIpSignupDescriptionText(content: String, modifier: Modifier = Modifier) {
+fun DedicatedIpSignupDescriptionText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -488,7 +581,10 @@ fun DedicatedIpSignupDescriptionText(content: String, modifier: Modifier = Modif
 }
 
 @Composable
-fun DedicatedIpSignupActivateTokenTitleText(content: String, modifier: Modifier = Modifier) {
+fun DedicatedIpSignupActivateTokenTitleText(
+    content: String,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -529,7 +625,10 @@ fun DedicatedIpSignupActivateTokenDescriptionText(
 }
 
 @Composable
-fun DedicatedIpSignupCountryTitleText(content: String, modifier: Modifier) {
+fun DedicatedIpSignupCountryTitleText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.onSurface,
@@ -540,7 +639,10 @@ fun DedicatedIpSignupCountryTitleText(content: String, modifier: Modifier) {
 }
 
 @Composable
-fun DedicatedIpSignupCountryDisclaimerText(content: String, modifier: Modifier) {
+fun DedicatedIpSignupCountryDisclaimerText(
+    content: String,
+    modifier: Modifier,
+) {
     Text(
         text = content,
         color = LocalColors.current.error,

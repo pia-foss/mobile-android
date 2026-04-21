@@ -39,72 +39,80 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun NotificationPermissionScreen() = Screen {
-    val viewModel: PermissionsViewModel = koinViewModel()
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = {
-            viewModel.navigateToConnection()
-        },
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(WindowInsets.systemBars.asPaddingValues())
-            .background(LocalColors.current.background)
-            .semantics {
-                testTagsAsResourceId = true
-            },
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Column(modifier = Modifier.widthIn(max = 520.dp)) {
-            Image(
-                painter = painterResource(id = R.drawable.pia_medium),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(40.dp)
-                    .fillMaxWidth(),
+fun NotificationPermissionScreen() =
+    Screen {
+        val viewModel: PermissionsViewModel = koinViewModel()
+        val launcher =
+            rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+                onResult = {
+                    viewModel.navigateToConnection()
+                },
             )
-            Image(
-                painter = painterResource(id = com.kape.permissions.R.drawable.image_bell),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(40.dp)
-                    .height(140.dp)
-                    .fillMaxWidth(),
-            )
-            Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                OnboardingTitleText(
-                    content = stringResource(id = R.string.notifications_title),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(WindowInsets.systemBars.asPaddingValues())
+                    .background(LocalColors.current.background)
+                    .semantics {
+                        testTagsAsResourceId = true
+                    },
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                Image(
+                    painter = painterResource(id = R.drawable.pia_medium),
+                    contentDescription = null,
+                    modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .height(40.dp)
+                            .fillMaxWidth(),
                 )
-
-                OnboardingDescriptionText(
-                    content = stringResource(id = R.string.notifications_description),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                Image(
+                    painter = painterResource(id = com.kape.permissions.R.drawable.image_bell),
+                    contentDescription = null,
+                    modifier =
+                        Modifier
+                            .padding(40.dp)
+                            .height(140.dp)
+                            .fillMaxWidth(),
                 )
-            }
+                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                    OnboardingTitleText(
+                        content = stringResource(id = R.string.notifications_title),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                    )
 
-            Spacer(modifier = Modifier.weight(1f))
+                    OnboardingDescriptionText(
+                        content = stringResource(id = R.string.notifications_description),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                    )
+                }
 
-            PrimaryButton(
-                text = stringResource(id = R.string.notifications_action),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .testTag(":NotificationPermissionScreen:notifications_action"),
-            ) {
-                launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                Spacer(modifier = Modifier.weight(1f))
+
+                PrimaryButton(
+                    text = stringResource(id = R.string.notifications_action),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
+                            .align(Alignment.CenterHorizontally)
+                            .testTag(":NotificationPermissionScreen:notifications_action"),
+                ) {
+                    launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
             }
         }
     }
-}

@@ -8,7 +8,6 @@ import org.koin.core.annotation.Singleton
 class SetShadowsocksRegionsUseCase(
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
 ) {
-
     fun setSelectShadowsocksServer(shadowsocksServer: ShadowsocksServer) =
         shadowsocksRegionPrefs.setSelectShadowsocksServer(shadowsocksServer)
 

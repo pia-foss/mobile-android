@@ -11,7 +11,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 internal class EmailDataSourceImplTest {
-
     private val api: AndroidAccountAPI = mockk(relaxed = true)
 
     private lateinit var source: EmailDataSource
@@ -22,20 +21,22 @@ internal class EmailDataSourceImplTest {
     }
 
     @Test
-    fun `setEmail success`() = runTest {
-        coEvery { api.setEmail(any(), any(), any()) } answers {
-            lastArg<(String?, List<Error>) -> Unit>().invoke(null, emptyList())
+    fun `setEmail success`() =
+        runTest {
+            coEvery { api.setEmail(any(), any(), any()) } answers {
+                lastArg<(String?, List<Error>) -> Unit>().invoke(null, emptyList())
+            }
+            val actual = source.setEmail("")
+            assertTrue(actual)
         }
-        val actual = source.setEmail("")
-        assertTrue(actual)
-    }
 
     @Test
-    fun `setEmail fails`() = runTest {
-        coEvery { api.setEmail(any(), any(), any()) } answers {
-            lastArg<(String?, List<Error>) -> Unit>().invoke(null, listOf(Error()))
+    fun `setEmail fails`() =
+        runTest {
+            coEvery { api.setEmail(any(), any(), any()) } answers {
+                lastArg<(String?, List<Error>) -> Unit>().invoke(null, listOf(Error()))
+            }
+            val actual = source.setEmail("")
+            assertFalse(actual)
         }
-        val actual = source.setEmail("")
-        assertFalse(actual)
-    }
 }

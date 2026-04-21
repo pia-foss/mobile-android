@@ -11,7 +11,6 @@ import java.util.stream.Stream
 import kotlin.test.assertEquals
 
 class DeleteAccountUseCaseTest {
-
     private val dataSource: ProfileDatasource = mockk()
 
     lateinit var useCase: DeleteAccountUseCase
@@ -23,7 +22,10 @@ class DeleteAccountUseCaseTest {
 
     @ParameterizedTest(name = "result: {0}, expected: {1}")
     @MethodSource("data")
-    fun deleteAccount(result: Boolean, expected: Boolean) = runTest {
+    fun deleteAccount(
+        result: Boolean,
+        expected: Boolean,
+    ) = runTest {
         coEvery { dataSource.deleteAccount() } returns result
         val actual = useCase.deleteAccount()
         assertEquals(expected, actual)
@@ -31,9 +33,10 @@ class DeleteAccountUseCaseTest {
 
     companion object {
         @JvmStatic
-        fun data() = Stream.of(
-            Arguments.of(true, true),
-            Arguments.of(false, false),
-        )
+        fun data() =
+            Stream.of(
+                Arguments.of(true, true),
+                Arguments.of(false, false),
+            )
     }
 }

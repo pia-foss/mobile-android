@@ -3,8 +3,8 @@ package com.kape.localprefs.prefs
 import android.content.Context
 import com.kape.data.vpnserver.VpnServer
 import com.kape.data.vpnserver.VpnServerOutdated
-import com.kape.regions.data.ServerData
 import com.kape.localprefs.Prefs
+import com.kape.regions.data.ServerData
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json
@@ -16,8 +16,9 @@ private const val VPN_SERVERS = "servers"
 private const val VPN_RECONNECT = "reconnect"
 
 @Singleton
-class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
-
+class VpnRegionPrefs(
+    context: Context,
+) : Prefs(context, "vpn-regions") {
     fun addToFavorites(serverData: ServerData) {
         val favorites = getFavoriteVpnServers().toMutableList()
         favorites.add(serverData)
@@ -35,14 +36,16 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
         return favorites.contains(serverData)
     }
 
-    fun isFavorite(serverName: String, isDip: Boolean): Boolean {
-        return isFavorite(ServerData(serverName, isDip))
-    }
+    fun isFavorite(
+        serverName: String,
+        isDip: Boolean,
+    ): Boolean = isFavorite(ServerData(serverName, isDip))
 
     fun getFavoriteVpnServers(): List<ServerData> {
-        val list: List<ServerData> = prefs.getString(VPN_FAVORITES, null)?.let {
-            Json.decodeFromString(it)
-        } ?: emptyList()
+        val list: List<ServerData> =
+            prefs.getString(VPN_FAVORITES, null)?.let {
+                Json.decodeFromString(it)
+            } ?: emptyList()
         return list
     }
 
@@ -52,8 +55,8 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
     }
 
     @OptIn(ExperimentalSerializationApi::class)
-    fun getSelectedServer(): VpnServer? {
-        return try {
+    fun getSelectedServer(): VpnServer? =
+        try {
             prefs.getString(VPN_SELECTED_SERVER, null)?.let {
                 Json.decodeFromString<VpnServer>(it)
             }
@@ -62,7 +65,6 @@ class VpnRegionPrefs(context: Context) : Prefs(context, "vpn-regions") {
                 Json.decodeFromString<VpnServerOutdated>(it).toVpnServer()
             }
         }
-    }
 
     fun needsVpnReconnect() = prefs.getBoolean(VPN_RECONNECT, false)
 

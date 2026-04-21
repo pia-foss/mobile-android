@@ -13,7 +13,6 @@ class SnoozeWorker(
     private val snoozeHandler: SnoozeHandler,
     private val vpnLauncher: VpnLauncher,
 ) : Worker(context, params) {
-
     override fun doWork(): Result {
         snoozeHandler.cancelSnooze()
         vpnLauncher.launchVpn()

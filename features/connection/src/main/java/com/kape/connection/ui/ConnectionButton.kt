@@ -44,60 +44,65 @@ fun ConnectButton(
     val hasFocus = remember { mutableStateOf(false) }
 
     var backgroundColor = colorScheme.surface
-    val color = when (status) {
-        ConnectionStatus.ERROR,
-        ConnectionStatus.DISCONNECTING,
-        ConnectionStatus.DISCONNECTED,
-        -> colorScheme.connectionError()
+    val color =
+        when (status) {
+            ConnectionStatus.ERROR,
+            ConnectionStatus.DISCONNECTING,
+            ConnectionStatus.DISCONNECTED,
+            -> colorScheme.connectionError()
 
-        ConnectionStatus.CONNECTED,
-        -> colorScheme.primary
+            ConnectionStatus.CONNECTED,
+            -> colorScheme.primary
 
-        ConnectionStatus.CONNECTING,
-        ConnectionStatus.RECONNECTING,
-        -> colorScheme.connectionDefault()
-    }
+            ConnectionStatus.CONNECTING,
+            ConnectionStatus.RECONNECTING,
+            -> colorScheme.connectionDefault()
+        }
 
     // If it's focused. We want to invert them.
-    val targetColor = if (hasFocus.value) {
-        val updatedColor = backgroundColor
-        backgroundColor = color
-        updatedColor
-    } else {
-        color
-    }
+    val targetColor =
+        if (hasFocus.value) {
+            val updatedColor = backgroundColor
+            backgroundColor = color
+            updatedColor
+        } else {
+            color
+        }
 
     Box(
-        modifier = modifier
-            .clip(CircleShape)
-            .onFocusChanged {
-                if (onTvLayout) {
-                    hasFocus.value = it.hasFocus
-                }
-            }
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(
-                    color = targetColor,
-                ),
-            ) { onClick() },
+        modifier =
+            modifier
+                .clip(CircleShape)
+                .onFocusChanged {
+                    if (onTvLayout) {
+                        hasFocus.value = it.hasFocus
+                    }
+                }.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication =
+                        ripple(
+                            color = targetColor,
+                        ),
+                ) { onClick() },
     ) {
         when (status) {
             ConnectionStatus.CONNECTED,
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
             ConnectionStatus.ERROR,
-            -> ButtonBackground(
-                loadingColor = color, // Intentional. The arc color stays the same on all scenarios.
-                backgroundColor = backgroundColor,
-            )
+            ->
+                ButtonBackground(
+                    loadingColor = color, // Intentional. The arc color stays the same on all scenarios.
+                    backgroundColor = backgroundColor,
+                )
 
             ConnectionStatus.CONNECTING,
             ConnectionStatus.RECONNECTING,
-            -> LoadingButtonBackground(
-                loadingColor = color, // Intentional. The arc color stays the same on all scenarios.
-                backgroundColor = backgroundColor,
-            )
+            ->
+                LoadingButtonBackground(
+                    loadingColor = color, // Intentional. The arc color stays the same on all scenarios.
+                    backgroundColor = backgroundColor,
+                )
         }
         Icon(
             painter = painterResource(id = R.drawable.ic_power),
@@ -140,16 +145,18 @@ private fun LoadingButtonBackground(
     val endAnimation by rememberInfiniteTransition().animateFloat(
         initialValue = 0f,
         targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800),
-        ),
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(800),
+            ),
     )
     val startAnimation by rememberInfiniteTransition().animateFloat(
         initialValue = 270f,
         targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(800),
-        ),
+        animationSpec =
+            infiniteRepeatable(
+                animation = tween(800),
+            ),
     )
     Canvas(
         modifier = Modifier.size(160.dp),

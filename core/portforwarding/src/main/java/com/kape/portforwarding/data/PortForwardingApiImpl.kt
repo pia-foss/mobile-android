@@ -18,7 +18,6 @@ class PortForwardingApiImpl(
     private val certificatePinningClient: CertificatePinningClient,
     private val userAgent: String,
 ) : PortForwardingApi {
-
     private val client = certificatePinningClient.client()
 
     @Throws(IOException::class)
@@ -26,14 +25,18 @@ class PortForwardingApiImpl(
         vpnToken: String,
         gateway: String,
     ): PortBindInformation? {
-        val urlEncodedEndpoint: String = Uri.parse("https://$gateway:19999/getSignature")
-            .buildUpon()
-            .appendQueryParameter("token", vpnToken)
-            .build().toString()
+        val urlEncodedEndpoint: String =
+            Uri
+                .parse("https://$gateway:19999/getSignature")
+                .buildUpon()
+                .appendQueryParameter("token", vpnToken)
+                .build()
+                .toString()
         return try {
-            val response = client.get(urlEncodedEndpoint) {
-                header("User-Agent", userAgent)
-            }
+            val response =
+                client.get(urlEncodedEndpoint) {
+                    header("User-Agent", userAgent)
+                }
             if (response.status != HttpStatusCode.OK) {
                 return null
             }
@@ -56,16 +59,20 @@ class PortForwardingApiImpl(
         signature: String,
         endpoint: String,
     ): Boolean {
-        val urlEncodedEndpoint: String = Uri.parse("https://$endpoint:19999/bindPort")
-            .buildUpon()
-            .appendQueryParameter("payload", payload)
-            .appendQueryParameter("signature", signature)
-            .build().toString()
+        val urlEncodedEndpoint: String =
+            Uri
+                .parse("https://$endpoint:19999/bindPort")
+                .buildUpon()
+                .appendQueryParameter("payload", payload)
+                .appendQueryParameter("signature", signature)
+                .build()
+                .toString()
         return try {
-            val response = client.get(urlEncodedEndpoint) {
-                header(HttpHeaders.UserAgent, userAgent)
-                header(HttpHeaders.Authorization, token)
-            }
+            val response =
+                client.get(urlEncodedEndpoint) {
+                    header(HttpHeaders.UserAgent, userAgent)
+                    header(HttpHeaders.Authorization, token)
+                }
             response.status == HttpStatusCode.OK
         } catch (exception: Exception) {
             false

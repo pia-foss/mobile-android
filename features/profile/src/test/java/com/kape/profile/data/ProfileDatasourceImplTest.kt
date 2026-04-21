@@ -16,7 +16,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 internal class ProfileDatasourceImplTest {
-
     private val api: AndroidAccountAPI = mockk(relaxed = true)
     private lateinit var dataSource: ProfileDatasource
 
@@ -26,62 +25,67 @@ internal class ProfileDatasourceImplTest {
     }
 
     @Test
-    fun `accountDetails - success`() = runTest {
-        val accountInformation = AccountInformation(
-            active = true,
-            canInvite = false,
-            canceled = false,
-            daysRemaining = 1,
-            email = "email",
-            expirationTime = 0,
-            expireAlert = false,
-            needsPayment = false,
-            plan = "plan",
-            recurring = false,
-            renewUrl = "url",
-            renewable = false,
-            expired = false,
-            username = "username",
-            productId = null,
-        )
-        coEvery { api.accountDetails(any()) } answers {
-            lastArg<(AccountInformation?, List<AccountRequestError>) -> Unit>().invoke(
-                accountInformation,
-                emptyList(),
-            )
+    fun `accountDetails - success`() =
+        runTest {
+            val accountInformation =
+                AccountInformation(
+                    active = true,
+                    canInvite = false,
+                    canceled = false,
+                    daysRemaining = 1,
+                    email = "email",
+                    expirationTime = 0,
+                    expireAlert = false,
+                    needsPayment = false,
+                    plan = "plan",
+                    recurring = false,
+                    renewUrl = "url",
+                    renewable = false,
+                    expired = false,
+                    username = "username",
+                    productId = null,
+                )
+            coEvery { api.accountDetails(any()) } answers {
+                lastArg<(AccountInformation?, List<AccountRequestError>) -> Unit>().invoke(
+                    accountInformation,
+                    emptyList(),
+                )
+            }
+            val actual = dataSource.accountDetails()
+            assertNotNull(actual)
+            assertEquals(accountInformation.username, actual.username)
         }
-        val actual = dataSource.accountDetails()
-        assertNotNull(actual)
-        assertEquals(accountInformation.username, actual.username)
-    }
 
     @Test
-    fun `accountDetails - failure`() = runTest {
-        coEvery { api.accountDetails(any()) } answers {
-            lastArg<(AccountInformation?, List<AccountRequestError>) -> Unit>().invoke(
-                null,
-                emptyList(),
-            )
+    fun `accountDetails - failure`() =
+        runTest {
+            coEvery { api.accountDetails(any()) } answers {
+                lastArg<(AccountInformation?, List<AccountRequestError>) -> Unit>().invoke(
+                    null,
+                    emptyList(),
+                )
+            }
+            val actual = dataSource.accountDetails()
+            assertNull(actual)
         }
-        val actual = dataSource.accountDetails()
-        assertNull(actual)
-    }
 
     @Test
-    fun `deleteAccount - success`() = runTest {
-        coEvery { api.deleteAccount(any()) } answers {
-            lastArg<(List<AccountRequestError>) -> Unit>().invoke(emptyList())
+    fun `deleteAccount - success`() =
+        runTest {
+            coEvery { api.deleteAccount(any()) } answers {
+                lastArg<(List<AccountRequestError>) -> Unit>().invoke(emptyList())
+            }
+            val actual = dataSource.deleteAccount()
+            assertTrue(actual)
         }
-        val actual = dataSource.deleteAccount()
-        assertTrue(actual)
-    }
 
     @Test
-    fun `deleteAccount - failure`() = runTest {
-        coEvery { api.deleteAccount(any()) } answers {
-            lastArg<(List<AccountRequestError>) -> Unit>().invoke(listOf(mockk()))
+    fun `deleteAccount - failure`() =
+        runTest {
+            coEvery { api.deleteAccount(any()) } answers {
+                lastArg<(List<AccountRequestError>) -> Unit>().invoke(listOf(mockk()))
+            }
+            val actual = dataSource.deleteAccount()
+            assertFalse(actual)
         }
-        val actual = dataSource.deleteAccount()
-        assertFalse(actual)
-    }
 }

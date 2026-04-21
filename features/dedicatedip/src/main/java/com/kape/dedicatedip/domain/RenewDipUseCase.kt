@@ -4,7 +4,8 @@ import com.kape.dedicatedip.utils.DipApiResult
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class RenewDipUseCase(private val dataSource: DipDataSource) {
-
+class RenewDipUseCase(
+    private val dataSource: DipDataSource,
+) {
     suspend fun renew(ipToken: String): DipApiResult = dataSource.renew(ipToken)
 }

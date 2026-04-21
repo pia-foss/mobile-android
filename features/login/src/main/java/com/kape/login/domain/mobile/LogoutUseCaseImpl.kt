@@ -35,7 +35,6 @@ class LogoutUseCaseImpl(
     private val ratingPrefs: RatingPrefs,
     private val connectionManager: ConnectionManager,
 ) : LogoutUseCase {
-
     override suspend fun logout(): Boolean {
         if (settingsPrefs.isAutomationEnabled()) {
             connectionPrefs.disconnectedByUser(true)

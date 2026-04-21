@@ -29,57 +29,64 @@ fun AccountDeletedScreen() {
     val viewModel: ProfileViewModel = koinViewModel()
 
     Column(
-        modifier = Modifier
-            .widthIn(max = 520.dp)
-            .fillMaxSize(),
+        modifier =
+            Modifier
+                .widthIn(max = 520.dp)
+                .fillMaxSize(),
     ) {
         Image(
             painter = painterResource(id = R.drawable.pia_medium),
             contentDescription = null,
-            modifier = Modifier
-                .padding(16.dp)
-                .height(40.dp)
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .padding(16.dp)
+                    .height(40.dp)
+                    .fillMaxWidth(),
         )
         Spacer(modifier = Modifier.height(32.dp))
         Image(
             painter = painterResource(id = R.drawable.img_success),
             contentDescription = null,
-            modifier = Modifier
-                .padding(20.dp)
-                .fillMaxWidth()
-                .size(150.dp),
+            modifier =
+                Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth()
+                    .size(150.dp),
         )
         Spacer(modifier = Modifier.height(32.dp))
         Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
             OnboardingTitleText(
                 content = stringResource(id = R.string.account_deletion_confirmation_title),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterHorizontally),
             )
             Spacer(modifier = Modifier.height(32.dp))
             OnboardingDescriptionText(
                 content = stringResource(id = R.string.account_deletion_confirmation_message),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(horizontal = 20.dp, vertical = 8.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
             )
         }
         Spacer(modifier = Modifier.weight(1f))
         PrimaryButton(
             text = stringResource(id = R.string.login),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
         ) {
             viewModel.navigateToLogin()
         }
         Spacer(modifier = Modifier.height(8.dp))
         SecondaryButton(
             text = stringResource(id = R.string.subscribe),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
         ) {
             viewModel.navigateToSubscribe()
         }

@@ -8,7 +8,6 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class UtilsModule {
-
     @Singleton
     fun providePlatformUtils(context: Context): PlatformUtils = PlatformUtils(context)
 

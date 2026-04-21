@@ -31,15 +31,17 @@ class LoginViewModel(
     private val permissionsUtil: PermissionUtil,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
-
     private val _state = MutableStateFlow(IDLE)
-    val loginState: StateFlow<LoginScreenState> = _state
+    val state: StateFlow<LoginScreenState> = _state
     val isConnected = networkConnectionListener.isConnected
     val shouldShowLoginWithReceiptButton: Boolean = buildConfigProvider.isGoogleFlavor()
 
     private lateinit var packageName: String
 
-    fun login(username: String, password: String) = viewModelScope.launch {
+    fun login(
+        username: String,
+        password: String,
+    ) = viewModelScope.launch {
         _state.emit(LOADING)
         if (username.isEmpty() || password.isEmpty()) {
             _state.emit(INVALID)
@@ -69,11 +71,12 @@ class LoginViewModel(
                 _state.emit(LOADING)
                 when (it) {
                     is PurchaseHistoryState.PurchaseHistorySuccess -> {
-                        val state = loginUseCase.loginWithReceipt(
-                            it.purchaseToken,
-                            it.productId,
-                            packageName,
-                        )
+                        val state =
+                            loginUseCase.loginWithReceipt(
+                                it.purchaseToken,
+                                it.productId,
+                                packageName,
+                            )
                         if (state == LoginState.Successful) {
                             router.updateDestination(permissionsUtil.getNextDestination())
                         } else {

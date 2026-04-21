@@ -44,7 +44,6 @@ import com.kape.ui.theme.connectedGradient
 import com.kape.ui.theme.connectingGradient
 import com.kape.ui.theme.errorGradient
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppBar(
@@ -74,9 +73,10 @@ private fun AppBarContent(
     onRightIconClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(getAppBarBackgroundColor(status, LocalColors.current)),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(getAppBarBackgroundColor(status, LocalColors.current)),
     ) {
         Spacer(
             Modifier.windowInsetsTopHeight(
@@ -84,29 +84,32 @@ private fun AppBarContent(
             ),
         )
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .semantics {
-                    testTagsAsResourceId = true
-                },
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .semantics {
+                        testTagsAsResourceId = true
+                    },
         ) {
             val menuContentDescription = stringResource(id = R.string.menu)
             val backContentDescription = stringResource(id = R.string.back)
             IconButton(
                 onClick = { onLeftIconClick() },
-                modifier = Modifier
-                    .align(CenterStart)
-                    .testTag(if (type == AppBarType.Connection) ":AppBar:side_menu" else ":AppBar:back")
-                    .semantics {
-                        contentDescription = when (type) {
-                            AppBarType.Connection -> menuContentDescription
-                            AppBarType.Customization,
-                            AppBarType.InAppBrowser,
-                            AppBarType.Navigation,
-                            -> backContentDescription
-                        }
-                    },
+                modifier =
+                    Modifier
+                        .align(CenterStart)
+                        .testTag(if (type == AppBarType.Connection) ":AppBar:side_menu" else ":AppBar:back")
+                        .semantics {
+                            contentDescription =
+                                when (type) {
+                                    AppBarType.Connection -> menuContentDescription
+                                    AppBarType.Customization,
+                                    AppBarType.InAppBrowser,
+                                    AppBarType.Navigation,
+                                    -> backContentDescription
+                                }
+                        },
             ) {
                 Icon(
                     painter = painterResource(id = getAppBarLeftIcon(type)),
@@ -139,9 +142,10 @@ private fun AppBarContent(
                         painter = painterResource(id = R.drawable.ic_logo_medium),
                         contentDescription = null,
                         tint = Color.Unspecified,
-                        modifier = Modifier
-                            .align(Center)
-                            .fillMaxWidth(),
+                        modifier =
+                            Modifier
+                                .align(Center)
+                                .fillMaxWidth(),
                     )
                 }
 
@@ -149,10 +153,11 @@ private fun AppBarContent(
                     AppBarTitleText(
                         content = title ?: "",
                         isError = status == ConnectionStatus.ERROR,
-                        modifier = Modifier
-                            .padding(start = 56.dp)
-                            .align(Center)
-                            .fillMaxWidth(),
+                        modifier =
+                            Modifier
+                                .padding(start = 56.dp)
+                                .align(Center)
+                                .fillMaxWidth(),
                     )
                 }
             }
@@ -160,28 +165,30 @@ private fun AppBarContent(
     }
 }
 
-private fun getAppBarLeftIcon(type: AppBarType): Int {
-    return when (type) {
+private fun getAppBarLeftIcon(type: AppBarType): Int =
+    when (type) {
         AppBarType.Connection -> R.drawable.ic_menu
         AppBarType.Customization,
         AppBarType.InAppBrowser,
         AppBarType.Navigation,
         -> R.drawable.ic_back
     }
-}
 
-private fun getAppBarBackgroundColor(status: ConnectionStatus, scheme: ColorScheme): Brush {
-    return when (status) {
-        ConnectionStatus.ERROR, ConnectionStatus.DISCONNECTING, ConnectionStatus.DISCONNECTED -> Brush.verticalGradient(
-            scheme.errorGradient(),
-        )
+private fun getAppBarBackgroundColor(
+    status: ConnectionStatus,
+    scheme: ColorScheme,
+): Brush =
+    when (status) {
+        ConnectionStatus.ERROR, ConnectionStatus.DISCONNECTING, ConnectionStatus.DISCONNECTED ->
+            Brush.verticalGradient(
+                scheme.errorGradient(),
+            )
 
         ConnectionStatus.CONNECTED -> Brush.verticalGradient(scheme.connectedGradient())
         ConnectionStatus.CONNECTING,
         ConnectionStatus.RECONNECTING,
         -> Brush.verticalGradient(scheme.connectingGradient())
     }
-}
 
 @Composable
 private fun AppBarConnectionStatus(
@@ -192,31 +199,33 @@ private fun AppBarConnectionStatus(
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
-            modifier = Modifier
-                .align(Center)
-                .testTag(":AppBar:connection_status"),
+            modifier =
+                Modifier
+                    .align(Center)
+                    .testTag(":AppBar:connection_status"),
         ) {
             val statusPrefix = stringResource(id = R.string.vpn_status)
             AppBarConnectionTextDefault(
                 content = title ?: "",
                 isError = (status == ConnectionStatus.ERROR),
-                modifier = Modifier
-                    .align(CenterVertically)
-                    .semantics {
-                        contentDescription = "$statusPrefix $title"
-                    }
-                    .testTag(":AppBar:connection_text_default"),
+                modifier =
+                    Modifier
+                        .align(CenterVertically)
+                        .semantics {
+                            contentDescription = "$statusPrefix $title"
+                        }.testTag(":AppBar:connection_text_default"),
             )
         }
 
         onRightIconClick?.let {
             IconButton(
                 onClick = { it() },
-                modifier = Modifier
-                    .align(CenterEnd)
-                    .semantics {
-                        invisibleToUser()
-                    },
+                modifier =
+                    Modifier
+                        .align(CenterEnd)
+                        .semantics {
+                            invisibleToUser()
+                        },
             ) {
                 rightIconId?.let {
                     Icon(
@@ -233,7 +242,10 @@ private fun AppBarConnectionStatus(
 
 sealed class AppBarType {
     data object Connection : AppBarType()
+
     data object Navigation : AppBarType()
+
     data object InAppBrowser : AppBarType()
+
     data object Customization : AppBarType()
 }

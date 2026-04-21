@@ -11,16 +11,16 @@ class ReadVpnRegionsDetailsUseCase(
     private val regionInputStream: RegionInputStream,
     private val regionSerialization: RegionSerialization,
 ) {
-
     companion object {
         private const val VPN_REGIONS_FILENAME = "vpn-regions.json"
     }
 
     fun readVpnRegionsDetailsFromAssetsFolder(): List<VpnServer> {
         val servers = regionInputStream.readAssetsFile(filename = VPN_REGIONS_FILENAME)
-        val vpnRegionsResponse = regionSerialization.decodeVpnRegionsFromString(
-            servers.split("\n\n").first(),
-        )
+        val vpnRegionsResponse =
+            regionSerialization.decodeVpnRegionsFromString(
+                servers.split("\n\n").first(),
+            )
         return adaptVpnServers(vpnRegionsResponse).values.toList()
     }
 }

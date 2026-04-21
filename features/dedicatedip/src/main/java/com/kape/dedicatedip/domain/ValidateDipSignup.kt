@@ -9,15 +9,13 @@ class ValidateDipSignup(
     private val subscriptionPrefs: SubscriptionPrefs,
     private val dataSource: DipDataSource,
 ) {
-
-    suspend operator fun invoke(
-        dipPurchaseData: DipPurchaseData?,
-    ): Result<Unit> {
-        val unwrappedDipPurchaseData = dipPurchaseData?.let {
-            it
-        } ?: run {
-            subscriptionPrefs.getDipPurchaseData()
-        }
+    suspend operator fun invoke(dipPurchaseData: DipPurchaseData?): Result<Unit> {
+        val unwrappedDipPurchaseData =
+            dipPurchaseData?.let {
+                it
+            } ?: run {
+                subscriptionPrefs.getDipPurchaseData()
+            }
 
         if (unwrappedDipPurchaseData == null) {
             return Result.failure(IllegalStateException("Unknown purchase data"))

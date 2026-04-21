@@ -11,14 +11,16 @@ import com.kape.vpnlauncher.VpnLauncher
 import org.koin.core.annotation.Singleton
 
 @Singleton([NetworkManager::class])
-class NetworkManagerImpl(
+class NetworkManager(
     private val context: Context,
     private val networkPrefs: NetworkManagementPrefs,
     private val vpnLauncher: VpnLauncher,
     private val settingsPrefs: SettingsPrefs,
 ) : NetworkManager {
-
-    override fun handleCurrentNetwork(ssid: String, isWifi: Boolean) {
+    override fun handleCurrentNetwork(
+        ssid: String,
+        isWifi: Boolean,
+    ) {
         if (settingsPrefs.isAutomationEnabled()) {
             networkPrefs.getRuleForNetwork(ssid)?.let {
                 applyNetworkRule(it)
@@ -28,7 +30,8 @@ class NetworkManagerImpl(
                         applyNetworkRule(it)
                     }
                 } else {
-                    networkPrefs.getRuleForNetwork(context.getString(R.string.nmt_mobile_data))
+                    networkPrefs
+                        .getRuleForNetwork(context.getString(R.string.nmt_mobile_data))
                         ?.let {
                             applyNetworkRule(it)
                         }

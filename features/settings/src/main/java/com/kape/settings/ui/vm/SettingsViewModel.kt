@@ -65,7 +65,6 @@ class SettingsViewModel(
     private val connectionManager: ConnectionManager,
     private val connectionInfoProvider: ConnectionInfoProvider,
 ) : ViewModel() {
-
     companion object {
         private const val GET_INSTALLED_APPS_DELAY_MS = 1000L
     }
@@ -93,18 +92,31 @@ class SettingsViewModel(
     val externalProxyTcpDialogVisible = mutableStateOf(false)
 
     fun navigateToGeneralSettings() = router.updateDestination(GeneralSettings)
+
     fun navigateToProtocolSettings() = router.updateDestination(ProtocolSettings)
+
     fun navigateToNetworkSettings() = router.updateDestination(NetworkSettings)
+
     fun navigateToPrivacySettings() = router.updateDestination(PrivacySettings)
+
     fun navigateToHelpSettings() = router.updateDestination(HelpSettings)
+
     fun navigateToAutomation() = router.updateDestination(AutomationSettings)
+
     fun navigateToObfuscationSettings() = router.updateDestination(ObfuscationSettings)
+
     fun navigateToKillSwitch() = router.updateDestination(KillSwitchSettings)
+
     fun navigateToConnectionStats() = router.updateDestination(ConnectionStats)
+
     fun navigateToDebugLogs() = router.updateDestination(DebugLogs)
+
     fun navigateToPrivacyPolicy() = router.updateDestination(WebDestination.Privacy)
+
     fun navigateToAbout() = router.updateDestination(About)
+
     fun navigateToExternalAppList() = router.updateDestination(ExternalAppList)
+
     fun navigateBack() = router.navigateBack()
 
     fun isAutomationEnabled() = prefs.isAutomationEnabled()
@@ -208,22 +220,18 @@ class SettingsViewModel(
 
     fun setCustomDns(customDns: CustomDns) = prefs.setCustomDns(customDns = customDns)
 
-    fun getCustomObfuscation(): CustomObfuscation? =
-        prefs.getCustomObfuscation()
+    fun getCustomObfuscation(): CustomObfuscation? = prefs.getCustomObfuscation()
 
-    fun setCustomObfuscation(customObfuscation: CustomObfuscation) =
-        prefs.setCustomObfuscation(customObfuscation = customObfuscation)
+    fun setCustomObfuscation(customObfuscation: CustomObfuscation) = prefs.setCustomObfuscation(customObfuscation = customObfuscation)
 
     fun isNumericIpAddress(ipAddress: String): Boolean {
         isDnsNumeric.value = isNumericIpAddressUseCase.invoke(ipAddress = ipAddress)
         return isDnsNumeric.value
     }
 
-    fun isPortValid(port: String): Boolean =
-        port.isNotEmpty() && port.toInt() > 0
+    fun isPortValid(port: String): Boolean = port.isNotEmpty() && port.toInt() > 0
 
-    fun setSelectedDnsOption(dnsOptions: DnsOptions) =
-        prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
+    fun setSelectedDnsOption(dnsOptions: DnsOptions) = prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
 
     fun getSelectedDnsOption(): DnsOptions = prefs.getSelectedDnsOption()
 
@@ -236,11 +244,12 @@ class SettingsViewModel(
         val currentSettings = getOpenVpnSettings()
         val hasSettingChanged = currentSettings.transport != transport
         currentSettings.transport = transport
-        val ports = if (transport == Transport.UDP) {
-            regionsRepository.getUdpPorts()
-        } else {
-            regionsRepository.getTcpPorts()
-        }
+        val ports =
+            if (transport == Transport.UDP) {
+                regionsRepository.getUdpPorts()
+            } else {
+                regionsRepository.getTcpPorts()
+            }
         currentSettings.port = ports[0].toString()
         prefs.setOpenVpnSettings(currentSettings)
 
@@ -253,8 +262,7 @@ class SettingsViewModel(
         }
     }
 
-    fun getTransport(): Transport =
-        getOpenVpnSettings().transport
+    fun getTransport(): Transport = getOpenVpnSettings().transport
 
     fun setEncryption(encryption: DataEncryption) {
         val currentSettings = getOpenVpnSettings()
@@ -342,7 +350,8 @@ class SettingsViewModel(
             delay(GET_INSTALLED_APPS_DELAY_MS)
 
             installedApps =
-                PerAppSettingsUtils.getInstalledApps(packageManager = packageManager)
+                PerAppSettingsUtils
+                    .getInstalledApps(packageManager = packageManager)
                     .filterNotNull()
             val sortedApps =
                 installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
@@ -351,33 +360,43 @@ class SettingsViewModel(
             }
         }
 
-    fun filterAppsByName(value: String, packageManager: PackageManager) {
+    fun filterAppsByName(
+        value: String,
+        packageManager: PackageManager,
+    ) {
         if (value.isEmpty()) {
             appList.value =
                 installedApps.sortedBy { packageManager.getApplicationLabel(it).toString() }
         } else {
-            appList.value = installedApps.filter {
-                packageManager.getApplicationLabel(it).toString().lowercase()
-                    .contains(value.lowercase())
-            }
+            appList.value =
+                installedApps.filter {
+                    packageManager
+                        .getApplicationLabel(it)
+                        .toString()
+                        .lowercase()
+                        .contains(value.lowercase())
+                }
         }
     }
 
-    fun getRecentEvents() = viewModelScope.launch {
-        eventList.value = kpiDataSource.recentEvents()
-    }
+    fun getRecentEvents() =
+        viewModelScope.launch {
+            eventList.value = kpiDataSource.recentEvents()
+        }
 
-    fun getDebugLogs() = viewModelScope.launch {
-        debugLogs.value = getDebugLogsUseCase.getDebugLogs()
-    }
+    fun getDebugLogs() =
+        viewModelScope.launch {
+            debugLogs.value = getDebugLogsUseCase.getDebugLogs()
+        }
 
-    fun sendLogs() = viewModelScope.launch {
-        val logs = connectionDataSource.getDebugLogs()
-        csiPrefs.setProtocolDebugLogs(logs.joinToString(separator = "\n"))
-        val result = sendLogUseCase.sendLog()
-        requestId.value = result
-        csiPrefs.clearCustomDebugLogs()
-    }
+    fun sendLogs() =
+        viewModelScope.launch {
+            val logs = connectionDataSource.getDebugLogs()
+            csiPrefs.setProtocolDebugLogs(logs.joinToString(separator = "\n"))
+            val result = sendLogUseCase.sendLog()
+            requestId.value = result
+            csiPrefs.clearCustomDebugLogs()
+        }
 
     fun resetRequestId() {
         requestId.value = null
@@ -397,12 +416,13 @@ class SettingsViewModel(
 
     fun reconnect() {
         connectionPrefs.getSelectedVpnServer()?.let {
-            connectionManager.connectJob = viewModelScope.launch {
-                if (connectionManager.isConnectionInProgress()) {
-                    connectionManager.disconnect().getOrNull()
+            connectionManager.connectJob =
+                viewModelScope.launch {
+                    if (connectionManager.isConnectionInProgress()) {
+                        connectionManager.disconnect().getOrNull()
+                    }
+                    connectionManager.connect(it, true, ::callback)
                 }
-                connectionManager.connect(it, true, ::callback)
-            }
         }
     }
 

@@ -13,7 +13,6 @@ import org.koin.core.context.stopKoin
 import kotlin.test.assertEquals
 
 internal class SignupDataSourceImplTest {
-
     private val api: AndroidAccountAPI = mockk(relaxed = true)
 
     private lateinit var source: SignupDataSourceImpl
@@ -26,22 +25,24 @@ internal class SignupDataSourceImplTest {
     }
 
     @Test
-    fun `signup success`() = runTest {
-        val expected = Credentials("ok", "username", "password")
-        val signupInfo = VpnSignUpInformation(expected.status, expected.username, expected.password)
-        coEvery { api.vpnSignUp(any(), any()) } answers {
-            lastArg<(VpnSignUpInformation?, List<Error>) -> Unit>().invoke(signupInfo, emptyList())
+    fun `signup success`() =
+        runTest {
+            val expected = Credentials("ok", "username", "password")
+            val signupInfo = VpnSignUpInformation(expected.status, expected.username, expected.password)
+            coEvery { api.vpnSignUp(any(), any()) } answers {
+                lastArg<(VpnSignUpInformation?, List<Error>) -> Unit>().invoke(signupInfo, emptyList())
+            }
+            val actual = source.vpnSignup("orderId", "token", "productId", "obfuscatedDeviceId")
+            assertEquals(expected, actual)
         }
-        val actual = source.vpnSignup("orderId", "token", "productId", "obfuscatedDeviceId")
-        assertEquals(expected, actual)
-    }
 
     @Test
-    fun `signup fails`() = runTest {
-        coEvery { api.vpnSignUp(any(), any()) } answers {
-            lastArg<(VpnSignUpInformation?, List<Error>) -> Unit>().invoke(null, listOf(Error()))
+    fun `signup fails`() =
+        runTest {
+            coEvery { api.vpnSignUp(any(), any()) } answers {
+                lastArg<(VpnSignUpInformation?, List<Error>) -> Unit>().invoke(null, listOf(Error()))
+            }
+            val actual = source.vpnSignup("orderId", "token", "productId", "obfuscatedDeviceId")
+            assertEquals(null, actual)
         }
-        val actual = source.vpnSignup("orderId", "token", "productId", "obfuscatedDeviceId")
-        assertEquals(null, actual)
-    }
 }

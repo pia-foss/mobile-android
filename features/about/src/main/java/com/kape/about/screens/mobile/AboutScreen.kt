@@ -21,29 +21,32 @@ import com.kape.ui.mobile.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AboutScreen(licences: List<String>) = Screen {
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.about))
-    }
+fun AboutScreen(licences: List<String>) =
+    Screen {
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.about))
+            }
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(it),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
         ) {
-            LazyColumn(
-                modifier = Modifier.widthIn(max = 520.dp),
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(it),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                items(licences) {
-                    Text(text = it, modifier = Modifier.padding(horizontal = 16.dp))
+                LazyColumn(
+                    modifier = Modifier.widthIn(max = 520.dp),
+                ) {
+                    items(licences) {
+                        Text(text = it, modifier = Modifier.padding(horizontal = 16.dp))
+                    }
                 }
             }
         }
     }
-}

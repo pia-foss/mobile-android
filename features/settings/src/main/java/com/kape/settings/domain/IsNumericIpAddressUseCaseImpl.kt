@@ -7,12 +7,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton([IsNumericIpAddressUseCase::class])
 class IsNumericIpAddressUseCaseImpl : IsNumericIpAddressUseCase {
-
-    override fun invoke(ipAddress: String): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    override fun invoke(ipAddress: String): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             InetAddresses.isNumericAddress(ipAddress)
         } else {
             Patterns.IP_ADDRESS.matcher(ipAddress).matches()
         }
-    }
 }

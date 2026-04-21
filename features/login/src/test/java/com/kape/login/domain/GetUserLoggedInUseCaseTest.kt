@@ -12,7 +12,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import kotlin.test.assertEquals
 
 internal class GetUserLoggedInUseCaseTest : BaseTest() {
-
     private val source = mockk<AuthenticationDataSource>()
 
     private lateinit var useCase: GetUserLoggedInUseCase
@@ -24,9 +23,10 @@ internal class GetUserLoggedInUseCaseTest : BaseTest() {
 
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("booleans")
-    fun login(expected: Boolean) = runTest {
-        every { source.isUserLoggedIn() } returns expected
-        val actual = useCase.invoke()
-        assertEquals(expected, actual)
-    }
+    fun login(expected: Boolean) =
+        runTest {
+            every { source.isUserLoggedIn() } returns expected
+            val actual = useCase.invoke()
+            assertEquals(expected, actual)
+        }
 }

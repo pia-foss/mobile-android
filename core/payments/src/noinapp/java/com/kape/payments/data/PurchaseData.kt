@@ -4,8 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class PurchaseData {
-
-    override fun toString(): String {
-        return ""
-    }
+    override fun toString(): String = ""
 }

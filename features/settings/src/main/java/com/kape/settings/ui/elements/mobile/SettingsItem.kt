@@ -36,21 +36,24 @@ fun SettingsItem(
 ) {
     // Screen readers interpret the clickable modifier as an interactive element. By removing
     // this modifier, the screen reader will no longer wrongly suggest the user to "tap twice to activate"
-    val clickableModifier = if (onClick != null) {
-        Modifier.clickable(onClick = onClick)
-    } else {
-        Modifier
-    }
+    val clickableModifier =
+        if (onClick != null) {
+            Modifier.clickable(onClick = onClick)
+        } else {
+            Modifier
+        }
     Column(
-        modifier = Modifier
-            .padding(vertical = 1.dp)
-            .then(clickableModifier)
-            .semantics(mergeDescendants = true) {},
+        modifier =
+            Modifier
+                .padding(vertical = 1.dp)
+                .then(clickableModifier)
+                .semantics(mergeDescendants = true) {},
     ) {
         Row(
-            modifier = Modifier
-                .height(56.dp)
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .height(56.dp)
+                    .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             iconId?.let {
@@ -63,9 +66,10 @@ fun SettingsItem(
                 Spacer(modifier = Modifier.width(16.dp))
             }
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .testTag(testTag.toString()),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .testTag(testTag.toString()),
             ) {
                 SettingsL2Text(
                     content = stringResource(id = titleId),

@@ -10,26 +10,26 @@ import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [Router::class])
 class RouterImpl : Router {
-    private val _destination = MutableStateFlow<ComposeDestination?>(null)
-    private val _navigateBack = MutableStateFlow(false)
+    private val destination = MutableStateFlow<ComposeDestination?>(null)
+    private val navigateBack = MutableStateFlow(false)
 
     override fun updateDestination(destination: ComposeDestination) {
-        _destination.update { destination }
+        this.destination.update { destination }
     }
 
-    override fun getNavigationState(): StateFlow<ComposeDestination?> = _destination.asStateFlow()
+    override fun getNavigationState(): StateFlow<ComposeDestination?> = destination.asStateFlow()
 
     override fun resetNavigation() {
-        _destination.update { null }
+        destination.update { null }
     }
 
     override fun navigateBack() {
-        _navigateBack.update { true }
+        navigateBack.update { true }
     }
 
-    override fun getBackState(): StateFlow<Boolean> = _navigateBack.asStateFlow()
+    override fun getBackState(): StateFlow<Boolean> = navigateBack.asStateFlow()
 
     override fun resetBack() {
-        _navigateBack.update { false }
+        navigateBack.update { false }
     }
 }

@@ -8,7 +8,6 @@ import org.koin.core.annotation.Module
 
 @Module
 class CustomizationModule {
-
     @KoinViewModel
     fun provideCustomizationViewModel(
         prefs: CustomizationPrefs,

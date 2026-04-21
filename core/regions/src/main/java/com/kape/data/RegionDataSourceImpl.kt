@@ -14,8 +14,9 @@ import kotlin.coroutines.resume
 @Singleton([VpnRegionDataSource::class, ShadowsocksRegionDataSource::class])
 class RegionDataSourceImpl(
     private val api: RegionsAPI,
-) : VpnRegionDataSource, ShadowsocksRegionDataSource, KoinComponent {
-
+) : VpnRegionDataSource,
+    ShadowsocksRegionDataSource,
+    KoinComponent {
     // region VpnRegionDataSource
     override suspend fun fetchVpnRegions(locale: String): VpnRegionsResponse? =
         suspendCancellableCoroutine { cont ->
@@ -41,9 +42,7 @@ class RegionDataSourceImpl(
     // endregion
 
     // region ShadowsocksRegionDataSource
-    override suspend fun fetchShadowsocksRegions(
-        locale: String,
-    ): List<ShadowsocksRegionsResponse> =
+    override suspend fun fetchShadowsocksRegions(locale: String): List<ShadowsocksRegionsResponse> =
         suspendCancellableCoroutine { cont ->
             api.fetchShadowsocksRegions(locale) { response, error ->
                 if (error != null) {

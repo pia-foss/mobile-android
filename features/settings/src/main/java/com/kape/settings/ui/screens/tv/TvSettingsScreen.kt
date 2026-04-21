@@ -35,98 +35,104 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvSettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-    val initialFocusRequester = remember { FocusRequester() }
+fun TvSettingsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val initialFocusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
+        }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
-            Row(
+            HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.general_settings),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 64.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    SecondaryButton(
-                        text = stringResource(id = R.string.general),
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier.focusRequester(initialFocusRequester),
-                    ) {
-                        viewModel.navigateToGeneralSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.protocols),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToProtocolSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.networks),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToNetworkSettings()
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    SecondaryButton(
-                        text = stringResource(id = R.string.privacy),
-                        textAlign = TextAlign.Start,
-                    ) {
-                        viewModel.navigateToPrivacySettings()
-                    }
-                }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_tv_settings),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.general_settings),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
                     )
+                }
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 64.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        SecondaryButton(
+                            text = stringResource(id = R.string.general),
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier.focusRequester(initialFocusRequester),
+                        ) {
+                            viewModel.navigateToGeneralSettings()
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SecondaryButton(
+                            text = stringResource(id = R.string.protocols),
+                            textAlign = TextAlign.Start,
+                        ) {
+                            viewModel.navigateToProtocolSettings()
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SecondaryButton(
+                            text = stringResource(id = R.string.networks),
+                            textAlign = TextAlign.Start,
+                        ) {
+                            viewModel.navigateToNetworkSettings()
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        SecondaryButton(
+                            text = stringResource(id = R.string.privacy),
+                            textAlign = TextAlign.Start,
+                        ) {
+                            viewModel.navigateToPrivacySettings()
+                        }
+                    }
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_tv_settings),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         }
     }
-}

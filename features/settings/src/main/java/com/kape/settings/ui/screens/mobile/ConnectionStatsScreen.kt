@@ -23,49 +23,54 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ConnectionStatsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.connection_stats_title))
-    }
+fun ConnectionStatsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.connection_stats_title))
+            }
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        viewModel.getRecentEvents()
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                if (viewModel.eventList.value.isEmpty()) {
-                    Text(
-                        text = stringResource(id = R.string.connection_stats_no_events),
-                        color = LocalColors.current.outlineVariant,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp),
-                        textAlign = TextAlign.Center,
-                    )
-                } else {
-                    LazyColumn {
-                        items(viewModel.eventList.value) {
-                            Text(
-                                text = it,
-                                color = LocalColors.current.outlineVariant,
-                                modifier = Modifier
+            viewModel.getRecentEvents()
+            Column(
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    if (viewModel.eventList.value.isEmpty()) {
+                        Text(
+                            text = stringResource(id = R.string.connection_stats_no_events),
+                            color = LocalColors.current.outlineVariant,
+                            modifier =
+                                Modifier
                                     .fillMaxWidth()
                                     .padding(4.dp),
-                                textAlign = TextAlign.Start,
-                            )
+                            textAlign = TextAlign.Center,
+                        )
+                    } else {
+                        LazyColumn {
+                            items(viewModel.eventList.value) {
+                                Text(
+                                    text = it,
+                                    color = LocalColors.current.outlineVariant,
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(4.dp),
+                                    textAlign = TextAlign.Start,
+                                )
+                            }
                         }
                     }
                 }
             }
         }
     }
-}

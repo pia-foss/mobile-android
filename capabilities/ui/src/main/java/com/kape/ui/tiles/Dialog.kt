@@ -37,9 +37,10 @@ fun Dialog(
         confirmButton = {
             TextButton(
                 onClick = onConfirm,
-                modifier = Modifier.testTag(
-                    ":SideMenu:ConfirmButton",
-                ),
+                modifier =
+                    Modifier.testTag(
+                        ":SideMenu:ConfirmButton",
+                    ),
             ) {
                 Text(text = onConfirmButtonText)
             }
@@ -54,9 +55,10 @@ fun Dialog(
 
             TextButton(
                 onClick = onDismiss,
-                modifier = Modifier.testTag(
-                    ":SideMenu:DismissButton",
-                ),
+                modifier =
+                    Modifier.testTag(
+                        ":SideMenu:DismissButton",
+                    ),
             ) {
                 Text(text = onDismissButtonText)
             }
@@ -95,9 +97,10 @@ fun LogoutDialog(
         confirmButton = {
             TextButton(
                 onClick = onConfirm,
-                modifier = Modifier.testTag(
-                    ":SideMenu:ConfirmButton",
-                ),
+                modifier =
+                    Modifier.testTag(
+                        ":SideMenu:ConfirmButton",
+                    ),
             ) {
                 Text(text = stringResource(id = R.string.drawer_item_title_logout))
             }
@@ -105,9 +108,10 @@ fun LogoutDialog(
         dismissButton = {
             TextButton(
                 onClick = onDismiss,
-                modifier = Modifier.testTag(
-                    ":SideMenu:DismissButton",
-                ),
+                modifier =
+                    Modifier.testTag(
+                        ":SideMenu:DismissButton",
+                    ),
             ) {
                 Text(text = stringResource(id = R.string.cancel))
             }

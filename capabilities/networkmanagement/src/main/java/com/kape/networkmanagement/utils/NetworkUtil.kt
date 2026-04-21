@@ -8,22 +8,25 @@ import com.kape.ui.R
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class NetworkUtil(private val context: Context) {
-
+class NetworkUtil(
+    private val context: Context,
+) {
     fun getDefaultList(): List<NetworkItem> {
-        val openWifi = NetworkItem(
-            networkName = context.getString(R.string.nmt_open_wifi),
-            networkType = NetworkType.WifiOpen,
-            networkBehavior = NetworkBehavior.AlwaysConnect,
-            isDefaultForOpen = true,
-        )
+        val openWifi =
+            NetworkItem(
+                networkName = context.getString(R.string.nmt_open_wifi),
+                networkType = NetworkType.WifiOpen,
+                networkBehavior = NetworkBehavior.AlwaysConnect,
+                isDefaultForOpen = true,
+            )
 
-        val mobileData = NetworkItem(
-            networkName = context.getString(R.string.nmt_mobile_data),
-            networkType = NetworkType.MobileData,
-            networkBehavior = NetworkBehavior.AlwaysConnect,
-            isDefaultForMobile = true,
-        )
+        val mobileData =
+            NetworkItem(
+                networkName = context.getString(R.string.nmt_mobile_data),
+                networkType = NetworkType.MobileData,
+                networkBehavior = NetworkBehavior.AlwaysConnect,
+                isDefaultForMobile = true,
+            )
 
         return listOf(openWifi, mobileData)
     }

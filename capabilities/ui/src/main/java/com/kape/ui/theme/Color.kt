@@ -33,108 +33,114 @@ private val info50 = Color(0xFFEDF5FE)
 private val clientRed = Color(0xfff24458)
 private val clientDarkYellow = Color(0xFFE6B400)
 
-val LightColorScheme = lightColorScheme(
-    primary = darkGreen,
-    onPrimary = white,
-    primaryContainer = Color.Unspecified,
-    onPrimaryContainer = grey40,
-    inversePrimary = Color.Unspecified,
-    secondary = Color.Unspecified,
-    onSecondary = Color.Unspecified,
-    secondaryContainer = Color.Unspecified,
-    onSecondaryContainer = Color.Unspecified,
-    tertiary = Color.Unspecified,
-    onTertiary = grey20,
-    tertiaryContainer = Color.Unspecified,
-    onTertiaryContainer = Color.Unspecified,
-    background = grey90,
-    onBackground = grey20,
-    surface = grey90,
-    onSurface = grey20,
-    surfaceVariant = white,
-    onSurfaceVariant = grey30,
-    inverseSurface = grey20,
-    inverseOnSurface = grey90,
-    error = error10,
-    onError = white,
-    errorContainer = error50,
-    onErrorContainer = error10,
-    outline = grey70,
-    outlineVariant = grey40,
-)
+val LightColorScheme =
+    lightColorScheme(
+        primary = darkGreen,
+        onPrimary = white,
+        primaryContainer = Color.Unspecified,
+        onPrimaryContainer = grey40,
+        inversePrimary = Color.Unspecified,
+        secondary = Color.Unspecified,
+        onSecondary = Color.Unspecified,
+        secondaryContainer = Color.Unspecified,
+        onSecondaryContainer = Color.Unspecified,
+        tertiary = Color.Unspecified,
+        onTertiary = grey20,
+        tertiaryContainer = Color.Unspecified,
+        onTertiaryContainer = Color.Unspecified,
+        background = grey90,
+        onBackground = grey20,
+        surface = grey90,
+        onSurface = grey20,
+        surfaceVariant = white,
+        onSurfaceVariant = grey30,
+        inverseSurface = grey20,
+        inverseOnSurface = grey90,
+        error = error10,
+        onError = white,
+        errorContainer = error50,
+        onErrorContainer = error10,
+        outline = grey70,
+        outlineVariant = grey40,
+    )
 
-val DarkColorScheme = darkColorScheme(
-    primary = lightGreen,
-    onPrimary = grey20,
-    primaryContainer = grey30,
-    onPrimaryContainer = grey25,
-    inversePrimary = Color.Unspecified,
-    secondary = Color.Unspecified,
-    onSecondary = Color.Unspecified,
-    secondaryContainer = Color.Unspecified,
-    onSecondaryContainer = Color.Unspecified,
-    tertiary = Color.Unspecified,
-    onTertiary = grey20,
-    tertiaryContainer = Color.Unspecified,
-    onTertiaryContainer = Color.Unspecified,
-    background = grey20,
-    onBackground = grey90,
-    surface = grey20,
-    onSurface = grey90,
-    surfaceVariant = grey25,
-    onSurfaceVariant = grey70,
-    inverseSurface = grey90,
-    inverseOnSurface = grey20,
-    error = error30,
-    onError = white,
-    errorContainer = error50,
-    onErrorContainer = error10,
-    outline = grey30,
-    outlineVariant = grey70,
-)
+val DarkColorScheme =
+    darkColorScheme(
+        primary = lightGreen,
+        onPrimary = grey20,
+        primaryContainer = grey30,
+        onPrimaryContainer = grey25,
+        inversePrimary = Color.Unspecified,
+        secondary = Color.Unspecified,
+        onSecondary = Color.Unspecified,
+        secondaryContainer = Color.Unspecified,
+        onSecondaryContainer = Color.Unspecified,
+        tertiary = Color.Unspecified,
+        onTertiary = grey20,
+        tertiaryContainer = Color.Unspecified,
+        onTertiaryContainer = Color.Unspecified,
+        background = grey20,
+        onBackground = grey90,
+        surface = grey20,
+        onSurface = grey90,
+        surfaceVariant = grey25,
+        onSurfaceVariant = grey70,
+        inverseSurface = grey90,
+        inverseOnSurface = grey20,
+        error = error30,
+        onError = white,
+        errorContainer = error50,
+        onErrorContainer = error10,
+        outline = grey30,
+        outlineVariant = grey70,
+    )
 
-fun ColorScheme.defaultGradient(scheme: ColorScheme): List<Color> {
-    return listOf(scheme.surface, scheme.surface)
-}
+fun ColorScheme.defaultGradient(scheme: ColorScheme): List<Color> = listOf(scheme.surface, scheme.surface)
 
-fun ColorScheme.connectedGradient(): List<Color> {
-    return listOf(Color(0xff4cb649), Color(0xff5ddf5a))
-}
+fun ColorScheme.connectedGradient(): List<Color> = listOf(Color(0xff4cb649), Color(0xff5ddf5a))
 
-fun ColorScheme.connectingGradient(): List<Color> {
-    return listOf(Color(0xffe6b400), Color(0xfff9cf01))
-}
+fun ColorScheme.connectingGradient(): List<Color> = listOf(Color(0xffe6b400), Color(0xfff9cf01))
 
-fun ColorScheme.errorGradient(): List<Color> {
-    return listOf(Color(0xffb2352d), Color(0xfff24458))
-}
+fun ColorScheme.errorGradient(): List<Color> = listOf(Color(0xffb2352d), Color(0xfff24458))
 
 fun ColorScheme.warning30() = warning30
 
 fun ColorScheme.statusBarDefault(scheme: ColorScheme) = scheme.surface
+
 fun ColorScheme.statusBarConnected() = Color(0xff4cb649)
+
 fun ColorScheme.statusBarConnecting() = Color(0xffe6b400)
+
 fun ColorScheme.statusBarError() = Color(0xffb2352d)
 
 fun ColorScheme.errorOutline() = error30
+
 fun ColorScheme.errorBackground() = error50
 
 fun ColorScheme.warningOutline() = warning30
+
 fun ColorScheme.warningBackground() = warning50
+
 fun ColorScheme.warningOrange() = warning10
 
 fun ColorScheme.infoOutline() = info30
+
 fun ColorScheme.infoBackground() = info50
+
 fun ColorScheme.infoBlue() = info10
 
 fun ColorScheme.successOutline() = success30
+
 fun ColorScheme.successBackground() = success50
 
 fun ColorScheme.connectionDefault() = clientDarkYellow
+
 fun ColorScheme.connectionError() = clientRed
 
 private fun latencyGreen(): Color = Color(0xff4cb649)
+
 private fun latencyYellow(): Color = Color(0xffe6b400)
+
 private fun latencyRed(): Color = Color(0xffb2352d)
 
 fun ColorScheme.getLatencyColor(latency: String?): Color {

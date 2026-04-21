@@ -11,7 +11,6 @@ class RegionsModuleStateProvider(
     private val metaEndpointsProvider: MetaEndpointsProvider,
     private val useStaging: Boolean,
 ) : IRegionEndpointProvider {
-
     override fun regionEndpoints(): List<RegionEndpoint> {
         val endpoints = mutableListOf<RegionEndpoint>()
         for (metaEndpoint in metaEndpointsProvider.metaEndpoints()) {

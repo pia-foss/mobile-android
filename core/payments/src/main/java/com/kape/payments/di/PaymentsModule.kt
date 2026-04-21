@@ -16,10 +16,8 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class PaymentsModule {
-
     @Singleton
-    fun provideGetPurchaseDetailsUseCase(prefs: SubscriptionPrefs): GetPurchaseDetailsUseCase =
-        GetPurchaseDetailsUseCase(prefs)
+    fun provideGetPurchaseDetailsUseCase(prefs: SubscriptionPrefs): GetPurchaseDetailsUseCase = GetPurchaseDetailsUseCase(prefs)
 
     @Singleton(binds = [SubscriptionDataSource::class])
     fun provideSubscriptionDataSource(
@@ -28,8 +26,7 @@ class PaymentsModule {
     ): SubscriptionDataSource = SubscriptionDataSourceImpl(prefs, api)
 
     @Singleton
-    fun provideGetSubscriptionsUseCase(source: SubscriptionDataSource): GetSubscriptionsUseCase =
-        GetSubscriptionsUseCase(source)
+    fun provideGetSubscriptionsUseCase(source: SubscriptionDataSource): GetSubscriptionsUseCase = GetSubscriptionsUseCase(source)
 
     @Singleton(binds = [VpnSubscriptionPaymentProvider::class])
     fun provideVpnSubscriptionPaymentProvider(prefs: SubscriptionPrefs): VpnSubscriptionPaymentProvider =

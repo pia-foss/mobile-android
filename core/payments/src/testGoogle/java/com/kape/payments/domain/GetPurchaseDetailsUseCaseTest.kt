@@ -23,18 +23,20 @@ class GetPurchaseDetailsUseCaseTest {
 
     @ParameterizedTest(name = "expected: {0}")
     @MethodSource("prefsValues")
-    fun `test getPurchaseDetails`(expected: PurchaseData?) = runTest {
-        every { prefs.getVpnPurchaseData() } returns expected
+    fun `test getPurchaseDetails`(expected: PurchaseData?) =
+        runTest {
+            every { prefs.getVpnPurchaseData() } returns expected
 
-        val result = useCase.getPurchaseDetails()
-        assertEquals(expected, result)
-    }
+            val result = useCase.getPurchaseDetails()
+            assertEquals(expected, result)
+        }
 
     companion object {
         @JvmStatic
-        fun prefsValues() = Stream.of(
-            Arguments.of(null),
-            Arguments.of(PurchaseData("token", "productId", "orderId")),
-        )
+        fun prefsValues() =
+            Stream.of(
+                Arguments.of(null),
+                Arguments.of(PurchaseData("token", "productId", "orderId")),
+            )
     }
 }

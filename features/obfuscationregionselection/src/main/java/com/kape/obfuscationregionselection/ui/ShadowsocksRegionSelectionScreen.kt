@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
@@ -32,86 +31,92 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ShadowsocksRegionSelectionScreen() = Screen {
-    val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
-    val isLoading = remember { mutableStateOf(false) }
-    val viewModel: ShadowsocksRegionSelectionViewModel =
-        koinViewModel<ShadowsocksRegionSelectionViewModel>().apply {
-            LaunchedEffect(Unit) {
-                locale?.let {
-                    getShadowsocksRegions()
+fun ShadowsocksRegionSelectionScreen() =
+    Screen {
+        val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
+        val isLoading = remember { mutableStateOf(false) }
+        val viewModel: ShadowsocksRegionSelectionViewModel =
+            koinViewModel<ShadowsocksRegionSelectionViewModel>().apply {
+                LaunchedEffect(Unit) {
+                    locale?.let {
+                        getShadowsocksRegions()
+                    }
                 }
             }
-        }
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.location_selection_title))
-    }
-    val isSearchEnabled = remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier
-            .background(LocalColors.current.surfaceVariant)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        AppBar(appBarViewModel)
-
-        Column(modifier = Modifier.widthIn(max = 520.dp)) {
-            Search(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-            ) {
-                viewModel.filterByName(it, isSearchEnabled)
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.location_selection_title))
             }
+        val isSearchEnabled = remember { mutableStateOf(false) }
 
-            PullToRefreshBox(
-                state = rememberPullToRefreshState(),
-                isRefreshing = isLoading.value,
-                onRefresh = {
-                    locale?.let {
-                        viewModel.fetchShadowsocksRegions(locale, isLoading)
-                    }
-                },
-            ) {
-                LazyColumn {
-                    val items = if (isSearchEnabled.value) {
-                        viewModel.sorted.value
-                    } else {
-                        viewModel.servers.value
-                    }
-                    items(items.size) { index ->
-                        val item = items[index]
-                        when (item.type) {
-                            is ItemType.Content -> {
-                                LocationPickerItem(
-                                    server = item.type.server,
-                                    isFavorite = item.type.isFavorite,
-                                    enableFavorite = item.type.enableFavorite,
-                                    onClick = {
-                                        viewModel.onShadowsocksRegionSelected(it)
-                                        appBarViewModel.navigateBack()
-                                    },
-                                    onFavoriteShadowsocksClick = {
-                                        viewModel.onFavoriteShadowsocksClicked(
-                                            it,
-                                        )
-                                    },
-                                )
+        Column(
+            modifier =
+                Modifier
+                    .background(LocalColors.current.surfaceVariant)
+                    .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            AppBar(appBarViewModel)
+
+            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                Search(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    viewModel.filterByName(it, isSearchEnabled)
+                }
+
+                PullToRefreshBox(
+                    state = rememberPullToRefreshState(),
+                    isRefreshing = isLoading.value,
+                    onRefresh = {
+                        locale?.let {
+                            viewModel.fetchShadowsocksRegions(locale, isLoading)
+                        }
+                    },
+                ) {
+                    LazyColumn {
+                        val items =
+                            if (isSearchEnabled.value) {
+                                viewModel.sorted.value
+                            } else {
+                                viewModel.servers.value
                             }
+                        items(items.size) { index ->
+                            val item = items[index]
+                            when (item.type) {
+                                is ItemType.Content -> {
+                                    LocationPickerItem(
+                                        server = item.type.server,
+                                        isFavorite = item.type.isFavorite,
+                                        enableFavorite = item.type.enableFavorite,
+                                        onClick = {
+                                            viewModel.onShadowsocksRegionSelected(it)
+                                            appBarViewModel.navigateBack()
+                                        },
+                                        onFavoriteShadowsocksClick = {
+                                            viewModel.onFavoriteShadowsocksClicked(
+                                                it,
+                                            )
+                                        },
+                                    )
+                                }
 
-                            ItemType.HeadingAll -> {
-                                MenuText(
-                                    content = stringResource(id = R.string.all_locations),
-                                    modifier = Modifier.padding(16.dp),
-                                )
-                            }
+                                ItemType.HeadingAll -> {
+                                    MenuText(
+                                        content = stringResource(id = R.string.all_locations),
+                                        modifier = Modifier.padding(16.dp),
+                                    )
+                                }
 
-                            ItemType.HeadingFavorites -> {
-                                MenuText(
-                                    content = stringResource(id = R.string.favorites),
-                                    modifier = Modifier.padding(16.dp),
-                                )
+                                ItemType.HeadingFavorites -> {
+                                    MenuText(
+                                        content = stringResource(id = R.string.favorites),
+                                        modifier = Modifier.padding(16.dp),
+                                    )
+                                }
                             }
                         }
                     }
@@ -119,4 +124,3 @@ fun ShadowsocksRegionSelectionScreen() = Screen {
             }
         }
     }
-}

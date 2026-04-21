@@ -14,17 +14,19 @@ import com.kape.ui.utils.LocalColors
 @Composable
 fun NoNetworkBanner(noNetworkMessage: String) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(LocalColors.current.error),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(LocalColors.current.error),
     ) {
         Text(
             text = noNetworkMessage,
             color = LocalColors.current.onError,
             textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         )
     }
 }

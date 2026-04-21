@@ -35,58 +35,61 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AddNewRuleScreen() = Screen {
-    val viewModel: AutomationViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
-    }
-    val showDialog = remember { mutableStateOf(false) }
-    var currentItem: String? = null
-    val context: Context = LocalContext.current
-    val availableNetworks by viewModel.availableNetwork.collectAsStateWithLifecycle()
+fun AddNewRuleScreen() =
+    Screen {
+        val viewModel: AutomationViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
+            }
+        val showDialog = remember { mutableStateOf(false) }
+        var currentItem: String? = null
+        val context: Context = LocalContext.current
+        val availableNetworks by viewModel.availableNetwork.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.scanNetworks()
-    }
+        LaunchedEffect(key1 = Unit) {
+            viewModel.scanNetworks()
+        }
 
-    Scaffold(
-        topBar = {
-            AppBar(viewModel = appBarViewModel)
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                AppBar(viewModel = appBarViewModel)
+            },
         ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                OnboardingFooterText(
-                    content = stringResource(id = com.kape.ui.R.string.add_rule_title),
-                    modifier = Modifier.padding(16.dp),
-                )
-                availableNetworks?.let {
-                    WifiNetworkItem(ssid = it, showDialog) {
-                        currentItem = it
-                        showDialog.value = true
+            Column(
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    OnboardingFooterText(
+                        content = stringResource(id = com.kape.ui.R.string.add_rule_title),
+                        modifier = Modifier.padding(16.dp),
+                    )
+                    availableNetworks?.let {
+                        WifiNetworkItem(ssid = it, showDialog) {
+                            currentItem = it
+                            showDialog.value = true
+                        }
+                    }
+                }
+            }
+
+            if (showDialog.value) {
+                BehaviorDialog(
+                    status = stringResource(id = com.kape.ui.R.string.nmt_connect),
+                    showRemoveOption = false,
+                    showDialog,
+                ) {
+                    currentItem?.let { item ->
+                        viewModel.addRule(item, getRuleForStatus(context, it))
                     }
                 }
             }
         }
-
-        if (showDialog.value) {
-            BehaviorDialog(
-                status = stringResource(id = com.kape.ui.R.string.nmt_connect),
-                showRemoveOption = false,
-                showDialog,
-            ) {
-                currentItem?.let { item ->
-                    viewModel.addRule(item, getRuleForStatus(context, it))
-                }
-            }
-        }
     }
-}
 
 @Composable
 fun WifiNetworkItem(
@@ -95,12 +98,13 @@ fun WifiNetworkItem(
     onClick: (ssid: String) -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .padding(16.dp)
-            .clickable {
-                showDialog.value = true
-                onClick(ssid)
-            },
+        modifier =
+            Modifier
+                .padding(16.dp)
+                .clickable {
+                    showDialog.value = true
+                    onClick(ssid)
+                },
     ) {
         Icon(
             painter = painterResource(id = com.kape.ui.R.drawable.ic_open_wifi),

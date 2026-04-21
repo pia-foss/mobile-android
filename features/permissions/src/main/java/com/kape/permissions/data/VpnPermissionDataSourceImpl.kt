@@ -9,11 +9,10 @@ import org.koin.core.annotation.Singleton
 class VpnPermissionDataSourceImpl(
     private val context: Context,
 ) : VpnPermissionDataSource {
-    override fun isVpnProfileInstalled(): Boolean {
-        return try {
+    override fun isVpnProfileInstalled(): Boolean =
+        try {
             VpnService.prepare(context) == null
         } catch (ex: IllegalStateException) {
             false
         }
-    }
 }

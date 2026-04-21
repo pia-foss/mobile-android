@@ -9,9 +9,10 @@ import kotlin.test.assertEquals
 
 class GetLogsUseCaseTest {
     private val result = listOf("log1")
-    private val connectionSource: ConnectionDataSource = mockk<ConnectionDataSource>().apply {
-        coEvery { getDebugLogs() } returns result
-    }
+    private val connectionSource: ConnectionDataSource =
+        mockk<ConnectionDataSource>().apply {
+            coEvery { getDebugLogs() } returns result
+        }
 
     private lateinit var useCase: GetLogsUseCase
 
@@ -21,8 +22,9 @@ class GetLogsUseCaseTest {
     }
 
     @Test
-    fun `test getDebugLogs`() = runTest {
-        val actual = useCase.getDebugLogs()
-        assertEquals(result, actual)
-    }
+    fun `test getDebugLogs`() =
+        runTest {
+            val actual = useCase.getDebugLogs()
+            assertEquals(result, actual)
+        }
 }

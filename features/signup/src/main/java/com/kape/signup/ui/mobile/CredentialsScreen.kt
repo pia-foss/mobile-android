@@ -31,29 +31,35 @@ import com.kape.ui.theme.OutlineBackground
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Screen {
+fun CredentialsScreen(
+    viewModel: SignupViewModel,
+    credentials: Credentials,
+) = Screen {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(WindowInsets.systemBars.asPaddingValues()),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(WindowInsets.systemBars.asPaddingValues()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(modifier = Modifier.widthIn(max = 520.dp)) {
             Image(
                 painter = painterResource(id = R.drawable.ic_logo_large),
                 contentDescription = null,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(24.dp)
-                    .align(Alignment.CenterHorizontally),
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .height(24.dp)
+                        .align(Alignment.CenterHorizontally),
             )
             Image(
                 painter = painterResource(id = com.kape.signup.R.drawable.ic_complete_redeem),
                 contentDescription = null,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(80.dp)
-                    .align(Alignment.CenterHorizontally),
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .height(80.dp)
+                        .align(Alignment.CenterHorizontally),
             )
             Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
                 Text(
@@ -67,9 +73,10 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Sc
                     color = LocalColors.current.outlineVariant,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(horizontal = 24.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(horizontal = 24.dp),
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -77,21 +84,22 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Sc
                     color = LocalColors.current.outlineVariant,
                     fontSize = 14.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(horizontal = 24.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(horizontal = 24.dp),
                 )
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp, end = 24.dp, top = 16.dp)
-                        .border(
-                            1.dp,
-                            shape = OutlineBackground,
-                            color = LocalColors.current.outline,
-                        )
-                        .padding(16.dp)
-                        .semantics(mergeDescendants = true) { },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 24.dp, end = 24.dp, top = 16.dp)
+                            .border(
+                                1.dp,
+                                shape = OutlineBackground,
+                                color = LocalColors.current.outline,
+                            ).padding(16.dp)
+                            .semantics(mergeDescendants = true) { },
                 ) {
                     Text(
                         text = stringResource(id = R.string.username),
@@ -102,16 +110,16 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Sc
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
-                        .border(
-                            1.dp,
-                            shape = OutlineBackground,
-                            color = LocalColors.current.outline,
-                        )
-                        .padding(16.dp)
-                        .semantics(mergeDescendants = true) { },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
+                            .border(
+                                1.dp,
+                                shape = OutlineBackground,
+                                color = LocalColors.current.outline,
+                            ).padding(16.dp)
+                            .semantics(mergeDescendants = true) { },
                 ) {
                     Text(
                         text = stringResource(id = R.string.password),
@@ -124,9 +132,10 @@ fun CredentialsScreen(viewModel: SignupViewModel, credentials: Credentials) = Sc
             Spacer(modifier = Modifier.height(4.dp))
             PrimaryButton(
                 text = stringResource(id = R.string.get_started),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
             ) {
                 viewModel.completeSubscription()
             }

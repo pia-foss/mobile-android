@@ -39,8 +39,9 @@ fun Input(
 ) {
     Column(modifier = modifier) {
         OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .fillMaxWidth(),
             value = content.value,
             onValueChange = {
                 content.value = it
@@ -60,20 +61,22 @@ fun Input(
                     )
                 }
             },
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedContainerColor = LocalColors.current.onPrimary,
-                unfocusedContainerColor = LocalColors.current.onPrimary,
-                disabledContainerColor = LocalColors.current.onPrimary,
-                focusedBorderColor = LocalColors.current.primary,
-                errorBorderColor = LocalColors.current.error,
-            ),
+            colors =
+                OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = LocalColors.current.onPrimary,
+                    unfocusedContainerColor = LocalColors.current.onPrimary,
+                    disabledContainerColor = LocalColors.current.onPrimary,
+                    focusedBorderColor = LocalColors.current.primary,
+                    errorBorderColor = LocalColors.current.error,
+                ),
             visualTransformation = if (maskInput) PasswordVisualTransformation() else VisualTransformation.None,
-            keyboardOptions = KeyboardOptions(
-                autoCorrect = false,
-                keyboardType = keyboard,
-                imeAction = imeAction,
-                platformImeOptions = platformImeOptions,
-            ),
+            keyboardOptions =
+                KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = keyboard,
+                    imeAction = imeAction,
+                    platformImeOptions = platformImeOptions,
+                ),
             keyboardActions = keyboardActions,
             isError = errorMessage != null,
         )

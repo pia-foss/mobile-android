@@ -28,17 +28,19 @@ import org.koin.compose.koinInject
 @Composable
 fun Footer(modifier: Modifier = Modifier) {
     ProvideTextStyle(
-        value = TextStyle(
-            fontSize = 14.sp,
-        ),
+        value =
+            TextStyle(
+                fontSize = 14.sp,
+            ),
     ) {
         Row(modifier = modifier) {
             ClickableText(R.string.privacy_policy, WebDestination.Privacy)
             Text(
                 text = " ${stringResource(R.string.and)} ",
-                modifier = Modifier.semantics {
-                    this.invisibleToUser()
-                },
+                modifier =
+                    Modifier.semantics {
+                        this.invisibleToUser()
+                    },
             )
             ClickableText(R.string.terms_of_service, WebDestination.Terms)
         }
@@ -46,7 +48,10 @@ fun Footer(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ClickableText(@StringRes textId: Int, destination: ComposeDestination) {
+fun ClickableText(
+    @StringRes textId: Int,
+    destination: ComposeDestination,
+) {
     val router: Router = koinInject()
     val primaryColor = LocalColors.current.primary
 
@@ -55,20 +60,21 @@ fun ClickableText(@StringRes textId: Int, destination: ComposeDestination) {
         color = primaryColor,
         overflow = TextOverflow.Clip,
         softWrap = true,
-        modifier = Modifier
-            .clickable { router.updateDestination(destination) }
-            // This draws the underline.
-            // We could add the underline by defining the style as TextDecoration.Underline
-            // However, this causes the font size to change, which makes it quite hard to
-            // align texts vertically
-            .drawBehind {
-                val verticalOffset = size.height - 4.sp.toPx()
-                drawLine(
-                    color = primaryColor,
-                    strokeWidth = 1.dp.toPx(),
-                    start = Offset(0f, verticalOffset),
-                    end = Offset(size.width, verticalOffset),
-                )
-            },
+        modifier =
+            Modifier
+                .clickable { router.updateDestination(destination) }
+                // This draws the underline.
+                // We could add the underline by defining the style as TextDecoration.Underline
+                // However, this causes the font size to change, which makes it quite hard to
+                // align texts vertically
+                .drawBehind {
+                    val verticalOffset = size.height - 4.sp.toPx()
+                    drawLine(
+                        color = primaryColor,
+                        strokeWidth = 1.dp.toPx(),
+                        start = Offset(0f, verticalOffset),
+                        end = Offset(size.width, verticalOffset),
+                    )
+                },
     )
 }

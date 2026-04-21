@@ -21,38 +21,41 @@ import org.koin.core.annotation.Singleton
 class ConnectionStatusProviderImpl(
     private val connectionValues: Map<ConnectionStatus, String>,
     private val notificationHandler: NotificationHandler,
-) : ConnectionStatusProvider, VPNManagerConnectionListener {
+) : ConnectionStatusProvider,
+    VPNManagerConnectionListener {
     private var timerJob: Job? = null
     private var timer: Timer? = null
-    private val defaultVpnConnectionStatus = VpnConnectionStatus(
-        ConnectionStatus.DISCONNECTED,
-        connectionValues[ConnectionStatus.DISCONNECTED] ?: "",
-    )
+    private val defaultVpnConnectionStatus =
+        VpnConnectionStatus(
+            ConnectionStatus.DISCONNECTED,
+            connectionValues[ConnectionStatus.DISCONNECTED] ?: "",
+        )
     private val _state: MutableStateFlow<VpnConnectionStatus> =
         MutableStateFlow(defaultVpnConnectionStatus)
     override val state: StateFlow<VpnConnectionStatus> = _state.asStateFlow()
 
     override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
-        val currentStatus = when (status) {
-            VPNManagerConnectionStatus.Disconnecting -> {
-                cancelTimerJob()
-                ConnectionStatus.DISCONNECTING
-            }
+        val currentStatus =
+            when (status) {
+                VPNManagerConnectionStatus.Disconnecting -> {
+                    cancelTimerJob()
+                    ConnectionStatus.DISCONNECTING
+                }
 
-            is VPNManagerConnectionStatus.Disconnected -> ConnectionStatus.DISCONNECTED
-            VPNManagerConnectionStatus.Authenticating,
-            VPNManagerConnectionStatus.LinkUp,
-            VPNManagerConnectionStatus.Configuring,
-            VPNManagerConnectionStatus.Connecting,
+                is VPNManagerConnectionStatus.Disconnected -> ConnectionStatus.DISCONNECTED
+                VPNManagerConnectionStatus.Authenticating,
+                VPNManagerConnectionStatus.LinkUp,
+                VPNManagerConnectionStatus.Configuring,
+                VPNManagerConnectionStatus.Connecting,
                 -> ConnectionStatus.CONNECTING
 
-            VPNManagerConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
-            is VPNManagerConnectionStatus.Connected -> {
-                cancelTimerJob()
-                startTimer(System.currentTimeMillis())
-                ConnectionStatus.CONNECTED
+                VPNManagerConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
+                is VPNManagerConnectionStatus.Connected -> {
+                    cancelTimerJob()
+                    startTimer(System.currentTimeMillis())
+                    ConnectionStatus.CONNECTED
+                }
             }
-        }
 
         if (currentStatus != _state.value.status) {
             notificationHandler.update(currentStatus.toString())
@@ -69,15 +72,16 @@ class ConnectionStatusProviderImpl(
     }
 
     private fun startTimer(connectedAt: Long) {
-        timerJob = CoroutineScope(Dispatchers.IO).launch {
-            while (true) {
-                delay(1_000L)
-                timer = getTimer(System.currentTimeMillis() - connectedAt)
-                withContext(Dispatchers.Main) {
-                    setConnectionValuesTitle(timer)
+        timerJob =
+            CoroutineScope(Dispatchers.IO).launch {
+                while (true) {
+                    delay(1_000L)
+                    timer = getTimer(System.currentTimeMillis() - connectedAt)
+                    withContext(Dispatchers.Main) {
+                        setConnectionValuesTitle(timer)
+                    }
                 }
             }
-        }
     }
 
     private fun getTimer(timeConnected: Long): Timer {
@@ -93,15 +97,16 @@ class ConnectionStatusProviderImpl(
     private fun setConnectionValuesTitle(timer: Timer?) {
         val status = _state.value.status
         connectionValues[status]?.let {
-            val args = if (status == ConnectionStatus.CONNECTED) {
-                "%02d:%02d:%02d".format(
-                    timer?.hours,
-                    timer?.minutes,
-                    timer?.seconds,
-                )
-            } else {
-                ""
-            }
+            val args =
+                if (status == ConnectionStatus.CONNECTED) {
+                    "%02d:%02d:%02d".format(
+                        timer?.hours,
+                        timer?.minutes,
+                        timer?.seconds,
+                    )
+                } else {
+                    ""
+                }
             val title = String.format(it, args)
             _state.update { it.copy(status, title) }
         }

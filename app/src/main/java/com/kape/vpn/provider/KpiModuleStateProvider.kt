@@ -15,12 +15,8 @@ class KpiModuleStateProvider(
     val certificate: String,
     private val accountAPI: AndroidAccountAPI,
     private val useStaging: Boolean,
-) :
-    KPIClientStateProvider {
-
-    override fun kpiAuthToken(): String? {
-        return accountAPI.apiToken()
-    }
+) : KPIClientStateProvider {
+    override fun kpiAuthToken(): String? = accountAPI.apiToken()
 
     override fun kpiEndpoints(): List<KPIEndpoint> {
         val endpoints = mutableListOf<KPIEndpoint>()
@@ -52,11 +48,10 @@ class KpiModuleStateProvider(
         return endpoints
     }
 
-    override fun projectToken(): String {
-        return if (useStaging) {
+    override fun projectToken(): String =
+        if (useStaging) {
             STAGING_EVENT_TOKEN
         } else {
             PRODUCTION_EVENT_TOKEN
         }
-    }
 }

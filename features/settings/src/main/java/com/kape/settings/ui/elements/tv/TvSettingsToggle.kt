@@ -37,15 +37,17 @@ fun TvSettingsToggle(
     val isChecked = remember { stateEnabled }
     Button(
         modifier = modifier.fillMaxWidth(),
-        shape = ButtonDefaults.shape(
-            shape = RoundedCornerShape(12.dp),
-        ),
-        colors = ButtonDefaults.colors(
-            containerColor = LocalColors.current.background,
-            contentColor = LocalColors.current.onSurfaceVariant,
-            focusedContainerColor = LocalColors.current.primary,
-            focusedContentColor = LocalColors.current.onPrimary,
-        ),
+        shape =
+            ButtonDefaults.shape(
+                shape = RoundedCornerShape(12.dp),
+            ),
+        colors =
+            ButtonDefaults.colors(
+                containerColor = LocalColors.current.background,
+                contentColor = LocalColors.current.onSurfaceVariant,
+                focusedContainerColor = LocalColors.current.primary,
+                focusedContentColor = LocalColors.current.onPrimary,
+            ),
         onClick = {
             isChecked.value = !isChecked.value
             toggle(isChecked.value)
@@ -60,15 +62,16 @@ fun TvSettingsToggle(
         Spacer(modifier = Modifier.width(16.dp))
         Switch(
             checked = isChecked.value,
-            colors = SwitchDefaults.colors(
-                uncheckedBorderColor = LocalColors.current.onSurfaceVariant,
-                checkedBorderColor = Color.Unspecified,
-                uncheckedTrackColor = LocalColors.current.onPrimary,
-                checkedTrackColor = LocalColors.current.primary,
-                uncheckedIconColor = LocalColors.current.onSurfaceVariant,
-                checkedIconColor = LocalColors.current.onPrimary,
-                uncheckedThumbColor = LocalColors.current.onSurfaceVariant,
-            ),
+            colors =
+                SwitchDefaults.colors(
+                    uncheckedBorderColor = LocalColors.current.onSurfaceVariant,
+                    checkedBorderColor = Color.Unspecified,
+                    uncheckedTrackColor = LocalColors.current.onPrimary,
+                    checkedTrackColor = LocalColors.current.primary,
+                    uncheckedIconColor = LocalColors.current.onSurfaceVariant,
+                    checkedIconColor = LocalColors.current.onPrimary,
+                    uncheckedThumbColor = LocalColors.current.onSurfaceVariant,
+                ),
             onCheckedChange = null,
         )
     }

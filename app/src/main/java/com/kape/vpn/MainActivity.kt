@@ -25,30 +25,6 @@ import com.kape.connection.ui.mobile.ConnectionScreen
 import com.kape.connection.ui.tv.TvConnectionScreen
 import com.kape.contracts.Router
 import com.kape.customization.CustomizationScreen
-import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpScreen
-import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpCountryScreen
-import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpPurchaseSuccessScreen
-import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpScreen
-import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenActivateScreen
-import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenDetailsScreen
-import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
-import com.kape.inappbrowser.ui.InAppBrowser
-import com.kape.localprefs.prefs.ShortcutPrefs
-import com.kape.login.ui.mobile.LoginScreen
-import com.kape.login.ui.mobile.LoginWithEmailScreen
-import com.kape.login.ui.tv.LoginPasswordScreen
-import com.kape.login.ui.tv.LoginUsernameScreen
-import com.kape.login.utils.TokenAuthenticationUtil
-import com.kape.obfuscationregionselection.ui.ShadowsocksRegionSelectionScreen
-import com.kape.payments.ui.VpnSubscriptionPaymentProvider
-import com.kape.permissions.ui.mobile.NotificationPermissionScreen
-import com.kape.permissions.ui.mobile.VpnPermissionScreen
-import com.kape.permissions.ui.tv.TvNotificationPermissionScreen
-import com.kape.permissions.ui.tv.TvVpnPermissionScreen
-import com.kape.permissions.utils.PermissionUtil
-import com.kape.profile.ui.screens.mobile.AccountDeletedScreen
-import com.kape.profile.ui.screens.mobile.ProfileScreen
-import com.kape.profile.ui.screens.tv.TvProfileScreen
 import com.kape.data.About
 import com.kape.data.AccountDeleted
 import com.kape.data.AutomationAddRule
@@ -81,6 +57,7 @@ import com.kape.data.Profile
 import com.kape.data.ProtocolSettings
 import com.kape.data.Settings
 import com.kape.data.ShadowsocksRegionSelection
+import com.kape.data.Splash
 import com.kape.data.Subscribe
 import com.kape.data.TvLoginPassword
 import com.kape.data.TvLoginUsername
@@ -91,7 +68,30 @@ import com.kape.data.Update
 import com.kape.data.VpnPermission
 import com.kape.data.VpnRegionSelection
 import com.kape.data.WebDestination
-import com.kape.data.Splash
+import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpCountryScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpPurchaseSuccessScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenActivateScreen
+import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenDetailsScreen
+import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
+import com.kape.inappbrowser.ui.InAppBrowser
+import com.kape.localprefs.prefs.ShortcutPrefs
+import com.kape.login.ui.mobile.LoginScreen
+import com.kape.login.ui.mobile.LoginWithEmailScreen
+import com.kape.login.ui.tv.LoginPasswordScreen
+import com.kape.login.ui.tv.LoginUsernameScreen
+import com.kape.login.utils.TokenAuthenticationUtil
+import com.kape.obfuscationregionselection.ui.ShadowsocksRegionSelectionScreen
+import com.kape.payments.ui.VpnSubscriptionPaymentProvider
+import com.kape.permissions.ui.mobile.NotificationPermissionScreen
+import com.kape.permissions.ui.mobile.VpnPermissionScreen
+import com.kape.permissions.ui.tv.TvNotificationPermissionScreen
+import com.kape.permissions.ui.tv.TvVpnPermissionScreen
+import com.kape.permissions.utils.PermissionUtil
+import com.kape.profile.ui.screens.mobile.AccountDeletedScreen
+import com.kape.profile.ui.screens.mobile.ProfileScreen
+import com.kape.profile.ui.screens.tv.TvProfileScreen
 import com.kape.settings.ui.screens.mobile.AutomationSettingsScreen
 import com.kape.settings.ui.screens.mobile.ConnectionStatsScreen
 import com.kape.settings.ui.screens.mobile.ExternalProxyAppList
@@ -177,7 +177,10 @@ class MainActivity : AppCompatActivity() {
         shortcutManager.createDynamicShortcuts()
     }
 
-    override fun onNewIntent(intent: Intent, caller: ComponentCaller) {
+    override fun onNewIntent(
+        intent: Intent,
+        caller: ComponentCaller,
+    ) {
         super.onNewIntent(intent, caller)
         deepLinkLogin(intent)
     }
@@ -187,7 +190,7 @@ class MainActivity : AppCompatActivity() {
         if (platformUtils.isTv()) {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE // tv
         } else if (platformUtils.isTablet()) {
-            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED  // allow rotation
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED // allow rotation
         } else {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT // phone
         }

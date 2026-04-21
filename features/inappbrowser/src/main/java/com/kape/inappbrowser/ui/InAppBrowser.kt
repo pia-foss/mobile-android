@@ -27,45 +27,52 @@ import org.koin.androidx.compose.koinViewModel
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun InAppBrowser(url: String) = Screen {
-    val appBarViewModel: AppBarViewModel = koinViewModel()
-    var loading by remember { mutableStateOf(true) }
-    val context = LocalContext.current
+fun InAppBrowser(url: String) =
+    Screen {
+        val appBarViewModel: AppBarViewModel = koinViewModel()
+        var loading by remember { mutableStateOf(true) }
+        val context = LocalContext.current
 
-    val webview = remember {
-        WebView(context).apply {
-            settings.javaScriptEnabled = true
-            setBackgroundColor(android.graphics.Color.TRANSPARENT) // important
+        val webview =
+            remember {
+                WebView(context).apply {
+                    settings.javaScriptEnabled = true
+                    setBackgroundColor(android.graphics.Color.TRANSPARENT) // important
+                }
+            }
+
+        LaunchedEffect(url) {
+            webview.webViewClient =
+                object : WebViewClient() {
+                    override fun onPageFinished(
+                        view: WebView?,
+                        url: String?,
+                    ) {
+                        loading = false
+                    }
+                }
+            webview.loadUrl(url)
         }
-    }
 
-    LaunchedEffect(url) {
-        webview.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                loading = false
+        Column(modifier = Modifier.fillMaxSize()) {
+            AppBar(
+                viewModel = appBarViewModel,
+                type = AppBarType.InAppBrowser,
+            )
+
+            if (loading) {
+                LinearProgressIndicator(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(2.dp),
+                    color = LocalColors.current.primary,
+                )
+            } else {
+                AndroidView(
+                    modifier = Modifier.fillMaxSize(),
+                    factory = { webview },
+                )
             }
         }
-        webview.loadUrl(url)
     }
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        AppBar(
-            viewModel = appBarViewModel,
-            type = AppBarType.InAppBrowser,
-        )
-
-        if (loading) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2.dp),
-                color = LocalColors.current.primary,
-            )
-        } else {
-            AndroidView(
-                modifier = Modifier.fillMaxSize(),
-                factory = { webview },
-            )
-        }
-    }
-}

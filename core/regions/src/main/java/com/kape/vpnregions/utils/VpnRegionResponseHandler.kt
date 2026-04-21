@@ -18,7 +18,12 @@ fun adaptVpnServers(vpnRegionsResponse: VpnRegionsResponse): Map<String, VpnServ
             mutableMapOf<VpnServer.ServerGroup, List<VpnServer.ServerEndpointDetails>>()
 
         vpnRegionsResponse.groups[RegionsProtocol.WIREGUARD.protocol]?.let { group ->
-            val port = group.first().ports.first().toString()
+            val port =
+                group
+                    .first()
+                    .ports
+                    .first()
+                    .toString()
             wireguardEndpoints?.let {
                 val mappedEndpoints = mutableListOf<VpnServer.ServerEndpointDetails>()
                 for (wireguardEndpoint in it) {
@@ -74,22 +79,23 @@ fun adaptVpnServers(vpnRegionsResponse: VpnRegionsResponse): Map<String, VpnServ
             regionEndpoints[VpnServer.ServerGroup.META] = mappedEndpoints
         }
 
-        val server = VpnServer(
-            region.name,
-            region.country,
-            region.dns,
-            null,
-            regionEndpoints,
-            region.id,
-            region.latitude,
-            region.longitude,
-            region.geo,
-            region.offline,
-            region.portForward,
-            region.autoRegion,
-            null,
-            null,
-        )
+        val server =
+            VpnServer(
+                region.name,
+                region.country,
+                region.dns,
+                null,
+                regionEndpoints,
+                region.id,
+                region.latitude,
+                region.longitude,
+                region.geo,
+                region.offline,
+                region.portForward,
+                region.autoRegion,
+                null,
+                null,
+            )
         servers[region.id] = server
     }
     return servers

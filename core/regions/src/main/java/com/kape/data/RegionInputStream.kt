@@ -7,7 +7,9 @@ import java.io.InputStream
 import java.io.InputStreamReader
 
 @Singleton
-class RegionInputStream(private val context: Context) {
+class RegionInputStream(
+    private val context: Context,
+) {
     fun readAssetsFile(filename: String): String {
         val inputStream: InputStream = context.assets.open(filename)
         val r = BufferedReader(InputStreamReader(inputStream))

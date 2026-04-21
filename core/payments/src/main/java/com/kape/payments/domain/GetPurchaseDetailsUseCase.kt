@@ -5,7 +5,8 @@ import com.kape.payments.data.PurchaseData
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class GetPurchaseDetailsUseCase(private val prefs: SubscriptionPrefs) {
-
+class GetPurchaseDetailsUseCase(
+    private val prefs: SubscriptionPrefs,
+) {
     fun getPurchaseDetails(): PurchaseData? = prefs.getVpnPurchaseData()
 }

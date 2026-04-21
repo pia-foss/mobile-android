@@ -25,47 +25,50 @@ import com.kape.ui.mobile.elements.Screen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AutomationSettingsScreen() = Screen {
-    val viewModel: AutomationViewModel = koinViewModel()
-    val appBarViewModel: AppBarViewModel = koinViewModel<AppBarViewModel>().apply {
-        appBarText(stringResource(id = R.string.automation))
-    }
-    val state by viewModel.automationState.collectAsState()
-    val context = LocalContext.current
+fun AutomationSettingsScreen() =
+    Screen {
+        val viewModel: AutomationViewModel = koinViewModel()
+        val appBarViewModel: AppBarViewModel =
+            koinViewModel<AppBarViewModel>().apply {
+                appBarText(stringResource(id = R.string.automation))
+            }
+        val state by viewModel.state.collectAsState()
+        val context = LocalContext.current
 
-    Scaffold(
-        topBar = {
-            AppBar(
-                viewModel = appBarViewModel,
-                type = AppBarType.Navigation,
-            )
-        },
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxWidth()
-                .semantics {},
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                SettingsToggle(
-                    titleId = R.string.automation_title,
-                    subtitleId = R.string.automation_description,
-                    enabled = state.isEnabled,
-                    toggle = {
-                        viewModel.onAutomationToggled(context)
-                    },
+        Scaffold(
+            topBar = {
+                AppBar(
+                    viewModel = appBarViewModel,
+                    type = AppBarType.Navigation,
                 )
-                if (state.isEnabled) {
-                    SettingsItem(
-                        titleId = R.string.manage_automation,
-                        onClick = {
-                            viewModel.navigateToNextScreen()
+            },
+        ) {
+            Column(
+                modifier =
+                    Modifier
+                        .padding(it)
+                        .fillMaxWidth()
+                        .semantics {},
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    SettingsToggle(
+                        titleId = R.string.automation_title,
+                        subtitleId = R.string.automation_description,
+                        enabled = state.isEnabled,
+                        toggle = {
+                            viewModel.onAutomationToggled(context)
                         },
                     )
+                    if (state.isEnabled) {
+                        SettingsItem(
+                            titleId = R.string.manage_automation,
+                            onClick = {
+                                viewModel.navigateToNextScreen()
+                            },
+                        )
+                    }
                 }
             }
         }
     }
-}

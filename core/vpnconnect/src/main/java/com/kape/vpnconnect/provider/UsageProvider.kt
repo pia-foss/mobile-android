@@ -9,9 +9,9 @@ import kotlin.math.ln
 import kotlin.math.pow
 
 @Singleton([VPNManagerProtocolByteCountDependency::class])
-class UsageProvider(private val context: Context) :
-    VPNManagerProtocolByteCountDependency {
-
+class UsageProvider(
+    private val context: Context,
+) : VPNManagerProtocolByteCountDependency {
     val download = mutableStateOf(humanReadableByteCountSI(0))
     val upload = mutableStateOf(humanReadableByteCountSI(0))
 
@@ -20,7 +20,10 @@ class UsageProvider(private val context: Context) :
     val widgetUploadSpeed = mutableStateOf(humanReadableByteCount(0, true, context))
     val widgetUpload = mutableStateOf(humanReadableByteCount(0, false, context))
 
-    override fun byteCount(tx: Long, rx: Long) {
+    override fun byteCount(
+        tx: Long,
+        rx: Long,
+    ) {
         download.value = humanReadableByteCountSI(rx)
         upload.value = humanReadableByteCountSI(tx)
         widgetDownload.value = humanReadableByteCount(rx, false, context)
@@ -49,25 +52,41 @@ class UsageProvider(private val context: Context) :
                 s,
                 b / 1e3,
             )
-        } else if (1000.let { b /= it; b } < 999950L) {
+        } else if (1000.let {
+                b /= it
+                b
+            } < 999950L
+        ) {
             String.format(
                 "%s%.1f MB",
                 s,
                 b / 1e3,
             )
-        } else if (1000.let { b /= it; b } < 999950L) {
+        } else if (1000.let {
+                b /= it
+                b
+            } < 999950L
+        ) {
             String.format(
                 "%s%.1f GB",
                 s,
                 b / 1e3,
             )
-        } else if (1000.let { b /= it; b } < 999950L) {
+        } else if (1000.let {
+                b /= it
+                b
+            } < 999950L
+        ) {
             String.format(
                 "%s%.1f TB",
                 s,
                 b / 1e3,
             )
-        } else if (1000.let { b /= it; b } < 999950L) {
+        } else if (1000.let {
+                b /= it
+                b
+            } < 999950L
+        ) {
             String.format(
                 "%s%.1f PB",
                 s,
@@ -78,13 +97,18 @@ class UsageProvider(private val context: Context) :
         }
     }
 
-    private fun humanReadableByteCount(bytes: Long, speed: Boolean, context: Context): String {
+    private fun humanReadableByteCount(
+        bytes: Long,
+        speed: Boolean,
+        context: Context,
+    ): String {
         var bytes = bytes / 2
         if (speed) bytes *= 8
         val unit = if (speed) 1000 else 1024
-        val exp = 0.coerceAtLeast(
-            (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt().coerceAtMost(3),
-        )
+        val exp =
+            0.coerceAtLeast(
+                (ln(bytes.toDouble()) / ln(unit.toDouble())).toInt().coerceAtMost(3),
+            )
         val bytesUnit = (bytes / unit.toDouble().pow(exp.toDouble())).toFloat()
         return if (speed) {
             when (exp) {

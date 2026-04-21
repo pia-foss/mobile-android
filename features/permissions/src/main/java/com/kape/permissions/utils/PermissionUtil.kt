@@ -13,18 +13,16 @@ class PermissionUtil(
     private val useCaseIsVpnProfileInstalled: IsVpnProfileInstalledUseCase,
     private val notificationPermissionManager: NotificationPermissionManager,
 ) {
-    fun isNotificationPermissionGranted(): Boolean =
-        notificationPermissionManager.isNotificationsPermissionGranted()
+    fun isNotificationPermissionGranted(): Boolean = notificationPermissionManager.isNotificationsPermissionGranted()
 
     fun isVpnProfileInstalled(): Boolean = useCaseIsVpnProfileInstalled.isVpnProfileInstalled()
 
-    fun getNextDestination(): ComposeDestination {
-        return if (!useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
+    fun getNextDestination(): ComposeDestination =
+        if (!useCaseIsVpnProfileInstalled.isVpnProfileInstalled()) {
             VpnPermission
         } else if (!notificationPermissionManager.isNotificationsPermissionGranted()) {
             NotificationPermission
         } else {
             Connection
         }
-    }
 }

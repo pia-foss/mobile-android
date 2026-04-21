@@ -19,7 +19,6 @@ class SnoozeHandler(
     private val connectionPrefs: ConnectionPrefs,
     private val vpnLauncher: VpnLauncher,
 ) {
-
     val isSnoozeActive = mutableStateOf(false)
     val timeUntilResume = mutableIntStateOf(0)
     private var countDownTimer: CountDownTimer? = null
@@ -29,9 +28,10 @@ class SnoozeHandler(
         val nowInMillis = Calendar.getInstance().timeInMillis
         val end = nowInMillis + interval
         setCountdownTimer(end)
-        val workRequest = OneTimeWorkRequestBuilder<SnoozeWorker>()
-            .setInitialDelay(interval.toLong(), TimeUnit.MILLISECONDS)
-            .build()
+        val workRequest =
+            OneTimeWorkRequestBuilder<SnoozeWorker>()
+                .setInitialDelay(interval.toLong(), TimeUnit.MILLISECONDS)
+                .build()
         workManager.enqueueUniqueWork(
             WorkerTags.SNOOZE_WORKER,
             ExistingWorkPolicy.REPLACE,
@@ -50,16 +50,17 @@ class SnoozeHandler(
 
     private fun setCountdownTimer(end: Long) {
         if (countDownTimer == null) {
-            countDownTimer = object : CountDownTimer(end, MINUTE) {
-                override fun onTick(millisUntilFinished: Long) {
-                    timeUntilResume.intValue =
-                        (((connectionPrefs.getLastSnoozeEndTime() - Calendar.getInstance().timeInMillis) / MINUTE) + 1).toInt()
-                }
+            countDownTimer =
+                object : CountDownTimer(end, MINUTE) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        timeUntilResume.intValue =
+                            (((connectionPrefs.getLastSnoozeEndTime() - Calendar.getInstance().timeInMillis) / MINUTE) + 1).toInt()
+                    }
 
-                override fun onFinish() {
-                    // no-op
+                    override fun onFinish() {
+                        // no-op
+                    }
                 }
-            }
         }
         (countDownTimer as CountDownTimer).start()
     }

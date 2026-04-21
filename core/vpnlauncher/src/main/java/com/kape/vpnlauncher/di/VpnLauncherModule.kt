@@ -11,7 +11,6 @@ import org.koin.core.annotation.Singleton
 
 @Module
 class VpnLauncherModule {
-
     @Singleton
     fun provideVpnLauncher(
         context: Context,
@@ -19,11 +18,12 @@ class VpnLauncherModule {
         settingsPrefs: SettingsPrefs,
         regionListProvider: RegionListProvider,
         connectionManager: ConnectionManager,
-    ): VpnLauncher = VpnLauncher(
-        context,
-        connectionPrefs,
-        settingsPrefs,
-        regionListProvider,
-        connectionManager,
-    )
+    ): VpnLauncher =
+        VpnLauncher(
+            context,
+            connectionPrefs,
+            settingsPrefs,
+            regionListProvider,
+            connectionManager,
+        )
 }

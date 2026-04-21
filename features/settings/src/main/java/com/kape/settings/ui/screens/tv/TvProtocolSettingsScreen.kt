@@ -44,180 +44,187 @@ import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun TvProtocolSettingsScreen() = Screen {
-    val viewModel: SettingsViewModel = koinViewModel()
-    val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-    val initialFocusRequester = remember { FocusRequester() }
+fun TvProtocolSettingsScreen() =
+    Screen {
+        val viewModel: SettingsViewModel = koinViewModel()
+        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val initialFocusRequester = remember { FocusRequester() }
 
-    val protocolDialogVisible = remember { mutableStateOf(false) }
-    val transportDialogVisible = remember { mutableStateOf(false) }
-    val encryptionDialogVisible = remember { mutableStateOf(false) }
-    val portDialogVisible = remember { mutableStateOf(false) }
-    val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
-    val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
+        val protocolDialogVisible = remember { mutableStateOf(false) }
+        val transportDialogVisible = remember { mutableStateOf(false) }
+        val encryptionDialogVisible = remember { mutableStateOf(false) }
+        val portDialogVisible = remember { mutableStateOf(false) }
+        val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
+        val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
 
-    LaunchedEffect(key1 = Unit) {
-        initialFocusRequester.requestFocus()
-    }
+        LaunchedEffect(key1 = Unit) {
+            initialFocusRequester.requestFocus()
+        }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 4.dp,
-            color = connectionInfoProvider.getTopBarConnectionColor(
-                scheme = LocalColors.current,
-            ),
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
-                .background(LocalColors.current.background),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize(),
         ) {
-            Row(
+            HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                thickness = 4.dp,
+                color =
+                    connectionInfoProvider.getTopBarConnectionColor(
+                        scheme = LocalColors.current,
+                    ),
+            )
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 32.dp, top = 24.dp, end = 32.dp, bottom = 0.dp)
+                        .background(LocalColors.current.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                AppBarTitleText(
-                    content = stringResource(id = R.string.protocols),
-                    textColor = LocalColors.current.onSurface,
-                    isError = false,
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(end = 64.dp),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    when (viewModel.getSelectedProtocol()) {
-                        VpnProtocols.WireGuard ->
-                            TvWireguardProtocolSettingsScreen(
-                                viewModel = viewModel,
-                                initialFocusRequester = initialFocusRequester,
-                                protocolDialogVisible = protocolDialogVisible,
-                            )
-                        VpnProtocols.OpenVPN ->
-                            TvOpenVpnProtocolSettingsScreen(
-                                viewModel = viewModel,
-                                initialFocusRequester = initialFocusRequester,
-                                protocolDialogVisible = protocolDialogVisible,
-                                transportDialogVisible = transportDialogVisible,
-                                encryptionDialogVisible = encryptionDialogVisible,
-                                portDialogVisible = portDialogVisible,
-                            )
+                    AppBarTitleText(
+                        content = stringResource(id = R.string.protocols),
+                        textColor = LocalColors.current.onSurface,
+                        isError = false,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                Row(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(32.dp),
+                ) {
+                    Column(
+                        modifier =
+                            Modifier
+                                .weight(1.0f)
+                                .padding(end = 64.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top,
+                    ) {
+                        when (viewModel.getSelectedProtocol()) {
+                            VpnProtocols.WireGuard ->
+                                TvWireguardProtocolSettingsScreen(
+                                    viewModel = viewModel,
+                                    initialFocusRequester = initialFocusRequester,
+                                    protocolDialogVisible = protocolDialogVisible,
+                                )
+                            VpnProtocols.OpenVPN ->
+                                TvOpenVpnProtocolSettingsScreen(
+                                    viewModel = viewModel,
+                                    initialFocusRequester = initialFocusRequester,
+                                    protocolDialogVisible = protocolDialogVisible,
+                                    transportDialogVisible = transportDialogVisible,
+                                    encryptionDialogVisible = encryptionDialogVisible,
+                                    portDialogVisible = portDialogVisible,
+                                )
+                        }
+                    }
+                    Column(
+                        modifier = Modifier.weight(1.0f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_tv_settings),
+                            contentScale = ContentScale.Fit,
+                            contentDescription = null,
+                        )
                     }
                 }
-                Column(
-                    modifier = Modifier.weight(1.0f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+            }
+            if (protocolDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_tv_settings),
-                        contentScale = ContentScale.Fit,
-                        contentDescription = null,
+                    OptionsDialog(
+                        titleId = R.string.protocol_selection_title,
+                        options =
+                            mapOf(
+                                VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
+                                VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
+                            ),
+                        buttons = getDefaultButtons(),
+                        onDismiss = { protocolDialogVisible.value = false },
+                        onConfirm = {
+                            val hasProtocolChanged = protocolSelection.value != it
+                            viewModel.selectProtocol(it)
+                            protocolSelection.value = it
+                            protocolDialogVisible.value = false
+
+                            if (hasProtocolChanged) {
+                                viewModel.showReconnectDialogIfVpnConnected()
+                            }
+                        },
+                        selection = protocolSelection.value,
+                    )
+                }
+            }
+            if (viewModel.reconnectDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
+                ) {
+                    ReconnectDialog(
+                        onReconnect = {
+                            viewModel.reconnect()
+                            viewModel.reconnectDialogVisible.value = false
+                        },
+                        onLater = {
+                            viewModel.reconnectDialogVisible.value = false
+                        },
+                    )
+                }
+            }
+
+            if (transportDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
+                ) {
+                    TransportSelectionDialog(
+                        viewModel = viewModel,
+                        transportDialogVisible = transportDialogVisible,
+                        transportSelection = viewModel.getOpenVpnSettings().transport,
+                        portSelection = portSelection,
+                    )
+                }
+            }
+
+            if (encryptionDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
+                ) {
+                    EncryptionSelectionDialog(
+                        viewModel = viewModel,
+                        encryptionDialogVisible = encryptionDialogVisible,
+                        encryptionSelection = viewModel.getOpenVpnSettings().dataEncryption,
+                    )
+                }
+            }
+
+            if (portDialogVisible.value) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.6f),
+                ) {
+                    PortSelectionDialog(
+                        viewModel = viewModel,
+                        portDialogVisible = portDialogVisible,
+                        portSelection = viewModel.getOpenVpnSettings().port,
                     )
                 }
             }
         }
-        if (protocolDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                OptionsDialog(
-                    titleId = R.string.protocol_selection_title,
-                    options = mapOf(
-                        VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
-                        VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
-                    ),
-                    buttons = getDefaultButtons(),
-                    onDismiss = { protocolDialogVisible.value = false },
-                    onConfirm = {
-                        val hasProtocolChanged = protocolSelection.value != it
-                        viewModel.selectProtocol(it)
-                        protocolSelection.value = it
-                        protocolDialogVisible.value = false
-
-                        if (hasProtocolChanged) {
-                            viewModel.showReconnectDialogIfVpnConnected()
-                        }
-                    },
-                    selection = protocolSelection.value,
-                )
-            }
-        }
-        if (viewModel.reconnectDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                ReconnectDialog(
-                    onReconnect = {
-                        viewModel.reconnect()
-                        viewModel.reconnectDialogVisible.value = false
-                    },
-                    onLater = {
-                        viewModel.reconnectDialogVisible.value = false
-                    },
-                )
-            }
-        }
-
-        if (transportDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                TransportSelectionDialog(
-                    viewModel = viewModel,
-                    transportDialogVisible = transportDialogVisible,
-                    transportSelection = viewModel.getOpenVpnSettings().transport,
-                    portSelection = portSelection,
-                )
-            }
-        }
-
-        if (encryptionDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                EncryptionSelectionDialog(
-                    viewModel = viewModel,
-                    encryptionDialogVisible = encryptionDialogVisible,
-                    encryptionSelection = viewModel.getOpenVpnSettings().dataEncryption,
-                )
-            }
-        }
-
-        if (portDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                PortSelectionDialog(
-                    viewModel = viewModel,
-                    portDialogVisible = portDialogVisible,
-                    portSelection = viewModel.getOpenVpnSettings().port,
-                )
-            }
-        }
     }
-}
 
 @Composable
 private fun TvOpenVpnProtocolSettingsScreen(

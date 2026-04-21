@@ -26,9 +26,10 @@ fun Traffic(
     upload: String,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 32.dp, vertical = 16.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
         TileTitleText(content = stringResource(id = R.string.traffic))
         Spacer(modifier = Modifier.height(8.dp))
@@ -43,9 +44,10 @@ fun Traffic(
                 painter = painterResource(id = R.drawable.ic_arrow),
                 contentDescription = null,
                 tint = LocalColors.current.onSurface,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .weight(0.2f),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterVertically)
+                        .weight(0.2f),
             )
 
             Column(Modifier.weight(0.4f).semantics(mergeDescendants = true) {}) {

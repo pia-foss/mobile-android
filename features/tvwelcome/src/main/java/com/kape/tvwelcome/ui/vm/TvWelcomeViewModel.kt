@@ -12,7 +12,6 @@ class TvWelcomeViewModel(
     private val router: Router,
     buildConfigProvider: BuildConfigProvider,
 ) : ViewModel() {
-
     val shouldShowSubscribeButton = buildConfigProvider.isGoogleFlavor()
 
     fun login() = router.updateDestination(TvLoginUsername)

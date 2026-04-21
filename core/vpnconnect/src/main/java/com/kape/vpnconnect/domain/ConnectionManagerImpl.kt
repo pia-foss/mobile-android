@@ -13,13 +13,14 @@ import com.kape.obfuscator.data.ObfuscatorProcessListener
 import com.kape.obfuscator.domain.StartObfuscatorProcess
 import com.kape.obfuscator.domain.StopObfuscatorProcess
 import com.kape.portforwarding.domain.PortForwardingUseCase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.sync.Mutex
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class ConnectionManagerImpl : ConnectionManager, KoinComponent {
-
+class ConnectionManagerImpl :
+    ConnectionManager,
+    KoinComponent {
     private val connectionSource: ConnectionDataSource by inject()
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val connectionPrefs: ConnectionPrefs by inject()
@@ -37,11 +38,18 @@ class ConnectionManagerImpl : ConnectionManager, KoinComponent {
     // Ensures only one disconnect→connect sequence runs at a time.
     private val reconnectMutex = Mutex()
 
-    private data class Connection(val server: VpnServer, val inProgress: Boolean)
+    private data class Connection(
+        val server: VpnServer,
+        val inProgress: Boolean,
+    )
 
     override var connectJob: Job? = null
 
-    override suspend fun connect(server: VpnServer, isManual: Boolean, stopCallback: () -> Unit) {
+    override suspend fun connect(
+        server: VpnServer,
+        isManual: Boolean,
+        stopCallback: () -> Unit,
+    ) {
         connectionInProgress = true
         connectionStatus.add(Connection(server, true))
         // Update connection info
@@ -54,31 +62,35 @@ class ConnectionManagerImpl : ConnectionManager, KoinComponent {
         if (!shadowsocksOk) return
 
         // Start VPN
-        val vpnOk = connectionSource.startConnection(
-            connectionConfigurationUseCase.generateConnectionConfiguration(
-                server,
-            ),
-            connectionStatusProvider,
-        ).fold(
-            onSuccess = {
-                // Start Port Forwarding
-                startPortForwarding()
-            },
-            onFailure = {
-                disconnect().getOrNull()
-            },
-        )
+        val vpnOk =
+            connectionSource
+                .startConnection(
+                    connectionConfigurationUseCase.generateConnectionConfiguration(
+                        server,
+                    ),
+                    connectionStatusProvider,
+                ).fold(
+                    onSuccess = {
+                        // Start Port Forwarding
+                        startPortForwarding()
+                    },
+                    onFailure = {
+                        disconnect().getOrNull()
+                    },
+                )
     }
 
-    override suspend fun disconnect(): Result<Unit> {
-        return runCatching {
+    override suspend fun disconnect(): Result<Unit> =
+        runCatching {
             stopConnection()
             stopObfuscatorProcess()
             cancelPortForwarding()
         }
-    }
 
-    override suspend fun reconnect(server: VpnServer, stopCallback: () -> Unit) {
+    override suspend fun reconnect(
+        server: VpnServer,
+        stopCallback: () -> Unit,
+    ) {
         // Update quick-connect history immediately so the list stays relevant
         // regardless of whether this request ends up being the one connected to.
         connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
@@ -103,28 +115,29 @@ class ConnectionManagerImpl : ConnectionManager, KoinComponent {
         }
     }
 
-    override fun isConnectionInProgress(): Boolean {
-        return connectionInProgress
-    }
+    override fun isConnectionInProgress(): Boolean = connectionInProgress
 
     private suspend fun startShadowsocks(stopCallback: () -> Unit): Boolean {
         if (!settingsPrefs.isShadowsocksObfuscationEnabled()) return true
 
         val server = shadowsocksRegionPrefs.getSelectedShadowsocksServer() ?: return false
 
-        val result = startObfuscatorProcess(
-            obfuscatorProcessInformation = ObfuscatorProcessInformation(
-                serverIp = server.host,
-                serverPort = server.port.toString(),
-                serverKey = server.key,
-                serverEncryptMethod = server.cipher,
-            ),
-            obfuscatorProcessListener = object : ObfuscatorProcessListener {
-                override fun processStopped() {
-                    stopCallback()
-                }
-            },
-        )
+        val result =
+            startObfuscatorProcess(
+                obfuscatorProcessInformation =
+                    ObfuscatorProcessInformation(
+                        serverIp = server.host,
+                        serverPort = server.port.toString(),
+                        serverKey = server.key,
+                        serverEncryptMethod = server.cipher,
+                    ),
+                obfuscatorProcessListener =
+                    object : ObfuscatorProcessListener {
+                        override fun processStopped() {
+                            stopCallback()
+                        }
+                    },
+            )
 
         return result.isSuccess
     }
@@ -135,13 +148,12 @@ class ConnectionManagerImpl : ConnectionManager, KoinComponent {
         connectionSource.startPortForwarding()
     }
 
-    private suspend fun stopConnection(): Result<Unit> {
-        return runCatching {
+    private suspend fun stopConnection(): Result<Unit> =
+        runCatching {
             connectionSource.stopConnection().getOrThrow()
             connectionInfoProvider.resetConnectionInfo()
             connectionInProgress = false
         }
-    }
 
     private fun cancelPortForwarding(): Result<Unit> {
         connectionSource.stopPortForwarding()

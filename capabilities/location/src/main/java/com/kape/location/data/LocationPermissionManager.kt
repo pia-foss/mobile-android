@@ -8,12 +8,14 @@ import androidx.core.content.ContextCompat
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class LocationPermissionManager(private val context: Context) {
-
-    fun isFineLocationPermissionGranted() = ContextCompat.checkSelfPermission(
-        context,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-    ) == PackageManager.PERMISSION_GRANTED
+class LocationPermissionManager(
+    private val context: Context,
+) {
+    fun isFineLocationPermissionGranted() =
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+        ) == PackageManager.PERMISSION_GRANTED
 
     fun isBackgroundLocationPermissionGranted() =
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
