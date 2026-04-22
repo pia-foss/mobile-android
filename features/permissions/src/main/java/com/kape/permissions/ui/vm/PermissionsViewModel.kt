@@ -33,7 +33,11 @@ class PermissionsViewModel(
         viewModelScope.launch {
             if (permissionUtil.isVpnProfileInstalled()) {
                 _vpnPermissionState.emit(GRANTED)
-                router.updateDestination(NotificationPermission)
+                if (!permissionUtil.isNotificationPermissionGranted()) {
+                    router.updateDestination(NotificationPermission)
+                } else {
+                    navigateToConnection()
+                }
                 return@launch
             }
             _vpnPermissionState.emit(NOT_GRANTED)

@@ -19,6 +19,7 @@ import com.kape.data.QUICK_CONNECT_MAX_SERVERS
 import com.kape.data.Settings
 import com.kape.data.ShadowsocksRegionSelection
 import com.kape.data.TvSideMenu
+import com.kape.data.VpnPermission
 import com.kape.data.VpnRegionSelection
 import com.kape.data.vpnserver.VpnServer
 import com.kape.dedicatedip.domain.RenewDipUseCase
@@ -29,6 +30,7 @@ import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
+import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.utils.RatingTool
 import com.kape.settings.data.ObfuscationOptions
@@ -63,6 +65,7 @@ class ConnectionViewModel(
     private val ratingTool: RatingTool,
     private val shortcutPrefs: ShortcutPrefs,
     private val buildConfigProvider: BuildConfigProvider,
+    private val isVpnProfileInstalledUseCase: IsVpnProfileInstalledUseCase,
     val connectionInfoProvider: ConnectionInfoProvider,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
@@ -98,6 +101,9 @@ class ConnectionViewModel(
     val showDedicatedIpHomeBanner = mutableStateOf(false)
 
     init {
+        if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
+            router.updateDestination(VpnPermission)
+        }
         viewModelScope.launch {
             regionListProvider.isDefaultList.collectLatest { isDefault ->
                 if (isAutoMode) {
