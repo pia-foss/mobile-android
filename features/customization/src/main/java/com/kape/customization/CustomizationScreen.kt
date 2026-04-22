@@ -97,12 +97,14 @@ fun CustomizationScreen() =
                                     .fillMaxWidth()
                                     .background(LocalColors.current.surface),
                         ) {
-                            CreateCustomizableElement(
-                                screenElement = it,
-                                connectionViewModel = connectionViewModel,
-                                onVisibilityToggled = viewModel::toggleVisibility,
-                                modifier = Modifier.longPressDraggableHandle(),
-                            )
+                            if (it.shouldDisplayElement) {
+                                CreateCustomizableElement(
+                                    screenElement = it,
+                                    connectionViewModel = connectionViewModel,
+                                    onVisibilityToggled = viewModel::toggleVisibility,
+                                    modifier = Modifier.longPressDraggableHandle(),
+                                )
+                            }
                         }
                     }
                 }

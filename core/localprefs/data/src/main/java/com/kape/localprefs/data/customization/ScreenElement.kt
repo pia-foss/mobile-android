@@ -9,4 +9,5 @@ data class ScreenElement(
     val name: String,
     var isVisible: Boolean = true,
     var isLocked: Boolean = false,
+    var shouldDisplayElement: Boolean = true,
 )
