@@ -48,7 +48,7 @@ class CustomizationViewModel(
         items.add(to.index, items.removeAt(from.index))
     }
 
-    fun saveOrder() = prefs.setOrderedElements(items)
+    fun saveOrder() = prefs.setElements(items)
 
     fun toggleVisibility(
         element: Element,

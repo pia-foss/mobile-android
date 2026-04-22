@@ -171,7 +171,7 @@ class ConnectionViewModel(
         }
     }
 
-    fun getOrderedElements() = customizationPrefs.getOrderedElements()
+    fun getOrderedElements() = customizationPrefs.getElements()
 
     fun isScreenElementVisible(screenElement: ScreenElement): Boolean =
         when (screenElement.element) {
