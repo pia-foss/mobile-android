@@ -71,7 +71,7 @@ fun SideMenuContent(
         SideMenuHeaderItem(
             username = viewModel.username.value,
             versionCode = viewModel.getVersionCode(),
-            versionName = viewModel.getVersionCode(),
+            versionName = viewModel.getVersionName(),
         )
 
         Spacer(modifier = Modifier.height(32.dp))
