@@ -59,6 +59,7 @@ dependencies {
     implementation(project(":features:vpnregionselection"))
     implementation(project(":features:dedicatedip"))
     implementation(project(":features:rating"))
+    implementation(project(":features:permissions"))
     implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:sharedui"))
 

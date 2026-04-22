@@ -12,6 +12,7 @@ import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
+import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.rating.utils.RatingTool
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
@@ -41,6 +42,7 @@ class ConnectionModule {
         ratingTool: RatingTool,
         shortcutPrefs: ShortcutPrefs,
         buildConfigProvider: BuildConfigProvider,
+        isVpnProfileInstalledUseCase: IsVpnProfileInstalledUseCase,
         networkConnectionListener: NetworkConnectionListener,
     ): ConnectionViewModel =
         ConnectionViewModel(
@@ -59,6 +61,7 @@ class ConnectionModule {
             ratingTool,
             shortcutPrefs,
             buildConfigProvider,
+            isVpnProfileInstalledUseCase,
             connectionInfoProvider,
             networkConnectionListener,
         )
