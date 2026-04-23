@@ -43,7 +43,6 @@ import com.kape.sharedui.tiles.Traffic
 import com.kape.sharedui.tiles.VpnLocationPicker
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
-import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.elements.Visibility
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
@@ -199,10 +198,10 @@ private fun DisplayComponent(
                     viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
             }
             QuickConnect(
+                modifier = modifier,
                 servers = quickConnectMap,
                 onClick = {},
             )
-            Separator()
         }
 
         Element.QuickSettings -> {
