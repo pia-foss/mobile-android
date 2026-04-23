@@ -4,7 +4,10 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -65,7 +68,8 @@ fun VpnRegionSelectionScreen() =
                 Modifier
                     .background(LocalColors.current.surfaceVariant)
                     .fillMaxWidth()
-                    .semantics { testTagsAsResourceId = true },
+                    .semantics { testTagsAsResourceId = true }
+                    .padding(WindowInsets.navigationBars.asPaddingValues()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AppBar(appBarViewModel)
