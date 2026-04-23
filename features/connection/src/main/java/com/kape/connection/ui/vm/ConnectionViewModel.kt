@@ -256,7 +256,11 @@ class ConnectionViewModel(
     }
 
     fun showVpnRegionSelection() {
-        router.updateDestination(VpnRegionSelection)
+        if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
+            router.updateDestination(VpnPermission)
+        } else {
+            router.updateDestination(VpnRegionSelection)
+        }
     }
 
     fun getSelectedShadowsocksServer() = shadowsocksListProvider.getSelected()
@@ -269,14 +273,19 @@ class ConnectionViewModel(
         connect()
     }
 
-    fun onConnectionButtonClicked() =
-        viewModelScope.launch {
-            if (connectionInfoProvider.isInConnectState()) {
-                disconnect()
-            } else {
-                connect()
+    fun onConnectionButtonClicked() {
+        if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
+            router.updateDestination(VpnPermission)
+        } else {
+            viewModelScope.launch {
+                if (connectionInfoProvider.isInConnectState()) {
+                    disconnect()
+                } else {
+                    connect()
+                }
             }
         }
+    }
 
     fun getConnectionSettings() =
         when (settingsPrefs.getSelectedProtocol()) {
@@ -285,16 +294,20 @@ class ConnectionViewModel(
         }
 
     fun quickConnect(server: VpnServer) {
-        vpnRegionPrefs.selectVpnServer(server)
-        connectionManager.connectJob =
-            viewModelScope.launch {
-                connectionManager.reconnect(server, ::callback)
+        if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
+            router.updateDestination(VpnPermission)
+        } else {
+            vpnRegionPrefs.selectVpnServer(server)
+            connectionManager.connectJob =
+                viewModelScope.launch {
+                    connectionManager.reconnect(server, ::callback)
+                }
+            _state.update {
+                it.copy(
+                    server = server,
+                    quickConnectServers = getQuickConnectVpnServers(),
+                )
             }
-        _state.update {
-            it.copy(
-                server = server,
-                quickConnectServers = getQuickConnectVpnServers(),
-            )
         }
     }
 
