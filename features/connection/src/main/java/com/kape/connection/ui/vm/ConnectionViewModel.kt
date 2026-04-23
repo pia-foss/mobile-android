@@ -269,14 +269,19 @@ class ConnectionViewModel(
         connect()
     }
 
-    fun onConnectionButtonClicked() =
-        viewModelScope.launch {
-            if (connectionInfoProvider.isInConnectState()) {
-                disconnect()
-            } else {
-                connect()
+    fun onConnectionButtonClicked() {
+        if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
+            router.updateDestination(VpnPermission)
+        } else {
+            viewModelScope.launch {
+                if (connectionInfoProvider.isInConnectState()) {
+                    disconnect()
+                } else {
+                    connect()
+                }
             }
         }
+    }
 
     fun getConnectionSettings() =
         when (settingsPrefs.getSelectedProtocol()) {
