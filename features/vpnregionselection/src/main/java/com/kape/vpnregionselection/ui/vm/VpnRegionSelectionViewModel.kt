@@ -91,12 +91,13 @@ class VpnRegionSelectionViewModel(
         if (value.isNotEmpty()) {
             isSearchEnabled?.value = true
             sorted.value =
-                servers.value.filter {
-                    it.type is ItemType.Content &&
-                        it.type.server.name
-                            .lowercase()
-                            .contains(value.lowercase())
-                }
+                servers.value
+                    .filter {
+                        it.type is ItemType.Content &&
+                            it.type.server.name
+                                .lowercase()
+                                .contains(value.lowercase())
+                    }.distinct()
         } else {
             sorted.value = emptyList()
             isSearchEnabled?.value = false
