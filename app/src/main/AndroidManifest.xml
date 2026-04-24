@@ -115,13 +115,9 @@
 
         <service
             android:name=".service.AutomationService"
-            android:foregroundServiceType="specialUse"
             android:exported="false"
-            android:permission="android.permission.BIND_VPN_SERVICE">
-            <intent-filter>
-                <action android:name="android.net.VpnService" />
-            </intent-filter>
-        </service>
+            android:foregroundServiceType="specialUse"
+            android:permission="android.permission.BIND_VPN_SERVICE" />
 
         <service
             android:name=".service.VpnAlwaysOnService"
