@@ -17,6 +17,9 @@ class TokenAuthenticationUtil(
     private val router: Router,
     private val permissionUtil: PermissionUtil,
 ) : CoroutineScope {
+    private val login = "piavpn:login?"
+    private val qrLogin = "piavpn:loginqr?"
+    private val loginUrl = "piavpn://login/?"
     private val job = Job()
 
     override val coroutineContext: CoroutineContext
@@ -25,7 +28,11 @@ class TokenAuthenticationUtil(
     fun authenticate(uri: Uri) {
         var openUri = uri
         var url = openUri.toString()
-        url = url.replace("piavpn:login?", "piavpn://login/?")
+        if (url.contains(login)) {
+            url = url.replace(login, loginUrl)
+        } else if (url.contains(qrLogin)) {
+            url = url.replace(qrLogin, loginUrl)
+        }
         openUri = Uri.parse(url)
         val token = openUri.getQueryParameter("token")
         token?.let {
