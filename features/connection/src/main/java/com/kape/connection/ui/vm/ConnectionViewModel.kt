@@ -160,14 +160,16 @@ class ConnectionViewModel(
         viewModelScope.launch {
             if (settingsPrefs.isConnectOnLaunchEnabled() || shortcutPrefs.isShortcutConnectToVpn()) {
                 shortcutPrefs.setShortcutConnectToVpn(false)
-                prefs.getSelectedVpnServer()?.let {
-                    connectionManager.connect(it, false, ::callback)
-                } ?: run {
-                    connectionManager.connect(
-                        regionListProvider.getOptimalServer(),
-                        false,
-                        ::callback,
-                    )
+                if (!connectionInfoProvider.isConnected()) {
+                    prefs.getSelectedVpnServer()?.let {
+                        connectionManager.connect(it, false, ::callback)
+                    } ?: run {
+                        connectionManager.connect(
+                            regionListProvider.getOptimalServer(),
+                            false,
+                            ::callback,
+                        )
+                    }
                 }
             }
             if (shortcutPrefs.isShortcutDisconnectVpn()) {
