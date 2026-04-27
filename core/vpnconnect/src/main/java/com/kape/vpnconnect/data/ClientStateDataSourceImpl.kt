@@ -6,7 +6,6 @@ import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.utils.DELAY_BETWEEN_RETRY
-import com.kape.vpnconnect.utils.STATUS_REQUEST_LONG_TIMEOUT
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -31,9 +30,9 @@ class ClientStateDataSourceImpl(
     }
 
     override suspend fun getVpnIp(): String {
-        repeat(3) { attempt ->
+        repeat(5) { attempt ->
             val vpnIp = getVpnIpOnce()
-            if (vpnIp != NO_IP) return vpnIp
+            if (vpnIp != NO_IP && vpnIp != connectionPrefs.getClientIp()) return vpnIp
 
             delay(DELAY_BETWEEN_RETRY)
         }
@@ -42,7 +41,7 @@ class ClientStateDataSourceImpl(
 
     private suspend fun getVpnIpOnce(): String =
         suspendCancellableCoroutine { continuation ->
-            accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT) { clientStatusInfo, errors ->
+            accountAPI.clientStatus { clientStatusInfo, errors ->
                 val ip = clientStatusInfo?.ip ?: NO_IP
                 if (clientStatusInfo?.connected == true) {
                     connectionPrefs.setVpnIp(ip)
@@ -53,7 +52,7 @@ class ClientStateDataSourceImpl(
 
     private suspend fun getPublicIpOnce(): String =
         suspendCancellableCoroutine { continuation ->
-            accountAPI.clientStatus(STATUS_REQUEST_LONG_TIMEOUT) { clientStatusInfo, errors ->
+            accountAPI.clientStatus { clientStatusInfo, errors ->
                 val ip = clientStatusInfo?.ip ?: NO_IP
                 if (clientStatusInfo?.connected == false) {
                     connectionPrefs.setClientIp(ip)
