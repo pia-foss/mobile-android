@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
+import com.kape.login.R
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
@@ -191,7 +192,7 @@ fun LoginScreen() =
 @Composable
 private fun getErrorMessage(state: LoginScreenState): String? =
     when (state.error) {
-        LoginError.Expired -> "account expired flow" // TODO: handle when signup module is built
+        LoginError.Expired -> stringResource(com.kape.ui.R.string.error_account_expired)
         LoginError.Failed -> stringResource(id = com.kape.ui.R.string.error_username_password_invalid)
         LoginError.Invalid -> stringResource(id = com.kape.ui.R.string.error_missing_credentials)
         LoginError.Throttled -> stringResource(id = com.kape.ui.R.string.error_throttled)
