@@ -57,6 +57,5 @@ class CustomizationViewModel(
         items.first { it.element == element }.apply {
             this.isVisible = isVisible
         }
-        prefs.setElements(items)
     }
 }
