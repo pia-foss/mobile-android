@@ -2,7 +2,7 @@ package com.kape.vpnconnect.provider
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateOf
-import com.kape.vpnconnect.R
+import androidx.compose.runtime.snapshots.Snapshot
 import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import org.koin.core.annotation.Singleton
 import kotlin.math.ln
@@ -24,21 +24,25 @@ class UsageProvider(
         tx: Long,
         rx: Long,
     ) {
-        download.value = humanReadableByteCountSI(rx)
-        upload.value = humanReadableByteCountSI(tx)
-        widgetDownload.value = humanReadableByteCount(rx, false, context)
-        widgetDownloadSpeed.value = humanReadableByteCount(rx, true, context)
-        widgetUpload.value = humanReadableByteCount(tx, false, context)
-        widgetUploadSpeed.value = humanReadableByteCount(tx, true, context)
+        Snapshot.withMutableSnapshot {
+            download.value = humanReadableByteCountSI(rx)
+            upload.value = humanReadableByteCountSI(tx)
+            widgetDownload.value = humanReadableByteCount(rx, false, context)
+            widgetDownloadSpeed.value = humanReadableByteCount(rx, true, context)
+            widgetUpload.value = humanReadableByteCount(tx, false, context)
+            widgetUploadSpeed.value = humanReadableByteCount(tx, true, context)
+        }
     }
 
     fun reset() {
-        download.value = humanReadableByteCountSI(0)
-        upload.value = humanReadableByteCountSI(0)
-        widgetUploadSpeed.value = humanReadableByteCount(0, true, context)
-        widgetUpload.value = humanReadableByteCount(0, true, context)
-        widgetDownload.value = humanReadableByteCount(0, true, context)
-        widgetDownloadSpeed.value = humanReadableByteCount(0, true, context)
+        Snapshot.withMutableSnapshot {
+            download.value = humanReadableByteCountSI(0)
+            upload.value = humanReadableByteCountSI(0)
+            widgetUploadSpeed.value = humanReadableByteCount(0, true, context)
+            widgetUpload.value = humanReadableByteCount(0, false, context)
+            widgetDownload.value = humanReadableByteCount(0, false, context)
+            widgetDownloadSpeed.value = humanReadableByteCount(0, true, context)
+        }
     }
 
     private fun humanReadableByteCountSI(bytes: Long): String {
