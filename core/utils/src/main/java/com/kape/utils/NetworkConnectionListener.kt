@@ -12,6 +12,7 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import com.kape.contracts.NetworkManager
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class NetworkConnectionListener(
     context: Context,
@@ -96,9 +97,9 @@ class NetworkConnectionListener(
             .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
             .build()
 
-    private val _isConnected = MutableStateFlow(false)
+    private val _isConnected = MutableStateFlow(true)
 
-    val isConnected = _isConnected
+    val isConnected = _isConnected.asStateFlow()
 
     private val _ssid = MutableStateFlow<String?>(null)
     val ssid = _ssid
