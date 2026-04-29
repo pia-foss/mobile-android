@@ -89,6 +89,7 @@ import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.elements.TertiaryButton
 import com.kape.ui.mobile.text.DedicatedIpHomeBannerText
 import com.kape.ui.theme.PiaTypography.subtitle3
+import com.kape.ui.tiles.Dialog
 import com.kape.ui.utils.LocalColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -112,6 +113,7 @@ fun ConnectionScreen() =
         val showRatingFeedbackDialog = remember { mutableStateOf(false) }
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
+        val shouldShowProtocolNotAvailable by viewModel.showProtocolNotAvailableDialog
 
         BackHandler {
             activity?.finish()
@@ -280,6 +282,15 @@ fun ConnectionScreen() =
                             )
                         }
                     }
+                }
+
+                if (shouldShowProtocolNotAvailable) {
+                    Dialog(
+                        stringResource(R.string.protocol_unavailable_title),
+                        stringResource(R.string.protocol_unavailable_message),
+                        stringResource(R.string.protocol_unavailable_action),
+                        onConfirm = { viewModel.resetProtocolNotAvailable() },
+                    )
                 }
             }
         }

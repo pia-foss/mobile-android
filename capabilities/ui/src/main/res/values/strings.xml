@@ -448,4 +448,8 @@
     <string name="update_required_message">Your app is outdated. Please update to continue using the app.</string>
     <string name="update_required_action">Update Now</string>
     <string name="update_required_info">Tapping \"Update Now\" will disconnect the VPN.</string>
+
+    <string name="protocol_unavailable_title">Protocol Temporarily Unavailable</string>
+    <string name="protocol_unavailable_message">This region isn\'t available with the current protocol. Try another region or protocol.</string>
+    <string name="protocol_unavailable_action">OK</string>
 </resources>

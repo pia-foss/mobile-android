@@ -10,6 +10,7 @@ interface ConnectionManager {
         server: VpnServer,
         isManual: Boolean,
         stopCallback: () -> Unit,
+        showDialog: () -> Unit,
     )
 
     suspend fun disconnect(): Result<Unit>
