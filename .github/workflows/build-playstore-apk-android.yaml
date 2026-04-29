@@ -36,6 +36,8 @@ jobs:
             --ks-pass pass:"${{ secrets.SIGNING_PLAYSTORE_STORE_PASSWORD }}" \
             --key-pass pass:"${{ secrets.SIGNING_PLAYSTORE_KEY_PASSWORD }}" \
             --ks-key-alias "${{ secrets.SIGNING_PLAYSTORE_KEY_ALIAS }}" \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
             --out app-google-release-signed.apk \
             app/build/outputs/apk/google/release/app-google-release-unsigned.apk
 

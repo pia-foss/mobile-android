@@ -36,6 +36,8 @@ jobs:
             --ks-pass pass:"${{ secrets.SIGNING_WEB_STORE_PASSWORD }}" \
             --key-pass pass:"${{ secrets.SIGNING_WEB_KEY_PASSWORD }}" \
             --ks-key-alias "${{ secrets.SIGNING_WEB_KEY_ALIAS }}" \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
             --out app-amazon-release-signed.apk \
             app/build/outputs/apk/amazon/release/app-amazon-release-unsigned.apk
 
