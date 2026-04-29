@@ -21,9 +21,10 @@ class CustomizationViewModel(
     val router: Router,
 ) : ViewModel(),
     KoinComponent {
-    private val items = mutableStateListOf<ScreenElement>()
+    val items = mutableStateListOf<ScreenElement>()
 
     fun getOrderedElements(): List<ScreenElement> {
+        items.clear()
         val current = prefs.getElements()
         current.forEach {
             if (it.element == Element.ShadowsocksRegionSelection) {

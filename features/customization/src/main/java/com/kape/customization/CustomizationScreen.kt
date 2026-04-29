@@ -17,7 +17,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -56,15 +55,11 @@ fun CustomizationScreen() =
         val connectionViewModel: ConnectionViewModel = koinViewModel()
         val appBarViewModel: AppBarViewModel = koinViewModel()
 
-        var list by remember { mutableStateOf(viewModel.getOrderedElements()) }
+        remember { viewModel.getOrderedElements() }
         val lazyListState = rememberLazyListState()
         val reorderableLazyColumnState =
             rememberReorderableLazyListState(lazyListState) { from, to ->
                 viewModel.onMove(from, to)
-                list =
-                    list.toMutableList().apply {
-                        add(to.index, removeAt(from.index))
-                    }
             }
 
         Scaffold(
@@ -86,7 +81,7 @@ fun CustomizationScreen() =
                         .fillMaxWidth(),
                 state = lazyListState,
             ) {
-                items(list, key = { it.name }) {
+                items(viewModel.items, key = { it.name }) {
                     ReorderableItem(reorderableLazyColumnState, key = it.name) { dragging ->
                         val elevation = animateDpAsState(if (dragging) 8.dp else 0.dp)
                         Column(
