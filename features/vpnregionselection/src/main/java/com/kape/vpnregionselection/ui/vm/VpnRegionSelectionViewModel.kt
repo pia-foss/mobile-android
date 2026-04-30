@@ -231,11 +231,10 @@ class VpnRegionSelectionViewModel(
 
         all.sortBy { (it.type as ItemType.Content).server.latency?.toInt() }
         all.sortByDescending { (it.type as ItemType.Content).server.isDedicatedIp }
-        Collections.swap(
-            all,
-            0,
-            all.indexOf(all.filter { it.type is ItemType.Content && it.type.server.name == autoRegionName }[0]),
-        )
+        val autoIndex = all.indexOfFirst { it.type is ItemType.Content && it.type.server.name == autoRegionName }
+        if (all.isNotEmpty() && autoIndex >= 0) {
+            Collections.swap(all, 0, autoIndex)
+        }
         list.addAll(all.distinct())
         servers.value = list
     }
