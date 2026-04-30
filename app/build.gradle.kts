@@ -205,7 +205,6 @@ val fetchRegionsInformation =
     tasks.register("fetchRegionsInformation") {
         group = "custom"
         description = "Fetches VPN and Shadowsocks region metadata"
-
         doLast {
             val assetsDir = File("$rootDir/app/src/main/assets")
             if (!assetsDir.exists()) assetsDir.mkdirs()
@@ -217,7 +216,6 @@ val fetchRegionsInformation =
                 val url = URI(urlString).toURL()
                 targetFile.writeText(url.readText())
             }
-
             fetchFile(
                 "https://serverlist.piaservers.net/vpninfo/regions/v2",
                 File(assetsDir, "metadata-regions.json"),
