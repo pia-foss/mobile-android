@@ -421,7 +421,14 @@ class SettingsViewModel(
                     if (connectionManager.isConnectionInProgress()) {
                         connectionManager.disconnect().getOrNull()
                     }
-                    connectionManager.connect(it, true, ::callback)
+                    connectionManager.connect(
+                        it,
+                        true,
+                        ::callback,
+                        {
+                            // no-op for now, might be used for fallback
+                        },
+                    )
                 }
         }
     }

@@ -99,6 +99,8 @@ class ConnectionViewModel(
     val isSnoozeActive = snoozeHandler.isSnoozeActive
     val timeUntilResume = snoozeHandler.timeUntilResume
     val showDedicatedIpHomeBanner = mutableStateOf(false)
+    var showProtocolNotAvailableDialog = mutableStateOf(false)
+        private set
 
     init {
         if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
@@ -162,12 +164,13 @@ class ConnectionViewModel(
                 shortcutPrefs.setShortcutConnectToVpn(false)
                 if (!connectionInfoProvider.isConnected()) {
                     prefs.getSelectedVpnServer()?.let {
-                        connectionManager.connect(it, false, ::callback)
+                        connectionManager.connect(it, false, ::callback, ::showProtocolNotAvailable)
                     } ?: run {
                         connectionManager.connect(
                             regionListProvider.getOptimalServer(),
                             false,
                             ::callback,
+                            ::showProtocolNotAvailable,
                         )
                     }
                 }
@@ -335,7 +338,12 @@ class ConnectionViewModel(
         connectionManager.connectJob?.cancel()
         connectionManager.connectJob =
             viewModelScope.launch {
-                connectionManager.connect(server = connectTo, true, ::callback)
+                connectionManager.connect(
+                    server = connectTo,
+                    true,
+                    ::callback,
+                    ::showProtocolNotAvailable,
+                )
             }
     }
 
@@ -364,6 +372,14 @@ class ConnectionViewModel(
     fun updateRatingDate() {
         ratingTool.updateRatingDate()
         _state.update { it.copy(ratingDialogType = null) }
+    }
+
+    fun showProtocolNotAvailable() {
+        showProtocolNotAvailableDialog.value = true
+    }
+
+    fun resetProtocolNotAvailable() {
+        showProtocolNotAvailableDialog.value = false
     }
 
     fun refreshState() =

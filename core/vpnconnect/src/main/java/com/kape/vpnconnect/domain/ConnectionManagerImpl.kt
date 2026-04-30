@@ -13,6 +13,8 @@ import com.kape.obfuscator.data.ObfuscatorProcessListener
 import com.kape.obfuscator.domain.StartObfuscatorProcess
 import com.kape.obfuscator.domain.StopObfuscatorProcess
 import com.kape.portforwarding.domain.PortForwardingUseCase
+import com.kape.settings.data.Transport
+import com.kape.settings.data.VpnProtocols
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -77,7 +79,14 @@ class ConnectionManagerImpl :
         disconnect().getOrNull()
 
         try {
-            connect(server, isManual = true, stopCallback)
+            connect(
+                server,
+                isManual = true,
+                stopCallback,
+                {
+                    // TODO: this function will be used as the upcoming fallback implementation
+                },
+            )
         } catch (_: Exception) {
             // Swallow to keep processor alive and allow newer state to apply
         }
@@ -87,24 +96,29 @@ class ConnectionManagerImpl :
         server: VpnServer,
         isManual: Boolean,
         stopCallback: () -> Unit,
+        showDialog: () -> Unit,
     ) {
-        connectionInProgress.set(true)
+        if (server.endpoints[mapProtocolToServerGroup()].isNullOrEmpty()) {
+            showDialog()
+        } else {
+            connectionInProgress.set(true)
 
-        connectionInfoProvider.updateInfo(server.name, server.iso, isManual)
-        connectionPrefs.setSelectedVpnServer(server)
-        connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
+            connectionInfoProvider.updateInfo(server.name, server.iso, isManual)
+            connectionPrefs.setSelectedVpnServer(server)
+            connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
 
-        val shadowsocksOk = startShadowsocks(stopCallback)
-        if (!shadowsocksOk) return
+            val shadowsocksOk = startShadowsocks(stopCallback)
+            if (!shadowsocksOk) return
 
-        connectionSource
-            .startConnection(
-                connectionConfigurationUseCase.generateConnectionConfiguration(server),
-                connectionStatusProvider,
-            ).fold(
-                onSuccess = { startPortForwarding() },
-                onFailure = { disconnect().getOrNull() },
-            )
+            connectionSource
+                .startConnection(
+                    connectionConfigurationUseCase.generateConnectionConfiguration(server),
+                    connectionStatusProvider,
+                ).fold(
+                    onSuccess = { startPortForwarding() },
+                    onFailure = { disconnect().getOrNull() },
+                )
+        }
     }
 
     override suspend fun disconnect(): Result<Unit> =
@@ -173,4 +187,15 @@ class ConnectionManagerImpl :
         portForwardingUseCase.clearBindPort()
         return Result.success(Unit)
     }
+
+    private fun mapProtocolToServerGroup(): VpnServer.ServerGroup =
+        when (settingsPrefs.getSelectedProtocol()) {
+            VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
+            VpnProtocols.OpenVPN -> {
+                when (settingsPrefs.getOpenVpnSettings().transport) {
+                    Transport.UDP -> VpnServer.ServerGroup.OPENVPN_UDP
+                    Transport.TCP -> VpnServer.ServerGroup.OPENVPN_TCP
+                }
+            }
+        }
 }

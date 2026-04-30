@@ -59,7 +59,15 @@ class VpnLauncher(
         }
     }
 
-    private suspend fun initiateConnection(server: VpnServer) = connectionManager.connect(server, false, ::stopVpn)
+    private suspend fun initiateConnection(server: VpnServer) =
+        connectionManager.connect(
+            server,
+            false,
+            ::stopVpn,
+            {
+                // no-op for now, might be used for fallback
+            },
+        )
 
     fun stopVpn() {
         launch {

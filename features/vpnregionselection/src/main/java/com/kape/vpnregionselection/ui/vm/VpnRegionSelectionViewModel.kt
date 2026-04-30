@@ -15,6 +15,8 @@ import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.regions.data.ServerData
+import com.kape.settings.data.Transport
+import com.kape.settings.data.VpnProtocols
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
@@ -65,7 +67,14 @@ class VpnRegionSelectionViewModel(
                 if (connectionManager.isConnectionInProgress()) {
                     connectionManager.disconnect().getOrNull()
                 }
-                connectionManager.connect(connectTo, true, ::callback)
+                connectionManager.connect(
+                    connectTo,
+                    true,
+                    ::callback,
+                    {
+                        // no-op for now, might be used for fallback
+                    },
+                )
                 router.navigateBack()
             }
     }
@@ -158,21 +167,25 @@ class VpnRegionSelectionViewModel(
                 if (settingsPrefs.isShowGeoLocatedServersEnabled().not() && server.isGeo) {
                     continue
                 }
-                all.add(
-                    ServerItem(
-                        type =
-                            ItemType.Content(
-                                isFavorite =
-                                    isVpnServerFavorite(
-                                        ServerData(
-                                            server.name,
-                                            server.isDedicatedIp,
+                if (server.endpoints[mapProtocolToServerGroup()].isNullOrEmpty()) {
+                    // ignore server as it does not currently support selected protocols
+                } else {
+                    all.add(
+                        ServerItem(
+                            type =
+                                ItemType.Content(
+                                    isFavorite =
+                                        isVpnServerFavorite(
+                                            ServerData(
+                                                server.name,
+                                                server.isDedicatedIp,
+                                            ),
                                         ),
-                                    ),
-                                server = server,
-                            ),
-                    ),
-                )
+                                    server = server,
+                                ),
+                        ),
+                    )
+                }
             }
             all.add(0, autoRegion)
         } ?: run {
@@ -184,22 +197,27 @@ class VpnRegionSelectionViewModel(
                 ) {
                     continue
                 }
-                all.add(
-                    ServerItem(
-                        type =
-                            ItemType.Content(
-                                isFavorite =
-                                    isVpnServerFavorite(
-                                        ServerData(
-                                            (item.type as ItemType.Content).server.name,
-                                            item.type.server.isDedicatedIp,
+
+                if ((item.type as ItemType.Content).server.endpoints[mapProtocolToServerGroup()].isNullOrEmpty()) {
+                    // ignore server as it does not currently support selected protocols
+                } else {
+                    all.add(
+                        ServerItem(
+                            type =
+                                ItemType.Content(
+                                    isFavorite =
+                                        isVpnServerFavorite(
+                                            ServerData(
+                                                (item.type as ItemType.Content).server.name,
+                                                item.type.server.isDedicatedIp,
+                                            ),
                                         ),
-                                    ),
-                                enableFavorite = item.type.enableFavorite,
-                                server = item.type.server,
-                            ),
-                    ),
-                )
+                                    enableFavorite = item.type.enableFavorite,
+                                    server = item.type.server,
+                                ),
+                        ),
+                    )
+                }
             }
         }
 
@@ -259,4 +277,15 @@ class VpnRegionSelectionViewModel(
                         ),
                 ),
         )
+
+    private fun mapProtocolToServerGroup(): VpnServer.ServerGroup =
+        when (settingsPrefs.getSelectedProtocol()) {
+            VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
+            VpnProtocols.OpenVPN -> {
+                when (settingsPrefs.getOpenVpnSettings().transport) {
+                    Transport.UDP -> VpnServer.ServerGroup.OPENVPN_UDP
+                    Transport.TCP -> VpnServer.ServerGroup.OPENVPN_TCP
+                }
+            }
+        }
 }
