@@ -1,4 +1,4 @@
-name: Build APKs
+name: Run ktlint and tests
 
 on:
   push:
@@ -55,32 +55,6 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         run: ./gradlew testGoogleDebugUnitTest
-
-
-  build-playstore-version:
-    needs: ktlintCheck
-    uses: ./.github/workflows/build-playstore-android.yaml
-    secrets: inherit
-
-  build-website-version:
-    needs: ktlintCheck
-    uses: ./.github/workflows/build-website-android.yaml
-    secrets: inherit
-
-  build-amazon-version:
-    needs: ktlintCheck
-    uses: ./.github/workflows/build-amazon-android.yaml
-    secrets: inherit
-
-  build-playstore-apk-version:
-    needs: ktlintCheck
-    uses: ./.github/workflows/build-playstore-apk-android.yaml
-    secrets: inherit
-
-  build-meta-version:
-    needs: ktlintCheck
-    uses: ./.github/workflows/build-meta-android.yaml
-    secrets: inherit
 
   e2e-testing:
     name: Run end to end instrumentation tests

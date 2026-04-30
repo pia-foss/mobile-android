@@ -1,0 +1,71 @@
+name: PR Build
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Build PR APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate unique build ID
+        id: build_id
+        run: |
+          # Slugify the branch name: lowercase, replace non-alphanumeric with hyphens, trim trailing hyphens
+          BRANCH_SLUG=$(echo "${{ github.head_ref }}" \
+            | tr '[:upper:]' '[:lower:]' \
+            | sed 's/[^a-z0-9]/-/g' \
+            | sed 's/-\+/-/g' \
+            | sed 's/^-\|-$//g' \
+            | cut -c1-40)
+
+          BUILD_ID="pr-${{ github.event.pull_request.number }}-${BRANCH_SLUG}"
+          echo "build_id=${BUILD_ID}" >> $GITHUB_OUTPUT
+          echo "Build ID: ${BUILD_ID}"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        env:
+          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew assembleGoogleDebug --no-daemon
+
+      - name: Rename APK with build ID
+        run: |
+          APK_PATH=$(find app/build/outputs/apk/google/debug -name "*.apk" | head -1)
+          APK_DIR=$(dirname "$APK_PATH")
+          mv "$APK_PATH" "${APK_DIR}/${{ steps.build_id.outputs.build_id }}.apk"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build_id.outputs.build_id }}
+          path: app/build/outputs/apk/google/debug/${{ steps.build_id.outputs.build_id }}.apk
+          retention-days: 7
+
+      - name: Comment on PR with artifact info
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const buildId = '${{ steps.build_id.outputs.build_id }}';
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `### Build ready\n\n**ID:** \`${buildId}\`\n**APK:** [Download from Actions](${runUrl})\n\n> Artifact expires after 7 days.`
+            });
