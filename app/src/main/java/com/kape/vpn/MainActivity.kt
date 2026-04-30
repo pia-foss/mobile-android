@@ -130,7 +130,6 @@ import com.kape.vpn.utils.ShortcutManager
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
 import org.koin.android.ext.android.inject
-import org.koin.core.qualifier.named
 
 class MainActivity : AppCompatActivity() {
     private val router: Router by inject()
@@ -139,7 +138,6 @@ class MainActivity : AppCompatActivity() {
     private val shortcutPrefs: ShortcutPrefs by inject()
     private val platformUtils: PlatformUtils by inject()
     private val shortcutManager: ShortcutManager by inject()
-    val licences: List<String> by inject(named("licences"))
     val permissionUtil: PermissionUtil by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -168,7 +166,7 @@ class MainActivity : AppCompatActivity() {
                         color = MaterialTheme.colorScheme.background,
                     ) {
                         NavHost(navController = navController, startDestination = Splash) {
-                            defineNavigationGraph(licences)
+                            defineNavigationGraph()
                         }
                     }
                 }
@@ -204,7 +202,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun NavGraphBuilder.defineNavigationGraph(licences: List<String>) {
+    private fun NavGraphBuilder.defineNavigationGraph() {
         if (platformUtils.isTv()) {
             composable<Splash> { SplashScreen() }
             composable<TvWelcome> { TvWelcomeScreen() }
@@ -227,7 +225,7 @@ class MainActivity : AppCompatActivity() {
             composable<DedicatedIpActivateToken> { TvDedicatedIpScreen() }
             composable<PerAppSettings> { TvPerAppSettingsScreen() }
             composable<HelpSettings> { TvHelpScreen() }
-            composable<About> { TvAboutScreen(licences) }
+            composable<About> { TvAboutScreen() }
             composable<GeneralSettings> { TvGeneralSettingsScreen() }
             composable<ProtocolSettings> { TvProtocolSettingsScreen() }
             composable<NetworkSettings> { TvNetworkSettingsScreen() }
@@ -281,8 +279,7 @@ class MainActivity : AppCompatActivity() {
             composable<DedicatedIpSignupTokenActivate> { SignupDedicatedIpTokenActivateScreen() }
             composable<DedicatedIpPurchaseSuccess> { SignupDedicatedIpPurchaseSuccessScreen() }
             composable<KillSwitchSettings> { KillSwitchSettingScreen() }
-            composable<ProtocolSettings> { ProtocolSettingsScreen() }
-            composable<About> { AboutScreen(licences) }
+            composable<About> { AboutScreen() }
             composable<Customization> { CustomizationScreen() }
             composable<AccountDeleted> { AccountDeletedScreen() }
             composable<Update> { UpdateScreen() }

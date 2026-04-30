@@ -12,6 +12,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.LicenceReader
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.elements.AboutButton
@@ -28,9 +32,15 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
-fun TvAboutScreen(licences: List<String>) =
+fun TvAboutScreen() =
     Screen {
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val licenceReader: LicenceReader = koinInject()
+        val licences = remember { mutableStateOf<List<String>>(emptyList()) }
+
+        LaunchedEffect(Unit) {
+            licences.value = licenceReader.readLicences()
+        }
 
         Box(
             modifier =
@@ -72,8 +82,8 @@ fun TvAboutScreen(licences: List<String>) =
                             .padding(32.dp),
                     columns = GridCells.Fixed(1),
                 ) {
-                    items(licences.size) { index ->
-                        val license = licences[index]
+                    items(licences.value.size) { index ->
+                        val license = licences.value[index]
                         AboutButton {
                             Text(text = license)
                         }
