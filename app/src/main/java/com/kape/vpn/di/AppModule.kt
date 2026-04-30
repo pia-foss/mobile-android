@@ -16,6 +16,7 @@ import com.kape.connection.di.ConnectionModule
 import com.kape.contracts.AppInfo
 import com.kape.contracts.ConfigInfo
 import com.kape.contracts.ConnectionStatusProvider
+import com.kape.contracts.LicenceReader
 import com.kape.contracts.NetworkManager
 import com.kape.csi.di.CsiModule
 import com.kape.customization.di.CustomizationModule
@@ -75,6 +76,7 @@ import com.kape.vpn.provider.VpnManagerProvider
 import com.kape.vpn.receiver.OnRulesChangedReceiver
 import com.kape.vpn.service.AutomationService
 import com.kape.vpn.service.WidgetProviderService
+import com.kape.vpn.utils.LicenceReaderImpl
 import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.di.VpnConnectModule
 import com.kape.vpnconnect.provider.UsageProvider
@@ -161,16 +163,13 @@ class AppModule {
             override val userAgent: String =
                 "privateinternetaccess.com Android Client/${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE}))"
             override val updateUrl: String = BuildConfig.UPDATE_URL
-            override val licences: List<String> =
-                context.assets
-                    .open("acknowledgements.txt")
-                    .bufferedReader()
-                    .use(BufferedReader::readLines)
         }
 
-    @Singleton
-    @Named("licences")
-    fun provideLicences(configInfo: ConfigInfo): List<String> = configInfo.licences
+    @Singleton(binds = [LicenceReader::class])
+    fun provideLicenceReader(
+        context: Context,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+    ): LicenceReader = LicenceReaderImpl(context, ioDispatcher)
 
     @Singleton
     @Named(DI.UPDATE_URL)
