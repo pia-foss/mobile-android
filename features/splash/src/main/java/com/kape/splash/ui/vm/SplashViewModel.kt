@@ -46,12 +46,11 @@ class SplashViewModel(
                 updateUrl = url
                 if (updateUrl.isNotEmpty()) {
                     router.updateDestination(Update)
+                    return@launch
                 }
-            } else if (!isUserLoggedIn.invoke()) {
-                handleSplashExit()
             }
+            handleSplashExit()
         }
-        handleSplashExit()
     }
 
     fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) =
