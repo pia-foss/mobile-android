@@ -84,6 +84,8 @@ They need to have the format `PIA_VALID_USERNAME`, `PIA_VALID_PASSWORD` and `PIA
 
 To trigger a build for testing along with all other builds from the latest main, push a branch with branch name starting with `rc`.
 
+To trigger a build for testing from the latest main, push a branch with branch name starting with `rc`.
+
 ### License
 
 This project is licensed under the [MIT (Expat) license](https://choosealicense.com/licenses/mit/), which can be found [here](/LICENSE).
