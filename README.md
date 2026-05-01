@@ -85,6 +85,8 @@ They need to have the format `PIA_VALID_USERNAME`, `PIA_VALID_PASSWORD` and `PIA
 In order to trigger release builds, simply push the version update branch (or any other branch) with branch name starting with `version`.
 This will be picked up by our actions and release builds will be produced.
 
+To trigger a build for testing from the latest main, push a branch with branch name starting with `rc`.
+
 ### License
 
 This project is licensed under the [MIT (Expat) license](https://choosealicense.com/licenses/mit/), which can be found [here](/LICENSE).
