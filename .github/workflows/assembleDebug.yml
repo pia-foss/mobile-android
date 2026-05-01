@@ -1,5 +1,3 @@
-name: Run ktlint and tests
-
 on:
   push:
     branches: [main]

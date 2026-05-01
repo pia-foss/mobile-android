@@ -212,6 +212,7 @@ private fun SideMenuHeaderItem(
                 modifier =
                     Modifier
                         .fillMaxWidth()
+                        .testTag(":SideMenu:Username")
                         .semantics {
                             contentDescription = "$usernamePrefix $username"
                         },
