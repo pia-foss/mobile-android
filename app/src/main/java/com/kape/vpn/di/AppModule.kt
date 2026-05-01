@@ -375,7 +375,7 @@ class AppModule {
     @Singleton
     fun provideLauncherIntent(context: Context): Intent =
         Intent(context, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
 
     @Singleton
