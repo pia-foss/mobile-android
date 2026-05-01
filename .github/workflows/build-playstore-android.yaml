@@ -25,6 +25,14 @@ jobs:
       - name: Bundle 'googleRelease' with Gradle
         run: ./gradlew bundleGoogleRelease
 
+      - name: Extract version info
+        id: version
+        run: |
+          VERSION_NAME=$(./gradlew -q printVersionName | tail -1)
+          VERSION_CODE=$(./gradlew -q printPlayStoreVersionCode | tail -1)
+          echo "version_name=${VERSION_NAME}" >> $GITHUB_OUTPUT
+          echo "version_code=${VERSION_CODE}" >> $GITHUB_OUTPUT
+
       - name: Decode keystore
         run: echo "${{ secrets.SIGNING_PLAYSTORE_KEYSTORE }}" | base64 -d > keystore.jks
 
@@ -39,13 +47,13 @@ jobs:
             -keypass "${{ secrets.SIGNING_PLAYSTORE_KEY_PASSWORD }}" \
             -signedjar app-google-release-signed.aab \
             app/build/outputs/bundle/googleRelease/app-google-release.aab \
-            "${{ secrets.SIGNING_PLAYSTORE_KEY_ALIAS }}" 
+            "${{ secrets.SIGNING_PLAYSTORE_KEY_ALIAS }}"
 
       - run: echo "Build status report=${{ job.status }}."
 
       - name: Upload App Bundle
         uses: actions/upload-artifact@v6
         with:
-          name: pia-output-google-play
+          name: pia-playstore-release-${{ steps.version.outputs.version_name }}-${{ steps.version.outputs.version_code }}
           path: app-google-release-signed.aab
           if-no-files-found: error

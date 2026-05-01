@@ -237,3 +237,15 @@ val fetchRegionsInformation =
 tasks.named("preBuild") {
     dependsOn(fetchRegionsInformation)
 }
+
+tasks.register("printVersionName") {
+    doLast { println(android.defaultConfig.versionName) }
+}
+
+tasks.register("printPlayStoreVersionCode") {
+    doLast { println(googleAppVersionCode) }
+}
+
+tasks.register("printNonPlayStoreVersionCode") {
+    doLast { println(noInAppVersionCode) }
+}

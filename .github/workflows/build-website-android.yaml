@@ -25,6 +25,14 @@ jobs:
       - name: Assemble 'noinappRelease' with Gradle
         run: ./gradlew assembleNoinappRelease
 
+      - name: Extract version info
+        id: version
+        run: |
+          VERSION_NAME=$(./gradlew -q printVersionName | tail -1)
+          VERSION_CODE=$(./gradlew -q printNonPlayStoreVersionCode | tail -1)
+          echo "version_name=${VERSION_NAME}" >> $GITHUB_OUTPUT
+          echo "version_code=${VERSION_CODE}" >> $GITHUB_OUTPUT
+
       - name: Decode keystore
         run: echo "${{ secrets.SIGNING_WEB_KEYSTORE }}" | base64 -d > keystore.jks
 
@@ -46,6 +54,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v6
         with:
-          name: pia-output-website
+          name: pia-website-release-${{ steps.version.outputs.version_name }}-${{ steps.version.outputs.version_code }}
           path: app-noinapp-release-signed.apk
           if-no-files-found: error
