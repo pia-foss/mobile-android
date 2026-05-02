@@ -100,24 +100,24 @@ fun LoginScreen() =
                 Input(
                     modifier =
                         Modifier
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .testTag(":LoginScreen:enter_username"),
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
                     label = stringResource(id = com.kape.ui.R.string.enter_username),
                     maskInput = false,
                     keyboard = KeyboardType.Text,
                     imeAction = ImeAction.Next,
                     content = username,
+                    testTag = ":LoginScreen:enter_username",
                 )
                 Input(
                     modifier =
                         Modifier
-                            .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .testTag(":LoginScreen:enter_password"),
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
                     label = stringResource(id = com.kape.ui.R.string.enter_password),
                     maskInput = true,
                     keyboard = KeyboardType.Password,
                     imeAction = ImeAction.Next,
                     content = password,
+                    testTag = ":LoginScreen:enter_password",
                 )
                 if (state.loading) {
                     Spacer(modifier = Modifier.height(16.dp))
@@ -139,7 +139,9 @@ fun LoginScreen() =
                         if (isConnected) {
                             viewModel.login(username.value, password.value)
                         } else {
-                            Toast.makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT).show()
+                            Toast
+                                .makeText(currentContext, noNetworkMessage, Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                 }
