@@ -67,6 +67,7 @@ class ConnectionDataSourceImpl(
                         "startConnection failed: $result",
                         settingsPrefs.isDebugLoggingEnabled(),
                     )
+                    connectionApi.stopConnection {}
                 }
                 if (cont.isActive) {
                     // Convert Result<ServerPeerInfo> → Result<Unit>
