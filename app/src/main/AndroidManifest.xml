@@ -122,7 +122,8 @@
 
         <service
             android:name=".service.VpnAlwaysOnService"
-            android:exported="true">
+            android:exported="true"
+            android:permission="android.permission.BIND_VPN_SERVICE">
             <intent-filter>
                 <action android:name="android.net.VpnService" />
             </intent-filter>
@@ -133,7 +134,8 @@
 
         <service
             android:name=".service.WidgetProviderService"
-            android:exported="true">
+            android:exported="true"
+            android:permission="android.permission.BIND_VPN_SERVICE">
             <intent-filter>
                 <action android:name="android.net.VpnService" />
             </intent-filter>
