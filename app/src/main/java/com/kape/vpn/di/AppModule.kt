@@ -30,6 +30,7 @@ import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.localprefs.di.PrefsModule
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.location.di.LocationModule
@@ -77,9 +78,11 @@ import com.kape.vpn.receiver.OnRulesChangedReceiver
 import com.kape.vpn.service.AutomationService
 import com.kape.vpn.service.WidgetProviderService
 import com.kape.vpn.utils.LicenceReaderImpl
+import com.kape.vpn.utils.NetworkManagerImpl
 import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.di.VpnConnectModule
 import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnlauncher.di.VpnLauncherModule
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
@@ -327,6 +330,15 @@ class AppModule {
         @Named(DI.AUTOMATION_SERVICE_INTENT) automationServiceIntent: Intent,
         notificationBuilder: Notification.Builder,
     ): AutomationManager = AutomationManager(context, automationServiceIntent, notificationBuilder)
+
+    @Singleton
+    fun provideNetworkManager(
+        context: Context,
+        networkPrefs: NetworkManagementPrefs,
+        vpnLauncher: VpnLauncher,
+        settingsPrefs: SettingsPrefs,
+        connectionStatusProvider: ConnectionStatusProvider,
+    ): NetworkManager = NetworkManagerImpl(context, networkPrefs, vpnLauncher, settingsPrefs, connectionStatusProvider)
 
     @Singleton
     fun provideNetworkConnectionListener(
