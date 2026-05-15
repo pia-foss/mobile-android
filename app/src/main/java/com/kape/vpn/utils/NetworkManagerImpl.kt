@@ -1,7 +1,9 @@
 package com.kape.vpn.utils
 
 import android.content.Context
+import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.NetworkManager
+import com.kape.data.ConnectionStatus
 import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.networkmanagement.data.NetworkBehavior
@@ -11,11 +13,12 @@ import com.kape.vpnlauncher.VpnLauncher
 import org.koin.core.annotation.Singleton
 
 @Singleton([NetworkManager::class])
-class NetworkManager(
+class NetworkManagerImpl(
     private val context: Context,
     private val networkPrefs: NetworkManagementPrefs,
     private val vpnLauncher: VpnLauncher,
     private val settingsPrefs: SettingsPrefs,
+    private val connectionStatusProvider: ConnectionStatusProvider,
 ) : NetworkManager {
     override fun handleCurrentNetwork(
         ssid: String,
@@ -43,7 +46,13 @@ class NetworkManager(
     private fun applyNetworkRule(rule: NetworkItem) {
         when (rule.networkBehavior) {
             is NetworkBehavior.AlwaysConnect -> {
-                vpnLauncher.launchVpn()
+                val needsToConnect =
+                    listOf(ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING).contains(
+                        connectionStatusProvider.state.value.status,
+                    )
+                if (needsToConnect) {
+                    vpnLauncher.launchVpn()
+                }
             }
 
             is NetworkBehavior.AlwaysDisconnect -> {
