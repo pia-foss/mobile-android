@@ -33,7 +33,7 @@ class AutomationViewModel(
     private val automationManager: AutomationManager,
 ) : ViewModel() {
     private val _state =
-        MutableStateFlow<AutomationState>(
+        MutableStateFlow(
             AutomationState(
                 isEnabled = settingsPrefs.isAutomationEnabled(),
                 locationPermissionGranted = locationPermissionManager.isFineLocationPermissionGranted(),
@@ -46,6 +46,7 @@ class AutomationViewModel(
 
     fun onLocationPermissionGranted() {
         _state.update { it.copy(locationPermissionGranted = true) }
+        navigateToAutomationBackgroundLocation()
     }
 
     fun onBackgroundLocationPermissionGranted(context: Context) {
@@ -117,8 +118,6 @@ class AutomationViewModel(
         networkRulesManager.removeRule(rule)
         _state.update { it.copy(rules = networkRulesManager.getRules()) }
     }
-
-    private fun navigateToAutomationLocation() = router.updateDestination(AutomationLocation)
 
     private fun navigateToAutomationBackgroundLocation() =
         router.updateDestination(
