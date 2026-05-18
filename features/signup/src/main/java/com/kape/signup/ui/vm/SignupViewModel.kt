@@ -180,14 +180,9 @@ class SignupViewModel(
                 _state.emit(META_SUBSCRIPTIONS)
                 return@launch
             }
-            if (subscriptionPrefs.getVpnSubscriptions().isEmpty()) {
-                _state.emit(LOADING)
-                subscriptionsUseCase.getVpnSubscriptions()
-                _state.emit(DEFAULT)
-                vpnSubscriptionPaymentProvider.loadProducts()
-            } else {
-                vpnSubscriptionPaymentProvider.loadProducts()
-            }
+            _state.emit(LOADING)
+            subscriptionsUseCase.getVpnSubscriptions()
+            vpnSubscriptionPaymentProvider.loadProducts()
         }
 
     fun loadEmptyPrices() =
