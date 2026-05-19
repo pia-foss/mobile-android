@@ -49,6 +49,7 @@ object Main {
     const val LOCATION_PICKER = ":ConnectionScreen:VpnLocationPicker"
     const val LOCATION_EIGHT_ITEM = ":VpnRegionSelectionScreen:locationItem_8"
     const val VPN_IP = ":Text:vpnIp"
+    const val CHANGE_LOCATION_CONFIRM = ":ChangeLocation:confirm"
 }
 
 object Protocols {

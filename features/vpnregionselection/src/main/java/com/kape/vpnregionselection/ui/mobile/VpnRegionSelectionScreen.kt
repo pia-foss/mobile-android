@@ -193,9 +193,10 @@ fun LocationChangeDialog(
     onCancel: () -> Unit,
 ) {
     AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = onCancel,
         confirmButton = {
-            TextButton(onClick = onConnect) {
+            TextButton(onClick = onConnect, modifier = Modifier.testTag(":ChangeLocation:confirm")) {
                 Text(text = stringResource(id = R.string.dialog_change_location_action))
             }
         },
