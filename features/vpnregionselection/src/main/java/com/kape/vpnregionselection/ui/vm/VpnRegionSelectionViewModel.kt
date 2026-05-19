@@ -20,6 +20,9 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import java.util.Collections
@@ -35,6 +38,9 @@ class VpnRegionSelectionViewModel(
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<ServerItem>())
     val sorted = mutableStateOf(emptyList<ServerItem>())
+    private val _selectedServer = MutableStateFlow<VpnServer?>(null)
+    val selectedServer = _selectedServer.asStateFlow()
+
     lateinit var autoRegionName: String
     lateinit var autoRegionIso: String
 
@@ -53,6 +59,10 @@ class VpnRegionSelectionViewModel(
             regionListProvider.updateServerLatencies(isVpnConnectionActive(), displayLoading)
         arrangeVpnServers(servers)
         isLoading.value = false
+    }
+
+    fun selectServer(server: VpnServer?) {
+        _selectedServer.update { server }
     }
 
     fun onVpnRegionSelected(server: VpnServer) {
@@ -231,7 +241,8 @@ class VpnRegionSelectionViewModel(
 
         all.sortBy { (it.type as ItemType.Content).server.latency?.toInt() }
         all.sortByDescending { (it.type as ItemType.Content).server.isDedicatedIp }
-        val autoIndex = all.indexOfFirst { it.type is ItemType.Content && it.type.server.name == autoRegionName }
+        val autoIndex =
+            all.indexOfFirst { it.type is ItemType.Content && it.type.server.name == autoRegionName }
         if (all.isNotEmpty() && autoIndex >= 0) {
             Collections.swap(all, 0, autoIndex)
         }
