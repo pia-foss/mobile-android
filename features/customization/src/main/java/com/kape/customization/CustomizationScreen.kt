@@ -195,6 +195,7 @@ private fun DisplayComponent(
             QuickConnect(
                 modifier = modifier,
                 servers = quickConnectMap,
+                isConnected = connectionState.status == ConnectionStatus.CONNECTED,
                 onClick = {},
             )
         }
