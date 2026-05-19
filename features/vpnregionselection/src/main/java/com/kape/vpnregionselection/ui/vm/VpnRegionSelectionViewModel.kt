@@ -12,6 +12,7 @@ import com.kape.data.Connection
 import com.kape.data.HelpSettings
 import com.kape.data.TvSideMenu
 import com.kape.data.vpnserver.VpnServer
+import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.regions.data.ServerData
@@ -33,6 +34,7 @@ class VpnRegionSelectionViewModel(
     private val regionListProvider: RegionListProvider,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val settingsPrefs: SettingsPrefs,
+    private val connectionPrefs: ConnectionPrefs,
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val connectionManager: ConnectionManager,
 ) : ViewModel() {
@@ -61,8 +63,13 @@ class VpnRegionSelectionViewModel(
         isLoading.value = false
     }
 
-    fun selectServer(server: VpnServer?) {
-        _selectedServer.update { server }
+    fun selectServer(server: VpnServer?): Boolean {
+        if (connectionPrefs.getSelectedVpnServer() == server) {
+            return false
+        } else {
+            _selectedServer.update { server }
+            return true
+        }
     }
 
     fun onVpnRegionSelected(server: VpnServer) {

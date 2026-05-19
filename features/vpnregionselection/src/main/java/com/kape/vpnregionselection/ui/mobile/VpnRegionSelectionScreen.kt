@@ -130,8 +130,11 @@ fun VpnRegionSelectionScreen() =
                                         isOffline = item.type.server.isOffline,
                                         onClick = {
                                             if (viewModel.isVpnConnectionActive()) {
-                                                viewModel.selectServer(item.type.server)
-                                                showChangeLocationDialog.value = true
+                                                showChangeLocationDialog.value =
+                                                    viewModel.selectServer(item.type.server)
+                                                if (!showChangeLocationDialog.value) {
+                                                    appBarViewModel.navigateBack()
+                                                }
                                             } else {
                                                 viewModel.onVpnRegionSelected(it)
                                                 appBarViewModel.navigateBack()
