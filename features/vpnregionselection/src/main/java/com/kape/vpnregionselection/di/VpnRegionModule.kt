@@ -3,6 +3,7 @@ package com.kape.vpnregionselection.di
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
+import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.vpnregions.utils.RegionListProvider
@@ -18,6 +19,7 @@ class VpnRegionModule {
         regionListProvider: RegionListProvider,
         vpnRegionPrefs: VpnRegionPrefs,
         settingsPrefs: SettingsPrefs,
+        connectionPrefs: ConnectionPrefs,
         connectionInfoProvider: ConnectionInfoProvider,
         connectionManager: ConnectionManager,
     ): VpnRegionSelectionViewModel =
@@ -26,6 +28,7 @@ class VpnRegionModule {
             regionListProvider,
             vpnRegionPrefs,
             settingsPrefs,
+            connectionPrefs,
             connectionInfoProvider,
             connectionManager,
         )

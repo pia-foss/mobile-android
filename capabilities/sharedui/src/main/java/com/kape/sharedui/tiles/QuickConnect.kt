@@ -11,9 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -30,6 +35,7 @@ import com.kape.data.vpnserver.VpnServer
 import com.kape.ui.R
 import com.kape.ui.mobile.text.QuickConnectText
 import com.kape.ui.mobile.text.TileTitleText
+import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
 
@@ -37,15 +43,46 @@ import com.kape.ui.utils.getFlagResource
 fun QuickConnect(
     modifier: Modifier = Modifier,
     servers: Map<VpnServer?, Boolean>,
+    isConnected: Boolean,
     onClick: (server: VpnServer) -> Unit,
 ) {
+    val showInfoText = remember { mutableStateOf(false) }
+
     Column(
         modifier =
             modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
-        TileTitleText(content = stringResource(id = R.string.quick_connect))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            TileTitleText(content = stringResource(id = R.string.quick_connect))
+            if (isConnected) {
+                Spacer(Modifier.width(8.dp))
+                IconButton(
+                    modifier = Modifier.size(16.dp),
+                    onClick = {
+                        showInfoText.value = !showInfoText.value
+                    },
+                ) {
+                    Icon(
+                        painterResource(R.drawable.ic_info),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(16.dp),
+                    )
+                }
+            } else {
+                showInfoText.value = false
+            }
+        }
+        if (showInfoText.value) {
+            Text(
+                text = stringResource(R.string.dialog_change_location_message),
+                color = LocalColors.current.onSurface,
+                style = PiaTypography.body3,
+            )
+        }
+
         Spacer(modifier = Modifier.height(8.dp))
         Row {
             if (servers.isEmpty()) {

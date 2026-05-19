@@ -230,6 +230,7 @@ fun ConnectionScreen() =
                                 screenState = state,
                                 connectionStatus = connectionState.status,
                                 vpnState = vpnState,
+                                isConnected = connectionState.status == ConnectionStatus.CONNECTED,
                             )
                         }
                         showRatingGeneralDialog.value =
@@ -304,6 +305,7 @@ private fun DisplayComponent(
     screenState: ConnectionScreenState,
     connectionStatus: ConnectionStatus,
     vpnState: VpnConnectionInfo,
+    isConnected: Boolean,
 ) {
     if (isVisible) {
         val context: Context = LocalContext.current
@@ -344,6 +346,7 @@ private fun DisplayComponent(
                 }
                 QuickConnect(
                     servers = quickConnectMap,
+                    isConnected = isConnected,
                     onClick = {
                         viewModel.quickConnect(it)
                     },

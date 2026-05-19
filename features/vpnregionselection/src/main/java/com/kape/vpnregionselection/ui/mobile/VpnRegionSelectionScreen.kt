@@ -11,6 +11,10 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
@@ -62,6 +66,7 @@ fun VpnRegionSelectionScreen() =
             }
         val isSearchEnabled = remember { mutableStateOf(false) }
         val showToast = remember { mutableStateOf(false) }
+        val showChangeLocationDialog = remember { mutableStateOf(false) }
 
         Column(
             modifier =
@@ -124,8 +129,16 @@ fun VpnRegionSelectionScreen() =
                                         isPortForwardingEnabled = viewModel.isPortForwardingEnabled,
                                         isOffline = item.type.server.isOffline,
                                         onClick = {
-                                            viewModel.onVpnRegionSelected(it)
-                                            appBarViewModel.navigateBack()
+                                            if (viewModel.isVpnConnectionActive()) {
+                                                showChangeLocationDialog.value =
+                                                    viewModel.selectServer(item.type.server)
+                                                if (!showChangeLocationDialog.value) {
+                                                    appBarViewModel.navigateBack()
+                                                }
+                                            } else {
+                                                viewModel.onVpnRegionSelected(it)
+                                                appBarViewModel.navigateBack()
+                                            }
                                         },
                                         onFavoriteVpnClick = {
                                             viewModel.onFavoriteVpnClicked(
@@ -156,6 +169,53 @@ fun VpnRegionSelectionScreen() =
                         }
                     }
                 }
+
+                if (showChangeLocationDialog.value) {
+                    LocationChangeDialog(
+                        {
+                            viewModel.selectedServer.value?.let {
+                                viewModel.onVpnRegionSelected(it)
+                            }
+                            showChangeLocationDialog.value = false
+                        },
+                        {
+                            showChangeLocationDialog.value = false
+                        },
+                    )
+                }
             }
         }
     }
+
+@Composable
+fun LocationChangeDialog(
+    onConnect: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
+        onDismissRequest = onCancel,
+        confirmButton = {
+            TextButton(onClick = onConnect, modifier = Modifier.testTag(":ChangeLocation:confirm")) {
+                Text(text = stringResource(id = R.string.dialog_change_location_action))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onCancel) {
+                Text(text = stringResource(id = R.string.dialog_change_location_dismiss))
+            }
+        },
+        title = {
+            Text(
+                text = stringResource(id = R.string.dialog_change_location_title),
+                style = MaterialTheme.typography.titleMedium,
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(id = R.string.dialog_change_location_message),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        },
+    )
+}

@@ -23,6 +23,7 @@ class QuickConnectTests {
             assertConnected()
             onElement { viewIdResourceName == Main.LOCATION_PICKER }.click()
             onElement { viewIdResourceName == Main.LOCATION_EIGHT_ITEM }.click()
+            onElement { viewIdResourceName == Main.CHANGE_LOCATION_CONFIRM }.click()
             assertConnected()
             onElement { viewIdResourceName == Main.QUICK_CONNECT_SECOND_ITEM }.click()
             assertConnected()
