@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.Snapshot
 import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.annotation.Singleton
 import kotlin.math.ln
 import kotlin.math.pow
@@ -15,9 +16,9 @@ class UsageProvider(
     val download = mutableStateOf(humanReadableByteCountSI(0))
     val upload = mutableStateOf(humanReadableByteCountSI(0))
 
-    val widgetDownloadSpeed = mutableStateOf(humanReadableByteCount(0, true, context))
+    val widgetDownloadSpeed = MutableStateFlow(humanReadableByteCount(0, true, context))
     val widgetDownload = mutableStateOf(humanReadableByteCount(0, false, context))
-    val widgetUploadSpeed = mutableStateOf(humanReadableByteCount(0, true, context))
+    val widgetUploadSpeed = MutableStateFlow(humanReadableByteCount(0, true, context))
     val widgetUpload = mutableStateOf(humanReadableByteCount(0, false, context))
 
     override fun byteCount(
@@ -28,21 +29,21 @@ class UsageProvider(
             download.value = humanReadableByteCountSI(rx)
             upload.value = humanReadableByteCountSI(tx)
             widgetDownload.value = humanReadableByteCount(rx, false, context)
-            widgetDownloadSpeed.value = humanReadableByteCount(rx, true, context)
             widgetUpload.value = humanReadableByteCount(tx, false, context)
-            widgetUploadSpeed.value = humanReadableByteCount(tx, true, context)
         }
+        widgetDownloadSpeed.value = humanReadableByteCount(rx, true, context)
+        widgetUploadSpeed.value = humanReadableByteCount(tx, true, context)
     }
 
     fun reset() {
         Snapshot.withMutableSnapshot {
             download.value = humanReadableByteCountSI(0)
             upload.value = humanReadableByteCountSI(0)
-            widgetUploadSpeed.value = humanReadableByteCount(0, true, context)
             widgetUpload.value = humanReadableByteCount(0, false, context)
             widgetDownload.value = humanReadableByteCount(0, false, context)
-            widgetDownloadSpeed.value = humanReadableByteCount(0, true, context)
         }
+        widgetUploadSpeed.value = humanReadableByteCount(0, true, context)
+        widgetDownloadSpeed.value = humanReadableByteCount(0, true, context)
     }
 
     private fun humanReadableByteCountSI(bytes: Long): String {
