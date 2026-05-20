@@ -79,7 +79,7 @@ object SideMenu {
 fun reachLogin() =
     uiAutomator {
         startApp(BuildConfig.APPLICATION_ID)
-        onElement { viewIdResourceName == SignUp.LOGIN_BUTTON }.click()
+        onElement(timeoutMs = LONG_TIMEOUT) { viewIdResourceName == SignUp.LOGIN_BUTTON }.click()
     }
 
 fun login() =
