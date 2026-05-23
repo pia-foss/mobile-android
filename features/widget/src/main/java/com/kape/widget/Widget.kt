@@ -57,8 +57,8 @@ class Widget(
             val connectionState by connectionInfoProvider.connectionInfoState.collectAsState()
             val infoState by connectionInfoProvider.state.collectAsState()
 
-            val downloadSpeed = usageProvider.widgetDownloadSpeed.value
-            val uploadSpeed = usageProvider.widgetUploadSpeed.value
+            val downloadSpeed by usageProvider.widgetDownloadSpeed.collectAsState()
+            val uploadSpeed by usageProvider.widgetUploadSpeed.collectAsState()
             when (LocalSize.current) {
                 size1 -> Size1WidgetContent(connectionState.status)
                 size2 -> Size2WidgetContent(connectionState.status, infoState.name)
@@ -108,7 +108,7 @@ class Widget(
                     modifier = GlanceModifier.width(40.dp),
                 )
                 Spacer(modifier = GlanceModifier.height(4.dp))
-                WidgetConnectButton(status, connectionInfoProvider.isConnected())
+                WidgetConnectButton(status)
             }
         }
     }
@@ -147,7 +147,7 @@ class Widget(
                             ),
                         modifier = GlanceModifier.width(80.dp),
                     )
-                    WidgetConnectButton(status, connectionInfoProvider.isConnected())
+                    WidgetConnectButton(status)
                 }
             }
         }
@@ -189,7 +189,7 @@ class Widget(
                             ),
                         modifier = GlanceModifier.width(80.dp),
                     )
-                    WidgetConnectButton(status, connectionInfoProvider.isConnected())
+                    WidgetConnectButton(status)
                 }
                 Spacer(modifier = GlanceModifier.height(16.dp))
                 Box(
@@ -293,7 +293,7 @@ class Widget(
                         modifier = GlanceModifier.fillMaxWidth().padding(end = 16.dp),
                         horizontalAlignment = Alignment.Horizontal.End,
                     ) {
-                        WidgetConnectButton(status, connectionInfoProvider.isConnected())
+                        WidgetConnectButton(status)
                     }
                 }
                 Spacer(modifier = GlanceModifier.height(16.dp))
@@ -364,10 +364,8 @@ class Widget(
     }
 
     @Composable
-    fun WidgetConnectButton(
-        status: ConnectionStatus,
-        isConnected: Boolean,
-    ) {
+    fun WidgetConnectButton(status: ConnectionStatus) {
+        val isConnected = status == ConnectionStatus.CONNECTED
         GlanceTheme(colors = WidgetColors.colors) {
             Box(
                 modifier =
