@@ -152,7 +152,6 @@ private fun DisplayComponent(
     viewModel: ConnectionViewModel,
 ) {
     val state = viewModel.state.collectAsState()
-    val vpnState by viewModel.connectionInfoProvider.state.collectAsState()
     val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsState()
 
     when (screenElement.element) {
@@ -170,18 +169,21 @@ private fun DisplayComponent(
         }
 
         Element.IpInfo -> {
-            val state by viewModel.state.collectAsState()
+            val publicIp by viewModel.connectionInfoProvider.publicIp.collectAsState()
+            val vpnIp by viewModel.connectionInfoProvider.vpnIp.collectAsState()
+            val portForwardingStatus by viewModel.connectionInfoProvider.portForwardingStatus.collectAsState()
+            val port by viewModel.connectionInfoProvider.port.collectAsState()
             IPTile(
                 modifier = modifier,
                 isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                publicIp = vpnState.publicIp,
-                vpnIp = vpnState.vpnIp,
+                publicIp = publicIp,
+                vpnIp = vpnIp,
                 portForwardingStatus =
-                    when (vpnState.portforwardingStatus) {
+                    when (portForwardingStatus) {
                         PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
                         PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
                         PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                        PortForwardingStatus.Success -> vpnState.port
+                        PortForwardingStatus.Success -> port
                     },
             )
         }

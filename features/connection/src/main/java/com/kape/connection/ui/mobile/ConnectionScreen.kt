@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,7 +66,6 @@ import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.connection.utils.ConnectionScreenState
 import com.kape.customization.data.Element
 import com.kape.data.ConnectionStatus
-import com.kape.data.VpnConnectionInfo
 import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.data.customization.ScreenElement
@@ -100,7 +100,6 @@ import org.koin.androidx.compose.koinViewModel
 fun ConnectionScreen() =
     Screen {
         val viewModel: ConnectionViewModel = koinViewModel()
-        val vpnState by viewModel.connectionInfoProvider.state.collectAsStateWithLifecycle()
         val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsStateWithLifecycle()
         val appBarViewModel: AppBarViewModel = koinViewModel()
         val scope: CoroutineScope = rememberCoroutineScope()
@@ -228,7 +227,6 @@ fun ConnectionScreen() =
                                 viewModel = viewModel,
                                 screenState = state,
                                 connectionStatus = connectionState.status,
-                                vpnState = vpnState,
                                 isConnected = connectionState.status == ConnectionStatus.CONNECTED,
                             )
                         }
@@ -303,7 +301,6 @@ private fun DisplayComponent(
     viewModel: ConnectionViewModel,
     screenState: ConnectionScreenState,
     connectionStatus: ConnectionStatus,
-    vpnState: VpnConnectionInfo,
     isConnected: Boolean,
 ) {
     if (isVisible) {
@@ -322,16 +319,21 @@ private fun DisplayComponent(
             }
 
             Element.IpInfo -> {
+                val publicIp by viewModel.connectionInfoProvider.publicIp.collectAsState()
+                val vpnIp by viewModel.connectionInfoProvider.vpnIp.collectAsState()
+                val portForwardingStatus by viewModel.connectionInfoProvider.portForwardingStatus.collectAsState()
+                val port by viewModel.connectionInfoProvider.port.collectAsState()
+
                 IPTile(
                     isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                    publicIp = vpnState.publicIp,
-                    vpnIp = vpnState.vpnIp,
+                    publicIp = publicIp,
+                    vpnIp = vpnIp,
                     portForwardingStatus =
-                        when (vpnState.portforwardingStatus) {
+                        when (portForwardingStatus) {
                             PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
                             PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
                             PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                            PortForwardingStatus.Success -> vpnState.port
+                            PortForwardingStatus.Success -> port
                         },
                 )
                 Separator()

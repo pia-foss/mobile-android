@@ -160,7 +160,7 @@ private fun DisplayComponent(
 
     val state by viewModel.state.collectAsState()
     val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsState()
-    val vpnState by viewModel.connectionInfoProvider.state.collectAsState()
+    val vpnIp by viewModel.connectionInfoProvider.vpnIp.collectAsState()
 
     when (screenElement) {
         Element.VpnRegionSelection -> {
@@ -170,7 +170,7 @@ private fun DisplayComponent(
                         down = startQuickConnectFocusRequester
                     },
                 server = state.server,
-                vpnIp = vpnState.vpnIp,
+                vpnIp = vpnIp,
                 isConnected = connectionState.status == ConnectionStatus.CONNECTED,
                 isOptimal = state.isCurrentServerOptimal,
             ) {

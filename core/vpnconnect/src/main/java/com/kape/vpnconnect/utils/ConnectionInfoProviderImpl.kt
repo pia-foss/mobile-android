@@ -6,9 +6,8 @@ import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
-import com.kape.data.NO_IP
-import com.kape.data.VpnConnectionInfo
 import com.kape.data.kpi.KpiConnectionStatus
+import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
@@ -20,14 +19,11 @@ import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Named
 
 class ConnectionInfoProviderImpl(
@@ -41,13 +37,14 @@ class ConnectionInfoProviderImpl(
 ) : ConnectionInfoProvider {
     private val ioScope = CoroutineScope(ioDispatcher)
     override val connectionInfoState = connectionStatusProvider.state
-    private val defaultState =
-        VpnConnectionInfo(
-            publicIp = connectionPrefs.clientIp.value,
-            vpnIp = connectionPrefs.vpnIp.value,
-        )
-    private val _connectionInfoState = MutableStateFlow(defaultState)
-    override val state = _connectionInfoState.asStateFlow()
+    override var name: String = ""
+    override var iso: String = ""
+    override var isManual: Boolean = false
+    override val publicIp: StateFlow<String> = connectionPrefs.clientIp
+    override val vpnIp: StateFlow<String> = connectionPrefs.vpnIp
+    override val portForwardingStatus: StateFlow<PortForwardingStatus> =
+        portForwardingUseCase.portForwardingStatus.asStateFlow()
+    override val port: StateFlow<String> = portForwardingUseCase.port
 
     init {
         ioScope.launch {
@@ -57,42 +54,16 @@ class ConnectionInfoProviderImpl(
                     it.vpnManagerConnectionStatus?.let {
                         submitKpiEventUseCase.submitConnectionEvent(
                             getKpiConnectionStatus(it),
-                            _connectionInfoState.value.isManual,
+                            isManual,
                         )
                     }
                     if (it.status == ConnectionStatus.DISCONNECTED) {
-                        val ip = clientStateDataSource.getPublicIp()
-                        withContext(mainDispatcher) {
-                            _connectionInfoState.update { it.copy(publicIp = ip, vpnIp = NO_IP) }
-                        }
+                        clientStateDataSource.getPublicIp()
                     }
                     if (it.status == ConnectionStatus.CONNECTED) {
-                        val vpnIp = clientStateDataSource.getVpnIp()
-                        withContext(mainDispatcher) {
-                            _connectionInfoState.update {
-                                it.copy(
-                                    publicIp = connectionPrefs.clientIp.value,
-                                    vpnIp = vpnIp,
-                                )
-                            }
-                        }
+                        clientStateDataSource.getVpnIp()
                     }
                 }
-        }
-        ioScope.launch {
-            combine(
-                portForwardingUseCase.portForwardingStatus,
-                portForwardingUseCase.port,
-            ) { status, port ->
-                withContext(mainDispatcher) {
-                    _connectionInfoState.update {
-                        it.copy(
-                            portforwardingStatus = status,
-                            port = port,
-                        )
-                    }
-                }
-            }.collect {}
         }
     }
 
@@ -112,11 +83,15 @@ class ConnectionInfoProviderImpl(
         iso: String,
         isManual: Boolean,
     ) {
-        _connectionInfoState.update { it.copy(name = name, iso = iso, isManual = isManual) }
+        this.name = name
+        this.iso = iso
+        this.isManual = isManual
     }
 
     override fun resetConnectionInfo() {
-        _connectionInfoState.update { defaultState }
+        this.name = ""
+        this.iso = ""
+        this.isManual = false
     }
 
     override fun getTopBarConnectionColor(scheme: ColorScheme): Color =
