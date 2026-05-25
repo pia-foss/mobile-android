@@ -1,6 +1,10 @@
 package com.kape.localprefs.prefs
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.kape.localprefs.Prefs
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.CustomObfuscation
@@ -9,206 +13,225 @@ import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
-private const val LAUNCH_ON_STARTUP = "launch-on-startup"
-private const val CONNECT_ON_LAUNCH = "connect-on-launch"
-private const val CONNECT_ON_APP_UPDATE = "connect-on-app-update"
-private const val SHOW_GEO_SERVERS = "show-geo-located-servers"
-private const val SELECTED_PROTOCOL = "selected-protocol"
-private const val WIRE_GUARD_SETTINGS = "wireguard-settings"
-private const val OPEN_VPN_SETTINGS = "openvpn-settings"
-private const val SELECTED_DNS_OPTION_SETTINGS = "selected-dns-option-settings"
-private const val CUSTOM_DNS_SETTINGS = "custom-dns-settings"
-private const val SELECTED_OBFUSCATION_OPTION_SETTINGS = "selected-obfuscation-option-settings"
-private const val CUSTOM_OBFUSCATION_SETTINGS = "custom-obfuscation-settings"
-private const val SHADOWSOCKS_OBFUSCATION_ENABLED = "shadowsocks-obfuscation-enabled"
-private const val EXTERNAL_PROXY_APP_ENABLED = "external-proxy-app-enabled"
-private const val EXTERNAL_PROXY_APP_PACKAGE_NAME = "external-proxy-app-package-name"
-private const val HELP_IMPROVE_PIA = "help-improve-pia"
-private const val DEBUG_LOGGING = "debug-logging"
-private const val VPN_EXCLUDED_APPS = "vpn-excluded-apps"
-private const val PORT_FORWARDING = "port-forwarding"
-private const val ALLOW_LOCAL_TRAFFIC = "allow-local-traffic"
-private const val AUTOMATION = "setting-automation"
-private const val MACE = "setting-mace"
+private val LAUNCH_ON_STARTUP = booleanPreferencesKey("launch-on-startup")
+private val CONNECT_ON_LAUNCH = booleanPreferencesKey("connect-on-launch")
+private val CONNECT_ON_APP_UPDATE = booleanPreferencesKey("connect-on-app-update")
+private val SHOW_GEO_SERVERS = booleanPreferencesKey("show-geo-located-servers")
+private val SELECTED_PROTOCOL = stringPreferencesKey("selected-protocol")
+private val WIRE_GUARD_SETTINGS = stringPreferencesKey("wireguard-settings")
+private val OPEN_VPN_SETTINGS = stringPreferencesKey("openvpn-settings")
+private val SELECTED_DNS_OPTION_SETTINGS = stringPreferencesKey("selected-dns-option-settings")
+private val CUSTOM_DNS_SETTINGS = stringPreferencesKey("custom-dns-settings")
+private val SELECTED_OBFUSCATION_OPTION_SETTINGS = stringPreferencesKey("selected-obfuscation-option-settings")
+private val CUSTOM_OBFUSCATION_SETTINGS = stringPreferencesKey("custom-obfuscation-settings")
+private val SHADOWSOCKS_OBFUSCATION_ENABLED = booleanPreferencesKey("shadowsocks-obfuscation-enabled")
+private val EXTERNAL_PROXY_APP_ENABLED = booleanPreferencesKey("external-proxy-app-enabled")
+private val EXTERNAL_PROXY_APP_PACKAGE_NAME = stringPreferencesKey("external-proxy-app-package-name")
+private val HELP_IMPROVE_PIA = booleanPreferencesKey("help-improve-pia")
+private val DEBUG_LOGGING = booleanPreferencesKey("debug-logging")
+private val VPN_EXCLUDED_APPS = stringSetPreferencesKey("vpn-excluded-apps")
+private val PORT_FORWARDING = booleanPreferencesKey("port-forwarding")
+private val ALLOW_LOCAL_TRAFFIC = booleanPreferencesKey("allow-local-traffic")
+private val AUTOMATION = booleanPreferencesKey("setting-automation")
+private val MACE = booleanPreferencesKey("setting-mace")
 
 @Singleton
 class SettingsPrefs(
     context: Context,
 ) : Prefs(context, "settings") {
     fun setEnableLaunchOnStartup(enable: Boolean) {
-        prefs.edit().putBoolean(LAUNCH_ON_STARTUP, enable).apply()
+        scope.launch {
+            dataStore.edit { it[LAUNCH_ON_STARTUP] = enable }
+        }
     }
 
-    fun isLaunchOnStartupEnabled(): Boolean = prefs.getBoolean(LAUNCH_ON_STARTUP, false)
+    fun isLaunchOnStartupEnabled(): Flow<Boolean> = dataStore.data.map { it[LAUNCH_ON_STARTUP] ?: false }
 
     fun setEnableConnectOnLaunch(enable: Boolean) {
-        prefs.edit().putBoolean(CONNECT_ON_LAUNCH, enable).apply()
+        scope.launch {
+            dataStore.edit { it[CONNECT_ON_LAUNCH] = enable }
+        }
     }
 
-    fun isConnectOnLaunchEnabled(): Boolean = prefs.getBoolean(CONNECT_ON_LAUNCH, false)
+    fun isConnectOnLaunchEnabled(): Flow<Boolean> = dataStore.data.map { it[CONNECT_ON_LAUNCH] ?: false }
 
     fun setEnableConnectOnAppUpdate(enable: Boolean) {
-        prefs.edit().putBoolean(CONNECT_ON_APP_UPDATE, enable).apply()
+        scope.launch {
+            dataStore.edit { it[CONNECT_ON_APP_UPDATE] = enable }
+        }
     }
 
-    fun isConnectOnAppUpdateEnabled(): Boolean = prefs.getBoolean(CONNECT_ON_APP_UPDATE, false)
+    fun isConnectOnAppUpdateEnabled(): Flow<Boolean> = dataStore.data.map { it[CONNECT_ON_APP_UPDATE] ?: false }
 
     fun setEnabledShowGeoLocatedServers(enable: Boolean) {
-        prefs.edit().putBoolean(SHOW_GEO_SERVERS, enable).apply()
+        scope.launch {
+            dataStore.edit { it[SHOW_GEO_SERVERS] = enable }
+        }
     }
 
-    fun isShowGeoLocatedServersEnabled(): Boolean = prefs.getBoolean(SHOW_GEO_SERVERS, true)
+    fun isShowGeoLocatedServersEnabled(): Flow<Boolean> = dataStore.data.map { it[SHOW_GEO_SERVERS] ?: true }
 
     fun setSelectedProtocol(protocol: VpnProtocols) {
-        prefs.edit().putString(SELECTED_PROTOCOL, Json.encodeToString(protocol)).apply()
-    }
-
-    fun getSelectedProtocol(): VpnProtocols {
-        prefs
-            .getString(
-                SELECTED_PROTOCOL,
-                Json.encodeToString(VpnProtocols.WireGuard),
-            )?.let {
-                return Json.decodeFromString(it)
-            } ?: run {
-            return VpnProtocols.WireGuard
+        scope.launch {
+            dataStore.edit { it[SELECTED_PROTOCOL] = Json.encodeToString(protocol) }
         }
     }
+
+    fun getSelectedProtocol(): Flow<VpnProtocols> =
+        dataStore.data.map { prefs ->
+            prefs[SELECTED_PROTOCOL]?.let { Json.decodeFromString(it) } ?: VpnProtocols.WireGuard
+        }
 
     fun setWireGuardSettings(settings: WireGuardSettings) {
-        prefs.edit().putString(WIRE_GUARD_SETTINGS, Json.encodeToString(settings)).apply()
-    }
-
-    fun getWireGuardSettings(): WireGuardSettings {
-        prefs.getString(WIRE_GUARD_SETTINGS, null)?.let {
-            return Json.decodeFromString(it)
-        } ?: run {
-            return WireGuardSettings()
+        scope.launch {
+            dataStore.edit { it[WIRE_GUARD_SETTINGS] = Json.encodeToString(settings) }
         }
     }
+
+    fun getWireGuardSettings(): Flow<WireGuardSettings> =
+        dataStore.data.map { prefs ->
+            prefs[WIRE_GUARD_SETTINGS]?.let { Json.decodeFromString(it) } ?: WireGuardSettings()
+        }
 
     fun setOpenVpnSettings(settings: OpenVpnSettings) {
-        prefs.edit().putString(OPEN_VPN_SETTINGS, Json.encodeToString(settings)).apply()
-    }
-
-    fun getOpenVpnSettings(): OpenVpnSettings {
-        prefs.getString(OPEN_VPN_SETTINGS, null)?.let {
-            return Json.decodeFromString(it)
-        } ?: run {
-            return OpenVpnSettings()
+        scope.launch {
+            dataStore.edit { it[OPEN_VPN_SETTINGS] = Json.encodeToString(settings) }
         }
     }
+
+    fun getOpenVpnSettings(): Flow<OpenVpnSettings> =
+        dataStore.data.map { prefs ->
+            prefs[OPEN_VPN_SETTINGS]?.let { Json.decodeFromString(it) } ?: OpenVpnSettings()
+        }
 
     fun setSelectedDnsOption(dnsOptions: DnsOptions) {
-        prefs
-            .edit()
-            .putString(SELECTED_DNS_OPTION_SETTINGS, Json.encodeToString(dnsOptions))
-            .apply()
-    }
-
-    fun getSelectedDnsOption(): DnsOptions {
-        prefs.getString(SELECTED_DNS_OPTION_SETTINGS, null)?.let {
-            return Json.decodeFromString(it)
-        } ?: run {
-            return DnsOptions.PIA
+        scope.launch {
+            dataStore.edit { it[SELECTED_DNS_OPTION_SETTINGS] = Json.encodeToString(dnsOptions) }
         }
     }
+
+    fun getSelectedDnsOption(): Flow<DnsOptions> =
+        dataStore.data.map { prefs ->
+            prefs[SELECTED_DNS_OPTION_SETTINGS]?.let { Json.decodeFromString(it) } ?: DnsOptions.PIA
+        }
 
     fun setCustomDns(customDns: CustomDns) {
-        prefs.edit().putString(CUSTOM_DNS_SETTINGS, Json.encodeToString(customDns)).apply()
-    }
-
-    fun getCustomDns(): CustomDns {
-        prefs.getString(CUSTOM_DNS_SETTINGS, null)?.let {
-            return Json.decodeFromString(it)
-        } ?: run {
-            return CustomDns()
+        scope.launch {
+            dataStore.edit { it[CUSTOM_DNS_SETTINGS] = Json.encodeToString(customDns) }
         }
     }
+
+    fun getCustomDns(): Flow<CustomDns> =
+        dataStore.data.map { prefs ->
+            prefs[CUSTOM_DNS_SETTINGS]?.let { Json.decodeFromString(it) } ?: CustomDns()
+        }
 
     fun setShadowsocksObfuscationEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean(SHADOWSOCKS_OBFUSCATION_ENABLED, enabled).apply()
+        scope.launch {
+            dataStore.edit { it[SHADOWSOCKS_OBFUSCATION_ENABLED] = enabled }
+        }
     }
 
-    fun isShadowsocksObfuscationEnabled(): Boolean = prefs.getBoolean(SHADOWSOCKS_OBFUSCATION_ENABLED, false)
+    fun isShadowsocksObfuscationEnabled(): Flow<Boolean> = dataStore.data.map { it[SHADOWSOCKS_OBFUSCATION_ENABLED] ?: false }
 
     fun setExternalProxyAppEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean(EXTERNAL_PROXY_APP_ENABLED, enabled).apply()
+        scope.launch {
+            dataStore.edit { it[EXTERNAL_PROXY_APP_ENABLED] = enabled }
+        }
     }
 
-    fun isExternalProxyAppEnabled() = prefs.getBoolean(EXTERNAL_PROXY_APP_ENABLED, false)
+    fun isExternalProxyAppEnabled(): Flow<Boolean> = dataStore.data.map { it[EXTERNAL_PROXY_APP_ENABLED] ?: false }
 
-    fun setExternalProxyAppPackageName(packageName: String) =
-        prefs
-            .edit()
-            .putString(
-                EXTERNAL_PROXY_APP_PACKAGE_NAME,
-                packageName,
-            ).apply()
+    fun setExternalProxyAppPackageName(packageName: String) {
+        scope.launch {
+            dataStore.edit { it[EXTERNAL_PROXY_APP_PACKAGE_NAME] = packageName }
+        }
+    }
 
-    fun getExternalProxyAppPackageName(): String = prefs.getString(EXTERNAL_PROXY_APP_PACKAGE_NAME, "") ?: ""
+    fun getExternalProxyAppPackageName(): Flow<String> = dataStore.data.map { it[EXTERNAL_PROXY_APP_PACKAGE_NAME] ?: "" }
 
     fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) {
-        prefs
-            .edit()
-            .putString(
-                SELECTED_OBFUSCATION_OPTION_SETTINGS,
-                Json.encodeToString(obfuscationOptions),
-            ).apply()
-    }
-
-    fun getSelectedObfuscationOption(): ObfuscationOptions {
-        prefs.getString(SELECTED_OBFUSCATION_OPTION_SETTINGS, null)?.let {
-            return Json.decodeFromString(it)
-        } ?: run {
-            return ObfuscationOptions.PIA
+        scope.launch {
+            dataStore.edit { it[SELECTED_OBFUSCATION_OPTION_SETTINGS] = Json.encodeToString(obfuscationOptions) }
         }
     }
+
+    fun getSelectedObfuscationOption(): Flow<ObfuscationOptions> =
+        dataStore.data.map { prefs ->
+            prefs[SELECTED_OBFUSCATION_OPTION_SETTINGS]?.let { Json.decodeFromString(it) } ?: ObfuscationOptions.PIA
+        }
 
     fun setCustomObfuscation(customObfuscation: CustomObfuscation) {
-        prefs
-            .edit()
-            .putString(CUSTOM_OBFUSCATION_SETTINGS, Json.encodeToString(customObfuscation))
-            .apply()
-    }
-
-    fun getCustomObfuscation(): CustomObfuscation? {
-        prefs.getString(CUSTOM_OBFUSCATION_SETTINGS, null)?.let {
-            return Json.decodeFromString(it)
-        } ?: run {
-            return null
+        scope.launch {
+            dataStore.edit { it[CUSTOM_OBFUSCATION_SETTINGS] = Json.encodeToString(customObfuscation) }
         }
     }
 
-    fun setHelpImprovePiaEnabled(enable: Boolean) = prefs.edit().putBoolean(HELP_IMPROVE_PIA, enable).apply()
+    fun getCustomObfuscation(): Flow<CustomObfuscation?> =
+        dataStore.data.map { prefs ->
+            prefs[CUSTOM_OBFUSCATION_SETTINGS]?.let { Json.decodeFromString(it) }
+        }
 
-    fun isHelpImprovePiaEnabled() = prefs.getBoolean(HELP_IMPROVE_PIA, false)
+    fun setHelpImprovePiaEnabled(enable: Boolean) {
+        scope.launch {
+            dataStore.edit { it[HELP_IMPROVE_PIA] = enable }
+        }
+    }
 
-    fun setDebugLoggingEnabled(enable: Boolean) = prefs.edit().putBoolean(DEBUG_LOGGING, enable).apply()
+    fun isHelpImprovePiaEnabled(): Flow<Boolean> = dataStore.data.map { it[HELP_IMPROVE_PIA] ?: false }
 
-    fun isDebugLoggingEnabled() = prefs.getBoolean(DEBUG_LOGGING, false)
+    fun setDebugLoggingEnabled(enable: Boolean) {
+        scope.launch {
+            dataStore.edit { it[DEBUG_LOGGING] = enable }
+        }
+    }
 
-    fun setVpnExcludedApps(apps: List<String>) = prefs.edit().putStringSet(VPN_EXCLUDED_APPS, apps.toSet()).apply()
+    fun isDebugLoggingEnabled(): Flow<Boolean> = dataStore.data.map { it[DEBUG_LOGGING] ?: false }
 
-    fun getVpnExcludedApps() = prefs.getStringSet(VPN_EXCLUDED_APPS, emptySet())?.toList() ?: emptyList()
+    fun setVpnExcludedApps(apps: List<String>) {
+        scope.launch {
+            dataStore.edit { it[VPN_EXCLUDED_APPS] = apps.toSet() }
+        }
+    }
 
-    fun setEnablePortForwarding(enable: Boolean) = prefs.edit().putBoolean(PORT_FORWARDING, enable).apply()
+    fun getVpnExcludedApps(): Flow<List<String>> = dataStore.data.map { it[VPN_EXCLUDED_APPS]?.toList() ?: emptyList() }
 
-    fun isPortForwardingEnabled() = prefs.getBoolean(PORT_FORWARDING, false)
+    fun setEnablePortForwarding(enable: Boolean) {
+        scope.launch {
+            dataStore.edit { it[PORT_FORWARDING] = enable }
+        }
+    }
 
-    fun setAllowLocalTrafficEnabled(enable: Boolean) = prefs.edit().putBoolean(ALLOW_LOCAL_TRAFFIC, enable).apply()
+    fun isPortForwardingEnabled(): Flow<Boolean> = dataStore.data.map { it[PORT_FORWARDING] ?: false }
 
-    fun isAllowLocalTrafficEnabled() = prefs.getBoolean(ALLOW_LOCAL_TRAFFIC, false)
+    fun setAllowLocalTrafficEnabled(enable: Boolean) {
+        scope.launch {
+            dataStore.edit { it[ALLOW_LOCAL_TRAFFIC] = enable }
+        }
+    }
 
-    fun setAutomationEnabled(enable: Boolean) = prefs.edit().putBoolean(AUTOMATION, enable).apply()
+    fun isAllowLocalTrafficEnabled(): Flow<Boolean> = dataStore.data.map { it[ALLOW_LOCAL_TRAFFIC] ?: false }
 
-    fun isAutomationEnabled() = prefs.getBoolean(AUTOMATION, false)
+    fun setAutomationEnabled(enable: Boolean) {
+        scope.launch {
+            dataStore.edit { it[AUTOMATION] = enable }
+        }
+    }
 
-    fun setMaceEnabled(enable: Boolean) = prefs.edit().putBoolean(MACE, enable).apply()
+    fun isAutomationEnabled(): Flow<Boolean> = dataStore.data.map { it[AUTOMATION] ?: false }
 
-    fun isMaceEnabled() = prefs.getBoolean(MACE, false)
+    fun setMaceEnabled(enable: Boolean) {
+        scope.launch {
+            dataStore.edit { it[MACE] = enable }
+        }
+    }
+
+    fun isMaceEnabled(): Flow<Boolean> = dataStore.data.map { it[MACE] ?: false }
 }

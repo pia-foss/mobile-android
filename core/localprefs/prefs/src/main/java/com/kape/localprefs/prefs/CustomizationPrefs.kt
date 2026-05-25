@@ -1,53 +1,52 @@
 package com.kape.localprefs.prefs
 
 import android.content.Context
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.kape.customization.data.Element
 import com.kape.localprefs.Prefs
 import com.kape.localprefs.data.customization.ScreenElement
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
-private const val ORDERED_ELEMENTS = "ordered-elements"
-private const val ORDERED_ELEMENTS_V2 = "ordered-elements-v2"
+private val ORDERED_ELEMENTS = stringPreferencesKey("ordered-elements")
+private val ORDERED_ELEMENTS_V2 = stringPreferencesKey("ordered-elements-v2")
 
 @Singleton
 class CustomizationPrefs(
     context: Context,
 ) : Prefs(context, "customization") {
     @Deprecated("Deprecated in favor of getElements()")
-    fun getOrderedElements(): List<ScreenElement> =
-        prefs.getString(ORDERED_ELEMENTS, null)?.let {
-            Json.decodeFromString(it)
-        } ?: defaultList()
-
-    @Deprecated("Deprecated in favor of setElements()")
-    fun setOrderedElements(orderedElements: List<ScreenElement>) =
-        prefs
-            .edit()
-            .putString(
-                ORDERED_ELEMENTS,
-                Json.encodeToString(orderedElements),
-            ).apply()
-
-    fun getElements(): List<ScreenElement> =
-        prefs.getString(ORDERED_ELEMENTS_V2, null)?.let {
-            Json.decodeFromString(it)
-        } ?: run {
-            if (getOrderedElements().isNotEmpty()) {
-                getOrderedElements()
-            } else {
-                defaultList()
-            }
+    fun getOrderedElements(): Flow<List<ScreenElement>> =
+        dataStore.data.map { prefs ->
+            prefs[ORDERED_ELEMENTS]?.let { Json.decodeFromString(it) } ?: defaultList()
         }
 
-    fun setElements(orderedElements: List<ScreenElement>) =
-        prefs
-            .edit()
-            .putString(
-                ORDERED_ELEMENTS_V2,
-                Json.encodeToString(orderedElements),
-            ).apply()
+    @Deprecated("Deprecated in favor of setElements()")
+    fun setOrderedElements(orderedElements: List<ScreenElement>) {
+        scope.launch {
+            dataStore.edit { it[ORDERED_ELEMENTS] = Json.encodeToString(orderedElements) }
+        }
+    }
+
+    fun getElements(): Flow<List<ScreenElement>> =
+        dataStore.data.map { prefs ->
+            prefs[ORDERED_ELEMENTS_V2]?.let { Json.decodeFromString(it) }
+                ?: prefs[ORDERED_ELEMENTS]?.let {
+                    Json.decodeFromString<List<ScreenElement>>(it).takeIf { list -> list.isNotEmpty() }
+                }
+                ?: defaultList()
+        }
+
+    fun setElements(orderedElements: List<ScreenElement>) {
+        scope.launch {
+            dataStore.edit { it[ORDERED_ELEMENTS_V2] = Json.encodeToString(orderedElements) }
+        }
+    }
 
     private fun defaultList(): List<ScreenElement> =
         listOf(

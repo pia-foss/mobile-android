@@ -27,6 +27,7 @@ object DI {
     const val WIDGET_PENDING_INTENT = "widget-pending-intent"
     const val MAIN_DISPATCHER = "main-dispatcher"
     const val IO_DISPATCHER = "io-dispatcher"
+    const val IO_SCOPE = "io-scope"
 }
 
 object WorkerTags {

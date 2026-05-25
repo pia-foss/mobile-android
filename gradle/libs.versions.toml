@@ -45,6 +45,8 @@ test-orchestrator = "1.6.1"
 junit5 = "1.14.0.0"
 shortcuts = "1.1.0"
 androidx-work = "2.10.0"
+datastore = "1.1.2"
+tink = "1.15.0"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "plugin-gradle" }
@@ -111,6 +113,8 @@ constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compos
 shortcuts = { module = "androidx.core:core-google-shortcuts", version.ref = "shortcuts" }
 work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
 
 [plugins]
 application = { id = "com.android.application", version.ref = "plugin-gradle" }

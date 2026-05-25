@@ -1,25 +1,27 @@
 package com.kape.localprefs.prefs
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import com.kape.localprefs.Prefs
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 
-private const val SHORTCUT_CONNECT_TO_VPN = "shortcut-connect-to-vpn"
-private const val SHORTCUT_DISCONNECT_VPN = "shortcut-disconnect-vpn"
-private const val SHORTCUT_CHANGE_SERVER = "shortcut-change-server"
-private const val SHORTCUT_SETTINGS = "shortcut-settings"
+private val SHORTCUT_CONNECT_TO_VPN = booleanPreferencesKey("shortcut-connect-to-vpn")
+private val SHORTCUT_DISCONNECT_VPN = booleanPreferencesKey("shortcut-disconnect-vpn")
+private val SHORTCUT_CHANGE_SERVER = booleanPreferencesKey("shortcut-change-server")
+private val SHORTCUT_SETTINGS = booleanPreferencesKey("shortcut-settings")
 
 @Singleton
 class ShortcutPrefs(
     context: Context,
 ) : Prefs(context, "shortcut") {
     fun setShortcutConnectToVpn(isShortcut: Boolean) {
-        prefs
-            .edit()
-            .putBoolean(
-                SHORTCUT_CONNECT_TO_VPN,
-                isShortcut,
-            ).apply()
+        scope.launch {
+            dataStore.edit { it[SHORTCUT_CONNECT_TO_VPN] = isShortcut }
+        }
         if (isShortcut) {
             setShortcutDisconnectVpn(false)
             setShortcutSettings(false)
@@ -27,15 +29,12 @@ class ShortcutPrefs(
         }
     }
 
-    fun isShortcutConnectToVpn(): Boolean = prefs.getBoolean(SHORTCUT_CONNECT_TO_VPN, false)
+    fun isShortcutConnectToVpn(): Flow<Boolean> = dataStore.data.map { it[SHORTCUT_CONNECT_TO_VPN] ?: false }
 
     fun setShortcutDisconnectVpn(isShortcut: Boolean) {
-        prefs
-            .edit()
-            .putBoolean(
-                SHORTCUT_DISCONNECT_VPN,
-                isShortcut,
-            ).apply()
+        scope.launch {
+            dataStore.edit { it[SHORTCUT_DISCONNECT_VPN] = isShortcut }
+        }
         if (isShortcut) {
             setShortcutSettings(false)
             setShortcutChangeServer(false)
@@ -43,15 +42,12 @@ class ShortcutPrefs(
         }
     }
 
-    fun isShortcutDisconnectVpn(): Boolean = prefs.getBoolean(SHORTCUT_DISCONNECT_VPN, false)
+    fun isShortcutDisconnectVpn(): Flow<Boolean> = dataStore.data.map { it[SHORTCUT_DISCONNECT_VPN] ?: false }
 
     fun setShortcutChangeServer(isShortcut: Boolean) {
-        prefs
-            .edit()
-            .putBoolean(
-                SHORTCUT_CHANGE_SERVER,
-                isShortcut,
-            ).apply()
+        scope.launch {
+            dataStore.edit { it[SHORTCUT_CHANGE_SERVER] = isShortcut }
+        }
         if (isShortcut) {
             setShortcutSettings(false)
             setShortcutConnectToVpn(false)
@@ -59,15 +55,12 @@ class ShortcutPrefs(
         }
     }
 
-    fun isShortcutChangeServer(): Boolean = prefs.getBoolean(SHORTCUT_CHANGE_SERVER, false)
+    fun isShortcutChangeServer(): Flow<Boolean> = dataStore.data.map { it[SHORTCUT_CHANGE_SERVER] ?: false }
 
     fun setShortcutSettings(isShortcut: Boolean) {
-        prefs
-            .edit()
-            .putBoolean(
-                SHORTCUT_SETTINGS,
-                isShortcut,
-            ).apply()
+        scope.launch {
+            dataStore.edit { it[SHORTCUT_SETTINGS] = isShortcut }
+        }
         if (isShortcut) {
             setShortcutChangeServer(false)
             setShortcutConnectToVpn(false)
@@ -75,5 +68,5 @@ class ShortcutPrefs(
         }
     }
 
-    fun isShortcutSettings(): Boolean = prefs.getBoolean(SHORTCUT_SETTINGS, false)
+    fun isShortcutSettings(): Flow<Boolean> = dataStore.data.map { it[SHORTCUT_SETTINGS] ?: false }
 }

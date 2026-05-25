@@ -102,6 +102,7 @@ import com.privateinternetaccess.regions.PlatformInstancesProvider
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.RegionsBuilder
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
@@ -185,6 +186,12 @@ class AppModule {
     @Singleton
     @Named(DI.IO_DISPATCHER)
     fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Singleton
+    @Named(DI.IO_SCOPE)
+    fun provideIOScope(
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+    ) = CoroutineScope(ioDispatcher)
 
     @Singleton
     fun provideNotificationManager(context: Context): NotificationManager =
@@ -338,7 +345,14 @@ class AppModule {
         vpnLauncher: VpnLauncher,
         settingsPrefs: SettingsPrefs,
         connectionStatusProvider: ConnectionStatusProvider,
-    ): NetworkManager = NetworkManagerImpl(context, networkPrefs, vpnLauncher, settingsPrefs, connectionStatusProvider)
+    ): NetworkManager =
+        NetworkManagerImpl(
+            context,
+            networkPrefs,
+            vpnLauncher,
+            settingsPrefs,
+            connectionStatusProvider,
+        )
 
     @Singleton
     fun provideNetworkConnectionListener(

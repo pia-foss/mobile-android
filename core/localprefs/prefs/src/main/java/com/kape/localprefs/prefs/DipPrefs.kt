@@ -1,124 +1,127 @@
 package com.kape.localprefs.prefs
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.kape.dip.data.DedicatedIpSelectedCountry
 import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.dip.data.DedicatedIpSupportedCountries
 import com.kape.localprefs.Prefs
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
-private const val DEDICATED_IPS = "dedicated-ips"
-private const val DIP_SIGNUP_ENABLED = "dip-signup-enabled"
-private const val DIP_SIGNUP_HOME_BANNER_VISIBLE = "dip-signup-home-banner-visible"
-private const val DIP_SIGNUP_PLANS = "dip-signup-plans"
-private const val DIP_SUPPORTED_COUNTRIES = "dip-supported-countries"
-private const val DIP_SIGNUP_PURCHASED_TOKEN = "dip-signup-purchased-token"
-private const val DIP_SIGNUP_SELECTED_PRODUCT_ID = "dip-signup-selected-product-id"
-private const val DIP_SIGNUP_SELECTED_COUNTRY = "dip-signup-selected-country"
+private val DEDICATED_IPS = stringSetPreferencesKey("dedicated-ips")
+private val DIP_SIGNUP_ENABLED = booleanPreferencesKey("dip-signup-enabled")
+private val DIP_SIGNUP_HOME_BANNER_VISIBLE = booleanPreferencesKey("dip-signup-home-banner-visible")
+private val DIP_SIGNUP_PLANS = stringPreferencesKey("dip-signup-plans")
+private val DIP_SUPPORTED_COUNTRIES = stringPreferencesKey("dip-supported-countries")
+private val DIP_SIGNUP_PURCHASED_TOKEN = stringPreferencesKey("dip-signup-purchased-token")
+private val DIP_SIGNUP_SELECTED_PRODUCT_ID = stringPreferencesKey("dip-signup-selected-product-id")
+private val DIP_SIGNUP_SELECTED_COUNTRY = stringPreferencesKey("dip-signup-selected-country")
 
 @Singleton
 class DipPrefs(
     context: Context,
 ) : Prefs(context, "dip") {
-    fun getDedicatedIps(): List<DedicatedIPInformationResponse.DedicatedIPInformation> {
-        val dips = mutableListOf<DedicatedIPInformationResponse.DedicatedIPInformation>()
-        for (dip in getDips()) {
-            dips.add(Json.decodeFromString(dip))
+    fun getDedicatedIps(): Flow<List<DedicatedIPInformationResponse.DedicatedIPInformation>> =
+        dataStore.data.map { prefs ->
+            prefs[DEDICATED_IPS]?.map { Json.decodeFromString(it) } ?: emptyList()
         }
-        return dips
-    }
 
     fun addDedicatedIp(dip: DedicatedIPInformationResponse.DedicatedIPInformation) {
-        val newDips = mutableSetOf<String>()
-        newDips.addAll(getDips())
-        newDips.add(Json.encodeToString(dip))
-        saveDedicatedIps(newDips)
+        scope.launch {
+            dataStore.edit { prefs ->
+                val current = prefs[DEDICATED_IPS] ?: emptySet()
+                prefs[DEDICATED_IPS] = current + Json.encodeToString(dip)
+            }
+        }
     }
 
     fun removeDedicatedIp(dip: DedicatedIPInformationResponse.DedicatedIPInformation) {
-        val newDips = getDips().toMutableList()
-        newDips.remove(Json.encodeToString(dip))
-        saveDedicatedIps(newDips.toSet())
+        scope.launch {
+            dataStore.edit { prefs ->
+                val current = prefs[DEDICATED_IPS]?.toMutableSet() ?: mutableSetOf()
+                current.remove(Json.encodeToString(dip))
+                prefs[DEDICATED_IPS] = current
+            }
+        }
     }
 
     fun setPurchasedSignupDipToken(dipToken: String) {
-        prefs.edit().putString(DIP_SIGNUP_PURCHASED_TOKEN, dipToken).apply()
+        scope.launch {
+            dataStore.edit { it[DIP_SIGNUP_PURCHASED_TOKEN] = dipToken }
+        }
     }
 
-    fun getPurchasedSignupDipToken(): String = prefs.getString(DIP_SIGNUP_PURCHASED_TOKEN, "") ?: ""
+    fun getPurchasedSignupDipToken(): Flow<String> = dataStore.data.map { it[DIP_SIGNUP_PURCHASED_TOKEN] ?: "" }
 
     fun removePurchasedSignupDipToken() {
-        prefs.edit().remove(DIP_SIGNUP_PURCHASED_TOKEN).apply()
+        scope.launch {
+            dataStore.edit { it.remove(DIP_SIGNUP_PURCHASED_TOKEN) }
+        }
     }
 
-    fun isDipSignupEnabled(isGoogleFlavor: Boolean) =
+    fun isDipSignupEnabled(isGoogleFlavor: Boolean): Flow<Boolean> =
         if (isGoogleFlavor) {
-            prefs.getBoolean(DIP_SIGNUP_ENABLED, false)
+            dataStore.data.map { it[DIP_SIGNUP_ENABLED] ?: false }
         } else {
-            false
+            flow { emit(false) }
         }
 
-    fun showDedicatedIpHomeBanner() = prefs.getBoolean(DIP_SIGNUP_HOME_BANNER_VISIBLE, false)
+    fun showDedicatedIpHomeBanner(): Flow<Boolean> = dataStore.data.map { it[DIP_SIGNUP_HOME_BANNER_VISIBLE] ?: false }
 
     fun hideDedicatedIpHomeBanner() {
-        prefs.edit().putBoolean(DIP_SIGNUP_HOME_BANNER_VISIBLE, false).apply()
+        scope.launch {
+            dataStore.edit { it[DIP_SIGNUP_HOME_BANNER_VISIBLE] = false }
+        }
     }
 
     fun setDedicatedIpSignupPlans(dedicatedIpSignupPlans: DedicatedIpSignupPlans) {
-        prefs
-            .edit()
-            .putString(DIP_SIGNUP_PLANS, Json.encodeToString(dedicatedIpSignupPlans))
-            .apply()
+        scope.launch {
+            dataStore.edit { it[DIP_SIGNUP_PLANS] = Json.encodeToString(dedicatedIpSignupPlans) }
+        }
     }
 
-    fun getDedicatedIpSignupPlans(): DedicatedIpSignupPlans? =
-        prefs.getString(DIP_SIGNUP_PLANS, null)?.let {
-            Json.decodeFromString(it)
+    fun getDedicatedIpSignupPlans(): Flow<DedicatedIpSignupPlans?> =
+        dataStore.data.map { prefs ->
+            prefs[DIP_SIGNUP_PLANS]?.let { Json.decodeFromString(it) }
         }
 
     fun setDedicatedIpSupportedCountries(dedicatedIpSupportedCountries: DedicatedIpSupportedCountries) {
-        prefs
-            .edit()
-            .putString(
-                DIP_SUPPORTED_COUNTRIES,
-                Json.encodeToString(dedicatedIpSupportedCountries),
-            ).apply()
+        scope.launch {
+            dataStore.edit { it[DIP_SUPPORTED_COUNTRIES] = Json.encodeToString(dedicatedIpSupportedCountries) }
+        }
     }
 
-    fun getDedicatedIpSupportedCountries(): DedicatedIpSupportedCountries? =
-        prefs.getString(DIP_SUPPORTED_COUNTRIES, null)?.let {
-            Json.decodeFromString(it)
+    fun getDedicatedIpSupportedCountries(): Flow<DedicatedIpSupportedCountries?> =
+        dataStore.data.map { prefs ->
+            prefs[DIP_SUPPORTED_COUNTRIES]?.let { Json.decodeFromString(it) }
         }
 
     fun setSelectedDipSignupProductId(productId: String) {
-        prefs
-            .edit()
-            .putString(
-                DIP_SIGNUP_SELECTED_PRODUCT_ID,
-                productId,
-            ).apply()
+        scope.launch {
+            dataStore.edit { it[DIP_SIGNUP_SELECTED_PRODUCT_ID] = productId }
+        }
     }
+
+    fun getSelectedDipSignupProductId(): Flow<String> = dataStore.data.map { it[DIP_SIGNUP_SELECTED_PRODUCT_ID] ?: "" }
 
     fun setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) {
-        prefs
-            .edit()
-            .putString(
-                DIP_SIGNUP_SELECTED_COUNTRY,
-                Json.encodeToString(dedicatedIpSelectedCountry),
-            ).apply()
+        scope.launch {
+            dataStore.edit { it[DIP_SIGNUP_SELECTED_COUNTRY] = Json.encodeToString(dedicatedIpSelectedCountry) }
+        }
     }
 
-    fun getDedicatedIpSelectedCountry(): DedicatedIpSelectedCountry? =
-        prefs.getString(DIP_SIGNUP_SELECTED_COUNTRY, null)?.let {
-            Json.decodeFromString(it)
+    fun getDedicatedIpSelectedCountry(): Flow<DedicatedIpSelectedCountry?> =
+        dataStore.data.map { prefs ->
+            prefs[DIP_SIGNUP_SELECTED_COUNTRY]?.let { Json.decodeFromString(it) }
         }
-
-    fun getSelectedDipSignupProductId(): String = prefs.getString(DIP_SIGNUP_SELECTED_PRODUCT_ID, "") ?: ""
-
-    private fun getDips() = prefs.getStringSet(DEDICATED_IPS, emptySet()) ?: emptySet()
-
-    private fun saveDedicatedIps(dips: Set<String>) = prefs.edit().putStringSet(DEDICATED_IPS, dips).apply()
 }
