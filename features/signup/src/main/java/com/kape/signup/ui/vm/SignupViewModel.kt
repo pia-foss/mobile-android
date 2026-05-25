@@ -10,8 +10,8 @@ import com.kape.contracts.Router
 import com.kape.data.LoginWithCredentials
 import com.kape.data.TvWelcome
 import com.kape.data.WebDestination
-import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.domain.GetSubscriptionsUseCase
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseState
 import com.kape.permissions.utils.PermissionUtil

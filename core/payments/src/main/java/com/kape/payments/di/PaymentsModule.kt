@@ -1,11 +1,11 @@
 package com.kape.payments.di
 
 import android.content.Context
-import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.data.SubscriptionDataSourceImpl
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.domain.SubscriptionDataSource
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.DipSubscriptionPaymentProviderImpl
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider

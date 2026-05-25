@@ -15,6 +15,7 @@ open class Prefs(
     name: String,
 ) {
     protected val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    val waitTime = 5000L
 
     val dataStore: DataStore<Preferences> =
         DataStoreFactory.create(

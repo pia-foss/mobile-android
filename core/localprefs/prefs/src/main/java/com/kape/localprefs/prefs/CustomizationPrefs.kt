@@ -7,7 +7,11 @@ import com.kape.customization.data.Element
 import com.kape.localprefs.Prefs
 import com.kape.localprefs.data.customization.ScreenElement
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -20,11 +24,8 @@ private val ORDERED_ELEMENTS_V2 = stringPreferencesKey("ordered-elements-v2")
 class CustomizationPrefs(
     context: Context,
 ) : Prefs(context, "customization") {
-    @Deprecated("Deprecated in favor of getElements()")
-    fun getOrderedElements(): Flow<List<ScreenElement>> =
-        dataStore.data.map { prefs ->
-            prefs[ORDERED_ELEMENTS]?.let { Json.decodeFromString(it) } ?: defaultList()
-        }
+    val elements: StateFlow<List<ScreenElement>> =
+        getElements().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), defaultList())
 
     @Deprecated("Deprecated in favor of setElements()")
     fun setOrderedElements(orderedElements: List<ScreenElement>) {
@@ -33,7 +34,13 @@ class CustomizationPrefs(
         }
     }
 
-    fun getElements(): Flow<List<ScreenElement>> =
+    fun setElements(orderedElements: List<ScreenElement>) {
+        scope.launch {
+            dataStore.edit { it[ORDERED_ELEMENTS_V2] = Json.encodeToString(orderedElements) }
+        }
+    }
+
+    private fun getElements(): Flow<List<ScreenElement>> =
         dataStore.data.map { prefs ->
             prefs[ORDERED_ELEMENTS_V2]?.let { Json.decodeFromString(it) }
                 ?: prefs[ORDERED_ELEMENTS]?.let {
@@ -41,12 +48,6 @@ class CustomizationPrefs(
                 }
                 ?: defaultList()
         }
-
-    fun setElements(orderedElements: List<ScreenElement>) {
-        scope.launch {
-            dataStore.edit { it[ORDERED_ELEMENTS_V2] = Json.encodeToString(orderedElements) }
-        }
-    }
 
     private fun defaultList(): List<ScreenElement> =
         listOf(

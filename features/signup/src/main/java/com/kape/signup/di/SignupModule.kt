@@ -5,9 +5,9 @@ import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.Router
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.login.domain.mobile.LoginUseCase
-import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.payments.domain.GetSubscriptionsUseCase
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.signup.data.EmailDataSourceImpl

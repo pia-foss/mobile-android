@@ -1,7 +1,7 @@
 package com.kape.payments.data
 
-import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.domain.SubscriptionDataSource
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.AndroidVpnSubscriptionsInformation

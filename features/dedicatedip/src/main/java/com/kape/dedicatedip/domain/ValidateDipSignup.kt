@@ -1,7 +1,7 @@
 package com.kape.dedicatedip.domain
 
-import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.data.DipPurchaseData
+import com.kape.payments.prefs.SubscriptionPrefs
 import org.koin.core.annotation.Singleton
 
 @Singleton

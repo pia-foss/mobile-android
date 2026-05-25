@@ -9,7 +9,10 @@ import com.kape.data.vpnserver.VpnServerOutdated
 import com.kape.localprefs.Prefs
 import com.kape.regions.data.ServerData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
@@ -24,6 +27,13 @@ private val VPN_RECONNECT = booleanPreferencesKey("reconnect")
 class VpnRegionPrefs(
     context: Context,
 ) : Prefs(context, "vpn-regions") {
+    val favoriteVpnServers: StateFlow<List<ServerData>> =
+        getFavoriteVpnServers().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
+    val selectedServer: StateFlow<VpnServer?> =
+        getSelectedServer().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
+    val needsVpnReconnect: StateFlow<Boolean> =
+        getNeedsVpnReconnect().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
+
     fun addToFavorites(serverData: ServerData) {
         scope.launch {
             dataStore.edit { prefs ->
@@ -59,11 +69,6 @@ class VpnRegionPrefs(
         isDip: Boolean,
     ): Flow<Boolean> = isFavorite(ServerData(serverName, isDip))
 
-    fun getFavoriteVpnServers(): Flow<List<ServerData>> =
-        dataStore.data.map { prefs ->
-            prefs[VPN_FAVORITES]?.let { Json.decodeFromString(it) } ?: emptyList()
-        }
-
     fun selectVpnServer(vpnServer: VpnServer) {
         scope.launch {
             dataStore.edit { prefs ->
@@ -73,8 +78,19 @@ class VpnRegionPrefs(
         }
     }
 
+    fun setVpnReconnect(needsReconnect: Boolean) {
+        scope.launch {
+            dataStore.edit { it[VPN_RECONNECT] = needsReconnect }
+        }
+    }
+
+    private fun getFavoriteVpnServers(): Flow<List<ServerData>> =
+        dataStore.data.map { prefs ->
+            prefs[VPN_FAVORITES]?.let { Json.decodeFromString(it) } ?: emptyList()
+        }
+
     @OptIn(ExperimentalSerializationApi::class)
-    fun getSelectedServer(): Flow<VpnServer?> =
+    private fun getSelectedServer(): Flow<VpnServer?> =
         dataStore.data.map { prefs ->
             try {
                 prefs[VPN_SELECTED_SERVER]?.let { Json.decodeFromString<VpnServer>(it) }
@@ -83,11 +99,5 @@ class VpnRegionPrefs(
             }
         }
 
-    fun needsVpnReconnect(): Flow<Boolean> = dataStore.data.map { it[VPN_RECONNECT] ?: false }
-
-    fun setVpnReconnect(needsReconnect: Boolean) {
-        scope.launch {
-            dataStore.edit { it[VPN_RECONNECT] = needsReconnect }
-        }
-    }
+    private fun getNeedsVpnReconnect(): Flow<Boolean> = dataStore.data.map { it[VPN_RECONNECT] ?: false }
 }

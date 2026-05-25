@@ -8,7 +8,11 @@ import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -20,6 +24,9 @@ private val NETWORK_RULES = stringSetPreferencesKey("network-rules")
 class NetworkManagementPrefs(
     context: Context,
 ) : Prefs(context, "network-management") {
+    val allRules: StateFlow<List<NetworkItem>> =
+        getAllRules().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
+
     fun addRuleForNetwork(
         ssid: String,
         behavior: NetworkBehavior,
@@ -74,16 +81,16 @@ class NetworkManagementPrefs(
         }
     }
 
-    fun getAllRules(): Flow<List<NetworkItem>> =
-        dataStore.data.map { prefs ->
-            prefs[NETWORK_RULES]?.map { Json.decodeFromString(it) } ?: emptyList()
-        }
-
     fun getRuleForNetwork(ssid: String): Flow<NetworkItem?> =
         dataStore.data.map { prefs ->
             prefs[NETWORK_RULES]
                 ?.map { Json.decodeFromString<NetworkItem>(it) }
                 ?.firstOrNull { it.networkName == ssid }
+        }
+
+    private fun getAllRules(): Flow<List<NetworkItem>> =
+        dataStore.data.map { prefs ->
+            prefs[NETWORK_RULES]?.map { Json.decodeFromString(it) } ?: emptyList()
         }
 
     private suspend fun addNetworkItem(item: NetworkItem) {

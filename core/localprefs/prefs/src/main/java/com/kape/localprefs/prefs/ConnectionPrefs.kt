@@ -11,7 +11,11 @@ import com.kape.data.NO_IP
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.Prefs
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
@@ -31,6 +35,25 @@ private const val DEFAULT_PROXY_PORT_VALUE = "8080"
 class ConnectionPrefs(
     context: Context,
 ) : Prefs(context, "connection") {
+    val quickConnectServers: StateFlow<List<QuickConnectServer>> =
+        getQuickConnectServers().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
+    val clientIp: StateFlow<String> =
+        getClientIp().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), NO_IP)
+    val vpnIp: StateFlow<String> =
+        getVpnIp().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), NO_IP)
+    val selectedVpnServer: StateFlow<VpnServer?> =
+        getSelectedVpnServer().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
+    val lastSnoozeEndTime: StateFlow<Long> =
+        getLastSnoozeEndTime().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), 0L)
+    val gateway: StateFlow<String> =
+        getGateway().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
+    val portBindingInfo: StateFlow<PortBindInformation?> =
+        getPortBindingInfo().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
+    val isDisconnectedByUser: StateFlow<Boolean> =
+        getDisconnectedByUser().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
+    val proxyPort: StateFlow<String> =
+        getProxyPort().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), DEFAULT_PROXY_PORT_VALUE)
+
     fun addToQuickConnect(
         serverKey: String,
         isDip: Boolean,
@@ -63,18 +86,11 @@ class ConnectionPrefs(
         }
     }
 
-    fun getQuickConnectServers(): Flow<List<QuickConnectServer>> =
-        dataStore.data.map { prefs ->
-            prefs[QUICK_CONNECT]?.let { Json.decodeFromString(it) } ?: emptyList()
-        }
-
     fun setClientIp(ip: String) {
         scope.launch {
             dataStore.edit { it[CLIENT_IP] = ip }
         }
     }
-
-    fun getClientIp(): Flow<String> = dataStore.data.map { it[CLIENT_IP] ?: NO_IP }
 
     fun setVpnIp(vpnIp: String) {
         scope.launch {
@@ -82,18 +98,11 @@ class ConnectionPrefs(
         }
     }
 
-    fun getVpnIp(): Flow<String> = dataStore.data.map { it[VPN_IP] ?: NO_IP }
-
     fun setSelectedVpnServer(server: VpnServer?) {
         scope.launch {
             dataStore.edit { it[PRE_SELECTED_VPN_SERVER] = Json.encodeToString(server) }
         }
     }
-
-    fun getSelectedVpnServer(): Flow<VpnServer?> =
-        dataStore.data.map { prefs ->
-            prefs[PRE_SELECTED_VPN_SERVER]?.let { Json.decodeFromString(it) }
-        }
 
     fun setLastSnoozeEndTime(endTime: Long) {
         scope.launch {
@@ -101,15 +110,11 @@ class ConnectionPrefs(
         }
     }
 
-    fun getLastSnoozeEndTime(): Flow<Long> = dataStore.data.map { it[LAST_SNOOZE_END_TIME] ?: 0L }
-
     fun setGateway(gateway: String) {
         scope.launch {
             dataStore.edit { it[GATEWAY] = gateway }
         }
     }
-
-    fun getGateway(): Flow<String> = dataStore.data.map { it[GATEWAY] ?: "" }
 
     fun clearGateway() = setGateway("")
 
@@ -119,11 +124,6 @@ class ConnectionPrefs(
         }
     }
 
-    fun getPortBindingInfo(): Flow<PortBindInformation?> =
-        dataStore.data.map { prefs ->
-            prefs[PORT_BINDING_INFO]?.let { Json.decodeFromString(it) }
-        }
-
     fun clearPortBindingInfo() = setPortBindingInformation(null)
 
     fun disconnectedByUser(byUser: Boolean) {
@@ -131,8 +131,6 @@ class ConnectionPrefs(
             dataStore.edit { it[DISCONNECTED_BY_USER] = byUser }
         }
     }
-
-    fun isDisconnectedByUser(): Flow<Boolean> = dataStore.data.map { it[DISCONNECTED_BY_USER] ?: false }
 
     fun setProxyPort(port: String?) {
         scope.launch {
@@ -142,5 +140,30 @@ class ConnectionPrefs(
         }
     }
 
-    fun getProxyPort(): Flow<String> = dataStore.data.map { it[PROXY_PORT] ?: DEFAULT_PROXY_PORT_VALUE }
+    private fun getQuickConnectServers(): Flow<List<QuickConnectServer>> =
+        dataStore.data.map { prefs ->
+            prefs[QUICK_CONNECT]?.let { Json.decodeFromString(it) } ?: emptyList()
+        }
+
+    private fun getClientIp(): Flow<String> = dataStore.data.map { it[CLIENT_IP] ?: NO_IP }
+
+    private fun getVpnIp(): Flow<String> = dataStore.data.map { it[VPN_IP] ?: NO_IP }
+
+    private fun getSelectedVpnServer(): Flow<VpnServer?> =
+        dataStore.data.map { prefs ->
+            prefs[PRE_SELECTED_VPN_SERVER]?.let { Json.decodeFromString(it) }
+        }
+
+    private fun getLastSnoozeEndTime(): Flow<Long> = dataStore.data.map { it[LAST_SNOOZE_END_TIME] ?: 0L }
+
+    private fun getGateway(): Flow<String> = dataStore.data.map { it[GATEWAY] ?: "" }
+
+    private fun getPortBindingInfo(): Flow<PortBindInformation?> =
+        dataStore.data.map { prefs ->
+            prefs[PORT_BINDING_INFO]?.let { Json.decodeFromString(it) }
+        }
+
+    private fun getDisconnectedByUser(): Flow<Boolean> = dataStore.data.map { it[DISCONNECTED_BY_USER] ?: false }
+
+    private fun getProxyPort(): Flow<String> = dataStore.data.map { it[PROXY_PORT] ?: DEFAULT_PROXY_PORT_VALUE }
 }

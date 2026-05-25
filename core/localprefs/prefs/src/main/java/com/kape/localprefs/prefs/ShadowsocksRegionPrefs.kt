@@ -7,7 +7,11 @@ import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.localprefs.Prefs
 import com.kape.regions.data.ServerData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
@@ -20,6 +24,11 @@ private val SHADOWSOCKS_SERVERS = stringPreferencesKey("shadowsocks-servers")
 class ShadowsocksRegionPrefs(
     context: Context,
 ) : Prefs(context, "shadowsocks-regions") {
+    val selectedShadowsocksServer: StateFlow<ShadowsocksServer?> =
+        getSelectedShadowsocksServer().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
+    val shadowsocksServers: StateFlow<List<ShadowsocksServer>> =
+        getShadowsocksServers().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
+
     fun addToFavorites(shadowsocksServerName: String) {
         scope.launch {
             dataStore.edit { prefs ->
@@ -60,18 +69,18 @@ class ShadowsocksRegionPrefs(
         }
     }
 
-    fun getSelectedShadowsocksServer(): Flow<ShadowsocksServer?> =
-        dataStore.data.map { prefs ->
-            prefs[SHADOWSOCKS_SELECTED_SERVER]?.let { Json.decodeFromString(it) }
-        }
-
     fun setShadowsocksServers(shadowsocksServers: List<ShadowsocksServer>) {
         scope.launch {
             dataStore.edit { it[SHADOWSOCKS_SERVERS] = Json.encodeToString(shadowsocksServers) }
         }
     }
 
-    fun getShadowsocksServers(): Flow<List<ShadowsocksServer>> =
+    private fun getSelectedShadowsocksServer(): Flow<ShadowsocksServer?> =
+        dataStore.data.map { prefs ->
+            prefs[SHADOWSOCKS_SELECTED_SERVER]?.let { Json.decodeFromString(it) }
+        }
+
+    private fun getShadowsocksServers(): Flow<List<ShadowsocksServer>> =
         dataStore.data.map { prefs ->
             prefs[SHADOWSOCKS_SERVERS]?.let { Json.decodeFromString(it) } ?: emptyList()
         }

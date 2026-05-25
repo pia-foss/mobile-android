@@ -27,7 +27,7 @@ import com.kape.login.ui.vm.mobile.LoginWithEmailViewModel
 import com.kape.login.ui.vm.tv.LoginPasswordViewModel
 import com.kape.login.ui.vm.tv.LoginUsernameViewModel
 import com.kape.login.utils.TokenAuthenticationUtil
-import com.kape.payments.SubscriptionPrefs
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.utils.NetworkConnectionListener

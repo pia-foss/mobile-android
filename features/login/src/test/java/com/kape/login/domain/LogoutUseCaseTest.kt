@@ -17,7 +17,7 @@ import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.login.BaseTest
 import com.kape.login.domain.mobile.LogoutUseCaseImpl
-import com.kape.payments.SubscriptionPrefs
+import com.kape.payments.prefs.SubscriptionPrefs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk

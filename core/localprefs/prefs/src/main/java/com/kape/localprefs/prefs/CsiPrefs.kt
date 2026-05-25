@@ -5,7 +5,11 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.kape.localprefs.Prefs
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 
@@ -17,21 +21,24 @@ private val DEBUG_LOGS = stringPreferencesKey("debug-logs")
 class CsiPrefs(
     context: Context,
 ) : Prefs(context, "csi") {
+    val lastKnownException: StateFlow<String> =
+        getLastKnownException().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
+    val protocolDebugLogs: StateFlow<String> =
+        getProtocolDebugLogs().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
+    val customDebugLogs: StateFlow<String> =
+        getCustomDebugLogs().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
+
     fun setLastKnownException(value: String) {
         scope.launch {
             dataStore.edit { it[LAST_KNOWN_EXCEPTION] = value }
         }
     }
 
-    fun getLastKnownException(): Flow<String> = dataStore.data.map { it[LAST_KNOWN_EXCEPTION] ?: "" }
-
     fun setProtocolDebugLogs(value: String) {
         scope.launch {
             dataStore.edit { it[PROTOCOL_DEBUG_LOGS] = value }
         }
     }
-
-    fun getProtocolDebugLogs(): Flow<String> = dataStore.data.map { it[PROTOCOL_DEBUG_LOGS] ?: "" }
 
     fun addCustomDebugLogs(
         value: String,
@@ -47,11 +54,15 @@ class CsiPrefs(
         }
     }
 
-    fun getCustomDebugLogs(): Flow<String> = dataStore.data.map { it[DEBUG_LOGS] ?: "" }
-
     fun clearCustomDebugLogs() {
         scope.launch {
             dataStore.edit { it[DEBUG_LOGS] = "" }
         }
     }
+
+    private fun getLastKnownException(): Flow<String> = dataStore.data.map { it[LAST_KNOWN_EXCEPTION] ?: "" }
+
+    private fun getProtocolDebugLogs(): Flow<String> = dataStore.data.map { it[PROTOCOL_DEBUG_LOGS] ?: "" }
+
+    private fun getCustomDebugLogs(): Flow<String> = dataStore.data.map { it[DEBUG_LOGS] ?: "" }
 }

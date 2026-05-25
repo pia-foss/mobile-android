@@ -45,6 +45,7 @@ dependencies {
     implementation(project(":core:localprefs:data"))
 
     implementation(libs.bundles.koin)
+    implementation(libs.datastore.preferences)
     testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)
     implementation(libs.coroutines)
