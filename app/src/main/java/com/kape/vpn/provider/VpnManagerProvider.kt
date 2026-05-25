@@ -14,7 +14,7 @@ class VpnManagerProvider(
 ) : VPNManagerPermissionsDependency,
     VPNManagerDebugLoggingDependency {
     override fun debugLog(log: String) {
-        prefs.addCustomDebugLogs("vpn debug log: $log", settingsPrefs.isDebugLoggingEnabled())
+        prefs.addCustomDebugLogs("vpn debug log: $log", settingsPrefs.isDebugLoggingEnabled.value)
     }
 
     override fun requestNecessaryPermissions(callback: VPNManagerResultCallback<Boolean>) {

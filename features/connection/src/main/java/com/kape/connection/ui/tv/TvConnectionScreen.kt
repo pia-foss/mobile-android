@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.connection.ui.ConnectButton
@@ -57,6 +58,7 @@ fun TvConnectionScreen() =
         val locale = Locale.getDefault().language
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
+        val screenElements by viewModel.getOrderedElements().collectAsStateWithLifecycle()
 
         BackHandler {
             activity?.finish()
@@ -132,7 +134,7 @@ fun TvConnectionScreen() =
                         viewModel.onConnectionButtonClicked()
                     }
                     Spacer(modifier = Modifier.height(32.dp))
-                    viewModel.getOrderedElements().forEach {
+                    screenElements.forEach {
                         DisplayComponent(
                             screenElement = it.element,
                             isVisible = viewModel.isScreenElementVisible(it),

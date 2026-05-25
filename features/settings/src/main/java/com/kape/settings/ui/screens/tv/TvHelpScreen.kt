@@ -19,6 +19,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.settings.ui.elements.tv.TvSettingsItem
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
@@ -54,6 +56,7 @@ fun TvHelpScreen() =
         val showDialog = remember { mutableStateOf(false) }
         val showToast = remember { mutableStateOf(false) }
         val showSpinner = remember { mutableStateOf(false) }
+        val improvePiaEnabled by viewModel.improvePiaEnabled().collectAsStateWithLifecycle()
 
         with(viewModel.requestId.value) {
             when {
@@ -144,12 +147,12 @@ fun TvHelpScreen() =
                             TvSettingsToggle(
                                 titleId = R.string.help_improve_pia_title,
                                 subtitleId = R.string.help_improve_pia_description,
-                                enabled = viewModel.improvePiaEnabled.value,
+                                enabled = improvePiaEnabled,
                                 toggle = {
                                     viewModel.toggleImprovePia(it)
                                 },
                             )
-                            if (viewModel.improvePiaEnabled.value) {
+                            if (improvePiaEnabled) {
                                 Spacer(modifier = Modifier.height(8.dp))
                                 TvSettingsItem(
                                     titleId = R.string.help_view_shared_data_title,

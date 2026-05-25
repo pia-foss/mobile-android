@@ -79,7 +79,7 @@ class KpiDataSourceImpl(
         eventProperties[KpiEventPropertyKey.ConnectionSource.value] = connectionSource.value
         eventProperties[KpiEventPropertyKey.UserAgent.value] = configInfo.userAgent
         eventProperties[KpiEventPropertyKey.VpnProtocol.value] =
-            when (settingsPrefs.getSelectedProtocol()) {
+            when (settingsPrefs.selectedProtocol.value) {
                 VpnProtocols.WireGuard -> VpnProtocols.WireGuard.name
                 VpnProtocols.OpenVPN -> VpnProtocols.OpenVPN.name
             }

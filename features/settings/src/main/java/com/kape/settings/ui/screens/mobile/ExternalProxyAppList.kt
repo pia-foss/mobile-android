@@ -48,7 +48,7 @@ fun ExternalProxyAppList() {
         koinViewModel<AppBarViewModel>().apply {
             appBarText(stringResource(id = R.string.proxy_selection_title))
         }
-    val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
+    val lastExcludedApps = remember { viewModel.vpnExcludedApps().value.map { it } }
 
     BackHandler {
         onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
@@ -85,7 +85,7 @@ fun ExternalProxyAppList() {
                     items(items.size) { index ->
                         val item = items[index]
                         val isSelected =
-                            viewModel.externalProxyAppPackageName.value == item.packageName
+                            viewModel.externalProxyAppPackageName().value == item.packageName
                         ApplicationRow(
                             icon = item.loadIcon(packageManager),
                             name = item.loadLabel(packageManager).toString(),
@@ -194,7 +194,7 @@ private fun onBackPressed(
     lastExcludedApps: List<String>,
     navigateBack: () -> Unit,
 ) {
-    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
+    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps().value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
         navigateBack()

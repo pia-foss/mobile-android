@@ -66,7 +66,7 @@ class DipViewModel(
     val supportedDipCountriesList = mutableStateOf<DipCountriesResponse?>(null)
     val dipMonthlyPlan = mutableStateOf<DedicatedIpMonthlyPlan?>(null)
     val dipYearlyPlan = mutableStateOf<DedicatedIpYearlyPlan?>(null)
-    val selectedPlanProductId = mutableStateOf(dipPrefs.getSelectedDipSignupProductId())
+    val selectedPlanProductId = mutableStateOf(dipPrefs.selectedDipSignupProductId.value)
     val showSupportedCountriesDialog = mutableStateOf(false)
     val showFetchingNeededInformationError = mutableStateOf(false)
     val showPurchaseValidationError = mutableStateOf(false)
@@ -89,7 +89,7 @@ class DipViewModel(
     fun loadDedicatedIps() =
         viewModelScope.launch {
             dipList.clear()
-            for (dip in dipPrefs.getDedicatedIps()) {
+            for (dip in dipPrefs.dedicatedIps.value) {
                 dipList.addAll(regionListProvider.servers.value.filter { it.isDedicatedIp })
             }
         }
@@ -126,11 +126,11 @@ class DipViewModel(
         serverKey: String,
         dipToken: String,
     ) {
-        val dip = dipPrefs.getDedicatedIps().firstOrNull { it.dipToken == dipToken }
+        val dip = dipPrefs.dedicatedIps.value.firstOrNull { it.dipToken == dipToken }
         dip?.let {
             dipPrefs.removeDedicatedIp(it)
             connectionPrefs.removeFromQuickConnect(serverKey)
-            if (connectionPrefs.getSelectedVpnServer()?.key == serverKey) {
+            if (connectionPrefs.selectedVpnServer.value?.key == serverKey) {
                 connectionPrefs.setSelectedVpnServer(null)
                 disconnect()
             }
@@ -181,7 +181,7 @@ class DipViewModel(
                 dipMonthlyPlan.value == null &&
                 yearlyPlan == null
             yearlyPlan?.let {
-                if (dipPrefs.getSelectedDipSignupProductId().isEmpty()) {
+                if (dipPrefs.selectedDipSignupProductId.value.isEmpty()) {
                     selectPlanProductId(it.id)
                 }
                 dipYearlyPlan.value = it
@@ -203,27 +203,27 @@ class DipViewModel(
         dipPrefs.setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry = dedicatedIpSelectedCountry)
     }
 
-    fun getSelectedDipCountry(): DedicatedIpSelectedCountry? = dipPrefs.getDedicatedIpSelectedCountry()
+    fun getSelectedDipCountry(): DedicatedIpSelectedCountry? = dipPrefs.dedicatedIpSelectedCountry.value
 
     fun selectPlanProductId(productId: String) {
         dipPrefs.setSelectedDipSignupProductId(productId)
-        selectedPlanProductId.value = dipPrefs.getSelectedDipSignupProductId()
+        selectedPlanProductId.value = dipPrefs.selectedDipSignupProductId.value
     }
 
     fun enableActivateTokenButton() {
         activateTokenButtonState.value = true
     }
 
-    fun getSignupDipToken(): String = dipPrefs.getPurchasedSignupDipToken()
+    fun getSignupDipToken(): String = dipPrefs.purchasedSignupDipToken.value
 
     fun purchaseSubscription(activity: Activity) {
-        if (dipPrefs.getSelectedDipSignupProductId().isEmpty()) {
+        if (dipPrefs.selectedDipSignupProductId.value.isEmpty()) {
             return
         }
 
         dipSubscriptionPaymentProvider.purchaseProduct(
             activity = activity,
-            productId = dipPrefs.getSelectedDipSignupProductId(),
+            productId = dipPrefs.selectedDipSignupProductId.value,
         ) { result ->
             result.fold(
                 onSuccess = {

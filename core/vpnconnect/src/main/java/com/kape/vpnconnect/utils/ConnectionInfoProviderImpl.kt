@@ -41,13 +41,12 @@ class ConnectionInfoProviderImpl(
 ) : ConnectionInfoProvider {
     private val ioScope = CoroutineScope(ioDispatcher)
     override val connectionInfoState = connectionStatusProvider.state
-    private val defaultState = VpnConnectionInfo(publicIp = connectionPrefs.getClientIp())
-    private val _connectionInfoState =
-        MutableStateFlow(
-            VpnConnectionInfo(
-                publicIp = connectionPrefs.getClientIp(),
-            ),
+    private val defaultState =
+        VpnConnectionInfo(
+            publicIp = connectionPrefs.clientIp.value,
+            vpnIp = connectionPrefs.vpnIp.value,
         )
+    private val _connectionInfoState = MutableStateFlow(defaultState)
     override val state = _connectionInfoState.asStateFlow()
 
     init {
@@ -72,7 +71,7 @@ class ConnectionInfoProviderImpl(
                         withContext(mainDispatcher) {
                             _connectionInfoState.update {
                                 it.copy(
-                                    publicIp = connectionPrefs.getClientIp(),
+                                    publicIp = connectionPrefs.clientIp.value,
                                     vpnIp = vpnIp,
                                 )
                             }

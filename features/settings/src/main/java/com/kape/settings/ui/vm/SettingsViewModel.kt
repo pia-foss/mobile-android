@@ -69,23 +69,37 @@ class SettingsViewModel(
         private const val GET_INSTALLED_APPS_DELAY_MS = 1000L
     }
 
-    val launchOnBootEnabled = mutableStateOf(prefs.isLaunchOnStartupEnabled())
-    val connectOnStart = mutableStateOf(prefs.isConnectOnLaunchEnabled())
-    val connectOnUpdate = mutableStateOf(prefs.isConnectOnAppUpdateEnabled())
-    val showGeoLocatedServers = mutableStateOf(prefs.isShowGeoLocatedServersEnabled())
-    val improvePiaEnabled = mutableStateOf(prefs.isHelpImprovePiaEnabled())
-    val debugLoggingEnabled = mutableStateOf(prefs.isDebugLoggingEnabled())
-    val shadowsocksObfuscationEnabled = mutableStateOf(prefs.isShadowsocksObfuscationEnabled())
-    val vpnExcludedApps = mutableStateOf(prefs.getVpnExcludedApps())
-    val isAllowLocalTrafficEnabled = mutableStateOf(prefs.isAllowLocalTrafficEnabled())
-    val externalProxyAppEnabled = mutableStateOf(prefs.isExternalProxyAppEnabled())
-    val externalProxyAppPackageName = mutableStateOf(prefs.getExternalProxyAppPackageName())
-    val externalProxyAppPort = mutableStateOf(connectionPrefs.getProxyPort())
+    fun launchOnBootEnabled() = prefs.isLaunchOnStartupEnabled
+
+    fun connectOnStart() = prefs.isConnectOnLaunchEnabled
+
+    fun connectOnUpdate() = prefs.isConnectOnAppUpdateEnabled
+
+    fun showGeoLocatedServers() = prefs.isShowGeoLocatedServersEnabled
+
+    fun improvePiaEnabled() = prefs.isHelpImprovePiaEnabled
+
+    fun debugLoggingEnabled() = prefs.isDebugLoggingEnabled
+
+    fun shadowsocksObfuscationEnabled() = prefs.isShadowsocksObfuscationEnabled
+
+    fun vpnExcludedApps() = prefs.vpnExcludedApps
+
+    fun isAllowLocalTrafficEnabled() = prefs.isAllowLocalTrafficEnabled
+
+    fun externalProxyAppEnabled() = prefs.isExternalProxyAppEnabled
+
+    fun externalProxyAppPackageName() = prefs.externalProxyAppPackageName
+
+    fun externalProxyAppPort() = connectionPrefs.proxyPort
+
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
     val eventList = mutableStateOf<List<String>>(emptyList())
     val debugLogs = mutableStateOf<List<String>>(emptyList())
     val requestId = mutableStateOf<String?>(null)
-    val maceEnabled = mutableStateOf(prefs.isMaceEnabled())
+
+    fun maceEnabled() = prefs.isMaceEnabled
+
     private val isDnsNumeric = mutableStateOf(true)
     private var installedApps = listOf<ApplicationInfo>()
     var reconnectDialogVisible = mutableStateOf(false)
@@ -119,31 +133,26 @@ class SettingsViewModel(
 
     fun navigateBack() = router.navigateBack()
 
-    fun isAutomationEnabled() = prefs.isAutomationEnabled()
+    fun isAutomationEnabled() = prefs.isAutomationEnabled
 
     fun toggleLaunchOnBoot(enable: Boolean) {
         prefs.setEnableLaunchOnStartup(enable)
-        launchOnBootEnabled.value = enable
     }
 
     fun toggleConnectOnStart(enable: Boolean) {
         prefs.setEnableConnectOnLaunch(enable)
-        connectOnStart.value = enable
     }
 
     fun toggleConnectOnUpdate(enable: Boolean) {
         prefs.setEnableConnectOnAppUpdate(enable)
-        connectOnUpdate.value = enable
     }
 
     fun toggleShowGeoLocatedServers(enable: Boolean) {
         prefs.setEnabledShowGeoLocatedServers(enable)
-        showGeoLocatedServers.value = enable
     }
 
     fun toggleImprovePia(enable: Boolean) {
         prefs.setHelpImprovePiaEnabled(enable)
-        improvePiaEnabled.value = enable
     }
 
     fun toggleDebugLogging(enable: Boolean) {
@@ -151,12 +160,10 @@ class SettingsViewModel(
         if (enable.not()) {
             csiPrefs.clearCustomDebugLogs()
         }
-        debugLoggingEnabled.value = enable
     }
 
     fun toggleMace(enable: Boolean) {
         prefs.setMaceEnabled(enable)
-        maceEnabled.value = enable
     }
 
     fun toggleEnablePortForwarding(enable: Boolean) {
@@ -165,7 +172,6 @@ class SettingsViewModel(
 
     fun toggleAllowLocalNetwork(enable: Boolean) {
         prefs.setAllowLocalTrafficEnabled(enable)
-        isAllowLocalTrafficEnabled.value = enable
 
         if (enable.not()) {
             toggleShadowsocksObfuscation(enabled = false)
@@ -174,22 +180,18 @@ class SettingsViewModel(
 
     fun toggleShadowsocksObfuscation(enabled: Boolean) {
         prefs.setShadowsocksObfuscationEnabled(enabled)
-        shadowsocksObfuscationEnabled.value = enabled
     }
 
     fun toggleExternalProxyApp(enabled: Boolean) {
         prefs.setExternalProxyAppEnabled(enabled)
-        externalProxyAppEnabled.value = enabled
     }
 
     fun setExternalProxyAppPackageName(packageName: String) {
         if (packageName.isEmpty()) {
             prefs.setExternalProxyAppPackageName(packageName)
-            removeFromVpnExcludedApps(externalProxyAppPackageName.value)
-            externalProxyAppPackageName.value = packageName
+            removeFromVpnExcludedApps(externalProxyAppPackageName().value)
         } else {
             prefs.setExternalProxyAppPackageName(packageName)
-            externalProxyAppPackageName.value = packageName
             addToVpnExcludedApps(packageName)
         }
         toggleExternalProxyApp(packageName.isNotEmpty())
@@ -197,12 +199,11 @@ class SettingsViewModel(
 
     fun setExternalProxyPort(port: String?) {
         connectionPrefs.setProxyPort(port)
-        externalProxyAppPort.value = connectionPrefs.getProxyPort()
     }
 
-    fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled()
+    fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled
 
-    fun getSelectedProtocol(): VpnProtocols = prefs.getSelectedProtocol()
+    fun getSelectedProtocol(): VpnProtocols = prefs.selectedProtocol.value
 
     fun selectProtocol(protocol: VpnProtocols) {
         prefs.setSelectedProtocol(protocol)
@@ -212,15 +213,15 @@ class SettingsViewModel(
         }
     }
 
-    fun getWireGuardSettings(): WireGuardSettings = prefs.getWireGuardSettings()
+    fun getWireGuardSettings(): WireGuardSettings = prefs.wireGuardSettings.value
 
-    fun getOpenVpnSettings(): OpenVpnSettings = prefs.getOpenVpnSettings()
+    fun getOpenVpnSettings(): OpenVpnSettings = prefs.openVpnSettings.value
 
-    fun getCustomDns(): CustomDns = prefs.getCustomDns()
+    fun getCustomDns(): CustomDns = prefs.customDns.value
 
     fun setCustomDns(customDns: CustomDns) = prefs.setCustomDns(customDns = customDns)
 
-    fun getCustomObfuscation(): CustomObfuscation? = prefs.getCustomObfuscation()
+    fun getCustomObfuscation(): CustomObfuscation? = prefs.customObfuscation.value
 
     fun setCustomObfuscation(customObfuscation: CustomObfuscation) = prefs.setCustomObfuscation(customObfuscation = customObfuscation)
 
@@ -233,12 +234,12 @@ class SettingsViewModel(
 
     fun setSelectedDnsOption(dnsOptions: DnsOptions) = prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
 
-    fun getSelectedDnsOption(): DnsOptions = prefs.getSelectedDnsOption()
+    fun getSelectedDnsOption(): DnsOptions = prefs.selectedDnsOption.value
 
     fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) =
         prefs.setSelectedObfuscationOption(obfuscationOptions = obfuscationOptions)
 
-    fun getSelectedObfuscationOption(): ObfuscationOptions = prefs.getSelectedObfuscationOption()
+    fun getSelectedObfuscationOption(): ObfuscationOptions = prefs.selectedObfuscationOption.value
 
     fun setTransport(transport: Transport) {
         val currentSettings = getOpenVpnSettings()
@@ -328,18 +329,16 @@ class SettingsViewModel(
 
     fun addToVpnExcludedApps(app: String) {
         val newList = mutableListOf<String>()
-        newList.addAll(prefs.getVpnExcludedApps())
+        newList.addAll(prefs.vpnExcludedApps.value)
         newList.add(app)
         prefs.setVpnExcludedApps(newList)
-        vpnExcludedApps.value = prefs.getVpnExcludedApps()
     }
 
     fun removeFromVpnExcludedApps(app: String) {
         val newList = mutableListOf<String>()
-        newList.addAll(prefs.getVpnExcludedApps())
+        newList.addAll(prefs.vpnExcludedApps.value)
         newList.remove(app)
         prefs.setVpnExcludedApps(newList)
-        vpnExcludedApps.value = prefs.getVpnExcludedApps()
     }
 
     fun getInstalledApplications(packageManager: PackageManager) =
@@ -409,13 +408,13 @@ class SettingsViewModel(
     }
 
     fun showExternalProxyTcpDialogIfNeeded() {
-        if (prefs.isExternalProxyAppEnabled() && prefs.getOpenVpnSettings().transport != Transport.TCP) {
+        if (prefs.isExternalProxyAppEnabled.value && prefs.openVpnSettings.value.transport != Transport.TCP) {
             externalProxyTcpDialogVisible.value = true
         }
     }
 
     fun reconnect() {
-        connectionPrefs.getSelectedVpnServer()?.let {
+        connectionPrefs.selectedVpnServer.value?.let {
             connectionManager.connectJob =
                 viewModelScope.launch {
                     if (connectionManager.isConnectionInProgress()) {

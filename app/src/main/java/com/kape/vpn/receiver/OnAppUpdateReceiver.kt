@@ -27,7 +27,7 @@ class OnAppUpdateReceiver :
         WebStorage.getInstance().deleteAllData()
         CookieManager.getInstance().removeAllCookies(null)
 
-        if (settingsPrefs.isConnectOnAppUpdateEnabled() && userLoggedInUseCase.invoke()) {
+        if (settingsPrefs.isConnectOnAppUpdateEnabled.value && userLoggedInUseCase.invoke()) {
             vpnLauncher.launchVpn()
         }
     }

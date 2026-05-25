@@ -8,5 +8,5 @@ import org.koin.core.annotation.Singleton
 class GetPurchaseDetailsUseCase(
     private val prefs: SubscriptionPrefs,
 ) {
-    fun getPurchaseDetails(): PurchaseData? = prefs.getVpnPurchaseData()
+    fun getPurchaseDetails(): PurchaseData? = prefs.vpnPurchaseData.value
 }

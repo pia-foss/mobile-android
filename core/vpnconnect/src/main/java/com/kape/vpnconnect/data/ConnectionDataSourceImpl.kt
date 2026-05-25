@@ -53,7 +53,7 @@ class ConnectionDataSourceImpl(
                 connectionStatusProvider as VPNManagerConnectionListener,
             ) {}
 
-            if (settingsPrefs.isHelpImprovePiaEnabled()) {
+            if (settingsPrefs.isHelpImprovePiaEnabled.value) {
                 kpiDataSource.start()
             } else {
                 kpiDataSource.stop()
@@ -65,7 +65,7 @@ class ConnectionDataSourceImpl(
                 } ?: run {
                     csiPrefs.addCustomDebugLogs(
                         "startConnection failed: $result",
-                        settingsPrefs.isDebugLoggingEnabled(),
+                        settingsPrefs.isDebugLoggingEnabled.value,
                     )
                     connectionApi.stopConnection {}
                 }
@@ -84,7 +84,7 @@ class ConnectionDataSourceImpl(
                 if (result.isFailure) {
                     csiPrefs.addCustomDebugLogs(
                         "stop connection failed: ${result.exceptionOrNull()}",
-                        settingsPrefs.isDebugLoggingEnabled(),
+                        settingsPrefs.isDebugLoggingEnabled.value,
                     )
                 }
                 // Resume coroutine with result
@@ -118,7 +118,7 @@ class ConnectionDataSourceImpl(
     override suspend fun getDebugLogs(): List<String> =
         suspendCancellableCoroutine { cont ->
             val target =
-                when (settingsPrefs.getSelectedProtocol()) {
+                when (settingsPrefs.selectedProtocol.value) {
                     VpnProtocols.WireGuard -> VPNManagerProtocolTarget.WIREGUARD
                     VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
                 }

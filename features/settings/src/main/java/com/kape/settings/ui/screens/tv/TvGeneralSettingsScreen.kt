@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
@@ -39,6 +41,9 @@ fun TvGeneralSettingsScreen() =
         val viewModel: SettingsViewModel = koinViewModel()
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
         val initialFocusRequester = remember { FocusRequester() }
+        val launchOnBoot by viewModel.launchOnBootEnabled().collectAsStateWithLifecycle()
+        val connectOnStart by viewModel.connectOnStart().collectAsStateWithLifecycle()
+        val connectOnUpdate by viewModel.connectOnUpdate().collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
@@ -95,7 +100,7 @@ fun TvGeneralSettingsScreen() =
                             modifier = Modifier.focusRequester(initialFocusRequester),
                             titleId = R.string.connect_on_boot_title,
                             subtitleId = R.string.connect_on_boot_description,
-                            enabled = viewModel.launchOnBootEnabled.value,
+                            enabled = launchOnBoot,
                             toggle = {
                                 viewModel.toggleLaunchOnBoot(it)
                             },
@@ -104,7 +109,7 @@ fun TvGeneralSettingsScreen() =
                         TvSettingsToggle(
                             titleId = R.string.connect_on_launch_title,
                             subtitleId = R.string.connect_on_launch_description,
-                            enabled = viewModel.connectOnStart.value,
+                            enabled = connectOnStart,
                             toggle = {
                                 viewModel.toggleConnectOnStart(it)
                             },
@@ -113,7 +118,7 @@ fun TvGeneralSettingsScreen() =
                         TvSettingsToggle(
                             titleId = R.string.connect_on_update_title,
                             subtitleId = R.string.connect_on_update_description,
-                            enabled = viewModel.connectOnUpdate.value,
+                            enabled = connectOnUpdate,
                             toggle = {
                                 viewModel.toggleConnectOnUpdate(it)
                             },

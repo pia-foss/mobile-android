@@ -11,5 +11,5 @@ class ConsentUseCase(
         prefs.setAllowSharing(allowSharing)
     }
 
-    fun getConsent() = prefs.getAllowSharing()
+    fun getConsent() = prefs.allowSharing.value
 }

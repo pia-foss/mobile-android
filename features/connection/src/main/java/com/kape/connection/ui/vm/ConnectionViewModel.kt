@@ -44,8 +44,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
@@ -72,8 +74,8 @@ class ConnectionViewModel(
     private var loadVpnServersJob: Job? = null
     private var loadShadowsocksServersJob: Job? = null
     private var updateStateJob: Job? = null
-    private val isAutoMode get() = prefs.getSelectedVpnServer() == null
-    private val selectedLocation = prefs.getSelectedVpnServer()
+    private val isAutoMode get() = prefs.selectedVpnServer.value == null
+    private val selectedLocation = prefs.selectedVpnServer.value
     private val serverToConnectTo =
         selectedLocation?.let {
             if (it.endpoints.isNotEmpty()) {
@@ -122,11 +124,11 @@ class ConnectionViewModel(
 
         ratingTool.start()
         renewDedicatedIps()
-        if (shortcutPrefs.isShortcutSettings()) {
+        if (shortcutPrefs.isShortcutSettings.value) {
             shortcutPrefs.setShortcutSettings(false)
             router.updateDestination(Settings)
         }
-        if (shortcutPrefs.isShortcutChangeServer()) {
+        if (shortcutPrefs.isShortcutChangeServer.value) {
             shortcutPrefs.setShortcutChangeServer(false)
             showVpnRegionSelection()
         }
@@ -160,10 +162,10 @@ class ConnectionViewModel(
 
     fun autoConnect() {
         viewModelScope.launch {
-            if (settingsPrefs.isConnectOnLaunchEnabled() || shortcutPrefs.isShortcutConnectToVpn()) {
+            if (settingsPrefs.isConnectOnLaunchEnabled.value || shortcutPrefs.isShortcutConnectToVpn.value) {
                 shortcutPrefs.setShortcutConnectToVpn(false)
                 if (!connectionInfoProvider.isConnected()) {
-                    prefs.getSelectedVpnServer()?.let {
+                    prefs.selectedVpnServer.value?.let {
                         connectionManager.connect(it, false, ::callback, ::showProtocolNotAvailable)
                     } ?: run {
                         connectionManager.connect(
@@ -175,22 +177,22 @@ class ConnectionViewModel(
                     }
                 }
             }
-            if (shortcutPrefs.isShortcutDisconnectVpn()) {
+            if (shortcutPrefs.isShortcutDisconnectVpn.value) {
                 shortcutPrefs.setShortcutDisconnectVpn(false)
                 connectionManager.disconnect().getOrNull()
             }
         }
     }
 
-    fun getOrderedElements() = customizationPrefs.getElements()
+    fun getOrderedElements() = customizationPrefs.elements
 
     fun isScreenElementVisible(screenElement: ScreenElement): Boolean =
         when (screenElement.element) {
             Element.ShadowsocksRegionSelection ->
                 screenElement.isVisible &&
-                    settingsPrefs.isShadowsocksObfuscationEnabled() &&
-                    settingsPrefs.getSelectedProtocol() == VpnProtocols.OpenVPN &&
-                    settingsPrefs.getSelectedObfuscationOption() == ObfuscationOptions.PIA
+                    settingsPrefs.isShadowsocksObfuscationEnabled.value &&
+                    settingsPrefs.selectedProtocol.value == VpnProtocols.OpenVPN &&
+                    settingsPrefs.selectedObfuscationOption.value == ObfuscationOptions.PIA
 
             Element.VpnRegionSelection,
             Element.ConnectionInfo,
@@ -202,11 +204,16 @@ class ConnectionViewModel(
             -> screenElement.isVisible
         }
 
-    fun shouldShowDedicatedIpSignupBanner() {
-        if (dipPrefs.isDipSignupEnabled(buildConfigProvider.isGoogleFlavor()) && dipPrefs.showDedicatedIpHomeBanner()) {
-            showDedicatedIpHomeBanner.value = true
+    fun shouldShowDedicatedIpSignupBanner() =
+        viewModelScope.launch {
+            if (dipPrefs
+                    .isDipSignupEnabled(buildConfigProvider.isGoogleFlavor())
+                    .first() &&
+                dipPrefs.dedicatedIpHomeBannerVisible.value
+            ) {
+                showDedicatedIpHomeBanner.value = true
+            }
         }
-    }
 
     fun hideDedicatedIpSignupBanner() {
         dipPrefs.hideDedicatedIpHomeBanner()
@@ -217,8 +224,8 @@ class ConnectionViewModel(
 
     private fun renewDedicatedIps() =
         viewModelScope.launch {
-            if (dipPrefs.getDedicatedIps().isNotEmpty()) {
-                for (dip in dipPrefs.getDedicatedIps()) {
+            if (dipPrefs.dedicatedIps.value.isNotEmpty()) {
+                for (dip in dipPrefs.dedicatedIps.value) {
                     renewDipUseCase.renew(dip.dipToken)
                 }
             }
@@ -226,7 +233,7 @@ class ConnectionViewModel(
 
     private fun getFavoriteServers(): List<VpnServer> {
         val favoriteServers = mutableListOf<VpnServer>()
-        for (item in vpnRegionPrefs.getFavoriteVpnServers()) {
+        for (item in vpnRegionPrefs.favoriteVpnServers.value) {
             regionListProvider.servers.value
                 .firstOrNull { it.name == item.name && it.isDedicatedIp == item.isDip }
                 ?.let {
@@ -246,7 +253,7 @@ class ConnectionViewModel(
             for (index in 0 until getFavoriteServers().size) {
                 orderedServers.add(getFavoriteServers()[index])
             }
-            val previousConnections = prefs.getQuickConnectServers().reversed()
+            val previousConnections = prefs.quickConnectServers.value.reversed()
             for (server in previousConnections) {
                 regionListProvider.servers.value
                     .firstOrNull { it.key == server.serverKey && it.isDedicatedIp == server.isDip }
@@ -293,9 +300,9 @@ class ConnectionViewModel(
     }
 
     fun getConnectionSettings() =
-        when (settingsPrefs.getSelectedProtocol()) {
-            VpnProtocols.WireGuard -> settingsPrefs.getWireGuardSettings()
-            VpnProtocols.OpenVPN -> settingsPrefs.getOpenVpnSettings()
+        when (settingsPrefs.selectedProtocol.value) {
+            VpnProtocols.WireGuard -> settingsPrefs.wireGuardSettings.value
+            VpnProtocols.OpenVPN -> settingsPrefs.openVpnSettings.value
         }
 
     fun quickConnect(server: VpnServer) {
@@ -316,12 +323,12 @@ class ConnectionViewModel(
         }
     }
 
-    fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled()
+    fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled.value
 
     fun isVpnServerFavorite(
         serverName: String,
         isDip: Boolean,
-    ): Boolean = vpnRegionPrefs.isFavorite(serverName, isDip)
+    ): Boolean = runBlocking { vpnRegionPrefs.isFavorite(serverName, isDip).first() }
 
     private fun connect() {
         val connectTo =
@@ -348,7 +355,7 @@ class ConnectionViewModel(
     }
 
     private fun disconnect() {
-        if (settingsPrefs.isAutomationEnabled()) {
+        if (settingsPrefs.isAutomationEnabled.value) {
             prefs.disconnectedByUser(true)
         }
         connectionManager.connectJob?.cancel()
@@ -384,7 +391,7 @@ class ConnectionViewModel(
 
     fun refreshState() =
         _state.update {
-            val selectedServer = prefs.getSelectedVpnServer()
+            val selectedServer = prefs.selectedVpnServer.value
             it.copy(
                 server = selectedServer ?: regionListProvider.getOptimalServer(),
                 quickConnectServers = getQuickConnectVpnServers(),

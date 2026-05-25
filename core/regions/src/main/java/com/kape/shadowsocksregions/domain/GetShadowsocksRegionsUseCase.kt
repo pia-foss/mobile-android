@@ -17,7 +17,7 @@ class GetShadowsocksRegionsUseCase(
 
     fun getSelectedShadowsocksServer(): ShadowsocksServer =
         getShadowsocksServers().firstOrNull {
-            it.host == shadowsocksRegionPrefs.getSelectedShadowsocksServer()?.host
+            it.host == shadowsocksRegionPrefs.selectedShadowsocksServer.value?.host
         } ?: run {
             val defaultShadowsocksServer = getShadowsocksServers().first()
             setShadowsocksRegionsUseCase.setSelectShadowsocksServer(defaultShadowsocksServer)
@@ -27,7 +27,7 @@ class GetShadowsocksRegionsUseCase(
     fun getShadowsocksServers(): List<ShadowsocksServer> =
         // If there are no servers persisted. Let's use the initial set of servers we are
         // shipping the application with while we perform a request for an updated version.
-        shadowsocksRegionPrefs.getShadowsocksServers().ifEmpty {
+        shadowsocksRegionPrefs.shadowsocksServers.value.ifEmpty {
             readShadowsocksRegionsDetailsUseCase.readShadowsocksRegionsDetailsFromAssetsFolder()
         }
 }

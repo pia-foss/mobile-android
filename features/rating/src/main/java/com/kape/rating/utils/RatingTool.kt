@@ -36,14 +36,14 @@ class RatingTool(
     val showRating: StateFlow<RatingDialogType?> = _showRating
 
     fun start() {
-        if (prefs.getRatingState().active) {
+        if (prefs.ratingState.value.active) {
             job.start()
 
             CoroutineScope(mainDispatcher).launch {
                 connectionStatusProvider.state.collectLatest {
                     when (it.status) {
                         ConnectionStatus.CONNECTED -> {
-                            if (prefs.getRatingState().active && shouldCountConnectedEvent) {
+                            if (prefs.ratingState.value.active && shouldCountConnectedEvent) {
                                 shouldCountConnectedEvent = true
                                 handleConnectedEvent(prefs)
                             }
@@ -69,7 +69,7 @@ class RatingTool(
     }
 
     fun setRatingInactive() {
-        val updatedState = prefs.getRatingState().copy(active = false)
+        val updatedState = prefs.ratingState.value.copy(active = false)
         prefs.setRatingState(updatedState)
         _showRating.value = null
     }
@@ -77,13 +77,13 @@ class RatingTool(
     fun updateRatingDate() {
         val dateFormat = SimpleDateFormat(DATE_FORMAT)
         val dateString = dateFormat.format(Date())
-        val updatedState = prefs.getRatingState().copy(notEnjoyingDate = dateString)
+        val updatedState = prefs.ratingState.value.copy(notEnjoyingDate = dateString)
         prefs.setRatingState(updatedState)
         _showRating.value = null
     }
 
     private fun handleConnectedEvent(prefs: RatingPrefs) {
-        val knownState = prefs.getRatingState()
+        val knownState = prefs.ratingState.value
         val updatedState = knownState.copy(counter = knownState.counter + 1)
         prefs.setRatingState(updatedState)
 

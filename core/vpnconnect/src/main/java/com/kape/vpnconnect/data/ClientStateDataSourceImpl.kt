@@ -20,9 +20,13 @@ class ClientStateDataSourceImpl(
     private val settingsPrefs: SettingsPrefs,
 ) : ClientStateDataSource {
     override suspend fun getPublicIp(): String {
-        repeat(3) { attempt ->
+        repeat(3) { _ ->
             val ip = getPublicIpOnce()
-            if (ip != NO_IP) return ip
+            println("--- get public IP: $ip")
+            if (ip != NO_IP) {
+                connectionPrefs.setClientIp(ip)
+                return ip
+            }
 
             delay(DELAY_BETWEEN_RETRY)
         }
@@ -30,9 +34,13 @@ class ClientStateDataSourceImpl(
     }
 
     override suspend fun getVpnIp(): String {
-        repeat(5) { attempt ->
+        repeat(5) { _ ->
             val vpnIp = getVpnIpOnce()
-            if (vpnIp != NO_IP && vpnIp != connectionPrefs.getClientIp()) return vpnIp
+            println("--- get vpnIp: $vpnIp")
+            if (vpnIp != NO_IP && vpnIp != connectionPrefs.clientIp.value) {
+                connectionPrefs.setVpnIp(vpnIp)
+                return vpnIp
+            }
 
             delay(DELAY_BETWEEN_RETRY)
         }

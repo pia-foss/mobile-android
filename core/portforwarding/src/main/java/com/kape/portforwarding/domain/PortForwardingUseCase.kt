@@ -26,13 +26,13 @@ class PortForwardingUseCase(
 
     suspend fun bindPort(vpnToken: String) {
         portForwardingStatus.value = PortForwardingStatus.Requesting
-        val gateway = connectionPrefs.getGateway()
+        val gateway = connectionPrefs.gateway.value
         if (gateway.isEmpty()) {
             portForwardingStatus.value = PortForwardingStatus.Error
         }
 
         // Set the gateway's CN for the selected protocol before the binding request
-        val server = connectionPrefs.getSelectedVpnServer()
+        val server = connectionPrefs.selectedVpnServer.value
         server?.let {
             it.endpoints[getServerGroup()]?.let { serverEndpointDetails ->
                 val tunnelCommonName = mutableListOf<Pair<String, String>>()
@@ -49,7 +49,7 @@ class PortForwardingUseCase(
 
         // If there is active data persisted. Send the bind port reminder request to keep the NAT
         // on the server rather than requesting a new port
-        connectionPrefs.getPortBindingInfo()?.let { portBindingInfo ->
+        connectionPrefs.portBindingInfo.value?.let { portBindingInfo ->
             if (tokenExpirationDateDaysLeft(portBindingInfo.decodedPayload.expirationDate) > MIN_EXPIRATION_DAYS) {
                 portForwardingStatus.value = PortForwardingStatus.Requesting
                 val successful =
@@ -90,10 +90,10 @@ class PortForwardingUseCase(
     }
 
     private fun getServerGroup(): VpnServer.ServerGroup =
-        when (settingsPrefs.getSelectedProtocol()) {
+        when (settingsPrefs.selectedProtocol.value) {
             VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
             VpnProtocols.OpenVPN -> {
-                if (settingsPrefs.getOpenVpnSettings().transport == Transport.UDP) {
+                if (settingsPrefs.openVpnSettings.value.transport == Transport.UDP) {
                     VpnServer.ServerGroup.OPENVPN_UDP
                 } else {
                     VpnServer.ServerGroup.OPENVPN_TCP

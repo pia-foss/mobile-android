@@ -99,33 +99,33 @@ class VpnSubscriptionPaymentProviderImpl(
 
     @Deprecated("Deprecated in favor of SubscriptionPlan")
     override fun getMonthlySubscription(): Subscription? =
-        prefs.getVpnSubscriptions().firstOrNull {
+        prefs.vpnSubscriptions.value.firstOrNull {
             it.plan.equals(MONTHLY_SUBSCRIPTION, ignoreCase = true)
         }
 
     @Deprecated("Deprecated in favor of SubscriptionPlan")
     override fun getYearlySubscription(): Subscription? =
-        prefs.getVpnSubscriptions().firstOrNull {
+        prefs.vpnSubscriptions.value.firstOrNull {
             it.plan.equals(YEARLY_SUBSCRIPTION, ignoreCase = true)
         }
 
     override fun getMonthlySubscriptionPlan(): SubscriptionPlan? =
-        prefs.getVpnSubscriptionPlans().firstOrNull {
+        prefs.vpnSubscriptionPlans.value.firstOrNull {
             it.billingPeriod == MONTHLY
         }
 
     override fun getYearlySubscriptionPlan(): SubscriptionPlan? =
-        prefs.getVpnSubscriptionPlans().firstOrNull {
+        prefs.vpnSubscriptionPlans.value.firstOrNull {
             it.billingPeriod == YEARLY
         }
 
     override fun getFreeTrialYearlySubscriptionPlan(): SubscriptionPlan? =
-        prefs.getVpnSubscriptionPlans().firstOrNull {
+        prefs.vpnSubscriptionPlans.value.firstOrNull {
             it.billingPeriod == YEARLY && it.freeTrialDuration != null
         }
 
     override fun loadProducts() {
-        if (prefs.getVpnSubscriptions().isEmpty()) {
+        if (prefs.vpnSubscriptions.value.isEmpty()) {
             purchaseState.value = PurchaseState.ProductsLoadedFailed
         } else {
             loadProviderProducts()
@@ -144,7 +144,7 @@ class VpnSubscriptionPaymentProviderImpl(
             productDetailsList,
             ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                val data = prefs.getVpnSubscriptions()
+                val data = prefs.vpnSubscriptions.value
                 val plans = mutableListOf<SubscriptionPlan>()
                 for (item in productDetailsList.productDetailsList) {
                     if (data.any { it.id == item.productId }) {
@@ -278,7 +278,7 @@ class VpnSubscriptionPaymentProviderImpl(
 
     private fun createProductsListForQuery(): List<QueryProductDetailsParams.Product> {
         val result = mutableListOf<QueryProductDetailsParams.Product>()
-        for (product in prefs.getVpnSubscriptions()) {
+        for (product in prefs.vpnSubscriptions.value) {
             result.add(
                 QueryProductDetailsParams.Product
                     .newBuilder()

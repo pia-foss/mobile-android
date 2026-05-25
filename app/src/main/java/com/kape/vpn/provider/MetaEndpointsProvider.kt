@@ -20,7 +20,7 @@ class MetaEndpointsProvider(
     fun metaEndpoints(): List<GenericEndpoint> {
         val endpoints = mutableListOf<GenericEndpoint>()
 
-        val selectedRegion = connectionPrefs.getSelectedVpnServer()
+        val selectedRegion = connectionPrefs.selectedVpnServer.value
 
         // Get the list of known regions sorted by latency.
         val sortedLatencyRegions =

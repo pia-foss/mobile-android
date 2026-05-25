@@ -36,7 +36,7 @@ class LogoutUseCaseImpl(
     private val connectionManager: ConnectionManager,
 ) : LogoutUseCase {
     override suspend fun logout(): Boolean {
-        if (settingsPrefs.isAutomationEnabled()) {
+        if (settingsPrefs.isAutomationEnabled.value) {
             connectionPrefs.disconnectedByUser(true)
         }
         if (connectionManager.isConnectionInProgress()) {
@@ -53,7 +53,7 @@ class LogoutUseCaseImpl(
         }
     }
 
-    private fun clearPrefs() {
+    private suspend fun clearPrefs() {
         connectionPrefs.clear()
         csiPrefs.clear()
         customizationPrefs.clear()

@@ -345,6 +345,7 @@ class AppModule {
         vpnLauncher: VpnLauncher,
         settingsPrefs: SettingsPrefs,
         connectionStatusProvider: ConnectionStatusProvider,
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
     ): NetworkManager =
         NetworkManagerImpl(
             context,
@@ -352,6 +353,7 @@ class AppModule {
             vpnLauncher,
             settingsPrefs,
             connectionStatusProvider,
+            ioScope,
         )
 
     @Singleton

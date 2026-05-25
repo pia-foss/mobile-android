@@ -35,7 +35,7 @@ class AutomationViewModel(
     private val _state =
         MutableStateFlow(
             AutomationState(
-                isEnabled = settingsPrefs.isAutomationEnabled(),
+                isEnabled = settingsPrefs.isAutomationEnabled.value,
                 locationPermissionGranted = locationPermissionManager.isFineLocationPermissionGranted(),
                 backgroundLocationPermissionGranted = locationPermissionManager.isBackgroundLocationPermissionGranted(),
                 rules = networkRulesManager.getRules(),
@@ -64,7 +64,7 @@ class AutomationViewModel(
     }
 
     fun onAutomationToggled(context: Context) {
-        if (settingsPrefs.isAutomationEnabled()) {
+        if (settingsPrefs.isAutomationEnabled.value) {
             disableAutomation()
             _state.update { it.copy(isEnabled = false) }
         } else {

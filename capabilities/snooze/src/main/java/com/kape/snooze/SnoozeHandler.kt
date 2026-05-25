@@ -54,7 +54,7 @@ class SnoozeHandler(
                 object : CountDownTimer(end, MINUTE) {
                     override fun onTick(millisUntilFinished: Long) {
                         timeUntilResume.intValue =
-                            (((connectionPrefs.getLastSnoozeEndTime() - Calendar.getInstance().timeInMillis) / MINUTE) + 1).toInt()
+                            (((connectionPrefs.lastSnoozeEndTime.value - Calendar.getInstance().timeInMillis) / MINUTE) + 1).toInt()
                     }
 
                     override fun onFinish() {

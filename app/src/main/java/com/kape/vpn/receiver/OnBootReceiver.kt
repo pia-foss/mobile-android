@@ -20,7 +20,7 @@ class OnBootReceiver :
         context: Context,
         intent: Intent,
     ) {
-        if (settingsPrefs.isLaunchOnStartupEnabled()) {
+        if (settingsPrefs.isLaunchOnStartupEnabled.value) {
             vpnLauncher.launchVpn()
         }
     }

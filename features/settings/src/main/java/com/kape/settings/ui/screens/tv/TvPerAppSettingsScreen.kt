@@ -65,7 +65,7 @@ fun TvPerAppSettingsScreen() =
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
         val initialFocusRequester = remember { FocusRequester() }
         val keyboardController = LocalSoftwareKeyboardController.current
-        val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
+        val lastExcludedApps = remember { viewModel.vpnExcludedApps().value.map { it } }
 
         BackHandler {
             onBackPressed(viewModel, lastExcludedApps, viewModel::navigateBack)
@@ -142,7 +142,7 @@ fun TvPerAppSettingsScreen() =
                                 val icon = applicationPackage.loadIcon(packageManager)
                                 val name = applicationPackage.loadLabel(packageManager).toString()
                                 val excludedFromTunnel =
-                                    viewModel.vpnExcludedApps.value.contains(
+                                    viewModel.vpnExcludedApps().value.contains(
                                         applicationPackage.packageName,
                                     )
                                 val focusRequester =
@@ -270,7 +270,7 @@ private fun onBackPressed(
     lastExcludedApps: List<String>,
     navigateBack: () -> Unit,
 ) {
-    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
+    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps().value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
         navigateBack()

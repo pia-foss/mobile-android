@@ -14,7 +14,7 @@ class ValidateDipSignup(
             dipPurchaseData?.let {
                 it
             } ?: run {
-                subscriptionPrefs.getDipPurchaseData()
+                subscriptionPrefs.dipPurchaseData.value
             }
 
         if (unwrappedDipPurchaseData == null) {

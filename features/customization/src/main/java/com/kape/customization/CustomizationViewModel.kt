@@ -25,10 +25,10 @@ class CustomizationViewModel(
 
     fun getOrderedElements(): List<ScreenElement> {
         items.clear()
-        val current = prefs.getElements()
+        val current = prefs.elements.value
         current.forEach {
             if (it.element == Element.ShadowsocksRegionSelection) {
-                if (settingsPrefs.isShadowsocksObfuscationEnabled()) {
+                if (settingsPrefs.isShadowsocksObfuscationEnabled.value) {
                     val visibleElement = it.apply { it.shouldDisplayElement = true }
                     items.add(visibleElement)
                 } else {

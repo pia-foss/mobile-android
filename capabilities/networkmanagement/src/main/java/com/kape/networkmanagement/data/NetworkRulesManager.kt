@@ -10,12 +10,12 @@ class NetworkRulesManager(
     private val util: NetworkUtil,
 ) {
     fun getRules(): List<NetworkItem> {
-        if (prefs.getAllRules().isEmpty()) {
+        if (prefs.allRules.value.isEmpty()) {
             for (item in util.getDefaultList()) {
                 prefs.addDefaultRule(item)
             }
         }
-        return prefs.getAllRules().sortedBy { !it.isDefault }
+        return prefs.allRules.value.sortedBy { !it.isDefault }
     }
 
     fun updateRule(

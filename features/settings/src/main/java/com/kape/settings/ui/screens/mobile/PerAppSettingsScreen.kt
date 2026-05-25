@@ -52,7 +52,7 @@ fun PerAppSettingsScreen() =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.per_app_settings))
             }
-        val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
+        val lastExcludedApps = remember { viewModel.vpnExcludedApps().value.map { it } }
 
         LaunchedEffect(key1 = Unit) {
             viewModel.getInstalledApplications(packageManager)
@@ -99,7 +99,7 @@ fun PerAppSettingsScreen() =
                         items(items.size) { index ->
                             val item = items[index]
                             val isExcluded =
-                                viewModel.vpnExcludedApps.value.contains(item.packageName)
+                                viewModel.vpnExcludedApps().value.contains(item.packageName)
                             ApplicationRow(
                                 icon = item.loadIcon(packageManager),
                                 name = item.loadLabel(packageManager).toString(),
@@ -217,7 +217,7 @@ private fun onBackPressed(
     lastExcludedApps: List<String>,
     navigateBack: () -> Unit,
 ) {
-    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
+    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps().value) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
         navigateBack()

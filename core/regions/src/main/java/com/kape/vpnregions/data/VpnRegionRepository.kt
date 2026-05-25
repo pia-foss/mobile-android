@@ -43,8 +43,7 @@ class VpnRegionRepository(
                 serverList.addAll(addDipToServerList(serverMap.values.toList()))
                 if (connectionInfoProvider.isNotDisconnected()) {
                     serverList
-                        .filter { it == connectionPrefs.getSelectedVpnServer() }
-                        .firstOrNull()
+                        .firstOrNull { it == connectionPrefs.selectedVpnServer.value }
                         ?.let {
                             connectionConfigurationUseCase.updateServerConfig(it)
                         }
@@ -81,7 +80,7 @@ class VpnRegionRepository(
     private fun addDipToServerList(servers: List<VpnServer>): List<VpnServer> {
         val updatedList = mutableListOf<VpnServer>()
         updatedList.addAll(servers)
-        for (dip in dipPrefs.getDedicatedIps()) {
+        for (dip in dipPrefs.dedicatedIps.value) {
             servers.firstOrNull { it.key == dip.id }?.let {
                 updatedList.add(getServerForDip(it, dip))
             }

@@ -94,7 +94,6 @@ import com.kape.ui.utils.LocalColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import java.util.Locale
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -104,7 +103,6 @@ fun ConnectionScreen() =
         val vpnState by viewModel.connectionInfoProvider.state.collectAsStateWithLifecycle()
         val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsStateWithLifecycle()
         val appBarViewModel: AppBarViewModel = koinViewModel()
-        val locale = Locale.getDefault().language
         val scope: CoroutineScope = rememberCoroutineScope()
         val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
         val state by viewModel.state.collectAsStateWithLifecycle()
@@ -114,6 +112,7 @@ fun ConnectionScreen() =
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
         val shouldShowProtocolNotAvailable by viewModel.showProtocolNotAvailableDialog
+        val screenElements by viewModel.getOrderedElements().collectAsStateWithLifecycle(emptyList())
 
         BackHandler {
             activity?.finish()
@@ -222,7 +221,7 @@ fun ConnectionScreen() =
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                         }
-                        viewModel.getOrderedElements().forEach { screenElement ->
+                        screenElements.forEach { screenElement ->
                             DisplayComponent(
                                 screenElement = screenElement,
                                 isVisible = viewModel.isScreenElementVisible(screenElement),

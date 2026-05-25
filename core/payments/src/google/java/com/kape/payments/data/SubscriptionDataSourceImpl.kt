@@ -26,7 +26,7 @@ class SubscriptionDataSourceImpl(
                     data.add(Subscription(item.id, item.legacy, item.plan, item.price, null))
                 }
                 prefs.storeVpnSubscriptions(data)
-                cont.resume(prefs.getVpnSubscriptions())
+                cont.resume(prefs.vpnSubscriptions.value)
             }
         }
 }

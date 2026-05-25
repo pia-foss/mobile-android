@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.data.DnsOptions
@@ -37,6 +39,7 @@ fun PrivacySettingsScreen() =
                 appBarText(stringResource(id = R.string.privacy))
             }
         val showWarning = remember { mutableStateOf(false) }
+        val maceEnabled by viewModel.maceEnabled().collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -62,10 +65,10 @@ fun PrivacySettingsScreen() =
                     SettingsToggle(
                         titleId = R.string.mace_title,
                         subtitleId = R.string.mace_description,
-                        enabled = viewModel.maceEnabled.value,
+                        enabled = maceEnabled,
                         toggle = {
                             // MACE requires using PIA DNS
-                            if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !viewModel.maceEnabled.value) {
+                            if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !maceEnabled) {
                                 showWarning.value = true
                             }
                             viewModel.toggleMace(it)

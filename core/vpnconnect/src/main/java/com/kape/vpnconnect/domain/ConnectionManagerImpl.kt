@@ -149,10 +149,10 @@ class ConnectionManagerImpl :
     // ───────────────────────────────────────────────────────────────
 
     private suspend fun startShadowsocks(stopCallback: () -> Unit): Boolean {
-        if (!settingsPrefs.isShadowsocksObfuscationEnabled()) return true
+        if (!settingsPrefs.isShadowsocksObfuscationEnabled.value) return true
 
         val server =
-            shadowsocksRegionPrefs.getSelectedShadowsocksServer() ?: return false
+            shadowsocksRegionPrefs.selectedShadowsocksServer.value ?: return false
 
         return startObfuscatorProcess(
             obfuscatorProcessInformation =
@@ -170,7 +170,7 @@ class ConnectionManagerImpl :
     }
 
     private suspend fun startPortForwarding() {
-        if (!settingsPrefs.isPortForwardingEnabled()) return
+        if (!settingsPrefs.isPortForwardingEnabled.value) return
         portForwardingUseCase.bindPort(connectionSource.getVpnToken())
         connectionSource.startPortForwarding()
     }
@@ -189,10 +189,10 @@ class ConnectionManagerImpl :
     }
 
     private fun mapProtocolToServerGroup(): VpnServer.ServerGroup =
-        when (settingsPrefs.getSelectedProtocol()) {
+        when (settingsPrefs.selectedProtocol.value) {
             VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
             VpnProtocols.OpenVPN -> {
-                when (settingsPrefs.getOpenVpnSettings().transport) {
+                when (settingsPrefs.openVpnSettings.value.transport) {
                     Transport.UDP -> VpnServer.ServerGroup.OPENVPN_UDP
                     Transport.TCP -> VpnServer.ServerGroup.OPENVPN_TCP
                 }
