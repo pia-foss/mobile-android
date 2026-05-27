@@ -97,6 +97,7 @@ class SettingsViewModel(
     val eventList = mutableStateOf<List<String>>(emptyList())
     val debugLogs = mutableStateOf<List<String>>(emptyList())
     val requestId = mutableStateOf<String?>(null)
+    val selectedProtocol = prefs.selectedProtocol
 
     fun maceEnabled() = prefs.isMaceEnabled
 
@@ -202,8 +203,6 @@ class SettingsViewModel(
     }
 
     fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled
-
-    fun getSelectedProtocol(): VpnProtocols = prefs.selectedProtocol.value
 
     fun selectProtocol(protocol: VpnProtocols) {
         prefs.setSelectedProtocol(protocol)

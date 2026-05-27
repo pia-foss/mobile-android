@@ -14,6 +14,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -54,7 +56,7 @@ fun TvProtocolSettingsScreen() =
         val transportDialogVisible = remember { mutableStateOf(false) }
         val encryptionDialogVisible = remember { mutableStateOf(false) }
         val portDialogVisible = remember { mutableStateOf(false) }
-        val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
+        val protocolSelection by viewModel.selectedProtocol.collectAsState()
         val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
 
         LaunchedEffect(key1 = Unit) {
@@ -108,7 +110,7 @@ fun TvProtocolSettingsScreen() =
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.Top,
                     ) {
-                        when (viewModel.getSelectedProtocol()) {
+                        when (protocolSelection) {
                             VpnProtocols.WireGuard ->
                                 TvWireguardProtocolSettingsScreen(
                                     viewModel = viewModel,
@@ -154,16 +156,15 @@ fun TvProtocolSettingsScreen() =
                         buttons = getDefaultButtons(),
                         onDismiss = { protocolDialogVisible.value = false },
                         onConfirm = {
-                            val hasProtocolChanged = protocolSelection.value != it
+                            val hasProtocolChanged = protocolSelection != it
                             viewModel.selectProtocol(it)
-                            protocolSelection.value = it
                             protocolDialogVisible.value = false
 
                             if (hasProtocolChanged) {
                                 viewModel.showReconnectDialogIfVpnConnected()
                             }
                         },
-                        selection = protocolSelection.value,
+                        selection = protocolSelection,
                     )
                 }
             }

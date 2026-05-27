@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,7 +43,7 @@ fun ProtocolSettingsScreen() =
                 appBarText(stringResource(id = R.string.protocols))
             }
         val protocolDialogVisible = remember { mutableStateOf(false) }
-        val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
+        val protocolSelection by viewModel.selectedProtocol.collectAsState()
 
         Scaffold(
             topBar = {
@@ -59,7 +61,7 @@ fun ProtocolSettingsScreen() =
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                    when (viewModel.getSelectedProtocol()) {
+                    when (protocolSelection) {
                         VpnProtocols.OpenVPN -> {
                             OpenVpnProtocolSettingsScreen(
                                 viewModel = viewModel,
@@ -86,16 +88,15 @@ fun ProtocolSettingsScreen() =
                             buttons = getDefaultButtons(),
                             onDismiss = { protocolDialogVisible.value = false },
                             onConfirm = {
-                                val hasProtocolChanged = protocolSelection.value != it
+                                val hasProtocolChanged = protocolSelection != it
                                 viewModel.selectProtocol(it)
-                                protocolSelection.value = it
                                 protocolDialogVisible.value = false
 
                                 if (hasProtocolChanged) {
                                     viewModel.showReconnectDialogIfVpnConnected()
                                 }
                             },
-                            selection = protocolSelection.value,
+                            selection = protocolSelection,
                         )
                     }
                     if (viewModel.reconnectDialogVisible.value) {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -34,7 +35,8 @@ fun SettingsScreen() =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = com.kape.ui.R.string.settings))
             }
-        val shouldShowObfuscation = viewModel.getSelectedProtocol() == VpnProtocols.OpenVPN
+        val protocol by viewModel.selectedProtocol.collectAsState()
+        val shouldShowObfuscation = protocol == VpnProtocols.OpenVPN
         val automationEnabled by viewModel.isAutomationEnabled().collectAsStateWithLifecycle()
 
         Scaffold(
@@ -63,7 +65,7 @@ fun SettingsScreen() =
                     SettingsItem(
                         iconId = R.drawable.ic_settings_protocols,
                         titleId = com.kape.ui.R.string.protocols,
-                        subtitle = viewModel.getSelectedProtocol().name,
+                        subtitle = protocol.name,
                         onClick = {
                             viewModel.navigateToProtocolSettings()
                         },
