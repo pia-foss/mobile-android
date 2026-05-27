@@ -18,6 +18,7 @@ dependencies {
 
     implementation(project(":core:contracts"))
     implementation(project(":core:data"))
+    implementation(project(":core:localprefs:prefs"))
     implementation(project(":capabilities:ui"))
 
     implementation(libs.bundles.compose)

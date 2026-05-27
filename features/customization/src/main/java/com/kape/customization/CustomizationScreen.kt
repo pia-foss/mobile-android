@@ -29,7 +29,6 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.customization.data.Element
 import com.kape.data.ConnectionStatus
-import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.sharedui.tiles.ConnectionInfo
@@ -169,23 +168,7 @@ private fun DisplayComponent(
         }
 
         Element.IpInfo -> {
-            val publicIp by viewModel.connectionInfoProvider.publicIp.collectAsState()
-            val vpnIp by viewModel.connectionInfoProvider.vpnIp.collectAsState()
-            val portForwardingStatus by viewModel.connectionInfoProvider.portForwardingStatus.collectAsState()
-            val port by viewModel.connectionInfoProvider.port.collectAsState()
-            IPTile(
-                modifier = modifier,
-                isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                publicIp = publicIp,
-                vpnIp = vpnIp,
-                portForwardingStatus =
-                    when (portForwardingStatus) {
-                        PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
-                        PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
-                        PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                        PortForwardingStatus.Success -> port
-                    },
-            )
+            IPTile(modifier = modifier)
         }
 
         Element.QuickConnect -> {
