@@ -36,7 +36,7 @@ fun SettingsToggle(
     toggle: (checked: Boolean) -> Unit,
     testTag: String = "",
 ) {
-    val isChecked = remember { stateEnabled }
+    val isChecked = remember(stateEnabled) { stateEnabled }
     Column(
         modifier =
             Modifier

@@ -36,6 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ObfuscationSettingsScreen() =
     Screen {
         val viewModel: SettingsViewModel = koinViewModel()
+        val customObfuscation by viewModel.customObfuscation.collectAsStateWithLifecycle()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.obfuscation))
@@ -44,7 +45,7 @@ fun ObfuscationSettingsScreen() =
             mutableMapOf(
                 ObfuscationOptions.PIA to stringResource(id = R.string.pia),
             )
-        viewModel.getCustomObfuscation()?.let {
+        customObfuscation?.let {
             obfuscationOptions[ObfuscationOptions.CUSTOM] =
                 "${stringResource(id = R.string.network_dns_selection_custom)} ${it.host}:${it.port}"
         }
@@ -55,11 +56,11 @@ fun ObfuscationSettingsScreen() =
         val tcpTransportDialogVisible = remember { mutableStateOf(false) }
         val externalProxyAppDialogVisible = remember { mutableStateOf(false) }
         val externalProxyPortDialogVisible = remember { mutableStateOf(false) }
-        val externalProxyEnabled by viewModel.externalProxyAppEnabled().collectAsStateWithLifecycle()
-        val externalProxyAppPackageName by viewModel.externalProxyAppPackageName().collectAsStateWithLifecycle()
-        val externalProxyPort by viewModel.externalProxyAppPort().collectAsStateWithLifecycle()
-        val shadowSocksEnabled by viewModel.shadowsocksObfuscationEnabled().collectAsStateWithLifecycle()
-        val localTrafficEnabled by viewModel.isAllowLocalTrafficEnabled().collectAsStateWithLifecycle()
+        val externalProxyEnabled by viewModel.externalProxyAppEnabled.collectAsStateWithLifecycle()
+        val externalProxyAppPackageName by viewModel.externalProxyAppPackageName.collectAsStateWithLifecycle()
+        val externalProxyPort by viewModel.externalProxyAppPort.collectAsStateWithLifecycle()
+        val shadowSocksEnabled by viewModel.shadowsocksObfuscationEnabled.collectAsStateWithLifecycle()
+        val localTrafficEnabled by viewModel.isAllowLocalTrafficEnabled.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -155,10 +156,10 @@ fun ObfuscationSettingsScreen() =
 
         if (customObfuscationDialogVisible.value) {
             CustomObfuscationDialog(
-                customObfuscation = viewModel.getCustomObfuscation(),
+                customObfuscation = customObfuscation,
                 onConfirm = {
                     customObfuscationDialogVisible.value = false
-                    val hasCustomObfuscationChanged = viewModel.getCustomObfuscation() != it
+                    val hasCustomObfuscationChanged = customObfuscation != it
                     viewModel.setCustomObfuscation(customObfuscation = it)
                     viewModel.setSelectedObfuscationOption(ObfuscationOptions.CUSTOM)
 

@@ -24,6 +24,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
 import androidx.tv.material3.ExperimentalTvMaterial3Api
@@ -65,10 +67,11 @@ fun TvPerAppSettingsScreen() =
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
         val initialFocusRequester = remember { FocusRequester() }
         val keyboardController = LocalSoftwareKeyboardController.current
-        val lastExcludedApps = remember { viewModel.vpnExcludedApps().value.map { it } }
+        val excluded by viewModel.vpnExcludedApps.collectAsStateWithLifecycle()
+        val lastExcludedApps = remember { excluded.map { it } }
 
         BackHandler {
-            onBackPressed(viewModel, lastExcludedApps, viewModel::navigateBack)
+            onBackPressed(viewModel, lastExcludedApps, excluded, viewModel::navigateBack)
         }
 
         Box(
@@ -142,7 +145,7 @@ fun TvPerAppSettingsScreen() =
                                 val icon = applicationPackage.loadIcon(packageManager)
                                 val name = applicationPackage.loadLabel(packageManager).toString()
                                 val excludedFromTunnel =
-                                    viewModel.vpnExcludedApps().value.contains(
+                                    excluded.contains(
                                         applicationPackage.packageName,
                                     )
                                 val focusRequester =
@@ -268,9 +271,10 @@ private fun PerAppSettingPackageItem(
 private fun onBackPressed(
     viewModel: SettingsViewModel,
     lastExcludedApps: List<String>,
+    excluded: List<String>,
     navigateBack: () -> Unit,
 ) {
-    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps().value) {
+    if (viewModel.isConnected() && lastExcludedApps != excluded) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
         navigateBack()

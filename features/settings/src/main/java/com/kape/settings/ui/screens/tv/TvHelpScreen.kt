@@ -56,7 +56,7 @@ fun TvHelpScreen() =
         val showDialog = remember { mutableStateOf(false) }
         val showToast = remember { mutableStateOf(false) }
         val showSpinner = remember { mutableStateOf(false) }
-        val improvePiaEnabled by viewModel.improvePiaEnabled().collectAsStateWithLifecycle()
+        val improvePiaEnabled by viewModel.improvePiaEnabled.collectAsStateWithLifecycle()
 
         with(viewModel.requestId.value) {
             when {

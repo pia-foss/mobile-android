@@ -33,10 +33,8 @@ import com.kape.settings.data.CustomObfuscation
 import com.kape.settings.data.DataEncryption
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.ObfuscationOptions
-import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
-import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.vpnconnect.domain.ConnectionDataSource
@@ -69,37 +67,27 @@ class SettingsViewModel(
         private const val GET_INSTALLED_APPS_DELAY_MS = 1000L
     }
 
-    fun launchOnBootEnabled() = prefs.isLaunchOnStartupEnabled
-
-    fun connectOnStart() = prefs.isConnectOnLaunchEnabled
-
-    fun connectOnUpdate() = prefs.isConnectOnAppUpdateEnabled
-
-    fun showGeoLocatedServers() = prefs.isShowGeoLocatedServersEnabled
-
-    fun improvePiaEnabled() = prefs.isHelpImprovePiaEnabled
-
-    fun debugLoggingEnabled() = prefs.isDebugLoggingEnabled
-
-    fun shadowsocksObfuscationEnabled() = prefs.isShadowsocksObfuscationEnabled
-
-    fun vpnExcludedApps() = prefs.vpnExcludedApps
-
-    fun isAllowLocalTrafficEnabled() = prefs.isAllowLocalTrafficEnabled
-
-    fun externalProxyAppEnabled() = prefs.isExternalProxyAppEnabled
-
-    fun externalProxyAppPackageName() = prefs.externalProxyAppPackageName
-
-    fun externalProxyAppPort() = connectionPrefs.proxyPort
-
+    val launchOnBootEnabled = prefs.isLaunchOnStartupEnabled
+    val connectOnStart = prefs.isConnectOnLaunchEnabled
+    val connectOnUpdate = prefs.isConnectOnAppUpdateEnabled
+    val showGeoLocatedServers = prefs.isShowGeoLocatedServersEnabled
+    val improvePiaEnabled = prefs.isHelpImprovePiaEnabled
+    val debugLoggingEnabled = prefs.isDebugLoggingEnabled
+    val shadowsocksObfuscationEnabled = prefs.isShadowsocksObfuscationEnabled
+    val vpnExcludedApps = prefs.vpnExcludedApps
+    val isAllowLocalTrafficEnabled = prefs.isAllowLocalTrafficEnabled
+    val externalProxyAppEnabled = prefs.isExternalProxyAppEnabled
+    val externalProxyAppPackageName = prefs.externalProxyAppPackageName
+    val externalProxyAppPort = connectionPrefs.proxyPort
+    val selectedDnsOption = prefs.selectedDnsOption
     val appList = mutableStateOf<List<ApplicationInfo>>(emptyList())
     val eventList = mutableStateOf<List<String>>(emptyList())
     val debugLogs = mutableStateOf<List<String>>(emptyList())
     val requestId = mutableStateOf<String?>(null)
     val selectedProtocol = prefs.selectedProtocol
-
-    fun maceEnabled() = prefs.isMaceEnabled
+    val maceEnabled = prefs.isMaceEnabled
+    val wireGuardSettings = prefs.wireGuardSettings
+    val openVpnSettings = prefs.openVpnSettings
 
     private val isDnsNumeric = mutableStateOf(true)
     private var installedApps = listOf<ApplicationInfo>()
@@ -190,7 +178,7 @@ class SettingsViewModel(
     fun setExternalProxyAppPackageName(packageName: String) {
         if (packageName.isEmpty()) {
             prefs.setExternalProxyAppPackageName(packageName)
-            removeFromVpnExcludedApps(externalProxyAppPackageName().value)
+            removeFromVpnExcludedApps(externalProxyAppPackageName.value)
         } else {
             prefs.setExternalProxyAppPackageName(packageName)
             addToVpnExcludedApps(packageName)
@@ -212,15 +200,11 @@ class SettingsViewModel(
         }
     }
 
-    fun getWireGuardSettings(): WireGuardSettings = prefs.wireGuardSettings.value
-
-    fun getOpenVpnSettings(): OpenVpnSettings = prefs.openVpnSettings.value
-
-    fun getCustomDns(): CustomDns = prefs.customDns.value
+    val customDns = prefs.customDns
 
     fun setCustomDns(customDns: CustomDns) = prefs.setCustomDns(customDns = customDns)
 
-    fun getCustomObfuscation(): CustomObfuscation? = prefs.customObfuscation.value
+    val customObfuscation = prefs.customObfuscation
 
     fun setCustomObfuscation(customObfuscation: CustomObfuscation) = prefs.setCustomObfuscation(customObfuscation = customObfuscation)
 
@@ -233,25 +217,21 @@ class SettingsViewModel(
 
     fun setSelectedDnsOption(dnsOptions: DnsOptions) = prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
 
-    fun getSelectedDnsOption(): DnsOptions = prefs.selectedDnsOption.value
-
     fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) =
         prefs.setSelectedObfuscationOption(obfuscationOptions = obfuscationOptions)
 
     fun getSelectedObfuscationOption(): ObfuscationOptions = prefs.selectedObfuscationOption.value
 
     fun setTransport(transport: Transport) {
-        val currentSettings = getOpenVpnSettings()
+        val currentSettings = openVpnSettings.value
         val hasSettingChanged = currentSettings.transport != transport
-        currentSettings.transport = transport
         val ports =
             if (transport == Transport.UDP) {
                 regionsRepository.getUdpPorts()
             } else {
                 regionsRepository.getTcpPorts()
             }
-        currentSettings.port = ports[0].toString()
-        prefs.setOpenVpnSettings(currentSettings)
+        prefs.setOpenVpnSettings(currentSettings.copy(transport = transport, port = ports[0].toString()))
 
         if (hasSettingChanged) {
             showReconnectDialogIfVpnConnected()
@@ -262,13 +242,12 @@ class SettingsViewModel(
         }
     }
 
-    fun getTransport(): Transport = getOpenVpnSettings().transport
+    fun getTransport(): Transport = openVpnSettings.value.transport
 
     fun setEncryption(encryption: DataEncryption) {
-        val currentSettings = getOpenVpnSettings()
+        val currentSettings = openVpnSettings.value
         val hasSettingChanged = currentSettings.dataEncryption != encryption
-        currentSettings.dataEncryption = encryption
-        prefs.setOpenVpnSettings(currentSettings)
+        prefs.setOpenVpnSettings(currentSettings.copy(dataEncryption = encryption))
 
         if (hasSettingChanged) {
             showReconnectDialogIfVpnConnected()
@@ -276,10 +255,9 @@ class SettingsViewModel(
     }
 
     fun setPort(port: String) {
-        val currentSettings = getOpenVpnSettings()
+        val currentSettings = openVpnSettings.value
         val hasSettingChanged = currentSettings.port != port
-        currentSettings.port = port
-        prefs.setOpenVpnSettings(currentSettings)
+        prefs.setOpenVpnSettings(currentSettings.copy(port = port))
 
         if (hasSettingChanged) {
             showReconnectDialogIfVpnConnected()
@@ -287,10 +265,9 @@ class SettingsViewModel(
     }
 
     fun setOpenVpnEnableSmallPackets(enable: Boolean) {
-        val currentSettings = getOpenVpnSettings()
+        val currentSettings = openVpnSettings.value
         val hasSettingChanged = currentSettings.useSmallPackets != enable
-        currentSettings.useSmallPackets = enable
-        prefs.setOpenVpnSettings(currentSettings)
+        prefs.setOpenVpnSettings(currentSettings.copy(useSmallPackets = enable))
 
         if (hasSettingChanged) {
             showReconnectDialogIfVpnConnected()
@@ -298,10 +275,9 @@ class SettingsViewModel(
     }
 
     fun setWireGuardEnableSmallPackets(enable: Boolean) {
-        val currentSettings = getWireGuardSettings()
+        val currentSettings = wireGuardSettings.value
         val hasSettingChanged = currentSettings.useSmallPackets != enable
-        currentSettings.useSmallPackets = enable
-        prefs.setWireGuardSettings(currentSettings)
+        prefs.setWireGuardSettings(currentSettings.copy(useSmallPackets = enable))
 
         if (hasSettingChanged) {
             showReconnectDialogIfVpnConnected()
@@ -310,7 +286,7 @@ class SettingsViewModel(
 
     fun getPorts(): Map<Int, String> {
         val availablePorts = mutableMapOf<Int, String>()
-        when (getOpenVpnSettings().transport) {
+        when (openVpnSettings.value.transport) {
             Transport.UDP -> {
                 regionsRepository.getUdpPorts().distinct().forEach {
                     availablePorts[it] = it.toString()

@@ -22,7 +22,6 @@ class ClientStateDataSourceImpl(
     override suspend fun getPublicIp(): String {
         repeat(3) { _ ->
             val ip = getPublicIpOnce()
-            println("--- get public IP: $ip")
             if (ip != NO_IP) {
                 connectionPrefs.setClientIp(ip)
                 return ip
@@ -36,7 +35,6 @@ class ClientStateDataSourceImpl(
     override suspend fun getVpnIp(): String {
         repeat(5) { _ ->
             val vpnIp = getVpnIpOnce()
-            println("--- get vpnIp: $vpnIp")
             if (vpnIp != NO_IP && vpnIp != connectionPrefs.clientIp.value) {
                 connectionPrefs.setVpnIp(vpnIp)
                 return vpnIp

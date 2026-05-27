@@ -29,10 +29,10 @@ fun GeneralSettingsScreen() =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.general))
             }
-        val launchOnBoot by viewModel.launchOnBootEnabled().collectAsStateWithLifecycle()
-        val connectOnStart by viewModel.connectOnStart().collectAsStateWithLifecycle()
-        val connectOnUpdate by viewModel.connectOnUpdate().collectAsStateWithLifecycle()
-        val showGeoLocatedServers by viewModel.showGeoLocatedServers().collectAsStateWithLifecycle()
+        val launchOnBoot by viewModel.launchOnBootEnabled.collectAsStateWithLifecycle()
+        val connectOnStart by viewModel.connectOnStart.collectAsStateWithLifecycle()
+        val connectOnUpdate by viewModel.connectOnUpdate.collectAsStateWithLifecycle()
+        val showGeoLocatedServers by viewModel.showGeoLocatedServers.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {

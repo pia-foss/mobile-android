@@ -52,30 +52,32 @@ fun TvNetworkSettingsScreen() =
         val viewModel: SettingsViewModel = koinViewModel()
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
         val initialFocusRequester = remember { FocusRequester() }
+        val customDns by viewModel.customDns.collectAsStateWithLifecycle()
 
         val dnsOptions =
             mutableMapOf(
                 DnsOptions.PIA to stringResource(id = R.string.pia),
                 DnsOptions.SYSTEM to stringResource(id = R.string.network_dns_selection_system),
             )
-        if (viewModel.getCustomDns().isInUse()) {
+        if (customDns.isInUse()) {
             dnsOptions[DnsOptions.CUSTOM] =
                 "${stringResource(id = R.string.network_dns_selection_custom)} ${
-                    getCustomDnsInfo(
-                        viewModel.getCustomDns(),
-                    )
+                    getCustomDnsInfo(customDns)
                 }"
         }
 
-        val dnsSelection =
-            remember { mutableStateOf(dnsOptions.getValue(viewModel.getSelectedDnsOption())) }
+        val selectedOption by viewModel.selectedDnsOption.collectAsStateWithLifecycle()
         val dnsDialogVisible = remember { mutableStateOf(false) }
         val customDnsDialogVisible = remember { mutableStateOf(false) }
         val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
         val dnsWarningDialogVisible = remember { mutableStateOf(false) }
-        val portForwardingEnabled by viewModel.isPortForwardingEnabled().collectAsStateWithLifecycle()
-        val localTrafficEnabled by viewModel.isAllowLocalTrafficEnabled().collectAsStateWithLifecycle()
-        val maceEnabled by viewModel.maceEnabled().collectAsStateWithLifecycle()
+        val portForwardingEnabled by viewModel
+            .isPortForwardingEnabled()
+            .collectAsStateWithLifecycle()
+        val localTrafficEnabled by viewModel
+            .isAllowLocalTrafficEnabled
+            .collectAsStateWithLifecycle()
+        val maceEnabled by viewModel.maceEnabled.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
@@ -131,7 +133,7 @@ fun TvNetworkSettingsScreen() =
                         TvSettingsItem(
                             modifier = Modifier.focusRequester(initialFocusRequester),
                             titleId = R.string.network_dns_title,
-                            subtitle = dnsOptions[viewModel.getSelectedDnsOption()],
+                            subtitle = dnsOptions[selectedOption],
                         ) {
                             dnsDialogVisible.value = !dnsDialogVisible.value
                         }
@@ -177,11 +179,11 @@ fun TvNetworkSettingsScreen() =
                 ) {
                     DnsSelectionDialog(
                         options = dnsOptions,
-                        selection = viewModel.getSelectedDnsOption(),
+                        selection = selectedOption,
                         onConfirm = {
-                            val hasDnsOptionChanged = viewModel.getSelectedDnsOption() != it
+                            val hasDnsOptionChanged = selectedOption != it
                             val previousDnsSelectionWasPIA =
-                                viewModel.getSelectedDnsOption() == DnsOptions.PIA
+                                selectedOption == DnsOptions.PIA
                             dnsDialogVisible.value = false
                             viewModel.setSelectedDnsOption(it)
 
@@ -220,11 +222,11 @@ fun TvNetworkSettingsScreen() =
                     color = Color.Black.copy(alpha = 0.6f),
                 ) {
                     CustomDnsDialog(
-                        customDns = viewModel.getCustomDns(),
+                        customDns = customDns,
                         displayFootnote = maceEnabled,
                         onConfirm = {
                             customDnsDialogVisible.value = false
-                            val hasCustomDnsChanged = viewModel.getCustomDns() != it
+                            val hasCustomDnsChanged = customDns != it
                             viewModel.setCustomDns(
                                 customDns = it,
                             )
@@ -272,7 +274,6 @@ fun TvNetworkSettingsScreen() =
                         viewModel = viewModel,
                         allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
                         onDismiss = {
-                            dnsSelection.value = DnsOptions.PIA.value
                             viewModel.setSelectedDnsOption(DnsOptions.PIA)
                         },
                     )
@@ -286,6 +287,7 @@ fun TvNetworkSettingsScreen() =
                 ) {
                     UnsafeDnsWarningDialog(
                         viewModel = viewModel,
+                        dnsSelectedOption = selectedOption,
                         dnsWarningDialogVisible = dnsWarningDialogVisible,
                         allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
                     )

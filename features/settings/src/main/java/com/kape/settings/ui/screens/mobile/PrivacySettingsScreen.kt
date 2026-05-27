@@ -39,7 +39,8 @@ fun PrivacySettingsScreen() =
                 appBarText(stringResource(id = R.string.privacy))
             }
         val showWarning = remember { mutableStateOf(false) }
-        val maceEnabled by viewModel.maceEnabled().collectAsStateWithLifecycle()
+        val maceEnabled by viewModel.maceEnabled.collectAsStateWithLifecycle()
+        val selectedDnsOption by viewModel.selectedDnsOption.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -68,7 +69,7 @@ fun PrivacySettingsScreen() =
                         enabled = maceEnabled,
                         toggle = {
                             // MACE requires using PIA DNS
-                            if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !maceEnabled) {
+                            if (selectedDnsOption != DnsOptions.PIA && !maceEnabled) {
                                 showWarning.value = true
                             }
                             viewModel.toggleMace(it)

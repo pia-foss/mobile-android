@@ -45,7 +45,8 @@ fun TvPrivacySettingsScreen() =
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
         val initialFocusRequester = remember { FocusRequester() }
         val showWarning = remember { mutableStateOf(false) }
-        val maceEnabled by viewModel.maceEnabled().collectAsStateWithLifecycle()
+        val maceEnabled by viewModel.maceEnabled.collectAsStateWithLifecycle()
+        val dnsSelectedOption by viewModel.selectedDnsOption.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
@@ -105,7 +106,7 @@ fun TvPrivacySettingsScreen() =
                             enabled = maceEnabled,
                             toggle = {
                                 // MACE requires using PIA DNS
-                                if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !maceEnabled) {
+                                if (dnsSelectedOption != DnsOptions.PIA && !maceEnabled) {
                                     showWarning.value = true
                                 }
                                 viewModel.toggleMace(it)

@@ -49,8 +49,8 @@ fun HelpScreen() =
         val showDialog = remember { mutableStateOf(false) }
         val showToast = remember { mutableStateOf(false) }
         val showSpinner = remember { mutableStateOf(false) }
-        val improvePiaEnabled by viewModel.improvePiaEnabled().collectAsStateWithLifecycle()
-        val debugLoggingEnabled by viewModel.debugLoggingEnabled().collectAsStateWithLifecycle()
+        val improvePiaEnabled by viewModel.improvePiaEnabled.collectAsStateWithLifecycle()
+        val debugLoggingEnabled by viewModel.debugLoggingEnabled.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {

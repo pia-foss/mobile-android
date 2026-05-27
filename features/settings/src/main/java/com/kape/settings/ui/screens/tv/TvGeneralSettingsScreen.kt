@@ -41,9 +41,9 @@ fun TvGeneralSettingsScreen() =
         val viewModel: SettingsViewModel = koinViewModel()
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
         val initialFocusRequester = remember { FocusRequester() }
-        val launchOnBoot by viewModel.launchOnBootEnabled().collectAsStateWithLifecycle()
-        val connectOnStart by viewModel.connectOnStart().collectAsStateWithLifecycle()
-        val connectOnUpdate by viewModel.connectOnUpdate().collectAsStateWithLifecycle()
+        val launchOnBoot by viewModel.launchOnBootEnabled.collectAsStateWithLifecycle()
+        val connectOnStart by viewModel.connectOnStart.collectAsStateWithLifecycle()
+        val connectOnUpdate by viewModel.connectOnUpdate.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
