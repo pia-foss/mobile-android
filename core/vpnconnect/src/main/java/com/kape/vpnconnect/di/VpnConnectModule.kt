@@ -11,6 +11,7 @@ import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
+import com.kape.contracts.UsageProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -28,12 +29,13 @@ import com.kape.vpnconnect.domain.ConnectionManagerImpl
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
-import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnconnect.provider.UsageProviderImpl
 import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import com.kape.vpnconnect.utils.NotificationHandler
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.ComponentScan
@@ -59,8 +61,8 @@ class VpnConnectModule {
         return values
     }
 
-    @Singleton
-    fun provideUsageProvider(context: Context): UsageProvider = UsageProvider(context)
+    @Singleton(binds = [UsageProvider::class, VPNManagerProtocolByteCountDependency::class])
+    fun provideUsageProvider(context: Context): UsageProvider = UsageProviderImpl(context)
 
     @Singleton
     fun provideNotificationHandler(

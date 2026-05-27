@@ -18,6 +18,7 @@ import com.kape.contracts.ConfigInfo
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.LicenceReader
 import com.kape.contracts.NetworkManager
+import com.kape.contracts.UsageProvider
 import com.kape.csi.di.CsiModule
 import com.kape.customization.di.CustomizationModule
 import com.kape.data.DI
@@ -81,11 +82,11 @@ import com.kape.vpn.utils.LicenceReaderImpl
 import com.kape.vpn.utils.NetworkManagerImpl
 import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.di.VpnConnectModule
-import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnlauncher.di.VpnLauncherModule
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
+import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import com.kape.vpnregions.di.VpnServersModule
 import com.kape.vpnregionselection.di.VpnRegionModule
 import com.privateinternetaccess.account.AccountBuilder
@@ -293,7 +294,7 @@ class AppModule {
         VPNManagerBuilder()
             .setContext(context)
             .setClientCoroutineContext(Dispatchers.Main)
-            .setProtocolByteCountDependency(usageProvider)
+            .setProtocolByteCountDependency(usageProvider as VPNManagerProtocolByteCountDependency)
             .setPermissionsDependency(vpnManagerProvider)
             .setDebugLoggingDependency(vpnManagerProvider)
             .build()

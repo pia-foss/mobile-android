@@ -10,7 +10,7 @@ import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
-import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnconnect.provider.UsageProviderImpl
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
@@ -39,7 +39,7 @@ class ConnectionDataSourceImplTest {
     private val workManager = mockk<WorkManager>(relaxed = true)
     private val settingsPrefs = mockk<SettingsPrefs>(relaxed = true)
     private val kpiDataSource = mockk<KpiDataSource>(relaxed = true)
-    private val usageProvider = mockk<UsageProvider>(relaxed = true)
+    private val usageProvider = mockk<UsageProviderImpl>(relaxed = true)
     private val csiPrefs = mockk<CsiPrefs>(relaxed = true)
 
     private val connectionStatusProvider =

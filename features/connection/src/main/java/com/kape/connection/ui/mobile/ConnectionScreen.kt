@@ -111,7 +111,9 @@ fun ConnectionScreen() =
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
         val shouldShowProtocolNotAvailable by viewModel.showProtocolNotAvailableDialog
-        val screenElements by viewModel.getOrderedElements().collectAsStateWithLifecycle(emptyList())
+        val screenElements by viewModel
+            .getOrderedElements()
+            .collectAsStateWithLifecycle(emptyList())
 
         BackHandler {
             activity?.finish()
@@ -431,10 +433,7 @@ private fun DisplayComponent(
             }
 
             Element.Traffic -> {
-                Traffic(
-                    download = viewModel.download.value,
-                    upload = viewModel.upload.value,
-                )
+                Traffic()
                 Separator()
             }
         }

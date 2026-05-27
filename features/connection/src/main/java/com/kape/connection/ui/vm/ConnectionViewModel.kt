@@ -37,7 +37,6 @@ import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
-import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
 import kotlinx.coroutines.Job
@@ -59,7 +58,6 @@ class ConnectionViewModel(
     private val prefs: ConnectionPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val snoozeHandler: SnoozeHandler,
-    private val usageProvider: UsageProvider,
     private val dipPrefs: DipPrefs,
     private val renewDipUseCase: RenewDipUseCase,
     private val customizationPrefs: CustomizationPrefs,
@@ -96,8 +94,6 @@ class ConnectionViewModel(
     private val _state: MutableStateFlow<ConnectionScreenState> = MutableStateFlow(defaultState)
     val state: StateFlow<ConnectionScreenState> = _state
     val isConnected = networkConnectionListener.isConnected
-    val download = usageProvider.download
-    val upload = usageProvider.upload
     val isSnoozeActive = snoozeHandler.isSnoozeActive
     val timeUntilResume = snoozeHandler.timeUntilResume
     val showDedicatedIpHomeBanner = mutableStateOf(false)

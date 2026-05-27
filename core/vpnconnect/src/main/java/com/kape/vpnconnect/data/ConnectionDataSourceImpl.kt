@@ -5,13 +5,13 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
+import com.kape.contracts.UsageProvider
 import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.vpnconnect.domain.ConnectionDataSource
-import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnconnect.worker.PortForwardingWorker
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList

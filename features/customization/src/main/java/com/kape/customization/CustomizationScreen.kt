@@ -251,11 +251,7 @@ private fun DisplayComponent(
         }
 
         Element.Traffic -> {
-            Traffic(
-                modifier = modifier,
-                viewModel.download.value,
-                viewModel.upload.value,
-            )
+            Traffic(modifier = modifier)
         }
     }
 }

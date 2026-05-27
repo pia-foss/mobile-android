@@ -5,6 +5,7 @@ import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
+import com.kape.contracts.UsageProvider
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CustomizationPrefs
@@ -16,7 +17,6 @@ import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.rating.utils.RatingTool
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
-import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
 import org.koin.core.annotation.KoinViewModel
@@ -53,7 +53,6 @@ class ConnectionModule {
             prefs,
             settingsPrefs,
             snoozeHandler,
-            usageProvider,
             dipPrefs,
             renewDipUseCase,
             customizationPrefs,
