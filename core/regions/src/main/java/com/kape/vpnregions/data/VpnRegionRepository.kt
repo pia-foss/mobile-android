@@ -77,6 +77,8 @@ class VpnRegionRepository(
         return addDipToServerList(serverMap.values.toList())
     }
 
+    fun addDipsToList(servers: List<VpnServer>): List<VpnServer> = addDipToServerList(servers)
+
     private fun addDipToServerList(servers: List<VpnServer>): List<VpnServer> {
         val updatedList = mutableListOf<VpnServer>()
         updatedList.addAll(servers)

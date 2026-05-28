@@ -59,8 +59,17 @@ class DipViewModel(
     private val _state = MutableStateFlow<DedicatedIpStep?>(null)
     val state: StateFlow<DedicatedIpStep?> = _state
     val activateTokenButtonState = mutableStateOf(false)
-
     val dipList = mutableStateListOf<VpnServer>()
+
+    init {
+        viewModelScope.launch {
+            dipPrefs.dedicatedIps.collect {
+                regionListProvider.reflectDedicatedIpAction()
+                loadDedicatedIps()
+            }
+        }
+    }
+
     val activationState = mutableStateOf<DipApiResult?>(null)
     val hasAnActivePlaystoreSubscription = mutableStateOf(true)
     val supportedDipCountriesList = mutableStateOf<DipCountriesResponse?>(null)
@@ -89,9 +98,7 @@ class DipViewModel(
     fun loadDedicatedIps() =
         viewModelScope.launch {
             dipList.clear()
-            for (dip in dipPrefs.dedicatedIps.value) {
-                dipList.addAll(regionListProvider.servers.value.filter { it.isDedicatedIp })
-            }
+            dipList.addAll(regionListProvider.servers.value.filter { it.isDedicatedIp })
         }
 
     fun activateDedicatedIp(dipToken: MutableState<TextFieldValue>) =
@@ -102,7 +109,6 @@ class DipViewModel(
                 DipApiResult.Active -> {
                     dipToken.value = TextFieldValue("")
                     dipPrefs.removePurchasedSignupDipToken()
-                    loadDedicatedIps()
                 }
 
                 DipApiResult.Expired -> {
@@ -115,7 +121,6 @@ class DipViewModel(
                     // no-op
                 }
             }
-            regionListProvider.reflectDedicatedIpAction()
         }
 
     fun resetActivationState() {
@@ -134,7 +139,6 @@ class DipViewModel(
                 connectionPrefs.setSelectedVpnServer(null)
                 disconnect()
             }
-            loadDedicatedIps()
         }
     }
 
