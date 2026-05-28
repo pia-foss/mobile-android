@@ -1,23 +1,27 @@
 package com.kape.payments.ui
 
 import android.app.Activity
-import com.kape.payments.SubscriptionPrefs
+import com.kape.data.DI
 import com.kape.payments.data.Subscription
 import com.kape.payments.data.SubscriptionPlan
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.utils.MONTHLY_SUBSCRIPTION
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
 import com.kape.payments.utils.YEARLY_SUBSCRIPTION
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Singleton([VpnSubscriptionPaymentProvider::class])
 class VpnSubscriptionPaymentProviderImpl(
     private val prefs: SubscriptionPrefs,
     var activity: Activity? = null,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : VpnSubscriptionPaymentProvider {
     override val purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.NoInAppPurchase)
     override val purchaseHistoryState =
@@ -28,12 +32,12 @@ class VpnSubscriptionPaymentProviderImpl(
     }
 
     override fun getMonthlySubscription(): Subscription =
-        prefs.getVpnSubscriptions().first {
+        prefs.vpnSubscriptions.value.first {
             it.plan.lowercase() == MONTHLY_SUBSCRIPTION.lowercase()
         }
 
     override fun getYearlySubscription(): Subscription =
-        prefs.getVpnSubscriptions().first {
+        prefs.vpnSubscriptions.value.first {
             it.plan.lowercase() == YEARLY_SUBSCRIPTION.lowercase()
         }
 

@@ -12,6 +12,7 @@ import com.android.billingclient.api.PurchasesResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
+import com.kape.data.DI
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
 import com.kape.payments.data.SubscriptionPlan
@@ -22,20 +23,23 @@ import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
 import com.kape.payments.utils.YEARLY
 import com.kape.payments.utils.YEARLY_SUBSCRIPTION
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Singleton([VpnSubscriptionPaymentProvider::class])
 class VpnSubscriptionPaymentProviderImpl(
     private val prefs: SubscriptionPrefs,
     private var activity: Activity? = null,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : VpnSubscriptionPaymentProvider {
     private lateinit var billingClient: BillingClient
     private var selectedProduct: ProductDetails? = null
-
     private val availableProducts = mutableListOf<ProductDetails>()
 
     private val purchasesUpdatedListener =
@@ -177,11 +181,13 @@ class VpnSubscriptionPaymentProviderImpl(
                         }
                     }
                 }
-                prefs.storeVpnSubscriptions(data)
-                prefs.storeVpnSubscriptionPlans(plans)
-                availableProducts.clear()
-                availableProducts.addAll(productDetailsList.productDetailsList)
-                purchaseState.value = PurchaseState.ProductsLoadedSuccess
+                ioScope.launch {
+                    prefs.storeVpnSubscriptions(data)
+                    prefs.storeVpnSubscriptionPlans(plans)
+                    availableProducts.clear()
+                    availableProducts.addAll(productDetailsList.productDetailsList)
+                    purchaseState.value = PurchaseState.ProductsLoadedSuccess
+                }
             } else {
                 purchaseState.value = PurchaseState.ProductsLoadedFailed
             }

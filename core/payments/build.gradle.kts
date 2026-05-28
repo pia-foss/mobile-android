@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.kape.account)
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
+    implementation(project(":core:data"))
 
     implementation(libs.bundles.koin)
     implementation(libs.datastore.preferences)

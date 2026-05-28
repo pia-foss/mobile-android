@@ -40,18 +40,14 @@ class SubscriptionPrefs(
     val dipPurchaseData: StateFlow<DipPurchaseData?> =
         getDipPurchaseData().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
 
-    fun storeVpnSubscriptions(available: List<Subscription>) {
+    suspend fun storeVpnSubscriptions(available: List<Subscription>) {
         val validData = available.filter { !it.legacy }.map { it.toString() }.toSet()
-        scope.launch {
-            dataStore.edit { it[AVAILABLE_VPN_SUBSCRIPTIONS] = validData }
-        }
+        dataStore.edit { it[AVAILABLE_VPN_SUBSCRIPTIONS] = validData }
     }
 
-    fun storeVpnSubscriptionPlans(available: List<SubscriptionPlan>) {
+    suspend fun storeVpnSubscriptionPlans(available: List<SubscriptionPlan>) {
         val validData = available.map { it.toString() }.toSet()
-        scope.launch {
-            dataStore.edit { it[AVAILABLE_VPN_SUBSCRIPTIONS_V2] = validData }
-        }
+        dataStore.edit { it[AVAILABLE_VPN_SUBSCRIPTIONS_V2] = validData }
     }
 
     fun storeVpnPurchaseData(purchaseData: PurchaseData) {
