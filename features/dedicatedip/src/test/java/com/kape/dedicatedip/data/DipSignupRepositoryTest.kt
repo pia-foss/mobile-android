@@ -36,7 +36,7 @@ class DipSignupRepositoryTest {
                     availableProducts = emptyList(),
                     status = "fetched",
                 )
-            every { dipPrefs.getDedicatedIpSignupPlans() } returns null
+            every { dipPrefs.dedicatedIpSignupPlans.value } returns null
             coEvery { dipDataSource.signupPlans() } returns fetchedDedicatedIpSignupPlansMock
 
             // when
@@ -60,7 +60,7 @@ class DipSignupRepositoryTest {
                     persistedTimestamp = System.currentTimeMillis() - (1L * 12 * 60 * 60 * 1000),
                     signupPlans = fetchedDedicatedIpSignupPlansMock,
                 )
-            every { dipPrefs.getDedicatedIpSignupPlans() } returns dedicatedIpSignupPlans
+            every { dipPrefs.dedicatedIpSignupPlans.value } returns dedicatedIpSignupPlans
 
             // when
             val actual = dipSignupRepository.signupPlans()
@@ -88,7 +88,7 @@ class DipSignupRepositoryTest {
                     persistedTimestamp = System.currentTimeMillis() - (2L * 24 * 60 * 60 * 1000),
                     signupPlans = outdatedFetchedDedicatedIpSignupPlansMock,
                 )
-            every { dipPrefs.getDedicatedIpSignupPlans() } returns dedicatedIpSignupPlans
+            every { dipPrefs.dedicatedIpSignupPlans.value } returns dedicatedIpSignupPlans
             coEvery { dipDataSource.signupPlans() } returns updatedFetchedDedicatedIpSignupPlansMock
 
             // when

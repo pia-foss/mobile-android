@@ -25,7 +25,7 @@ class GetPurchaseDetailsUseCaseTest {
     @MethodSource("prefsValues")
     fun `test getPurchaseDetails`(expected: PurchaseData?) =
         runTest {
-            every { prefs.getVpnPurchaseData() } returns expected
+            every { prefs.vpnPurchaseData.value } returns expected
 
             val result = useCase.getPurchaseDetails()
             assertEquals(expected, result)

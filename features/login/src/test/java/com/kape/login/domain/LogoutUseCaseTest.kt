@@ -14,6 +14,7 @@ import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
+import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.login.BaseTest
 import com.kape.login.domain.mobile.LogoutUseCaseImpl
@@ -44,6 +45,7 @@ internal class LogoutUseCaseTest : BaseTest() {
     private val kpiPrefs = mockk<KpiPrefs>()
     private val consentPrefs = mockk<ConsentPrefs>()
     private val ratingPrefs = mockk<RatingPrefs>()
+    private val shortcutPrefs = mockk<ShortcutPrefs>()
 
     private lateinit var useCase: LogoutUseCaseImpl
 
@@ -59,6 +61,7 @@ internal class LogoutUseCaseTest : BaseTest() {
                 networkManagementPrefs,
                 subscriptionPrefs,
                 shadowsocksRegionPrefs,
+                shortcutPrefs,
                 vpnRegionPrefs,
                 settingsPrefs,
                 kpiPrefs,
@@ -77,20 +80,21 @@ internal class LogoutUseCaseTest : BaseTest() {
     ) = runTest {
         coEvery { source.logout() } returns result
         coEvery { connectionManager.disconnect() } returns Result.success(Unit)
-        every { settingsPrefs.isAutomationEnabled() } returns isAutomationEnabled
+        every { settingsPrefs.isAutomationEnabled.value } returns isAutomationEnabled
         every { connectionPrefs.disconnectedByUser(any()) } returns Unit
-        every { connectionPrefs.clear() } returns Unit
-        every { csiPrefs.clear() } returns Unit
-        every { customizationPrefs.clear() } returns Unit
-        every { dipPrefs.clear() } returns Unit
-        every { networkManagementPrefs.clear() } returns Unit
-        every { subscriptionPrefs.clear() } returns Unit
-        every { shadowsocksRegionPrefs.clear() } returns Unit
-        every { vpnRegionPrefs.clear() } returns Unit
-        every { settingsPrefs.clear() } returns Unit
-        every { kpiPrefs.clear() } returns Unit
-        every { consentPrefs.clear() } returns Unit
-        every { ratingPrefs.clear() } returns Unit
+        coEvery { shortcutPrefs.clear() } returns Unit
+        coEvery { connectionPrefs.clear() } returns Unit
+        coEvery { csiPrefs.clear() } returns Unit
+        coEvery { customizationPrefs.clear() } returns Unit
+        coEvery { dipPrefs.clear() } returns Unit
+        coEvery { networkManagementPrefs.clear() } returns Unit
+        coEvery { subscriptionPrefs.clear() } returns Unit
+        coEvery { shadowsocksRegionPrefs.clear() } returns Unit
+        coEvery { vpnRegionPrefs.clear() } returns Unit
+        coEvery { settingsPrefs.clear() } returns Unit
+        coEvery { kpiPrefs.clear() } returns Unit
+        coEvery { consentPrefs.clear() } returns Unit
+        coEvery { ratingPrefs.clear() } returns Unit
 
         val actual = useCase.logout()
         assertEquals(expected, actual)

@@ -28,7 +28,7 @@ class ConsentUseCaseTest {
         expected: Boolean,
     ) = runTest {
         every { prefs.setAllowSharing(any()) } returns Unit
-        every { prefs.getAllowSharing() } returns expected
+        every { prefs.allowSharing.value } returns expected
 
         useCase.setConsent(result)
         assertEquals(expected, useCase.getConsent())

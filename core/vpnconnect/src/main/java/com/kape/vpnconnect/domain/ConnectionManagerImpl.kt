@@ -16,6 +16,7 @@ import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -70,6 +71,7 @@ class ConnectionManagerImpl :
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun handleReconnect(
         server: VpnServer,
         stopCallback: () -> Unit,
@@ -77,6 +79,9 @@ class ConnectionManagerImpl :
         connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
 
         disconnect().getOrNull()
+
+        // A newer reconnect request arrived during disconnect; let the loop handle it.
+        if (!reconnectChannel.isEmpty) return
 
         try {
             connect(

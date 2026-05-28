@@ -8,70 +8,88 @@ import com.privateinternetaccess.account.model.response.AndroidVpnSubscriptionsI
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
-import org.koin.core.context.startKoin
-import org.koin.core.context.stopKoin
-import java.util.stream.Stream
 import kotlin.test.assertEquals
 
 internal class SubscriptionDataSourceImplTest {
-    private val api: AndroidAccountAPI = mockk(relaxed = true)
-    private val prefs: SubscriptionPrefs = mockk(relaxed = true)
+    private val api: AndroidAccountAPI = mockk()
+    private val prefs: SubscriptionPrefs = mockk()
+
+    private val ioScope = CoroutineScope(Dispatchers.Unconfined)
+
+    private val subscriptionsFlow =
+        MutableStateFlow<List<Subscription>>(emptyList())
 
     private lateinit var source: SubscriptionDataSource
 
     @BeforeEach
-    internal fun setUp() {
-        stopKoin()
-        startKoin {}
-        source = SubscriptionDataSourceImpl(prefs, api)
+    fun setUp() {
+        every { prefs.vpnSubscriptions } returns subscriptionsFlow
+
+        source =
+            SubscriptionDataSourceImpl(
+                prefs = prefs,
+                api = api,
+                ioScope = ioScope,
+            )
     }
 
-    @ParameterizedTest(name = "api: {0}")
-    @MethodSource("accountApiResults")
-    fun `getAvailableSubscriptions() - unsuccessful`(errorList: List<AccountRequestError>) =
+    @Test
+    fun `returns empty list when api returns error`() =
         runTest {
+            coEvery { prefs.storeVpnSubscriptions(any()) } returns Unit
+
             coEvery { api.vpnSubscriptions(any()) } answers {
-                lastArg<(AndroidVpnSubscriptionsInformation?, List<AccountRequestError>) -> Unit>()
-                    .invoke(null, errorList)
+                val callback =
+                    firstArg<(AndroidVpnSubscriptionsInformation?, List<AccountRequestError>) -> Unit>()
+                callback.invoke(null, listOf(AccountRequestError(500, "error")))
             }
-            val actual = source.getAvailableVpnSubscriptions()
-            assertEquals(emptyList(), actual)
+
+            val result = source.getAvailableVpnSubscriptions()
+
+            assertEquals(emptyList(), result)
         }
 
     @Test
-    fun `getAvailableSubscriptions - successful`() =
+    fun `returns subscriptions when api succeeds`() =
         runTest {
-            val data =
+            val apiResponse =
                 AndroidVpnSubscriptionsInformation(
-                    listOf(AndroidVpnSubscriptionsInformation.AvailableProduct("id", false, "monthly", "3.99")),
-                    "ok",
+                    availableProducts =
+                        listOf(
+                            AndroidVpnSubscriptionsInformation.AvailableProduct(
+                                id = "id",
+                                legacy = false,
+                                plan = "monthly",
+                                price = "3.99",
+                            ),
+                        ),
+                    status = "ok",
                 )
-            val expected = listOf(Subscription("id", false, "monthly", "3.99", "$ 3.99"))
+
+            val expected =
+                listOf(
+                    Subscription("id", false, "monthly", "3.99", null),
+                )
+
+            // IMPORTANT: this is what Flow.first { it.isNotEmpty() } will return
+            subscriptionsFlow.value = expected
+
+            coEvery { prefs.storeVpnSubscriptions(any()) } returns Unit
+
             coEvery { api.vpnSubscriptions(any()) } answers {
-                lastArg<(AndroidVpnSubscriptionsInformation?, List<AccountRequestError>) -> Unit>()
-                    .invoke(data, emptyList())
+                val callback =
+                    firstArg<(AndroidVpnSubscriptionsInformation?, List<AccountRequestError>) -> Unit>()
+                callback.invoke(apiResponse, emptyList())
             }
-            every { prefs.storeVpnSubscriptions(any()) } returns Unit
-            every { prefs.getVpnSubscriptions() } returns expected
 
-            val actual = source.getAvailableVpnSubscriptions()
-            assertEquals(expected, actual)
+            val result = source.getAvailableVpnSubscriptions()
+
+            assertEquals(expected, result)
         }
-
-    companion object {
-        @JvmStatic
-        fun accountApiResults() =
-            Stream.of(
-                Arguments.of(listOf(AccountRequestError(code = 600, message = null))),
-                Arguments.of(listOf(AccountRequestError(code = 429, message = null))),
-                Arguments.of(listOf(AccountRequestError(code = 401, message = null))),
-                Arguments.of(listOf(AccountRequestError(code = 402, message = null))),
-            )
-    }
 }

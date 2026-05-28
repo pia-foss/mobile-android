@@ -11,18 +11,23 @@ import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.obfuscator.domain.StartObfuscatorProcess
 import com.kape.obfuscator.domain.StopObfuscatorProcess
 import com.kape.portforwarding.domain.PortForwardingUseCase
+import com.kape.settings.data.OpenVpnSettings
+import com.kape.settings.data.Transport
+import com.kape.settings.data.VpnProtocols
 import com.kape.vpnmanager.data.models.ClientConfiguration
-import io.mockk.coAnswers
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.yield
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -30,6 +35,7 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ConnectionManagerImplTest {
     private val connectionSource = mockk<ConnectionDataSource>(relaxed = true)
     private val connectionInfoProvider = mockk<ConnectionInfoProvider>(relaxed = true)
@@ -41,24 +47,6 @@ class ConnectionManagerImplTest {
     private val stopObfuscatorProcess = mockk<StopObfuscatorProcess>(relaxed = true)
     private val portForwardingUseCase = mockk<PortForwardingUseCase>(relaxed = true)
     private val connectionStatusProvider = mockk<ConnectionStatusProvider>(relaxed = true)
-
-    private val server =
-        VpnServer(
-            name = "US East",
-            iso = "us",
-            dns = "us-east.example.com",
-            latency = null,
-            endpoints = emptyMap(),
-            key = "us-east",
-            latitude = null,
-            longitude = null,
-            isGeo = false,
-            isOffline = false,
-            allowsPortForwarding = false,
-            autoRegion = false,
-            dipToken = null,
-            dedicatedIp = null,
-        )
 
     private val appModule =
         module {
@@ -72,7 +60,31 @@ class ConnectionManagerImplTest {
             single { stopObfuscatorProcess }
             single { portForwardingUseCase }
             single { connectionStatusProvider }
+            single<CoroutineScope> { CoroutineScope(Dispatchers.Unconfined) }
         }
+
+    // Default server with WireGuard endpoint (matches @BeforeEach selectedProtocol stub).
+    private val server =
+        VpnServer(
+            name = "US East",
+            iso = "us",
+            dns = "us-east.example.com",
+            latency = null,
+            endpoints =
+                mapOf(
+                    VpnServer.ServerGroup.WIREGUARD to
+                        listOf(VpnServer.ServerEndpointDetails("1.2.3.4", "us-east.example.com")),
+                ),
+            key = "us-east",
+            latitude = null,
+            longitude = null,
+            isGeo = false,
+            isOffline = false,
+            allowsPortForwarding = false,
+            autoRegion = false,
+            dipToken = null,
+            dedicatedIp = null,
+        )
 
     private lateinit var connectionManager: ConnectionManagerImpl
 
@@ -80,20 +92,82 @@ class ConnectionManagerImplTest {
     fun setUp() {
         stopKoin()
         startKoin { modules(appModule) }
+        every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.WireGuard
+        every { settingsPrefs.isPortForwardingEnabled.value } returns false
         connectionManager = ConnectionManagerImpl()
     }
 
     // region connect
 
     @Test
+    fun `connect - no endpoints for selected protocol - calls showDialog and skips startConnection`() =
+        runTest {
+            val serverNoEndpoints = server.copy(endpoints = emptyMap())
+            val showDialogCalled = mutableListOf<Boolean>()
+
+            connectionManager.connect(serverNoEndpoints, isManual = true, {}) {
+                showDialogCalled.add(true)
+            }
+
+            assertTrue(showDialogCalled.isNotEmpty())
+            coVerify(exactly = 0) { connectionSource.startConnection(any(), any()) }
+        }
+
+    @Test
+    fun `connect - OpenVPN UDP - resolves OPENVPN_UDP server group`() =
+        runTest {
+            val clientConfig = mockk<ClientConfiguration>()
+            val openvpnUdpServer =
+                server.copy(
+                    endpoints =
+                        mapOf(
+                            VpnServer.ServerGroup.OPENVPN_UDP to
+                                listOf(VpnServer.ServerEndpointDetails("1.2.3.4", "us-east.example.com")),
+                        ),
+                )
+            every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.OpenVPN
+            every { settingsPrefs.openVpnSettings.value } returns OpenVpnSettings(transport = Transport.UDP)
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
+            every { connectionConfigurationUseCase.generateConnectionConfiguration(openvpnUdpServer) } returns clientConfig
+            coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
+
+            connectionManager.connect(openvpnUdpServer, isManual = false, {}) {}
+
+            coVerify { connectionSource.startConnection(clientConfig, connectionStatusProvider) }
+        }
+
+    @Test
+    fun `connect - OpenVPN TCP - resolves OPENVPN_TCP server group`() =
+        runTest {
+            val clientConfig = mockk<ClientConfiguration>()
+            val openvpnTcpServer =
+                server.copy(
+                    endpoints =
+                        mapOf(
+                            VpnServer.ServerGroup.OPENVPN_TCP to
+                                listOf(VpnServer.ServerEndpointDetails("1.2.3.4", "us-east.example.com")),
+                        ),
+                )
+            every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.OpenVPN
+            every { settingsPrefs.openVpnSettings.value } returns OpenVpnSettings(transport = Transport.TCP)
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
+            every { connectionConfigurationUseCase.generateConnectionConfiguration(openvpnTcpServer) } returns clientConfig
+            coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
+
+            connectionManager.connect(openvpnTcpServer, isManual = false, {}) {}
+
+            coVerify { connectionSource.startConnection(clientConfig, connectionStatusProvider) }
+        }
+
+    @Test
     fun `connect - shadowsocks disabled - VPN succeeds - updates info, sets server and quick connect`() =
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns false
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
             every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
-            connectionManager.connect(server, isManual = true) {}
+            connectionManager.connect(server, isManual = true, {}) {}
 
             verify { connectionInfoProvider.updateInfo(server.name, server.iso, true) }
             verify { connectionPrefs.setSelectedVpnServer(server) }
@@ -104,61 +178,62 @@ class ConnectionManagerImplTest {
     fun `connect - shadowsocks disabled - VPN succeeds - port forwarding disabled - does not start port forwarding`() =
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns false
-            every { settingsPrefs.isPortForwardingEnabled() } returns false
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
+            every { settingsPrefs.isPortForwardingEnabled.value } returns false
             every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
-            connectionManager.connect(server, isManual = false) {}
+            connectionManager.connect(server, isManual = false, {}) {}
 
             coVerify(exactly = 0) { portForwardingUseCase.bindPort(any()) }
             verify(exactly = 0) { connectionSource.startPortForwarding() }
         }
 
     @Test
-    fun `connect - shadowsocks disabled - VPN succeeds - port forwarding enabled - starts port forwarding`() =
+    fun `connect - shadowsocks disabled - VPN succeeds - port forwarding enabled - binds port and starts port forwarding`() =
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns false
-            every { settingsPrefs.isPortForwardingEnabled() } returns true
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
+            every { settingsPrefs.isPortForwardingEnabled.value } returns true
             every { connectionSource.getVpnToken() } returns "vpn_token"
             every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
-            connectionManager.connect(server, isManual = false) {}
+            connectionManager.connect(server, isManual = false, {}) {}
 
             coVerify { portForwardingUseCase.bindPort("vpn_token") }
             verify { connectionSource.startPortForwarding() }
         }
 
     @Test
-    fun `connect - shadowsocks disabled - VPN fails - calls stopObfuscatorProcess`() =
+    fun `connect - shadowsocks disabled - VPN fails - calls disconnect`() =
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns false
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
             every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery {
                 connectionSource.startConnection(clientConfig, connectionStatusProvider)
             } returns Result.failure(RuntimeException("VPN failed"))
 
-            connectionManager.connect(server, isManual = false) {}
+            connectionManager.connect(server, isManual = false, {}) {}
 
+            coVerify { connectionSource.stopConnection() }
             coVerify { stopObfuscatorProcess() }
         }
 
     @Test
     fun `connect - shadowsocks enabled - no server selected - returns early without starting VPN`() =
         runTest {
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns true
-            every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns null
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns true
+            every { shadowsocksRegionPrefs.selectedShadowsocksServer.value } returns null
 
-            connectionManager.connect(server, isManual = false) {}
+            connectionManager.connect(server, isManual = false, {}) {}
 
             coVerify(exactly = 0) { connectionSource.startConnection(any(), any()) }
         }
 
     @Test
-    fun `connect - shadowsocks enabled - server found - obfuscator starts successfully - proceeds to VPN`() =
+    fun `connect - shadowsocks enabled - server found - obfuscator succeeds - proceeds to VPN`() =
         runTest {
             val shadowsocksServer =
                 ShadowsocksServer(
@@ -169,13 +244,13 @@ class ConnectionManagerImplTest {
                     cipher = "aes-256-gcm",
                 )
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns true
-            every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns shadowsocksServer
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns true
+            every { shadowsocksRegionPrefs.selectedShadowsocksServer.value } returns shadowsocksServer
             coEvery { startObfuscatorProcess(any(), any()) } returns Result.success(Unit)
             every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
-            connectionManager.connect(server, isManual = false) {}
+            connectionManager.connect(server, isManual = false, {}) {}
 
             coVerify { connectionSource.startConnection(clientConfig, connectionStatusProvider) }
         }
@@ -191,11 +266,11 @@ class ConnectionManagerImplTest {
                     key = "test-key",
                     cipher = "aes-256-gcm",
                 )
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns true
-            every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns shadowsocksServer
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns true
+            every { shadowsocksRegionPrefs.selectedShadowsocksServer.value } returns shadowsocksServer
             coEvery { startObfuscatorProcess(any(), any()) } returns Result.failure(RuntimeException("obfuscator failed"))
 
-            connectionManager.connect(server, isManual = false) {}
+            connectionManager.connect(server, isManual = false, {}) {}
 
             coVerify(exactly = 0) { connectionSource.startConnection(any(), any()) }
         }
@@ -236,13 +311,30 @@ class ConnectionManagerImplTest {
 
     // endregion
 
+    // region isConnectionInProgress
+
+    @Test
+    fun `isConnectionInProgress - initially false`() {
+        assertFalse(connectionManager.isConnectionInProgress())
+    }
+
+    // endregion
+
     // region reconnect
+
+    @Test
+    fun `reconnect - records server in quick connect history immediately before channel processing`() =
+        runTest {
+            connectionManager.reconnect(server) {}
+
+            verify { connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp) }
+        }
 
     @Test
     fun `reconnect - disconnects then connects to the requested server`() =
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns false
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
             every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.stopConnection() } returns Result.success(Unit)
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
@@ -257,37 +349,25 @@ class ConnectionManagerImplTest {
     fun `reconnect - records every selected server in quick connect history immediately on call`() =
         runTest {
             val server2 =
-                VpnServer(
+                server.copy(
                     name = "EU West",
                     iso = "eu",
-                    dns = "eu-west.example.com",
-                    latency = null,
-                    endpoints = emptyMap(),
                     key = "eu-west",
-                    latitude = null,
-                    longitude = null,
-                    isGeo = false,
-                    isOffline = false,
-                    allowsPortForwarding = false,
-                    autoRegion = false,
-                    dipToken = null,
-                    dedicatedIp = null,
                 )
-            val clientConfig2 = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns false
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(server2) } returns clientConfig2
+            val disconnectSignal = CompletableDeferred<Unit>()
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
             coEvery { connectionSource.stopConnection() } coAnswers {
-                yield()
+                disconnectSignal.await()
                 Result.success(Unit)
             }
             coEvery { connectionSource.startConnection(any(), any()) } returns Result.success(Unit)
 
             val job = launch { connectionManager.reconnect(server) {} }
-            yield() // let the first reconnect reach the yield inside stopConnection
-            connectionManager.reconnect(server2) {} // supersedes server; still records server2 immediately
+            advanceUntilIdle() // processor blocks inside stopConnection
+            connectionManager.reconnect(server2) {} // recorded immediately
+            disconnectSignal.complete(Unit)
             job.join()
 
-            // Both servers should be in quick-connect history, each recorded at call time
             verify { connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp) }
             verify { connectionPrefs.addToQuickConnect(server2.key, server2.isDedicatedIp) }
         }
@@ -296,37 +376,32 @@ class ConnectionManagerImplTest {
     fun `reconnect - when server is updated during disconnect - skips to latest without connecting to the first`() =
         runTest {
             val server2 =
-                VpnServer(
+                server.copy(
                     name = "EU West",
                     iso = "eu",
-                    dns = "eu-west.example.com",
-                    latency = null,
-                    endpoints = emptyMap(),
                     key = "eu-west",
-                    latitude = null,
-                    longitude = null,
-                    isGeo = false,
-                    isOffline = false,
-                    allowsPortForwarding = false,
-                    autoRegion = false,
-                    dipToken = null,
-                    dedicatedIp = null,
+                    endpoints =
+                        mapOf(
+                            VpnServer.ServerGroup.WIREGUARD to
+                                listOf(VpnServer.ServerEndpointDetails("5.6.7.8", "eu-west.example.com")),
+                        ),
                 )
             val clientConfig2 = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns false
+            val disconnectSignal = CompletableDeferred<Unit>()
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
             every { connectionConfigurationUseCase.generateConnectionConfiguration(server2) } returns clientConfig2
             coEvery { connectionSource.stopConnection() } coAnswers {
-                yield()
+                disconnectSignal.await()
                 Result.success(Unit)
             }
             coEvery { connectionSource.startConnection(any(), any()) } returns Result.success(Unit)
 
             val job = launch { connectionManager.reconnect(server) {} }
-            yield() // let the first reconnect reach the yield inside stopConnection
-            connectionManager.reconnect(server2) {} // supersedes server while disconnect is in progress
+            advanceUntilIdle() // processor runs until blocked inside stopConnection(server)
+            connectionManager.reconnect(server2) {} // arrives while disconnect is in progress
+            disconnectSignal.complete(Unit) // let disconnect finish; server2 is pending, so server is skipped
             job.join()
 
-            // server2 is read after disconnect completes, so server is never connected to
             coVerify { connectionSource.startConnection(clientConfig2, connectionStatusProvider) }
             coVerify(exactly = 0) {
                 connectionSource.startConnection(
@@ -340,44 +415,36 @@ class ConnectionManagerImplTest {
     fun `reconnect - when server is updated during connect - disconnects and switches to latest`() =
         runTest {
             val server2 =
-                VpnServer(
+                server.copy(
                     name = "EU West",
                     iso = "eu",
-                    dns = "eu-west.example.com",
-                    latency = null,
-                    endpoints = emptyMap(),
                     key = "eu-west",
-                    latitude = null,
-                    longitude = null,
-                    isGeo = false,
-                    isOffline = false,
-                    allowsPortForwarding = false,
-                    autoRegion = false,
-                    dipToken = null,
-                    dedicatedIp = null,
+                    endpoints =
+                        mapOf(
+                            VpnServer.ServerGroup.WIREGUARD to
+                                listOf(VpnServer.ServerEndpointDetails("5.6.7.8", "eu-west.example.com")),
+                        ),
                 )
             val clientConfig = mockk<ClientConfiguration>()
             val clientConfig2 = mockk<ClientConfiguration>()
             val connectToServerSignal = CompletableDeferred<Unit>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled() } returns false
+            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
             every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             every { connectionConfigurationUseCase.generateConnectionConfiguration(server2) } returns clientConfig2
             coEvery { connectionSource.stopConnection() } returns Result.success(Unit)
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } coAnswers {
-                connectToServerSignal.await() // blocks until we signal from the test
+                connectToServerSignal.await()
                 Result.success(Unit)
             }
             coEvery { connectionSource.startConnection(clientConfig2, connectionStatusProvider) } returns Result.success(Unit)
 
             val job = launch { connectionManager.reconnect(server) {} }
-            advanceUntilIdle() // job runs until it is blocked inside startConnection(clientConfig)
-            connectionManager.reconnect(server2) {} // arrives while connect(server) is in progress
-            connectToServerSignal.complete(Unit) // let connect(server) finish
+            advanceUntilIdle()
+            connectionManager.reconnect(server2) {}
+            connectToServerSignal.complete(Unit)
             job.join()
 
-            // connect(server) ran first (server2 hadn't been selected yet when the loop started)
             coVerify { connectionSource.startConnection(clientConfig, connectionStatusProvider) }
-            // After connect(server) finished and server2 was found pending, switched to server2
             coVerify { connectionSource.startConnection(clientConfig2, connectionStatusProvider) }
         }
 
