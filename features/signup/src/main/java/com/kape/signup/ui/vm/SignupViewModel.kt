@@ -64,7 +64,6 @@ class SignupViewModel(
     init {
         viewModelScope.launch {
             vpnSubscriptionPaymentProvider.purchaseState.collect {
-                println("--- state: $it")
                 when (it) {
                     PurchaseState.Default -> {
                         // no op

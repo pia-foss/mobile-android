@@ -2,8 +2,6 @@ package com.kape.vpnconnect.data
 
 import com.kape.data.NO_IP
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.CsiPrefs
-import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.utils.DELAY_BETWEEN_RETRY
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -16,14 +14,11 @@ import kotlin.coroutines.resume
 class ClientStateDataSourceImpl(
     private val accountAPI: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
-    private val csiPrefs: CsiPrefs,
-    private val settingsPrefs: SettingsPrefs,
 ) : ClientStateDataSource {
     override suspend fun getPublicIp(): String {
         repeat(3) { _ ->
             val ip = getPublicIpOnce()
             if (ip != NO_IP) {
-                connectionPrefs.setClientIp(ip)
                 return ip
             }
 
@@ -36,7 +31,6 @@ class ClientStateDataSourceImpl(
         repeat(5) { _ ->
             val vpnIp = getVpnIpOnce()
             if (vpnIp != NO_IP && vpnIp != connectionPrefs.clientIp.value) {
-                connectionPrefs.setVpnIp(vpnIp)
                 return vpnIp
             }
 

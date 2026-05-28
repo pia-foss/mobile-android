@@ -31,4 +31,6 @@ interface ConnectionInfoProvider {
     fun resetConnectionInfo()
 
     fun getTopBarConnectionColor(scheme: ColorScheme): Color
+
+    fun requestClientIp()
 }

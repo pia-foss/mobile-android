@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.connection.model.QuickConnectServer
 import com.kape.connection.utils.ConnectionScreenState
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
@@ -39,7 +40,6 @@ import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -69,11 +69,8 @@ class ConnectionViewModel(
     val connectionInfoProvider: ConnectionInfoProvider,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
-    private var loadVpnServersJob: Job? = null
-    private var loadShadowsocksServersJob: Job? = null
-    private var updateStateJob: Job? = null
-    private val isAutoMode get() = prefs.selectedVpnServer.value == null
-    private val selectedLocation = prefs.selectedVpnServer.value
+    private var isAutoMode: Boolean = false
+    private var selectedLocation: VpnServer? = null
     private val serverToConnectTo =
         selectedLocation?.let {
             if (it.endpoints.isNotEmpty()) {
@@ -86,7 +83,6 @@ class ConnectionViewModel(
     private val defaultState =
         ConnectionScreenState(
             server = serverToConnectTo,
-            quickConnectServers = getQuickConnectVpnServers(),
             isCurrentServerOptimal = isAutoMode,
             showOptimalLocationInfo = isAutoMode && regionListProvider.isDefaultList.value,
             ratingDialogType = ratingTool.showRating.value,
@@ -99,11 +95,26 @@ class ConnectionViewModel(
     val showDedicatedIpHomeBanner = mutableStateOf(false)
     var showProtocolNotAvailableDialog = mutableStateOf(false)
         private set
+    val quickConnectServers = MutableStateFlow<List<VpnServer>>(emptyList())
 
     init {
         if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
             router.updateDestination(VpnPermission)
         }
+
+        connectionInfoProvider.requestClientIp()
+
+        viewModelScope.launch {
+            prefs.selectedVpnServer.collectLatest {
+                it?.let {
+                    isAutoMode = false
+                    selectedLocation = it
+                } ?: run {
+                    isAutoMode = true
+                }
+            }
+        }
+
         viewModelScope.launch {
             regionListProvider.isDefaultList.collectLatest { isDefault ->
                 if (isAutoMode) {
@@ -115,6 +126,12 @@ class ConnectionViewModel(
                         )
                     }
                 }
+            }
+        }
+
+        viewModelScope.launch {
+            prefs.quickConnectServers.collectLatest { servers ->
+                quickConnectServers.update { getQuickConnectVpnServers(servers) }
             }
         }
 
@@ -239,7 +256,7 @@ class ConnectionViewModel(
         return favoriteServers
     }
 
-    private fun getQuickConnectVpnServers(): List<VpnServer> {
+    private fun getQuickConnectVpnServers(servers: List<QuickConnectServer>): List<VpnServer> {
         val orderedServers = mutableListOf<VpnServer>()
         if (getFavoriteServers().size > QUICK_CONNECT_MAX_SERVERS) {
             for (index in 0 until QUICK_CONNECT_MAX_SERVERS) {
@@ -249,7 +266,7 @@ class ConnectionViewModel(
             for (index in 0 until getFavoriteServers().size) {
                 orderedServers.add(getFavoriteServers()[index])
             }
-            val previousConnections = prefs.quickConnectServers.value.reversed()
+            val previousConnections = servers.reversed()
             for (server in previousConnections) {
                 regionListProvider.servers.value
                     .firstOrNull { it.key == server.serverKey && it.isDedicatedIp == server.isDip }
@@ -313,13 +330,10 @@ class ConnectionViewModel(
             _state.update {
                 it.copy(
                     server = server,
-                    quickConnectServers = getQuickConnectVpnServers(),
                 )
             }
         }
     }
-
-    fun isPortForwardingEnabled() = settingsPrefs.isPortForwardingEnabled.value
 
     fun isVpnServerFavorite(
         serverName: String,
@@ -390,7 +404,6 @@ class ConnectionViewModel(
             val selectedServer = prefs.selectedVpnServer.value
             it.copy(
                 server = selectedServer ?: regionListProvider.getOptimalServer(),
-                quickConnectServers = getQuickConnectVpnServers(),
                 isCurrentServerOptimal = selectedServer == null,
                 showOptimalLocationInfo = selectedServer == null && regionListProvider.isDefaultList.value,
             )

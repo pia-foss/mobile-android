@@ -180,7 +180,8 @@ private fun DisplayComponent(
 
         Element.QuickConnect -> {
             val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-            for (server in state.quickConnectServers) {
+            val quickConnectServers by viewModel.quickConnectServers.collectAsStateWithLifecycle()
+            for (server in quickConnectServers) {
                 quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
             }
             QuickConnect(

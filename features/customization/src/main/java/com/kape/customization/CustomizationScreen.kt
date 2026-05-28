@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -173,7 +174,8 @@ private fun DisplayComponent(
 
         Element.QuickConnect -> {
             val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-            for (server in state.value.quickConnectServers) {
+            val quickConnectServers by viewModel.quickConnectServers.collectAsStateWithLifecycle()
+            for (server in quickConnectServers) {
                 quickConnectMap[server] =
                     viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
             }

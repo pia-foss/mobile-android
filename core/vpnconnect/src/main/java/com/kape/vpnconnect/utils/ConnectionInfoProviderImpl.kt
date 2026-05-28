@@ -106,6 +106,12 @@ class ConnectionInfoProviderImpl(
             ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
         }
 
+    override fun requestClientIp() {
+        ioScope.launch {
+            clientStateDataSource.getPublicIp()
+        }
+    }
+
     private fun getKpiConnectionStatus(status: VPNManagerConnectionStatus): KpiConnectionStatus =
         when (status) {
             VPNManagerConnectionStatus.Disconnecting,

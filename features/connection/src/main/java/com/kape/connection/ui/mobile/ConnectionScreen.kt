@@ -1,6 +1,5 @@
 package com.kape.connection.ui.mobile
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -304,7 +303,6 @@ private fun DisplayComponent(
     isConnected: Boolean,
 ) {
     if (isVisible) {
-        val context: Context = LocalContext.current
         when (screenElement.element) {
             Element.ConnectionInfo -> {
                 val settings = viewModel.getConnectionSettings()
@@ -325,7 +323,8 @@ private fun DisplayComponent(
 
             Element.QuickConnect -> {
                 val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-                for (server in screenState.quickConnectServers) {
+                val quickConnectServers by viewModel.quickConnectServers.collectAsStateWithLifecycle()
+                for (server in quickConnectServers) {
                     quickConnectMap[server] =
                         viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
                 }

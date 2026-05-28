@@ -16,6 +16,7 @@ import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
+import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.login.data.AuthenticationDataSourceImpl
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
@@ -54,6 +55,7 @@ class LoginModule {
         networkManagementPrefs: NetworkManagementPrefs,
         subscriptionPrefs: SubscriptionPrefs,
         shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
+        shortcutPrefs: ShortcutPrefs,
         vpnRegionPrefs: VpnRegionPrefs,
         settingsPrefs: SettingsPrefs,
         kpiPrefs: KpiPrefs,
@@ -70,6 +72,7 @@ class LoginModule {
             networkManagementPrefs,
             subscriptionPrefs,
             shadowsocksRegionPrefs,
+            shortcutPrefs,
             vpnRegionPrefs,
             settingsPrefs,
             kpiPrefs,
