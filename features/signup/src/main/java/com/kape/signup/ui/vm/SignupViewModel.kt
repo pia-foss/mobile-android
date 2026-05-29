@@ -82,63 +82,65 @@ class SignupViewModel(
                     }
 
                     PurchaseState.ProductsLoadedSuccess -> {
-                        subscriptionPrefs.vpnSubscriptionPlans.collectLatest { plans ->
-                            val yearlyPlan =
-                                vpnSubscriptionPaymentProvider.getFreeTrialYearlySubscriptionPlan()
-                                    ?: vpnSubscriptionPaymentProvider.getYearlySubscriptionPlan()
-                            val monthlyPlan =
-                                vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
+                        viewModelScope.launch {
+                            subscriptionPrefs.vpnSubscriptionPlans.collectLatest { _ ->
+                                val yearlyPlan =
+                                    vpnSubscriptionPaymentProvider.getFreeTrialYearlySubscriptionPlan()
+                                        ?: vpnSubscriptionPaymentProvider.getYearlySubscriptionPlan()
+                                val monthlyPlan =
+                                    vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
 
-                            if (yearlyPlan == null || monthlyPlan == null) {
-                                onProductsFailedToLoad()
-                                return@collectLatest
+                                if (yearlyPlan == null || monthlyPlan == null) {
+                                    onProductsFailedToLoad()
+                                    return@collectLatest
+                                }
+
+                                val yearly =
+                                    Plan(
+                                        yearlyPlan.id,
+                                        yearlyPlan.plan.replaceFirstChar { first ->
+                                            if (first.isLowerCase()) {
+                                                first.titlecase(
+                                                    Locale.getDefault(),
+                                                )
+                                            } else {
+                                                first.toString()
+                                            }
+                                        },
+                                        true,
+                                        mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice),
+                                        secondaryPrice =
+                                            formatter.formatYearlyPerMonth(
+                                                yearlyPlan.formattedPrice,
+                                                yearlyPlan.currencyCode,
+                                            ),
+                                    )
+                                val monthly =
+                                    Plan(
+                                        monthlyPlan.id,
+                                        monthlyPlan.plan.replaceFirstChar { first ->
+                                            if (first.isLowerCase()) {
+                                                first.titlecase(
+                                                    Locale.getDefault(),
+                                                )
+                                            } else {
+                                                first.toString()
+                                            }
+                                        },
+                                        false,
+                                        mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
+                                    )
+                                val data =
+                                    SubscriptionData(
+                                        mutableStateOf(yearly),
+                                        yearly,
+                                        monthly,
+                                    )
+                                subscriptionData = data
+                                _state.emit(
+                                    SUBSCRIPTIONS(data),
+                                )
                             }
-
-                            val yearly =
-                                Plan(
-                                    yearlyPlan.id,
-                                    yearlyPlan.plan.replaceFirstChar { first ->
-                                        if (first.isLowerCase()) {
-                                            first.titlecase(
-                                                Locale.getDefault(),
-                                            )
-                                        } else {
-                                            first.toString()
-                                        }
-                                    },
-                                    true,
-                                    mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice),
-                                    secondaryPrice =
-                                        formatter.formatYearlyPerMonth(
-                                            yearlyPlan.formattedPrice,
-                                            yearlyPlan.currencyCode,
-                                        ),
-                                )
-                            val monthly =
-                                Plan(
-                                    monthlyPlan.id,
-                                    monthlyPlan.plan.replaceFirstChar { first ->
-                                        if (first.isLowerCase()) {
-                                            first.titlecase(
-                                                Locale.getDefault(),
-                                            )
-                                        } else {
-                                            first.toString()
-                                        }
-                                    },
-                                    false,
-                                    mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
-                                )
-                            val data =
-                                SubscriptionData(
-                                    mutableStateOf(yearly),
-                                    yearly,
-                                    monthly,
-                                )
-                            subscriptionData = data
-                            _state.emit(
-                                SUBSCRIPTIONS(data),
-                            )
                         }
                     }
 
@@ -196,7 +198,6 @@ class SignupViewModel(
     fun purchase(id: String) =
         viewModelScope.launch {
             vpnSubscriptionPaymentProvider.purchaseSelectedProduct(id)
-            vpnSubscriptionPaymentProvider.reset()
         }
 
     fun navigateToLogin() {

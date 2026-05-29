@@ -50,16 +50,12 @@ class SubscriptionPrefs(
         dataStore.edit { it[AVAILABLE_VPN_SUBSCRIPTIONS_V2] = validData }
     }
 
-    fun storeVpnPurchaseData(purchaseData: PurchaseData) {
-        scope.launch {
-            dataStore.edit { it[VPN_PURCHASE_DATA] = purchaseData.toString() }
-        }
+    suspend fun storeVpnPurchaseData(purchaseData: PurchaseData) {
+        dataStore.edit { it[VPN_PURCHASE_DATA] = purchaseData.toString() }
     }
 
-    fun storeDipPurchaseData(purchaseData: DipPurchaseData) {
-        scope.launch {
-            dataStore.edit { it[DIP_PURCHASE_DATA] = Json.encodeToString(purchaseData) }
-        }
+    suspend fun storeDipPurchaseData(purchaseData: DipPurchaseData) {
+        dataStore.edit { it[DIP_PURCHASE_DATA] = Json.encodeToString(purchaseData) }
     }
 
     fun removeDipPurchaseData() {

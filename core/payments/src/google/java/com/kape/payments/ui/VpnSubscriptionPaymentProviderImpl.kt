@@ -53,19 +53,23 @@ class VpnSubscriptionPaymentProviderImpl(
                                 it == selectedProduct?.productId
                             }?.let { productId ->
                                 purchase.orderId?.let { orderId ->
-                                    prefs.storeVpnPurchaseData(
-                                        PurchaseData(
-                                            purchase.purchaseToken,
-                                            productId,
-                                            orderId,
-                                        ),
-                                    )
+                                    ioScope.launch {
+                                        prefs.storeVpnPurchaseData(
+                                            PurchaseData(
+                                                purchase.purchaseToken,
+                                                productId,
+                                                orderId,
+                                            ),
+                                        )
+                                        purchaseState.value = PurchaseState.PurchaseSuccess
+                                    }
                                 }
-                                purchaseState.value = PurchaseState.PurchaseSuccess
                             }
                     }
 
-                    else -> purchaseState.value = PurchaseState.PurchaseFailed
+                    else -> {
+                        purchaseState.value = PurchaseState.PurchaseFailed
+                    }
                 }
             }
         }

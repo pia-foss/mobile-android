@@ -8,6 +8,7 @@ import com.kape.signup.data.models.Credentials
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
@@ -43,7 +44,8 @@ internal class SignupUseCaseTest {
         expected: Credentials?,
         purchaseData: PurchaseData?,
     ) = runTest {
-        every { purchaseDetailsUseCase.getPurchaseDetails() } returns purchaseData
+        val flow = MutableStateFlow(purchaseData)
+        every { purchaseDetailsUseCase.getPurchaseDetails() } returns flow
         every { getObfuscatedDeviceIdentifierUseCase.obfuscatedDeviceIdentifier() } returns Result.success("obfuscatedDeviceId")
         coEvery { loginUseCase.login(any(), any()) } returns LoginState.Successful
         coEvery { emailDataSource.setEmail(any()) } returns true
