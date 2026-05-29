@@ -22,11 +22,16 @@ internal class EncryptedPreferencesSerializer(
 ) : Serializer<Preferences> {
     override val defaultValue: Preferences = emptyPreferences()
 
-    private val aead: Aead = buildAead(context, name)
+    private val aead: Aead? =
+        try {
+            buildAead(context, name)
+        } catch (e: Exception) {
+            null
+        }
 
     override suspend fun readFrom(input: InputStream): Preferences {
         val bytes = input.readBytes()
-        if (bytes.isEmpty()) return defaultValue
+        if (bytes.isEmpty() || aead == null) return defaultValue
         return try {
             val decrypted = aead.decrypt(bytes, null)
             PreferencesSerializer.readFrom(decrypted.inputStream().source().buffer())
@@ -39,6 +44,7 @@ internal class EncryptedPreferencesSerializer(
         t: Preferences,
         output: OutputStream,
     ) {
+        val aead = aead ?: return
         val buffer = Buffer()
         PreferencesSerializer.writeTo(t, buffer)
         output.write(aead.encrypt(buffer.readByteArray(), null))
