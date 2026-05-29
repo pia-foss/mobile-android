@@ -57,6 +57,7 @@ fun AutomationScreen() =
         val currentItem = remember { mutableStateOf<NetworkItem?>(null) }
         val context: Context = LocalContext.current
         val state by viewModel.state.collectAsStateWithLifecycle()
+        val rules by viewModel.rules.collectAsStateWithLifecycle(emptyList())
 
         AutomationScreenContent(
             appBarViewModel,
@@ -66,6 +67,7 @@ fun AutomationScreen() =
                 showDialog.value = true
             },
             viewModel::navigateToAutomationAddNewRule,
+            rules,
         )
 
         if (showDialog.value) {
@@ -95,6 +97,7 @@ fun AutomationScreenContent(
     state: AutomationState,
     onNetworkCardClick: (NetworkItem) -> Unit,
     navigateToAddRule: () -> Unit,
+    rules: List<NetworkItem>,
 ) {
     Scaffold(
         topBar = {
@@ -120,7 +123,7 @@ fun AutomationScreenContent(
                 )
 
                 LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-                    items(state.rules) { networkItem ->
+                    items(rules) { networkItem ->
                         val icon: Int
                         val title: String
                         val status = getStatus(behavior = networkItem.networkBehavior)

@@ -38,11 +38,11 @@ class AutomationViewModel(
                 isEnabled = settingsPrefs.isAutomationEnabled.value,
                 locationPermissionGranted = locationPermissionManager.isFineLocationPermissionGranted(),
                 backgroundLocationPermissionGranted = locationPermissionManager.isBackgroundLocationPermissionGranted(),
-                rules = networkRulesManager.getRules(),
             ),
         )
     val state = _state.asStateFlow()
     val availableNetwork = networkConnectionListener.ssid
+    val rules = networkRulesManager.getRules()
 
     fun onLocationPermissionGranted() {
         _state.update { it.copy(locationPermissionGranted = true) }
@@ -103,7 +103,6 @@ class AutomationViewModel(
         behavior: NetworkBehavior,
     ) {
         networkRulesManager.updateRule(rule, behavior)
-        _state.update { it.copy(rules = networkRulesManager.getRules()) }
     }
 
     fun addRule(
@@ -111,12 +110,10 @@ class AutomationViewModel(
         behavior: NetworkBehavior,
     ) {
         networkRulesManager.addRule(ssid, behavior)
-        _state.update { it.copy(rules = networkRulesManager.getRules()) }
     }
 
     fun removeRule(rule: NetworkItem) {
         networkRulesManager.removeRule(rule)
-        _state.update { it.copy(rules = networkRulesManager.getRules()) }
     }
 
     private fun navigateToAutomationBackgroundLocation() =
@@ -149,5 +146,4 @@ data class AutomationState(
     val isEnabled: Boolean,
     val locationPermissionGranted: Boolean,
     val backgroundLocationPermissionGranted: Boolean,
-    val rules: List<NetworkItem>,
 )
