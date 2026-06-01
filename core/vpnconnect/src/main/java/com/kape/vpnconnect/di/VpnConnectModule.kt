@@ -38,6 +38,7 @@ import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
@@ -115,6 +116,7 @@ class VpnConnectModule {
         kpiDataSource: KpiDataSource,
         usageProvider: UsageProvider,
         csiPrefs: CsiPrefs,
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
     ): ConnectionDataSource =
         ConnectionDataSourceImpl(
             vpnApi,
@@ -125,6 +127,7 @@ class VpnConnectModule {
             kpiDataSource,
             usageProvider,
             csiPrefs,
+            ioScope,
         )
 
     @Singleton(binds = [ConnectionConfigurationUseCase::class])

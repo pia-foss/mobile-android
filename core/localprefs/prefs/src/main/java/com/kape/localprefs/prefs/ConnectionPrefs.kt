@@ -36,7 +36,11 @@ class ConnectionPrefs(
     context: Context,
 ) : Prefs(context, "connection") {
     val quickConnectServers: StateFlow<List<QuickConnectServer>> =
-        getQuickConnectServers().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
+        getQuickConnectServers().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            emptyList(),
+        )
     val clientIp: StateFlow<String> =
         getClientIp().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), NO_IP)
     val vpnIp: StateFlow<String> =
@@ -52,7 +56,11 @@ class ConnectionPrefs(
     val isDisconnectedByUser: StateFlow<Boolean> =
         getDisconnectedByUser().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
     val proxyPort: StateFlow<String> =
-        getProxyPort().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), DEFAULT_PROXY_PORT_VALUE)
+        getProxyPort().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            DEFAULT_PROXY_PORT_VALUE,
+        )
 
     fun addToQuickConnect(
         serverKey: String,
@@ -110,21 +118,17 @@ class ConnectionPrefs(
         }
     }
 
-    fun setGateway(gateway: String) {
-        scope.launch {
-            dataStore.edit { it[GATEWAY] = gateway }
-        }
+    suspend fun setGateway(gateway: String) {
+        dataStore.edit { it[GATEWAY] = gateway }
     }
 
-    fun clearGateway() = setGateway("")
+    suspend fun clearGateway() = setGateway("")
 
-    fun setPortBindingInformation(info: PortBindInformation?) {
-        scope.launch {
-            dataStore.edit { it[PORT_BINDING_INFO] = Json.encodeToString(info) }
-        }
+    suspend fun setPortBindingInformation(info: PortBindInformation?) {
+        dataStore.edit { it[PORT_BINDING_INFO] = Json.encodeToString(info) }
     }
 
-    fun clearPortBindingInfo() = setPortBindingInformation(null)
+    suspend fun clearPortBindingInfo() = setPortBindingInformation(null)
 
     fun disconnectedByUser(byUser: Boolean) {
         scope.launch {

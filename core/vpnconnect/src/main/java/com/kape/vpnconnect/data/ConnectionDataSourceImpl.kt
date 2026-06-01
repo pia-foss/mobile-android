@@ -6,6 +6,7 @@ import androidx.work.WorkManager
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.contracts.UsageProvider
+import com.kape.data.DI
 import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
@@ -22,6 +23,7 @@ import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import java.util.concurrent.TimeUnit
@@ -37,6 +39,7 @@ class ConnectionDataSourceImpl(
     private val kpiDataSource: KpiDataSource,
     private val usageProvider: UsageProvider,
     private val csiPrefs: CsiPrefs,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : ConnectionDataSource,
     KoinComponent {
     override suspend fun startConnection(
@@ -61,7 +64,9 @@ class ConnectionDataSourceImpl(
 
             connectionApi.startConnection(clientConfiguration) { result ->
                 result.getOrNull()?.let { serverPeerInfo ->
-                    connectionPrefs.setGateway(serverPeerInfo.gateway)
+                    ioScope.launch {
+                        connectionPrefs.setGateway(serverPeerInfo.gateway)
+                    }
                 } ?: run {
                     csiPrefs.addCustomDebugLogs(
                         "startConnection failed: $result",
@@ -110,9 +115,11 @@ class ConnectionDataSourceImpl(
     }
 
     override fun stopPortForwarding() {
-        connectionPrefs.clearGateway()
-        connectionPrefs.clearPortBindingInfo()
-        workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER)
+        ioScope.launch {
+            connectionPrefs.clearGateway()
+            connectionPrefs.clearPortBindingInfo()
+            workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER)
+        }
     }
 
     override suspend fun getDebugLogs(): List<String> =
