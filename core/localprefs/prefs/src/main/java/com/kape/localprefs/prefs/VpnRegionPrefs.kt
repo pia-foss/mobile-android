@@ -28,7 +28,11 @@ class VpnRegionPrefs(
     context: Context,
 ) : Prefs(context, "vpn-regions") {
     val favoriteVpnServers: StateFlow<List<ServerData>> =
-        getFavoriteVpnServers().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
+        getFavoriteVpnServers().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            emptyList(),
+        )
     val selectedServer: StateFlow<VpnServer?> =
         getSelectedServer().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
     val needsVpnReconnect: StateFlow<Boolean> =
@@ -38,8 +42,10 @@ class VpnRegionPrefs(
         scope.launch {
             dataStore.edit { prefs ->
                 val favorites =
-                    prefs[VPN_FAVORITES]?.let { Json.decodeFromString<List<ServerData>>(it) } ?: emptyList()
-                prefs[VPN_FAVORITES] = Json.encodeToString(favorites + serverData)
+                    prefs[VPN_FAVORITES]?.let { Json.decodeFromString<List<ServerData>>(it) }
+                        ?: emptyList()
+                favorites.toMutableList().add(serverData)
+                prefs[VPN_FAVORITES] = Json.encodeToString(favorites)
             }
         }
     }
@@ -60,7 +66,8 @@ class VpnRegionPrefs(
     fun isFavorite(serverData: ServerData): Flow<Boolean> =
         dataStore.data.map { prefs ->
             val favorites =
-                prefs[VPN_FAVORITES]?.let { Json.decodeFromString<List<ServerData>>(it) } ?: emptyList()
+                prefs[VPN_FAVORITES]?.let { Json.decodeFromString<List<ServerData>>(it) }
+                    ?: emptyList()
             favorites.contains(serverData)
         }
 
@@ -95,7 +102,9 @@ class VpnRegionPrefs(
             try {
                 prefs[VPN_SELECTED_SERVER]?.let { Json.decodeFromString<VpnServer>(it) }
             } catch (exception: MissingFieldException) {
-                prefs[VPN_SELECTED_SERVER]?.let { Json.decodeFromString<VpnServerOutdated>(it).toVpnServer() }
+                prefs[VPN_SELECTED_SERVER]?.let {
+                    Json.decodeFromString<VpnServerOutdated>(it).toVpnServer()
+                }
             }
         }
 

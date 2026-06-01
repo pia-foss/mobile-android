@@ -16,11 +16,9 @@ import com.kape.settings.data.WireGuardSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
@@ -93,20 +91,20 @@ class SettingsPrefs(
     val isMaceEnabled: StateFlow<Boolean> =
         getMaceEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
 
-    fun setEnableLaunchOnStartup(enable: Boolean) {
-        scope.launch { dataStore.edit { it[LAUNCH_ON_STARTUP] = enable } }
+    fun setEnableLaunchOnStartup(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[LAUNCH_ON_STARTUP] = enabled } }
     }
 
-    fun setEnableConnectOnLaunch(enable: Boolean) {
-        scope.launch { dataStore.edit { it[CONNECT_ON_LAUNCH] = enable } }
+    fun setEnableConnectOnLaunch(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[CONNECT_ON_LAUNCH] = enabled } }
     }
 
-    fun setEnableConnectOnAppUpdate(enable: Boolean) {
-        scope.launch { dataStore.edit { it[CONNECT_ON_APP_UPDATE] = enable } }
+    fun setEnableConnectOnAppUpdate(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[CONNECT_ON_APP_UPDATE] = enabled } }
     }
 
-    fun setEnabledShowGeoLocatedServers(enable: Boolean) {
-        scope.launch { dataStore.edit { it[SHOW_GEO_SERVERS] = enable } }
+    fun setEnabledShowGeoLocatedServers(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[SHOW_GEO_SERVERS] = enabled } }
     }
 
     fun setSelectedProtocol(protocol: VpnProtocols) {
@@ -151,32 +149,32 @@ class SettingsPrefs(
         scope.launch { dataStore.edit { it[CUSTOM_OBFUSCATION_SETTINGS] = Json.encodeToString(customObfuscation) } }
     }
 
-    fun setHelpImprovePiaEnabled(enable: Boolean) {
-        scope.launch { dataStore.edit { it[HELP_IMPROVE_PIA] = enable } }
+    fun setHelpImprovePiaEnabled(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[HELP_IMPROVE_PIA] = enabled } }
     }
 
-    fun setDebugLoggingEnabled(enable: Boolean) {
-        scope.launch { dataStore.edit { it[DEBUG_LOGGING] = enable } }
+    fun setDebugLoggingEnabled(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[DEBUG_LOGGING] = enabled } }
     }
 
     fun setVpnExcludedApps(apps: List<String>) {
         scope.launch { dataStore.edit { it[VPN_EXCLUDED_APPS] = apps.toSet() } }
     }
 
-    fun setEnablePortForwarding(enable: Boolean) {
-        scope.launch { dataStore.edit { it[PORT_FORWARDING] = enable } }
+    fun setEnablePortForwarding(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[PORT_FORWARDING] = enabled } }
     }
 
-    fun setAllowLocalTrafficEnabled(enable: Boolean) {
-        scope.launch { dataStore.edit { it[ALLOW_LOCAL_TRAFFIC] = enable } }
+    fun setAllowLocalTrafficEnabled(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[ALLOW_LOCAL_TRAFFIC] = enabled } }
     }
 
-    fun setAutomationEnabled(enable: Boolean) {
-        scope.launch { dataStore.edit { it[AUTOMATION] = enable } }
+    fun setAutomationEnabled(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[AUTOMATION] = enabled } }
     }
 
-    fun setMaceEnabled(enable: Boolean) {
-        scope.launch { dataStore.edit { it[MACE] = enable } }
+    fun setMaceEnabled(enabled: Boolean) {
+        scope.launch { dataStore.edit { it[MACE] = enabled } }
     }
 
     private fun getLaunchOnStartupEnabled(): Flow<Boolean> = dataStore.data.map { it[LAUNCH_ON_STARTUP] ?: false }

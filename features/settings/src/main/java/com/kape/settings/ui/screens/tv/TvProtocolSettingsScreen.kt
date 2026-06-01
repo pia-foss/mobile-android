@@ -14,7 +14,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -61,7 +60,7 @@ fun TvProtocolSettingsScreen() =
         val transportDialogVisible = remember { mutableStateOf(false) }
         val encryptionDialogVisible = remember { mutableStateOf(false) }
         val portDialogVisible = remember { mutableStateOf(false) }
-        val protocolSelection by viewModel.selectedProtocol.collectAsState()
+        val protocolSelection by viewModel.selectedProtocol.collectAsStateWithLifecycle()
         val portSelection = remember { mutableStateOf(openVpnSettings.port) }
 
         LaunchedEffect(key1 = Unit) {

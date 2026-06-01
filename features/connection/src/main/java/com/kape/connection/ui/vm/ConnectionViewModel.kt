@@ -366,7 +366,7 @@ class ConnectionViewModel(
 
     private fun disconnect() {
         if (settingsPrefs.isAutomationEnabled.value) {
-            prefs.disconnectedByUser(true)
+            prefs.setDisconnectedByUser(true)
         }
         connectionManager.connectJob?.cancel()
         connectionManager.connectJob = null

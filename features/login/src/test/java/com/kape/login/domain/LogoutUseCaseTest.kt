@@ -81,7 +81,7 @@ internal class LogoutUseCaseTest : BaseTest() {
         coEvery { source.logout() } returns result
         coEvery { connectionManager.disconnect() } returns Result.success(Unit)
         every { settingsPrefs.isAutomationEnabled.value } returns isAutomationEnabled
-        every { connectionPrefs.disconnectedByUser(any()) } returns Unit
+        every { connectionPrefs.setDisconnectedByUser(any()) } returns Unit
         coEvery { shortcutPrefs.clear() } returns Unit
         coEvery { connectionPrefs.clear() } returns Unit
         coEvery { csiPrefs.clear() } returns Unit

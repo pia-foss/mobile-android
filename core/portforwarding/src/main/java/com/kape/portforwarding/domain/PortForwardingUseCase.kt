@@ -29,7 +29,6 @@ class PortForwardingUseCase(
         portForwardingStatus.value = PortForwardingStatus.Requesting
         val gateway = connectionPrefs.gateway.first()
         if (gateway.isEmpty()) {
-            println("--- gateway is empty")
             portForwardingStatus.value = PortForwardingStatus.Error
         }
 

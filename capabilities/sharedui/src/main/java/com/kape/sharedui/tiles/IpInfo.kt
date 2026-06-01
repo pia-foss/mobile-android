@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -20,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -36,11 +36,11 @@ fun IPTile(modifier: Modifier = Modifier) {
     val settingsPrefs: SettingsPrefs = koinInject()
     val connectionInfoProvider: ConnectionInfoProvider = koinInject()
 
-    val publicIp by connectionPrefs.clientIp.collectAsState()
-    val vpnIp by connectionPrefs.vpnIp.collectAsState()
-    val isPortForwardingEnabled by settingsPrefs.isPortForwardingEnabled.collectAsState()
-    val portForwardingStatus: PortForwardingStatus by connectionInfoProvider.portForwardingStatus.collectAsState()
-    val port: String by connectionInfoProvider.port.collectAsState()
+    val publicIp by connectionPrefs.clientIp.collectAsStateWithLifecycle()
+    val vpnIp by connectionPrefs.vpnIp.collectAsStateWithLifecycle()
+    val isPortForwardingEnabled by settingsPrefs.isPortForwardingEnabled.collectAsStateWithLifecycle()
+    val portForwardingStatus: PortForwardingStatus by connectionInfoProvider.portForwardingStatus.collectAsStateWithLifecycle()
+    val port: String by connectionInfoProvider.port.collectAsStateWithLifecycle()
 
     Row(modifier = modifier.padding(horizontal = 32.dp, vertical = 16.dp)) {
         Column(

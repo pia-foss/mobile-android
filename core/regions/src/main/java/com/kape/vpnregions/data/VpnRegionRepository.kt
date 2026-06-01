@@ -40,7 +40,7 @@ class VpnRegionRepository(
             } else {
                 serverMap = adaptVpnServers(response)
                 serverInfo = adaptServersInfo(response)
-                serverList.addAll(addDipToServerList(serverMap.values.toList()))
+                serverList.addAll(addDipsToServerList(serverMap.values.toList()))
                 if (connectionInfoProvider.isNotDisconnected()) {
                     serverList
                         .firstOrNull { it == connectionPrefs.selectedVpnServer.value }
@@ -51,7 +51,7 @@ class VpnRegionRepository(
             }
         } else {
             serverList.addAll(serverMap.values.toList())
-            return addDipToServerList(serverList)
+            return addDipsToServerList(serverList)
         }
         return serverList
     }
@@ -59,12 +59,12 @@ class VpnRegionRepository(
     suspend fun fetchLatencies(isConnected: Boolean): List<VpnServer> {
         if (isConnected) {
             populateLatencies(isConnected)
-            return addDipToServerList(serverMap.values.toList())
+            return addDipsToServerList(serverMap.values.toList())
         } else {
             val latencies = source.pingRequests()
             latencyInfo = latencies ?: emptyList()
             populateLatencies(isConnected)
-            return addDipToServerList(serverMap.values.toList())
+            return addDipsToServerList(serverMap.values.toList())
         }
     }
 
@@ -74,12 +74,12 @@ class VpnRegionRepository(
 
     fun getServers(isConnected: Boolean): List<VpnServer> {
         populateLatencies(isConnected)
-        return addDipToServerList(serverMap.values.toList())
+        return addDipsToServerList(serverMap.values.toList())
     }
 
-    fun addDipsToList(servers: List<VpnServer>): List<VpnServer> = addDipToServerList(servers)
+    fun addDipsToList(servers: List<VpnServer>): List<VpnServer> = addDipsToServerList(servers)
 
-    private fun addDipToServerList(servers: List<VpnServer>): List<VpnServer> {
+    private fun addDipsToServerList(servers: List<VpnServer>): List<VpnServer> {
         val updatedList = mutableListOf<VpnServer>()
         updatedList.addAll(servers)
         for (dip in dipPrefs.dedicatedIps.value) {

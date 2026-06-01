@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,7 +45,7 @@ fun ProtocolSettingsScreen() =
                 appBarText(stringResource(id = R.string.protocols))
             }
         val protocolDialogVisible = remember { mutableStateOf(false) }
-        val protocolSelection by viewModel.selectedProtocol.collectAsState()
+        val protocolSelection by viewModel.selectedProtocol.collectAsStateWithLifecycle()
         val wireGuardSettings by viewModel.wireGuardSettings.collectAsStateWithLifecycle()
 
         Scaffold(

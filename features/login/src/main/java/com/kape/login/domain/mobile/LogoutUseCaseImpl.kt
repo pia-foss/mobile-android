@@ -39,7 +39,7 @@ class LogoutUseCaseImpl(
 ) : LogoutUseCase {
     override suspend fun logout(): Boolean {
         if (settingsPrefs.isAutomationEnabled.value) {
-            connectionPrefs.disconnectedByUser(true)
+            connectionPrefs.setDisconnectedByUser(true)
         }
         if (connectionManager.isConnectionInProgress()) {
             connectionManager.disconnect().getOrNull()
