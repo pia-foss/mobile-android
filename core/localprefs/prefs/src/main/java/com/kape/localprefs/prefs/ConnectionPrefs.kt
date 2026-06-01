@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
@@ -61,60 +60,48 @@ class ConnectionPrefs(
             DEFAULT_PROXY_PORT_VALUE,
         )
 
-    fun addToQuickConnect(
+    suspend fun addToQuickConnect(
         serverKey: String,
         isDip: Boolean,
     ) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                val list =
-                    prefs[QUICK_CONNECT]
-                        ?.let { Json.decodeFromString<List<QuickConnectServer>>(it) }
-                        ?.toMutableList() ?: mutableListOf()
-                list
-                    .firstOrNull { it.serverKey == serverKey && it.isDip == isDip }
-                    ?.let { list.remove(it) }
-                list.add(QuickConnectServer(serverKey, isDip))
-                prefs[QUICK_CONNECT] = Json.encodeToString(list)
-            }
+        dataStore.edit { prefs ->
+            val list =
+                prefs[QUICK_CONNECT]
+                    ?.let { Json.decodeFromString<List<QuickConnectServer>>(it) }
+                    ?.toMutableList() ?: mutableListOf()
+            list
+                .firstOrNull { it.serverKey == serverKey && it.isDip == isDip }
+                ?.let { list.remove(it) }
+            list.add(QuickConnectServer(serverKey, isDip))
+            prefs[QUICK_CONNECT] = Json.encodeToString(list)
         }
     }
 
-    fun removeFromQuickConnect(serverKey: String) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                val list =
-                    prefs[QUICK_CONNECT]
-                        ?.let { Json.decodeFromString<List<QuickConnectServer>>(it) }
-                        ?.toMutableList() ?: mutableListOf()
-                list.firstOrNull { it.serverKey == serverKey && it.isDip }?.let { list.remove(it) }
-                prefs[QUICK_CONNECT] = Json.encodeToString(list)
-            }
+    suspend fun removeFromQuickConnect(serverKey: String) {
+        dataStore.edit { prefs ->
+            val list =
+                prefs[QUICK_CONNECT]
+                    ?.let { Json.decodeFromString<List<QuickConnectServer>>(it) }
+                    ?.toMutableList() ?: mutableListOf()
+            list.firstOrNull { it.serverKey == serverKey && it.isDip }?.let { list.remove(it) }
+            prefs[QUICK_CONNECT] = Json.encodeToString(list)
         }
     }
 
-    fun setClientIp(ip: String) {
-        scope.launch {
-            dataStore.edit { it[CLIENT_IP] = ip }
-        }
+    suspend fun setClientIp(ip: String) {
+        dataStore.edit { it[CLIENT_IP] = ip }
     }
 
-    fun setVpnIp(vpnIp: String) {
-        scope.launch {
-            dataStore.edit { it[VPN_IP] = vpnIp }
-        }
+    suspend fun setVpnIp(vpnIp: String) {
+        dataStore.edit { it[VPN_IP] = vpnIp }
     }
 
-    fun setSelectedVpnServer(server: VpnServer?) {
-        scope.launch {
-            dataStore.edit { it[PRE_SELECTED_VPN_SERVER] = Json.encodeToString(server) }
-        }
+    suspend fun setSelectedVpnServer(server: VpnServer?) {
+        dataStore.edit { it[PRE_SELECTED_VPN_SERVER] = Json.encodeToString(server) }
     }
 
-    fun setLastSnoozeEndTime(endTime: Long) {
-        scope.launch {
-            dataStore.edit { it[LAST_SNOOZE_END_TIME] = endTime }
-        }
+    suspend fun setLastSnoozeEndTime(endTime: Long) {
+        dataStore.edit { it[LAST_SNOOZE_END_TIME] = endTime }
     }
 
     suspend fun setGateway(gateway: String) {
@@ -129,17 +116,13 @@ class ConnectionPrefs(
 
     suspend fun clearPortBindingInfo() = setPortBindingInformation(null)
 
-    fun setDisconnectedByUser(byUser: Boolean) {
-        scope.launch {
-            dataStore.edit { it[DISCONNECTED_BY_USER] = byUser }
-        }
+    suspend fun setDisconnectedByUser(byUser: Boolean) {
+        dataStore.edit { it[DISCONNECTED_BY_USER] = byUser }
     }
 
-    fun setProxyPort(port: String?) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                if (port != null) prefs[PROXY_PORT] = port else prefs.remove(PROXY_PORT)
-            }
+    suspend fun setProxyPort(port: String?) {
+        dataStore.edit { prefs ->
+            if (port != null) prefs[PROXY_PORT] = port else prefs.remove(PROXY_PORT)
         }
     }
 

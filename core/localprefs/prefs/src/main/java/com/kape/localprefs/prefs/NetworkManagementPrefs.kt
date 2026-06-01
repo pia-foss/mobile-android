@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
@@ -27,38 +26,32 @@ class NetworkManagementPrefs(
     val allRules: StateFlow<List<NetworkItem>> =
         getAllRules().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
 
-    fun addRuleForNetwork(
+    suspend fun addRuleForNetwork(
         ssid: String,
         behavior: NetworkBehavior,
     ) {
-        scope.launch {
-            addNetworkItem(
-                NetworkItem(
-                    networkName = ssid,
-                    networkType = NetworkType.WifiCustom,
-                    networkBehavior = behavior,
-                ),
-            )
+        addNetworkItem(
+            NetworkItem(
+                networkName = ssid,
+                networkType = NetworkType.WifiCustom,
+                networkBehavior = behavior,
+            ),
+        )
+    }
+
+    suspend fun addDefaultRule(networkItem: NetworkItem) {
+        addNetworkItem(networkItem)
+    }
+
+    suspend fun removeRuleForNetwork(rule: NetworkItem) {
+        dataStore.edit { prefs ->
+            val current = prefs[NETWORK_RULES]?.toMutableSet() ?: mutableSetOf()
+            current.remove(Json.encodeToString(rule))
+            prefs[NETWORK_RULES] = current
         }
     }
 
-    fun addDefaultRule(networkItem: NetworkItem) {
-        scope.launch {
-            addNetworkItem(networkItem)
-        }
-    }
-
-    fun removeRuleForNetwork(rule: NetworkItem) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                val current = prefs[NETWORK_RULES]?.toMutableSet() ?: mutableSetOf()
-                current.remove(Json.encodeToString(rule))
-                prefs[NETWORK_RULES] = current
-            }
-        }
-    }
-
-    fun updateRuleForNetwork(
+    suspend fun updateRuleForNetwork(
         rule: NetworkItem,
         behavior: NetworkBehavior,
     ) {
@@ -71,13 +64,11 @@ class NetworkManagementPrefs(
                 isDefaultForOpen = rule.isDefaultForOpen,
                 isDefaultForSecure = rule.isDefaultForSecure,
             )
-        scope.launch {
-            dataStore.edit { prefs ->
-                val current = prefs[NETWORK_RULES]?.toMutableSet() ?: mutableSetOf()
-                current.remove(Json.encodeToString(rule))
-                current.add(Json.encodeToString(updatedRule))
-                prefs[NETWORK_RULES] = current
-            }
+        dataStore.edit { prefs ->
+            val current = prefs[NETWORK_RULES]?.toMutableSet() ?: mutableSetOf()
+            current.remove(Json.encodeToString(rule))
+            current.add(Json.encodeToString(updatedRule))
+            prefs[NETWORK_RULES] = current
         }
     }
 

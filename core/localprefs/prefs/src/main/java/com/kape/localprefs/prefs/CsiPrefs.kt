@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 
 private val LAST_KNOWN_EXCEPTION = stringPreferencesKey("last-known-exception")
@@ -28,36 +27,28 @@ class CsiPrefs(
     val customDebugLogs: StateFlow<String> =
         getCustomDebugLogs().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
 
-    fun setLastKnownException(value: String) {
-        scope.launch {
-            dataStore.edit { it[LAST_KNOWN_EXCEPTION] = value }
-        }
+    suspend fun setLastKnownException(value: String) {
+        dataStore.edit { it[LAST_KNOWN_EXCEPTION] = value }
     }
 
-    fun setProtocolDebugLogs(value: String) {
-        scope.launch {
-            dataStore.edit { it[PROTOCOL_DEBUG_LOGS] = value }
-        }
+    suspend fun setProtocolDebugLogs(value: String) {
+        dataStore.edit { it[PROTOCOL_DEBUG_LOGS] = value }
     }
 
-    fun addCustomDebugLogs(
+    suspend fun addCustomDebugLogs(
         value: String,
         isDebugLoggingEnabled: Boolean,
     ) {
         if (isDebugLoggingEnabled) {
-            scope.launch {
-                dataStore.edit { prefs ->
-                    val current = prefs[DEBUG_LOGS] ?: ""
-                    prefs[DEBUG_LOGS] = current + value + "\n"
-                }
+            dataStore.edit { prefs ->
+                val current = prefs[DEBUG_LOGS] ?: ""
+                prefs[DEBUG_LOGS] = current + value + "\n"
             }
         }
     }
 
-    fun clearCustomDebugLogs() {
-        scope.launch {
-            dataStore.edit { it[DEBUG_LOGS] = "" }
-        }
+    suspend fun clearCustomDebugLogs() {
+        dataStore.edit { it[DEBUG_LOGS] = "" }
     }
 
     private fun getLastKnownException(): Flow<String> = dataStore.data.map { it[LAST_KNOWN_EXCEPTION] ?: "" }

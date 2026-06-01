@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
@@ -29,29 +28,25 @@ class ShadowsocksRegionPrefs(
     val shadowsocksServers: StateFlow<List<ShadowsocksServer>> =
         getShadowsocksServers().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
 
-    fun addToFavorites(shadowsocksServerName: String) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                val favorites =
-                    prefs[SHADOWSOCKS_VPN_FAVORITES]
-                        ?.let { Json.decodeFromString<List<ServerData>>(it) }
-                        ?.toMutableList() ?: mutableListOf()
-                favorites.add(ServerData(shadowsocksServerName, false))
-                prefs[SHADOWSOCKS_VPN_FAVORITES] = Json.encodeToString(favorites)
-            }
+    suspend fun addToFavorites(shadowsocksServerName: String) {
+        dataStore.edit { prefs ->
+            val favorites =
+                prefs[SHADOWSOCKS_VPN_FAVORITES]
+                    ?.let { Json.decodeFromString<List<ServerData>>(it) }
+                    ?.toMutableList() ?: mutableListOf()
+            favorites.add(ServerData(shadowsocksServerName, false))
+            prefs[SHADOWSOCKS_VPN_FAVORITES] = Json.encodeToString(favorites)
         }
     }
 
-    fun removeFromFavorites(shadowsocksServerName: String) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                val favorites =
-                    prefs[SHADOWSOCKS_VPN_FAVORITES]
-                        ?.let { Json.decodeFromString<List<ServerData>>(it) }
-                        ?.toMutableList() ?: mutableListOf()
-                favorites.remove(ServerData(shadowsocksServerName, false))
-                prefs[SHADOWSOCKS_VPN_FAVORITES] = Json.encodeToString(favorites)
-            }
+    suspend fun removeFromFavorites(shadowsocksServerName: String) {
+        dataStore.edit { prefs ->
+            val favorites =
+                prefs[SHADOWSOCKS_VPN_FAVORITES]
+                    ?.let { Json.decodeFromString<List<ServerData>>(it) }
+                    ?.toMutableList() ?: mutableListOf()
+            favorites.remove(ServerData(shadowsocksServerName, false))
+            prefs[SHADOWSOCKS_VPN_FAVORITES] = Json.encodeToString(favorites)
         }
     }
 
@@ -63,16 +58,12 @@ class ShadowsocksRegionPrefs(
             favorites.contains(ServerData(shadowsocksServerName, false))
         }
 
-    fun setSelectShadowsocksServer(shadowsocksServer: ShadowsocksServer) {
-        scope.launch {
-            dataStore.edit { it[SHADOWSOCKS_SELECTED_SERVER] = Json.encodeToString(shadowsocksServer) }
-        }
+    suspend fun setSelectShadowsocksServer(shadowsocksServer: ShadowsocksServer) {
+        dataStore.edit { it[SHADOWSOCKS_SELECTED_SERVER] = Json.encodeToString(shadowsocksServer) }
     }
 
-    fun setShadowsocksServers(shadowsocksServers: List<ShadowsocksServer>) {
-        scope.launch {
-            dataStore.edit { it[SHADOWSOCKS_SERVERS] = Json.encodeToString(shadowsocksServers) }
-        }
+    suspend fun setShadowsocksServers(shadowsocksServers: List<ShadowsocksServer>) {
+        dataStore.edit { it[SHADOWSOCKS_SERVERS] = Json.encodeToString(shadowsocksServers) }
     }
 
     private fun getSelectedShadowsocksServer(): Flow<ShadowsocksServer?> =

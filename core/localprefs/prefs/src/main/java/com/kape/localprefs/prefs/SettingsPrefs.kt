@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
@@ -91,90 +90,88 @@ class SettingsPrefs(
     val isMaceEnabled: StateFlow<Boolean> =
         getMaceEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
 
-    fun setEnableLaunchOnStartup(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[LAUNCH_ON_STARTUP] = enabled } }
+    suspend fun setEnableLaunchOnStartup(enabled: Boolean) {
+        dataStore.edit { it[LAUNCH_ON_STARTUP] = enabled }
     }
 
-    fun setEnableConnectOnLaunch(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[CONNECT_ON_LAUNCH] = enabled } }
+    suspend fun setEnableConnectOnLaunch(enabled: Boolean) {
+        dataStore.edit { it[CONNECT_ON_LAUNCH] = enabled }
     }
 
-    fun setEnableConnectOnAppUpdate(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[CONNECT_ON_APP_UPDATE] = enabled } }
+    suspend fun setEnableConnectOnAppUpdate(enabled: Boolean) {
+        dataStore.edit { it[CONNECT_ON_APP_UPDATE] = enabled }
     }
 
-    fun setEnabledShowGeoLocatedServers(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[SHOW_GEO_SERVERS] = enabled } }
+    suspend fun setEnabledShowGeoLocatedServers(enabled: Boolean) {
+        dataStore.edit { it[SHOW_GEO_SERVERS] = enabled }
     }
 
-    fun setSelectedProtocol(protocol: VpnProtocols) {
-        scope.launch { dataStore.edit { it[SELECTED_PROTOCOL] = Json.encodeToString(protocol) } }
+    suspend fun setSelectedProtocol(protocol: VpnProtocols) {
+        dataStore.edit { it[SELECTED_PROTOCOL] = Json.encodeToString(protocol) }
     }
 
-    fun setWireGuardSettings(settings: WireGuardSettings) {
-        scope.launch { dataStore.edit { it[WIRE_GUARD_SETTINGS] = Json.encodeToString(settings) } }
+    suspend fun setWireGuardSettings(settings: WireGuardSettings) {
+        dataStore.edit { it[WIRE_GUARD_SETTINGS] = Json.encodeToString(settings) }
     }
 
-    fun setOpenVpnSettings(settings: OpenVpnSettings) {
-        scope.launch { dataStore.edit { it[OPEN_VPN_SETTINGS] = Json.encodeToString(settings) } }
+    suspend fun setOpenVpnSettings(settings: OpenVpnSettings) {
+        dataStore.edit { it[OPEN_VPN_SETTINGS] = Json.encodeToString(settings) }
     }
 
-    fun setSelectedDnsOption(dnsOptions: DnsOptions) {
-        scope.launch { dataStore.edit { it[SELECTED_DNS_OPTION_SETTINGS] = Json.encodeToString(dnsOptions) } }
+    suspend fun setSelectedDnsOption(dnsOptions: DnsOptions) {
+        dataStore.edit { it[SELECTED_DNS_OPTION_SETTINGS] = Json.encodeToString(dnsOptions) }
     }
 
-    fun setCustomDns(customDns: CustomDns) {
-        scope.launch { dataStore.edit { it[CUSTOM_DNS_SETTINGS] = Json.encodeToString(customDns) } }
+    suspend fun setCustomDns(customDns: CustomDns) {
+        dataStore.edit { it[CUSTOM_DNS_SETTINGS] = Json.encodeToString(customDns) }
     }
 
-    fun setShadowsocksObfuscationEnabled(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[SHADOWSOCKS_OBFUSCATION_ENABLED] = enabled } }
+    suspend fun setShadowsocksObfuscationEnabled(enabled: Boolean) {
+        dataStore.edit { it[SHADOWSOCKS_OBFUSCATION_ENABLED] = enabled }
     }
 
-    fun setExternalProxyAppEnabled(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[EXTERNAL_PROXY_APP_ENABLED] = enabled } }
+    suspend fun setExternalProxyAppEnabled(enabled: Boolean) {
+        dataStore.edit { it[EXTERNAL_PROXY_APP_ENABLED] = enabled }
     }
 
-    fun setExternalProxyAppPackageName(packageName: String) {
-        scope.launch { dataStore.edit { it[EXTERNAL_PROXY_APP_PACKAGE_NAME] = packageName } }
+    suspend fun setExternalProxyAppPackageName(packageName: String) {
+        dataStore.edit { it[EXTERNAL_PROXY_APP_PACKAGE_NAME] = packageName }
     }
 
-    fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) {
-        scope.launch {
-            dataStore.edit { it[SELECTED_OBFUSCATION_OPTION_SETTINGS] = Json.encodeToString(obfuscationOptions) }
-        }
+    suspend fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) {
+        dataStore.edit { it[SELECTED_OBFUSCATION_OPTION_SETTINGS] = Json.encodeToString(obfuscationOptions) }
     }
 
-    fun setCustomObfuscation(customObfuscation: CustomObfuscation) {
-        scope.launch { dataStore.edit { it[CUSTOM_OBFUSCATION_SETTINGS] = Json.encodeToString(customObfuscation) } }
+    suspend fun setCustomObfuscation(customObfuscation: CustomObfuscation) {
+        dataStore.edit { it[CUSTOM_OBFUSCATION_SETTINGS] = Json.encodeToString(customObfuscation) }
     }
 
-    fun setHelpImprovePiaEnabled(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[HELP_IMPROVE_PIA] = enabled } }
+    suspend fun setHelpImprovePiaEnabled(enabled: Boolean) {
+        dataStore.edit { it[HELP_IMPROVE_PIA] = enabled }
     }
 
-    fun setDebugLoggingEnabled(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[DEBUG_LOGGING] = enabled } }
+    suspend fun setDebugLoggingEnabled(enabled: Boolean) {
+        dataStore.edit { it[DEBUG_LOGGING] = enabled }
     }
 
-    fun setVpnExcludedApps(apps: List<String>) {
-        scope.launch { dataStore.edit { it[VPN_EXCLUDED_APPS] = apps.toSet() } }
+    suspend fun setVpnExcludedApps(apps: List<String>) {
+        dataStore.edit { it[VPN_EXCLUDED_APPS] = apps.toSet() }
     }
 
-    fun setEnablePortForwarding(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[PORT_FORWARDING] = enabled } }
+    suspend fun setEnablePortForwarding(enabled: Boolean) {
+        dataStore.edit { it[PORT_FORWARDING] = enabled }
     }
 
-    fun setAllowLocalTrafficEnabled(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[ALLOW_LOCAL_TRAFFIC] = enabled } }
+    suspend fun setAllowLocalTrafficEnabled(enabled: Boolean) {
+        dataStore.edit { it[ALLOW_LOCAL_TRAFFIC] = enabled }
     }
 
-    fun setAutomationEnabled(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[AUTOMATION] = enabled } }
+    suspend fun setAutomationEnabled(enabled: Boolean) {
+        dataStore.edit { it[AUTOMATION] = enabled }
     }
 
-    fun setMaceEnabled(enabled: Boolean) {
-        scope.launch { dataStore.edit { it[MACE] = enabled } }
+    suspend fun setMaceEnabled(enabled: Boolean) {
+        dataStore.edit { it[MACE] = enabled }
     }
 
     private fun getLaunchOnStartupEnabled(): Flow<Boolean> = dataStore.data.map { it[LAUNCH_ON_STARTUP] ?: false }

@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
@@ -24,10 +23,8 @@ class RatingPrefs(
     val ratingState: StateFlow<RatingState> =
         getRatingState().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), RatingState(true, 0))
 
-    fun setRatingState(state: RatingState) {
-        scope.launch {
-            dataStore.edit { it[RATING_STATE] = Json.encodeToString(state) }
-        }
+    suspend fun setRatingState(state: RatingState) {
+        dataStore.edit { it[RATING_STATE] = Json.encodeToString(state) }
     }
 
     private fun getRatingState(): Flow<RatingState> =

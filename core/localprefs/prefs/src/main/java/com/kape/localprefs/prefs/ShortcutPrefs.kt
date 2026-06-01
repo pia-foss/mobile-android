@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 
 private val SHORTCUT_CONNECT_TO_VPN = booleanPreferencesKey("shortcut-connect-to-vpn")
@@ -31,10 +30,8 @@ class ShortcutPrefs(
     val isShortcutSettings: StateFlow<Boolean> =
         getShortcutSettings().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
 
-    fun setShortcutConnectToVpn(isShortcut: Boolean) {
-        scope.launch {
-            dataStore.edit { it[SHORTCUT_CONNECT_TO_VPN] = isShortcut }
-        }
+    suspend fun setShortcutConnectToVpn(isShortcut: Boolean) {
+        dataStore.edit { it[SHORTCUT_CONNECT_TO_VPN] = isShortcut }
         if (isShortcut) {
             setShortcutDisconnectVpn(false)
             setShortcutSettings(false)
@@ -42,10 +39,8 @@ class ShortcutPrefs(
         }
     }
 
-    fun setShortcutDisconnectVpn(isShortcut: Boolean) {
-        scope.launch {
-            dataStore.edit { it[SHORTCUT_DISCONNECT_VPN] = isShortcut }
-        }
+    suspend fun setShortcutDisconnectVpn(isShortcut: Boolean) {
+        dataStore.edit { it[SHORTCUT_DISCONNECT_VPN] = isShortcut }
         if (isShortcut) {
             setShortcutSettings(false)
             setShortcutChangeServer(false)
@@ -53,10 +48,8 @@ class ShortcutPrefs(
         }
     }
 
-    fun setShortcutChangeServer(isShortcut: Boolean) {
-        scope.launch {
-            dataStore.edit { it[SHORTCUT_CHANGE_SERVER] = isShortcut }
-        }
+    suspend fun setShortcutChangeServer(isShortcut: Boolean) {
+        dataStore.edit { it[SHORTCUT_CHANGE_SERVER] = isShortcut }
         if (isShortcut) {
             setShortcutSettings(false)
             setShortcutConnectToVpn(false)
@@ -64,10 +57,8 @@ class ShortcutPrefs(
         }
     }
 
-    fun setShortcutSettings(isShortcut: Boolean) {
-        scope.launch {
-            dataStore.edit { it[SHORTCUT_SETTINGS] = isShortcut }
-        }
+    suspend fun setShortcutSettings(isShortcut: Boolean) {
+        dataStore.edit { it[SHORTCUT_SETTINGS] = isShortcut }
         if (isShortcut) {
             setShortcutChangeServer(false)
             setShortcutConnectToVpn(false)

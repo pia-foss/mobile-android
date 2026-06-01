@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
@@ -28,16 +27,12 @@ class CustomizationPrefs(
         getElements().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), defaultList())
 
     @Deprecated("Deprecated in favor of setElements()")
-    fun setOrderedElements(orderedElements: List<ScreenElement>) {
-        scope.launch {
-            dataStore.edit { it[ORDERED_ELEMENTS] = Json.encodeToString(orderedElements) }
-        }
+    suspend fun setOrderedElements(orderedElements: List<ScreenElement>) {
+        dataStore.edit { it[ORDERED_ELEMENTS] = Json.encodeToString(orderedElements) }
     }
 
-    fun setElements(orderedElements: List<ScreenElement>) {
-        scope.launch {
-            dataStore.edit { it[ORDERED_ELEMENTS_V2] = Json.encodeToString(orderedElements) }
-        }
+    suspend fun setElements(orderedElements: List<ScreenElement>) {
+        dataStore.edit { it[ORDERED_ELEMENTS_V2] = Json.encodeToString(orderedElements) }
     }
 
     private fun getElements(): Flow<List<ScreenElement>> =

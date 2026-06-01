@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import kotlinx.serialization.json.Json
@@ -38,28 +37,24 @@ class VpnRegionPrefs(
     val needsVpnReconnect: StateFlow<Boolean> =
         getNeedsVpnReconnect().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
 
-    fun addToFavorites(serverData: ServerData) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                val favorites =
-                    prefs[VPN_FAVORITES]?.let { Json.decodeFromString<List<ServerData>>(it) }
-                        ?: emptyList()
-                favorites.toMutableList().add(serverData)
-                prefs[VPN_FAVORITES] = Json.encodeToString(favorites)
-            }
+    suspend fun addToFavorites(serverData: ServerData) {
+        dataStore.edit { prefs ->
+            val favorites =
+                prefs[VPN_FAVORITES]?.let { Json.decodeFromString<List<ServerData>>(it) }
+                    ?: emptyList()
+            favorites.toMutableList().add(serverData)
+            prefs[VPN_FAVORITES] = Json.encodeToString(favorites)
         }
     }
 
-    fun removeFromFavorites(serverData: ServerData) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                val favorites =
-                    prefs[VPN_FAVORITES]
-                        ?.let { Json.decodeFromString<List<ServerData>>(it) }
-                        ?.toMutableList() ?: mutableListOf()
-                favorites.remove(serverData)
-                prefs[VPN_FAVORITES] = Json.encodeToString(favorites)
-            }
+    suspend fun removeFromFavorites(serverData: ServerData) {
+        dataStore.edit { prefs ->
+            val favorites =
+                prefs[VPN_FAVORITES]
+                    ?.let { Json.decodeFromString<List<ServerData>>(it) }
+                    ?.toMutableList() ?: mutableListOf()
+            favorites.remove(serverData)
+            prefs[VPN_FAVORITES] = Json.encodeToString(favorites)
         }
     }
 
@@ -76,19 +71,15 @@ class VpnRegionPrefs(
         isDip: Boolean,
     ): Flow<Boolean> = isFavorite(ServerData(serverName, isDip))
 
-    fun selectVpnServer(vpnServer: VpnServer) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                prefs[VPN_SELECTED_SERVER] = Json.encodeToString(vpnServer)
-                prefs[VPN_RECONNECT] = true
-            }
+    suspend fun selectVpnServer(vpnServer: VpnServer) {
+        dataStore.edit { prefs ->
+            prefs[VPN_SELECTED_SERVER] = Json.encodeToString(vpnServer)
+            prefs[VPN_RECONNECT] = true
         }
     }
 
-    fun setVpnReconnect(needsReconnect: Boolean) {
-        scope.launch {
-            dataStore.edit { it[VPN_RECONNECT] = needsReconnect }
-        }
+    suspend fun setVpnReconnect(needsReconnect: Boolean) {
+        dataStore.edit { it[VPN_RECONNECT] = needsReconnect }
     }
 
     private fun getFavoriteVpnServers(): Flow<List<ServerData>> =

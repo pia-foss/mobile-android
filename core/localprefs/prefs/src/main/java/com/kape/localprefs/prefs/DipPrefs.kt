@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
@@ -50,35 +49,27 @@ class DipPrefs(
     val dedicatedIpSelectedCountry: StateFlow<DedicatedIpSelectedCountry?> =
         getDedicatedIpSelectedCountry().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
 
-    fun addDedicatedIp(dip: DedicatedIPInformationResponse.DedicatedIPInformation) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                val current = prefs[DEDICATED_IPS] ?: emptySet()
-                prefs[DEDICATED_IPS] = current + Json.encodeToString(dip)
-            }
+    suspend fun addDedicatedIp(dip: DedicatedIPInformationResponse.DedicatedIPInformation) {
+        dataStore.edit { prefs ->
+            val current = prefs[DEDICATED_IPS] ?: emptySet()
+            prefs[DEDICATED_IPS] = current + Json.encodeToString(dip)
         }
     }
 
-    fun removeDedicatedIp(dip: DedicatedIPInformationResponse.DedicatedIPInformation) {
-        scope.launch {
-            dataStore.edit { prefs ->
-                val current = prefs[DEDICATED_IPS]?.toMutableSet() ?: mutableSetOf()
-                current.remove(Json.encodeToString(dip))
-                prefs[DEDICATED_IPS] = current
-            }
+    suspend fun removeDedicatedIp(dip: DedicatedIPInformationResponse.DedicatedIPInformation) {
+        dataStore.edit { prefs ->
+            val current = prefs[DEDICATED_IPS]?.toMutableSet() ?: mutableSetOf()
+            current.remove(Json.encodeToString(dip))
+            prefs[DEDICATED_IPS] = current
         }
     }
 
-    fun setPurchasedSignupDipToken(dipToken: String) {
-        scope.launch {
-            dataStore.edit { it[DIP_SIGNUP_PURCHASED_TOKEN] = dipToken }
-        }
+    suspend fun setPurchasedSignupDipToken(dipToken: String) {
+        dataStore.edit { it[DIP_SIGNUP_PURCHASED_TOKEN] = dipToken }
     }
 
-    fun removePurchasedSignupDipToken() {
-        scope.launch {
-            dataStore.edit { it.remove(DIP_SIGNUP_PURCHASED_TOKEN) }
-        }
+    suspend fun removePurchasedSignupDipToken() {
+        dataStore.edit { it.remove(DIP_SIGNUP_PURCHASED_TOKEN) }
     }
 
     fun isDipSignupEnabled(isGoogleFlavor: Boolean): Flow<Boolean> =
@@ -88,34 +79,24 @@ class DipPrefs(
             flow { emit(false) }
         }
 
-    fun hideDedicatedIpHomeBanner() {
-        scope.launch {
-            dataStore.edit { it[DIP_SIGNUP_HOME_BANNER_VISIBLE] = false }
-        }
+    suspend fun hideDedicatedIpHomeBanner() {
+        dataStore.edit { it[DIP_SIGNUP_HOME_BANNER_VISIBLE] = false }
     }
 
-    fun setDedicatedIpSignupPlans(dedicatedIpSignupPlans: DedicatedIpSignupPlans) {
-        scope.launch {
-            dataStore.edit { it[DIP_SIGNUP_PLANS] = Json.encodeToString(dedicatedIpSignupPlans) }
-        }
+    suspend fun setDedicatedIpSignupPlans(dedicatedIpSignupPlans: DedicatedIpSignupPlans) {
+        dataStore.edit { it[DIP_SIGNUP_PLANS] = Json.encodeToString(dedicatedIpSignupPlans) }
     }
 
-    fun setDedicatedIpSupportedCountries(dedicatedIpSupportedCountries: DedicatedIpSupportedCountries) {
-        scope.launch {
-            dataStore.edit { it[DIP_SUPPORTED_COUNTRIES] = Json.encodeToString(dedicatedIpSupportedCountries) }
-        }
+    suspend fun setDedicatedIpSupportedCountries(dedicatedIpSupportedCountries: DedicatedIpSupportedCountries) {
+        dataStore.edit { it[DIP_SUPPORTED_COUNTRIES] = Json.encodeToString(dedicatedIpSupportedCountries) }
     }
 
-    fun setSelectedDipSignupProductId(productId: String) {
-        scope.launch {
-            dataStore.edit { it[DIP_SIGNUP_SELECTED_PRODUCT_ID] = productId }
-        }
+    suspend fun setSelectedDipSignupProductId(productId: String) {
+        dataStore.edit { it[DIP_SIGNUP_SELECTED_PRODUCT_ID] = productId }
     }
 
-    fun setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) {
-        scope.launch {
-            dataStore.edit { it[DIP_SIGNUP_SELECTED_COUNTRY] = Json.encodeToString(dedicatedIpSelectedCountry) }
-        }
+    suspend fun setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) {
+        dataStore.edit { it[DIP_SIGNUP_SELECTED_COUNTRY] = Json.encodeToString(dedicatedIpSelectedCountry) }
     }
 
     private fun getDedicatedIps(): Flow<List<DedicatedIPInformationResponse.DedicatedIPInformation>> =

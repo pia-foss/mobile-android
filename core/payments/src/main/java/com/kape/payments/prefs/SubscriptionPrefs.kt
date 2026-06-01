@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
@@ -58,10 +57,8 @@ class SubscriptionPrefs(
         dataStore.edit { it[DIP_PURCHASE_DATA] = Json.encodeToString(purchaseData) }
     }
 
-    fun removeDipPurchaseData() {
-        scope.launch {
-            dataStore.edit { it.remove(DIP_PURCHASE_DATA) }
-        }
+    suspend fun removeDipPurchaseData() {
+        dataStore.edit { it.remove(DIP_PURCHASE_DATA) }
     }
 
     private fun getVpnSubscriptions(): Flow<List<Subscription>> =

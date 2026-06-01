@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 
 private val ACTIVE_PROTOCOL = stringPreferencesKey("active-protocol")
@@ -22,10 +21,8 @@ class KpiPrefs(
     val activeProtocol: StateFlow<String> =
         getActiveProtocol().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
 
-    fun setActiveProtocol(protocol: String) {
-        scope.launch {
-            dataStore.edit { it[ACTIVE_PROTOCOL] = protocol }
-        }
+    suspend fun setActiveProtocol(protocol: String) {
+        dataStore.edit { it[ACTIVE_PROTOCOL] = protocol }
     }
 
     private fun getActiveProtocol(): Flow<String> = dataStore.data.map { it[ACTIVE_PROTOCOL] ?: "" }
