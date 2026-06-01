@@ -66,6 +66,10 @@ class ConnectionDataSourceImpl(
                 result.getOrNull()?.let { serverPeerInfo ->
                     ioScope.launch {
                         connectionPrefs.setGateway(serverPeerInfo.gateway)
+                        if (cont.isActive) {
+                            // Convert Result<ServerPeerInfo> → Result<Unit>
+                            cont.resume(result.map { Unit })
+                        }
                     }
                 } ?: run {
                     csiPrefs.addCustomDebugLogs(
@@ -73,10 +77,10 @@ class ConnectionDataSourceImpl(
                         settingsPrefs.isDebugLoggingEnabled.value,
                     )
                     connectionApi.stopConnection {}
-                }
-                if (cont.isActive) {
-                    // Convert Result<ServerPeerInfo> → Result<Unit>
-                    cont.resume(result.map { Unit })
+                    if (cont.isActive) {
+                        // Convert Result<ServerPeerInfo> → Result<Unit>
+                        cont.resume(result.map { Unit })
+                    }
                 }
             }
         }
