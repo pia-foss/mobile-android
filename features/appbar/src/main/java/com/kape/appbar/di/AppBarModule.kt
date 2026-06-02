@@ -18,5 +18,13 @@ class AppBarModule {
         connectionStatusProvider: ConnectionStatusProvider,
         networkConnectionListener: NetworkConnectionListener,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-    ): AppBarViewModel = AppBarViewModel(router, connectionStatusProvider, ioDispatcher, networkConnectionListener)
+        @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
+    ): AppBarViewModel =
+        AppBarViewModel(
+            router,
+            connectionStatusProvider,
+            ioDispatcher,
+            mainDispatcher,
+            networkConnectionListener,
+        )
 }

@@ -11,7 +11,9 @@ import com.kape.data.ConnectionStatus
 import com.kape.data.DI
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
 
@@ -20,6 +22,7 @@ class AppBarViewModel(
     private val router: Router,
     private val connectionStatusProvider: ConnectionStatusProvider,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+    @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
     val isConnected = networkConnectionListener.isConnected
@@ -29,14 +32,16 @@ class AppBarViewModel(
     var accessibilityPrefix by mutableStateOf("")
         private set
 
-    lateinit var appBarConnectionState: ConnectionStatus
+    var appBarConnectionState: ConnectionStatus = connectionStatusProvider.state.value.status
         private set
 
     init {
         viewModelScope.launch(ioDispatcher) {
-            connectionStatusProvider.state.collect {
-                refreshConnectionState(it.title)
-                appBarConnectionState = it.status
+            connectionStatusProvider.state.collectLatest {
+                withContext(mainDispatcher) {
+                    refreshConnectionState(it.title)
+                    appBarConnectionState = it.status
+                }
             }
         }
     }
