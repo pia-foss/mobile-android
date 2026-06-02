@@ -1,12 +1,16 @@
 package com.kape.vpn.provider
 
 import android.os.Build
+import com.kape.data.DI
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.privateinternetaccess.csi.ICSIProvider
 import com.privateinternetaccess.csi.ProviderType
 import com.privateinternetaccess.csi.ReportType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.koin.core.annotation.Named
 import java.util.Locale
 
 private const val CSI_APPLICATION_INFORMATION_FILENAME = "application_information"
@@ -22,10 +26,13 @@ class CsiDataProvider(
     private val csiPrefs: CsiPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val userAgent: String,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) {
     init {
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
-            csiPrefs.setLastKnownException(throwable.stackTraceToString())
+            ioScope.launch {
+                csiPrefs.setLastKnownException(throwable.stackTraceToString())
+            }
         }
     }
 

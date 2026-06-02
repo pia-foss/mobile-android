@@ -1,8 +1,12 @@
 package com.kape.shadowsocksregions.domain
 
+import com.kape.data.DI
 import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.shadowsocksregions.data.ShadowsocksRegionRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -11,6 +15,7 @@ class GetShadowsocksRegionsUseCase(
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
     private val readShadowsocksRegionsDetailsUseCase: ReadShadowsocksRegionsDetailsUseCase,
     private val setShadowsocksRegionsUseCase: SetShadowsocksRegionsUseCase,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) {
     suspend fun fetchShadowsocksServers(locale: String): List<ShadowsocksServer> =
         shadowsocksRegionRepository.fetchShadowsocksServers(locale)
@@ -20,7 +25,9 @@ class GetShadowsocksRegionsUseCase(
             it.host == shadowsocksRegionPrefs.selectedShadowsocksServer.value?.host
         } ?: run {
             val defaultShadowsocksServer = getShadowsocksServers().first()
-            setShadowsocksRegionsUseCase.setSelectShadowsocksServer(defaultShadowsocksServer)
+            ioScope.launch {
+                setShadowsocksRegionsUseCase.setSelectShadowsocksServer(defaultShadowsocksServer)
+            }
             defaultShadowsocksServer
         }
 

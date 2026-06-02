@@ -30,7 +30,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.ui.elements.BehaviorDialog
-import com.kape.automation.ui.viewmodel.AutomationState
 import com.kape.automation.ui.viewmodel.AutomationViewModel
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
@@ -56,12 +55,10 @@ fun AutomationScreen() =
         val showDialog = remember { mutableStateOf(false) }
         val currentItem = remember { mutableStateOf<NetworkItem?>(null) }
         val context: Context = LocalContext.current
-        val state by viewModel.state.collectAsStateWithLifecycle()
         val rules by viewModel.rules.collectAsStateWithLifecycle(emptyList())
 
         AutomationScreenContent(
             appBarViewModel,
-            state,
             onNetworkCardClick = { item ->
                 currentItem.value = item
                 showDialog.value = true
@@ -94,7 +91,6 @@ fun AutomationScreen() =
 @Composable
 fun AutomationScreenContent(
     appBarViewModel: AppBarViewModel,
-    state: AutomationState,
     onNetworkCardClick: (NetworkItem) -> Unit,
     navigateToAddRule: () -> Unit,
     rules: List<NetworkItem>,

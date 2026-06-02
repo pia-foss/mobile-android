@@ -68,13 +68,13 @@ class RatingTool(
         }
     }
 
-    fun setRatingInactive() {
+    suspend fun setRatingInactive() {
         val updatedState = prefs.ratingState.value.copy(active = false)
         prefs.setRatingState(updatedState)
         _showRating.value = null
     }
 
-    fun updateRatingDate() {
+    suspend fun updateRatingDate() {
         val dateFormat = SimpleDateFormat(DATE_FORMAT)
         val dateString = dateFormat.format(Date())
         val updatedState = prefs.ratingState.value.copy(notEnjoyingDate = dateString)
@@ -82,7 +82,7 @@ class RatingTool(
         _showRating.value = null
     }
 
-    private fun handleConnectedEvent(prefs: RatingPrefs) {
+    private suspend fun handleConnectedEvent(prefs: RatingPrefs) {
         val knownState = prefs.ratingState.value
         val updatedState = knownState.copy(counter = knownState.counter + 1)
         prefs.setRatingState(updatedState)

@@ -19,10 +19,12 @@ import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
 
@@ -36,6 +38,7 @@ class ConnectionInfoProviderImpl(
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) : ConnectionInfoProvider {
     private val ioScope = CoroutineScope(ioDispatcher)
+    private val currentConnectionStatus = MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
     override val connectionInfoState = connectionStatusProvider.state
     override var name: String = ""
     override var iso: String = ""
@@ -50,33 +53,34 @@ class ConnectionInfoProviderImpl(
         ioScope.launch {
             connectionStatusProvider.state
                 .distinctUntilChangedBy { it.status == ConnectionStatus.CONNECTED || it.status == ConnectionStatus.DISCONNECTED }
-                .collectLatest {
-                    it.vpnManagerConnectionStatus?.let {
+                .collectLatest { (status, title, vpnManagerConnectionStatus) ->
+                    currentConnectionStatus.update { status }
+                    vpnManagerConnectionStatus?.let {
                         submitKpiEventUseCase.submitConnectionEvent(
                             getKpiConnectionStatus(it),
                             isManual,
                         )
                     }
-                    if (it.status == ConnectionStatus.DISCONNECTED) {
+                    if (status == ConnectionStatus.DISCONNECTED) {
                         clientStateDataSource.getPublicIp()
                     }
-                    if (it.status == ConnectionStatus.CONNECTED) {
+                    if (status == ConnectionStatus.CONNECTED) {
                         clientStateDataSource.getVpnIp()
                     }
                 }
         }
     }
 
-    override fun isConnected(): Boolean = connectionInfoState.value.status == ConnectionStatus.CONNECTED
+    override fun isConnected(): Boolean = currentConnectionStatus.value == ConnectionStatus.CONNECTED
 
     override fun isInConnectState(): Boolean =
         listOf(
             ConnectionStatus.CONNECTED,
             ConnectionStatus.CONNECTING,
             ConnectionStatus.RECONNECTING,
-        ).contains(connectionInfoState.value.status)
+        ).contains(currentConnectionStatus.value)
 
-    override fun isNotDisconnected() = connectionInfoState.value.status != ConnectionStatus.DISCONNECTED
+    override fun isNotDisconnected(): Boolean = currentConnectionStatus.value != ConnectionStatus.DISCONNECTED
 
     override fun updateInfo(
         name: String,

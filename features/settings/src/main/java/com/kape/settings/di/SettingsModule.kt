@@ -9,7 +9,6 @@ import com.kape.csi.domain.SendLogUseCase
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
-import com.kape.location.data.LocationPermissionManager
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.domain.IsNumericIpAddressUseCaseImpl
 import com.kape.settings.ui.vm.SettingsViewModel
@@ -38,7 +37,6 @@ class SettingsModule {
         getDebugLogsUseCase: GetLogsUseCase,
         sendLogUseCase: SendLogUseCase,
         isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
-        locationPermissionManager: LocationPermissionManager,
         connectionManager: ConnectionManager,
         connectionInfoProvider: ConnectionInfoProvider,
     ): SettingsViewModel =
@@ -54,7 +52,6 @@ class SettingsModule {
             getDebugLogsUseCase,
             sendLogUseCase,
             isNumericIpAddressUseCase,
-            locationPermissionManager,
             connectionManager,
             connectionInfoProvider,
         )

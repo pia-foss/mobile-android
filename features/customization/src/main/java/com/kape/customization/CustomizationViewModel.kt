@@ -5,12 +5,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
 import com.kape.customization.data.Element
 import com.kape.data.ShadowsocksRegionSelection
 import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.localprefs.prefs.CustomizationPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.component.KoinComponent
 
@@ -49,7 +51,10 @@ class CustomizationViewModel(
         items.add(to.index, items.removeAt(from.index))
     }
 
-    fun saveOrder() = prefs.setElements(items)
+    fun saveOrder() =
+        viewModelScope.launch {
+            prefs.setElements(items)
+        }
 
     fun toggleVisibility(
         element: Element,

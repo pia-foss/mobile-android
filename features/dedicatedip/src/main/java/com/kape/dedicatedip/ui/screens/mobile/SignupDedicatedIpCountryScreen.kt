@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.ui.vm.DipViewModel
@@ -67,6 +69,7 @@ fun SignupDedicatedIpCountryScreen() =
                 appBarText(stringResource(id = R.string.dedicated_ip_title))
             }
         val viewModel: DipViewModel = koinViewModel()
+        val dipSelectedCountry by viewModel.getSelectedDipCountry().collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
             viewModel.getDipSupportedCountries()
@@ -140,7 +143,7 @@ fun SignupDedicatedIpCountryScreen() =
                                     shape = RoundedCornerShape(12.dp),
                                 ),
                     ) {
-                        viewModel.getSelectedDipCountry()?.let { dedicatedIpSelectedCountry ->
+                        dipSelectedCountry?.let { dedicatedIpSelectedCountry ->
                             DipCountryItem(dedicatedIpSelectedCountry) {
                                 showAllLocations.value = !showAllLocations.value
                             }

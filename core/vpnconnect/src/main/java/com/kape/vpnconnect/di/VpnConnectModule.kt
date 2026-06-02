@@ -104,7 +104,8 @@ class VpnConnectModule {
     fun provideClientStateDataSource(
         accountApi: AndroidAccountAPI,
         connectionPrefs: ConnectionPrefs,
-    ): ClientStateDataSource = ClientStateDataSourceImpl(accountApi, connectionPrefs)
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
+    ): ClientStateDataSource = ClientStateDataSourceImpl(accountApi, connectionPrefs, ioScope)
 
     @Singleton(binds = [ConnectionDataSource::class])
     fun provideConnectionDataSource(

@@ -72,14 +72,16 @@ class ConnectionDataSourceImpl(
                         }
                     }
                 } ?: run {
-                    csiPrefs.addCustomDebugLogs(
-                        "startConnection failed: $result",
-                        settingsPrefs.isDebugLoggingEnabled.value,
-                    )
-                    connectionApi.stopConnection {}
-                    if (cont.isActive) {
-                        // Convert Result<ServerPeerInfo> → Result<Unit>
-                        cont.resume(result.map { Unit })
+                    ioScope.launch {
+                        csiPrefs.addCustomDebugLogs(
+                            "startConnection failed: $result",
+                            settingsPrefs.isDebugLoggingEnabled.value,
+                        )
+                        connectionApi.stopConnection {}
+                        if (cont.isActive) {
+                            // Convert Result<ServerPeerInfo> → Result<Unit>
+                            cont.resume(result.map { Unit })
+                        }
                     }
                 }
             }
@@ -88,17 +90,19 @@ class ConnectionDataSourceImpl(
     override suspend fun stopConnection(): Result<Unit> =
         suspendCancellableCoroutine { continuation ->
             connectionApi.stopConnection { result ->
-                usageProvider.reset()
-                stopPortForwarding()
-                if (result.isFailure) {
-                    csiPrefs.addCustomDebugLogs(
-                        "stop connection failed: ${result.exceptionOrNull()}",
-                        settingsPrefs.isDebugLoggingEnabled.value,
-                    )
-                }
-                // Resume coroutine with result
-                if (continuation.isActive) {
-                    continuation.resume(result)
+                ioScope.launch {
+                    usageProvider.reset()
+                    stopPortForwarding()
+                    if (result.isFailure) {
+                        csiPrefs.addCustomDebugLogs(
+                            "stop connection failed: ${result.exceptionOrNull()}",
+                            settingsPrefs.isDebugLoggingEnabled.value,
+                        )
+                    }
+                    // Resume coroutine with result
+                    if (continuation.isActive) {
+                        continuation.resume(result)
+                    }
                 }
             }
         }

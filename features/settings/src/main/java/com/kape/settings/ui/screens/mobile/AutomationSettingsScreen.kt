@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -32,8 +32,8 @@ fun AutomationSettingsScreen() =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.automation))
             }
-        val state by viewModel.state.collectAsState()
         val context = LocalContext.current
+        val isEnabled by viewModel.isAutomationEnavled.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -55,12 +55,12 @@ fun AutomationSettingsScreen() =
                     SettingsToggle(
                         titleId = R.string.automation_title,
                         subtitleId = R.string.automation_description,
-                        enabled = state.isEnabled,
+                        enabled = isEnabled,
                         toggle = {
                             viewModel.onAutomationToggled(context)
                         },
                     )
-                    if (state.isEnabled) {
+                    if (isEnabled) {
                         SettingsItem(
                             titleId = R.string.manage_automation,
                             onClick = {

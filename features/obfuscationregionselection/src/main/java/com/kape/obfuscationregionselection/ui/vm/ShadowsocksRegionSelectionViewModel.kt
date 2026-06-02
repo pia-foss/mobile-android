@@ -36,9 +36,10 @@ class ShadowsocksRegionSelectionViewModel(
         isLoading.value = false
     }
 
-    fun onShadowsocksRegionSelected(server: ShadowsocksServer) {
-        shadowsocksRegionPrefs.setSelectShadowsocksServer(server)
-    }
+    fun onShadowsocksRegionSelected(server: ShadowsocksServer) =
+        viewModelScope.launch {
+            shadowsocksRegionPrefs.setSelectShadowsocksServer(server)
+        }
 
     fun onFavoriteShadowsocksClicked(serverName: String) =
         viewModelScope.launch {

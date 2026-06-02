@@ -36,6 +36,7 @@ import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 
@@ -75,7 +76,7 @@ class DipViewModel(
     val supportedDipCountriesList = mutableStateOf<DipCountriesResponse?>(null)
     val dipMonthlyPlan = mutableStateOf<DedicatedIpMonthlyPlan?>(null)
     val dipYearlyPlan = mutableStateOf<DedicatedIpYearlyPlan?>(null)
-    val selectedPlanProductId = mutableStateOf(dipPrefs.selectedDipSignupProductId.value)
+    val selectedPlanProductId = dipPrefs.selectedDipSignupProductId
     val showSupportedCountriesDialog = mutableStateOf(false)
     val showFetchingNeededInformationError = mutableStateOf(false)
     val showPurchaseValidationError = mutableStateOf(false)
@@ -98,7 +99,7 @@ class DipViewModel(
     fun loadDedicatedIps() =
         viewModelScope.launch {
             dipList.clear()
-            dipList.addAll(regionListProvider.servers.value.filter { it.isDedicatedIp })
+            dipList.addAll(regionListProvider.servers.first().filter { it.isDedicatedIp })
         }
 
     fun activateDedicatedIp(dipToken: MutableState<TextFieldValue>) =
@@ -130,12 +131,12 @@ class DipViewModel(
     fun removeDip(
         serverKey: String,
         dipToken: String,
-    ) {
+    ) = viewModelScope.launch {
         val dip = dipPrefs.dedicatedIps.value.firstOrNull { it.dipToken == dipToken }
         dip?.let {
             dipPrefs.removeDedicatedIp(it)
             connectionPrefs.removeFromQuickConnect(serverKey)
-            if (connectionPrefs.selectedVpnServer.value?.key == serverKey) {
+            if (connectionPrefs.selectedVpnServer.first()?.key == serverKey) {
                 connectionPrefs.setSelectedVpnServer(null)
                 disconnect()
             }
@@ -153,7 +154,7 @@ class DipViewModel(
 
             supportedDipCountriesList.value = response
             val selectedDipCountry =
-                getSelectedDipCountry() ?: DedicatedIpSelectedCountry(
+                getSelectedDipCountry().first() ?: DedicatedIpSelectedCountry(
                     countryCode = response.dedicatedIpCountriesAvailable.first().countryCode,
                     countryName = response.dedicatedIpCountriesAvailable.first().name,
                     regionName =
@@ -203,40 +204,43 @@ class DipViewModel(
 
     fun showDedicatedIpSignupBanner() = dipPrefs.isDipSignupEnabled(buildConfigProvider.isGoogleFlavor())
 
-    fun selectDipCountry(dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) {
-        dipPrefs.setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry = dedicatedIpSelectedCountry)
-    }
+    fun selectDipCountry(dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) =
+        viewModelScope.launch {
+            dipPrefs.setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry = dedicatedIpSelectedCountry)
+        }
 
-    fun getSelectedDipCountry(): DedicatedIpSelectedCountry? = dipPrefs.dedicatedIpSelectedCountry.value
+    fun getSelectedDipCountry() = dipPrefs.dedicatedIpSelectedCountry
 
-    fun selectPlanProductId(productId: String) {
-        dipPrefs.setSelectedDipSignupProductId(productId)
-        selectedPlanProductId.value = dipPrefs.selectedDipSignupProductId.value
-    }
+    fun selectPlanProductId(productId: String) =
+        viewModelScope.launch {
+            dipPrefs.setSelectedDipSignupProductId(productId)
+        }
 
     fun enableActivateTokenButton() {
         activateTokenButtonState.value = true
     }
 
-    fun getSignupDipToken(): String = dipPrefs.purchasedSignupDipToken.value
+    fun getSignupDipToken() = dipPrefs.purchasedSignupDipToken
 
     fun purchaseSubscription(activity: Activity) {
-        if (dipPrefs.selectedDipSignupProductId.value.isEmpty()) {
-            return
-        }
+        viewModelScope.launch {
+            if (dipPrefs.selectedDipSignupProductId.first().isEmpty()) {
+                return@launch
+            }
 
-        dipSubscriptionPaymentProvider.purchaseProduct(
-            activity = activity,
-            productId = dipPrefs.selectedDipSignupProductId.value,
-        ) { result ->
-            result.fold(
-                onSuccess = {
-                    validateSubscriptionPurchase(dipPurchaseData = it)
-                },
-                onFailure = {
-                    // Do nothing. The billing library shows the payment error to the users.
-                },
-            )
+            dipSubscriptionPaymentProvider.purchaseProduct(
+                activity = activity,
+                productId = dipPrefs.selectedDipSignupProductId.first(),
+            ) { result ->
+                result.fold(
+                    onSuccess = {
+                        validateSubscriptionPurchase(dipPurchaseData = it)
+                    },
+                    onFailure = {
+                        // Do nothing. The billing library shows the payment error to the users.
+                    },
+                )
+            }
         }
     }
 
@@ -261,7 +265,7 @@ class DipViewModel(
         viewModelScope.launch {
             showSpinner.value = true
             showTokenRetrievalError.value = false
-            val countryDetails = getSelectedDipCountry()
+            val countryDetails = getSelectedDipCountry().first()
             if (countryDetails == null) {
                 showTokenRetrievalError.value = true
                 return@launch

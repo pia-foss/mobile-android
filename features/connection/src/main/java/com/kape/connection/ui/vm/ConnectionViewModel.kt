@@ -42,7 +42,9 @@ import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -137,11 +139,15 @@ class ConnectionViewModel(
 
         ratingTool.start()
         renewDedicatedIps()
-        if (shortcutPrefs.isShortcutSettings.value) {
+
+        viewModelScope.launch {
+            shortcutPrefs.isShortcutSettings.first { it }
             shortcutPrefs.setShortcutSettings(false)
             router.updateDestination(Settings)
         }
-        if (shortcutPrefs.isShortcutChangeServer.value) {
+
+        viewModelScope.launch {
+            shortcutPrefs.isShortcutChangeServer.first { it }
             shortcutPrefs.setShortcutChangeServer(false)
             showVpnRegionSelection()
         }
@@ -175,25 +181,31 @@ class ConnectionViewModel(
 
     fun autoConnect() {
         viewModelScope.launch {
-            if (settingsPrefs.isConnectOnLaunchEnabled.value || shortcutPrefs.isShortcutConnectToVpn.value) {
-                shortcutPrefs.setShortcutConnectToVpn(false)
-                if (!connectionInfoProvider.isConnected()) {
-                    prefs.selectedVpnServer.value?.let {
-                        connectionManager.connect(it, false, ::callback, ::showProtocolNotAvailable)
-                    } ?: run {
-                        connectionManager.connect(
-                            regionListProvider.getOptimalServer(),
-                            false,
-                            ::callback,
-                            ::showProtocolNotAvailable,
-                        )
+            combine(
+                settingsPrefs.isConnectOnLaunchEnabled,
+                shortcutPrefs.isShortcutConnectToVpn,
+                shortcutPrefs.isShortcutDisconnectVpn,
+            ) { connectOnLaunchEnabled, shortcutConnect, shortcutDisconnect ->
+                if (connectOnLaunchEnabled || shortcutConnect) {
+                    shortcutPrefs.setShortcutConnectToVpn(false)
+                    if (!connectionInfoProvider.isConnected()) {
+                        prefs.selectedVpnServer.value?.let {
+                            connectionManager.connect(it, false, ::callback, ::showProtocolNotAvailable)
+                        } ?: run {
+                            connectionManager.connect(
+                                regionListProvider.getOptimalServer(),
+                                false,
+                                ::callback,
+                                ::showProtocolNotAvailable,
+                            )
+                        }
                     }
                 }
-            }
-            if (shortcutPrefs.isShortcutDisconnectVpn.value) {
-                shortcutPrefs.setShortcutDisconnectVpn(false)
-                connectionManager.disconnect().getOrNull()
-            }
+                if (shortcutDisconnect) {
+                    shortcutPrefs.setShortcutDisconnectVpn(false)
+                    connectionManager.disconnect().getOrNull()
+                }
+            }.collect()
         }
     }
 
@@ -228,10 +240,11 @@ class ConnectionViewModel(
             }
         }
 
-    fun hideDedicatedIpSignupBanner() {
-        dipPrefs.hideDedicatedIpHomeBanner()
-        showDedicatedIpHomeBanner.value = false
-    }
+    fun hideDedicatedIpSignupBanner() =
+        viewModelScope.launch {
+            dipPrefs.hideDedicatedIpHomeBanner()
+            showDedicatedIpHomeBanner.value = false
+        }
 
     fun snooze(interval: Int) = snoozeHandler.setSnooze(interval)
 
@@ -319,18 +332,20 @@ class ConnectionViewModel(
         }
 
     fun quickConnect(server: VpnServer) {
-        if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
-            router.updateDestination(VpnPermission)
-        } else {
-            vpnRegionPrefs.selectVpnServer(server)
-            connectionManager.connectJob =
-                viewModelScope.launch {
-                    connectionManager.reconnect(server, ::callback)
+        viewModelScope.launch {
+            if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
+                router.updateDestination(VpnPermission)
+            } else {
+                vpnRegionPrefs.selectVpnServer(server)
+                connectionManager.connectJob =
+                    viewModelScope.launch {
+                        connectionManager.reconnect(server, ::callback)
+                    }
+                _state.update {
+                    it.copy(
+                        server = server,
+                    )
                 }
-            _state.update {
-                it.copy(
-                    server = server,
-                )
             }
         }
     }
@@ -341,37 +356,41 @@ class ConnectionViewModel(
     ): Boolean = runBlocking { vpnRegionPrefs.isFavorite(serverName, isDip).first() }
 
     private fun connect() {
-        val connectTo =
-            if (state.value.server.endpoints
-                    .isEmpty()
-            ) {
-                regionListProvider.getOptimalServer()
-            } else {
-                state.value.server
-            }
-        prefs.setSelectedVpnServer(connectTo)
-        prefs.addToQuickConnect(connectTo.key, connectTo.isDedicatedIp)
-        snoozeHandler.cancelSnooze()
-        connectionManager.connectJob?.cancel()
-        connectionManager.connectJob =
-            viewModelScope.launch {
-                connectionManager.connect(
-                    server = connectTo,
-                    true,
-                    ::callback,
-                    ::showProtocolNotAvailable,
-                )
-            }
+        viewModelScope.launch {
+            val connectTo =
+                if (state.value.server.endpoints
+                        .isEmpty()
+                ) {
+                    regionListProvider.getOptimalServer()
+                } else {
+                    state.value.server
+                }
+            prefs.setSelectedVpnServer(connectTo)
+            prefs.addToQuickConnect(connectTo.key, connectTo.isDedicatedIp)
+            snoozeHandler.cancelSnooze()
+            connectionManager.connectJob?.cancel()
+            connectionManager.connectJob =
+                viewModelScope.launch {
+                    connectionManager.connect(
+                        server = connectTo,
+                        true,
+                        ::callback,
+                        ::showProtocolNotAvailable,
+                    )
+                }
+        }
     }
 
     private fun disconnect() {
-        if (settingsPrefs.isAutomationEnabled.value) {
-            prefs.setDisconnectedByUser(true)
-        }
-        connectionManager.connectJob?.cancel()
-        connectionManager.connectJob = null
         viewModelScope.launch {
-            connectionManager.disconnect().getOrNull()
+            if (settingsPrefs.isAutomationEnabled.value) {
+                prefs.setDisconnectedByUser(true)
+            }
+            connectionManager.connectJob?.cancel()
+            connectionManager.connectJob = null
+            viewModelScope.launch {
+                connectionManager.disconnect().getOrNull()
+            }
         }
     }
 
@@ -381,15 +400,17 @@ class ConnectionViewModel(
 
     fun showFeedbackPrompt() = _state.update { it.copy(ratingDialogType = RatingDialogType.Feedback) }
 
-    fun setRatingStateInactive() {
-        ratingTool.setRatingInactive()
-        _state.update { it.copy(ratingDialogType = null) }
-    }
+    fun setRatingStateInactive() =
+        viewModelScope.launch {
+            ratingTool.setRatingInactive()
+            _state.update { it.copy(ratingDialogType = null) }
+        }
 
-    fun updateRatingDate() {
-        ratingTool.updateRatingDate()
-        _state.update { it.copy(ratingDialogType = null) }
-    }
+    fun updateRatingDate() =
+        viewModelScope.launch {
+            ratingTool.updateRatingDate()
+            _state.update { it.copy(ratingDialogType = null) }
+        }
 
     fun showProtocolNotAvailable() {
         showProtocolNotAvailableDialog.value = true

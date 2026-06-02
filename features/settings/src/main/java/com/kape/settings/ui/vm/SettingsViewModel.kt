@@ -27,7 +27,6 @@ import com.kape.data.WebDestination
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
-import com.kape.location.data.LocationPermissionManager
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.CustomObfuscation
 import com.kape.settings.data.DataEncryption
@@ -42,6 +41,7 @@ import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.KoinViewModel
@@ -59,7 +59,6 @@ class SettingsViewModel(
     private val getDebugLogsUseCase: GetLogsUseCase,
     private val sendLogUseCase: SendLogUseCase,
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
-    private val locationPermissionManager: LocationPermissionManager,
     private val connectionManager: ConnectionManager,
     private val connectionInfoProvider: ConnectionInfoProvider,
 ) : ViewModel() {
@@ -124,89 +123,109 @@ class SettingsViewModel(
 
     fun isAutomationEnabled() = prefs.isAutomationEnabled
 
-    fun toggleLaunchOnBoot(enable: Boolean) {
-        prefs.setEnableLaunchOnStartup(enable)
-    }
-
-    fun toggleConnectOnStart(enable: Boolean) {
-        prefs.setEnableConnectOnLaunch(enable)
-    }
-
-    fun toggleConnectOnUpdate(enable: Boolean) {
-        prefs.setEnableConnectOnAppUpdate(enable)
-    }
-
-    fun toggleShowGeoLocatedServers(enable: Boolean) {
-        prefs.setEnabledShowGeoLocatedServers(enable)
-    }
-
-    fun toggleImprovePia(enable: Boolean) {
-        prefs.setHelpImprovePiaEnabled(enable)
-    }
-
-    fun toggleDebugLogging(enable: Boolean) {
-        prefs.setDebugLoggingEnabled(enable)
-        if (enable.not()) {
-            csiPrefs.clearCustomDebugLogs()
+    fun toggleLaunchOnBoot(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setEnableLaunchOnStartup(enabled)
         }
-    }
 
-    fun toggleMace(enable: Boolean) {
-        prefs.setMaceEnabled(enable)
-    }
-
-    fun toggleEnablePortForwarding(enable: Boolean) {
-        prefs.setEnablePortForwarding(enable)
-    }
-
-    fun toggleAllowLocalNetwork(enable: Boolean) {
-        prefs.setAllowLocalTrafficEnabled(enable)
-
-        if (enable.not()) {
-            toggleShadowsocksObfuscation(enabled = false)
+    fun toggleConnectOnStart(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setEnableConnectOnLaunch(enabled)
         }
-    }
 
-    fun toggleShadowsocksObfuscation(enabled: Boolean) {
-        prefs.setShadowsocksObfuscationEnabled(enabled)
-    }
-
-    fun toggleExternalProxyApp(enabled: Boolean) {
-        prefs.setExternalProxyAppEnabled(enabled)
-    }
-
-    fun setExternalProxyAppPackageName(packageName: String) {
-        if (packageName.isEmpty()) {
-            prefs.setExternalProxyAppPackageName(packageName)
-            removeFromVpnExcludedApps(externalProxyAppPackageName.value)
-        } else {
-            prefs.setExternalProxyAppPackageName(packageName)
-            addToVpnExcludedApps(packageName)
+    fun toggleConnectOnUpdate(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setEnableConnectOnAppUpdate(enabled)
         }
-        toggleExternalProxyApp(packageName.isNotEmpty())
-    }
 
-    fun setExternalProxyPort(port: String?) {
-        connectionPrefs.setProxyPort(port)
-    }
+    fun toggleShowGeoLocatedServers(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setEnabledShowGeoLocatedServers(enabled)
+        }
+
+    fun toggleImprovePia(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setHelpImprovePiaEnabled(enabled)
+        }
+
+    fun toggleDebugLogging(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setDebugLoggingEnabled(enabled)
+            if (enabled.not()) {
+                csiPrefs.clearCustomDebugLogs()
+            }
+        }
+
+    fun toggleMace(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setMaceEnabled(enabled)
+        }
+
+    fun toggleEnablePortForwarding(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setEnablePortForwarding(enabled)
+        }
+
+    fun toggleAllowLocalNetwork(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setAllowLocalTrafficEnabled(enabled)
+
+            if (enabled.not()) {
+                toggleShadowsocksObfuscation(enabled = false)
+            }
+        }
+
+    fun toggleShadowsocksObfuscation(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setShadowsocksObfuscationEnabled(enabled)
+        }
+
+    fun toggleExternalProxyApp(enabled: Boolean) =
+        viewModelScope.launch {
+            prefs.setExternalProxyAppEnabled(enabled)
+        }
+
+    fun setExternalProxyAppPackageName(packageName: String) =
+        viewModelScope.launch {
+            if (packageName.isEmpty()) {
+                prefs.setExternalProxyAppPackageName(packageName)
+                removeFromVpnExcludedApps(externalProxyAppPackageName.value)
+            } else {
+                prefs.setExternalProxyAppPackageName(packageName)
+                addToVpnExcludedApps(packageName)
+            }
+            toggleExternalProxyApp(packageName.isNotEmpty())
+        }
+
+    fun setExternalProxyPort(port: String?) =
+        viewModelScope.launch {
+            connectionPrefs.setProxyPort(port)
+        }
 
     fun isPortForwardingEnabled() = prefs.isPortForwardingEnabled
 
-    fun selectProtocol(protocol: VpnProtocols) {
-        prefs.setSelectedProtocol(protocol)
+    fun selectProtocol(protocol: VpnProtocols) =
+        viewModelScope.launch {
+            prefs.setSelectedProtocol(protocol)
 
-        if (protocol != VpnProtocols.OpenVPN) {
-            toggleShadowsocksObfuscation(enabled = false)
+            if (protocol != VpnProtocols.OpenVPN) {
+                toggleShadowsocksObfuscation(enabled = false)
+            }
         }
-    }
 
     val customDns = prefs.customDns
 
-    fun setCustomDns(customDns: CustomDns) = prefs.setCustomDns(customDns = customDns)
+    fun setCustomDns(customDns: CustomDns) =
+        viewModelScope.launch {
+            prefs.setCustomDns(customDns = customDns)
+        }
 
     val customObfuscation = prefs.customObfuscation
 
-    fun setCustomObfuscation(customObfuscation: CustomObfuscation) = prefs.setCustomObfuscation(customObfuscation = customObfuscation)
+    fun setCustomObfuscation(customObfuscation: CustomObfuscation) =
+        viewModelScope.launch {
+            prefs.setCustomObfuscation(customObfuscation = customObfuscation)
+        }
 
     fun isNumericIpAddress(ipAddress: String): Boolean {
         isDnsNumeric.value = isNumericIpAddressUseCase.invoke(ipAddress = ipAddress)
@@ -215,72 +234,87 @@ class SettingsViewModel(
 
     fun isPortValid(port: String): Boolean = port.isNotEmpty() && port.toInt() > 0
 
-    fun setSelectedDnsOption(dnsOptions: DnsOptions) = prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
+    fun setSelectedDnsOption(dnsOptions: DnsOptions) =
+        viewModelScope.launch {
+            prefs.setSelectedDnsOption(dnsOptions = dnsOptions)
+        }
 
     fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) =
-        prefs.setSelectedObfuscationOption(obfuscationOptions = obfuscationOptions)
+        viewModelScope.launch {
+            prefs.setSelectedObfuscationOption(obfuscationOptions = obfuscationOptions)
+        }
 
     fun getSelectedObfuscationOption(): ObfuscationOptions = prefs.selectedObfuscationOption.value
 
     fun setTransport(transport: Transport) {
-        val currentSettings = openVpnSettings.value
-        val hasSettingChanged = currentSettings.transport != transport
-        val ports =
-            if (transport == Transport.UDP) {
-                regionsRepository.getUdpPorts()
-            } else {
-                regionsRepository.getTcpPorts()
+        viewModelScope.launch {
+            val currentSettings = openVpnSettings.first()
+            val hasSettingChanged = currentSettings.transport != transport
+            val ports =
+                if (transport == Transport.UDP) {
+                    regionsRepository.getUdpPorts()
+                } else {
+                    regionsRepository.getTcpPorts()
+                }
+            prefs.setOpenVpnSettings(currentSettings.copy(transport = transport, port = ports[0].toString()))
+
+            if (hasSettingChanged) {
+                showReconnectDialogIfVpnConnected()
             }
-        prefs.setOpenVpnSettings(currentSettings.copy(transport = transport, port = ports[0].toString()))
 
-        if (hasSettingChanged) {
-            showReconnectDialogIfVpnConnected()
-        }
-
-        if (transport == Transport.UDP) {
-            toggleShadowsocksObfuscation(enabled = false)
+            if (transport == Transport.UDP) {
+                toggleShadowsocksObfuscation(enabled = false)
+            }
         }
     }
 
     fun getTransport(): Transport = openVpnSettings.value.transport
 
     fun setEncryption(encryption: DataEncryption) {
-        val currentSettings = openVpnSettings.value
-        val hasSettingChanged = currentSettings.dataEncryption != encryption
-        prefs.setOpenVpnSettings(currentSettings.copy(dataEncryption = encryption))
+        viewModelScope.launch {
+            val currentSettings = openVpnSettings.first()
+            val hasSettingChanged = currentSettings.dataEncryption != encryption
+            prefs.setOpenVpnSettings(currentSettings.copy(dataEncryption = encryption))
 
-        if (hasSettingChanged) {
-            showReconnectDialogIfVpnConnected()
+            if (hasSettingChanged) {
+                showReconnectDialogIfVpnConnected()
+            }
         }
     }
 
     fun setPort(port: String) {
-        val currentSettings = openVpnSettings.value
-        val hasSettingChanged = currentSettings.port != port
-        prefs.setOpenVpnSettings(currentSettings.copy(port = port))
+        viewModelScope.launch {
+            val currentSettings = openVpnSettings.first()
+            val hasSettingChanged = currentSettings.port != port
+            prefs.setOpenVpnSettings(currentSettings.copy(port = port))
 
-        if (hasSettingChanged) {
-            showReconnectDialogIfVpnConnected()
+            if (hasSettingChanged) {
+                showReconnectDialogIfVpnConnected()
+            }
         }
     }
 
-    fun setOpenVpnEnableSmallPackets(enable: Boolean) {
-        val currentSettings = openVpnSettings.value
-        val hasSettingChanged = currentSettings.useSmallPackets != enable
-        prefs.setOpenVpnSettings(currentSettings.copy(useSmallPackets = enable))
+    fun setOpenVpnEnableSmallPackets(enabled: Boolean) {
+        viewModelScope.launch {
+            val currentSettings = openVpnSettings.first()
+            val hasSettingChanged = currentSettings.useSmallPackets != enabled
+            prefs.setOpenVpnSettings(currentSettings.copy(useSmallPackets = enabled))
 
-        if (hasSettingChanged) {
-            showReconnectDialogIfVpnConnected()
+            if (hasSettingChanged) {
+                showReconnectDialogIfVpnConnected()
+            }
         }
     }
 
-    fun setWireGuardEnableSmallPackets(enable: Boolean) {
-        val currentSettings = wireGuardSettings.value
-        val hasSettingChanged = currentSettings.useSmallPackets != enable
-        prefs.setWireGuardSettings(currentSettings.copy(useSmallPackets = enable))
+    fun setWireGuardEnableSmallPackets(enabled: Boolean) {
+        viewModelScope.launch {
+            val currentSettings = wireGuardSettings.first()
+            val hasSettingChanged = currentSettings.useSmallPackets != enabled
+            prefs.setWireGuardSettings(currentSettings.copy(useSmallPackets = enabled))
 
-        if (hasSettingChanged) {
-            showReconnectDialogIfVpnConnected()
+            if (hasSettingChanged) {
+                showReconnectDialogIfVpnConnected()
+            }
         }
     }
 
@@ -303,17 +337,21 @@ class SettingsViewModel(
     }
 
     fun addToVpnExcludedApps(app: String) {
-        val newList = mutableListOf<String>()
-        newList.addAll(prefs.vpnExcludedApps.value)
-        newList.add(app)
-        prefs.setVpnExcludedApps(newList)
+        viewModelScope.launch {
+            val newList = mutableListOf<String>()
+            newList.addAll(prefs.vpnExcludedApps.value)
+            newList.add(app)
+            prefs.setVpnExcludedApps(newList)
+        }
     }
 
     fun removeFromVpnExcludedApps(app: String) {
-        val newList = mutableListOf<String>()
-        newList.addAll(prefs.vpnExcludedApps.value)
-        newList.remove(app)
-        prefs.setVpnExcludedApps(newList)
+        viewModelScope.launch {
+            val newList = mutableListOf<String>()
+            newList.addAll(prefs.vpnExcludedApps.value)
+            newList.remove(app)
+            prefs.setVpnExcludedApps(newList)
+        }
     }
 
     fun getInstalledApplications(packageManager: PackageManager) =

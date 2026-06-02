@@ -4,6 +4,7 @@ import android.content.Context
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
+import com.kape.data.DI
 import com.kape.dedicatedip.data.DipDataSourceImpl
 import com.kape.dedicatedip.data.DipSignupRepository
 import com.kape.dedicatedip.domain.ActivateDipUseCase
@@ -23,8 +24,10 @@ import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.ui.utils.PriceFormatter
 import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.AndroidAccountAPI
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Module
@@ -34,7 +37,8 @@ class DipModule {
         context: Context,
         accountApi: AndroidAccountAPI,
         dipPrefs: DipPrefs,
-    ): DipDataSource = DipDataSourceImpl(context, accountApi, dipPrefs)
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
+    ): DipDataSource = DipDataSourceImpl(context, accountApi, dipPrefs, ioScope)
 
     @Singleton
     fun provideDipSignupRepository(

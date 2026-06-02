@@ -15,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.ui.R
@@ -44,7 +46,7 @@ fun SignupDedicatedIpTokenActivateScreen() =
         val context = LocalContext.current
         val viewModel: DipViewModel = koinViewModel()
         val showSpinner = remember { mutableStateOf(false) }
-        val dipToken = remember { mutableStateOf(viewModel.getSignupDipToken()) }
+        val dipToken by viewModel.getSignupDipToken().collectAsStateWithLifecycle()
 
         Column(
             modifier =
@@ -76,7 +78,7 @@ fun SignupDedicatedIpTokenActivateScreen() =
                     enabled = false,
                     maskInput = false,
                     keyboard = KeyboardType.Text,
-                    content = dipToken,
+                    content = mutableStateOf(dipToken),
                     singleLine = true,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -122,7 +124,7 @@ fun SignupDedicatedIpTokenActivateScreen() =
             ) {
                 showSpinner.value = true
                 viewModel.activateDedicatedIp(
-                    mutableStateOf(TextFieldValue(viewModel.getSignupDipToken())),
+                    mutableStateOf(TextFieldValue(dipToken)),
                 )
             }
             Spacer(modifier = Modifier.height(64.dp))
@@ -138,6 +140,7 @@ fun SignupDedicatedIpTokenActivateScreen() =
                 showSpinner.value = false
                 viewModel.navigateToActivateToken()
             }
+
             DipApiResult.Expired -> {
                 showToast(
                     context = context,
@@ -146,6 +149,7 @@ fun SignupDedicatedIpTokenActivateScreen() =
                 viewModel.resetActivationState()
                 showSpinner.value = false
             }
+
             DipApiResult.Invalid,
             DipApiResult.Error,
             -> {
@@ -156,6 +160,7 @@ fun SignupDedicatedIpTokenActivateScreen() =
                 viewModel.resetActivationState()
                 showSpinner.value = false
             }
+
             null -> {
                 // do nothing
             }

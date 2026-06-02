@@ -34,8 +34,10 @@ class VpnLauncher(
         if (vpnIntent == null) {
             // vpn permission is provided, initiate a connection
             if (settingsPrefs.isAutomationEnabled.value && connectionPrefs.isDisconnectedByUser.value) {
-                connectionPrefs.setDisconnectedByUser(false)
-                return
+                launch {
+                    connectionPrefs.setDisconnectedByUser(false)
+                    return@launch
+                }
             } else {
                 val server: VpnServer? = connectionPrefs.selectedVpnServer.value
                 launch {
