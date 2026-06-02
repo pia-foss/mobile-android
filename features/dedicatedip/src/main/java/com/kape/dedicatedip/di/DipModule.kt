@@ -24,6 +24,7 @@ import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.ui.utils.PriceFormatter
 import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.AndroidAccountAPI
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
@@ -95,6 +96,7 @@ class DipModule {
         connectionPrefs: ConnectionPrefs,
         buildConfigProvider: BuildConfigProvider,
         connectionManager: ConnectionManager,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): DipViewModel =
         DipViewModel(
             router,
@@ -111,5 +113,6 @@ class DipModule {
             connectionPrefs,
             buildConfigProvider,
             connectionManager,
+            ioDispatcher,
         )
 }

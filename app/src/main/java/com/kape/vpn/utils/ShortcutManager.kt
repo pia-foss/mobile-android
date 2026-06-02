@@ -14,8 +14,8 @@ import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_DISCONNECT
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.vpn.MainActivity
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -30,6 +30,7 @@ class ShortcutManager(
     private val context: Context,
     private val connectionStatusProvider: ConnectionStatusProvider,
     @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
+    @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) {
     init {
         ioScope.launch {
@@ -38,7 +39,7 @@ class ShortcutManager(
                 .filter { it == ConnectionStatus.CONNECTED || it == ConnectionStatus.DISCONNECTED }
                 .distinctUntilChanged()
                 .collectLatest { status ->
-                    withContext(Dispatchers.Main) {
+                    withContext(mainDispatcher) {
                         createDynamicShortcuts(status == ConnectionStatus.CONNECTED)
                     }
                 }

@@ -3,6 +3,7 @@ package com.kape.signup.di
 import android.content.Context
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.Router
+import com.kape.data.DI
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
@@ -26,8 +27,10 @@ import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.utils.PriceFormatter
 import com.kape.utils.NetworkConnectionListener
 import com.privateinternetaccess.account.AndroidAccountAPI
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Module
@@ -84,6 +87,7 @@ class SignupModule {
         buildConfigProvider: BuildConfigProvider,
         permissionUtil: PermissionUtil,
         networkConnectionListener: NetworkConnectionListener,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): SignupViewModel =
         SignupViewModel(
             router,
@@ -95,6 +99,7 @@ class SignupModule {
             subscriptionsUseCase,
             buildConfigProvider,
             permissionUtil,
+            ioDispatcher,
             networkConnectionListener,
         )
 }

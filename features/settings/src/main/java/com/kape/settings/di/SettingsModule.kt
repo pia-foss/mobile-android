@@ -6,6 +6,7 @@ import com.kape.contracts.ConnectionManager
 import com.kape.contracts.KpiDataSource
 import com.kape.contracts.Router
 import com.kape.csi.domain.SendLogUseCase
+import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -15,8 +16,10 @@ import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Module
@@ -39,6 +42,7 @@ class SettingsModule {
         isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
         connectionManager: ConnectionManager,
         connectionInfoProvider: ConnectionInfoProvider,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): SettingsViewModel =
         SettingsViewModel(
             router,
@@ -54,5 +58,6 @@ class SettingsModule {
             isNumericIpAddressUseCase,
             connectionManager,
             connectionInfoProvider,
+            ioDispatcher,
         )
 }

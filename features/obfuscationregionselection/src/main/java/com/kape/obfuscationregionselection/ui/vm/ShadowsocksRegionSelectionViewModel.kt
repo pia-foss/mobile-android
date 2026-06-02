@@ -5,21 +5,25 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
+import com.kape.data.DI
 import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.obfuscationregionselection.util.ItemType
 import com.kape.obfuscationregionselection.util.ShadowsocksServerItem
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Named
 
 @KoinViewModel
 class ShadowsocksRegionSelectionViewModel(
     private val router: Router,
     private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<ShadowsocksServerItem>())
     val sorted = mutableStateOf(emptyList<ShadowsocksServerItem>())
@@ -29,7 +33,7 @@ class ShadowsocksRegionSelectionViewModel(
     fun fetchShadowsocksRegions(
         locale: String,
         isLoading: MutableState<Boolean>,
-    ) = viewModelScope.launch {
+    ) = viewModelScope.launch(ioDispatcher) {
         isLoading.value = true
         val servers = getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale)
         arrangeShadowsocksServers(servers)
@@ -37,12 +41,12 @@ class ShadowsocksRegionSelectionViewModel(
     }
 
     fun onShadowsocksRegionSelected(server: ShadowsocksServer) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             shadowsocksRegionPrefs.setSelectShadowsocksServer(server)
         }
 
     fun onFavoriteShadowsocksClicked(serverName: String) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             if (shadowsocksRegionPrefs.isFavorite(serverName).first()) {
                 shadowsocksRegionPrefs.removeFromFavorites(serverName)
             } else {
@@ -54,7 +58,7 @@ class ShadowsocksRegionSelectionViewModel(
     fun filterByName(
         value: String,
         isSearchEnabled: MutableState<Boolean>,
-    ) = viewModelScope.launch {
+    ) = viewModelScope.launch(ioDispatcher) {
         if (value.isNotEmpty()) {
             isSearchEnabled.value = true
             sorted.value =
@@ -72,7 +76,7 @@ class ShadowsocksRegionSelectionViewModel(
     private fun isShadowsocksServerFavorite(serverName: String): Flow<Boolean> = shadowsocksRegionPrefs.isFavorite(serverName)
 
     private fun arrangeShadowsocksServers(items: List<ShadowsocksServer>? = null) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             val list = mutableListOf<ShadowsocksServerItem>()
             val favorites = mutableListOf<ShadowsocksServerItem>()
             val all = mutableListOf<ShadowsocksServerItem>()

@@ -6,6 +6,7 @@ import com.kape.contracts.ConnectionManager
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
+import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
@@ -33,8 +34,10 @@ import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.utils.NetworkConnectionListener
 import com.privateinternetaccess.account.AndroidAccountAPI
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Module
@@ -101,6 +104,7 @@ class LoginModule {
         vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
         buildConfigProvider: BuildConfigProvider,
         permissionsUtil: PermissionUtil,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): LoginViewModel =
         LoginViewModel(
@@ -109,6 +113,7 @@ class LoginModule {
             vpnSubscriptionPaymentProvider,
             buildConfigProvider,
             permissionsUtil,
+            ioDispatcher,
             networkConnectionListener,
         )
 
@@ -127,5 +132,6 @@ class LoginModule {
         router: Router,
         useCase: LoginUseCase,
         networkConnectionListener: NetworkConnectionListener,
-    ): LoginWithEmailViewModel = LoginWithEmailViewModel(router, useCase, networkConnectionListener)
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+    ): LoginWithEmailViewModel = LoginWithEmailViewModel(router, useCase, ioDispatcher, networkConnectionListener)
 }

@@ -54,7 +54,7 @@ class SplashViewModel(
     }
 
     fun onUpdateClicked(launchUpdate: (updateUrl: String) -> Unit) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             if (connectionManager.isConnectionInProgress()) {
                 connectionManager.disconnect().getOrNull()
             }

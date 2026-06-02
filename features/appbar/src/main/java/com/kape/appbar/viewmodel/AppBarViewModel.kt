@@ -8,14 +8,18 @@ import androidx.lifecycle.viewModelScope
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.Router
 import com.kape.data.ConnectionStatus
+import com.kape.data.DI
 import com.kape.utils.NetworkConnectionListener
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Named
 
 @KoinViewModel
 class AppBarViewModel(
     private val router: Router,
     private val connectionStatusProvider: ConnectionStatusProvider,
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
     val isConnected = networkConnectionListener.isConnected
@@ -29,7 +33,7 @@ class AppBarViewModel(
         private set
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             connectionStatusProvider.state.collect {
                 refreshConnectionState(it.title)
                 appBarConnectionState = it.status

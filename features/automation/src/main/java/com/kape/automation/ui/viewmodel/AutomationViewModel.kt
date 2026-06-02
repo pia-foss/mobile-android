@@ -17,6 +17,7 @@ import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkRulesManager
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -33,6 +34,7 @@ class AutomationViewModel(
     private val networkConnectionListener: NetworkConnectionListener,
     @Named(DI.RULES_UPDATED_INTENT) private val broadcastIntent: Intent,
     private val automationManager: AutomationManager,
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     val isAutomationEnavled = settingsPrefs.isAutomationEnabled
 
@@ -53,7 +55,7 @@ class AutomationViewModel(
     }
 
     fun onBackgroundLocationPermissionGranted(context: Context) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             settingsPrefs.setAutomationEnabled(true)
             automationManager.startAutomationService()
             sendBroadcast(context)
@@ -71,7 +73,7 @@ class AutomationViewModel(
         if (settingsPrefs.isAutomationEnabled.value) {
             disableAutomation()
         } else {
-            viewModelScope.launch {
+            viewModelScope.launch(ioDispatcher) {
                 if (areLocationPermissionsGranted()) {
                     settingsPrefs.setAutomationEnabled(true)
                     automationManager.startAutomationService()
@@ -92,7 +94,7 @@ class AutomationViewModel(
     fun sendBroadcast(context: Context) = context.sendBroadcast(broadcastIntent)
 
     private fun disableAutomation() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             settingsPrefs.setAutomationEnabled(false)
             automationManager.stopAutomationService()
         }
@@ -106,19 +108,19 @@ class AutomationViewModel(
     fun updateRule(
         rule: NetworkItem,
         behavior: NetworkBehavior,
-    ) = viewModelScope.launch {
+    ) = viewModelScope.launch(ioDispatcher) {
         networkRulesManager.updateRule(rule, behavior)
     }
 
     fun addRule(
         ssid: String,
         behavior: NetworkBehavior,
-    ) = viewModelScope.launch {
+    ) = viewModelScope.launch(ioDispatcher) {
         networkRulesManager.addRule(ssid, behavior)
     }
 
     fun removeRule(rule: NetworkItem) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             networkRulesManager.removeRule(rule)
         }
 

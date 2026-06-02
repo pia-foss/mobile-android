@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
+import com.kape.data.DI
 import com.kape.data.DedicatedIpActivateToken
 import com.kape.data.DedicatedIpLocationSelection
 import com.kape.data.DedicatedIpSignupPlans
@@ -34,11 +35,13 @@ import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Named
 
 @KoinViewModel
 class DipViewModel(
@@ -56,6 +59,7 @@ class DipViewModel(
     private val connectionPrefs: ConnectionPrefs,
     private val buildConfigProvider: BuildConfigProvider,
     private val connectionManager: ConnectionManager,
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val _state = MutableStateFlow<DedicatedIpStep?>(null)
     val state: StateFlow<DedicatedIpStep?> = _state
@@ -63,7 +67,7 @@ class DipViewModel(
     val dipList = mutableStateListOf<VpnServer>()
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             dipPrefs.dedicatedIps.collect {
                 regionListProvider.reflectDedicatedIpAction()
                 loadDedicatedIps()
@@ -97,13 +101,13 @@ class DipViewModel(
     fun navigateBack() = router.navigateBack()
 
     fun loadDedicatedIps() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             dipList.clear()
             dipList.addAll(regionListProvider.servers.first().filter { it.isDedicatedIp })
         }
 
     fun activateDedicatedIp(dipToken: MutableState<TextFieldValue>) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             val result = activateDipUseCase.activate(dipToken.value.text)
             activationState.value = result
             when (result) {
@@ -131,7 +135,7 @@ class DipViewModel(
     fun removeDip(
         serverKey: String,
         dipToken: String,
-    ) = viewModelScope.launch {
+    ) = viewModelScope.launch(ioDispatcher) {
         val dip = dipPrefs.dedicatedIps.value.firstOrNull { it.dipToken == dipToken }
         dip?.let {
             dipPrefs.removeDedicatedIp(it)
@@ -144,7 +148,7 @@ class DipViewModel(
     }
 
     fun getDipSupportedCountries() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             val response = getDipSupportedCountries.invoke()
             if (response == null || response.dedicatedIpCountriesAvailable.isEmpty()) {
                 showSupportedCountriesDialog.value = false
@@ -167,7 +171,7 @@ class DipViewModel(
         }
 
     fun getDipMonthlyPlan() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             val monthlyPlan = getDipMonthlyPlan.invoke()
             showFetchingNeededInformationError.value =
                 dipYearlyPlan.value == null &&
@@ -180,7 +184,7 @@ class DipViewModel(
         }
 
     fun getDipYearlyPlan() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             val yearlyPlan = getDipYearlyPlan.invoke()
             showFetchingNeededInformationError.value =
                 dipMonthlyPlan.value == null &&
@@ -196,7 +200,7 @@ class DipViewModel(
         }
 
     fun hasActivePlaystoreSubscription() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             vpnSubscriptionPaymentProvider.hasActiveSubscription().collect {
                 hasAnActivePlaystoreSubscription.value = it
             }
@@ -205,14 +209,14 @@ class DipViewModel(
     fun showDedicatedIpSignupBanner() = dipPrefs.isDipSignupEnabled(buildConfigProvider.isGoogleFlavor())
 
     fun selectDipCountry(dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             dipPrefs.setDedicatedIpSelectedCountry(dedicatedIpSelectedCountry = dedicatedIpSelectedCountry)
         }
 
     fun getSelectedDipCountry() = dipPrefs.dedicatedIpSelectedCountry
 
     fun selectPlanProductId(productId: String) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             dipPrefs.setSelectedDipSignupProductId(productId)
         }
 
@@ -223,7 +227,7 @@ class DipViewModel(
     fun getSignupDipToken() = dipPrefs.purchasedSignupDipToken
 
     fun purchaseSubscription(activity: Activity) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             if (dipPrefs.selectedDipSignupProductId.first().isEmpty()) {
                 return@launch
             }
@@ -245,7 +249,7 @@ class DipViewModel(
     }
 
     fun validateSubscriptionPurchase(dipPurchaseData: DipPurchaseData? = null) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             showSpinner.value = true
             showPurchaseValidationError.value = false
             val result = validateDipSignup.invoke(dipPurchaseData = dipPurchaseData)
@@ -262,7 +266,7 @@ class DipViewModel(
         }
 
     fun fetchPurchasedDedicatedIpToken() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             showSpinner.value = true
             showTokenRetrievalError.value = false
             val countryDetails = getSelectedDipCountry().first()
@@ -290,7 +294,7 @@ class DipViewModel(
         }
 
     fun resumePossibleUnacknowledgedDipPurchases() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             val monthlyPlan = getDipMonthlyPlan.invoke()
             val yearlyPlan = getDipYearlyPlan.invoke()
             val productIds = mutableListOf<String>()
@@ -318,7 +322,7 @@ class DipViewModel(
         }
 
     private fun checkForUnacknowledgedDipPurchases(productId: String) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             dipSubscriptionPaymentProvider.unacknowledgedProductIds(
                 productIds = listOf(productId),
             ) { result ->
@@ -336,10 +340,10 @@ class DipViewModel(
             }
         }
 
-    private fun disconnect() = viewModelScope.launch { connectionManager.disconnect().getOrNull() }
+    private fun disconnect() = viewModelScope.launch(ioDispatcher) { connectionManager.disconnect().getOrNull() }
 
     private fun navigateToDedicatedIpPurchaseSuccess() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             _state.emit(DedicatedIpStep.SignupSuccess)
         }
 }

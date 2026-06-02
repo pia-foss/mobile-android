@@ -9,6 +9,7 @@ import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
 import com.kape.data.AUTO_KEY
 import com.kape.data.Connection
+import com.kape.data.DI
 import com.kape.data.HelpSettings
 import com.kape.data.TvSideMenu
 import com.kape.data.vpnserver.VpnServer
@@ -21,12 +22,14 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Named
 import java.util.Collections
 
 @KoinViewModel
@@ -38,6 +41,7 @@ class VpnRegionSelectionViewModel(
     private val connectionPrefs: ConnectionPrefs,
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val connectionManager: ConnectionManager,
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<ServerItem>())
     val sorted = mutableStateOf(emptyList<ServerItem>())
@@ -53,7 +57,7 @@ class VpnRegionSelectionViewModel(
         locale: String,
         isLoading: MutableState<Boolean>,
         displayLoading: Boolean,
-    ) = viewModelScope.launch {
+    ) = viewModelScope.launch(ioDispatcher) {
         arrangeVpnServers(regionListProvider.servers.value)
         if (displayLoading) {
             isLoading.value = true
@@ -81,7 +85,7 @@ class VpnRegionSelectionViewModel(
                 server
             }
         connectionManager.connectJob =
-            viewModelScope.launch {
+            viewModelScope.launch(ioDispatcher) {
                 if (connectionManager.isConnectionInProgress()) {
                     connectionManager.disconnect().getOrNull()
                 }
@@ -98,11 +102,11 @@ class VpnRegionSelectionViewModel(
     }
 
     private fun callback() {
-        viewModelScope.launch { connectionManager.disconnect().getOrNull() }
+        viewModelScope.launch(ioDispatcher) { connectionManager.disconnect().getOrNull() }
     }
 
     fun onFavoriteVpnClicked(serverData: ServerData) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             if (vpnRegionPrefs.isFavorite(serverData).first()) {
                 vpnRegionPrefs.removeFromFavorites(serverData)
             } else {
@@ -115,7 +119,7 @@ class VpnRegionSelectionViewModel(
     fun filterByName(
         value: String,
         isSearchEnabled: MutableState<Boolean>? = null,
-    ) = viewModelScope.launch {
+    ) = viewModelScope.launch(ioDispatcher) {
         if (value.isNotEmpty()) {
             isSearchEnabled?.value = true
             sorted.value =
@@ -177,7 +181,7 @@ class VpnRegionSelectionViewModel(
     private fun isVpnServerFavorite(serverData: ServerData) = vpnRegionPrefs.isFavorite(serverData)
 
     private fun arrangeVpnServers(items: List<VpnServer>? = null) =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             val autoRegion = getAutoRegion(autoRegionName, autoRegionIso)
             val list = mutableListOf<ServerItem>()
             val favorites = mutableListOf<ServerItem>()

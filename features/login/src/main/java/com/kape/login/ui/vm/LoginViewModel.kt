@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.Router
+import com.kape.data.DI
 import com.kape.data.LoginWithEmail
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.FAILED
@@ -17,10 +18,12 @@ import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.utils.NetworkConnectionListener
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Named
 
 @KoinViewModel
 class LoginViewModel(
@@ -29,6 +32,7 @@ class LoginViewModel(
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     private val buildConfigProvider: BuildConfigProvider,
     private val permissionsUtil: PermissionUtil,
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
     private val _state = MutableStateFlow(IDLE)
@@ -41,7 +45,7 @@ class LoginViewModel(
     fun login(
         username: String,
         password: String,
-    ) = viewModelScope.launch {
+    ) = viewModelScope.launch(ioDispatcher) {
         _state.emit(LOADING)
         if (username.isEmpty() || password.isEmpty()) {
             _state.emit(INVALID)
@@ -57,7 +61,7 @@ class LoginViewModel(
 
     fun loginWithReceipt(packageName: String) {
         this.packageName = packageName
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             collectPurchaseHistory()
             vpnSubscriptionPaymentProvider.getPurchaseHistory()
         }
@@ -66,7 +70,7 @@ class LoginViewModel(
     fun navigateToLoginWithEmail() = router.updateDestination(LoginWithEmail)
 
     private fun collectPurchaseHistory() {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             vpnSubscriptionPaymentProvider.purchaseHistoryState.collect {
                 _state.emit(LOADING)
                 when (it) {
