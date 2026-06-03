@@ -42,12 +42,16 @@ import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -194,7 +198,12 @@ class ConnectionViewModel(
                     shortcutPrefs.setShortcutConnectToVpn(false)
                     if (!connectionInfoProvider.isConnected()) {
                         prefs.selectedVpnServer.value?.let {
-                            connectionManager.connect(it, false, ::callback, ::showProtocolNotAvailable)
+                            connectionManager.connect(
+                                it,
+                                false,
+                                ::callback,
+                                ::showProtocolNotAvailable,
+                            )
                         } ?: run {
                             connectionManager.connect(
                                 regionListProvider.getOptimalServer(),
@@ -329,11 +338,23 @@ class ConnectionViewModel(
         }
     }
 
-    fun getConnectionSettings() =
-        when (settingsPrefs.selectedProtocol.value) {
-            VpnProtocols.WireGuard -> settingsPrefs.wireGuardSettings.value
-            VpnProtocols.OpenVPN -> settingsPrefs.openVpnSettings.value
-        }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getConnectionSettings(): StateFlow<com.kape.settings.data.ProtocolSettings> =
+        settingsPrefs.selectedProtocol
+            .flatMapLatest { protocol ->
+                when (protocol) {
+                    VpnProtocols.WireGuard -> settingsPrefs.wireGuardSettings
+                    VpnProtocols.OpenVPN -> settingsPrefs.openVpnSettings
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(),
+                initialValue =
+                    when (settingsPrefs.selectedProtocol.value) {
+                        VpnProtocols.WireGuard -> settingsPrefs.wireGuardSettings.value
+                        VpnProtocols.OpenVPN -> settingsPrefs.openVpnSettings.value
+                    },
+            )
 
     fun quickConnect(server: VpnServer) {
         viewModelScope.launch(ioDispatcher) {

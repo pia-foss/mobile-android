@@ -4,10 +4,10 @@ import com.kape.data.DI
 import com.kape.data.vpnserver.VpnServer
 import com.kape.vpnregions.data.VpnRegionRepository
 import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
@@ -16,7 +16,7 @@ import java.util.Locale
 class RegionListProvider(
     private val regionRepository: VpnRegionRepository,
     private val readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
-    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) {
     private val locale = Locale.getDefault().language
     private val _isDefaultList = MutableStateFlow(true)
@@ -41,12 +41,14 @@ class RegionListProvider(
     }
 
     fun reflectDedicatedIpAction() {
-        val nonDipServers = _servers.value.filter { !it.isDedicatedIp }
-        _servers.value = regionRepository.addDipsToList(nonDipServers)
+        ioScope.launch {
+            val nonDipServers = _servers.value.filter { !it.isDedicatedIp }
+            _servers.value = regionRepository.addDipsToServerList(nonDipServers)
+        }
     }
 
     fun loadVpnServerLatencies() =
-        CoroutineScope(ioDispatcher).launch {
+        ioScope.launch {
             updateServerLatencies(locale, false)
         }
 
@@ -62,7 +64,7 @@ class RegionListProvider(
             _servers.value = servers
             servers
         } else {
-            _servers.value = regionRepository.getServers(isConnected)
+            _servers.value = regionRepository.getServers(isConnected).first()
             _servers.value
         }
     }
@@ -83,8 +85,10 @@ class RegionListProvider(
     }
 
     private fun setRegionsListToDefault() {
-        val assetServers = readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
-        _servers.update { regionRepository.addDipsToList(assetServers) }
-        _isDefaultList.update { true }
+        ioScope.launch {
+            val assetServers = readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
+            _servers.update { regionRepository.addDipsToServerList(assetServers) }
+            _isDefaultList.update { true }
+        }
     }
 }

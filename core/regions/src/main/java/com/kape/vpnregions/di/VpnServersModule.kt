@@ -7,6 +7,7 @@ import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
@@ -19,8 +20,8 @@ class VpnServersModule {
     fun provideRegionListProvider(
         regionRepository: VpnRegionRepository,
         readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
-        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-    ): RegionListProvider = RegionListProvider(regionRepository, readVpnRegionsDetailsUseCase, ioDispatcher)
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
+    ): RegionListProvider = RegionListProvider(regionRepository, readVpnRegionsDetailsUseCase, ioScope)
 
     @Singleton
     fun provideShadowsocksListProvider(

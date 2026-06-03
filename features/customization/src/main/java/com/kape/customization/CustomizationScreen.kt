@@ -156,7 +156,7 @@ private fun DisplayComponent(
 
     when (screenElement.element) {
         Element.ConnectionInfo -> {
-            val settings = viewModel.getConnectionSettings()
+            val settings by viewModel.getConnectionSettings().collectAsStateWithLifecycle()
             ConnectionInfo(
                 modifier = modifier,
                 connection = settings.name,
