@@ -96,14 +96,16 @@ class VpnSubscriptionPaymentProviderImpl(
                 }
 
                 override fun onPurchaseUpdatesResponse(purchaseUpdate: PurchaseUpdatesResponse?) {
-                    purchaseUpdate?.let {
-                        prefs.storeVpnPurchaseData(
-                            PurchaseData(
-                                it.userData.userId,
-                                it.receipts.first().receiptId,
-                            ),
-                        )
-                        purchaseState.value = PurchaseState.PurchaseSuccess
+                    ioScope.launch {
+                        purchaseUpdate?.let {
+                            prefs.storeVpnPurchaseData(
+                                PurchaseData(
+                                    it.userData.userId,
+                                    it.receipts.first().receiptId,
+                                ),
+                            )
+                            purchaseState.value = PurchaseState.PurchaseSuccess
+                        }
                     }
                 }
             },
@@ -164,13 +166,15 @@ class VpnSubscriptionPaymentProviderImpl(
         if (purchase != null) {
             when (purchase.requestStatus) {
                 PurchaseResponse.RequestStatus.SUCCESSFUL -> {
-                    prefs.storeVpnPurchaseData(
-                        PurchaseData(
-                            purchase.userData.userId,
-                            purchase.receipt.receiptId,
-                        ),
-                    )
-                    purchaseState.value = PurchaseState.PurchaseSuccess
+                    ioScope.launch {
+                        prefs.storeVpnPurchaseData(
+                            PurchaseData(
+                                purchase.userData.userId,
+                                purchase.receipt.receiptId,
+                            ),
+                        )
+                        purchaseState.value = PurchaseState.PurchaseSuccess
+                    }
                 }
 
                 else -> purchaseState.value = PurchaseState.PurchaseFailed
