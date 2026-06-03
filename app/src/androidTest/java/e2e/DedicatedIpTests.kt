@@ -5,8 +5,8 @@ import androidx.test.uiautomator.Until
 import androidx.test.uiautomator.uiAutomator
 import com.kape.vpn.BuildConfig
 import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
 import org.junit.Test
-import kotlin.test.assertNull
 
 class DedicatedIpTests {
     @Test
@@ -25,7 +25,9 @@ class DedicatedIpTests {
             assertNotNull(
                 device.wait(Until.hasObject(By.res(Dip.SERVER_NAME)), TIMEOUT),
             )
-            assertNull(device.findObject(By.res(Dip.FIELD)))
+            assertTrue(
+                device.wait(Until.gone(By.res(Dip.FIELD)), TIMEOUT),
+            )
         }
 
     @Test
