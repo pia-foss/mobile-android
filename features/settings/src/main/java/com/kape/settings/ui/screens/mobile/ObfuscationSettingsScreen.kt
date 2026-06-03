@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.data.ObfuscationOptions
@@ -34,6 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ObfuscationSettingsScreen() =
     Screen {
         val viewModel: SettingsViewModel = koinViewModel()
+        val customObfuscation by viewModel.customObfuscation.collectAsStateWithLifecycle()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.obfuscation))
@@ -42,7 +45,7 @@ fun ObfuscationSettingsScreen() =
             mutableMapOf(
                 ObfuscationOptions.PIA to stringResource(id = R.string.pia),
             )
-        viewModel.getCustomObfuscation()?.let {
+        customObfuscation?.let {
             obfuscationOptions[ObfuscationOptions.CUSTOM] =
                 "${stringResource(id = R.string.network_dns_selection_custom)} ${it.host}:${it.port}"
         }
@@ -53,6 +56,11 @@ fun ObfuscationSettingsScreen() =
         val tcpTransportDialogVisible = remember { mutableStateOf(false) }
         val externalProxyAppDialogVisible = remember { mutableStateOf(false) }
         val externalProxyPortDialogVisible = remember { mutableStateOf(false) }
+        val externalProxyEnabled by viewModel.externalProxyAppEnabled.collectAsStateWithLifecycle()
+        val externalProxyAppPackageName by viewModel.externalProxyAppPackageName.collectAsStateWithLifecycle()
+        val externalProxyPort by viewModel.externalProxyAppPort.collectAsStateWithLifecycle()
+        val shadowSocksEnabled by viewModel.shadowsocksObfuscationEnabled.collectAsStateWithLifecycle()
+        val localTrafficEnabled by viewModel.isAllowLocalTrafficEnabled.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -71,26 +79,26 @@ fun ObfuscationSettingsScreen() =
                     SettingsToggle(
                         titleId = R.string.obfuscation_external_proxy_app_title,
                         subtitleId = R.string.obfuscation_external_proxy_app_description,
-                        stateEnabled = viewModel.externalProxyAppEnabled,
+                        stateEnabled = externalProxyEnabled,
                         toggle = {
-                            if (it && viewModel.externalProxyAppPackageName.value.isEmpty()) {
+                            if (it && externalProxyAppPackageName.isEmpty()) {
                                 externalProxyAppDialogVisible.value = true
                             } else {
                                 viewModel.toggleExternalProxyApp(it)
                             }
                         },
                     )
-                    if (viewModel.externalProxyAppEnabled.value && viewModel.externalProxyAppPackageName.value.isNotEmpty()) {
+                    if (externalProxyEnabled && externalProxyAppPackageName.isNotEmpty()) {
                         SettingsItem(
                             titleId = R.string.selected_proxy_app,
-                            subtitle = viewModel.externalProxyAppPackageName.value,
+                            subtitle = externalProxyAppPackageName,
                             onClick = {
                                 viewModel.navigateToExternalAppList()
                             },
                         )
                         SettingsItem(
                             titleId = R.string.proxy_port,
-                            subtitle = viewModel.externalProxyAppPort.value,
+                            subtitle = externalProxyPort,
                             onClick = {
                                 externalProxyPortDialogVisible.value = true
                             },
@@ -99,17 +107,17 @@ fun ObfuscationSettingsScreen() =
                     SettingsToggle(
                         titleId = R.string.obfuscation_shadowsocks_title,
                         subtitleId = R.string.obfuscation_shadowsocks_description,
-                        stateEnabled = viewModel.shadowsocksObfuscationEnabled,
+                        stateEnabled = shadowSocksEnabled,
                         toggle = { enabled ->
                             viewModel.toggleShadowsocksObfuscation(enabled)
-                            if (viewModel.isAllowLocalTrafficEnabled.value.not()) {
+                            if (localTrafficEnabled.not()) {
                                 allowLocalTrafficDialogVisible.value = true
                             } else if (viewModel.getTransport() != Transport.TCP) {
                                 tcpTransportDialogVisible.value = true
                             }
                         },
                     )
-                    if (viewModel.shadowsocksObfuscationEnabled.value) {
+                    if (shadowSocksEnabled) {
                         SettingsItem(
                             titleId = R.string.obfuscation_shadowsocks_subtitle,
                             onClick = {
@@ -131,7 +139,7 @@ fun ObfuscationSettingsScreen() =
                     viewModel.setSelectedObfuscationOption(it)
 
                     if (hasCustomOptionChanged &&
-                        (viewModel.shadowsocksObfuscationEnabled.value && it == ObfuscationOptions.PIA)
+                        (shadowSocksEnabled && it == ObfuscationOptions.PIA)
                     ) {
                         viewModel.showReconnectDialogIfVpnConnected()
                     }
@@ -148,10 +156,10 @@ fun ObfuscationSettingsScreen() =
 
         if (customObfuscationDialogVisible.value) {
             CustomObfuscationDialog(
-                customObfuscation = viewModel.getCustomObfuscation(),
+                customObfuscation = customObfuscation,
                 onConfirm = {
                     customObfuscationDialogVisible.value = false
-                    val hasCustomObfuscationChanged = viewModel.getCustomObfuscation() != it
+                    val hasCustomObfuscationChanged = customObfuscation != it
                     viewModel.setCustomObfuscation(customObfuscation = it)
                     viewModel.setSelectedObfuscationOption(ObfuscationOptions.CUSTOM)
 
@@ -229,7 +237,7 @@ fun ObfuscationSettingsScreen() =
 
         if (externalProxyPortDialogVisible.value) {
             ProxyPortDialog(
-                currentPort = viewModel.externalProxyAppPort.value,
+                currentPort = externalProxyPort,
                 onConfirm = {
                     viewModel.setExternalProxyPort(it)
                     externalProxyPortDialogVisible.value = false

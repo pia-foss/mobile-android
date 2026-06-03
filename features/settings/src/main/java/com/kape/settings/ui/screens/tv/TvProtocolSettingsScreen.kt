@@ -14,6 +14,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,8 +26,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.contracts.ConnectionInfoProvider
+import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
+import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.ui.elements.OptionsDialog
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.tv.TvSettingsItem
@@ -47,6 +51,8 @@ import org.koin.compose.koinInject
 fun TvProtocolSettingsScreen() =
     Screen {
         val viewModel: SettingsViewModel = koinViewModel()
+        val openVpnSettings by viewModel.openVpnSettings.collectAsStateWithLifecycle()
+        val wireGuardSettings by viewModel.wireGuardSettings.collectAsStateWithLifecycle()
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
         val initialFocusRequester = remember { FocusRequester() }
 
@@ -54,8 +60,8 @@ fun TvProtocolSettingsScreen() =
         val transportDialogVisible = remember { mutableStateOf(false) }
         val encryptionDialogVisible = remember { mutableStateOf(false) }
         val portDialogVisible = remember { mutableStateOf(false) }
-        val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
-        val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
+        val protocolSelection by viewModel.selectedProtocol.collectAsStateWithLifecycle()
+        val portSelection = remember { mutableStateOf(openVpnSettings.port) }
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
@@ -108,13 +114,15 @@ fun TvProtocolSettingsScreen() =
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.Top,
                     ) {
-                        when (viewModel.getSelectedProtocol()) {
+                        when (protocolSelection) {
                             VpnProtocols.WireGuard ->
                                 TvWireguardProtocolSettingsScreen(
                                     viewModel = viewModel,
                                     initialFocusRequester = initialFocusRequester,
                                     protocolDialogVisible = protocolDialogVisible,
+                                    wireGuardSettings,
                                 )
+
                             VpnProtocols.OpenVPN ->
                                 TvOpenVpnProtocolSettingsScreen(
                                     viewModel = viewModel,
@@ -123,6 +131,7 @@ fun TvProtocolSettingsScreen() =
                                     transportDialogVisible = transportDialogVisible,
                                     encryptionDialogVisible = encryptionDialogVisible,
                                     portDialogVisible = portDialogVisible,
+                                    openVpnSettings,
                                 )
                         }
                     }
@@ -154,16 +163,15 @@ fun TvProtocolSettingsScreen() =
                         buttons = getDefaultButtons(),
                         onDismiss = { protocolDialogVisible.value = false },
                         onConfirm = {
-                            val hasProtocolChanged = protocolSelection.value != it
+                            val hasProtocolChanged = protocolSelection != it
                             viewModel.selectProtocol(it)
-                            protocolSelection.value = it
                             protocolDialogVisible.value = false
 
                             if (hasProtocolChanged) {
                                 viewModel.showReconnectDialogIfVpnConnected()
                             }
                         },
-                        selection = protocolSelection.value,
+                        selection = protocolSelection,
                     )
                 }
             }
@@ -192,8 +200,9 @@ fun TvProtocolSettingsScreen() =
                     TransportSelectionDialog(
                         viewModel = viewModel,
                         transportDialogVisible = transportDialogVisible,
-                        transportSelection = viewModel.getOpenVpnSettings().transport,
+                        transportSelection = openVpnSettings.transport,
                         portSelection = portSelection,
+                        openVpnSettings,
                     )
                 }
             }
@@ -206,7 +215,7 @@ fun TvProtocolSettingsScreen() =
                     EncryptionSelectionDialog(
                         viewModel = viewModel,
                         encryptionDialogVisible = encryptionDialogVisible,
-                        encryptionSelection = viewModel.getOpenVpnSettings().dataEncryption,
+                        encryptionSelection = openVpnSettings.dataEncryption,
                     )
                 }
             }
@@ -219,7 +228,7 @@ fun TvProtocolSettingsScreen() =
                     PortSelectionDialog(
                         viewModel = viewModel,
                         portDialogVisible = portDialogVisible,
-                        portSelection = viewModel.getOpenVpnSettings().port,
+                        portSelection = openVpnSettings.port,
                     )
                 }
             }
@@ -234,43 +243,44 @@ private fun TvOpenVpnProtocolSettingsScreen(
     transportDialogVisible: MutableState<Boolean>,
     encryptionDialogVisible: MutableState<Boolean>,
     portDialogVisible: MutableState<Boolean>,
+    openVpnSettings: OpenVpnSettings,
 ) {
     TvSettingsItem(
         modifier = Modifier.focusRequester(initialFocusRequester),
         titleId = R.string.protocol_selection_title,
-        subtitle = viewModel.getOpenVpnSettings().name,
+        subtitle = openVpnSettings.name,
     ) {
         protocolDialogVisible.value = true
     }
     TvSettingsItem(
         titleId = R.string.protocol_transport_title,
-        subtitle = viewModel.getOpenVpnSettings().transport.value,
+        subtitle = openVpnSettings.transport.value,
     ) {
         transportDialogVisible.value = !transportDialogVisible.value
     }
     TvSettingsItem(
         titleId = R.string.protocol_data_encryption_title,
-        subtitle = viewModel.getOpenVpnSettings().dataEncryption.value,
+        subtitle = openVpnSettings.dataEncryption.value,
     ) {
         encryptionDialogVisible.value = !encryptionDialogVisible.value
     }
     TvSettingsItem(
         titleId = R.string.protocol_port_title,
-        subtitle = viewModel.getOpenVpnSettings().port,
+        subtitle = openVpnSettings.port,
     ) {
         portDialogVisible.value = !portDialogVisible.value
     }
     TvSettingsToggle(
         titleId = R.string.protocol_use_small_packets_title,
         subtitleId = R.string.protocol_use_small_packets_description,
-        enabled = viewModel.getOpenVpnSettings().useSmallPackets,
+        enabled = openVpnSettings.useSmallPackets,
         toggle = {
             viewModel.setOpenVpnEnableSmallPackets(it)
         },
     )
     TvSettingsItem(
         titleId = R.string.protocol_handshake_title,
-        subtitle = viewModel.getOpenVpnSettings().handshake,
+        subtitle = openVpnSettings.handshake,
     ) { }
 }
 
@@ -279,24 +289,25 @@ private fun TvWireguardProtocolSettingsScreen(
     viewModel: SettingsViewModel,
     initialFocusRequester: FocusRequester,
     protocolDialogVisible: MutableState<Boolean>,
+    wireGuardSettings: WireGuardSettings,
 ) {
     TvSettingsItem(
         modifier = Modifier.focusRequester(initialFocusRequester),
         titleId = R.string.protocol_selection_title,
-        subtitle = viewModel.getWireGuardSettings().name,
+        subtitle = wireGuardSettings.name,
     ) {
         protocolDialogVisible.value = true
     }
     TvSettingsToggle(
         titleId = R.string.protocol_use_small_packets_title,
         subtitleId = R.string.protocol_use_small_packets_description,
-        enabled = viewModel.getWireGuardSettings().useSmallPackets,
+        enabled = wireGuardSettings.useSmallPackets,
         toggle = {
             viewModel.setWireGuardEnableSmallPackets(it)
         },
     )
     TvSettingsItem(
         titleId = R.string.protocol_handshake_title,
-        subtitle = viewModel.getWireGuardSettings().handshake,
+        subtitle = wireGuardSettings.handshake,
     ) { }
 }

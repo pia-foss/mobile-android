@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -16,11 +17,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.data.DataEncryption
+import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
+import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.ui.elements.OptionsDialog
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.mobile.SettingsItem
@@ -41,7 +45,8 @@ fun ProtocolSettingsScreen() =
                 appBarText(stringResource(id = R.string.protocols))
             }
         val protocolDialogVisible = remember { mutableStateOf(false) }
-        val protocolSelection = remember { mutableStateOf(viewModel.getSelectedProtocol()) }
+        val protocolSelection by viewModel.selectedProtocol.collectAsStateWithLifecycle()
+        val wireGuardSettings by viewModel.wireGuardSettings.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -59,7 +64,7 @@ fun ProtocolSettingsScreen() =
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                    when (viewModel.getSelectedProtocol()) {
+                    when (protocolSelection) {
                         VpnProtocols.OpenVPN -> {
                             OpenVpnProtocolSettingsScreen(
                                 viewModel = viewModel,
@@ -71,6 +76,7 @@ fun ProtocolSettingsScreen() =
                             WireGuardProtocolSettingsScreen(
                                 viewModel = viewModel,
                                 protocolDialogVisible = protocolDialogVisible,
+                                wireGuardSettings = wireGuardSettings,
                             )
                         }
                     }
@@ -86,16 +92,15 @@ fun ProtocolSettingsScreen() =
                             buttons = getDefaultButtons(),
                             onDismiss = { protocolDialogVisible.value = false },
                             onConfirm = {
-                                val hasProtocolChanged = protocolSelection.value != it
+                                val hasProtocolChanged = protocolSelection != it
                                 viewModel.selectProtocol(it)
-                                protocolSelection.value = it
                                 protocolDialogVisible.value = false
 
                                 if (hasProtocolChanged) {
                                     viewModel.showReconnectDialogIfVpnConnected()
                                 }
                             },
-                            selection = protocolSelection.value,
+                            selection = protocolSelection,
                         )
                     }
                     if (viewModel.reconnectDialogVisible.value) {
@@ -119,46 +124,48 @@ fun OpenVpnProtocolSettingsScreen(
     viewModel: SettingsViewModel,
     protocolDialogVisible: MutableState<Boolean>,
 ) {
+    val openVpnSettings by viewModel.openVpnSettings.collectAsStateWithLifecycle()
     val transportDialogVisible = remember { mutableStateOf(false) }
     val encryptionDialogVisible = remember { mutableStateOf(false) }
     val portDialogVisible = remember { mutableStateOf(false) }
-    val portSelection = remember { mutableStateOf(viewModel.getOpenVpnSettings().port) }
+    val portSelection = remember { mutableStateOf(openVpnSettings.port) }
     ProtocolSelectionLine(
-        name = viewModel.getOpenVpnSettings().name,
+        name = openVpnSettings.name,
         protocolDialogVisible,
     )
     SettingsItem(
         titleId = R.string.protocol_transport_title,
-        subtitle = viewModel.getOpenVpnSettings().transport.value,
+        subtitle = openVpnSettings.transport.value,
     ) {
         transportDialogVisible.value = !transportDialogVisible.value
     }
     SettingsItem(
         titleId = R.string.protocol_data_encryption_title,
-        subtitle = viewModel.getOpenVpnSettings().dataEncryption.value,
+        subtitle = openVpnSettings.dataEncryption.value,
     ) {
         encryptionDialogVisible.value = !encryptionDialogVisible.value
     }
     SettingsItem(
         titleId = R.string.protocol_port_title,
-        subtitle = viewModel.getOpenVpnSettings().port,
+        subtitle = openVpnSettings.port,
     ) {
         portDialogVisible.value = !portDialogVisible.value
     }
     UseSmallPacketsLine(
-        enabled = viewModel.getOpenVpnSettings().useSmallPackets,
+        enabled = openVpnSettings.useSmallPackets,
         onClick = {
             viewModel.setOpenVpnEnableSmallPackets(it)
         },
     )
-    HandshakeLine(handshake = viewModel.getOpenVpnSettings().handshake)
+    HandshakeLine(handshake = openVpnSettings.handshake)
 
     if (transportDialogVisible.value) {
         TransportSelectionDialog(
             viewModel = viewModel,
             transportDialogVisible = transportDialogVisible,
-            transportSelection = viewModel.getOpenVpnSettings().transport,
+            transportSelection = openVpnSettings.transport,
             portSelection = portSelection,
+            openVpnSettings,
         )
     }
 
@@ -166,7 +173,7 @@ fun OpenVpnProtocolSettingsScreen(
         EncryptionSelectionDialog(
             viewModel = viewModel,
             encryptionDialogVisible = encryptionDialogVisible,
-            encryptionSelection = viewModel.getOpenVpnSettings().dataEncryption,
+            encryptionSelection = openVpnSettings.dataEncryption,
         )
     }
 
@@ -174,7 +181,7 @@ fun OpenVpnProtocolSettingsScreen(
         PortSelectionDialog(
             viewModel = viewModel,
             portDialogVisible = portDialogVisible,
-            portSelection = viewModel.getOpenVpnSettings().port,
+            portSelection = openVpnSettings.port,
         )
     }
 }
@@ -183,8 +190,9 @@ fun OpenVpnProtocolSettingsScreen(
 fun WireGuardProtocolSettingsScreen(
     viewModel: SettingsViewModel,
     protocolDialogVisible: MutableState<Boolean>,
+    wireGuardSettings: WireGuardSettings,
 ) {
-    val protocolSettings = viewModel.getWireGuardSettings()
+    val protocolSettings = wireGuardSettings
     ProtocolSelectionLine(name = protocolSettings.name, protocolDialogVisible)
     UseSmallPacketsLine(
         enabled = protocolSettings.useSmallPackets,
@@ -237,6 +245,7 @@ fun TransportSelectionDialog(
     transportDialogVisible: MutableState<Boolean>,
     transportSelection: Transport,
     portSelection: MutableState<String>,
+    openVpnSettings: OpenVpnSettings,
 ) {
     OptionsDialog(
         R.string.protocol_transport_title,
@@ -247,7 +256,7 @@ fun TransportSelectionDialog(
         },
         onConfirm = {
             viewModel.setTransport(it)
-            portSelection.value = viewModel.getOpenVpnSettings().port
+            portSelection.value = openVpnSettings.port
             transportDialogVisible.value = false
         },
         selection = transportSelection,

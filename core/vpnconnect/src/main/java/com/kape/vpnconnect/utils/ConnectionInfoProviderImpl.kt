@@ -6,9 +6,8 @@ import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
-import com.kape.data.NO_IP
-import com.kape.data.VpnConnectionInfo
 import com.kape.data.kpi.KpiConnectionStatus
+import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
@@ -21,13 +20,12 @@ import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Named
 
 class ConnectionInfoProviderImpl(
@@ -40,84 +38,64 @@ class ConnectionInfoProviderImpl(
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) : ConnectionInfoProvider {
     private val ioScope = CoroutineScope(ioDispatcher)
+    private val currentConnectionStatus = MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
     override val connectionInfoState = connectionStatusProvider.state
-    private val defaultState = VpnConnectionInfo(publicIp = connectionPrefs.getClientIp())
-    private val _connectionInfoState =
-        MutableStateFlow(
-            VpnConnectionInfo(
-                publicIp = connectionPrefs.getClientIp(),
-            ),
-        )
-    override val state = _connectionInfoState.asStateFlow()
+    override var name: String = ""
+    override var iso: String = ""
+    override var isManual: Boolean = false
+    override val publicIp: StateFlow<String> = connectionPrefs.clientIp
+    override val vpnIp: StateFlow<String> = connectionPrefs.vpnIp
+    override val portForwardingStatus: StateFlow<PortForwardingStatus> =
+        portForwardingUseCase.portForwardingStatus.asStateFlow()
+    override val port: StateFlow<String> = portForwardingUseCase.port
 
     init {
         ioScope.launch {
             connectionStatusProvider.state
                 .distinctUntilChangedBy { it.status == ConnectionStatus.CONNECTED || it.status == ConnectionStatus.DISCONNECTED }
-                .collectLatest {
-                    it.vpnManagerConnectionStatus?.let {
+                .collectLatest { (status, title, vpnManagerConnectionStatus) ->
+                    currentConnectionStatus.update { status }
+                    vpnManagerConnectionStatus?.let {
                         submitKpiEventUseCase.submitConnectionEvent(
                             getKpiConnectionStatus(it),
-                            _connectionInfoState.value.isManual,
+                            isManual,
                         )
                     }
-                    if (it.status == ConnectionStatus.DISCONNECTED) {
-                        val ip = clientStateDataSource.getPublicIp()
-                        withContext(mainDispatcher) {
-                            _connectionInfoState.update { it.copy(publicIp = ip, vpnIp = NO_IP) }
-                        }
+                    if (status == ConnectionStatus.DISCONNECTED) {
+                        clientStateDataSource.getPublicIp()
                     }
-                    if (it.status == ConnectionStatus.CONNECTED) {
-                        val vpnIp = clientStateDataSource.getVpnIp()
-                        withContext(mainDispatcher) {
-                            _connectionInfoState.update {
-                                it.copy(
-                                    publicIp = connectionPrefs.getClientIp(),
-                                    vpnIp = vpnIp,
-                                )
-                            }
-                        }
+                    if (status == ConnectionStatus.CONNECTED) {
+                        clientStateDataSource.getVpnIp()
                     }
                 }
-        }
-        ioScope.launch {
-            combine(
-                portForwardingUseCase.portForwardingStatus,
-                portForwardingUseCase.port,
-            ) { status, port ->
-                withContext(mainDispatcher) {
-                    _connectionInfoState.update {
-                        it.copy(
-                            portforwardingStatus = status,
-                            port = port,
-                        )
-                    }
-                }
-            }.collect {}
         }
     }
 
-    override fun isConnected(): Boolean = connectionInfoState.value.status == ConnectionStatus.CONNECTED
+    override fun isConnected(): Boolean = currentConnectionStatus.value == ConnectionStatus.CONNECTED
 
     override fun isInConnectState(): Boolean =
         listOf(
             ConnectionStatus.CONNECTED,
             ConnectionStatus.CONNECTING,
             ConnectionStatus.RECONNECTING,
-        ).contains(connectionInfoState.value.status)
+        ).contains(currentConnectionStatus.value)
 
-    override fun isNotDisconnected() = connectionInfoState.value.status != ConnectionStatus.DISCONNECTED
+    override fun isNotDisconnected(): Boolean = currentConnectionStatus.value != ConnectionStatus.DISCONNECTED
 
     override fun updateInfo(
         name: String,
         iso: String,
         isManual: Boolean,
     ) {
-        _connectionInfoState.update { it.copy(name = name, iso = iso, isManual = isManual) }
+        this.name = name
+        this.iso = iso
+        this.isManual = isManual
     }
 
     override fun resetConnectionInfo() {
-        _connectionInfoState.update { defaultState }
+        this.name = ""
+        this.iso = ""
+        this.isManual = false
     }
 
     override fun getTopBarConnectionColor(scheme: ColorScheme): Color =
@@ -131,6 +109,12 @@ class ConnectionInfoProviderImpl(
 
             ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
         }
+
+    override fun requestClientIp() {
+        ioScope.launch {
+            clientStateDataSource.getPublicIp()
+        }
+    }
 
     private fun getKpiConnectionStatus(status: VPNManagerConnectionStatus): KpiConnectionStatus =
         when (status) {

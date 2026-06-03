@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -48,10 +50,12 @@ fun ExternalProxyAppList() {
         koinViewModel<AppBarViewModel>().apply {
             appBarText(stringResource(id = R.string.proxy_selection_title))
         }
-    val lastExcludedApps = remember { viewModel.vpnExcludedApps.value.map { it } }
+    val excluded by viewModel.vpnExcludedApps.collectAsStateWithLifecycle()
+    val lastExcludedApps = remember { excluded.map { it } }
+    val externalProxyPackageName by viewModel.externalProxyAppPackageName.collectAsStateWithLifecycle()
 
     BackHandler {
-        onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
+        onBackPressed(viewModel, lastExcludedApps, excluded, appBarViewModel::navigateBack)
     }
 
     Scaffold(
@@ -59,7 +63,7 @@ fun ExternalProxyAppList() {
             AppBar(
                 viewModel = appBarViewModel,
                 onLeftIconClick = {
-                    onBackPressed(viewModel, lastExcludedApps, appBarViewModel::navigateBack)
+                    onBackPressed(viewModel, lastExcludedApps, excluded, appBarViewModel::navigateBack)
                 },
             )
         },
@@ -84,8 +88,7 @@ fun ExternalProxyAppList() {
                     val items = viewModel.appList.value
                     items(items.size) { index ->
                         val item = items[index]
-                        val isSelected =
-                            viewModel.externalProxyAppPackageName.value == item.packageName
+                        val isSelected = externalProxyPackageName == item.packageName
                         ApplicationRow(
                             icon = item.loadIcon(packageManager),
                             name = item.loadLabel(packageManager).toString(),
@@ -192,9 +195,10 @@ private fun SelectedCheckBox(
 private fun onBackPressed(
     viewModel: SettingsViewModel,
     lastExcludedApps: List<String>,
+    excluded: List<String>,
     navigateBack: () -> Unit,
 ) {
-    if (viewModel.isConnected() && lastExcludedApps != viewModel.vpnExcludedApps.value) {
+    if (viewModel.isConnected() && lastExcludedApps != excluded) {
         viewModel.showReconnectDialogIfVpnConnected()
     } else {
         navigateBack()

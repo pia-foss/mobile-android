@@ -1,6 +1,7 @@
 package com.kape.dedicatedip.data
 
 import android.content.Context
+import com.kape.data.DI
 import com.kape.dedicatedip.domain.DipDataSource
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.localprefs.prefs.DipPrefs
@@ -10,7 +11,10 @@ import com.privateinternetaccess.account.model.request.AndroidAddonSignupInforma
 import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import com.privateinternetaccess.account.model.response.DipCountriesResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 import kotlin.coroutines.resume
 
@@ -19,6 +23,7 @@ class DipDataSourceImpl(
     private val context: Context,
     private val accountApi: AndroidAccountAPI,
     private val dipPrefs: DipPrefs,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : DipDataSource {
     companion object {
         private const val STORE = "google_play"
@@ -35,8 +40,10 @@ class DipDataSourceImpl(
                 activated?.let {
                     when (it.status) {
                         DedicatedIPInformationResponse.Status.active -> {
-                            dipPrefs.addDedicatedIp(it)
-                            cont.resume(DipApiResult.Active)
+                            ioScope.launch {
+                                dipPrefs.addDedicatedIp(it)
+                                cont.resume(DipApiResult.Active)
+                            }
                         }
 
                         DedicatedIPInformationResponse.Status.expired -> {

@@ -9,9 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -31,10 +28,8 @@ fun TvSettingsToggle(
     @StringRes titleId: Int,
     @StringRes subtitleId: Int? = null,
     enabled: Boolean = false,
-    stateEnabled: MutableState<Boolean> = mutableStateOf(enabled),
     toggle: (checked: Boolean) -> Unit,
 ) {
-    val isChecked = remember { stateEnabled }
     Button(
         modifier = modifier.fillMaxWidth(),
         shape =
@@ -49,8 +44,7 @@ fun TvSettingsToggle(
                 focusedContentColor = LocalColors.current.onPrimary,
             ),
         onClick = {
-            isChecked.value = !isChecked.value
-            toggle(isChecked.value)
+            toggle(!enabled)
         },
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -61,7 +55,7 @@ fun TvSettingsToggle(
         }
         Spacer(modifier = Modifier.width(16.dp))
         Switch(
-            checked = isChecked.value,
+            checked = enabled,
             colors =
                 SwitchDefaults.colors(
                     uncheckedBorderColor = LocalColors.current.onSurfaceVariant,

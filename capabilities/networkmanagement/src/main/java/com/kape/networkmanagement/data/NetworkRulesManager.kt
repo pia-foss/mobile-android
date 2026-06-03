@@ -2,6 +2,10 @@ package com.kape.networkmanagement.data
 
 import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.networkmanagement.utils.NetworkUtil
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -9,30 +13,34 @@ class NetworkRulesManager(
     private val prefs: NetworkManagementPrefs,
     private val util: NetworkUtil,
 ) {
-    fun getRules(): List<NetworkItem> {
-        if (prefs.getAllRules().isEmpty()) {
-            for (item in util.getDefaultList()) {
-                prefs.addDefaultRule(item)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun getRules(): Flow<List<NetworkItem>> =
+        prefs.allRules
+            .onEach { rules ->
+                if (rules.isEmpty()) {
+                    util.getDefaultList().forEach {
+                        prefs.addDefaultRule(it)
+                    }
+                }
+            }.map { rules ->
+                rules.sortedBy { !it.isDefault }
             }
-        }
-        return prefs.getAllRules().sortedBy { !it.isDefault }
-    }
 
-    fun updateRule(
+    suspend fun updateRule(
         rule: NetworkItem,
         behavior: NetworkBehavior,
     ) {
         prefs.updateRuleForNetwork(rule, behavior)
     }
 
-    fun addRule(
+    suspend fun addRule(
         ssid: String,
         behavior: NetworkBehavior,
     ) {
         prefs.addRuleForNetwork(ssid, behavior)
     }
 
-    fun removeRule(rule: NetworkItem) {
+    suspend fun removeRule(rule: NetworkItem) {
         prefs.removeRuleForNetwork(rule)
     }
 }

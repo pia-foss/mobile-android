@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.data.CustomDns
@@ -33,6 +36,7 @@ import org.koin.androidx.compose.koinViewModel
 fun NetworkSettingsScreen() =
     Screen {
         val viewModel: SettingsViewModel = koinViewModel()
+        val customDns by viewModel.customDns.collectAsStateWithLifecycle()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.networks))
@@ -42,21 +46,24 @@ fun NetworkSettingsScreen() =
                 DnsOptions.PIA to stringResource(id = R.string.pia),
                 DnsOptions.SYSTEM to stringResource(id = R.string.network_dns_selection_system),
             )
-        if (viewModel.getCustomDns().isInUse()) {
+        if (customDns.isInUse()) {
             dnsOptions[DnsOptions.CUSTOM] =
                 "${stringResource(id = R.string.network_dns_selection_custom)} ${
-                    getCustomDnsInfo(
-                        viewModel.getCustomDns(),
-                    )
+                    getCustomDnsInfo(customDns)
                 }"
         }
-
-        val dnsSelection =
-            remember { mutableStateOf(dnsOptions.getValue(viewModel.getSelectedDnsOption())) }
+        val selectedOption by viewModel.selectedDnsOption.collectAsState()
         val dnsDialogVisible = remember { mutableStateOf(false) }
         val customDnsDialogVisible = remember { mutableStateOf(false) }
         val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
         val dnsWarningDialogVisible = remember { mutableStateOf(false) }
+        val portForwardingEnabled by viewModel
+            .isPortForwardingEnabled()
+            .collectAsStateWithLifecycle()
+        val localTrafficEnabled by viewModel
+            .isAllowLocalTrafficEnabled
+            .collectAsStateWithLifecycle()
+        val maceEnabled by viewModel.maceEnabled.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -74,14 +81,14 @@ fun NetworkSettingsScreen() =
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {
                     SettingsItem(
                         titleId = R.string.network_dns_title,
-                        subtitle = dnsOptions[viewModel.getSelectedDnsOption()],
+                        subtitle = dnsOptions[selectedOption],
                     ) {
                         dnsDialogVisible.value = !dnsDialogVisible.value
                     }
                     SettingsToggle(
                         titleId = R.string.network_port_forwarding_title,
                         subtitleId = R.string.network_port_forwarding_description,
-                        enabled = viewModel.isPortForwardingEnabled(),
+                        enabled = portForwardingEnabled,
                         toggle = {
                             viewModel.toggleEnablePortForwarding(it)
                             viewModel.showReconnectDialogIfVpnConnected()
@@ -90,7 +97,7 @@ fun NetworkSettingsScreen() =
                     SettingsToggle(
                         titleId = R.string.network_allow_lan_traffic_title,
                         subtitleId = R.string.network_allow_lan_traffic_description,
-                        stateEnabled = viewModel.isAllowLocalTrafficEnabled,
+                        stateEnabled = localTrafficEnabled,
                         toggle = { checked ->
                             viewModel.toggleAllowLocalNetwork(checked)
                             viewModel.showReconnectDialogIfVpnConnected()
@@ -103,15 +110,15 @@ fun NetworkSettingsScreen() =
         if (dnsDialogVisible.value) {
             DnsSelectionDialog(
                 options = dnsOptions,
-                selection = viewModel.getSelectedDnsOption(),
+                selection = selectedOption,
                 onConfirm = {
-                    val hasDnsOptionChanged = viewModel.getSelectedDnsOption() != it
-                    val previousDnsSelectionWasPIA = viewModel.getSelectedDnsOption() == DnsOptions.PIA
+                    val hasDnsOptionChanged = selectedOption != it
+                    val previousDnsSelectionWasPIA = selectedOption == DnsOptions.PIA
                     dnsDialogVisible.value = false
                     viewModel.setSelectedDnsOption(it)
 
                     if (it == DnsOptions.SYSTEM &&
-                        viewModel.isAllowLocalTrafficEnabled.value.not()
+                        localTrafficEnabled.not()
                     ) {
                         allowLocalTrafficDialogVisible.value = true
                     }
@@ -140,11 +147,11 @@ fun NetworkSettingsScreen() =
 
         if (customDnsDialogVisible.value) {
             CustomDnsDialog(
-                customDns = viewModel.getCustomDns(),
-                displayFootnote = viewModel.maceEnabled.value,
+                customDns = customDns,
+                displayFootnote = maceEnabled,
                 onConfirm = {
                     customDnsDialogVisible.value = false
-                    val hasCustomDnsChanged = viewModel.getCustomDns() != it
+                    val hasCustomDnsChanged = customDns != it
                     viewModel.setCustomDns(
                         customDns = it,
                     )
@@ -182,7 +189,6 @@ fun NetworkSettingsScreen() =
                 viewModel = viewModel,
                 allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
                 onDismiss = {
-                    dnsSelection.value = DnsOptions.PIA.value
                     viewModel.setSelectedDnsOption(DnsOptions.PIA)
                 },
             )
@@ -191,6 +197,7 @@ fun NetworkSettingsScreen() =
         if (dnsWarningDialogVisible.value) {
             UnsafeDnsWarningDialog(
                 viewModel = viewModel,
+                dnsSelectedOption = selectedOption,
                 dnsWarningDialogVisible = dnsWarningDialogVisible,
                 allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
             )
@@ -200,11 +207,12 @@ fun NetworkSettingsScreen() =
 @Composable
 fun UnsafeDnsWarningDialog(
     viewModel: SettingsViewModel,
+    dnsSelectedOption: DnsOptions,
     dnsWarningDialogVisible: MutableState<Boolean>,
     allowLocalTrafficDialogVisible: MutableState<Boolean>,
 ) {
     val titleId =
-        if (viewModel.getSelectedDnsOption() == DnsOptions.SYSTEM) {
+        if (dnsSelectedOption == DnsOptions.SYSTEM) {
             R.string.network_dns_selection_system
         } else {
             R.string.network_dns_selection_custom

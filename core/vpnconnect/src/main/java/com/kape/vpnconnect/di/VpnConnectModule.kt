@@ -11,6 +11,7 @@ import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
+import com.kape.contracts.UsageProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -28,14 +29,16 @@ import com.kape.vpnconnect.domain.ConnectionManagerImpl
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
-import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnconnect.provider.UsageProviderImpl
 import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
 import com.kape.vpnconnect.utils.NotificationHandler
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
@@ -59,8 +62,8 @@ class VpnConnectModule {
         return values
     }
 
-    @Singleton
-    fun provideUsageProvider(context: Context): UsageProvider = UsageProvider(context)
+    @Singleton(binds = [UsageProvider::class, VPNManagerProtocolByteCountDependency::class])
+    fun provideUsageProvider(context: Context): UsageProvider = UsageProviderImpl(context)
 
     @Singleton
     fun provideNotificationHandler(
@@ -101,9 +104,8 @@ class VpnConnectModule {
     fun provideClientStateDataSource(
         accountApi: AndroidAccountAPI,
         connectionPrefs: ConnectionPrefs,
-        csiPrefs: CsiPrefs,
-        settingsPrefs: SettingsPrefs,
-    ): ClientStateDataSource = ClientStateDataSourceImpl(accountApi, connectionPrefs, csiPrefs, settingsPrefs)
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
+    ): ClientStateDataSource = ClientStateDataSourceImpl(accountApi, connectionPrefs, ioScope)
 
     @Singleton(binds = [ConnectionDataSource::class])
     fun provideConnectionDataSource(
@@ -115,6 +117,7 @@ class VpnConnectModule {
         kpiDataSource: KpiDataSource,
         usageProvider: UsageProvider,
         csiPrefs: CsiPrefs,
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
     ): ConnectionDataSource =
         ConnectionDataSourceImpl(
             vpnApi,
@@ -125,6 +128,7 @@ class VpnConnectModule {
             kpiDataSource,
             usageProvider,
             csiPrefs,
+            ioScope,
         )
 
     @Singleton(binds = [ConnectionConfigurationUseCase::class])

@@ -5,6 +5,7 @@ import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
+import com.kape.data.DI
 import com.kape.dedicatedip.domain.RenewDipUseCase
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CustomizationPrefs
@@ -16,11 +17,12 @@ import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.rating.utils.RatingTool
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
-import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
 
 @Module
 class ConnectionModule {
@@ -34,7 +36,6 @@ class ConnectionModule {
         prefs: ConnectionPrefs,
         settingsPrefs: SettingsPrefs,
         snoozeHandler: SnoozeHandler,
-        usageProvider: UsageProvider,
         dipPrefs: DipPrefs,
         renewDipUseCase: RenewDipUseCase,
         customizationPrefs: CustomizationPrefs,
@@ -43,6 +44,7 @@ class ConnectionModule {
         shortcutPrefs: ShortcutPrefs,
         buildConfigProvider: BuildConfigProvider,
         isVpnProfileInstalledUseCase: IsVpnProfileInstalledUseCase,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): ConnectionViewModel =
         ConnectionViewModel(
@@ -53,7 +55,6 @@ class ConnectionModule {
             prefs,
             settingsPrefs,
             snoozeHandler,
-            usageProvider,
             dipPrefs,
             renewDipUseCase,
             customizationPrefs,
@@ -62,6 +63,7 @@ class ConnectionModule {
             shortcutPrefs,
             buildConfigProvider,
             isVpnProfileInstalledUseCase,
+            ioDispatcher,
             connectionInfoProvider,
             networkConnectionListener,
         )

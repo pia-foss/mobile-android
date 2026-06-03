@@ -7,11 +7,9 @@ import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -25,14 +23,10 @@ class DipDataSourceImplTest {
 
     private lateinit var source: DipDataSource
 
-    @BeforeEach
-    internal fun setUp() {
-        source = DipDataSourceImpl(context, api, prefs)
-    }
-
     @Test
     fun activateSuccess() =
         runTest {
+            source = DipDataSourceImpl(context, api, prefs, this)
             val dipInfo =
                 DedicatedIPInformationResponse.DedicatedIPInformation(
                     id = "id",
@@ -43,7 +37,7 @@ class DipDataSourceImplTest {
                     dipToken = "ipToken",
                     status = DedicatedIPInformationResponse.Status.active,
                 )
-            every { prefs.addDedicatedIp(any()) } returns Unit
+            coEvery { prefs.addDedicatedIp(any()) } returns Unit
             coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
                 lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
                     listOf(dipInfo),
@@ -61,6 +55,7 @@ class DipDataSourceImplTest {
         errorList: List<AccountRequestError>,
         expected: DipApiResult,
     ) = runTest {
+        source = DipDataSourceImpl(context, api, prefs, this)
         coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
             lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
                 emptyList(),
@@ -78,6 +73,7 @@ class DipDataSourceImplTest {
         errorList: List<AccountRequestError>,
         expected: DipApiResult,
     ) = runTest {
+        source = DipDataSourceImpl(context, api, prefs, this)
         coEvery { api.renewDedicatedIP(any(), any()) } answers {
             lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
         }

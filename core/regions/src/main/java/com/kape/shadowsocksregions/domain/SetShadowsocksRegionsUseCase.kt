@@ -8,9 +8,9 @@ import org.koin.core.annotation.Singleton
 class SetShadowsocksRegionsUseCase(
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
 ) {
-    fun setSelectShadowsocksServer(shadowsocksServer: ShadowsocksServer) =
+    suspend fun setSelectShadowsocksServer(shadowsocksServer: ShadowsocksServer) =
         shadowsocksRegionPrefs.setSelectShadowsocksServer(shadowsocksServer)
 
-    fun setShadowsocksServers(shadowsocksServers: List<ShadowsocksServer>) =
+    suspend fun setShadowsocksServers(shadowsocksServers: List<ShadowsocksServer>) =
         shadowsocksRegionPrefs.setShadowsocksServers(shadowsocksServers)
 }

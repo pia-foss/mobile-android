@@ -76,12 +76,11 @@ class QuickSettingService :
             if (connectionInfoProvider.isConnected()) {
                 it.state = Tile.STATE_ACTIVE
                 it.label =
-                    if (connectionInfoProvider.state.value.name
-                            .isEmpty()
+                    if (connectionInfoProvider.name.isEmpty()
                     ) {
                         getString(R.string.qs_disconnect_nolocation)
                     } else {
-                        getString(R.string.qs_disconnect, connectionInfoProvider.state.value.name)
+                        getString(R.string.qs_disconnect, connectionInfoProvider.name)
                     }
             } else {
                 if (!isUserLoggedIn.invoke()) {

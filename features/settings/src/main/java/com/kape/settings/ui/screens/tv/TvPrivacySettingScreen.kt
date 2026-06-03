@@ -13,6 +13,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
@@ -43,6 +45,8 @@ fun TvPrivacySettingsScreen() =
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
         val initialFocusRequester = remember { FocusRequester() }
         val showWarning = remember { mutableStateOf(false) }
+        val maceEnabled by viewModel.maceEnabled.collectAsStateWithLifecycle()
+        val dnsSelectedOption by viewModel.selectedDnsOption.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
@@ -99,10 +103,10 @@ fun TvPrivacySettingsScreen() =
                             modifier = Modifier.focusRequester(initialFocusRequester),
                             titleId = R.string.mace_title,
                             subtitleId = R.string.mace_description,
-                            enabled = viewModel.maceEnabled.value,
+                            enabled = maceEnabled,
                             toggle = {
                                 // MACE requires using PIA DNS
-                                if (viewModel.getSelectedDnsOption() != DnsOptions.PIA && !viewModel.maceEnabled.value) {
+                                if (dnsSelectedOption != DnsOptions.PIA && !maceEnabled) {
                                     showWarning.value = true
                                 }
                                 viewModel.toggleMace(it)

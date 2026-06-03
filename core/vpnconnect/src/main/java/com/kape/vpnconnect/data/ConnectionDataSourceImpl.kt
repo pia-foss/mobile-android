@@ -5,13 +5,14 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
+import com.kape.contracts.UsageProvider
+import com.kape.data.DI
 import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.vpnconnect.domain.ConnectionDataSource
-import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnconnect.worker.PortForwardingWorker
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
@@ -22,6 +23,7 @@ import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import java.util.concurrent.TimeUnit
@@ -37,6 +39,7 @@ class ConnectionDataSourceImpl(
     private val kpiDataSource: KpiDataSource,
     private val usageProvider: UsageProvider,
     private val csiPrefs: CsiPrefs,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : ConnectionDataSource,
     KoinComponent {
     override suspend fun startConnection(
@@ -53,7 +56,7 @@ class ConnectionDataSourceImpl(
                 connectionStatusProvider as VPNManagerConnectionListener,
             ) {}
 
-            if (settingsPrefs.isHelpImprovePiaEnabled()) {
+            if (settingsPrefs.isHelpImprovePiaEnabled.value) {
                 kpiDataSource.start()
             } else {
                 kpiDataSource.stop()
@@ -61,17 +64,25 @@ class ConnectionDataSourceImpl(
 
             connectionApi.startConnection(clientConfiguration) { result ->
                 result.getOrNull()?.let { serverPeerInfo ->
-                    connectionPrefs.setGateway(serverPeerInfo.gateway)
+                    ioScope.launch {
+                        connectionPrefs.setGateway(serverPeerInfo.gateway)
+                        if (cont.isActive) {
+                            // Convert Result<ServerPeerInfo> → Result<Unit>
+                            cont.resume(result.map { Unit })
+                        }
+                    }
                 } ?: run {
-                    csiPrefs.addCustomDebugLogs(
-                        "startConnection failed: $result",
-                        settingsPrefs.isDebugLoggingEnabled(),
-                    )
-                    connectionApi.stopConnection {}
-                }
-                if (cont.isActive) {
-                    // Convert Result<ServerPeerInfo> → Result<Unit>
-                    cont.resume(result.map { Unit })
+                    ioScope.launch {
+                        csiPrefs.addCustomDebugLogs(
+                            "startConnection failed: $result",
+                            settingsPrefs.isDebugLoggingEnabled.value,
+                        )
+                        connectionApi.stopConnection {}
+                        if (cont.isActive) {
+                            // Convert Result<ServerPeerInfo> → Result<Unit>
+                            cont.resume(result.map { Unit })
+                        }
+                    }
                 }
             }
         }
@@ -79,17 +90,19 @@ class ConnectionDataSourceImpl(
     override suspend fun stopConnection(): Result<Unit> =
         suspendCancellableCoroutine { continuation ->
             connectionApi.stopConnection { result ->
-                usageProvider.reset()
-                stopPortForwarding()
-                if (result.isFailure) {
-                    csiPrefs.addCustomDebugLogs(
-                        "stop connection failed: ${result.exceptionOrNull()}",
-                        settingsPrefs.isDebugLoggingEnabled(),
-                    )
-                }
-                // Resume coroutine with result
-                if (continuation.isActive) {
-                    continuation.resume(result)
+                ioScope.launch {
+                    usageProvider.reset()
+                    stopPortForwarding()
+                    if (result.isFailure) {
+                        csiPrefs.addCustomDebugLogs(
+                            "stop connection failed: ${result.exceptionOrNull()}",
+                            settingsPrefs.isDebugLoggingEnabled.value,
+                        )
+                    }
+                    // Resume coroutine with result
+                    if (continuation.isActive) {
+                        continuation.resume(result)
+                    }
                 }
             }
         }
@@ -110,15 +123,17 @@ class ConnectionDataSourceImpl(
     }
 
     override fun stopPortForwarding() {
-        connectionPrefs.clearGateway()
-        connectionPrefs.clearPortBindingInfo()
-        workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER)
+        ioScope.launch {
+            connectionPrefs.clearGateway()
+            connectionPrefs.clearPortBindingInfo()
+            workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER)
+        }
     }
 
     override suspend fun getDebugLogs(): List<String> =
         suspendCancellableCoroutine { cont ->
             val target =
-                when (settingsPrefs.getSelectedProtocol()) {
+                when (settingsPrefs.selectedProtocol.value) {
                     VpnProtocols.WireGuard -> VPNManagerProtocolTarget.WIREGUARD
                     VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
                 }

@@ -23,13 +23,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.customization.data.Element
 import com.kape.data.ConnectionStatus
-import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.sharedui.tiles.ConnectionInfo
@@ -152,7 +152,6 @@ private fun DisplayComponent(
     viewModel: ConnectionViewModel,
 ) {
     val state = viewModel.state.collectAsState()
-    val vpnState by viewModel.connectionInfoProvider.state.collectAsState()
     val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsState()
 
     when (screenElement.element) {
@@ -170,25 +169,13 @@ private fun DisplayComponent(
         }
 
         Element.IpInfo -> {
-            val state by viewModel.state.collectAsState()
-            IPTile(
-                modifier = modifier,
-                isPortForwardingEnabled = viewModel.isPortForwardingEnabled(),
-                publicIp = vpnState.publicIp,
-                vpnIp = vpnState.vpnIp,
-                portForwardingStatus =
-                    when (vpnState.portforwardingStatus) {
-                        PortForwardingStatus.Error -> stringResource(id = R.string.pfwd_error)
-                        PortForwardingStatus.NoPortForwarding -> stringResource(id = R.string.pfwd_disabled)
-                        PortForwardingStatus.Requesting -> stringResource(id = R.string.pfwd_requesting)
-                        PortForwardingStatus.Success -> vpnState.port
-                    },
-            )
+            IPTile(modifier = modifier)
         }
 
         Element.QuickConnect -> {
             val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-            for (server in state.value.quickConnectServers) {
+            val quickConnectServers by viewModel.quickConnectServers.collectAsStateWithLifecycle()
+            for (server in quickConnectServers) {
                 quickConnectMap[server] =
                     viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
             }
@@ -249,11 +236,7 @@ private fun DisplayComponent(
         }
 
         Element.Traffic -> {
-            Traffic(
-                modifier = modifier,
-                viewModel.download.value,
-                viewModel.upload.value,
-            )
+            Traffic(modifier = modifier)
         }
     }
 }

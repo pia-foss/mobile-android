@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,11 +32,11 @@ fun SettingsToggle(
     @StringRes subtitleId: Int? = null,
     @DrawableRes iconId: Int? = null,
     enabled: Boolean = false,
-    stateEnabled: MutableState<Boolean> = mutableStateOf(enabled),
+    stateEnabled: Boolean = enabled,
     toggle: (checked: Boolean) -> Unit,
     testTag: String = "",
 ) {
-    val isChecked = remember { stateEnabled }
+    val isChecked = remember(stateEnabled) { stateEnabled }
     Column(
         modifier =
             Modifier
@@ -53,10 +51,9 @@ fun SettingsToggle(
                     .semantics(mergeDescendants = true) { }
                     .testTag(testTag)
                     .selectable(
-                        selected = isChecked.value,
+                        selected = isChecked,
                         onClick = {
-                            isChecked.value = !isChecked.value
-                            toggle(isChecked.value)
+                            toggle(!isChecked)
                         },
                     ),
             verticalAlignment = Alignment.CenterVertically,
@@ -83,7 +80,7 @@ fun SettingsToggle(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
-            Toggle(isOn = isChecked.value)
+            Toggle(isOn = isChecked)
         }
         Spacer(modifier = Modifier.height(8.dp))
         Separator()

@@ -9,6 +9,7 @@ import com.kape.location.data.LocationPermissionManager
 import com.kape.networkmanagement.data.NetworkRulesManager
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
+import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
@@ -24,6 +25,7 @@ class AutomationModule {
         networkConnectionListener: NetworkConnectionListener,
         @Named(DI.RULES_UPDATED_INTENT) broadcastIntent: Intent,
         automationManager: AutomationManager,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): AutomationViewModel =
         AutomationViewModel(
             router,
@@ -33,5 +35,6 @@ class AutomationModule {
             networkConnectionListener,
             broadcastIntent,
             automationManager,
+            ioDispatcher,
         )
 }

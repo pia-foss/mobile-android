@@ -1,12 +1,16 @@
 package com.kape.vpn.provider
 
 import android.os.Build
+import com.kape.data.DI
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.privateinternetaccess.csi.ICSIProvider
 import com.privateinternetaccess.csi.ProviderType
 import com.privateinternetaccess.csi.ReportType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.koin.core.annotation.Named
 import java.util.Locale
 
 private const val CSI_APPLICATION_INFORMATION_FILENAME = "application_information"
@@ -22,10 +26,13 @@ class CsiDataProvider(
     private val csiPrefs: CsiPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val userAgent: String,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) {
     init {
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
-            csiPrefs.setLastKnownException(throwable.stackTraceToString())
+            ioScope.launch {
+                csiPrefs.setLastKnownException(throwable.stackTraceToString())
+            }
         }
     }
 
@@ -124,7 +131,7 @@ class CsiDataProvider(
             override val reportType: ReportType
                 get() = ReportType.LOG
             override val value: String
-                get() = redactIPsFromString(csiPrefs.getProtocolDebugLogs())
+                get() = redactIPsFromString(csiPrefs.protocolDebugLogs.value)
         }
 
     val debugLogProvider =
@@ -143,16 +150,16 @@ class CsiDataProvider(
 
     // region private
     private fun getProtocolInformation(): String {
-        val activeProtocol = settingsPrefs.getSelectedProtocol()
+        val activeProtocol = settingsPrefs.selectedProtocol.value
         val settings =
             when (activeProtocol) {
-                VpnProtocols.WireGuard -> settingsPrefs.getWireGuardSettings()
-                VpnProtocols.OpenVPN -> settingsPrefs.getOpenVpnSettings()
+                VpnProtocols.WireGuard -> settingsPrefs.wireGuardSettings.value
+                VpnProtocols.OpenVPN -> settingsPrefs.openVpnSettings.value
             }
         val sb = StringBuilder()
         sb.append("~~ Connection Settings ~~\n")
         sb.append("Connection Type: ${settings.transport}\n")
-        sb.append("Port Forwarding: ${settingsPrefs.isPortForwardingEnabled()}\n")
+        sb.append("Port Forwarding: ${settingsPrefs.isPortForwardingEnabled.value}\n")
         sb.append("Remote Port: ${settings.port}\n")
         sb.append("OVPN Use Small Packets: ${settings.useSmallPackets}\n")
         sb.append(
@@ -163,8 +170,8 @@ class CsiDataProvider(
         sb.append("Protocol: ${activeProtocol.name}\n")
         // TODO: implement as part of https://polymoon.atlassian.net/browse/PIA-606,
         sb.append("\n~~ Blocking Settings ~~\n\n")
-        sb.append("MACE: ${settingsPrefs.isMaceEnabled()}\n")
-        sb.append("Allow Local Network: ${settingsPrefs.isAllowLocalTrafficEnabled()}\n")
+        sb.append("MACE: ${settingsPrefs.isMaceEnabled.value}\n")
+        sb.append("Allow Local Network: ${settingsPrefs.isAllowLocalTrafficEnabled.value}\n")
         sb.append("\n~~ Encryption Settings ~~\n\n")
 
         sb.append("Data Encryption: ${settings.dataEncryption.value}\n")
@@ -185,9 +192,9 @@ class CsiDataProvider(
         sb.append("OpenVPN Handshake: ${settings.handshake}\n")
         sb.append("Wireguard Handshake: ${settings.handshake}\n")
         sb.append("\n~~ App Settings ~~\n\n")
-        sb.append("1 click connect: ${settingsPrefs.isConnectOnLaunchEnabled()}\n")
-        sb.append("Connect on Boot: ${settingsPrefs.isLaunchOnStartupEnabled()}\n")
-        sb.append("Connect on App Updated: ${settingsPrefs.isConnectOnAppUpdateEnabled()}\n")
+        sb.append("1 click connect: ${settingsPrefs.isConnectOnLaunchEnabled.value}\n")
+        sb.append("Connect on Boot: ${settingsPrefs.isLaunchOnStartupEnabled.value}\n")
+        sb.append("Connect on App Updated: ${settingsPrefs.isConnectOnAppUpdateEnabled.value}\n")
         sb.append("\n~~~~~ End User Settings ~~~~~\n")
         sb.append("\n~~ VPN Logs ~~\n\n")
         // TODO: implement vpn logs as part of https://polymoon.atlassian.net/browse/PIA-377
@@ -201,7 +208,7 @@ class CsiDataProvider(
     // TODO: implement as part of https://polymoon.atlassian.net/browse/PIA-606
     private fun getUserSettings(): String = ""
 
-    private fun getLastKnownException(): String = csiPrefs.getLastKnownException()
+    private fun getLastKnownException(): String = csiPrefs.lastKnownException.value
 
     private fun getApplicationInformation(): String = userAgent
 
@@ -217,7 +224,7 @@ class CsiDataProvider(
         return sb.toString()
     }
 
-    private fun getDebugLogs(): String = csiPrefs.getCustomDebugLogs()
+    private fun getDebugLogs(): String = csiPrefs.customDebugLogs.value
 
     private fun redactIPsFromString(redact: String): String = redact.replace("\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b".toRegex(), "REDACTED")
 }

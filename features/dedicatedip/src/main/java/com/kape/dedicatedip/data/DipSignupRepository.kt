@@ -19,7 +19,7 @@ class DipSignupRepository(
     }
 
     suspend fun signupPlans(): AndroidAddonsSubscriptionsInformation? {
-        dipPrefs.getDedicatedIpSignupPlans()?.let {
+        dipPrefs.dedicatedIpSignupPlans.value?.let {
             if (System.currentTimeMillis() - it.persistedTimestamp > DIP_SIGNUP_FETCH_PLANS_MIN_CACHE_1_DAY) {
                 return fetchSignupPlans()
             } else {
@@ -30,7 +30,7 @@ class DipSignupRepository(
     }
 
     suspend fun dipSupportedCountries(): DipCountriesResponse? {
-        dipPrefs.getDedicatedIpSupportedCountries()?.let {
+        dipPrefs.dedicatedIpSupportedCountries.value?.let {
             if (System.currentTimeMillis() - it.persistedTimestamp > DIP_SIGNUP_FETCH_PLANS_MIN_CACHE_12_HOURS) {
                 return fetchSupportedCountries()
             } else {

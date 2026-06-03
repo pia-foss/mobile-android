@@ -16,6 +16,7 @@ import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -70,6 +71,7 @@ class ConnectionManagerImpl :
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun handleReconnect(
         server: VpnServer,
         stopCallback: () -> Unit,
@@ -77,6 +79,9 @@ class ConnectionManagerImpl :
         connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
 
         disconnect().getOrNull()
+
+        // A newer reconnect request arrived during disconnect; let the loop handle it.
+        if (!reconnectChannel.isEmpty) return
 
         try {
             connect(
@@ -149,10 +154,10 @@ class ConnectionManagerImpl :
     // ───────────────────────────────────────────────────────────────
 
     private suspend fun startShadowsocks(stopCallback: () -> Unit): Boolean {
-        if (!settingsPrefs.isShadowsocksObfuscationEnabled()) return true
+        if (!settingsPrefs.isShadowsocksObfuscationEnabled.value) return true
 
         val server =
-            shadowsocksRegionPrefs.getSelectedShadowsocksServer() ?: return false
+            shadowsocksRegionPrefs.selectedShadowsocksServer.value ?: return false
 
         return startObfuscatorProcess(
             obfuscatorProcessInformation =
@@ -170,7 +175,7 @@ class ConnectionManagerImpl :
     }
 
     private suspend fun startPortForwarding() {
-        if (!settingsPrefs.isPortForwardingEnabled()) return
+        if (!settingsPrefs.isPortForwardingEnabled.value) return
         portForwardingUseCase.bindPort(connectionSource.getVpnToken())
         connectionSource.startPortForwarding()
     }
@@ -189,10 +194,10 @@ class ConnectionManagerImpl :
     }
 
     private fun mapProtocolToServerGroup(): VpnServer.ServerGroup =
-        when (settingsPrefs.getSelectedProtocol()) {
+        when (settingsPrefs.selectedProtocol.value) {
             VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
             VpnProtocols.OpenVPN -> {
-                when (settingsPrefs.getOpenVpnSettings().transport) {
+                when (settingsPrefs.openVpnSettings.value.transport) {
                     Transport.UDP -> VpnServer.ServerGroup.OPENVPN_UDP
                     Transport.TCP -> VpnServer.ServerGroup.OPENVPN_TCP
                 }

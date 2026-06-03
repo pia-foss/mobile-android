@@ -1,7 +1,7 @@
 package com.kape.payments.domain
 
-import com.kape.payments.SubscriptionPrefs
 import com.kape.payments.data.PurchaseData
+import com.kape.payments.prefs.SubscriptionPrefs
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -25,9 +25,9 @@ class GetPurchaseDetailsUseCaseTest {
     @MethodSource("prefsValues")
     fun `test getPurchaseDetails`(expected: PurchaseData?) =
         runTest {
-            every { prefs.getVpnPurchaseData() } returns expected
+            every { prefs.vpnPurchaseData.value } returns expected
 
-            val result = useCase.getPurchaseDetails()
+            val result = useCase.getPurchaseDetails().value
             assertEquals(expected, result)
         }
 

@@ -15,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ClipboardManager
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.PrimaryButton
@@ -45,6 +47,7 @@ import org.koin.androidx.compose.koinViewModel
 fun SignupDedicatedIpTokenDetailsScreen() =
     Screen {
         val viewModel: DipViewModel = koinViewModel()
+        val dipToken by viewModel.getSignupDipToken().collectAsStateWithLifecycle()
         val context = LocalContext.current
         val clipboardManager: ClipboardManager = LocalClipboardManager.current
         val toastText = stringResource(id = R.string.dip_signup_token_copied)
@@ -118,7 +121,7 @@ fun SignupDedicatedIpTokenDetailsScreen() =
                         border = BorderStroke(1.dp, color = LocalColors.current.infoOutline()),
                         shape = RoundedCornerShape(12.dp),
                         onClick = {
-                            clipboardManager.setText(AnnotatedString(viewModel.getSignupDipToken()))
+                            clipboardManager.setText(AnnotatedString(dipToken))
                             Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
                             viewModel.enableActivateTokenButton()
                         },
@@ -132,7 +135,7 @@ fun SignupDedicatedIpTokenDetailsScreen() =
                         ) {
                             DedicatedIpSignupActivateTokenDescriptionText(
                                 modifier = Modifier.weight(1.0f),
-                                content = viewModel.getSignupDipToken(),
+                                content = dipToken,
                                 color = LocalColors.current.infoBlue(),
                             )
                             Spacer(modifier = Modifier.width(8.dp))

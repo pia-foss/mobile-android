@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
 import java.util.Locale
@@ -40,7 +41,8 @@ class RegionListProvider(
     }
 
     fun reflectDedicatedIpAction() {
-        _servers.value = regionRepository.getServers(false)
+        val nonDipServers = _servers.value.filter { !it.isDedicatedIp }
+        _servers.value = regionRepository.addDipsToList(nonDipServers)
     }
 
     fun loadVpnServerLatencies() =
@@ -81,7 +83,8 @@ class RegionListProvider(
     }
 
     private fun setRegionsListToDefault() {
-        _servers.value = readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
-        _isDefaultList.value = true
+        val assetServers = readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
+        _servers.update { regionRepository.addDipsToList(assetServers) }
+        _isDefaultList.update { true }
     }
 }

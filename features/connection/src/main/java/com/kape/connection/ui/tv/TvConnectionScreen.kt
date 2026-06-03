@@ -28,6 +28,7 @@ import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.connection.ui.ConnectButton
@@ -57,6 +58,7 @@ fun TvConnectionScreen() =
         val locale = Locale.getDefault().language
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
+        val screenElements by viewModel.getOrderedElements().collectAsStateWithLifecycle()
 
         BackHandler {
             activity?.finish()
@@ -132,7 +134,7 @@ fun TvConnectionScreen() =
                         viewModel.onConnectionButtonClicked()
                     }
                     Spacer(modifier = Modifier.height(32.dp))
-                    viewModel.getOrderedElements().forEach {
+                    screenElements.forEach {
                         DisplayComponent(
                             screenElement = it.element,
                             isVisible = viewModel.isScreenElementVisible(it),
@@ -158,7 +160,7 @@ private fun DisplayComponent(
 
     val state by viewModel.state.collectAsState()
     val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsState()
-    val vpnState by viewModel.connectionInfoProvider.state.collectAsState()
+    val vpnIp by viewModel.connectionInfoProvider.vpnIp.collectAsState()
 
     when (screenElement) {
         Element.VpnRegionSelection -> {
@@ -168,7 +170,7 @@ private fun DisplayComponent(
                         down = startQuickConnectFocusRequester
                     },
                 server = state.server,
-                vpnIp = vpnState.vpnIp,
+                vpnIp = vpnIp,
                 isConnected = connectionState.status == ConnectionStatus.CONNECTED,
                 isOptimal = state.isCurrentServerOptimal,
             ) {
@@ -178,7 +180,8 @@ private fun DisplayComponent(
 
         Element.QuickConnect -> {
             val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-            for (server in state.quickConnectServers) {
+            val quickConnectServers by viewModel.quickConnectServers.collectAsStateWithLifecycle()
+            for (server in quickConnectServers) {
                 quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
             }
             QuickConnect(

@@ -1,6 +1,7 @@
 package com.kape.signup.domain
 
 import com.kape.localprefs.prefs.ConsentPrefs
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
@@ -27,8 +28,8 @@ class ConsentUseCaseTest {
         result: Boolean,
         expected: Boolean,
     ) = runTest {
-        every { prefs.setAllowSharing(any()) } returns Unit
-        every { prefs.getAllowSharing() } returns expected
+        coEvery { prefs.setAllowSharing(any()) } returns Unit
+        every { prefs.allowSharing.value } returns expected
 
         useCase.setConsent(result)
         assertEquals(expected, useCase.getConsent())

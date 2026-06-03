@@ -113,7 +113,7 @@ val state: StateFlow<ScreenState> = _state
 val connectionState = connectionInfoProvider.connectionState  // StateFlow<VpnConnectionStatus>
 
 // Event handlers always launch coroutines
-fun onSomeAction() = viewModelScope.launch { ... }
+fun onSomeAction() = viewModelScope.launch(ioDispatcher) { ... }
 ```
 
 ### Repository pattern

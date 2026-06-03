@@ -1,37 +1,59 @@
 package com.kape.localprefs.prefs
 
 import android.content.Context
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.kape.localprefs.Prefs
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import org.koin.core.annotation.Singleton
 
-private const val LAST_KNOWN_EXCEPTION = "last-known-exception"
-private const val PROTOCOL_DEBUG_LOGS = "protocol-debug-logs"
-private const val DEBUG_LOGS = "debug-logs"
+private val LAST_KNOWN_EXCEPTION = stringPreferencesKey("last-known-exception")
+private val PROTOCOL_DEBUG_LOGS = stringPreferencesKey("protocol-debug-logs")
+private val DEBUG_LOGS = stringPreferencesKey("debug-logs")
 
 @Singleton
 class CsiPrefs(
     context: Context,
 ) : Prefs(context, "csi") {
-    fun setLastKnownException(value: String) = prefs.edit().putString(LAST_KNOWN_EXCEPTION, value).apply()
+    val lastKnownException: StateFlow<String> =
+        getLastKnownException().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
+    val protocolDebugLogs: StateFlow<String> =
+        getProtocolDebugLogs().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
+    val customDebugLogs: StateFlow<String> =
+        getCustomDebugLogs().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
 
-    fun getLastKnownException() = prefs.getString(LAST_KNOWN_EXCEPTION, "") ?: ""
+    suspend fun setLastKnownException(value: String) {
+        dataStore.edit { it[LAST_KNOWN_EXCEPTION] = value }
+    }
 
-    fun setProtocolDebugLogs(value: String) = prefs.edit().putString(PROTOCOL_DEBUG_LOGS, value).apply()
+    suspend fun setProtocolDebugLogs(value: String) {
+        dataStore.edit { it[PROTOCOL_DEBUG_LOGS] = value }
+    }
 
-    fun getProtocolDebugLogs() = prefs.getString(PROTOCOL_DEBUG_LOGS, "") ?: ""
-
-    fun addCustomDebugLogs(
+    suspend fun addCustomDebugLogs(
         value: String,
         isDebugLoggingEnabled: Boolean,
     ) {
         if (isDebugLoggingEnabled) {
-            var current = prefs.getString(DEBUG_LOGS, "")
-            current += value + "\n"
-            prefs.edit().putString(DEBUG_LOGS, current).apply()
+            dataStore.edit { prefs ->
+                val current = prefs[DEBUG_LOGS] ?: ""
+                prefs[DEBUG_LOGS] = current + value + "\n"
+            }
         }
     }
 
-    fun getCustomDebugLogs() = prefs.getString(DEBUG_LOGS, "") ?: ""
+    suspend fun clearCustomDebugLogs() {
+        dataStore.edit { it[DEBUG_LOGS] = "" }
+    }
 
-    fun clearCustomDebugLogs() = prefs.edit().putString(DEBUG_LOGS, "").apply()
+    private fun getLastKnownException(): Flow<String> = dataStore.data.map { it[LAST_KNOWN_EXCEPTION] ?: "" }
+
+    private fun getProtocolDebugLogs(): Flow<String> = dataStore.data.map { it[PROTOCOL_DEBUG_LOGS] ?: "" }
+
+    private fun getCustomDebugLogs(): Flow<String> = dataStore.data.map { it[DEBUG_LOGS] ?: "" }
 }

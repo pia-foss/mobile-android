@@ -3,6 +3,7 @@ package com.kape.automation.ui.viewmodel
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
 import com.kape.data.AutomationAddRule
 import com.kape.data.AutomationBackgroundLocation
@@ -16,9 +17,11 @@ import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkRulesManager
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
 
@@ -31,18 +34,20 @@ class AutomationViewModel(
     private val networkConnectionListener: NetworkConnectionListener,
     @Named(DI.RULES_UPDATED_INTENT) private val broadcastIntent: Intent,
     private val automationManager: AutomationManager,
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
+    val isAutomationEnavled = settingsPrefs.isAutomationEnabled
+
     private val _state =
         MutableStateFlow(
             AutomationState(
-                isEnabled = settingsPrefs.isAutomationEnabled(),
                 locationPermissionGranted = locationPermissionManager.isFineLocationPermissionGranted(),
                 backgroundLocationPermissionGranted = locationPermissionManager.isBackgroundLocationPermissionGranted(),
-                rules = networkRulesManager.getRules(),
             ),
         )
     val state = _state.asStateFlow()
     val availableNetwork = networkConnectionListener.ssid
+    val rules = networkRulesManager.getRules()
 
     fun onLocationPermissionGranted() {
         _state.update { it.copy(locationPermissionGranted = true) }
@@ -50,47 +55,49 @@ class AutomationViewModel(
     }
 
     fun onBackgroundLocationPermissionGranted(context: Context) {
-        settingsPrefs.setAutomationEnabled(true)
-        automationManager.startAutomationService()
-        sendBroadcast(context)
-        _state.update {
-            it.copy(
-                isEnabled = true,
-                locationPermissionGranted = true,
-                backgroundLocationPermissionGranted = true,
-            )
+        viewModelScope.launch(ioDispatcher) {
+            settingsPrefs.setAutomationEnabled(true)
+            automationManager.startAutomationService()
+            sendBroadcast(context)
+            _state.update {
+                it.copy(
+                    locationPermissionGranted = true,
+                    backgroundLocationPermissionGranted = true,
+                )
+            }
+            navigateToAutomationMain()
         }
-        navigateToAutomationMain()
     }
 
     fun onAutomationToggled(context: Context) {
-        if (settingsPrefs.isAutomationEnabled()) {
+        if (settingsPrefs.isAutomationEnabled.value) {
             disableAutomation()
-            _state.update { it.copy(isEnabled = false) }
         } else {
-            if (areLocationPermissionsGranted()) {
-                settingsPrefs.setAutomationEnabled(true)
-                automationManager.startAutomationService()
-                sendBroadcast(context)
-                _state.update {
-                    it.copy(
-                        isEnabled = true,
-                        locationPermissionGranted = true,
-                        backgroundLocationPermissionGranted = true,
-                    )
+            viewModelScope.launch(ioDispatcher) {
+                if (areLocationPermissionsGranted()) {
+                    settingsPrefs.setAutomationEnabled(true)
+                    automationManager.startAutomationService()
+                    sendBroadcast(context)
+                    _state.update {
+                        it.copy(
+                            locationPermissionGranted = true,
+                            backgroundLocationPermissionGranted = true,
+                        )
+                    }
+                } else {
+                    navigateToLocationPermissionRequests()
                 }
-            } else {
-                navigateToLocationPermissionRequests()
             }
         }
     }
 
     fun sendBroadcast(context: Context) = context.sendBroadcast(broadcastIntent)
 
-    private fun disableAutomation() {
-        settingsPrefs.setAutomationEnabled(false)
-        automationManager.stopAutomationService()
-    }
+    private fun disableAutomation() =
+        viewModelScope.launch(ioDispatcher) {
+            settingsPrefs.setAutomationEnabled(false)
+            automationManager.stopAutomationService()
+        }
 
     private fun areLocationPermissionsGranted() =
         locationPermissionManager.isFineLocationPermissionGranted() &&
@@ -101,23 +108,21 @@ class AutomationViewModel(
     fun updateRule(
         rule: NetworkItem,
         behavior: NetworkBehavior,
-    ) {
+    ) = viewModelScope.launch(ioDispatcher) {
         networkRulesManager.updateRule(rule, behavior)
-        _state.update { it.copy(rules = networkRulesManager.getRules()) }
     }
 
     fun addRule(
         ssid: String,
         behavior: NetworkBehavior,
-    ) {
+    ) = viewModelScope.launch(ioDispatcher) {
         networkRulesManager.addRule(ssid, behavior)
-        _state.update { it.copy(rules = networkRulesManager.getRules()) }
     }
 
-    fun removeRule(rule: NetworkItem) {
-        networkRulesManager.removeRule(rule)
-        _state.update { it.copy(rules = networkRulesManager.getRules()) }
-    }
+    fun removeRule(rule: NetworkItem) =
+        viewModelScope.launch(ioDispatcher) {
+            networkRulesManager.removeRule(rule)
+        }
 
     private fun navigateToAutomationBackgroundLocation() =
         router.updateDestination(
@@ -146,8 +151,6 @@ class AutomationViewModel(
 }
 
 data class AutomationState(
-    val isEnabled: Boolean,
     val locationPermissionGranted: Boolean,
     val backgroundLocationPermissionGranted: Boolean,
-    val rules: List<NetworkItem>,
 )

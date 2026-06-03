@@ -10,7 +10,7 @@ import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
-import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.vpnconnect.provider.UsageProviderImpl
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.ServerList
@@ -39,7 +39,7 @@ class ConnectionDataSourceImplTest {
     private val workManager = mockk<WorkManager>(relaxed = true)
     private val settingsPrefs = mockk<SettingsPrefs>(relaxed = true)
     private val kpiDataSource = mockk<KpiDataSource>(relaxed = true)
-    private val usageProvider = mockk<UsageProvider>(relaxed = true)
+    private val usageProvider = mockk<UsageProviderImpl>(relaxed = true)
     private val csiPrefs = mockk<CsiPrefs>(relaxed = true)
 
     private val connectionStatusProvider =
@@ -76,7 +76,7 @@ class ConnectionDataSourceImplTest {
             val serverPeerInfo = ServerPeerInformation(networkInterface = "wg0", gateway = "10.0.0.1")
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-            every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
+            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns false
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
             every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
                 slot.captured.invoke(Result.success(serverPeerInfo))
@@ -94,8 +94,8 @@ class ConnectionDataSourceImplTest {
             val clientConfiguration = mockk<ClientConfiguration>()
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-            every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
-            every { settingsPrefs.isDebugLoggingEnabled() } returns false
+            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns false
+            every { settingsPrefs.isDebugLoggingEnabled.value } returns false
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
             every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
                 slot.captured.invoke(Result.failure(RuntimeException("connection failed")))
@@ -113,7 +113,7 @@ class ConnectionDataSourceImplTest {
             val clientConfiguration = mockk<ClientConfiguration>()
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-            every { settingsPrefs.isHelpImprovePiaEnabled() } returns true
+            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns true
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
             every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
                 slot.captured.invoke(Result.success(mockk(relaxed = true)))
@@ -130,7 +130,7 @@ class ConnectionDataSourceImplTest {
             val clientConfiguration = mockk<ClientConfiguration>()
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-            every { settingsPrefs.isHelpImprovePiaEnabled() } returns false
+            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns false
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
             every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
                 slot.captured.invoke(Result.success(mockk(relaxed = true)))
@@ -168,7 +168,7 @@ class ConnectionDataSourceImplTest {
         runTest {
             val slot = slot<(Result<Unit>) -> Unit>()
 
-            every { settingsPrefs.isDebugLoggingEnabled() } returns true
+            every { settingsPrefs.isDebugLoggingEnabled.value } returns true
             every { connectionApi.stopConnection(capture(slot)) } answers {
                 slot.captured.invoke(Result.failure(RuntimeException("stop failed")))
             }
@@ -235,7 +235,7 @@ class ConnectionDataSourceImplTest {
             val logs = listOf("wg_log1", "wg_log2")
             val slot = slot<(Result<List<String>>) -> Unit>()
 
-            every { settingsPrefs.getSelectedProtocol() } returns VpnProtocols.WireGuard
+            every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.WireGuard
             every { connectionApi.getVpnProtocolLogs(VPNManagerProtocolTarget.WIREGUARD, capture(slot)) } answers {
                 slot.captured.invoke(Result.success(logs))
             }
@@ -251,7 +251,7 @@ class ConnectionDataSourceImplTest {
             val logs = listOf("ovpn_log1")
             val slot = slot<(Result<List<String>>) -> Unit>()
 
-            every { settingsPrefs.getSelectedProtocol() } returns VpnProtocols.OpenVPN
+            every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.OpenVPN
             every { connectionApi.getVpnProtocolLogs(VPNManagerProtocolTarget.OPENVPN, capture(slot)) } answers {
                 slot.captured.invoke(Result.success(logs))
             }
@@ -266,7 +266,7 @@ class ConnectionDataSourceImplTest {
         runTest {
             val slot = slot<(Result<List<String>>) -> Unit>()
 
-            every { settingsPrefs.getSelectedProtocol() } returns VpnProtocols.WireGuard
+            every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.WireGuard
             every { connectionApi.getVpnProtocolLogs(any(), capture(slot)) } answers {
                 slot.captured.invoke(Result.failure(RuntimeException("logs unavailable")))
             }

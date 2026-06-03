@@ -18,6 +18,7 @@ import com.kape.contracts.ConfigInfo
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.LicenceReader
 import com.kape.contracts.NetworkManager
+import com.kape.contracts.UsageProvider
 import com.kape.csi.di.CsiModule
 import com.kape.customization.di.CustomizationModule
 import com.kape.data.DI
@@ -81,11 +82,11 @@ import com.kape.vpn.utils.LicenceReaderImpl
 import com.kape.vpn.utils.NetworkManagerImpl
 import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.di.VpnConnectModule
-import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnlauncher.di.VpnLauncherModule
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerBuilder
+import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import com.kape.vpnregions.di.VpnServersModule
 import com.kape.vpnregionselection.di.VpnRegionModule
 import com.privateinternetaccess.account.AccountBuilder
@@ -102,6 +103,7 @@ import com.privateinternetaccess.regions.PlatformInstancesProvider
 import com.privateinternetaccess.regions.RegionsAPI
 import com.privateinternetaccess.regions.RegionsBuilder
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
@@ -185,6 +187,12 @@ class AppModule {
     @Singleton
     @Named(DI.IO_DISPATCHER)
     fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+    @Singleton
+    @Named(DI.IO_SCOPE)
+    fun provideIOScope(
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+    ) = CoroutineScope(ioDispatcher)
 
     @Singleton
     fun provideNotificationManager(context: Context): NotificationManager =
@@ -286,7 +294,7 @@ class AppModule {
         VPNManagerBuilder()
             .setContext(context)
             .setClientCoroutineContext(Dispatchers.Main)
-            .setProtocolByteCountDependency(usageProvider)
+            .setProtocolByteCountDependency(usageProvider as VPNManagerProtocolByteCountDependency)
             .setPermissionsDependency(vpnManagerProvider)
             .setDebugLoggingDependency(vpnManagerProvider)
             .build()
@@ -299,7 +307,8 @@ class AppModule {
         csiPrefs: CsiPrefs,
         settingsPrefs: SettingsPrefs,
         configInfo: ConfigInfo,
-    ): CsiDataProvider = CsiDataProvider(csiPrefs, settingsPrefs, configInfo.userAgent)
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
+    ): CsiDataProvider = CsiDataProvider(csiPrefs, settingsPrefs, configInfo.userAgent, ioScope)
 
     @Singleton([CSIAPI::class])
     fun provideCsiApi(
@@ -338,7 +347,16 @@ class AppModule {
         vpnLauncher: VpnLauncher,
         settingsPrefs: SettingsPrefs,
         connectionStatusProvider: ConnectionStatusProvider,
-    ): NetworkManager = NetworkManagerImpl(context, networkPrefs, vpnLauncher, settingsPrefs, connectionStatusProvider)
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
+    ): NetworkManager =
+        NetworkManagerImpl(
+            context,
+            networkPrefs,
+            vpnLauncher,
+            settingsPrefs,
+            connectionStatusProvider,
+            ioScope,
+        )
 
     @Singleton
     fun provideNetworkConnectionListener(

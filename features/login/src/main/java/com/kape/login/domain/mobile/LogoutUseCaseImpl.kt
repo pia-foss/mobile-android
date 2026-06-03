@@ -14,8 +14,9 @@ import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
+import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
-import com.kape.payments.SubscriptionPrefs
+import com.kape.payments.prefs.SubscriptionPrefs
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -28,6 +29,7 @@ class LogoutUseCaseImpl(
     private val networkManagementPrefs: NetworkManagementPrefs,
     private val subscriptionPrefs: SubscriptionPrefs,
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
+    private val shortcutPrefs: ShortcutPrefs,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val kpiPrefs: KpiPrefs,
@@ -36,8 +38,8 @@ class LogoutUseCaseImpl(
     private val connectionManager: ConnectionManager,
 ) : LogoutUseCase {
     override suspend fun logout(): Boolean {
-        if (settingsPrefs.isAutomationEnabled()) {
-            connectionPrefs.disconnectedByUser(true)
+        if (settingsPrefs.isAutomationEnabled.value) {
+            connectionPrefs.setDisconnectedByUser(true)
         }
         if (connectionManager.isConnectionInProgress()) {
             connectionManager.disconnect().getOrNull()
@@ -53,7 +55,7 @@ class LogoutUseCaseImpl(
         }
     }
 
-    private fun clearPrefs() {
+    private suspend fun clearPrefs() {
         connectionPrefs.clear()
         csiPrefs.clear()
         customizationPrefs.clear()
@@ -61,6 +63,7 @@ class LogoutUseCaseImpl(
         networkManagementPrefs.clear()
         subscriptionPrefs.clear()
         shadowsocksRegionPrefs.clear()
+        shortcutPrefs.clear()
         vpnRegionPrefs.clear()
         settingsPrefs.clear()
         kpiPrefs.clear()

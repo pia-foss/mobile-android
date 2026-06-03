@@ -17,4 +17,7 @@ dependencies {
     implementation(libs.bundles.serialization)
     implementation(libs.kape.account)
     implementation(libs.crypto)
+    implementation(libs.datastore.preferences)
+    implementation(libs.tink.android)
+    implementation(libs.coroutines)
 }

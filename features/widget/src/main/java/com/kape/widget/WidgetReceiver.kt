@@ -3,7 +3,7 @@ package com.kape.widget
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import com.kape.contracts.ConnectionInfoProvider
-import com.kape.vpnconnect.provider.UsageProvider
+import com.kape.contracts.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -14,6 +15,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
@@ -32,7 +34,9 @@ fun SettingsScreen() =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = com.kape.ui.R.string.settings))
             }
-        val shouldShowObfuscation = viewModel.getSelectedProtocol() == VpnProtocols.OpenVPN
+        val protocol by viewModel.selectedProtocol.collectAsStateWithLifecycle()
+        val shouldShowObfuscation = protocol == VpnProtocols.OpenVPN
+        val automationEnabled by viewModel.isAutomationEnabled().collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -60,7 +64,7 @@ fun SettingsScreen() =
                     SettingsItem(
                         iconId = R.drawable.ic_settings_protocols,
                         titleId = com.kape.ui.R.string.protocols,
-                        subtitle = viewModel.getSelectedProtocol().name,
+                        subtitle = protocol.name,
                         onClick = {
                             viewModel.navigateToProtocolSettings()
                         },
@@ -85,7 +89,7 @@ fun SettingsScreen() =
                         titleId = com.kape.ui.R.string.automation,
                         subtitle =
                             stringResource(
-                                id = if (viewModel.isAutomationEnabled()) com.kape.ui.R.string.enabled else com.kape.ui.R.string.disabled,
+                                id = if (automationEnabled) com.kape.ui.R.string.enabled else com.kape.ui.R.string.disabled,
                             ),
                         onClick = {
                             viewModel.navigateToAutomation()

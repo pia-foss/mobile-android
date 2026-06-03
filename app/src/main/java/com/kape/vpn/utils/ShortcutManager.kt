@@ -16,7 +16,10 @@ import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.vpn.MainActivity
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Named
@@ -26,37 +29,35 @@ import org.koin.core.annotation.Singleton
 class ShortcutManager(
     private val context: Context,
     private val connectionStatusProvider: ConnectionStatusProvider,
-    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) {
     init {
-        CoroutineScope(ioDispatcher).launch {
-            connectionStatusProvider.state.collect {
-                when (it) {
-                    ConnectionStatus.CONNECTED,
-                    ConnectionStatus.DISCONNECTED,
-                    ->
-                        withContext(Dispatchers.Main) {
-                            createDynamicShortcuts()
-                        }
-
-                    else -> {
-                        // no-op
+        ioScope.launch {
+            connectionStatusProvider.state
+                .map { it.status }
+                .filter { it == ConnectionStatus.CONNECTED || it == ConnectionStatus.DISCONNECTED }
+                .distinctUntilChanged()
+                .collectLatest { status ->
+                    withContext(mainDispatcher) {
+                        createDynamicShortcuts(status == ConnectionStatus.CONNECTED)
                     }
                 }
-            }
         }
     }
 
-    fun createDynamicShortcuts() {
-        val isConnected = connectionStatusProvider.state.value == ConnectionStatus.CONNECTED
+    fun createDynamicShortcuts(isConnected: Boolean = false) {
         val connect =
             ShortcutInfoCompat
                 .Builder(context, CONNECT)
                 .setShortLabel(context.getString(if (isConnected) R.string.qs_disconnect_nolocation else R.string.qs_title))
                 .setLongLabel(context.getString(if (isConnected) R.string.qs_disconnect_nolocation else R.string.qs_title))
-                .setIcon(IconCompat.createWithResource(context, com.kape.vpn.R.drawable.ic_protected))
-                .setIntent(
+                .setIcon(
+                    IconCompat.createWithResource(
+                        context,
+                        com.kape.vpn.R.drawable.ic_protected,
+                    ),
+                ).setIntent(
                     Intent(context, MainActivity::class.java).apply {
                         action = if (isConnected) ACTION_DISCONNECT else ACTION_CONNECT
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

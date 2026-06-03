@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
 import com.kape.data.AccountDeleted
+import com.kape.data.DI
 import com.kape.data.LoginWithCredentials
 import com.kape.data.Splash
 import com.kape.data.Subscribe
@@ -16,10 +17,12 @@ import com.kape.profile.ui.screens.mobile.IDLE
 import com.kape.profile.ui.screens.mobile.LOADING
 import com.kape.profile.ui.screens.mobile.ProfileScreenState
 import com.kape.profile.ui.screens.mobile.createSuccessState
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.Named
 import org.koin.core.component.KoinComponent
 
 @KoinViewModel
@@ -28,6 +31,7 @@ class ProfileViewModel(
     private val deleteAccountUseCase: DeleteAccountUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val router: Router,
+    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel(),
     KoinComponent {
     private val _state = MutableStateFlow(IDLE)
@@ -38,7 +42,7 @@ class ProfileViewModel(
     }
 
     fun logout() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             logoutUseCase.logout()
             router.updateDestination(Splash)
         }
@@ -52,7 +56,7 @@ class ProfileViewModel(
     fun navigateToDeleteAccount() = router.updateDestination(WebDestination.DeleteAccount)
 
     private fun loadProfile() =
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             _state.emit(LOADING)
             val profile = useCase.getProfile()
             if (profile == null) {

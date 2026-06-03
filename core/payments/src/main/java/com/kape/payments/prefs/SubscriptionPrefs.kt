@@ -1,81 +1,83 @@
-package com.kape.payments
+package com.kape.payments.prefs
 
 import android.content.Context
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.kape.localprefs.Prefs
 import com.kape.payments.data.DipPurchaseData
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
 import com.kape.payments.data.SubscriptionPlan
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
-import kotlin.toString
 
-private const val AVAILABLE_VPN_SUBSCRIPTIONS = "available-subscriptions"
-private const val AVAILABLE_VPN_SUBSCRIPTIONS_V2 = "available-subscriptions-v2"
-private const val VPN_PURCHASE_DATA = "purchase-data"
-private const val DIP_PURCHASE_DATA = "dip-purchase-data"
+private val AVAILABLE_VPN_SUBSCRIPTIONS = stringSetPreferencesKey("available-subscriptions")
+private val AVAILABLE_VPN_SUBSCRIPTIONS_V2 = stringSetPreferencesKey("available-subscriptions-v2")
+private val VPN_PURCHASE_DATA = stringPreferencesKey("purchase-data")
+private val DIP_PURCHASE_DATA = stringPreferencesKey("dip-purchase-data")
 
 @Singleton
 class SubscriptionPrefs(
     context: Context,
 ) : Prefs(context, "subscriptions") {
-    fun storeVpnSubscriptions(available: List<Subscription>) {
-        val validData = mutableSetOf<String>()
-        for (item in available) {
-            if (!item.legacy) {
-                validData.add(item.toString())
-            }
-        }
-        prefs.edit().putStringSet(AVAILABLE_VPN_SUBSCRIPTIONS, validData).apply()
+    val vpnSubscriptions: StateFlow<List<Subscription>> =
+        getVpnSubscriptions().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
+    val vpnSubscriptionPlans: StateFlow<List<SubscriptionPlan>> =
+        getVpnSubscriptionPlans().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            emptyList(),
+        )
+    val vpnPurchaseData: StateFlow<PurchaseData?> =
+        getVpnPurchaseData().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
+    val dipPurchaseData: StateFlow<DipPurchaseData?> =
+        getDipPurchaseData().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
+
+    suspend fun storeVpnSubscriptions(available: List<Subscription>) {
+        val validData = available.filter { !it.legacy }.map { it.toString() }.toSet()
+        dataStore.edit { it[AVAILABLE_VPN_SUBSCRIPTIONS] = validData }
     }
 
-    fun getVpnSubscriptions(): List<Subscription> {
-        val data = mutableListOf<Subscription>()
-        for (item in prefs.getStringSet(AVAILABLE_VPN_SUBSCRIPTIONS, emptySet())!!) {
-            data.add(Json.decodeFromString(item))
-        }
-        return data
+    suspend fun storeVpnSubscriptionPlans(available: List<SubscriptionPlan>) {
+        val validData = available.map { it.toString() }.toSet()
+        dataStore.edit { it[AVAILABLE_VPN_SUBSCRIPTIONS_V2] = validData }
     }
 
-    fun storeVpnSubscriptionPlans(available: List<SubscriptionPlan>) {
-        val validData = mutableSetOf<String>()
-        for (item in available) {
-            validData.add(item.toString())
-        }
-        prefs.edit().putStringSet(AVAILABLE_VPN_SUBSCRIPTIONS_V2, validData).apply()
+    suspend fun storeVpnPurchaseData(purchaseData: PurchaseData) {
+        dataStore.edit { it[VPN_PURCHASE_DATA] = purchaseData.toString() }
     }
 
-    fun getVpnSubscriptionPlans(): List<SubscriptionPlan> {
-        val data = mutableListOf<SubscriptionPlan>()
-        for (item in prefs.getStringSet(AVAILABLE_VPN_SUBSCRIPTIONS_V2, emptySet())!!) {
-            data.add(Json.decodeFromString(item))
-        }
-        return data
+    suspend fun storeDipPurchaseData(purchaseData: DipPurchaseData) {
+        dataStore.edit { it[DIP_PURCHASE_DATA] = Json.encodeToString(purchaseData) }
     }
 
-    fun storeVpnPurchaseData(purchaseData: PurchaseData) {
-        prefs.edit().putString(VPN_PURCHASE_DATA, purchaseData.toString()).apply()
+    suspend fun removeDipPurchaseData() {
+        dataStore.edit { it.remove(DIP_PURCHASE_DATA) }
     }
 
-    fun getVpnPurchaseData(): PurchaseData? {
-        val data = prefs.getString(VPN_PURCHASE_DATA, null)
-        return if (data == null) {
-            data
-        } else {
-            Json.decodeFromString(data)
-        }
-    }
-
-    fun storeDipPurchaseData(purchaseData: DipPurchaseData) {
-        prefs.edit().putString(DIP_PURCHASE_DATA, Json.encodeToString(purchaseData)).apply()
-    }
-
-    fun getDipPurchaseData(): DipPurchaseData? =
-        prefs.getString(DIP_PURCHASE_DATA, null)?.let {
-            Json.decodeFromString(it)
+    private fun getVpnSubscriptions(): Flow<List<Subscription>> =
+        dataStore.data.map { prefs ->
+            prefs[AVAILABLE_VPN_SUBSCRIPTIONS]?.map { Json.decodeFromString(it) } ?: emptyList()
         }
 
-    fun removeDipPurchaseData() {
-        prefs.edit().remove(DIP_PURCHASE_DATA).apply()
-    }
+    private fun getVpnSubscriptionPlans(): Flow<List<SubscriptionPlan>> =
+        dataStore.data.map { prefs ->
+            prefs[AVAILABLE_VPN_SUBSCRIPTIONS_V2]?.map { Json.decodeFromString(it) } ?: emptyList()
+        }
+
+    private fun getVpnPurchaseData(): Flow<PurchaseData?> =
+        dataStore.data.map { prefs ->
+            prefs[VPN_PURCHASE_DATA]?.let { Json.decodeFromString(it) }
+        }
+
+    private fun getDipPurchaseData(): Flow<DipPurchaseData?> =
+        dataStore.data.map { prefs ->
+            prefs[DIP_PURCHASE_DATA]?.let { Json.decodeFromString(it) }
+        }
 }

@@ -32,9 +32,9 @@ import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.UsageProvider
 import com.kape.data.ConnectionStatus
 import com.kape.ui.utils.getFlagResource
-import com.kape.vpnconnect.provider.UsageProvider
 import com.kape.vpnlauncher.VpnLauncher
 
 class Widget(
@@ -55,17 +55,16 @@ class Widget(
     ) {
         provideContent {
             val connectionState by connectionInfoProvider.connectionInfoState.collectAsState()
-            val infoState by connectionInfoProvider.state.collectAsState()
 
             val downloadSpeed by usageProvider.widgetDownloadSpeed.collectAsState()
             val uploadSpeed by usageProvider.widgetUploadSpeed.collectAsState()
             when (LocalSize.current) {
                 size1 -> Size1WidgetContent(connectionState.status)
-                size2 -> Size2WidgetContent(connectionState.status, infoState.name)
+                size2 -> Size2WidgetContent(connectionState.status, connectionInfoProvider.name)
                 size3 ->
                     Size3WidgetContent(
                         connectionState.status,
-                        infoState.name,
+                        connectionInfoProvider.name,
                         downloadSpeed,
                         uploadSpeed,
                     )
@@ -73,8 +72,8 @@ class Widget(
                 size4 ->
                     Size4WidgetContent(
                         connectionState.status,
-                        infoState.name,
-                        infoState.iso,
+                        connectionInfoProvider.name,
+                        connectionInfoProvider.iso,
                         downloadSpeed,
                         uploadSpeed,
                     )

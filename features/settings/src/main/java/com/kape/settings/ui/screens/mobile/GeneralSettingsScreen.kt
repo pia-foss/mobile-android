@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.ui.elements.mobile.SettingsToggle
@@ -27,6 +29,10 @@ fun GeneralSettingsScreen() =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.general))
             }
+        val launchOnBoot by viewModel.launchOnBootEnabled.collectAsStateWithLifecycle()
+        val connectOnStart by viewModel.connectOnStart.collectAsStateWithLifecycle()
+        val connectOnUpdate by viewModel.connectOnUpdate.collectAsStateWithLifecycle()
+        val showGeoLocatedServers by viewModel.showGeoLocatedServers.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -45,7 +51,7 @@ fun GeneralSettingsScreen() =
                     SettingsToggle(
                         titleId = R.string.connect_on_boot_title,
                         subtitleId = R.string.connect_on_boot_description,
-                        enabled = viewModel.launchOnBootEnabled.value,
+                        enabled = launchOnBoot,
                         toggle = {
                             viewModel.toggleLaunchOnBoot(it)
                         },
@@ -54,7 +60,7 @@ fun GeneralSettingsScreen() =
                     SettingsToggle(
                         titleId = R.string.connect_on_launch_title,
                         subtitleId = R.string.connect_on_launch_description,
-                        enabled = viewModel.connectOnStart.value,
+                        enabled = connectOnStart,
                         toggle = {
                             viewModel.toggleConnectOnStart(it)
                         },
@@ -63,7 +69,7 @@ fun GeneralSettingsScreen() =
                     SettingsToggle(
                         titleId = R.string.connect_on_update_title,
                         subtitleId = R.string.connect_on_update_description,
-                        enabled = viewModel.connectOnUpdate.value,
+                        enabled = connectOnUpdate,
                         toggle = {
                             viewModel.toggleConnectOnUpdate(it)
                         },
@@ -71,7 +77,7 @@ fun GeneralSettingsScreen() =
 
                     SettingsToggle(
                         titleId = R.string.geo_servers,
-                        enabled = viewModel.showGeoLocatedServers.value,
+                        enabled = showGeoLocatedServers,
                         toggle = {
                             viewModel.toggleShowGeoLocatedServers(it)
                         },

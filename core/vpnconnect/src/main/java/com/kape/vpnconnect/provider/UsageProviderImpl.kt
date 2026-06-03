@@ -1,25 +1,26 @@
 package com.kape.vpnconnect.provider
 
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.Snapshot
+import com.kape.contracts.UsageProvider
 import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.annotation.Singleton
 import kotlin.math.ln
 import kotlin.math.pow
 
-@Singleton([VPNManagerProtocolByteCountDependency::class])
-class UsageProvider(
+@Singleton([UsageProvider::class, VPNManagerProtocolByteCountDependency::class])
+class UsageProviderImpl(
     private val context: Context,
-) : VPNManagerProtocolByteCountDependency {
-    val download = mutableStateOf(humanReadableByteCountSI(0))
-    val upload = mutableStateOf(humanReadableByteCountSI(0))
+) : VPNManagerProtocolByteCountDependency,
+    UsageProvider {
+    override val download = MutableStateFlow(humanReadableByteCountSI(0))
+    override val upload = MutableStateFlow(humanReadableByteCountSI(0))
 
-    val widgetDownloadSpeed = MutableStateFlow(humanReadableByteCount(0, true, context))
-    val widgetDownload = mutableStateOf(humanReadableByteCount(0, false, context))
-    val widgetUploadSpeed = MutableStateFlow(humanReadableByteCount(0, true, context))
-    val widgetUpload = mutableStateOf(humanReadableByteCount(0, false, context))
+    override val widgetDownloadSpeed = MutableStateFlow(humanReadableByteCount(0, true, context))
+    override val widgetDownload = MutableStateFlow(humanReadableByteCount(0, false, context))
+    override val widgetUploadSpeed = MutableStateFlow(humanReadableByteCount(0, true, context))
+    override val widgetUpload = MutableStateFlow(humanReadableByteCount(0, false, context))
 
     override fun byteCount(
         tx: Long,
@@ -35,7 +36,7 @@ class UsageProvider(
         widgetUploadSpeed.value = humanReadableByteCount(tx, true, context)
     }
 
-    fun reset() {
+    override fun reset() {
         Snapshot.withMutableSnapshot {
             download.value = humanReadableByteCountSI(0)
             upload.value = humanReadableByteCountSI(0)

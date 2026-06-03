@@ -1,18 +1,29 @@
 package com.kape.localprefs.prefs
 
 import android.content.Context
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.kape.localprefs.Prefs
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import org.koin.core.annotation.Singleton
 
-private const val ACTIVE_PROTOCOL = "active-protocol"
+private val ACTIVE_PROTOCOL = stringPreferencesKey("active-protocol")
 
 @Singleton
 class KpiPrefs(
     context: Context,
 ) : Prefs(context, "kpi") {
-    fun setActiveProtocol(protocol: String) {
-        prefs.edit().putString(ACTIVE_PROTOCOL, protocol).apply()
+    val activeProtocol: StateFlow<String> =
+        getActiveProtocol().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
+
+    suspend fun setActiveProtocol(protocol: String) {
+        dataStore.edit { it[ACTIVE_PROTOCOL] = protocol }
     }
 
-    fun getActiveProtocol(): String = prefs.getString(ACTIVE_PROTOCOL, "")!!
+    private fun getActiveProtocol(): Flow<String> = dataStore.data.map { it[ACTIVE_PROTOCOL] ?: "" }
 }

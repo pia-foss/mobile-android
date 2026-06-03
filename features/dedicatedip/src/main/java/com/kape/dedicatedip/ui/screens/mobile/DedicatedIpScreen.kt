@@ -30,6 +30,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -86,6 +88,7 @@ fun DedicatedIpScreen() =
         val showSpinner = remember { mutableStateOf(false) }
         val serverForDeletion = remember { mutableStateOf<VpnServer?>(null) }
         val context = LocalContext.current
+        val showDipSignupBanner by viewModel.showDedicatedIpSignupBanner().collectAsState(false)
 
         Scaffold(
             topBar = {
@@ -196,7 +199,7 @@ fun DedicatedIpScreen() =
                             }
                         }
 
-                        if (viewModel.showDedicatedIpSignupBanner()) {
+                        if (showDipSignupBanner) {
                             DedicatedIpSignupBanner(
                                 onAcceptTapped = {
                                     viewModel.navigateToDedicatedIpPlans()

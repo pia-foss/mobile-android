@@ -4,6 +4,7 @@ import android.content.Context
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
+import com.kape.data.DI
 import com.kape.dedicatedip.data.DipDataSourceImpl
 import com.kape.dedicatedip.data.DipSignupRepository
 import com.kape.dedicatedip.domain.ActivateDipUseCase
@@ -17,14 +18,17 @@ import com.kape.dedicatedip.domain.ValidateDipSignup
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.DipPrefs
-import com.kape.payments.SubscriptionPrefs
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.ui.utils.PriceFormatter
 import com.kape.vpnregions.utils.RegionListProvider
 import com.privateinternetaccess.account.AndroidAccountAPI
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Module
@@ -34,7 +38,8 @@ class DipModule {
         context: Context,
         accountApi: AndroidAccountAPI,
         dipPrefs: DipPrefs,
-    ): DipDataSource = DipDataSourceImpl(context, accountApi, dipPrefs)
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
+    ): DipDataSource = DipDataSourceImpl(context, accountApi, dipPrefs, ioScope)
 
     @Singleton
     fun provideDipSignupRepository(
@@ -91,6 +96,7 @@ class DipModule {
         connectionPrefs: ConnectionPrefs,
         buildConfigProvider: BuildConfigProvider,
         connectionManager: ConnectionManager,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): DipViewModel =
         DipViewModel(
             router,
@@ -107,5 +113,6 @@ class DipModule {
             connectionPrefs,
             buildConfigProvider,
             connectionManager,
+            ioDispatcher,
         )
 }

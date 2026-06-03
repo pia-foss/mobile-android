@@ -12,30 +12,34 @@ import com.android.billingclient.api.PurchasesResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
-import com.kape.payments.SubscriptionPrefs
+import com.kape.data.DI
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
 import com.kape.payments.data.SubscriptionPlan
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.utils.MONTHLY
 import com.kape.payments.utils.MONTHLY_SUBSCRIPTION
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
 import com.kape.payments.utils.YEARLY
 import com.kape.payments.utils.YEARLY_SUBSCRIPTION
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Singleton([VpnSubscriptionPaymentProvider::class])
 class VpnSubscriptionPaymentProviderImpl(
     private val prefs: SubscriptionPrefs,
     private var activity: Activity? = null,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : VpnSubscriptionPaymentProvider {
     private lateinit var billingClient: BillingClient
     private var selectedProduct: ProductDetails? = null
-
     private val availableProducts = mutableListOf<ProductDetails>()
 
     private val purchasesUpdatedListener =
@@ -49,19 +53,23 @@ class VpnSubscriptionPaymentProviderImpl(
                                 it == selectedProduct?.productId
                             }?.let { productId ->
                                 purchase.orderId?.let { orderId ->
-                                    prefs.storeVpnPurchaseData(
-                                        PurchaseData(
-                                            purchase.purchaseToken,
-                                            productId,
-                                            orderId,
-                                        ),
-                                    )
+                                    ioScope.launch {
+                                        prefs.storeVpnPurchaseData(
+                                            PurchaseData(
+                                                purchase.purchaseToken,
+                                                productId,
+                                                orderId,
+                                            ),
+                                        )
+                                        purchaseState.value = PurchaseState.PurchaseSuccess
+                                    }
                                 }
-                                purchaseState.value = PurchaseState.PurchaseSuccess
                             }
                     }
 
-                    else -> purchaseState.value = PurchaseState.PurchaseFailed
+                    else -> {
+                        purchaseState.value = PurchaseState.PurchaseFailed
+                    }
                 }
             }
         }
@@ -99,33 +107,33 @@ class VpnSubscriptionPaymentProviderImpl(
 
     @Deprecated("Deprecated in favor of SubscriptionPlan")
     override fun getMonthlySubscription(): Subscription? =
-        prefs.getVpnSubscriptions().firstOrNull {
+        prefs.vpnSubscriptions.value.firstOrNull {
             it.plan.equals(MONTHLY_SUBSCRIPTION, ignoreCase = true)
         }
 
     @Deprecated("Deprecated in favor of SubscriptionPlan")
     override fun getYearlySubscription(): Subscription? =
-        prefs.getVpnSubscriptions().firstOrNull {
+        prefs.vpnSubscriptions.value.firstOrNull {
             it.plan.equals(YEARLY_SUBSCRIPTION, ignoreCase = true)
         }
 
     override fun getMonthlySubscriptionPlan(): SubscriptionPlan? =
-        prefs.getVpnSubscriptionPlans().firstOrNull {
+        prefs.vpnSubscriptionPlans.value.firstOrNull {
             it.billingPeriod == MONTHLY
         }
 
     override fun getYearlySubscriptionPlan(): SubscriptionPlan? =
-        prefs.getVpnSubscriptionPlans().firstOrNull {
+        prefs.vpnSubscriptionPlans.value.firstOrNull {
             it.billingPeriod == YEARLY
         }
 
     override fun getFreeTrialYearlySubscriptionPlan(): SubscriptionPlan? =
-        prefs.getVpnSubscriptionPlans().firstOrNull {
+        prefs.vpnSubscriptionPlans.value.firstOrNull {
             it.billingPeriod == YEARLY && it.freeTrialDuration != null
         }
 
     override fun loadProducts() {
-        if (prefs.getVpnSubscriptions().isEmpty()) {
+        if (prefs.vpnSubscriptions.value.isEmpty()) {
             purchaseState.value = PurchaseState.ProductsLoadedFailed
         } else {
             loadProviderProducts()
@@ -144,7 +152,7 @@ class VpnSubscriptionPaymentProviderImpl(
             productDetailsList,
             ->
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                val data = prefs.getVpnSubscriptions()
+                val data = prefs.vpnSubscriptions.value
                 val plans = mutableListOf<SubscriptionPlan>()
                 for (item in productDetailsList.productDetailsList) {
                     if (data.any { it.id == item.productId }) {
@@ -177,11 +185,13 @@ class VpnSubscriptionPaymentProviderImpl(
                         }
                     }
                 }
-                prefs.storeVpnSubscriptions(data)
-                prefs.storeVpnSubscriptionPlans(plans)
-                availableProducts.clear()
-                availableProducts.addAll(productDetailsList.productDetailsList)
-                purchaseState.value = PurchaseState.ProductsLoadedSuccess
+                ioScope.launch {
+                    prefs.storeVpnSubscriptions(data)
+                    prefs.storeVpnSubscriptionPlans(plans)
+                    availableProducts.clear()
+                    availableProducts.addAll(productDetailsList.productDetailsList)
+                    purchaseState.value = PurchaseState.ProductsLoadedSuccess
+                }
             } else {
                 purchaseState.value = PurchaseState.ProductsLoadedFailed
             }
@@ -278,7 +288,7 @@ class VpnSubscriptionPaymentProviderImpl(
 
     private fun createProductsListForQuery(): List<QueryProductDetailsParams.Product> {
         val result = mutableListOf<QueryProductDetailsParams.Product>()
-        for (product in prefs.getVpnSubscriptions()) {
+        for (product in prefs.vpnSubscriptions.value) {
             result.add(
                 QueryProductDetailsParams.Product
                     .newBuilder()

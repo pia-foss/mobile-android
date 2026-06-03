@@ -35,6 +35,7 @@ import com.kape.data.AutomationSettings
 import com.kape.data.Connection
 import com.kape.data.ConnectionStats
 import com.kape.data.Customization
+import com.kape.data.DI
 import com.kape.data.DebugLogs
 import com.kape.data.DedicatedIpActivateToken
 import com.kape.data.DedicatedIpLocationSelection
@@ -88,7 +89,6 @@ import com.kape.permissions.ui.mobile.NotificationPermissionScreen
 import com.kape.permissions.ui.mobile.VpnPermissionScreen
 import com.kape.permissions.ui.tv.TvNotificationPermissionScreen
 import com.kape.permissions.ui.tv.TvVpnPermissionScreen
-import com.kape.permissions.utils.PermissionUtil
 import com.kape.profile.ui.screens.mobile.AccountDeletedScreen
 import com.kape.profile.ui.screens.mobile.ProfileScreen
 import com.kape.profile.ui.screens.tv.TvProfileScreen
@@ -129,7 +129,10 @@ import com.kape.utils.PlatformUtils
 import com.kape.vpn.utils.ShortcutManager
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import org.koin.core.qualifier.named
 
 class MainActivity : AppCompatActivity() {
     private val router: Router by inject()
@@ -138,7 +141,7 @@ class MainActivity : AppCompatActivity() {
     private val shortcutPrefs: ShortcutPrefs by inject()
     private val platformUtils: PlatformUtils by inject()
     private val shortcutManager: ShortcutManager by inject()
-    val permissionUtil: PermissionUtil by inject()
+    private val ioScope: CoroutineScope by inject(named(DI.IO_SCOPE))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,11 +153,13 @@ class MainActivity : AppCompatActivity() {
         defineScreenOrientation()
         deepLinkLogin(intent)
         intent.action?.let {
-            when (it) {
-                ACTION_SETTINGS -> shortcutPrefs.setShortcutSettings(true)
-                ACTION_SERVER_SELECTION -> shortcutPrefs.setShortcutChangeServer(true)
-                ACTION_CONNECT -> shortcutPrefs.setShortcutConnectToVpn(true)
-                ACTION_DISCONNECT -> shortcutPrefs.setShortcutDisconnectVpn(true)
+            ioScope.launch {
+                when (it) {
+                    ACTION_SETTINGS -> shortcutPrefs.setShortcutSettings(true)
+                    ACTION_SERVER_SELECTION -> shortcutPrefs.setShortcutChangeServer(true)
+                    ACTION_CONNECT -> shortcutPrefs.setShortcutConnectToVpn(true)
+                    ACTION_DISCONNECT -> shortcutPrefs.setShortcutDisconnectVpn(true)
+                }
             }
         }
         enableEdgeToEdge()

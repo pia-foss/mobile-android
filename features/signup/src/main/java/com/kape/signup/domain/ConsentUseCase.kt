@@ -7,9 +7,9 @@ import org.koin.core.annotation.Singleton
 class ConsentUseCase(
     private val prefs: ConsentPrefs,
 ) {
-    fun setConsent(allowSharing: Boolean) {
+    suspend fun setConsent(allowSharing: Boolean) {
         prefs.setAllowSharing(allowSharing)
     }
 
-    fun getConsent() = prefs.getAllowSharing()
+    fun getConsent() = prefs.allowSharing.value
 }

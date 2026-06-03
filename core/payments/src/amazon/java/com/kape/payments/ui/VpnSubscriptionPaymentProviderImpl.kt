@@ -9,18 +9,23 @@ import com.amazon.device.iap.model.ProductDataResponse
 import com.amazon.device.iap.model.PurchaseResponse
 import com.amazon.device.iap.model.PurchaseUpdatesResponse
 import com.amazon.device.iap.model.UserDataResponse
-import com.kape.payments.SubscriptionPrefs
+import com.kape.data.DI
 import com.kape.payments.data.PurchaseData
 import com.kape.payments.data.Subscription
 import com.kape.payments.data.SubscriptionPlan
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.utils.MONTHLY_SUBSCRIPTION
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
 import com.kape.payments.utils.YEARLY_SUBSCRIPTION
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 private const val M1 = "PIA-M1"
@@ -30,6 +35,7 @@ private const val Y1 = "PIA-Y1"
 class VpnSubscriptionPaymentProviderImpl(
     private val prefs: SubscriptionPrefs,
     var activity: Activity? = null,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : VpnSubscriptionPaymentProvider {
     private val products = hashSetOf(MONTHLY_SUBSCRIPTION, YEARLY_SUBSCRIPTION, M1, Y1)
     private var selectedProduct: Product? = null
@@ -72,8 +78,10 @@ class VpnSubscriptionPaymentProviderImpl(
                             } else {
                                 yearly.formattedPrice = perYear.price
                                 monthly.formattedPrice = perMonth.price
-                                prefs.storeVpnSubscriptions(listOf(yearly, monthly))
-                                purchaseState.value = PurchaseState.ProductsLoadedSuccess
+                                ioScope.launch {
+                                    prefs.storeVpnSubscriptions(listOf(yearly, monthly))
+                                    purchaseState.value = PurchaseState.ProductsLoadedSuccess
+                                }
                             }
                         } else {
                             purchaseState.value = PurchaseState.ProductsLoadedFailed
@@ -102,9 +110,9 @@ class VpnSubscriptionPaymentProviderImpl(
         )
     }
 
-    override fun getMonthlySubscription(): Subscription? = prefs.getVpnSubscriptions().firstOrNull { plan -> plan.id == M1 }
+    override fun getMonthlySubscription(): Subscription? = prefs.vpnSubscriptions.value.firstOrNull { plan -> plan.id == M1 }
 
-    override fun getYearlySubscription(): Subscription? = prefs.getVpnSubscriptions().firstOrNull { plan -> plan.id == Y1 }
+    override fun getYearlySubscription(): Subscription? = prefs.vpnSubscriptions.value.firstOrNull { plan -> plan.id == Y1 }
 
     override fun getMonthlySubscriptionPlan(): SubscriptionPlan? {
         // Subscriptions not supported
@@ -164,6 +172,7 @@ class VpnSubscriptionPaymentProviderImpl(
                     )
                     purchaseState.value = PurchaseState.PurchaseSuccess
                 }
+
                 else -> purchaseState.value = PurchaseState.PurchaseFailed
             }
         } else {
