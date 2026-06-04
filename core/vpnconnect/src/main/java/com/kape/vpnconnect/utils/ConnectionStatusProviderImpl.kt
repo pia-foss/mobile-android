@@ -2,7 +2,7 @@ package com.kape.vpnconnect.utils
 
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.ConnectionStatus
-import com.kape.data.VpnConnectionStatus
+import com.kape.data.DI
 import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import kotlinx.coroutines.CoroutineScope
@@ -15,34 +15,37 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
+import kotlin.time.Duration.Companion.milliseconds
 
 @Singleton
 class ConnectionStatusProviderImpl(
     private val connectionValues: Map<ConnectionStatus, String>,
     private val notificationHandler: NotificationHandler,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : ConnectionStatusProvider,
     VPNManagerConnectionListener {
     private var timerJob: Job? = null
     private var timer: Timer? = null
-    private val defaultVpnConnectionStatus =
-        VpnConnectionStatus(
-            ConnectionStatus.DISCONNECTED,
-            connectionValues[ConnectionStatus.DISCONNECTED] ?: "",
-        )
-    private val _state: MutableStateFlow<VpnConnectionStatus> =
-        MutableStateFlow(defaultVpnConnectionStatus)
-    override val state: StateFlow<VpnConnectionStatus> = _state.asStateFlow()
+    private val _status = MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
+    override val status: StateFlow<ConnectionStatus> = _status.asStateFlow()
+    private val _title =
+        MutableStateFlow(connectionValues[ConnectionStatus.DISCONNECTED] ?: "")
+    override val title: StateFlow<String> = _title.asStateFlow()
+    private val _vpnManagerConnectionStatus = MutableStateFlow<VPNManagerConnectionStatus?>(null)
+    override val vpnManagerConnectionStatus: StateFlow<VPNManagerConnectionStatus?> =
+        _vpnManagerConnectionStatus.asStateFlow()
 
     override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
         val currentStatus =
             when (status) {
-                VPNManagerConnectionStatus.Disconnecting -> {
+                VPNManagerConnectionStatus.Disconnecting -> ConnectionStatus.DISCONNECTING
+                is VPNManagerConnectionStatus.Disconnected -> {
                     cancelTimerJob()
-                    ConnectionStatus.DISCONNECTING
+                    ConnectionStatus.DISCONNECTED
                 }
 
-                is VPNManagerConnectionStatus.Disconnected -> ConnectionStatus.DISCONNECTED
                 VPNManagerConnectionStatus.Authenticating,
                 VPNManagerConnectionStatus.LinkUp,
                 VPNManagerConnectionStatus.Configuring,
@@ -51,17 +54,18 @@ class ConnectionStatusProviderImpl(
 
                 VPNManagerConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
                 is VPNManagerConnectionStatus.Connected -> {
-                    cancelTimerJob()
-                    startTimer(System.currentTimeMillis())
+                    if (timerJob == null) {
+                        startTimer(System.currentTimeMillis())
+                    }
                     ConnectionStatus.CONNECTED
                 }
             }
 
-        if (currentStatus != _state.value.status) {
+        if (currentStatus != _status.value) {
             notificationHandler.update(currentStatus.toString())
         }
-        _state.update { it.copy(status = currentStatus, vpnManagerConnectionStatus = status) }
-
+        _status.update { currentStatus }
+        _vpnManagerConnectionStatus.update { status }
         setConnectionValuesTitle(timer)
     }
 
@@ -73,13 +77,13 @@ class ConnectionStatusProviderImpl(
 
     private fun startTimer(connectedAt: Long) {
         timerJob =
-            CoroutineScope(Dispatchers.IO).launch {
+            ioScope.launch {
                 while (true) {
-                    delay(1_000L)
                     timer = getTimer(System.currentTimeMillis() - connectedAt)
                     withContext(Dispatchers.Main) {
                         setConnectionValuesTitle(timer)
                     }
+                    delay(1_000L.milliseconds)
                 }
             }
     }
@@ -95,10 +99,10 @@ class ConnectionStatusProviderImpl(
     }
 
     private fun setConnectionValuesTitle(timer: Timer?) {
-        val status = _state.value.status
-        connectionValues[status]?.let {
+        val current = _status.value
+        connectionValues[current]?.let {
             val args =
-                if (status == ConnectionStatus.CONNECTED) {
+                if (current == ConnectionStatus.CONNECTED) {
                     "%02d:%02d:%02d".format(
                         timer?.hours,
                         timer?.minutes,
@@ -108,7 +112,7 @@ class ConnectionStatusProviderImpl(
                     ""
                 }
             val title = String.format(it, args)
-            _state.update { it.copy(status, title) }
+            _title.update { title }
         }
     }
 }

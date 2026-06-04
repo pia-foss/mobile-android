@@ -54,16 +54,16 @@ class Widget(
         id: GlanceId,
     ) {
         provideContent {
-            val connectionState by connectionInfoProvider.connectionInfoState.collectAsState()
+            val connectionStatus by connectionInfoProvider.status.collectAsState()
 
             val downloadSpeed by usageProvider.widgetDownloadSpeed.collectAsState()
             val uploadSpeed by usageProvider.widgetUploadSpeed.collectAsState()
             when (LocalSize.current) {
-                size1 -> Size1WidgetContent(connectionState.status)
-                size2 -> Size2WidgetContent(connectionState.status, connectionInfoProvider.name)
+                size1 -> Size1WidgetContent(connectionStatus)
+                size2 -> Size2WidgetContent(connectionStatus, connectionInfoProvider.name)
                 size3 ->
                     Size3WidgetContent(
-                        connectionState.status,
+                        connectionStatus,
                         connectionInfoProvider.name,
                         downloadSpeed,
                         uploadSpeed,
@@ -71,7 +71,7 @@ class Widget(
 
                 size4 ->
                     Size4WidgetContent(
-                        connectionState.status,
+                        connectionStatus,
                         connectionInfoProvider.name,
                         connectionInfoProvider.iso,
                         downloadSpeed,

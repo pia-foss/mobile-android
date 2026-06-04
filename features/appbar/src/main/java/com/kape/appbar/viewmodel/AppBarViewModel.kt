@@ -1,17 +1,18 @@
 package com.kape.appbar.viewmodel
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.Router
-import com.kape.data.ConnectionStatus
 import com.kape.data.DI
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.KoinViewModel
@@ -26,39 +27,24 @@ class AppBarViewModel(
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
     val isConnected = networkConnectionListener.isConnected
-
-    var appBarText by mutableStateOf("")
-        private set
-    var accessibilityPrefix by mutableStateOf("")
-        private set
-
-    var appBarConnectionState: ConnectionStatus = connectionStatusProvider.state.value.status
-        private set
+    val connectionStatus = connectionStatusProvider.status
+    private val _currentTitle = MutableStateFlow("")
+    val currentTitle = _currentTitle.asStateFlow()
+    private val connectionTitle = connectionStatusProvider.title
 
     init {
         viewModelScope.launch(ioDispatcher) {
-            connectionStatusProvider.state.collectLatest {
+            connectionTitle.collectLatest { title ->
                 withContext(mainDispatcher) {
-                    refreshConnectionState(it.title)
-                    appBarConnectionState = it.status
+                    _currentTitle.update { title }
                 }
             }
         }
     }
 
     fun appBarText(title: String?) {
-        appBarText = title ?: appBarTitle(connectionStatusProvider.state.value.title)
+        _currentTitle.update { title ?: connectionTitle.value }
     }
 
     fun navigateBack() = router.navigateBack()
-
-    private fun refreshAppBarTitle(status: String) {
-        appBarText = appBarTitle(status)
-    }
-
-    private fun refreshConnectionState(status: String) {
-        refreshAppBarTitle(status)
-    }
-
-    private fun appBarTitle(status: String): String = status
 }

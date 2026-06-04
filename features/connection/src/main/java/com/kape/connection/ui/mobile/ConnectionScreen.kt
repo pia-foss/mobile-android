@@ -97,7 +97,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ConnectionScreen() =
     Screen {
         val viewModel: ConnectionViewModel = koinViewModel()
-        val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsStateWithLifecycle()
+        val connectionStatus by viewModel.connectionInfoProvider.status.collectAsStateWithLifecycle()
         val appBarViewModel: AppBarViewModel = koinViewModel()
         val scope: CoroutineScope = rememberCoroutineScope()
         val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
@@ -122,7 +122,7 @@ fun ConnectionScreen() =
             }
         }
 
-        LaunchedEffect(connectionState.status) {
+        LaunchedEffect(connectionStatus) {
             viewModel.refreshState()
         }
 
@@ -169,7 +169,7 @@ fun ConnectionScreen() =
                             stringResource(id = R.string.toggle_connection_button)
 
                         connectButtonDescription +=
-                            when (connectionState.status) {
+                            when (connectionStatus) {
                                 ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING ->
                                     stringResource(
                                         id = R.string.disconnect_from_vpn,
@@ -190,7 +190,7 @@ fun ConnectionScreen() =
                             )
                         }
                         ConnectButton(
-                            status = connectionState.status,
+                            status = connectionStatus,
                             onTvLayout = false,
                             modifier =
                                 Modifier
@@ -225,8 +225,8 @@ fun ConnectionScreen() =
                                 isVisible = viewModel.isScreenElementVisible(screenElement),
                                 viewModel = viewModel,
                                 screenState = state,
-                                connectionStatus = connectionState.status,
-                                isConnected = connectionState.status == ConnectionStatus.CONNECTED,
+                                connectionStatus = connectionStatus,
+                                isConnected = connectionStatus == ConnectionStatus.CONNECTED,
                             )
                         }
                         showRatingGeneralDialog.value =

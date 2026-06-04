@@ -51,8 +51,8 @@ class App : Application() {
 
     private fun observeConnectionStateForWidget() {
         appScope.launch {
-            connectionInfoProvider.connectionInfoState
-                .distinctUntilChangedBy { it.status }
+            connectionInfoProvider.status
+                .distinctUntilChangedBy { it }
                 .collect { refreshWidget() }
         }
     }

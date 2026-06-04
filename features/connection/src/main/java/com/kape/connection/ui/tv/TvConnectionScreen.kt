@@ -50,7 +50,7 @@ fun TvConnectionScreen() =
     Screen {
         val viewModel: ConnectionViewModel = koinViewModel()
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-        val state by connectionInfoProvider.connectionInfoState.collectAsState()
+        val connectionStatus by connectionInfoProvider.status.collectAsStateWithLifecycle()
         val isConnected = viewModel.isConnected.collectAsState()
         val topStartHeaderFocusRequester = remember { FocusRequester() }
         val topEndHeaderFocusRequester = remember { FocusRequester() }
@@ -99,7 +99,7 @@ fun TvConnectionScreen() =
                 verticalArrangement = Arrangement.Center,
             ) {
                 TvHomeHeaderItem(
-                    connectionStatus = state.status,
+                    connectionStatus = connectionStatus,
                     defaultSelectedTabIndex = 0,
                     topStartHeaderFocusRequester = topStartHeaderFocusRequester,
                     topEndHeaderFocusRequester = topEndHeaderFocusRequester,
@@ -121,7 +121,7 @@ fun TvConnectionScreen() =
                 ) {
                     Spacer(modifier = Modifier.height(32.dp))
                     ConnectButton(
-                        status = if (isConnected.value) state.status else ConnectionStatus.ERROR,
+                        status = if (isConnected.value) connectionStatus else ConnectionStatus.ERROR,
                         onTvLayout = true,
                         modifier =
                             Modifier
@@ -140,6 +140,7 @@ fun TvConnectionScreen() =
                             isVisible = viewModel.isScreenElementVisible(it),
                             viewModel = viewModel,
                             startQuickConnectFocusRequester = startQuickConnectFocusRequester,
+                            connectionStatus = connectionStatus,
                         )
                     }
                 }
@@ -153,13 +154,13 @@ private fun DisplayComponent(
     isVisible: Boolean,
     viewModel: ConnectionViewModel,
     startQuickConnectFocusRequester: FocusRequester,
+    connectionStatus: ConnectionStatus,
 ) {
     if (isVisible.not()) {
         return
     }
 
     val state by viewModel.state.collectAsState()
-    val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsState()
     val vpnIp by viewModel.connectionInfoProvider.vpnIp.collectAsState()
 
     when (screenElement) {
@@ -171,7 +172,7 @@ private fun DisplayComponent(
                     },
                 server = state.server,
                 vpnIp = vpnIp,
-                isConnected = connectionState.status == ConnectionStatus.CONNECTED,
+                isConnected = connectionStatus == ConnectionStatus.CONNECTED,
                 isOptimal = state.isCurrentServerOptimal,
             ) {
                 viewModel.showVpnRegionSelection()

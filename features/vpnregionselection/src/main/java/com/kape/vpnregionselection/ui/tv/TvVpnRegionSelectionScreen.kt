@@ -19,7 +19,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import com.kape.appbar.view.tv.TvHomeHeaderItem
@@ -61,7 +61,7 @@ fun TvVpnRegionSelectionScreen() =
         val favoriteButtonFocusRequester = remember { FocusRequester() }
         val searchButtonFocusRequester = remember { FocusRequester() }
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-        val status by connectionInfoProvider.connectionInfoState.collectAsState()
+        val status by connectionInfoProvider.status.collectAsStateWithLifecycle()
         val isFavoriteSelected = remember { mutableStateOf(false) }
         val isSearchEnabled = remember { mutableStateOf(false) }
         val viewModel: VpnRegionSelectionViewModel =
@@ -120,7 +120,7 @@ fun TvVpnRegionSelectionScreen() =
                 TvHomeHeaderItem(
                     modifier = Modifier.focusRequester(initialFocusRequester),
                     title = stringResource(id = R.string.location_selection_title),
-                    connectionStatus = status.status,
+                    connectionStatus = status,
                     defaultSelectedTabIndex = 1,
                     onVpnSelected = {
                         viewModel.navigateToVpn()
