@@ -2,64 +2,43 @@ package com.kape.signup.ui.vm
 
 import android.app.Activity
 import android.util.Patterns
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.data.LoginWithCredentials
 import com.kape.data.TvWelcome
 import com.kape.data.WebDestination
-import com.kape.payments.domain.GetSubscriptionsUseCase
-import com.kape.payments.prefs.SubscriptionPrefs
-import com.kape.payments.ui.VpnSubscriptionPaymentProvider
-import com.kape.payments.utils.PurchaseState
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.signup.domain.ConsentUseCase
+import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.domain.SignupUseCase
-import com.kape.signup.utils.AMAZON_LOGIN
-import com.kape.signup.utils.CONSENT
 import com.kape.signup.utils.DEFAULT
 import com.kape.signup.utils.EMAIL
 import com.kape.signup.utils.ERROR_EMAIL_INVALID
 import com.kape.signup.utils.ERROR_REGISTRATION
 import com.kape.signup.utils.IN_PROCESS
-import com.kape.signup.utils.LOADING
-import com.kape.signup.utils.META_SUBSCRIPTIONS
-import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
-import com.kape.signup.utils.Plan
-import com.kape.signup.utils.SUBSCRIPTIONS
 import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
-import com.kape.signup.utils.SubscriptionData
 import com.kape.signup.utils.signedUp
-import com.kape.ui.utils.PriceFormatter
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
-import java.util.Locale
 
 @KoinViewModel
 class SignupViewModel(
     private val router: Router,
-    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
-    private val formatter: PriceFormatter,
+    private val billingHandler: SignupBillingHandler,
     private val consentUseCase: ConsentUseCase,
     private val useCase: SignupUseCase,
-    private val subscriptionPrefs: SubscriptionPrefs,
-    private val subscriptionsUseCase: GetSubscriptionsUseCase,
-    private val buildConfigProvider: BuildConfigProvider,
     private val permissionUtil: PermissionUtil,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
-    private var subscriptionData: SubscriptionData? = null
     private val _state = MutableStateFlow(DEFAULT)
     val state: StateFlow<SignupScreenState> = _state
 
@@ -67,132 +46,12 @@ class SignupViewModel(
 
     init {
         viewModelScope.launch(ioDispatcher) {
-            vpnSubscriptionPaymentProvider.purchaseState.collect {
-                when (it) {
-                    PurchaseState.Default -> {
-                        // no op
-                    }
-
-                    PurchaseState.InitFailed -> {
-                        onProductsFailedToLoad()
-                    }
-
-                    PurchaseState.InitSuccess -> {
-                        // no-op
-                    }
-
-                    PurchaseState.ProductsLoadedFailed -> {
-                        onProductsFailedToLoad()
-                    }
-
-                    PurchaseState.ProductsLoadedSuccess -> {
-                        viewModelScope.launch(ioDispatcher) {
-                            subscriptionPrefs.vpnSubscriptionPlans.collectLatest { _ ->
-                                val yearlyPlan =
-                                    vpnSubscriptionPaymentProvider.getFreeTrialYearlySubscriptionPlan()
-                                        ?: vpnSubscriptionPaymentProvider.getYearlySubscriptionPlan()
-                                val monthlyPlan =
-                                    vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
-
-                                if (yearlyPlan == null || monthlyPlan == null) {
-                                    onProductsFailedToLoad()
-                                    return@collectLatest
-                                }
-
-                                val yearly =
-                                    Plan(
-                                        yearlyPlan.id,
-                                        yearlyPlan.plan.replaceFirstChar { first ->
-                                            if (first.isLowerCase()) {
-                                                first.titlecase(
-                                                    Locale.getDefault(),
-                                                )
-                                            } else {
-                                                first.toString()
-                                            }
-                                        },
-                                        true,
-                                        mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice),
-                                        secondaryPrice =
-                                            formatter.formatYearlyPerMonth(
-                                                yearlyPlan.formattedPrice,
-                                                yearlyPlan.currencyCode,
-                                            ),
-                                    )
-                                val monthly =
-                                    Plan(
-                                        monthlyPlan.id,
-                                        monthlyPlan.plan.replaceFirstChar { first ->
-                                            if (first.isLowerCase()) {
-                                                first.titlecase(
-                                                    Locale.getDefault(),
-                                                )
-                                            } else {
-                                                first.toString()
-                                            }
-                                        },
-                                        false,
-                                        mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
-                                    )
-                                val data =
-                                    SubscriptionData(
-                                        mutableStateOf(yearly),
-                                        yearly,
-                                        monthly,
-                                    )
-                                subscriptionData = data
-                                _state.emit(
-                                    SUBSCRIPTIONS(data),
-                                )
-                            }
-                        }
-                    }
-
-                    PurchaseState.PurchaseFailed -> {
-                        // TODO: handle error
-                    }
-
-                    PurchaseState.PurchaseSuccess -> {
-                        if (it == PurchaseState.PurchaseSuccess) {
-                            _state.emit(CONSENT)
-                        } else if (it == PurchaseState.PurchaseFailed) {
-                            // TODO: handle error?
-                            subscriptionData?.let { subscriptionData ->
-                                _state.emit(SUBSCRIPTIONS(subscriptionData))
-                            }
-                        }
-                    }
-
-                    PurchaseState.NoInAppPurchase -> {
-                        _state.emit(NO_IN_APP_SUBSCRIPTIONS)
-                    }
-
-                    PurchaseState.Disconnected -> {
-                        // no-op
-                    }
-                }
-            }
+            billingHandler.billingState.collect { _state.emit(it) }
         }
+        billingHandler.initialize(viewModelScope, ioDispatcher)
     }
 
-    fun loadPrices() =
-        viewModelScope.launch(ioDispatcher) {
-            if (buildConfigProvider.isAmazonFlavor()) {
-                _state.emit(AMAZON_LOGIN)
-                return@launch
-            }
-            if (buildConfigProvider.isWebFlavor()) {
-                _state.emit(NO_IN_APP_SUBSCRIPTIONS)
-                return@launch
-            }
-            if (buildConfigProvider.isMetaFlavor()) {
-                _state.emit(META_SUBSCRIPTIONS)
-                return@launch
-            }
-            _state.emit(LOADING)
-            subscriptionsUseCase.getVpnSubscriptions()
-            vpnSubscriptionPaymentProvider.loadProducts()
-        }
+    fun loadPrices() = billingHandler.loadPrices(viewModelScope, ioDispatcher)
 
     fun loadEmptyPrices() =
         viewModelScope.launch(ioDispatcher) {
@@ -201,12 +60,12 @@ class SignupViewModel(
 
     fun purchase(id: String) =
         viewModelScope.launch(ioDispatcher) {
-            vpnSubscriptionPaymentProvider.purchaseSelectedProduct(id)
+            billingHandler.purchase(id)
         }
 
     fun navigateToLogin() {
         router.updateDestination(LoginWithCredentials)
-        vpnSubscriptionPaymentProvider.reset()
+        billingHandler.reset()
     }
 
     fun navigateToTvWelcome() {
@@ -227,7 +86,6 @@ class SignupViewModel(
 
     fun allowEventSharing(allow: Boolean) =
         viewModelScope.launch(ioDispatcher) {
-            // TODO: VPN-3101 - add kpi start/stop
             consentUseCase.setConsent(allow)
             _state.emit(EMAIL)
         }
@@ -251,17 +109,10 @@ class SignupViewModel(
 
     fun completeSubscription() {
         router.updateDestination(permissionUtil.getNextDestination())
-        vpnSubscriptionPaymentProvider.purchaseState.value = PurchaseState.Default
+        billingHandler.reset()
     }
 
     fun registerClientIfNeeded(activity: Activity) {
-        if (!vpnSubscriptionPaymentProvider.isClientRegistered()) {
-            vpnSubscriptionPaymentProvider.register(activity)
-        }
+        billingHandler.registerClientIfNeeded(activity)
     }
-
-    private fun onProductsFailedToLoad() =
-        viewModelScope.launch(ioDispatcher) {
-            _state.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
-        }
 }

@@ -54,6 +54,7 @@ import com.kape.settings.di.SettingsModule
 import com.kape.shadowsocksregions.di.ShadowsocksServersModule
 import com.kape.shareevents.di.KpiModule
 import com.kape.sidemenu.di.SideMenuModule
+import com.kape.signup.di.SignupBillingModule
 import com.kape.signup.di.SignupModule
 import com.kape.snooze.di.SnoozeModule
 import com.kape.splash.di.SplashModule
@@ -124,6 +125,7 @@ import java.io.BufferedReader
         SettingsModule::class,
         ProfileModule::class,
         SignupModule::class,
+        SignupBillingModule::class,
         AutomationModule::class,
         DipModule::class,
         AppBarModule::class,

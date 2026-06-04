@@ -1,15 +1,11 @@
 package com.kape.signup.di
 
 import android.content.Context
-import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
-import com.kape.payments.domain.GetSubscriptionsUseCase
-import com.kape.payments.prefs.SubscriptionPrefs
-import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.signup.data.EmailDataSourceImpl
 import com.kape.signup.data.Identifier
@@ -21,10 +17,10 @@ import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.EmailDataSource
 import com.kape.signup.domain.GetObfuscatedDeviceIdentifierUseCase
 import com.kape.signup.domain.SetEmailUseCase
+import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.domain.SignupDataSource
 import com.kape.signup.domain.SignupUseCase
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.ui.utils.PriceFormatter
 import com.kape.utils.NetworkConnectionListener
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineDispatcher
@@ -78,26 +74,18 @@ class SignupModule {
     @KoinViewModel
     fun provideSignupViewModel(
         router: Router,
-        vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
-        formatter: PriceFormatter,
+        billingHandler: SignupBillingHandler,
         consentUseCase: ConsentUseCase,
         useCase: SignupUseCase,
-        subscriptionPrefs: SubscriptionPrefs,
-        subscriptionsUseCase: GetSubscriptionsUseCase,
-        buildConfigProvider: BuildConfigProvider,
         permissionUtil: PermissionUtil,
         networkConnectionListener: NetworkConnectionListener,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): SignupViewModel =
         SignupViewModel(
             router,
-            vpnSubscriptionPaymentProvider,
-            formatter,
+            billingHandler,
             consentUseCase,
             useCase,
-            subscriptionPrefs,
-            subscriptionsUseCase,
-            buildConfigProvider,
             permissionUtil,
             ioDispatcher,
             networkConnectionListener,
