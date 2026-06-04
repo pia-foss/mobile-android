@@ -32,7 +32,7 @@ class QuickSettingService :
 
     init {
         launch {
-            connectionInfoProvider.connectionInfoState.collect {
+            connectionInfoProvider.status.collect {
                 withContext(Dispatchers.Main) {
                     updateTile()
                 }

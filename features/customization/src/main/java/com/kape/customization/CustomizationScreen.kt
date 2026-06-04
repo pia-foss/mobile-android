@@ -152,7 +152,7 @@ private fun DisplayComponent(
     viewModel: ConnectionViewModel,
 ) {
     val state = viewModel.state.collectAsState()
-    val connectionState by viewModel.connectionInfoProvider.connectionInfoState.collectAsState()
+    val connectionStatus by viewModel.connectionInfoProvider.status.collectAsStateWithLifecycle()
 
     when (screenElement.element) {
         Element.ConnectionInfo -> {
@@ -182,7 +182,7 @@ private fun DisplayComponent(
             QuickConnect(
                 modifier = modifier,
                 servers = quickConnectMap,
-                isConnected = connectionState.status == ConnectionStatus.CONNECTED,
+                isConnected = connectionStatus == ConnectionStatus.CONNECTED,
                 onClick = {},
             )
         }
@@ -200,7 +200,7 @@ private fun DisplayComponent(
             VpnLocationPicker(
                 modifier = modifier,
                 server = state.value.server,
-                isConnected = connectionState == ConnectionStatus.CONNECTED,
+                isConnected = connectionStatus == ConnectionStatus.CONNECTED,
                 state.value.isCurrentServerOptimal,
             ) {}
         }
@@ -209,7 +209,7 @@ private fun DisplayComponent(
             ShadowsocksLocationPicker(
                 modifier = modifier,
                 server = viewModel.getSelectedShadowsocksServer(),
-                isConnected = connectionState == ConnectionStatus.CONNECTED,
+                isConnected = connectionStatus == ConnectionStatus.CONNECTED,
             ) {}
         }
 

@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
@@ -38,8 +39,12 @@ class ConnectionInfoProviderImpl(
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) : ConnectionInfoProvider {
     private val ioScope = CoroutineScope(ioDispatcher)
-    private val currentConnectionStatus = MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
-    override val connectionInfoState = connectionStatusProvider.state
+    private val currentConnectionStatus =
+        MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
+    override val status: StateFlow<ConnectionStatus> = connectionStatusProvider.status
+    override val title: StateFlow<String> = connectionStatusProvider.title
+    override val vpnManagerConnectionStatus: StateFlow<VPNManagerConnectionStatus?> =
+        connectionStatusProvider.vpnManagerConnectionStatus
     override var name: String = ""
     override var iso: String = ""
     override var isManual: Boolean = false
@@ -51,20 +56,20 @@ class ConnectionInfoProviderImpl(
 
     init {
         ioScope.launch {
-            connectionStatusProvider.state
-                .distinctUntilChangedBy { it.status == ConnectionStatus.CONNECTED || it.status == ConnectionStatus.DISCONNECTED }
-                .collectLatest { (status, title, vpnManagerConnectionStatus) ->
-                    currentConnectionStatus.update { status }
-                    vpnManagerConnectionStatus?.let {
+            connectionStatusProvider.status
+                .distinctUntilChangedBy { it == ConnectionStatus.CONNECTED || it == ConnectionStatus.DISCONNECTED }
+                .collectLatest { latestConnectionStatus ->
+                    currentConnectionStatus.update { latestConnectionStatus }
+                    vpnManagerConnectionStatus.first()?.let {
                         submitKpiEventUseCase.submitConnectionEvent(
                             getKpiConnectionStatus(it),
                             isManual,
                         )
                     }
-                    if (status == ConnectionStatus.DISCONNECTED) {
+                    if (latestConnectionStatus == ConnectionStatus.DISCONNECTED) {
                         clientStateDataSource.getPublicIp()
                     }
-                    if (status == ConnectionStatus.CONNECTED) {
+                    if (latestConnectionStatus == ConnectionStatus.CONNECTED) {
                         clientStateDataSource.getVpnIp()
                     }
                 }
@@ -99,7 +104,7 @@ class ConnectionInfoProviderImpl(
     }
 
     override fun getTopBarConnectionColor(scheme: ColorScheme): Color =
-        when (connectionInfoState.value.status) {
+        when (status.value) {
             ConnectionStatus.ERROR -> scheme.statusBarError()
             ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
             ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING ->

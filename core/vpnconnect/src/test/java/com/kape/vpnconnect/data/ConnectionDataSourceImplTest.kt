@@ -5,7 +5,6 @@ import androidx.work.WorkManager
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.data.ConnectionStatus
-import com.kape.data.VpnConnectionStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -19,6 +18,7 @@ import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import com.privateinternetaccess.account.AndroidAccountAPI
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -29,7 +29,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ConnectionDataSourceImplTest {
@@ -52,26 +51,23 @@ class ConnectionDataSourceImplTest {
 
     private lateinit var dataSource: ConnectionDataSourceImpl
 
-    @BeforeEach
-    fun setUp() {
-        dataSource =
-            ConnectionDataSourceImpl(
-                connectionApi = connectionApi,
-                accountApi = accountApi,
-                connectionPrefs = connectionPrefs,
-                workManager = workManager,
-                settingsPrefs = settingsPrefs,
-                kpiDataSource = kpiDataSource,
-                usageProvider = usageProvider,
-                csiPrefs = csiPrefs,
-            )
-    }
-
     // region startConnection
 
     @Test
     fun `startConnection - success - sets gateway and returns success`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
             val clientConfiguration = mockk<ClientConfiguration>()
             val serverPeerInfo = ServerPeerInformation(networkInterface = "wg0", gateway = "10.0.0.1")
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
@@ -85,12 +81,25 @@ class ConnectionDataSourceImplTest {
             val result = dataSource.startConnection(clientConfiguration, connectionStatusProvider)
 
             assertTrue(result.isSuccess)
-            verify { connectionPrefs.setGateway("10.0.0.1") }
+            coVerify { connectionPrefs.setGateway("10.0.0.1") }
         }
 
     @Test
     fun `startConnection - failure - logs error and returns failure`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
+
             val clientConfiguration = mockk<ClientConfiguration>()
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
@@ -104,12 +113,25 @@ class ConnectionDataSourceImplTest {
             val result = dataSource.startConnection(clientConfiguration, connectionStatusProvider)
 
             assertTrue(result.isFailure)
-            verify { csiPrefs.addCustomDebugLogs(any(), false) }
+            coVerify { csiPrefs.addCustomDebugLogs(any(), false) }
         }
 
     @Test
     fun `startConnection - help improve PIA enabled - starts KPI`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
+
             val clientConfiguration = mockk<ClientConfiguration>()
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
@@ -127,6 +149,18 @@ class ConnectionDataSourceImplTest {
     @Test
     fun `startConnection - help improve PIA disabled - stops KPI`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
             val clientConfiguration = mockk<ClientConfiguration>()
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
@@ -148,6 +182,18 @@ class ConnectionDataSourceImplTest {
     @Test
     fun `stopConnection - success - resets usage, stops port forwarding, returns success`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
             val slot = slot<(Result<Unit>) -> Unit>()
 
             every { connectionApi.stopConnection(capture(slot)) } answers {
@@ -158,14 +204,26 @@ class ConnectionDataSourceImplTest {
 
             assertTrue(result.isSuccess)
             verify { usageProvider.reset() }
-            verify { connectionPrefs.clearGateway() }
-            verify { connectionPrefs.clearPortBindingInfo() }
+            coVerify { connectionPrefs.clearGateway() }
+            coVerify { connectionPrefs.clearPortBindingInfo() }
             verify { workManager.cancelUniqueWork(any()) }
         }
 
     @Test
     fun `stopConnection - failure - logs error and returns failure`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
             val slot = slot<(Result<Unit>) -> Unit>()
 
             every { settingsPrefs.isDebugLoggingEnabled.value } returns true
@@ -176,7 +234,7 @@ class ConnectionDataSourceImplTest {
             val result = dataSource.stopConnection()
 
             assertTrue(result.isFailure)
-            verify { csiPrefs.addCustomDebugLogs(any(), true) }
+            coVerify { csiPrefs.addCustomDebugLogs(any(), true) }
         }
 
     // endregion
@@ -184,46 +242,98 @@ class ConnectionDataSourceImplTest {
     // region getVpnToken
 
     @Test
-    fun `getVpnToken - account API returns token - returns token`() {
-        every { accountApi.vpnToken() } returns "vpn_token_123"
+    fun `getVpnToken - account API returns token - returns token`() =
+        runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
+            every { accountApi.vpnToken() } returns "vpn_token_123"
 
-        val result = dataSource.getVpnToken()
+            val result = dataSource.getVpnToken()
 
-        assertEquals("vpn_token_123", result)
-    }
+            assertEquals("vpn_token_123", result)
+        }
 
     @Test
-    fun `getVpnToken - account API returns null - returns empty string`() {
-        every { accountApi.vpnToken() } returns null
+    fun `getVpnToken - account API returns null - returns empty string`() =
+        runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
+            every { accountApi.vpnToken() } returns null
 
-        val result = dataSource.getVpnToken()
+            val result = dataSource.getVpnToken()
 
-        assertEquals("", result)
-    }
+            assertEquals("", result)
+        }
 
     // endregion
 
     // region startPortForwarding
 
     @Test
-    fun `startPortForwarding - enqueues unique periodic work with KEEP policy`() {
-        dataSource.startPortForwarding()
+    fun `startPortForwarding - enqueues unique periodic work with KEEP policy`() =
+        runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
+            dataSource.startPortForwarding()
 
-        verify { workManager.enqueueUniquePeriodicWork(any(), ExistingPeriodicWorkPolicy.KEEP, any()) }
-    }
+            verify { workManager.enqueueUniquePeriodicWork(any(), ExistingPeriodicWorkPolicy.KEEP, any()) }
+        }
 
     // endregion
 
     // region stopPortForwarding
 
     @Test
-    fun `stopPortForwarding - clears gateway, port binding info, and cancels worker`() {
-        dataSource.stopPortForwarding()
+    fun `stopPortForwarding - clears gateway, port binding info, and cancels worker`() =
+        runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
+            dataSource.stopPortForwarding()
 
-        verify { connectionPrefs.clearGateway() }
-        verify { connectionPrefs.clearPortBindingInfo() }
-        verify { workManager.cancelUniqueWork(any()) }
-    }
+            coVerify { connectionPrefs.clearGateway() }
+            coVerify { connectionPrefs.clearPortBindingInfo() }
+            verify { workManager.cancelUniqueWork(any()) }
+        }
 
     // endregion
 
@@ -232,6 +342,18 @@ class ConnectionDataSourceImplTest {
     @Test
     fun `getDebugLogs - WireGuard protocol - success - returns log list`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
             val logs = listOf("wg_log1", "wg_log2")
             val slot = slot<(Result<List<String>>) -> Unit>()
 
@@ -248,6 +370,18 @@ class ConnectionDataSourceImplTest {
     @Test
     fun `getDebugLogs - OpenVPN protocol - success - returns log list`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
             val logs = listOf("ovpn_log1")
             val slot = slot<(Result<List<String>>) -> Unit>()
 
@@ -264,6 +398,18 @@ class ConnectionDataSourceImplTest {
     @Test
     fun `getDebugLogs - failure - returns empty list`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
             val slot = slot<(Result<List<String>>) -> Unit>()
 
             every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.WireGuard
@@ -283,6 +429,18 @@ class ConnectionDataSourceImplTest {
     @Test
     fun `updateConfigurationServers - success - returns true`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
             val servers = mockk<ServerList>()
             val slot = slot<(Result<Unit>) -> Unit>()
 
@@ -298,6 +456,18 @@ class ConnectionDataSourceImplTest {
     @Test
     fun `updateConfigurationServers - failure - returns false`() =
         runTest {
+            dataSource =
+                ConnectionDataSourceImpl(
+                    connectionApi = connectionApi,
+                    accountApi = accountApi,
+                    connectionPrefs = connectionPrefs,
+                    workManager = workManager,
+                    settingsPrefs = settingsPrefs,
+                    kpiDataSource = kpiDataSource,
+                    usageProvider = usageProvider,
+                    csiPrefs = csiPrefs,
+                    ioScope = this,
+                )
             val servers = mockk<ServerList>()
             val slot = slot<(Result<Unit>) -> Unit>()
 

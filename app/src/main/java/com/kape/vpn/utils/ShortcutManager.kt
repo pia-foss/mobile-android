@@ -19,7 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Named
@@ -34,8 +33,7 @@ class ShortcutManager(
 ) {
     init {
         ioScope.launch {
-            connectionStatusProvider.state
-                .map { it.status }
+            connectionStatusProvider.status
                 .filter { it == ConnectionStatus.CONNECTED || it == ConnectionStatus.DISCONNECTED }
                 .distinctUntilChanged()
                 .collectLatest { status ->

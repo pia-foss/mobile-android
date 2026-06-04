@@ -2,12 +2,15 @@ package com.kape.contracts
 
 import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
-import com.kape.data.VpnConnectionStatus
+import com.kape.data.ConnectionStatus
 import com.kape.data.portforwarding.PortForwardingStatus
+import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import kotlinx.coroutines.flow.StateFlow
 
 interface ConnectionInfoProvider {
-    val connectionInfoState: StateFlow<VpnConnectionStatus>
+    val status: StateFlow<ConnectionStatus>
+    val title: StateFlow<String>
+    val vpnManagerConnectionStatus: StateFlow<VPNManagerConnectionStatus?>
     var name: String
     var iso: String
     var isManual: Boolean

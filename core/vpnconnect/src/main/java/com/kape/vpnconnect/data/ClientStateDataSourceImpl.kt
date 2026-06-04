@@ -13,6 +13,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 import kotlin.coroutines.resume
+import kotlin.time.Duration.Companion.milliseconds
 
 @Singleton(binds = [ClientStateDataSource::class])
 class ClientStateDataSourceImpl(
@@ -26,8 +27,7 @@ class ClientStateDataSourceImpl(
             if (ip != NO_IP) {
                 return ip
             }
-
-            delay(DELAY_BETWEEN_RETRY)
+            delay(DELAY_BETWEEN_RETRY.milliseconds)
         }
         return NO_IP
     }
@@ -38,8 +38,7 @@ class ClientStateDataSourceImpl(
             if (vpnIp != NO_IP && vpnIp != connectionPrefs.clientIp.value) {
                 return vpnIp
             }
-
-            delay(DELAY_BETWEEN_RETRY)
+            delay(DELAY_BETWEEN_RETRY.milliseconds)
         }
         return NO_IP
     }

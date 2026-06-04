@@ -6,13 +6,12 @@ import com.kape.vpnconnect.utils.SHORT_DELAY
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.ClientStatusInformation
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class ClientStateDataSourceImplTest {
@@ -21,20 +20,17 @@ class ClientStateDataSourceImplTest {
 
     private lateinit var dataSource: ClientStateDataSourceImpl
 
-    @BeforeEach
-    fun setUp() {
-        dataSource =
-            ClientStateDataSourceImpl(
-                accountAPI = accountAPI,
-                connectionPrefs = connectionPrefs,
-            )
-    }
-
     // region getPublicIp
 
     @Test
     fun `getPublicIp - disconnected - returns IP, sets client IP and clears VPN IP`() =
         runTest {
+            dataSource =
+                ClientStateDataSourceImpl(
+                    accountAPI = accountAPI,
+                    connectionPrefs = connectionPrefs,
+                    ioScope = this,
+                )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
             every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
                 slot.captured.invoke(ClientStatusInformation(connected = false, ip = "192.168.1.1"), emptyList())
@@ -43,13 +39,19 @@ class ClientStateDataSourceImplTest {
             val result = dataSource.getPublicIp()
 
             assertEquals("192.168.1.1", result)
-            verify { connectionPrefs.setClientIp("192.168.1.1") }
-            verify { connectionPrefs.setVpnIp(NO_IP) }
+            coVerify { connectionPrefs.setClientIp("192.168.1.1") }
+            coVerify { connectionPrefs.setVpnIp(NO_IP) }
         }
 
     @Test
     fun `getPublicIp - connected - returns IP without setting client IP`() =
         runTest {
+            dataSource =
+                ClientStateDataSourceImpl(
+                    accountAPI = accountAPI,
+                    connectionPrefs = connectionPrefs,
+                    ioScope = this,
+                )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
             every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
                 slot.captured.invoke(ClientStatusInformation(connected = true, ip = "10.0.0.1"), emptyList())
@@ -58,12 +60,19 @@ class ClientStateDataSourceImplTest {
             val result = dataSource.getPublicIp()
 
             assertEquals("10.0.0.1", result)
-            verify(exactly = 0) { connectionPrefs.setClientIp(any()) }
+            coVerify(exactly = 0) { connectionPrefs.setClientIp(any()) }
         }
 
     @Test
     fun `getPublicIp - null response - returns NO_IP`() =
         runTest {
+            dataSource =
+                ClientStateDataSourceImpl(
+                    accountAPI = accountAPI,
+                    connectionPrefs = connectionPrefs,
+                    ioScope = this,
+                )
+
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
             every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
                 slot.captured.invoke(null, emptyList())
@@ -81,6 +90,12 @@ class ClientStateDataSourceImplTest {
     @Test
     fun `getVpnIp - connected on first attempt - returns VPN IP`() =
         runTest {
+            dataSource =
+                ClientStateDataSourceImpl(
+                    accountAPI = accountAPI,
+                    connectionPrefs = connectionPrefs,
+                    ioScope = this,
+                )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
             every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
                 slot.captured.invoke(ClientStatusInformation(connected = true, ip = "10.8.0.1"), emptyList())
@@ -89,12 +104,18 @@ class ClientStateDataSourceImplTest {
             val result = dataSource.getVpnIp()
 
             assertEquals("10.8.0.1", result)
-            verify { connectionPrefs.setVpnIp("10.8.0.1") }
+            coVerify { connectionPrefs.setVpnIp("10.8.0.1") }
         }
 
     @Test
     fun `getVpnIp - never connected - returns NO_IP after retries`() =
         runTest {
+            dataSource =
+                ClientStateDataSourceImpl(
+                    accountAPI = accountAPI,
+                    connectionPrefs = connectionPrefs,
+                    ioScope = this,
+                )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
             every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
                 slot.captured.invoke(ClientStatusInformation(connected = false, ip = NO_IP), emptyList())
@@ -108,6 +129,12 @@ class ClientStateDataSourceImplTest {
     @Test
     fun `getVpnIp - null response - returns NO_IP`() =
         runTest {
+            dataSource =
+                ClientStateDataSourceImpl(
+                    accountAPI = accountAPI,
+                    connectionPrefs = connectionPrefs,
+                    ioScope = this,
+                )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
             every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
                 slot.captured.invoke(null, emptyList())

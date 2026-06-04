@@ -35,6 +35,7 @@ import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.data.ConnectionStatus
 import com.kape.ui.R
@@ -53,11 +54,13 @@ fun AppBar(
     onRightIconClick: () -> Unit = {},
 ) {
     val isConnected by viewModel.isConnected.collectAsState()
+    val connectionStatus by viewModel.connectionStatus.collectAsStateWithLifecycle()
+    val title by viewModel.currentTitle.collectAsStateWithLifecycle()
 
     AppBarContent(
         type = type,
-        status = if (isConnected) viewModel.appBarConnectionState else ConnectionStatus.ERROR,
-        if (isConnected) viewModel.appBarText else stringResource(id = R.string.no_internet_connection),
+        status = if (isConnected) connectionStatus else ConnectionStatus.ERROR,
+        title = if (isConnected) title else stringResource(id = R.string.no_internet_connection),
         onLeftIconClick,
         onRightIconClick,
     )

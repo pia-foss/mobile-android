@@ -40,8 +40,8 @@ class RatingTool(
             job.start()
 
             CoroutineScope(mainDispatcher).launch {
-                connectionStatusProvider.state.collectLatest {
-                    when (it.status) {
+                connectionStatusProvider.status.collectLatest {
+                    when (it) {
                         ConnectionStatus.CONNECTED -> {
                             if (prefs.ratingState.value.active && shouldCountConnectedEvent) {
                                 shouldCountConnectedEvent = true

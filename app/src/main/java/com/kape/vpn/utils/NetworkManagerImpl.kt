@@ -55,12 +55,12 @@ class NetworkManagerImpl(
         }
     }
 
-    private fun applyNetworkRule(rule: NetworkItem) {
+    private suspend fun applyNetworkRule(rule: NetworkItem) {
         when (rule.networkBehavior) {
             is NetworkBehavior.AlwaysConnect -> {
                 val needsToConnect =
                     listOf(ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING).contains(
-                        connectionStatusProvider.state.value.status,
+                        connectionStatusProvider.status.first(),
                     )
                 if (needsToConnect) {
                     vpnLauncher.launchVpn()

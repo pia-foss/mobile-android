@@ -170,8 +170,8 @@ class ConnectionManagerImplTest {
             connectionManager.connect(server, isManual = true, {}) {}
 
             verify { connectionInfoProvider.updateInfo(server.name, server.iso, true) }
-            verify { connectionPrefs.setSelectedVpnServer(server) }
-            verify { connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp) }
+            coVerify { connectionPrefs.setSelectedVpnServer(server) }
+            coVerify { connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp) }
         }
 
     @Test
@@ -327,7 +327,7 @@ class ConnectionManagerImplTest {
         runTest {
             connectionManager.reconnect(server) {}
 
-            verify { connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp) }
+            coVerify { connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp) }
         }
 
     @Test
@@ -368,8 +368,8 @@ class ConnectionManagerImplTest {
             disconnectSignal.complete(Unit)
             job.join()
 
-            verify { connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp) }
-            verify { connectionPrefs.addToQuickConnect(server2.key, server2.isDedicatedIp) }
+            coVerify { connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp) }
+            coVerify { connectionPrefs.addToQuickConnect(server2.key, server2.isDedicatedIp) }
         }
 
     @Test
