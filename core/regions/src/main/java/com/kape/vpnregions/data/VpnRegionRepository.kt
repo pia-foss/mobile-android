@@ -11,6 +11,9 @@ import com.kape.vpnregions.utils.adaptServersInfo
 import com.kape.vpnregions.utils.adaptVpnServers
 import com.kape.vpnregions.utils.getServerForDip
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -72,19 +75,21 @@ class VpnRegionRepository(
 
     fun getTcpPorts() = serverInfo.tcpPorts ?: emptyList()
 
-    fun getServers(isConnected: Boolean): List<VpnServer> {
-        populateLatencies(isConnected)
-        return addDipsToServerList(serverMap.values.toList())
-    }
+    fun getServers(isConnected: Boolean): Flow<List<VpnServer>> =
+        flow {
+            populateLatencies(isConnected)
+            emit(addDipsToServerList(serverMap.values.toList()))
+        }
 
-    fun addDipsToList(servers: List<VpnServer>): List<VpnServer> = addDipsToServerList(servers)
-
-    private fun addDipsToServerList(servers: List<VpnServer>): List<VpnServer> {
+    suspend fun addDipsToServerList(servers: List<VpnServer>): List<VpnServer> {
         val updatedList = mutableListOf<VpnServer>()
         updatedList.addAll(servers)
-        for (dip in dipPrefs.dedicatedIps.value) {
+        for (dip in dipPrefs.dedicatedIps.first()) {
             servers.firstOrNull { it.key == dip.id }?.let {
-                updatedList.add(getServerForDip(it, dip))
+                val dipServer = getServerForDip(it, dip)
+                if (!updatedList.contains(dipServer)) {
+                    updatedList.add(dipServer)
+                }
             }
         }
         return updatedList

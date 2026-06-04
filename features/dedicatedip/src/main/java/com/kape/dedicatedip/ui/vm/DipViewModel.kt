@@ -103,7 +103,9 @@ class DipViewModel(
     fun loadDedicatedIps() =
         viewModelScope.launch(ioDispatcher) {
             dipList.clear()
-            dipList.addAll(regionListProvider.servers.first().filter { it.isDedicatedIp })
+            dipList.addAll(
+                regionListProvider.servers.first().filter { it.isDedicatedIp },
+            )
         }
 
     fun activateDedicatedIp(dipToken: MutableState<TextFieldValue>) =

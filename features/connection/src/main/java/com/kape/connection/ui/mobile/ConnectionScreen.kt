@@ -305,7 +305,7 @@ private fun DisplayComponent(
     if (isVisible) {
         when (screenElement.element) {
             Element.ConnectionInfo -> {
-                val settings = viewModel.getConnectionSettings()
+                val settings by viewModel.getConnectionSettings().collectAsStateWithLifecycle()
                 ConnectionInfo(
                     connection = settings.name,
                     port = settings.port,
