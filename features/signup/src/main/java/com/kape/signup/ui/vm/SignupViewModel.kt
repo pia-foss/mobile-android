@@ -12,7 +12,7 @@ import com.kape.data.WebDestination
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.SignupBillingHandler
-import com.kape.signup.domain.SignupUseCase
+import com.kape.signup.domain.SignupHandler
 import com.kape.signup.utils.DEFAULT
 import com.kape.signup.utils.EMAIL
 import com.kape.signup.utils.ERROR_EMAIL_INVALID
@@ -34,9 +34,10 @@ class SignupViewModel(
     private val router: Router,
     private val billingHandler: SignupBillingHandler,
     private val consentUseCase: ConsentUseCase,
-    private val useCase: SignupUseCase,
+    private val signupHandler: SignupHandler,
     private val permissionUtil: PermissionUtil,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+    @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
     private val _state = MutableStateFlow(DEFAULT)
@@ -51,17 +52,19 @@ class SignupViewModel(
         billingHandler.initialize(viewModelScope, ioDispatcher)
     }
 
-    fun loadPrices() = billingHandler.loadPrices(viewModelScope, ioDispatcher)
+    fun loadPrices(activity: Activity) = billingHandler.loadPrices(viewModelScope, ioDispatcher, mainDispatcher, activity)
 
     fun loadEmptyPrices() =
         viewModelScope.launch(ioDispatcher) {
             _state.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
         }
 
-    fun purchase(id: String) =
-        viewModelScope.launch(ioDispatcher) {
-            billingHandler.purchase(id)
-        }
+    fun purchase(
+        id: String,
+        activity: Activity,
+    ) = viewModelScope.launch(ioDispatcher) {
+        billingHandler.purchase(id, activity)
+    }
 
     fun navigateToLogin() {
         router.updateDestination(LoginWithCredentials)
@@ -99,7 +102,7 @@ class SignupViewModel(
                 return@launch
             }
             _state.emit(IN_PROCESS)
-            val result = useCase.vpnSignup(email)
+            val result = signupHandler.vpnSignup(email)
             if (result == null) {
                 _state.emit(ERROR_REGISTRATION)
             } else {

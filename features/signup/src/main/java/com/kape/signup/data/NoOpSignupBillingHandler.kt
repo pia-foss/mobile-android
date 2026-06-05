@@ -24,14 +24,19 @@ class NoOpSignupBillingHandler(
 
     override fun loadPrices(
         scope: CoroutineScope,
-        dispatcher: CoroutineDispatcher,
+        ioDispatcher: CoroutineDispatcher,
+        mainDispatcher: CoroutineDispatcher,
+        activity: Activity,
     ) {
-        scope.launch(dispatcher) {
+        scope.launch(ioDispatcher) {
             _billingState.emit(loadPricesState)
         }
     }
 
-    override fun purchase(id: String) {
+    override fun purchase(
+        id: String,
+        activity: Activity,
+    ) {
         // no-op
     }
 

@@ -1,5 +1,6 @@
 package com.kape.signup.ui.mobile
 
+import android.app.Activity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -9,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.SignupError
 import com.kape.signup.utils.SignupStep
@@ -20,6 +22,7 @@ fun SignupScreensFlow() {
     val viewModel: SignupViewModel = koinViewModel()
     val state by remember(viewModel) { viewModel.state }.collectAsState()
     val connectionState by remember(viewModel) { viewModel.isConnected }.collectAsState()
+    val context = LocalContext.current
 
     when (state.step) {
         SignupStep.Consent -> ConsentScreen(viewModel = viewModel)
@@ -27,7 +30,7 @@ fun SignupScreensFlow() {
             when (connectionState) {
                 true -> {
                     if (state.subscriptionData == null) {
-                        viewModel.loadPrices()
+                        viewModel.loadPrices(context as Activity)
                     }
                 }
 

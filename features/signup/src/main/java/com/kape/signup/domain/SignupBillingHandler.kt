@@ -16,10 +16,15 @@ interface SignupBillingHandler {
 
     fun loadPrices(
         scope: CoroutineScope,
-        dispatcher: CoroutineDispatcher,
+        ioDispatcher: CoroutineDispatcher,
+        mainDispatcher: CoroutineDispatcher,
+        activity: Activity,
     )
 
-    fun purchase(id: String)
+    fun purchase(
+        id: String,
+        activity: Activity,
+    )
 
     fun registerClientIfNeeded(activity: Activity)
 

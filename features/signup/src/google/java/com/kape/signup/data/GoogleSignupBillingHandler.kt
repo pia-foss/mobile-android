@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class GoogleSignupBillingHandler(
@@ -111,17 +112,25 @@ class GoogleSignupBillingHandler(
 
     override fun loadPrices(
         scope: CoroutineScope,
-        dispatcher: CoroutineDispatcher,
+        ioDispatcher: CoroutineDispatcher,
+        mainDispatcher: CoroutineDispatcher,
+        activity: Activity,
     ) {
-        scope.launch(dispatcher) {
+        scope.launch(ioDispatcher) {
+            withContext(mainDispatcher) {
+                vpnSubscriptionPaymentProvider.register(activity)
+            }
             _billingState.emit(LOADING)
             subscriptionsUseCase.getVpnSubscriptions()
             vpnSubscriptionPaymentProvider.loadProducts()
         }
     }
 
-    override fun purchase(id: String) {
-        vpnSubscriptionPaymentProvider.purchaseSelectedProduct(id)
+    override fun purchase(
+        id: String,
+        activity: Activity,
+    ) {
+        vpnSubscriptionPaymentProvider.purchaseSelectedProduct(id, activity)
     }
 
     override fun registerClientIfNeeded(activity: Activity) {

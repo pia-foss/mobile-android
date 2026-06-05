@@ -4,8 +4,6 @@ import android.content.Context
 import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConsentPrefs
-import com.kape.login.domain.mobile.LoginUseCase
-import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.signup.data.EmailDataSourceImpl
 import com.kape.signup.data.Identifier
@@ -19,7 +17,7 @@ import com.kape.signup.domain.GetObfuscatedDeviceIdentifierUseCase
 import com.kape.signup.domain.SetEmailUseCase
 import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.domain.SignupDataSource
-import com.kape.signup.domain.SignupUseCase
+import com.kape.signup.domain.SignupHandler
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.utils.NetworkConnectionListener
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -55,39 +53,25 @@ class SignupModule {
     @Singleton(binds = [SignupDataSource::class])
     fun provideSignupDataSource(api: AndroidAccountAPI): SignupDataSource = SignupDataSourceImpl(api)
 
-    @Singleton
-    fun provideSignupUseCase(
-        signupDataSource: SignupDataSource,
-        loginUseCase: LoginUseCase,
-        emailDataSource: EmailDataSource,
-        purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
-        getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase,
-    ): SignupUseCase =
-        SignupUseCase(
-            signupDataSource,
-            loginUseCase,
-            emailDataSource,
-            purchaseDetailsUseCase,
-            getObfuscatedDeviceIdentifierUseCase,
-        )
-
     @KoinViewModel
     fun provideSignupViewModel(
         router: Router,
         billingHandler: SignupBillingHandler,
         consentUseCase: ConsentUseCase,
-        useCase: SignupUseCase,
+        signupHandler: SignupHandler,
         permissionUtil: PermissionUtil,
         networkConnectionListener: NetworkConnectionListener,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+        @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): SignupViewModel =
         SignupViewModel(
             router,
             billingHandler,
             consentUseCase,
-            useCase,
+            signupHandler,
             permissionUtil,
             ioDispatcher,
+            mainDispatcher,
             networkConnectionListener,
         )
 }

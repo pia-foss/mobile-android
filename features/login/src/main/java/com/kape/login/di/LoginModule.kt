@@ -8,28 +8,19 @@ import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.ConsentPrefs
-import com.kape.localprefs.prefs.CsiPrefs
-import com.kape.localprefs.prefs.CustomizationPrefs
-import com.kape.localprefs.prefs.DipPrefs
-import com.kape.localprefs.prefs.KpiPrefs
-import com.kape.localprefs.prefs.NetworkManagementPrefs
-import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
-import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
-import com.kape.localprefs.prefs.ShortcutPrefs
-import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.login.data.AuthenticationDataSourceImpl
+import com.kape.login.domain.LogoutHandler
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
 import com.kape.login.domain.mobile.LoginUseCase
+import com.kape.login.domain.mobile.LoginWithReceiptHandler
 import com.kape.login.domain.mobile.LogoutUseCaseImpl
 import com.kape.login.domain.tv.LoginUsernameUseCase
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.ui.vm.mobile.LoginWithEmailViewModel
 import com.kape.login.ui.vm.tv.LoginPasswordViewModel
 import com.kape.login.ui.vm.tv.LoginUsernameViewModel
-import com.kape.payments.prefs.SubscriptionPrefs
-import com.kape.payments.ui.VpnSubscriptionPaymentProvider
+import com.kape.login.utils.TokenAuthenticationUtil
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.utils.NetworkConnectionListener
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -51,36 +42,16 @@ class LoginModule {
     fun provideLogoutUseCase(
         source: AuthenticationDataSource,
         connectionPrefs: ConnectionPrefs,
-        csiPrefs: CsiPrefs,
-        customizationPrefs: CustomizationPrefs,
-        dipPrefs: DipPrefs,
-        networkManagementPrefs: NetworkManagementPrefs,
-        subscriptionPrefs: SubscriptionPrefs,
-        shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
-        shortcutPrefs: ShortcutPrefs,
-        vpnRegionPrefs: VpnRegionPrefs,
         settingsPrefs: SettingsPrefs,
-        kpiPrefs: KpiPrefs,
-        consentPrefs: ConsentPrefs,
-        ratingPrefs: RatingPrefs,
         connectionManager: ConnectionManager,
+        logoutHandler: LogoutHandler,
     ): LogoutUseCase =
         LogoutUseCaseImpl(
             source,
             connectionPrefs,
-            csiPrefs,
-            customizationPrefs,
-            dipPrefs,
-            networkManagementPrefs,
-            subscriptionPrefs,
-            shadowsocksRegionPrefs,
-            shortcutPrefs,
-            vpnRegionPrefs,
             settingsPrefs,
-            kpiPrefs,
-            consentPrefs,
-            ratingPrefs,
             connectionManager,
+            logoutHandler,
         )
 
     @Singleton
@@ -93,7 +64,7 @@ class LoginModule {
     fun provideLoginViewModel(
         router: Router,
         loginUseCase: LoginUseCase,
-        vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
+        loginWithReceiptHandler: LoginWithReceiptHandler,
         buildConfigProvider: BuildConfigProvider,
         permissionsUtil: PermissionUtil,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
@@ -102,7 +73,7 @@ class LoginModule {
         LoginViewModel(
             router,
             loginUseCase,
-            vpnSubscriptionPaymentProvider,
+            loginWithReceiptHandler,
             buildConfigProvider,
             permissionsUtil,
             ioDispatcher,

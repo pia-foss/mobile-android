@@ -1,5 +1,6 @@
 package com.kape.signup.ui.tv
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -49,6 +51,7 @@ fun TvSignUpScreen() =
         val viewModel: SignupViewModel = koinViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
         val subscriptionData = state.subscriptionData
+        val context = LocalContext.current
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
@@ -159,7 +162,7 @@ fun TvSignUpScreen() =
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     subscriptionData?.let {
-                        viewModel.purchase(subscriptionData.selected.value.id)
+                        viewModel.purchase(subscriptionData.selected.value.id, context as Activity)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))

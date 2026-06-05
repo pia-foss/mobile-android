@@ -36,6 +36,7 @@ import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.location.di.LocationModule
 import com.kape.login.di.LoginModule
+import com.kape.login.di.LoginWithReceiptModule
 import com.kape.networkmanagement.di.NetworkManagementModule
 import com.kape.notifications.data.NotificationChannelManager
 import com.kape.notifications.data.NotificationPermissionManager
@@ -120,6 +121,7 @@ import java.io.BufferedReader
         ObfuscatorModule::class,
         KpiModule::class,
         LoginModule::class,
+        LoginWithReceiptModule::class,
         SplashModule::class,
         ConnectionModule::class,
         SettingsModule::class,
