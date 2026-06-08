@@ -1,6 +1,6 @@
 package com.kape.payments.domain
 
-import com.kape.payments.data.PurchaseData
+import com.kape.data.dip.PurchaseData
 import com.kape.payments.prefs.SubscriptionPrefs
 import io.mockk.every
 import io.mockk.mockk

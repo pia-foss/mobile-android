@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.kape.data.dip.DipPurchaseData
+import com.kape.data.dip.PurchaseData
+import com.kape.data.dip.Subscription
 import com.kape.localprefs.Prefs
-import com.kape.payments.data.DipPurchaseData
-import com.kape.payments.data.PurchaseData
-import com.kape.payments.data.Subscription
 import com.kape.payments.data.SubscriptionPlan
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted

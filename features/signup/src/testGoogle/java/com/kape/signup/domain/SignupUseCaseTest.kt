@@ -1,8 +1,8 @@
 package com.kape.signup.domain
 
+import com.kape.data.dip.PurchaseData
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.LoginState
-import com.kape.payments.data.PurchaseData
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.signup.data.models.Credentials
 import io.mockk.coEvery

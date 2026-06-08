@@ -1,7 +1,6 @@
-package com.kape.payments.data
+package com.kape.data.dip
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 @Serializable

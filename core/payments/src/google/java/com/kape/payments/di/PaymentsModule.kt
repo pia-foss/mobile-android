@@ -22,15 +22,15 @@ class PaymentsModule {
     @Singleton
     fun provideGetPurchaseDetailsUseCase(prefs: SubscriptionPrefs): GetPurchaseDetailsUseCase = GetPurchaseDetailsUseCase(prefs)
 
+    @Singleton
+    fun provideGetSubscriptionsUseCase(source: SubscriptionDataSource): GetSubscriptionsUseCase = GetSubscriptionsUseCase(source)
+
     @Singleton(binds = [SubscriptionDataSource::class])
     fun provideSubscriptionDataSource(
         prefs: SubscriptionPrefs,
         api: AndroidAccountAPI,
         @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
     ): SubscriptionDataSource = SubscriptionDataSourceImpl(prefs, api, ioScope)
-
-    @Singleton
-    fun provideGetSubscriptionsUseCase(source: SubscriptionDataSource): GetSubscriptionsUseCase = GetSubscriptionsUseCase(source)
 
     @Singleton(binds = [VpnSubscriptionPaymentProvider::class])
     fun provideVpnSubscriptionPaymentProvider(

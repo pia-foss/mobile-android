@@ -10,13 +10,11 @@ import com.kape.signup.data.Identifier
 import com.kape.signup.data.IdentifierImpl
 import com.kape.signup.data.Obfuscator
 import com.kape.signup.data.ObfuscatorImpl
-import com.kape.signup.data.SignupDataSourceImpl
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.EmailDataSource
 import com.kape.signup.domain.GetObfuscatedDeviceIdentifierUseCase
 import com.kape.signup.domain.SetEmailUseCase
 import com.kape.signup.domain.SignupBillingHandler
-import com.kape.signup.domain.SignupDataSource
 import com.kape.signup.domain.SignupHandler
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.utils.NetworkConnectionListener
@@ -49,9 +47,6 @@ class SignupModule {
 
     @Singleton
     fun provideSetEmailUseCase(source: EmailDataSource): SetEmailUseCase = SetEmailUseCase(source)
-
-    @Singleton(binds = [SignupDataSource::class])
-    fun provideSignupDataSource(api: AndroidAccountAPI): SignupDataSource = SignupDataSourceImpl(api)
 
     @KoinViewModel
     fun provideSignupViewModel(

@@ -5,7 +5,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class RenewDipUseCase(
-    private val dataSource: DipDataSource,
+    private val dataSource: DipPurchaseDataSource,
 ) {
     suspend fun renew(ipToken: String): DipApiResult = dataSource.renew(ipToken)
 }

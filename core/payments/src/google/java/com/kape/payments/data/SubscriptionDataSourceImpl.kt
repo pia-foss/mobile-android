@@ -1,6 +1,7 @@
 package com.kape.payments.data
 
 import com.kape.data.DI
+import com.kape.data.dip.Subscription
 import com.kape.payments.domain.SubscriptionDataSource
 import com.kape.payments.prefs.SubscriptionPrefs
 import com.privateinternetaccess.account.AndroidAccountAPI

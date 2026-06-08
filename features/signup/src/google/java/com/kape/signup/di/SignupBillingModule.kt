@@ -6,6 +6,7 @@ import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.signup.data.GoogleSignupBillingHandler
+import com.kape.signup.data.SignupDataSourceImpl
 import com.kape.signup.data.SignupHandlerImpl
 import com.kape.signup.domain.EmailDataSource
 import com.kape.signup.domain.GetObfuscatedDeviceIdentifierUseCase
@@ -14,11 +15,15 @@ import com.kape.signup.domain.SignupDataSource
 import com.kape.signup.domain.SignupHandler
 import com.kape.signup.domain.SignupUseCase
 import com.kape.ui.utils.PriceFormatter
+import com.privateinternetaccess.account.AndroidAccountAPI
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
 
 @Module
 class SignupBillingModule {
+    @Singleton(binds = [SignupDataSource::class])
+    fun provideSignupDataSource(api: AndroidAccountAPI): SignupDataSource = SignupDataSourceImpl(api)
+
     @Singleton(binds = [SignupBillingHandler::class])
     fun provideSignupBillingHandler(
         vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,

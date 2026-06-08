@@ -1,13 +1,13 @@
 package com.kape.dedicatedip.domain
 
-import com.kape.payments.data.DipPurchaseData
+import com.kape.data.dip.DipPurchaseData
 import com.kape.payments.prefs.SubscriptionPrefs
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class ValidateDipSignup(
     private val subscriptionPrefs: SubscriptionPrefs,
-    private val dataSource: DipDataSource,
+    private val dataSource: DipPurchaseDataSource,
 ) {
     suspend operator fun invoke(dipPurchaseData: DipPurchaseData?): Result<Unit> {
         val unwrappedDipPurchaseData =

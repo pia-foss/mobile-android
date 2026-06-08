@@ -4,7 +4,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class FetchSignupDipToken(
-    private val dipDataSource: DipDataSource,
+    private val dipDataSource: DipPurchaseDataSource,
 ) {
     suspend operator fun invoke(
         countryCode: String,

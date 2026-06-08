@@ -1,4 +1,4 @@
-package com.kape.payments.data
+package com.kape.data.dip
 
 import kotlinx.serialization.Serializable
 

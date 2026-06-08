@@ -23,6 +23,7 @@ import com.kape.csi.di.CsiModule
 import com.kape.customization.di.CustomizationModule
 import com.kape.data.DI
 import com.kape.dedicatedip.di.DipModule
+import com.kape.dedicatedip.di.DipPurchaseModule
 import com.kape.featureflags.di.FeatureFlagsModule
 import com.kape.httpclient.data.CertificatePinningClientImpl
 import com.kape.httpclient.data.GetWebsiteDownloadLinkImpl
@@ -130,6 +131,7 @@ import java.io.BufferedReader
         SignupBillingModule::class,
         AutomationModule::class,
         DipModule::class,
+        DipPurchaseModule::class,
         AppBarModule::class,
         TvWelcomeModule::class,
         CustomizationModule::class,

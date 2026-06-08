@@ -11,7 +11,7 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
-import com.kape.payments.data.DipPurchaseData
+import com.kape.data.dip.DipPurchaseData
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.asCoroutineDispatcher
