@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.data.vpnserver.VpnServer
@@ -75,10 +76,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun DedicatedIpScreen() =
     Screen {
-        val viewModel: DipViewModel =
-            koinViewModel<DipViewModel>().apply {
-                loadDedicatedIps()
-            }
+        val viewModel: DipViewModel = koinViewModel<DipViewModel>()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = com.kape.ui.R.string.dedicated_ip_title))
@@ -89,6 +87,7 @@ fun DedicatedIpScreen() =
         val serverForDeletion = remember { mutableStateOf<VpnServer?>(null) }
         val context = LocalContext.current
         val showDipSignupBanner by viewModel.showDedicatedIpSignupBanner().collectAsState(false)
+        val dipList by viewModel.dipList.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -122,7 +121,7 @@ fun DedicatedIpScreen() =
                         text =
                             stringResource(
                                 id =
-                                    if (viewModel.dipList.isEmpty()) {
+                                    if (dipList.isEmpty()) {
                                         com.kape.ui.R.string.dedicated_ip_description
                                     } else {
                                         com.kape.ui.R.string.dip_summary
@@ -131,7 +130,7 @@ fun DedicatedIpScreen() =
                         fontSize = 12.sp,
                         color = LocalColors.current.onSurface,
                     )
-                    if (viewModel.dipList.isEmpty()) {
+                    if (dipList.isEmpty()) {
                         Spacer(modifier = Modifier.height(16.dp))
                         Card(
                             border = BorderStroke(1.dp, color = LocalColors.current.primary),
@@ -209,7 +208,7 @@ fun DedicatedIpScreen() =
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                if (viewModel.dipList.isNotEmpty()) {
+                if (dipList.isNotEmpty()) {
                     Text(
                         text = stringResource(id = com.kape.ui.R.string.owned_dedicated_ips),
                         fontSize = 18.sp,
@@ -220,7 +219,7 @@ fun DedicatedIpScreen() =
                     Spacer(modifier = Modifier.height(16.dp))
 
                     LazyColumn {
-                        val items = viewModel.dipList
+                        val items = dipList
                         items(items.size) { index ->
                             val item = items[index]
                             DipItem(server = item, showDialog, serverForDeletion)

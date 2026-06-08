@@ -12,11 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,17 +31,13 @@ import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.contracts.ConnectionInfoProvider
-import com.kape.data.ConnectionStatus
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.theme.connectionError
-import com.kape.ui.theme.statusBarConnected
-import com.kape.ui.theme.statusBarConnecting
-import com.kape.ui.theme.statusBarDefault
-import com.kape.ui.theme.statusBarError
 import com.kape.ui.tiles.Dialog
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.text.AppBarTitleText
@@ -57,14 +53,12 @@ import org.koin.compose.koinInject
 @Composable
 fun TvDedicatedIpScreen() =
     Screen {
-        val viewModel: DipViewModel =
-            koinViewModel<DipViewModel>().apply {
-                loadDedicatedIps()
-            }
+        val viewModel: DipViewModel = koinViewModel<DipViewModel>()
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
         val showActivationDialog = remember { mutableStateOf(false) }
         val showDeletionDialog = remember { mutableStateOf(false) }
         val text = remember { mutableStateOf("") }
+        val dipList by viewModel.dipList.collectAsStateWithLifecycle()
 
         Box(
             modifier =
@@ -113,7 +107,7 @@ fun TvDedicatedIpScreen() =
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.Top,
                     ) {
-                        if (viewModel.dipList.isEmpty()) {
+                        if (dipList.isEmpty()) {
                             ActivateDedicatedIpContent(
                                 viewModel = viewModel,
                                 text = text,
@@ -197,7 +191,7 @@ fun TvDedicatedIpScreen() =
         }
 
         if (showDeletionDialog.value) {
-            val server = viewModel.dipList.toList().first()
+            val server = dipList.toList().first()
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = Color.Black.copy(alpha = 0.6f),
@@ -266,6 +260,7 @@ private fun DedicatedIpDetailsContent(
     viewModel: DipViewModel,
     showDeletionDialog: MutableState<Boolean>,
 ) {
+    val dipList by viewModel.dipList.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier.padding(horizontal = 16.dp),
     ) {
@@ -278,7 +273,7 @@ private fun DedicatedIpDetailsContent(
         DedicatedIpAddressDetailsSubtitle(
             modifier = Modifier.fillMaxWidth(),
             content =
-                viewModel.dipList
+                dipList
                     .toList()
                     .first()
                     .dedicatedIp!!,
@@ -292,7 +287,7 @@ private fun DedicatedIpDetailsContent(
         DedicatedIpAddressDetailsSubtitle(
             modifier = Modifier.fillMaxWidth(),
             content =
-                viewModel.dipList
+                dipList
                     .toList()
                     .first()
                     .name,
@@ -307,19 +302,3 @@ private fun DedicatedIpDetailsContent(
         showDeletionDialog.value = true
     }
 }
-
-@Composable
-private fun getTopBarConnectionColor(
-    status: ConnectionStatus,
-    scheme: ColorScheme,
-): Color =
-    when (status) {
-        ConnectionStatus.ERROR -> scheme.statusBarError()
-        ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING ->
-            scheme.statusBarDefault(
-                scheme,
-            )
-
-        ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
-    }

@@ -2,7 +2,6 @@ package com.kape.dedicatedip.ui.vm
 
 import android.app.Activity
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
@@ -32,7 +31,9 @@ import com.privateinternetaccess.account.model.response.DipCountriesResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
@@ -52,11 +53,13 @@ class DipViewModel(
     private val _state = MutableStateFlow<DedicatedIpStep?>(null)
     val state: StateFlow<DedicatedIpStep?> = _state
     val activateTokenButtonState = mutableStateOf(false)
-    val dipList = mutableStateListOf<VpnServer>()
+    private val _dipList = MutableStateFlow<List<VpnServer>>(emptyList())
+    val dipList = _dipList.asStateFlow()
 
     init {
         viewModelScope.launch(ioDispatcher) {
             dipPrefs.dedicatedIps.collect {
+                println("--- prefs updated: $it")
                 regionListProvider.reflectDedicatedIpAction()
                 loadDedicatedIps()
             }
@@ -88,17 +91,15 @@ class DipViewModel(
 
     fun navigateBack() = router.navigateBack()
 
-    fun loadDedicatedIps() =
+    private fun loadDedicatedIps() =
         viewModelScope.launch(ioDispatcher) {
-            dipList.clear()
-            dipList.addAll(
-                regionListProvider.servers.first().filter { it.isDedicatedIp },
-            )
+            _dipList.update { regionListProvider.servers.first().filter { it.isDedicatedIp } }
         }
 
     fun activateDedicatedIp(dipToken: MutableState<TextFieldValue>) =
         viewModelScope.launch(ioDispatcher) {
             val result = activateDipUseCase.activate(dipToken.value.text)
+            println("--- activation state result: $result")
             activationState.value = result
             when (result) {
                 DipApiResult.Active -> {
