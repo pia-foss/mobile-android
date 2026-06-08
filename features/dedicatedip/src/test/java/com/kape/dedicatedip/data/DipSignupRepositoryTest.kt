@@ -1,6 +1,6 @@
 package com.kape.dedicatedip.data
 
-import com.kape.dedicatedip.domain.DipDataSource
+import com.kape.dedicatedip.domain.DipPurchaseDataSource
 import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.localprefs.prefs.DipPrefs
 import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 
 class DipSignupRepositoryTest {
     private val dipPrefs: DipPrefs = mockk(relaxed = true)
-    private val dipDataSource: DipDataSource = mockk(relaxed = true)
+    private val dipDataSource: DipPurchaseDataSource = mockk(relaxed = true)
 
     private lateinit var dipSignupRepository: DipSignupRepository
 
