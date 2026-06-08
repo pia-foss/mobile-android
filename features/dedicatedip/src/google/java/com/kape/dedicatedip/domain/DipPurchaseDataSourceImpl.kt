@@ -1,7 +1,7 @@
 package com.kape.dedicatedip.domain
 
 import android.content.Context
-import com.kape.data.dip.DipPurchaseData
+import com.kape.data.model.DipPurchaseData
 import com.kape.dedicatedip.utils.DipApiResult
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.request.AndroidAddonSignupInformation
@@ -25,7 +25,6 @@ class DipPurchaseDataSourceImpl(
                     cont.resume(DipApiResult.Error)
                     return@renewDedicatedIP
                 }
-                // todo: update if needed once implemented
                 cont.resume(DipApiResult.Active)
             }
         }

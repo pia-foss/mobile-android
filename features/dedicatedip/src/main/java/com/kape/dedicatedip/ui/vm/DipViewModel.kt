@@ -15,7 +15,7 @@ import com.kape.data.DedicatedIpLocationSelection
 import com.kape.data.DedicatedIpSignupPlans
 import com.kape.data.DedicatedIpSignupTokenActivate
 import com.kape.data.DedicatedIpSignupTokenDetails
-import com.kape.data.dip.DipPurchaseData
+import com.kape.data.model.DipPurchaseData
 import com.kape.data.vpnserver.VpnServer
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
@@ -59,7 +59,6 @@ class DipViewModel(
     init {
         viewModelScope.launch(ioDispatcher) {
             dipPrefs.dedicatedIps.collect {
-                println("--- prefs updated: $it")
                 regionListProvider.reflectDedicatedIpAction()
                 loadDedicatedIps()
             }
@@ -99,7 +98,6 @@ class DipViewModel(
     fun activateDedicatedIp(dipToken: MutableState<TextFieldValue>) =
         viewModelScope.launch(ioDispatcher) {
             val result = activateDipUseCase.activate(dipToken.value.text)
-            println("--- activation state result: $result")
             activationState.value = result
             when (result) {
                 DipApiResult.Active -> {

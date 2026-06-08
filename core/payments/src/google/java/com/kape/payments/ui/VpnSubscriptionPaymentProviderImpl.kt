@@ -13,8 +13,8 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
 import com.kape.data.DI
-import com.kape.data.dip.PurchaseData
-import com.kape.data.dip.Subscription
+import com.kape.data.model.PurchaseData
+import com.kape.data.model.Subscription
 import com.kape.payments.data.SubscriptionPlan
 import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.utils.MONTHLY

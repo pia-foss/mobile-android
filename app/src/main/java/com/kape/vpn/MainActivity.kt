@@ -1,7 +1,5 @@
 package com.kape.vpn
 
-import android.app.ComponentCaller
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.WindowManager

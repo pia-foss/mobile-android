@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 
 class NoOpSignupBillingHandler(
-    private val loadPricesState: SignupScreenState,
+    private val signupScreenState: SignupScreenState,
 ) : SignupBillingHandler {
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
     override val billingState: Flow<SignupScreenState> = _billingState
@@ -29,7 +29,7 @@ class NoOpSignupBillingHandler(
         activity: Activity,
     ) {
         scope.launch(ioDispatcher) {
-            _billingState.emit(loadPricesState)
+            _billingState.emit(signupScreenState)
         }
     }
 

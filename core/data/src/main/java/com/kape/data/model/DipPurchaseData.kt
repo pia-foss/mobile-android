@@ -1,4 +1,4 @@
-package com.kape.data.dip
+package com.kape.data.model
 
 import kotlinx.serialization.Serializable
 

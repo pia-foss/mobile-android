@@ -191,7 +191,6 @@ dependencies {
 
     testImplementation(libs.coroutines.test)
     "googleImplementation"(libs.billing.google)
-    "amazonImplementation"(libs.billing.amazon)
     androidTestImplementation(libs.bundles.androidtest)
     "androidTestUtil"(libs.orchestrator)
 }

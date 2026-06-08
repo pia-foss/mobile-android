@@ -1,7 +1,7 @@
 package com.kape.payments.ui
 
 import android.app.Activity
-import com.kape.data.dip.DipPurchaseData
+import com.kape.data.model.DipPurchaseData
 
 interface DipSubscriptionPaymentProvider {
     /**

@@ -1,7 +1,7 @@
 package com.kape.dedicatedip.domain
 
 import android.app.Activity
-import com.kape.data.dip.DipPurchaseData
+import com.kape.data.model.DipPurchaseData
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
 import com.kape.dedicatedip.utils.DipApiResult

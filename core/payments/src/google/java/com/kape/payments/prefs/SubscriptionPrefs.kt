@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
-import com.kape.data.dip.DipPurchaseData
-import com.kape.data.dip.PurchaseData
-import com.kape.data.dip.Subscription
+import com.kape.data.model.DipPurchaseData
+import com.kape.data.model.PurchaseData
+import com.kape.data.model.Subscription
 import com.kape.localprefs.Prefs
 import com.kape.payments.data.SubscriptionPlan
 import kotlinx.coroutines.flow.Flow

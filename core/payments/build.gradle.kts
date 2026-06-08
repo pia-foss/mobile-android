@@ -54,7 +54,6 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     implementation(libs.bundles.serialization)
     "googleImplementation"(libs.billing.google)
-    "amazonImplementation"(libs.billing.amazon)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
 }
