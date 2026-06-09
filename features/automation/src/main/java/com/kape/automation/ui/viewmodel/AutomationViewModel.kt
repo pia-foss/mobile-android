@@ -36,7 +36,7 @@ class AutomationViewModel(
     private val automationManager: AutomationManager,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    val isAutomationEnavled = settingsPrefs.isAutomationEnabled
+    val isAutomationEnabled = settingsPrefs.isAutomationEnabled
 
     private val _state =
         MutableStateFlow(
