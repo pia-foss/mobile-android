@@ -107,5 +107,5 @@ jobs:
         if: always()
         with:
           name: e2e-report
-          path: ${{ github.workspace }}/app/build/reports/androidTests/connected/debug/flavors/google/*
+          path: ${{ github.workspace }}/app/build/reports/androidTests/connected/debug/flavors/noinapp/*
           overwrite: true
