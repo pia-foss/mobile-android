@@ -1,7 +1,5 @@
 package com.kape.vpn
 
-import android.app.ComponentCaller
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.WindowManager
@@ -82,7 +80,6 @@ import com.kape.login.ui.mobile.LoginScreen
 import com.kape.login.ui.mobile.LoginWithEmailScreen
 import com.kape.login.ui.tv.LoginPasswordScreen
 import com.kape.login.ui.tv.LoginUsernameScreen
-import com.kape.login.utils.TokenAuthenticationUtil
 import com.kape.obfuscationregionselection.ui.ShadowsocksRegionSelectionScreen
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.permissions.ui.mobile.NotificationPermissionScreen
@@ -136,7 +133,6 @@ import org.koin.core.qualifier.named
 
 class MainActivity : AppCompatActivity() {
     private val router: Router by inject()
-    private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
     private val shortcutPrefs: ShortcutPrefs by inject()
     private val platformUtils: PlatformUtils by inject()
@@ -151,7 +147,6 @@ class MainActivity : AppCompatActivity() {
         )
         vpnSubscriptionPaymentProvider.register(this)
         defineScreenOrientation()
-        deepLinkLogin(intent)
         intent.action?.let {
             ioScope.launch {
                 when (it) {
@@ -180,14 +175,6 @@ class MainActivity : AppCompatActivity() {
         shortcutManager.createDynamicShortcuts()
     }
 
-    override fun onNewIntent(
-        intent: Intent,
-        caller: ComponentCaller,
-    ) {
-        super.onNewIntent(intent, caller)
-        deepLinkLogin(intent)
-    }
-
     // region private
     private fun defineScreenOrientation() {
         if (platformUtils.isTv()) {
@@ -196,14 +183,6 @@ class MainActivity : AppCompatActivity() {
             ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED // allow rotation
         } else {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT // phone
-        }
-    }
-
-    private fun deepLinkLogin(intent: Intent?) {
-        intent?.data?.let {
-            if (it.toString().contains("login")) {
-                tokenAuthenticationUtil.authenticate(it)
-            }
         }
     }
 
