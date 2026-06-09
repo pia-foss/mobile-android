@@ -12,7 +12,7 @@ import com.kape.data.Subscribe
 import com.kape.data.TvWelcome
 import com.kape.data.Update
 import com.kape.featureflags.domain.ForceUpdateUseCase
-import com.kape.httpclient.domain.GetWebsiteDownloadLink
+import com.kape.splash.domain.GetAppLatestVersionUseCase
 import com.kape.utils.PlatformUtils
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,7 +25,7 @@ class SplashViewModel(
     private val router: Router,
     private val regionListProvider: RegionListProvider,
     private val forceUpdateUseCase: ForceUpdateUseCase,
-    private val getWebsiteDownloadLink: GetWebsiteDownloadLink,
+    private val getAppLatestVersionUseCase: GetAppLatestVersionUseCase,
     @Named(DI.UPDATE_URL) private val appUpdateUrl: String,
     private val connectionManager: ConnectionManager,
     private val connectionInfoProvider: ConnectionInfoProvider,
@@ -42,8 +42,8 @@ class SplashViewModel(
         viewModelScope.launch(ioDispatcher) {
             val requiresUpdate = forceUpdateUseCase.requiresForceUpdate()
             if (requiresUpdate) {
-                val url = getWebsiteDownloadLink.invoke()
-                updateUrl = url
+                val latestVersion = getAppLatestVersionUseCase.getLatestVersion()
+                updateUrl = latestVersion?.url ?: ""
                 if (updateUrl.isNotEmpty()) {
                     router.updateDestination(Update)
                     return@launch
