@@ -1,6 +1,7 @@
 package com.kape.inappbrowser.ui
 
 import android.annotation.SuppressLint
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Column
@@ -41,6 +42,8 @@ fun InAppBrowser(url: String) =
             remember {
                 WebView(context).apply {
                     settings.javaScriptEnabled = true
+                    settings.allowFileAccess = false
+                    WebView.setWebContentsDebuggingEnabled(false)
                     setBackgroundColor(android.graphics.Color.TRANSPARENT) // important
                 }
             }
@@ -53,6 +56,17 @@ fun InAppBrowser(url: String) =
                         url: String?,
                     ) {
                         loading = false
+                    }
+
+                    override fun shouldOverrideUrlLoading(
+                        view: WebView?,
+                        request: WebResourceRequest?,
+                    ): Boolean {
+                        val host = request?.url?.host ?: return true
+                        return!(
+                            host.endsWith("privateinternetaccess.com") ||
+                                host.endsWith("helpdesk.privateinternetaccess.com")
+                        ) // allow WebView to load
                     }
                 }
             webview.loadUrl(url)
