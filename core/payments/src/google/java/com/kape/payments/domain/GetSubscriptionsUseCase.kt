@@ -1,6 +1,6 @@
 package com.kape.payments.domain
 
-import com.kape.payments.data.Subscription
+import com.kape.data.model.Subscription
 import org.koin.core.annotation.Singleton
 
 @Singleton

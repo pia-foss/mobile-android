@@ -6,7 +6,7 @@ import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
 import com.kape.data.DI
-import com.kape.dedicatedip.domain.RenewDipUseCase
+import com.kape.dedicatedip.domain.DipPurchaseHandler
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CustomizationPrefs
 import com.kape.localprefs.prefs.DipPrefs
@@ -37,13 +37,13 @@ class ConnectionModule {
         settingsPrefs: SettingsPrefs,
         snoozeHandler: SnoozeHandler,
         dipPrefs: DipPrefs,
-        renewDipUseCase: RenewDipUseCase,
         customizationPrefs: CustomizationPrefs,
         vpnRegionPrefs: VpnRegionPrefs,
         ratingTool: RatingTool,
         shortcutPrefs: ShortcutPrefs,
         buildConfigProvider: BuildConfigProvider,
         isVpnProfileInstalledUseCase: IsVpnProfileInstalledUseCase,
+        dipPurchaseHandler: DipPurchaseHandler,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): ConnectionViewModel =
@@ -56,13 +56,13 @@ class ConnectionModule {
             settingsPrefs,
             snoozeHandler,
             dipPrefs,
-            renewDipUseCase,
             customizationPrefs,
             vpnRegionPrefs,
             ratingTool,
             shortcutPrefs,
             buildConfigProvider,
             isVpnProfileInstalledUseCase,
+            dipPurchaseHandler,
             ioDispatcher,
             connectionInfoProvider,
             networkConnectionListener,

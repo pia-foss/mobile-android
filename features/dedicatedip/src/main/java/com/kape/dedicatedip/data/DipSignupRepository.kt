@@ -1,6 +1,6 @@
 package com.kape.dedicatedip.data
 
-import com.kape.dedicatedip.domain.DipDataSource
+import com.kape.dedicatedip.domain.DipPurchaseDataSource
 import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.dip.data.DedicatedIpSupportedCountries
 import com.kape.localprefs.prefs.DipPrefs
@@ -10,7 +10,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class DipSignupRepository(
-    private val dipDataSource: DipDataSource,
+    private val dipDataSource: DipPurchaseDataSource,
     private val dipPrefs: DipPrefs,
 ) {
     private companion object {

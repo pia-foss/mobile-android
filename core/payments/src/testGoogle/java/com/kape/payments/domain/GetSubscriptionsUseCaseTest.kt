@@ -1,6 +1,6 @@
 package com.kape.payments.domain
 
-import com.kape.payments.data.Subscription
+import com.kape.data.model.Subscription
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest

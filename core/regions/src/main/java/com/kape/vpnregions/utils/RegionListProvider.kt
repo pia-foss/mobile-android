@@ -40,11 +40,9 @@ class RegionListProvider(
         }
     }
 
-    fun reflectDedicatedIpAction() {
-        ioScope.launch {
-            val nonDipServers = _servers.value.filter { !it.isDedicatedIp }
-            _servers.value = regionRepository.addDipsToServerList(nonDipServers)
-        }
+    suspend fun reflectDedicatedIpAction() {
+        val nonDipServers = _servers.value.filter { !it.isDedicatedIp }
+        _servers.value = regionRepository.addDipsToServerList(nonDipServers)
     }
 
     fun loadVpnServerLatencies() =

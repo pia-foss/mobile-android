@@ -186,7 +186,7 @@ fun SignUpScreen(
                             .alpha(determineSubscribeButtonAlpha(screenState)),
                 ) {
                     subscriptionData?.let {
-                        viewModel.purchase(subscriptionData.selected.value.id)
+                        viewModel.purchase(subscriptionData.selected.value.id, context as Activity)
                     } ?: run {
                         viewModel.navigateToWebsite()
                     }

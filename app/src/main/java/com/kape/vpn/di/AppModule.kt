@@ -23,6 +23,7 @@ import com.kape.csi.di.CsiModule
 import com.kape.customization.di.CustomizationModule
 import com.kape.data.DI
 import com.kape.dedicatedip.di.DipModule
+import com.kape.dedicatedip.di.DipPurchaseModule
 import com.kape.featureflags.di.FeatureFlagsModule
 import com.kape.httpclient.data.CertificatePinningClientImpl
 import com.kape.httpclient.data.GetWebsiteDownloadLinkImpl
@@ -36,6 +37,7 @@ import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.location.di.LocationModule
 import com.kape.login.di.LoginModule
+import com.kape.login.di.LoginWithReceiptModule
 import com.kape.networkmanagement.di.NetworkManagementModule
 import com.kape.notifications.data.NotificationChannelManager
 import com.kape.notifications.data.NotificationPermissionManager
@@ -54,6 +56,7 @@ import com.kape.settings.di.SettingsModule
 import com.kape.shadowsocksregions.di.ShadowsocksServersModule
 import com.kape.shareevents.di.KpiModule
 import com.kape.sidemenu.di.SideMenuModule
+import com.kape.signup.di.SignupBillingModule
 import com.kape.signup.di.SignupModule
 import com.kape.snooze.di.SnoozeModule
 import com.kape.splash.di.SplashModule
@@ -119,13 +122,16 @@ import java.io.BufferedReader
         ObfuscatorModule::class,
         KpiModule::class,
         LoginModule::class,
+        LoginWithReceiptModule::class,
         SplashModule::class,
         ConnectionModule::class,
         SettingsModule::class,
         ProfileModule::class,
         SignupModule::class,
+        SignupBillingModule::class,
         AutomationModule::class,
         DipModule::class,
+        DipPurchaseModule::class,
         AppBarModule::class,
         TvWelcomeModule::class,
         CustomizationModule::class,

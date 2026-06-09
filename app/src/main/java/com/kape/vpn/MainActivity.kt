@@ -81,7 +81,6 @@ import com.kape.login.ui.mobile.LoginWithEmailScreen
 import com.kape.login.ui.tv.LoginPasswordScreen
 import com.kape.login.ui.tv.LoginUsernameScreen
 import com.kape.obfuscationregionselection.ui.ShadowsocksRegionSelectionScreen
-import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.permissions.ui.mobile.NotificationPermissionScreen
 import com.kape.permissions.ui.mobile.VpnPermissionScreen
 import com.kape.permissions.ui.tv.TvNotificationPermissionScreen
@@ -133,7 +132,6 @@ import org.koin.core.qualifier.named
 
 class MainActivity : AppCompatActivity() {
     private val router: Router by inject()
-    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider by inject()
     private val shortcutPrefs: ShortcutPrefs by inject()
     private val platformUtils: PlatformUtils by inject()
     private val shortcutManager: ShortcutManager by inject()
@@ -145,7 +143,6 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_SECURE,
             WindowManager.LayoutParams.FLAG_SECURE,
         )
-        vpnSubscriptionPaymentProvider.register(this)
         defineScreenOrientation()
         intent.action?.let {
             ioScope.launch {

@@ -7,6 +7,7 @@ import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.data.LoginWithEmail
 import com.kape.login.domain.mobile.LoginUseCase
+import com.kape.login.domain.mobile.LoginWithReceiptHandler
 import com.kape.login.utils.FAILED
 import com.kape.login.utils.IDLE
 import com.kape.login.utils.INVALID
@@ -14,7 +15,6 @@ import com.kape.login.utils.LOADING
 import com.kape.login.utils.LoginScreenState
 import com.kape.login.utils.LoginState
 import com.kape.login.utils.getScreenState
-import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.utils.NetworkConnectionListener
@@ -29,7 +29,7 @@ import org.koin.core.annotation.Named
 class LoginViewModel(
     private val router: Router,
     private val loginUseCase: LoginUseCase,
-    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
+    private val loginWithReceiptHandler: LoginWithReceiptHandler,
     private val buildConfigProvider: BuildConfigProvider,
     private val permissionsUtil: PermissionUtil,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
@@ -63,7 +63,7 @@ class LoginViewModel(
         this.packageName = packageName
         viewModelScope.launch(ioDispatcher) {
             collectPurchaseHistory()
-            vpnSubscriptionPaymentProvider.getPurchaseHistory()
+            loginWithReceiptHandler.getPurchaseHistory()
         }
     }
 
@@ -71,7 +71,7 @@ class LoginViewModel(
 
     private fun collectPurchaseHistory() {
         viewModelScope.launch(ioDispatcher) {
-            vpnSubscriptionPaymentProvider.purchaseHistoryState.collect {
+            loginWithReceiptHandler.purchaseHistoryState.collect {
                 _state.emit(LOADING)
                 when (it) {
                     is PurchaseHistoryState.PurchaseHistorySuccess -> {

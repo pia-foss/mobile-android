@@ -24,7 +24,7 @@ import com.kape.data.TvSideMenu
 import com.kape.data.VpnPermission
 import com.kape.data.VpnRegionSelection
 import com.kape.data.vpnserver.VpnServer
-import com.kape.dedicatedip.domain.RenewDipUseCase
+import com.kape.dedicatedip.domain.DipPurchaseHandler
 import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CustomizationPrefs
@@ -68,13 +68,13 @@ class ConnectionViewModel(
     private val settingsPrefs: SettingsPrefs,
     private val snoozeHandler: SnoozeHandler,
     private val dipPrefs: DipPrefs,
-    private val renewDipUseCase: RenewDipUseCase,
     private val customizationPrefs: CustomizationPrefs,
     private val vpnRegionPrefs: VpnRegionPrefs,
     private val ratingTool: RatingTool,
     private val shortcutPrefs: ShortcutPrefs,
     private val buildConfigProvider: BuildConfigProvider,
     private val isVpnProfileInstalledUseCase: IsVpnProfileInstalledUseCase,
+    private val dipPurchaseHandler: DipPurchaseHandler,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     val connectionInfoProvider: ConnectionInfoProvider,
     networkConnectionListener: NetworkConnectionListener,
@@ -265,7 +265,7 @@ class ConnectionViewModel(
         viewModelScope.launch(ioDispatcher) {
             if (dipPrefs.dedicatedIps.value.isNotEmpty()) {
                 for (dip in dipPrefs.dedicatedIps.value) {
-                    renewDipUseCase.renew(dip.dipToken)
+                    dipPurchaseHandler.renew(dip.dipToken)
                 }
             }
         }

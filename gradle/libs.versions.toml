@@ -18,7 +18,6 @@ serialization = "1.11.0"
 date-time = "0.6.2"
 ktor = "3.5.0"
 billing-google = "9.0.0"
-billing-amazon = "3.0.9"
 spongy-castle = "1.58.0.0"
 coroutines = "1.11.0"
 drawable-painter = "0.37.3"
@@ -84,7 +83,6 @@ datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "d
 ktorCore = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktorHttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 billing-google = { module = "com.android.billingclient:billing-ktx", version.ref = "billing-google" }
-billing-amazon = { module = "com.amazon.device:amazon-appstore-sdk", version.ref = "billing-amazon" }
 spongycastle = { module = "com.madgag.spongycastle:core", version.ref = "spongy-castle" }
 junit = { module = "junit:junit", version.ref = "test-junit" }
 mockk = { module = "io.mockk:mockk-android", version.ref = "test-mockk" }

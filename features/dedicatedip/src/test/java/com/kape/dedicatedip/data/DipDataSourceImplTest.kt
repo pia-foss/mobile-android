@@ -1,6 +1,8 @@
 package com.kape.dedicatedip.data
 
 import com.kape.dedicatedip.domain.DipDataSource
+import com.kape.dedicatedip.domain.DipPurchaseDataSource
+import com.kape.dedicatedip.domain.DipPurchaseDataSourceImpl
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.localprefs.prefs.DipPrefs
 import com.privateinternetaccess.account.AccountRequestError
@@ -22,11 +24,12 @@ class DipDataSourceImplTest {
     private val context: android.content.Context = mockk()
 
     private lateinit var source: DipDataSource
+    private lateinit var purchaseDataSource: DipPurchaseDataSource
 
     @Test
     fun activateSuccess() =
         runTest {
-            source = DipDataSourceImpl(context, api, prefs, this)
+            source = DipDataSourceImpl(api, prefs, this)
             val dipInfo =
                 DedicatedIPInformationResponse.DedicatedIPInformation(
                     id = "id",
@@ -55,7 +58,7 @@ class DipDataSourceImplTest {
         errorList: List<AccountRequestError>,
         expected: DipApiResult,
     ) = runTest {
-        source = DipDataSourceImpl(context, api, prefs, this)
+        source = DipDataSourceImpl(api, prefs, this)
         coEvery { api.redeemDedicatedIPs(any(), any()) } answers {
             lastArg<(List<DedicatedIPInformationResponse.DedicatedIPInformation>, List<AccountRequestError>) -> Unit>().invoke(
                 emptyList(),
@@ -73,12 +76,13 @@ class DipDataSourceImplTest {
         errorList: List<AccountRequestError>,
         expected: DipApiResult,
     ) = runTest {
-        source = DipDataSourceImpl(context, api, prefs, this)
+        source = DipDataSourceImpl(api, prefs, this)
+        purchaseDataSource = DipPurchaseDataSourceImpl(context, api)
         coEvery { api.renewDedicatedIP(any(), any()) } answers {
             lastArg<(List<AccountRequestError>) -> Unit>().invoke(errorList)
         }
 
-        val actual = source.renew("ipToken")
+        val actual = purchaseDataSource.renew("ipToken")
         assertEquals(expected, actual)
     }
 

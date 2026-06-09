@@ -13,8 +13,8 @@ import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
 import com.kape.data.DI
-import com.kape.payments.data.PurchaseData
-import com.kape.payments.data.Subscription
+import com.kape.data.model.PurchaseData
+import com.kape.data.model.Subscription
 import com.kape.payments.data.SubscriptionPlan
 import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.utils.MONTHLY
@@ -35,7 +35,6 @@ import org.koin.core.annotation.Singleton
 @Singleton([VpnSubscriptionPaymentProvider::class])
 class VpnSubscriptionPaymentProviderImpl(
     private val prefs: SubscriptionPrefs,
-    private var activity: Activity? = null,
     @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : VpnSubscriptionPaymentProvider {
     private lateinit var billingClient: BillingClient
@@ -79,7 +78,6 @@ class VpnSubscriptionPaymentProviderImpl(
         MutableStateFlow<PurchaseHistoryState>(PurchaseHistoryState.Default)
 
     override fun register(activity: Activity) {
-        this.activity = activity
         billingClient =
             BillingClient
                 .newBuilder(activity)
@@ -198,18 +196,19 @@ class VpnSubscriptionPaymentProviderImpl(
         }
     }
 
-    override fun purchaseSelectedProduct(id: String) {
+    override fun purchaseSelectedProduct(
+        id: String,
+        activity: Activity,
+    ) {
         selectedProduct = availableProducts.first { it.productId == id }
-        activity?.let { currentActivity ->
-            selectedProduct?.let { productId ->
-                val billingFlowParams =
-                    BillingFlowParams
-                        .newBuilder()
-                        .setProductDetailsParamsList(createProductQuery(productId))
-                        .build()
+        selectedProduct?.let { productId ->
+            val billingFlowParams =
+                BillingFlowParams
+                    .newBuilder()
+                    .setProductDetailsParamsList(createProductQuery(productId))
+                    .build()
 
-                billingClient.launchBillingFlow(currentActivity, billingFlowParams)
-            }
+            billingClient.launchBillingFlow(activity, billingFlowParams)
         }
     }
 
@@ -257,7 +256,10 @@ class VpnSubscriptionPaymentProviderImpl(
     override fun hasActiveSubscription(): Flow<Boolean> =
         callbackFlow {
             val params =
-                QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build()
+                QueryPurchasesParams
+                    .newBuilder()
+                    .setProductType(BillingClient.ProductType.SUBS)
+                    .build()
             val purchasesListener =
                 PurchasesResponseListener { billingResult: BillingResult, purchases: List<Purchase> ->
                     if (billingResult.responseCode != BillingClient.BillingResponseCode.OK) {
