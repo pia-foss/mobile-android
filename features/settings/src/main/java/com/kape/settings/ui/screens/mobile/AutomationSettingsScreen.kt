@@ -33,7 +33,7 @@ fun AutomationSettingsScreen() =
                 appBarText(stringResource(id = R.string.automation))
             }
         val context = LocalContext.current
-        val isEnabled by viewModel.isAutomationEnavled.collectAsStateWithLifecycle()
+        val isEnabled by viewModel.isAutomationEnabled.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {

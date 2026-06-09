@@ -4,6 +4,7 @@ import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.networkmanagement.utils.NetworkUtil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.annotation.Singleton
@@ -37,6 +38,10 @@ class NetworkRulesManager(
         ssid: String,
         behavior: NetworkBehavior,
     ) {
+        val existingRule = prefs.allRules.first().firstOrNull { it.networkName == ssid }
+        existingRule?.let {
+            prefs.removeRuleForNetwork(existingRule)
+        }
         prefs.addRuleForNetwork(ssid, behavior)
     }
 
