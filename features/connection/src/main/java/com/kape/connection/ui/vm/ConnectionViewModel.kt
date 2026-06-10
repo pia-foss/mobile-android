@@ -222,7 +222,13 @@ class ConnectionViewModel(
         }
     }
 
-    fun getOrderedElements() = customizationPrefs.elements
+    fun getOrderedElements() =
+        combine(
+            customizationPrefs.elements,
+            settingsPrefs.isShadowsocksObfuscationEnabled,
+            settingsPrefs.selectedProtocol,
+            settingsPrefs.selectedObfuscationOption,
+        ) { elements, _, _, _ -> elements }
 
     fun isScreenElementVisible(screenElement: ScreenElement): Boolean =
         when (screenElement.element) {
@@ -314,7 +320,7 @@ class ConnectionViewModel(
         }
     }
 
-    fun getSelectedShadowsocksServer() = shadowsocksListProvider.getSelected()
+    fun getSelectedShadowsocksServer() = shadowsocksListProvider.selectedServer
 
     fun showShadowsocksRegionSelection() {
         router.updateDestination(ShadowsocksRegionSelection)

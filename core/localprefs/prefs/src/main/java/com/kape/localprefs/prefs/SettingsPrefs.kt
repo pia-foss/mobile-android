@@ -16,6 +16,7 @@ import com.kape.settings.data.WireGuardSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.Json
@@ -125,6 +126,8 @@ class SettingsPrefs(
     suspend fun setCustomDns(customDns: CustomDns) {
         dataStore.edit { it[CUSTOM_DNS_SETTINGS] = Json.encodeToString(customDns) }
     }
+
+    suspend fun isShadowsocksObfuscationEnabledNow(): Boolean = getShadowsocksObfuscationEnabled().first()
 
     suspend fun setShadowsocksObfuscationEnabled(enabled: Boolean) {
         dataStore.edit { it[SHADOWSOCKS_OBFUSCATION_ENABLED] = enabled }

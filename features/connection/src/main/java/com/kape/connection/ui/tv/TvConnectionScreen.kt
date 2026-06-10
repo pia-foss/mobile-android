@@ -58,7 +58,7 @@ fun TvConnectionScreen() =
         val locale = Locale.getDefault().language
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
-        val screenElements by viewModel.getOrderedElements().collectAsStateWithLifecycle()
+        val screenElements by viewModel.getOrderedElements().collectAsStateWithLifecycle(emptyList())
 
         BackHandler {
             activity?.finish()
