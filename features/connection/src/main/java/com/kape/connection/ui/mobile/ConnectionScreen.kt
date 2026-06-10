@@ -376,11 +376,14 @@ private fun DisplayComponent(
             }
 
             Element.ShadowsocksRegionSelection -> {
-                ShadowsocksLocationPicker(
-                    server = viewModel.getSelectedShadowsocksServer(),
-                    isConnected = connectionStatus == ConnectionStatus.CONNECTED,
-                ) {
-                    viewModel.showShadowsocksRegionSelection()
+                val selectedServer by viewModel.getSelectedShadowsocksServer().collectAsStateWithLifecycle()
+                selectedServer?.let {
+                    ShadowsocksLocationPicker(
+                        server = it,
+                        isConnected = connectionStatus == ConnectionStatus.CONNECTED,
+                    ) {
+                        viewModel.showShadowsocksRegionSelection()
+                    }
                 }
             }
 

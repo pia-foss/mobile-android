@@ -154,10 +154,10 @@ class ConnectionManagerImpl :
     // ───────────────────────────────────────────────────────────────
 
     private suspend fun startShadowsocks(stopCallback: () -> Unit): Boolean {
-        if (!settingsPrefs.isShadowsocksObfuscationEnabled.value) return true
+        if (!settingsPrefs.isShadowsocksObfuscationEnabledNow()) return true
 
         val server =
-            shadowsocksRegionPrefs.selectedShadowsocksServer.value ?: return false
+            shadowsocksRegionPrefs.getSelectedShadowsocksServerNow() ?: return false
 
         return startObfuscatorProcess(
             obfuscatorProcessInformation =
