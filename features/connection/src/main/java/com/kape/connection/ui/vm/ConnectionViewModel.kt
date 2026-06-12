@@ -140,9 +140,9 @@ class ConnectionViewModel(
         }
 
         viewModelScope.launch(ioDispatcher) {
-            prefs.quickConnectServers.collectLatest { servers ->
-                quickConnectServers.update { getQuickConnectVpnServers(servers) }
-            }
+            combine(prefs.quickConnectServers, vpnRegionPrefs.favoriteVpnServers) { quickConnect, _ ->
+                quickConnectServers.update { getQuickConnectVpnServers(quickConnect) }
+            }.collect()
         }
 
         ratingTool.start()
@@ -295,7 +295,7 @@ class ConnectionViewModel(
                 orderedServers.add(getFavoriteServers()[index])
             }
         } else {
-            for (index in 0 until getFavoriteServers().size) {
+            for (index in getFavoriteServers().indices) {
                 orderedServers.add(getFavoriteServers()[index])
             }
             val previousConnections = servers.reversed()

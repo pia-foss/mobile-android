@@ -40,9 +40,10 @@ class VpnRegionPrefs(
     suspend fun addToFavorites(serverData: ServerData) {
         dataStore.edit { prefs ->
             val favorites =
-                prefs[VPN_FAVORITES]?.let { Json.decodeFromString<List<ServerData>>(it) }
-                    ?: emptyList()
-            favorites.toMutableList().add(serverData)
+                prefs[VPN_FAVORITES]
+                    ?.let { Json.decodeFromString<List<ServerData>>(it) }
+                    ?.toMutableList() ?: mutableListOf()
+            favorites.add(serverData)
             prefs[VPN_FAVORITES] = Json.encodeToString(favorites)
         }
     }
