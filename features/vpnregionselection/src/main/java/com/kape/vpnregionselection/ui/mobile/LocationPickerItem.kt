@@ -65,7 +65,7 @@ fun LocationPickerItem(
                                 contentDescription = offlineDescription
                             }
                         },
-                    ).alpha(if (!server.allowsPortForwarding && isPortForwardingEnabled) 0.5f else 1f)
+                    ).alpha(if (server.isOffline) 0.5f else 1f)
                     .defaultMinSize(minHeight = 56.dp)
                     .padding(16.dp)
                     .testTag(testTag),
@@ -93,7 +93,7 @@ fun LocationPickerItem(
                     if (!server.allowsPortForwarding && isPortForwardingEnabled) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
-                            painter = painterResource(id = com.kape.ui.R.drawable.ic_port_forwarding_unavailable),
+                            painter = painterResource(id = R.drawable.ic_port_forwarding_unavailable),
                             contentDescription = null,
                             tint = Color.Unspecified,
                             modifier = Modifier.size(16.dp),
