@@ -19,6 +19,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -126,7 +127,7 @@ fun VpnRegionSelectionScreen() =
                                         server = item.type.server,
                                         isFavorite = item.type.isFavorite,
                                         enableFavorite = item.type.enableFavorite,
-                                        isPortForwardingEnabled = viewModel.isPortForwardingEnabled.value,
+                                        isPortForwardingEnabled = viewModel.isPortForwardingEnabled.collectAsState().value,
                                         isOffline = item.type.server.isOffline,
                                         onClick = {
                                             if (viewModel.isVpnConnectionActive()) {
