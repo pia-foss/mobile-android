@@ -17,6 +17,7 @@ import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.rating.utils.RatingTool
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
+import com.kape.utils.UpdateAvailableManager
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
 import kotlinx.coroutines.CoroutineDispatcher
@@ -44,6 +45,7 @@ class ConnectionModule {
         buildConfigProvider: BuildConfigProvider,
         isVpnProfileInstalledUseCase: IsVpnProfileInstalledUseCase,
         dipPurchaseHandler: DipPurchaseHandler,
+        updateAvailableManager: UpdateAvailableManager,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): ConnectionViewModel =
@@ -63,6 +65,7 @@ class ConnectionModule {
             buildConfigProvider,
             isVpnProfileInstalledUseCase,
             dipPurchaseHandler,
+            updateAvailableManager,
             ioDispatcher,
             connectionInfoProvider,
             networkConnectionListener,

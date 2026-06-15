@@ -11,6 +11,7 @@ android {
 
 dependencies {
     implementation(project(":core:data"))
+    implementation(libs.kape.account)
     implementation(libs.coroutines)
     implementation(libs.bundles.serialization)
     implementation(libs.kape.vpnmanager)

@@ -1,5 +1,6 @@
 package com.kape.sidemenu.ui.screens.mobile
 
+import android.content.Intent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -21,12 +22,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,10 +37,13 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.sidemenu.R
 import com.kape.sidemenu.ui.vm.SideMenuViewModel
 import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.text.MenuText
+import com.kape.ui.mobile.text.SideMenuUpdateAvailableText
 import com.kape.ui.mobile.text.SideMenuUsernameText
 import com.kape.ui.mobile.text.SideMenuVersionText
 import com.kape.ui.tiles.LogoutDialog
@@ -54,6 +60,8 @@ fun SideMenuContent(
 ) {
     val viewModel: SideMenuViewModel = koinViewModel()
     val logoutDialogVisible = remember { mutableStateOf(false) }
+    val hasUpdateAvailable by viewModel.updateAvailable.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     Column(
         modifier =
@@ -72,6 +80,15 @@ fun SideMenuContent(
             username = viewModel.username.value,
             versionCode = viewModel.getVersionCode(),
             versionName = viewModel.getVersionName(),
+            hasUpdateAvailable = hasUpdateAvailable,
+            onClick = {
+                if (hasUpdateAvailable) {
+                    val launchIntent = Intent(Intent.ACTION_VIEW)
+                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    launchIntent.data = viewModel.getDownloadLink().toUri()
+                    context.startActivity(launchIntent)
+                }
+            },
         )
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -184,12 +201,15 @@ private fun SideMenuHeaderItem(
     username: String,
     versionCode: String,
     versionName: String,
+    hasUpdateAvailable: Boolean,
+    onClick: () -> Unit,
 ) {
     Row(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .focusable(),
+                .focusable()
+                .clickable(onClick = onClick),
     ) {
         Image(
             painter = painterResource(id = R.drawable.drawer_icon),
@@ -226,6 +246,13 @@ private fun SideMenuHeaderItem(
                     ),
                 modifier = Modifier.wrapContentWidth(),
             )
+            if (hasUpdateAvailable) {
+                Spacer(modifier = Modifier.height(4.dp))
+                SideMenuUpdateAvailableText(
+                    content = stringResource(com.kape.ui.R.string.app_update_available_title),
+                    modifier = Modifier.wrapContentWidth(),
+                )
+            }
         }
     }
 }

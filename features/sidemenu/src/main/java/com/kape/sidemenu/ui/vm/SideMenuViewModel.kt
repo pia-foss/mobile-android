@@ -17,6 +17,7 @@ import com.kape.data.Settings
 import com.kape.data.Splash
 import com.kape.data.WebDestination
 import com.kape.profile.domain.GetProfileUseCase
+import com.kape.utils.UpdateAvailableManager
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
@@ -28,11 +29,13 @@ class SideMenuViewModel(
     private val logoutUseCase: LogoutUseCase,
     private val appInfo: AppInfo,
     private val router: Router,
+    private val updateAvailableManager: UpdateAvailableManager,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     val username = mutableStateOf("")
     val showExpire = mutableStateOf(false)
     val daysRemaining = mutableIntStateOf(0)
+    val updateAvailable = updateAvailableManager.hasUpdateAvailable
 
     init {
         viewModelScope.launch(ioDispatcher) {
@@ -50,6 +53,8 @@ class SideMenuViewModel(
             logoutUseCase.logout()
             router.updateDestination(Splash)
         }
+
+    fun getDownloadLink(): String = updateAvailableManager.getDownloadUrl()
 
     fun navigateToVpnConnect() {
         router.updateDestination(Connection)

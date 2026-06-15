@@ -1,11 +1,12 @@
 package com.kape.splash.domain
 
+import com.kape.contracts.GetAppLatestVersion
 import com.privateinternetaccess.account.model.response.LatestClientVersion
 import org.koin.core.annotation.Singleton
 
-@Singleton
+@Singleton(binds = [GetAppLatestVersion::class])
 class GetAppLatestVersionUseCase(
     private val dataSource: LatestAppVersionDataSource,
-) {
-    suspend fun getLatestVersion(): LatestClientVersion? = dataSource.getLatestAppVersion()
+) : GetAppLatestVersion {
+    override suspend fun invoke(): LatestClientVersion? = dataSource.getLatestAppVersion()
 }
