@@ -19,6 +19,7 @@ import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.regions.data.ServerData
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
+import com.kape.utils.UpdateAvailableManager
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
@@ -41,6 +42,7 @@ class VpnRegionSelectionViewModel(
     private val connectionPrefs: ConnectionPrefs,
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val connectionManager: ConnectionManager,
+    private val updateAvailableManager: UpdateAvailableManager,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<ServerItem>())
@@ -52,6 +54,7 @@ class VpnRegionSelectionViewModel(
     lateinit var autoRegionIso: String
 
     val isPortForwardingEnabled = settingsPrefs.isPortForwardingEnabled
+    val hasUpdateAvailable = updateAvailableManager.hasUpdateAvailable
 
     fun loadVpnRegions(
         locale: String,

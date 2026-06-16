@@ -37,6 +37,7 @@ import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
+import com.kape.utils.UpdateAvailableManager
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
@@ -64,6 +65,7 @@ class SettingsViewModel(
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
     private val connectionManager: ConnectionManager,
     private val connectionInfoProvider: ConnectionInfoProvider,
+    private val updateAvailableManager: UpdateAvailableManager,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     companion object {
@@ -91,6 +93,7 @@ class SettingsViewModel(
     val maceEnabled = prefs.isMaceEnabled
     val wireGuardSettings = prefs.wireGuardSettings
     val openVpnSettings = prefs.openVpnSettings
+    val hasUpdateAvailable = updateAvailableManager.hasUpdateAvailable
 
     private val isDnsNumeric = mutableStateOf(true)
     private var installedApps = listOf<ApplicationInfo>()
@@ -448,6 +451,8 @@ class SettingsViewModel(
                 }
         }
     }
+
+    fun getDownloadLink(): String = updateAvailableManager.getDownloadUrl()
 
     private fun callback() {
         viewModelScope.launch(ioDispatcher) { connectionManager.disconnect().getOrNull() }

@@ -1,7 +1,6 @@
 package com.kape.settings.ui.screens.tv
 
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.settings.ui.elements.tv.TvSettingsItem
@@ -57,6 +57,7 @@ fun TvHelpScreen() =
         val showToast = remember { mutableStateOf(false) }
         val showSpinner = remember { mutableStateOf(false) }
         val improvePiaEnabled by viewModel.improvePiaEnabled.collectAsStateWithLifecycle()
+        val hasUpdateAvailable by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
 
         with(viewModel.requestId.value) {
             when {
@@ -139,11 +140,22 @@ fun TvHelpScreen() =
                             ) {
                                 context.startActivity(
                                     Intent(Intent.ACTION_VIEW).apply {
-                                        data = Uri.parse(appUrl)
+                                        data = appUrl.toUri()
                                     },
                                 )
                             }
                             Spacer(modifier = Modifier.height(8.dp))
+                            if (hasUpdateAvailable) {
+                                TvSettingsItem(
+                                    titleId = R.string.app_update_available_title,
+                                ) {
+                                    context.startActivity(
+                                        Intent(Intent.ACTION_VIEW).apply {
+                                            data = viewModel.getDownloadLink().toUri()
+                                        },
+                                    )
+                                }
+                            }
                             TvSettingsToggle(
                                 titleId = R.string.help_improve_pia_title,
                                 subtitleId = R.string.help_improve_pia_description,

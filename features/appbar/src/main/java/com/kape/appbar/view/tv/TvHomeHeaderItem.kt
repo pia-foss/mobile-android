@@ -4,9 +4,11 @@ package com.kape.appbar.view.tv
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
@@ -42,6 +44,7 @@ fun TvHomeHeaderItem(
     title: String? = null,
     connectionStatus: ConnectionStatus,
     defaultSelectedTabIndex: Int,
+    hasUpdateAvailable: Boolean,
     topStartHeaderFocusRequester: FocusRequester = FocusRequester(),
     topEndHeaderFocusRequester: FocusRequester = FocusRequester(),
     onVpnSelected: () -> Unit = { },
@@ -156,13 +159,23 @@ fun TvHomeHeaderItem(
             ) {
                 onSettingsSelected()
             }
-            RoundIconButton(
-                modifier =
-                    Modifier
-                        .padding(horizontal = 4.dp),
-                painterId = R.drawable.ic_help,
-            ) {
-                onHelpSelected()
+            Box {
+                RoundIconButton(
+                    modifier = Modifier.padding(horizontal = 4.dp),
+                    painterId = R.drawable.ic_help,
+                ) {
+                    onHelpSelected()
+                }
+
+                if (hasUpdateAvailable) {
+                    Box(
+                        modifier =
+                            Modifier
+                                .size(8.dp)
+                                .background(color = LocalColors.current.error, shape = CircleShape)
+                                .align(Alignment.TopEnd),
+                    )
+                }
             }
         }
     }

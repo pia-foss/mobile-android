@@ -75,6 +75,7 @@ fun TvVpnRegionSelectionScreen() =
                     }
                 }
             }
+        val hasUpdateAvailable by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
 
         val serverItems =
             if (isFavoriteSelected.value) {
@@ -122,6 +123,7 @@ fun TvVpnRegionSelectionScreen() =
                     title = stringResource(id = R.string.location_selection_title),
                     connectionStatus = status,
                     defaultSelectedTabIndex = 1,
+                    hasUpdateAvailable = hasUpdateAvailable,
                     onVpnSelected = {
                         viewModel.navigateToVpn()
                     },

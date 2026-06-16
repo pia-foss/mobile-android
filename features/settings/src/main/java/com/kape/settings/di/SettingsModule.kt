@@ -13,6 +13,7 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.domain.IsNumericIpAddressUseCaseImpl
 import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.utils.UpdateAvailableManager
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
@@ -42,6 +43,7 @@ class SettingsModule {
         isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
         connectionManager: ConnectionManager,
         connectionInfoProvider: ConnectionInfoProvider,
+        updateAvailableManager: UpdateAvailableManager,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): SettingsViewModel =
         SettingsViewModel(
@@ -58,6 +60,7 @@ class SettingsModule {
             isNumericIpAddressUseCase,
             connectionManager,
             connectionInfoProvider,
+            updateAvailableManager,
             ioDispatcher,
         )
 }

@@ -22,6 +22,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:contracts"))
     implementation(project(":core:regions"))
+    implementation(project(":core:utils"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
