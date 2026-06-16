@@ -39,6 +39,7 @@ import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
+import com.kape.utils.UpdateAvailableManager
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
 import kotlinx.coroutines.CoroutineDispatcher
@@ -75,6 +76,7 @@ class ConnectionViewModel(
     private val buildConfigProvider: BuildConfigProvider,
     private val isVpnProfileInstalledUseCase: IsVpnProfileInstalledUseCase,
     private val dipPurchaseHandler: DipPurchaseHandler,
+    private val updateAvailableManager: UpdateAvailableManager,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     val connectionInfoProvider: ConnectionInfoProvider,
     networkConnectionListener: NetworkConnectionListener,
@@ -106,6 +108,7 @@ class ConnectionViewModel(
     var showProtocolNotAvailableDialog = mutableStateOf(false)
         private set
     val quickConnectServers = MutableStateFlow<List<VpnServer>>(emptyList())
+    val hasUpdateAvailable = updateAvailableManager.hasUpdateAvailable
 
     init {
         if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
@@ -140,7 +143,10 @@ class ConnectionViewModel(
         }
 
         viewModelScope.launch(ioDispatcher) {
-            combine(prefs.quickConnectServers, vpnRegionPrefs.favoriteVpnServers) { quickConnect, _ ->
+            combine(
+                prefs.quickConnectServers,
+                vpnRegionPrefs.favoriteVpnServers,
+            ) { quickConnect, _ ->
                 quickConnectServers.update { getQuickConnectVpnServers(quickConnect) }
             }.collect()
         }
@@ -186,6 +192,8 @@ class ConnectionViewModel(
     fun navigateToDedicatedIpPlans() {
         router.updateDestination(DedicatedIpSignupPlans)
     }
+
+    fun getDownloadLink(): String = updateAvailableManager.getDownloadUrl()
 
     fun autoConnect() {
         viewModelScope.launch(ioDispatcher) {

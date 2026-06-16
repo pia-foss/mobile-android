@@ -1,7 +1,6 @@
 package com.kape.connection.ui.mobile
 
 import android.content.Intent
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
@@ -29,6 +28,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -52,6 +56,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -108,9 +113,9 @@ fun ConnectionScreen() =
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
         val shouldShowProtocolNotAvailable by viewModel.showProtocolNotAvailableDialog
-        val screenElements by viewModel
-            .getOrderedElements()
-            .collectAsStateWithLifecycle(emptyList())
+        val screenElements by viewModel.getOrderedElements().collectAsStateWithLifecycle(emptyList())
+        val showUpdateAvailableDialog by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
+        val snackbarHostState = remember { SnackbarHostState() }
 
         BackHandler {
             activity?.finish()
@@ -151,6 +156,14 @@ fun ConnectionScreen() =
                         },
                         onRightIconClick = { viewModel.navigateToCustomization() },
                     )
+                },
+                snackbarHost = {
+                    SnackbarHost(snackbarHostState) { data ->
+                        Snackbar(
+                            snackbarData = data,
+                            actionContentColor = LocalColors.current.inversePrimary,
+                        )
+                    }
                 },
             ) {
                 Column(
@@ -231,8 +244,7 @@ fun ConnectionScreen() =
                         }
                         showRatingGeneralDialog.value =
                             state.ratingDialogType is RatingDialogType.General
-                        showRatingReviewDialog.value =
-                            state.ratingDialogType is RatingDialogType.Review
+                        showRatingReviewDialog.value = state.ratingDialogType is RatingDialogType.Review
                         showRatingFeedbackDialog.value =
                             state.ratingDialogType is RatingDialogType.Feedback
 
@@ -244,7 +256,7 @@ fun ConnectionScreen() =
                                 onConfirm = {
                                     val launchIntent = Intent(Intent.ACTION_VIEW)
                                     launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    launchIntent.data = Uri.parse(url)
+                                    launchIntent.data = url.toUri()
 
                                     // Silently fail if Google Play Store isn't installed.
                                     if (launchIntent.resolveActivity(context.packageManager) != null) {
@@ -266,7 +278,7 @@ fun ConnectionScreen() =
                                 onConfirm = {
                                     val launchIntent = Intent(Intent.ACTION_VIEW)
                                     launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    launchIntent.data = Uri.parse(url)
+                                    launchIntent.data = url.toUri()
 
                                     // Silently fail if Google Play Store isn't installed.
                                     if (launchIntent.resolveActivity(context.packageManager) != null) {
@@ -288,6 +300,31 @@ fun ConnectionScreen() =
                         stringResource(R.string.protocol_unavailable_action),
                         onConfirm = { viewModel.resetProtocolNotAvailable() },
                     )
+                }
+
+                val message = stringResource(R.string.app_update_available_title)
+                val action = stringResource(R.string.app_update_available_positive_action)
+                val context = LocalContext.current
+
+                LaunchedEffect(showUpdateAvailableDialog) {
+                    if (showUpdateAvailableDialog) {
+                        val result =
+                            snackbarHostState.showSnackbar(
+                                message = message,
+                                actionLabel = action,
+                                withDismissAction = true,
+                                duration = SnackbarDuration.Short,
+                            )
+                        when (result) {
+                            SnackbarResult.Dismissed -> snackbarHostState.currentSnackbarData?.dismiss()
+                            SnackbarResult.ActionPerformed -> {
+                                val launchIntent = Intent(Intent.ACTION_VIEW)
+                                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                launchIntent.data = viewModel.getDownloadLink().toUri()
+                                context.startActivity(launchIntent)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -376,7 +413,9 @@ private fun DisplayComponent(
             }
 
             Element.ShadowsocksRegionSelection -> {
-                val selectedServer by viewModel.getSelectedShadowsocksServer().collectAsStateWithLifecycle()
+                val selectedServer by viewModel
+                    .getSelectedShadowsocksServer()
+                    .collectAsStateWithLifecycle()
                 selectedServer?.let {
                     ShadowsocksLocationPicker(
                         server = it,

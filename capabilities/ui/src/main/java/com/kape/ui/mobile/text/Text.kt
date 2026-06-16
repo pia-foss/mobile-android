@@ -58,6 +58,19 @@ fun SideMenuVersionText(
 }
 
 @Composable
+fun SideMenuUpdateAvailableText(
+    content: String,
+    modifier: Modifier,
+) {
+    Text(
+        text = content,
+        color = LocalColors.current.error,
+        style = PiaTypography.caption1,
+        modifier = modifier,
+    )
+}
+
+@Composable
 fun AppBarConnectionTextDefault(
     content: String,
     isError: Boolean,

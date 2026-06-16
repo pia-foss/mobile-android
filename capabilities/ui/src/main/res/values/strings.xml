@@ -457,4 +457,7 @@
     <string name="dialog_change_location_message">Your VPN will briefly disconnect while connecting to the new location.</string>
     <string name="dialog_change_location_action">CONNECT</string>
     <string name="dialog_change_location_dismiss">CANCEL</string>
+
+    <string name="app_update_available_title">App Update Available!</string>
+    <string name="app_update_available_positive_action">Download</string>
 </resources>

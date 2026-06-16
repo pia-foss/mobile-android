@@ -58,7 +58,10 @@ fun TvConnectionScreen() =
         val locale = Locale.getDefault().language
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
-        val screenElements by viewModel.getOrderedElements().collectAsStateWithLifecycle(emptyList())
+        val screenElements by viewModel
+            .getOrderedElements()
+            .collectAsStateWithLifecycle(emptyList())
+        val hasUpdateAvailable by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
 
         BackHandler {
             activity?.finish()
@@ -101,6 +104,7 @@ fun TvConnectionScreen() =
                 TvHomeHeaderItem(
                     connectionStatus = connectionStatus,
                     defaultSelectedTabIndex = 0,
+                    hasUpdateAvailable = hasUpdateAvailable,
                     topStartHeaderFocusRequester = topStartHeaderFocusRequester,
                     topEndHeaderFocusRequester = topEndHeaderFocusRequester,
                     onLocationsSelected = {
@@ -183,7 +187,8 @@ private fun DisplayComponent(
             val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
             val quickConnectServers by viewModel.quickConnectServers.collectAsStateWithLifecycle()
             for (server in quickConnectServers) {
-                quickConnectMap[server] = viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
+                quickConnectMap[server] =
+                    viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
             }
             QuickConnect(
                 startQuickConnectFocusRequester = startQuickConnectFocusRequester,

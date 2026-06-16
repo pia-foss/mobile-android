@@ -32,6 +32,7 @@ dependencies {
 
     implementation(project(":core:contracts"))
     implementation(project(":core:data"))
+    implementation(project(":core:utils"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:profile"))

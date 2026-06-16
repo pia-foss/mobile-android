@@ -2,6 +2,7 @@ package com.kape.splash.di
 
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
+import com.kape.contracts.GetAppLatestVersion
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
 import com.kape.data.DI
@@ -24,15 +25,16 @@ class SplashModule {
     @Singleton(binds = [LatestAppVersionDataSource::class])
     fun provideLatestAppVersionDataSource(api: AndroidAccountAPI): LatestAppVersionDataSource = LatestAppVersionDataSourceImpl(api)
 
-    @Singleton
-    fun provideGetAppLatestVersionUseCase(dataSource: LatestAppVersionDataSource) = GetAppLatestVersionUseCase(dataSource)
+    @Singleton(binds = [GetAppLatestVersion::class])
+    fun provideGetAppLatestVersionUseCase(dataSource: LatestAppVersionDataSource): GetAppLatestVersion =
+        GetAppLatestVersionUseCase(dataSource)
 
     @KoinViewModel
     fun provideSplashViewModel(
         router: Router,
         regionListProvider: RegionListProvider,
         forceUpdateUseCase: ForceUpdateUseCase,
-        getAppLatestVersionUseCase: GetAppLatestVersionUseCase,
+        getAppLatestVersionUseCase: GetAppLatestVersion,
         @Named(DI.UPDATE_URL) appUpdateUrl: String,
         connectionManager: ConnectionManager,
         connectionInfoProvider: ConnectionInfoProvider,
