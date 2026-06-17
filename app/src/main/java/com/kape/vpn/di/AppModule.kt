@@ -26,9 +26,7 @@ import com.kape.dedicatedip.di.DipModule
 import com.kape.dedicatedip.di.DipPurchaseModule
 import com.kape.featureflags.di.FeatureFlagsModule
 import com.kape.httpclient.data.CertificatePinningClientImpl
-import com.kape.httpclient.data.GetWebsiteDownloadLinkImpl
 import com.kape.httpclient.domain.CertificatePinningClient
-import com.kape.httpclient.domain.GetWebsiteDownloadLink
 import com.kape.localprefs.di.PrefsModule
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
@@ -225,9 +223,6 @@ class AppModule {
         connectionPrefs: ConnectionPrefs,
         settingsPrefs: SettingsPrefs,
     ): PortForwardingUseCase = PortForwardingUseCase(api, connectionPrefs, settingsPrefs)
-
-    @Singleton(binds = [GetWebsiteDownloadLink::class])
-    fun provideUpdateClient(): GetWebsiteDownloadLink = GetWebsiteDownloadLinkImpl()
 
     @Singleton
     fun provideAccountStateProvider(
