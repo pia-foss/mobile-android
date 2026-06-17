@@ -5,6 +5,11 @@ import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.shadowsocksregions.data.ShadowsocksRegionRepository
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
@@ -20,21 +25,24 @@ class GetShadowsocksRegionsUseCase(
     suspend fun fetchShadowsocksServers(locale: String): List<ShadowsocksServer> =
         shadowsocksRegionRepository.fetchShadowsocksServers(locale)
 
-    fun getSelectedShadowsocksServer(): ShadowsocksServer =
-        getShadowsocksServers().firstOrNull {
-            it.host == shadowsocksRegionPrefs.selectedShadowsocksServer.value?.host
-        } ?: run {
-            val defaultShadowsocksServer = getShadowsocksServers().first()
-            ioScope.launch {
-                setShadowsocksRegionsUseCase.setSelectShadowsocksServer(defaultShadowsocksServer)
-            }
-            defaultShadowsocksServer
+    fun getSelectedShadowsocksServer(): Flow<ShadowsocksServer> =
+        getShadowsocksServers().combine(shadowsocksRegionPrefs.selectedShadowsocksServer) { servers, selectedServer ->
+            servers.firstOrNull { it.host == selectedServer?.host }
+                ?: run {
+                    val defaultShadowsocksServer = servers.first()
+                    ioScope.launch {
+                        setShadowsocksRegionsUseCase.setSelectShadowsocksServer(
+                            defaultShadowsocksServer,
+                        )
+                    }
+                    defaultShadowsocksServer
+                }
         }
 
-    fun getShadowsocksServers(): List<ShadowsocksServer> =
-        // If there are no servers persisted. Let's use the initial set of servers we are
-        // shipping the application with while we perform a request for an updated version.
-        shadowsocksRegionPrefs.shadowsocksServers.value.ifEmpty {
-            readShadowsocksRegionsDetailsUseCase.readShadowsocksRegionsDetailsFromAssetsFolder()
+    fun getShadowsocksServers(): Flow<List<ShadowsocksServer>> =
+        shadowsocksRegionPrefs.shadowsocksServers.map { servers ->
+            servers.ifEmpty {
+                readShadowsocksRegionsDetailsUseCase.readShadowsocksRegionsDetailsFromAssetsFolder()
+            }
         }
 }

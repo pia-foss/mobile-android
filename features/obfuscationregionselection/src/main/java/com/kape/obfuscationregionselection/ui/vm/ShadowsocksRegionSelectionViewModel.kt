@@ -12,7 +12,9 @@ import com.kape.obfuscationregionselection.util.ItemType
 import com.kape.obfuscationregionselection.util.ShadowsocksServerItem
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
@@ -24,11 +26,17 @@ class ShadowsocksRegionSelectionViewModel(
     private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<ShadowsocksServerItem>())
     val sorted = mutableStateOf(emptyList<ShadowsocksServerItem>())
 
-    fun getShadowsocksRegions() = arrangeShadowsocksServers(getShadowsocksRegionsUseCase.getShadowsocksServers())
+    fun getShadowsocksRegions() =
+        ioScope.launch {
+            getShadowsocksRegionsUseCase.getShadowsocksServers().collectLatest {
+                arrangeShadowsocksServers(it)
+            }
+        }
 
     fun fetchShadowsocksRegions(
         locale: String,
