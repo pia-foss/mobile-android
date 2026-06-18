@@ -9,7 +9,7 @@ import com.kape.connection.utils.ConnectionScreenState
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
-import com.kape.customization.data.Element
+import com.kape.contracts.ScreenElementProvider
 import com.kape.data.AutomationSettings
 import com.kape.data.Customization
 import com.kape.data.DI
@@ -25,7 +25,6 @@ import com.kape.data.VpnPermission
 import com.kape.data.VpnRegionSelection
 import com.kape.data.vpnserver.VpnServer
 import com.kape.dedicatedip.domain.DipPurchaseHandler
-import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CustomizationPrefs
 import com.kape.localprefs.prefs.DipPrefs
@@ -35,7 +34,6 @@ import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.utils.RatingTool
-import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.VpnProtocols
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
@@ -77,6 +75,7 @@ class ConnectionViewModel(
     private val isVpnProfileInstalledUseCase: IsVpnProfileInstalledUseCase,
     private val dipPurchaseHandler: DipPurchaseHandler,
     private val updateAvailableManager: UpdateAvailableManager,
+    private val screenElementProvider: ScreenElementProvider,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     val connectionInfoProvider: ConnectionInfoProvider,
     networkConnectionListener: NetworkConnectionListener,
@@ -230,31 +229,7 @@ class ConnectionViewModel(
         }
     }
 
-    fun getOrderedElements() =
-        combine(
-            customizationPrefs.elements,
-            settingsPrefs.isShadowsocksObfuscationEnabled,
-            settingsPrefs.selectedProtocol,
-            settingsPrefs.selectedObfuscationOption,
-        ) { elements, _, _, _ -> elements }
-
-    fun isScreenElementVisible(screenElement: ScreenElement): Boolean =
-        when (screenElement.element) {
-            Element.ShadowsocksRegionSelection ->
-                screenElement.isVisible &&
-                    settingsPrefs.isShadowsocksObfuscationEnabled.value &&
-                    settingsPrefs.selectedProtocol.value == VpnProtocols.OpenVPN &&
-                    settingsPrefs.selectedObfuscationOption.value == ObfuscationOptions.PIA
-
-            Element.VpnRegionSelection,
-            Element.ConnectionInfo,
-            Element.QuickConnect,
-            Element.QuickSettings,
-            Element.Snooze,
-            Element.IpInfo,
-            Element.Traffic,
-            -> screenElement.isVisible
-        }
+    fun getOrderedElements() = screenElementProvider.screenElements
 
     fun shouldShowDedicatedIpSignupBanner() =
         viewModelScope.launch(ioDispatcher) {

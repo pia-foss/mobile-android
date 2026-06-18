@@ -6,6 +6,7 @@ import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
@@ -26,7 +27,12 @@ class ShadowsocksListProvider(
         ioScope.launch {
             val servers = getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale)
             _servers.update { servers }
-            _selectedServer.update { getShadowsocksRegionsUseCase.getSelectedShadowsocksServer() }
+        }
+
+        ioScope.launch {
+            getShadowsocksRegionsUseCase.getSelectedShadowsocksServer().collectLatest { server ->
+                _selectedServer.value = server
+            }
         }
     }
 }

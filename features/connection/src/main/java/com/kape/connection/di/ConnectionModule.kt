@@ -5,6 +5,7 @@ import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.Router
+import com.kape.contracts.ScreenElementProvider
 import com.kape.data.DI
 import com.kape.dedicatedip.domain.DipPurchaseHandler
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -46,6 +47,7 @@ class ConnectionModule {
         isVpnProfileInstalledUseCase: IsVpnProfileInstalledUseCase,
         dipPurchaseHandler: DipPurchaseHandler,
         updateAvailableManager: UpdateAvailableManager,
+        screenElementProvider: ScreenElementProvider,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): ConnectionViewModel =
@@ -66,6 +68,7 @@ class ConnectionModule {
             isVpnProfileInstalledUseCase,
             dipPurchaseHandler,
             updateAvailableManager,
+            screenElementProvider,
             ioDispatcher,
             connectionInfoProvider,
             networkConnectionListener,

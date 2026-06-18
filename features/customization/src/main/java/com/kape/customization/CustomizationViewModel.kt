@@ -1,19 +1,17 @@
 package com.kape.customization
 
 import androidx.compose.foundation.lazy.LazyListItemInfo
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
+import com.kape.contracts.ScreenElementProvider
 import com.kape.customization.data.Element
 import com.kape.data.DI
-import com.kape.data.ShadowsocksRegionSelection
 import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.localprefs.prefs.CustomizationPrefs
-import com.kape.localprefs.prefs.SettingsPrefs
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
@@ -22,30 +20,20 @@ import org.koin.core.component.KoinComponent
 @KoinViewModel
 class CustomizationViewModel(
     private val prefs: CustomizationPrefs,
-    private val settingsPrefs: SettingsPrefs,
+    private val screenElementProvider: ScreenElementProvider,
     val router: Router,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel(),
     KoinComponent {
     val items = mutableStateListOf<ScreenElement>()
 
-    fun getOrderedElements(): List<ScreenElement> {
-        items.clear()
-        val current = prefs.elements.value
-        current.forEach {
-            if (it.element == Element.ShadowsocksRegionSelection) {
-                if (settingsPrefs.isShadowsocksObfuscationEnabled.value) {
-                    val visibleElement = it.apply { it.shouldDisplayElement = true }
-                    items.add(visibleElement)
-                } else {
-                    val invisibleElement = it.apply { it.shouldDisplayElement = false }
-                    items.add(invisibleElement)
-                }
-            } else {
-                items.add(it)
+    init {
+        viewModelScope.launch {
+            screenElementProvider.customizationElements.collectLatest {
+                items.clear()
+                items.addAll(it)
             }
         }
-        return items
     }
 
     fun onMove(
@@ -58,6 +46,7 @@ class CustomizationViewModel(
     fun saveOrder() =
         viewModelScope.launch(ioDispatcher) {
             prefs.setElements(items)
+            router.navigateBack()
         }
 
     fun toggleVisibility(
