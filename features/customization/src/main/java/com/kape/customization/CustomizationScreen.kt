@@ -55,7 +55,6 @@ fun CustomizationScreen() =
         val connectionViewModel: ConnectionViewModel = koinViewModel()
         val appBarViewModel: AppBarViewModel = koinViewModel()
 
-        remember { viewModel.getOrderedElements() }
         val lazyListState = rememberLazyListState()
         val reorderableLazyColumnState =
             rememberReorderableLazyListState(lazyListState) { from, to ->
@@ -69,7 +68,6 @@ fun CustomizationScreen() =
                     type = AppBarType.Customization,
                     onRightIconClick = {
                         viewModel.saveOrder()
-                        viewModel.router.navigateBack()
                     },
                 )
             },
@@ -91,13 +89,25 @@ fun CustomizationScreen() =
                                     .fillMaxWidth()
                                     .background(LocalColors.current.surface),
                         ) {
-                            if (it.shouldDisplayElement) {
-                                CreateCustomizableElement(
-                                    screenElement = it,
-                                    connectionViewModel = connectionViewModel,
-                                    onVisibilityToggled = viewModel::toggleVisibility,
-                                    modifier = Modifier.longPressDraggableHandle(),
-                                )
+                            when (it.element) {
+                                Element.ShadowsocksRegionSelection -> {
+                                    if (it.shouldDisplayElement) {
+                                        CreateCustomizableElement(
+                                            screenElement = it,
+                                            connectionViewModel = connectionViewModel,
+                                            onVisibilityToggled = viewModel::toggleVisibility,
+                                            modifier = Modifier.longPressDraggableHandle(),
+                                        )
+                                    }
+                                }
+
+                                else ->
+                                    CreateCustomizableElement(
+                                        screenElement = it,
+                                        connectionViewModel = connectionViewModel,
+                                        onVisibilityToggled = viewModel::toggleVisibility,
+                                        modifier = Modifier.longPressDraggableHandle(),
+                                    )
                             }
                         }
                     }

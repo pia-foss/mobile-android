@@ -113,7 +113,9 @@ fun ConnectionScreen() =
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
         val shouldShowProtocolNotAvailable by viewModel.showProtocolNotAvailableDialog
-        val screenElements by viewModel.getOrderedElements().collectAsStateWithLifecycle(emptyList())
+        val screenElements by viewModel
+            .getOrderedElements()
+            .collectAsStateWithLifecycle(emptyList())
         val showUpdateAvailableDialog by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
         val snackbarHostState = remember { SnackbarHostState() }
 
@@ -235,7 +237,7 @@ fun ConnectionScreen() =
                         screenElements.forEach { screenElement ->
                             DisplayComponent(
                                 screenElement = screenElement,
-                                isVisible = viewModel.isScreenElementVisible(screenElement),
+                                isVisible = screenElement.shouldDisplayElement,
                                 viewModel = viewModel,
                                 screenState = state,
                                 connectionStatus = connectionStatus,
@@ -244,7 +246,8 @@ fun ConnectionScreen() =
                         }
                         showRatingGeneralDialog.value =
                             state.ratingDialogType is RatingDialogType.General
-                        showRatingReviewDialog.value = state.ratingDialogType is RatingDialogType.Review
+                        showRatingReviewDialog.value =
+                            state.ratingDialogType is RatingDialogType.Review
                         showRatingFeedbackDialog.value =
                             state.ratingDialogType is RatingDialogType.Feedback
 

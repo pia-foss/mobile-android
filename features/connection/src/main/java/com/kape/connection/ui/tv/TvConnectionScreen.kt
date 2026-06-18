@@ -60,7 +60,7 @@ fun TvConnectionScreen() =
         val activity = LocalActivity.current
         val screenElements by viewModel
             .getOrderedElements()
-            .collectAsStateWithLifecycle(emptyList())
+            .collectAsStateWithLifecycle()
         val hasUpdateAvailable by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
 
         BackHandler {
@@ -141,7 +141,7 @@ fun TvConnectionScreen() =
                     screenElements.forEach {
                         DisplayComponent(
                             screenElement = it.element,
-                            isVisible = viewModel.isScreenElementVisible(it),
+                            isVisible = it.shouldDisplayElement,
                             viewModel = viewModel,
                             startQuickConnectFocusRequester = startQuickConnectFocusRequester,
                             connectionStatus = connectionStatus,
