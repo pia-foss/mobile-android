@@ -65,7 +65,7 @@ configure<ApplicationExtension> {
             buildConfigField(
                 "String",
                 "UPDATE_URL",
-                "\"amzn://apps/android?com.privateinternetaccess.android\"",
+                "\"amzn://apps/android?p=com.privateinternetaccess.android\"",
             )
         }
         create("google") {
