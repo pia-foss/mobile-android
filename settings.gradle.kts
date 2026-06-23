@@ -13,13 +13,6 @@ dependencyResolutionManagement {
         mavenLocal()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
-        maven {
-            url = uri("https://maven.pkg.github.com/pia-foss/mobile-shared-kpi")
-            credentials {
-                username = System.getenv("GITHUB_USERNAME")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
     }
 }
 

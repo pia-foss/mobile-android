@@ -16,7 +16,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar)
 
-    implementation(libs.kape.kpi)
+    implementation(libs.mobile.shared.kpi)
     implementation(project(":core:contracts"))
     implementation(project(":core:data"))
     implementation(project(":core:localprefs:prefs"))

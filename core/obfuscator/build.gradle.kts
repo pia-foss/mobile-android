@@ -11,7 +11,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.kape.obfuscator)
+    implementation(libs.mobile.android.obfuscation.proxy)
     implementation(libs.coroutines)
     testImplementation(libs.coroutines.test)
     androidTestImplementation(libs.bundles.coroutines.androidtest)
