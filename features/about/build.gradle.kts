@@ -25,7 +25,7 @@ dependencies {
     implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
-    implementation(libs.kape.vpnmanager)
+    implementation(libs.mobile.android.vpn.manager)
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.android)

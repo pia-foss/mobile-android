@@ -74,7 +74,7 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
-    implementation(libs.kape.vpnmanager)
+    implementation(libs.mobile.android.vpn.manager)
     implementation(libs.kape.account)
     implementation(libs.bundles.serialization)
     implementation(libs.constraintlayout)

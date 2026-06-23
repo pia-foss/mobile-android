@@ -120,6 +120,11 @@ configure<ApplicationExtension> {
     packaging.jniLibs {
         useLegacyPackaging = true
     }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
 }
 
 dependencies {
@@ -146,7 +151,7 @@ dependencies {
     implementation(libs.kape.regions)
     implementation(libs.kape.csi)
     implementation(libs.kape.obfuscator)
-    implementation(libs.kape.vpnmanager)
+    implementation(libs.mobile.android.vpn.manager)
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))

@@ -20,7 +20,7 @@ dependencies {
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:ui"))
     implementation(libs.material3)
-    implementation(libs.kape.vpnmanager)
+    implementation(libs.mobile.android.vpn.manager)
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)

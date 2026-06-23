@@ -15,7 +15,7 @@ dependencies {
     implementation(libs.kape.account)
     implementation(libs.coroutines)
     implementation(libs.bundles.serialization)
-    implementation(libs.kape.vpnmanager)
+    implementation(libs.mobile.android.vpn.manager)
     implementation(libs.compose.ui.graphics)
     implementation(libs.material3)
 }
