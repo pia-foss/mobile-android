@@ -14,13 +14,6 @@ dependencyResolutionManagement {
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
         maven {
-            url = uri("https://maven.pkg.github.com/pia-foss/mobile-shared-csi")
-            credentials {
-                username = System.getenv("GITHUB_USERNAME")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-        maven {
             url = uri("https://maven.pkg.github.com/pia-foss/mobile-shared-kpi")
             credentials {
                 username = System.getenv("GITHUB_USERNAME")

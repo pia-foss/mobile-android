@@ -147,11 +147,11 @@ dependencies {
     implementation(project(":core:obfuscator"))
     implementation(project(":core:contracts"))
     implementation(libs.kape.kpi)
-    implementation(libs.kape.csi)
     implementation(libs.kape.obfuscator)
     implementation(libs.mobile.android.vpn.manager)
     implementation(libs.mobile.shared.regions)
     implementation(libs.mobile.shared.account)
+    implementation(libs.mobile.shared.csi)
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))
