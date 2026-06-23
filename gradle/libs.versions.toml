@@ -1,5 +1,6 @@
 [versions]
 mobile-android-vpn-manager = "0.4.14-pia"
+mobile-shared-regions = "1.7.1"
 plugin-gradle = "9.2.1"
 plugin-kotlin = "2.3.21"
 plugin-ktlint = "14.2.0"
@@ -29,7 +30,6 @@ androidx-material3 = "1.4.0"
 kape-account = "1.5.5"
 kape-kpi = "1.2.4"
 kape-csi = "1.3.4"
-kape-regions = "1.7.1"
 kape-obfuscator = "0.1.1"
 test-junit = "4.13.2"
 test-mockk = "1.14.11"
@@ -60,6 +60,7 @@ compose-tv-material = { module = "androidx.tv:tv-material", version.ref = "compo
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
 compose-navigation-test = { module = "androidx.navigation:navigation-testing", version.ref = "compose-navigation" }
 mobile-android-vpn-manager = { module = "com.github.pia-foss:mobile-android-vpn-manager", version.ref = "mobile-android-vpn-manager" }
+mobile-shared-regions = { module = "com.github.pia-foss:mobile-shared-regions", version.ref = "mobile-shared-regions" }
 viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "compose-jetpack" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "compose-jetpack" }
@@ -97,7 +98,6 @@ coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", ve
 kape-account = { module = "com.kape.android:account-android", version.ref = "kape-account" }
 kape-kpi = { module = "com.kape.android:kpi-android", version.ref = "kape-kpi" }
 kape-csi = { module = "com.kape.android:csi-android", version.ref = "kape-csi" }
-kape-regions = { module = "com.kape.android:regions-android", version.ref = "kape-regions" }
 kape-obfuscator = { module = "com.kape.android:obfuscator", version.ref = "kape-obfuscator" }
 drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "drawable-painter" }
 glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }

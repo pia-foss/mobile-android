@@ -19,7 +19,7 @@ dependencies {
     implementation(project(":core:contracts"))
 
     implementation(libs.bundles.serialization)
-    implementation(libs.kape.regions)
+    implementation(libs.mobile.shared.regions)
     implementation(libs.kape.account)
 
     implementation(libs.coroutines)

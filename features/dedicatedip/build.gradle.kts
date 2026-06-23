@@ -41,7 +41,7 @@ dependencies {
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:buildconfig"))
     implementation(libs.kape.account)
-    implementation(libs.kape.regions)
+    implementation(libs.mobile.shared.regions)
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.android)
