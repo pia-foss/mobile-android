@@ -40,7 +40,7 @@ dependencies {
     implementation(project(":features:appbar"))
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:buildconfig"))
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.account)
     implementation(libs.mobile.shared.regions)
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)

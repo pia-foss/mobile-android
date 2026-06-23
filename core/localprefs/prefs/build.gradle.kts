@@ -15,7 +15,7 @@ dependencies {
     implementation(project(":core:localprefs:data"))
     implementation(libs.bundles.koin)
     implementation(libs.bundles.serialization)
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.account)
     implementation(libs.crypto)
     implementation(libs.datastore.preferences)
     implementation(libs.tink.android)

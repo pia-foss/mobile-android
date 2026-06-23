@@ -20,7 +20,7 @@ dependencies {
 
     implementation(libs.bundles.serialization)
     implementation(libs.mobile.shared.regions)
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.account)
 
     implementation(libs.coroutines)
     testImplementation(libs.coroutines.test)

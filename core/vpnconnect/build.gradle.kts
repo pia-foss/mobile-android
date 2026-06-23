@@ -24,7 +24,7 @@ dependencies {
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.account)
     implementation(libs.bundles.serialization)
     implementation(libs.coroutines)
     testImplementation(libs.coroutines.test)

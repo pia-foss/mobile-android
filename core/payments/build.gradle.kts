@@ -40,7 +40,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar)
 
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.account)
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
     implementation(project(":core:data"))

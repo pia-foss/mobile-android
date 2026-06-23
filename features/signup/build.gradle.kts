@@ -38,7 +38,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar)
 
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.account)
 
     implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:ui"))
