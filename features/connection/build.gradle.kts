@@ -22,6 +22,9 @@ android {
         create("meta") {
             dimension = "provider"
         }
+        create("fdroid") {
+            dimension = "provider"
+        }
     }
     namespace = "com.kape.connection"
 

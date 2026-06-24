@@ -90,6 +90,12 @@ configure<ApplicationExtension> {
             versionCode = metaVersionCode
             buildConfigField("String", "UPDATE_URL", "\"\"")
         }
+        create("fdroid") {
+            dimension = "provider"
+            applicationId = "com.privateinternetaccess.android"
+            versionCode = noInAppVersionCode
+            buildConfigField("String", "UPDATE_URL", "\"\"")
+        }
     }
 
     sourceSets {
@@ -97,11 +103,12 @@ configure<ApplicationExtension> {
         getByName("google").manifest.srcFile("google/AndroidManifest.xml")
         getByName("noinapp").manifest.srcFile("noinapp/AndroidManifest.xml")
         getByName("meta").manifest.srcFile("meta/AndroidManifest.xml")
+        getByName("fdroid").manifest.srcFile("fdroid/AndroidManifest.xml")
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
     }
 
@@ -192,7 +199,9 @@ dependencies {
     androidTestImplementation(libs.bundles.koinandroidtest)
     implementation(libs.multiplatform.settings)
     implementation(libs.coroutines)
-    implementation(libs.shortcuts)
+    "googleImplementation"(libs.shortcuts)
+    "amazonImplementation"(libs.shortcuts)
+    "noinappImplementation"(libs.shortcuts)
 
     testImplementation(libs.coroutines.test)
     "googleImplementation"(libs.billing.google)

@@ -24,6 +24,9 @@ android {
         create("meta") {
             dimension = "provider"
         }
+        create("fdroid") {
+            dimension = "provider"
+        }
     }
     testOptions {
         unitTests {

@@ -5,4 +5,5 @@ internal enum class BuildFlavor {
     AMAZON,
     WEB,
     META,
+    FDROID,
 }
