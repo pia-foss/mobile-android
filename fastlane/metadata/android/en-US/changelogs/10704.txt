@@ -1,0 +1,3 @@
+ - Improved app stability
+ - General bugfixes
+ - Fixed irresponsive widget issue
