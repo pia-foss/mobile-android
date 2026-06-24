@@ -22,6 +22,9 @@ android {
         create("meta") {
             dimension = "provider"
         }
+        create("fdroid") {
+            dimension = "provider"
+        }
     }
     namespace = "com.kape.connection"
 
@@ -74,8 +77,8 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
-    implementation(libs.kape.vpnmanager)
-    implementation(libs.kape.account)
+    implementation(libs.mobile.android.vpn.manager)
+    implementation(libs.mobile.shared.account)
     implementation(libs.bundles.serialization)
     implementation(libs.constraintlayout)
 }

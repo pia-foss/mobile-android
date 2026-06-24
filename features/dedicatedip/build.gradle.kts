@@ -22,6 +22,9 @@ android {
         create("meta") {
             dimension = "provider"
         }
+        create("fdroid") {
+            dimension = "provider"
+        }
     }
     namespace = "com.kape.dedicatedip"
     buildFeatures {
@@ -40,8 +43,8 @@ dependencies {
     implementation(project(":features:appbar"))
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:buildconfig"))
-    implementation(libs.kape.account)
-    implementation(libs.kape.regions)
+    implementation(libs.mobile.shared.account)
+    implementation(libs.mobile.shared.regions)
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.android)
@@ -54,7 +57,7 @@ dependencies {
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
     implementation(libs.constraintlayout)
-    implementation(libs.kape.vpnmanager)
+    implementation(libs.mobile.android.vpn.manager)
 }
 
 koinCompiler {

@@ -11,5 +11,5 @@ android {
 
 dependencies {
     implementation(libs.bundles.serialization)
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.account)
 }

@@ -24,6 +24,9 @@ android {
         create("meta") {
             dimension = "provider"
         }
+        create("fdroid") {
+            dimension = "provider"
+        }
     }
     testOptions {
         unitTests {
@@ -38,7 +41,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar)
 
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.account)
 
     implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:ui"))

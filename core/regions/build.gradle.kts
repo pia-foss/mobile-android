@@ -19,8 +19,8 @@ dependencies {
     implementation(project(":core:contracts"))
 
     implementation(libs.bundles.serialization)
-    implementation(libs.kape.regions)
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.regions)
+    implementation(libs.mobile.shared.account)
 
     implementation(libs.coroutines)
     testImplementation(libs.coroutines.test)

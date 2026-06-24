@@ -13,7 +13,7 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugar)
 
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.account)
 
     implementation(libs.bundles.serialization)
     implementation(libs.bundles.koin)

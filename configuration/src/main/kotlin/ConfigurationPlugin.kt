@@ -36,13 +36,13 @@ class ConfigurationPlugin : Plugin<Project> {
 
         // Kotlin JVM target for all modules
         project.tasks.withType<KotlinJvmCompile>().configureEach {
-            compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+            compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
         }
 
         // Java plugin compatibility (if applied)
         project.extensions.findByType<JavaPluginExtension>()?.apply {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
         }
     }
 
@@ -56,8 +56,8 @@ class ConfigurationPlugin : Plugin<Project> {
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
         }
     }
 
@@ -70,8 +70,8 @@ class ConfigurationPlugin : Plugin<Project> {
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
         }
     }
 }

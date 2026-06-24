@@ -11,7 +11,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.kape.csi)
+    implementation(libs.mobile.shared.csi)
     implementation(libs.bundles.koin)
     implementation(libs.coroutines)
     testImplementation(libs.bundles.test)

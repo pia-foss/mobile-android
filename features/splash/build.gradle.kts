@@ -26,7 +26,7 @@ dependencies {
     implementation(project(":capabilities:notifications"))
     implementation(project(":capabilities:featureflags"))
 
-    implementation(libs.kape.account)
+    implementation(libs.mobile.shared.account)
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.android)

@@ -90,6 +90,12 @@ configure<ApplicationExtension> {
             versionCode = metaVersionCode
             buildConfigField("String", "UPDATE_URL", "\"\"")
         }
+        create("fdroid") {
+            dimension = "provider"
+            applicationId = "com.privateinternetaccess.android"
+            versionCode = noInAppVersionCode
+            buildConfigField("String", "UPDATE_URL", "\"\"")
+        }
     }
 
     sourceSets {
@@ -97,11 +103,12 @@ configure<ApplicationExtension> {
         getByName("google").manifest.srcFile("google/AndroidManifest.xml")
         getByName("noinapp").manifest.srcFile("noinapp/AndroidManifest.xml")
         getByName("meta").manifest.srcFile("meta/AndroidManifest.xml")
+        getByName("fdroid").manifest.srcFile("fdroid/AndroidManifest.xml")
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
         isCoreLibraryDesugaringEnabled = true
     }
 
@@ -119,6 +126,11 @@ configure<ApplicationExtension> {
 
     packaging.jniLibs {
         useLegacyPackaging = true
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 }
 
@@ -141,12 +153,12 @@ dependencies {
     implementation(project(":core:regions"))
     implementation(project(":core:obfuscator"))
     implementation(project(":core:contracts"))
-    implementation(libs.kape.account)
-    implementation(libs.kape.kpi)
-    implementation(libs.kape.regions)
-    implementation(libs.kape.csi)
-    implementation(libs.kape.obfuscator)
-    implementation(libs.kape.vpnmanager)
+    implementation(libs.mobile.android.vpn.manager)
+    implementation(libs.mobile.shared.regions)
+    implementation(libs.mobile.shared.account)
+    implementation(libs.mobile.shared.csi)
+    implementation(libs.mobile.shared.kpi)
+    implementation(libs.mobile.android.obfuscation.proxy)
 
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:shareevents"))
@@ -187,7 +199,9 @@ dependencies {
     androidTestImplementation(libs.bundles.koinandroidtest)
     implementation(libs.multiplatform.settings)
     implementation(libs.coroutines)
-    implementation(libs.shortcuts)
+    "googleImplementation"(libs.shortcuts)
+    "amazonImplementation"(libs.shortcuts)
+    "noinappImplementation"(libs.shortcuts)
 
     testImplementation(libs.coroutines.test)
     "googleImplementation"(libs.billing.google)

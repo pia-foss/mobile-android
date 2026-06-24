@@ -13,6 +13,7 @@ class BuildConfigProvider(
             "amazon" -> BuildFlavor.AMAZON
             "noinapp" -> BuildFlavor.WEB
             "meta" -> BuildFlavor.META
+            "fdroid" -> BuildFlavor.FDROID
             else -> throw IllegalArgumentException("Unknown app flavor. Please update enum.")
         }
 
@@ -26,6 +27,8 @@ class BuildConfigProvider(
     fun isGoogleFlavor() = flavor == BuildFlavor.GOOGLE
 
     fun isAmazonFlavor() = flavor == BuildFlavor.AMAZON
+
+    fun isFDroid() = flavor == BuildFlavor.FDROID
 
     fun isWebFlavor() = flavor == BuildFlavor.WEB
 
