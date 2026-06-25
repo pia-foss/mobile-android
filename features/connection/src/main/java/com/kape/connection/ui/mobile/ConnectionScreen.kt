@@ -354,6 +354,7 @@ private fun DisplayComponent(
                     encryption = settings.dataEncryption.value,
                     handshake = settings.handshake,
                 )
+                Separator()
             }
 
             Element.IpInfo -> {
