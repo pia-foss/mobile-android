@@ -403,35 +403,38 @@ class Widget(
         when (status) {
             ConnectionStatus.CONNECTED -> ImageProvider(R.drawable.background_green)
             ConnectionStatus.CONNECTING,
-            ConnectionStatus.DISCONNECTED,
-            ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
             -> ImageProvider(R.drawable.background_yellow)
 
-            ConnectionStatus.ERROR -> ImageProvider(R.drawable.background_red)
+            ConnectionStatus.DISCONNECTED,
+            ConnectionStatus.DISCONNECTING,
+            ConnectionStatus.ERROR,
+            -> ImageProvider(R.drawable.background_red)
         }
 
     private fun getOutlineForStatus(status: ConnectionStatus): ImageProvider =
         when (status) {
             ConnectionStatus.CONNECTED -> ImageProvider(R.drawable.outline_green)
             ConnectionStatus.CONNECTING,
-            ConnectionStatus.DISCONNECTED,
-            ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
             -> ImageProvider(R.drawable.outline_yellow)
 
-            ConnectionStatus.ERROR -> ImageProvider(R.drawable.outline_red)
+            ConnectionStatus.DISCONNECTED,
+            ConnectionStatus.DISCONNECTING,
+            ConnectionStatus.ERROR,
+            -> ImageProvider(R.drawable.outline_red)
         }
 
     private fun getIconForStatus(status: ConnectionStatus): ImageProvider =
         when (status) {
             ConnectionStatus.CONNECTED -> ImageProvider(R.drawable.ic_power_green)
             ConnectionStatus.CONNECTING,
-            ConnectionStatus.DISCONNECTED,
-            ConnectionStatus.DISCONNECTING,
             ConnectionStatus.RECONNECTING,
             -> ImageProvider(R.drawable.ic_power_yellow)
 
-            ConnectionStatus.ERROR -> ImageProvider(R.drawable.ic_power_red)
+            ConnectionStatus.DISCONNECTED,
+            ConnectionStatus.DISCONNECTING,
+            ConnectionStatus.ERROR,
+            -> ImageProvider(R.drawable.ic_power_red)
         }
 }
