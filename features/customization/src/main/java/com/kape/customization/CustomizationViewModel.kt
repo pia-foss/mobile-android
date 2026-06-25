@@ -26,14 +26,10 @@ class CustomizationViewModel(
 ) : ViewModel(),
     KoinComponent {
     val items = mutableStateListOf<ScreenElement>()
+    private var originalItems = emptyList<ScreenElement>()
 
     init {
-        viewModelScope.launch {
-            screenElementProvider.customizationElements.collectLatest {
-                items.clear()
-                items.addAll(it)
-            }
-        }
+        refreshElements()
     }
 
     fun onMove(
@@ -43,11 +39,14 @@ class CustomizationViewModel(
         items.add(to.index, items.removeAt(from.index))
     }
 
-    fun saveOrder() =
+    fun saveOrder() {
+        val snapshot = items.map { it.copy() }
+        originalItems = snapshot
         viewModelScope.launch(ioDispatcher) {
-            prefs.setElements(items)
+            prefs.setElements(snapshot)
             router.navigateBack()
         }
+    }
 
     fun toggleVisibility(
         element: Element,
@@ -55,6 +54,21 @@ class CustomizationViewModel(
     ) {
         items.first { it.element == element }.apply {
             this.isVisible = isVisible
+        }
+    }
+
+    fun discardChanges() {
+        items.clear()
+        items.addAll(originalItems.map { it.copy() })
+    }
+
+    private fun refreshElements() {
+        viewModelScope.launch {
+            screenElementProvider.customizationElements.collectLatest {
+                originalItems = it.map { element -> element.copy() }
+                items.clear()
+                items.addAll(it.map { element -> element.copy() })
+            }
         }
     }
 }
