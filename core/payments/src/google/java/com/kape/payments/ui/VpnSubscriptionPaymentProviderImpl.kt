@@ -139,6 +139,10 @@ class VpnSubscriptionPaymentProviderImpl(
     }
 
     private fun loadProviderProducts() {
+        if (!::billingClient.isInitialized) {
+            purchaseState.value = PurchaseState.ProductsLoadedFailed
+            return
+        }
         val queryProductDetailsParams =
             QueryProductDetailsParams
                 .newBuilder()
@@ -200,6 +204,10 @@ class VpnSubscriptionPaymentProviderImpl(
         id: String,
         activity: Activity,
     ) {
+        if (!::billingClient.isInitialized) {
+            purchaseState.value = PurchaseState.PurchaseFailed
+            return
+        }
         selectedProduct = availableProducts.first { it.productId == id }
         selectedProduct?.let { productId ->
             val billingFlowParams =
@@ -217,6 +225,10 @@ class VpnSubscriptionPaymentProviderImpl(
     }
 
     override fun getPurchaseHistory() {
+        if (!::billingClient.isInitialized) {
+            purchaseHistoryState.value = PurchaseHistoryState.PurchaseHistoryFailed
+            return
+        }
         val params =
             QueryPurchasesParams
                 .newBuilder()
@@ -255,6 +267,11 @@ class VpnSubscriptionPaymentProviderImpl(
 
     override fun hasActiveSubscription(): Flow<Boolean> =
         callbackFlow {
+            if (!::billingClient.isInitialized) {
+                trySend(false)
+                close()
+                return@callbackFlow
+            }
             val params =
                 QueryPurchasesParams
                     .newBuilder()
@@ -282,7 +299,7 @@ class VpnSubscriptionPaymentProviderImpl(
             awaitClose { channel.close() }
         }
 
-    override fun isClientRegistered(): Boolean = billingClient.isReady
+    override fun isClientRegistered(): Boolean = ::billingClient.isInitialized && billingClient.isReady
 
     override fun reset() {
         purchaseState.value = PurchaseState.Default
