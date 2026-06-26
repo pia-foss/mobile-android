@@ -6,6 +6,7 @@ import androidx.test.uiautomator.uiAutomator
 import org.junit.Test
 
 class ProtocolTests {
+    @PhoneTest
     @Test
     fun protocolsConnectWithAndWithoutSmallPacketsEnabled() =
         uiAutomator {

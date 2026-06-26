@@ -6,6 +6,7 @@ import org.junit.Test
 import kotlin.test.assertNotNull
 
 class LoginTests {
+    @PhoneTest
     @Test
     fun loginWithValidCredentialsReachesConnectionScreen() =
         uiAutomator {
@@ -13,6 +14,7 @@ class LoginTests {
             assertNotNull(onElementOrNull { viewIdResourceName == Main.CONNECT_BUTTON })
         }
 
+    @PhoneTest
     @Test
     fun loginWithNoCredentialsShowsError() =
         uiAutomator {
@@ -21,6 +23,7 @@ class LoginTests {
             assertNotNull(onElementOrNull { viewIdResourceName == Login.ERROR_FIELD })
         }
 
+    @PhoneTest
     @Test
     fun loginWithInvalidCredentialsShowsError() =
         uiAutomator {
@@ -31,6 +34,7 @@ class LoginTests {
             assertNotNull(onElementOrNull { viewIdResourceName == Login.ERROR_FIELD })
         }
 
+    @PhoneTest
     @Test
     fun loginWithValidUsernameAndInvalidPasswordShowsError() =
         uiAutomator {
@@ -42,6 +46,7 @@ class LoginTests {
             assertNotNull(onElementOrNull { viewIdResourceName == Login.ERROR_FIELD })
         }
 
+    @PhoneTest
     @Test
     fun loginWithInvalidUsernameAndValidPasswordShowsError() =
         uiAutomator {

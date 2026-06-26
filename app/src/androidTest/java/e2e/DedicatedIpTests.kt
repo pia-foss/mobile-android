@@ -9,6 +9,7 @@ import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
 class DedicatedIpTests {
+    @PhoneTest
     @Test
     fun acceptValidToken() =
         uiAutomator {
@@ -30,6 +31,7 @@ class DedicatedIpTests {
             )
         }
 
+    @PhoneTest
     @Test
     fun rejectInvalidDip() =
         uiAutomator {

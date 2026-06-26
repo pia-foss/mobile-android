@@ -4,6 +4,7 @@ import androidx.test.uiautomator.uiAutomator
 import org.junit.Test
 
 class QuickConnectTests {
+    @PhoneTest
     @Test
     fun quickConnectFromDisconnectedConnects() =
         uiAutomator {
@@ -15,6 +16,7 @@ class QuickConnectTests {
             assertConnected()
         }
 
+    @PhoneTest
     @Test
     fun quickConnectSwitchesServerWhenAlreadyConnected() =
         uiAutomator {

@@ -16,6 +16,14 @@ val IP_PATTERN =
         "^((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.|$)){4}$",
     )
 
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+annotation class TvTest
+
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+annotation class PhoneTest
+
 object RegionSelection {
     const val SEARCH_BAR = ":VpnRegionSelectionScreen:searchBar"
     const val SEARCH_LOCATION_TEXT = ":VpnRegionSelectionScreen:locationItem_0:regionName"

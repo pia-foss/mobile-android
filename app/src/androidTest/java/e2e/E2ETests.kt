@@ -5,6 +5,7 @@ import org.junit.Test
 
 class E2ETests {
     // Connection tests
+    @PhoneTest
     @Test
     fun connectAfterLogin() =
         uiAutomator {
@@ -13,6 +14,7 @@ class E2ETests {
             assertConnected()
         }
 
+    @PhoneTest
     @Test
     fun searchAndConnectToRegion() =
         uiAutomator {

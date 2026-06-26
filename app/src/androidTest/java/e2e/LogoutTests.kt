@@ -7,6 +7,7 @@ import junit.framework.TestCase.assertNotNull
 import org.junit.Test
 
 class LogoutTests {
+    @PhoneTest
     @Test
     fun logoutReachesSignupScreen() =
         uiAutomator {
@@ -20,6 +21,7 @@ class LogoutTests {
             )
         }
 
+    @PhoneTest
     @Test
     fun persistenceLayerWipedAfterLogout() =
         uiAutomator {
