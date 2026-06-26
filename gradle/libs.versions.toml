@@ -1,6 +1,6 @@
 [versions]
 mobile-android-obfuscation-proxy = "0.1.5"
-mobile-android-vpn-manager = "0.4.14-pia"
+mobile-android-vpn-manager = "0.4.15-pia"
 mobile-shared-account = "1.5.5"
 mobile-shared-csi = "1.3.4"
 mobile-shared-kpi = "1.2.6"
