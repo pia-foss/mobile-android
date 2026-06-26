@@ -245,6 +245,7 @@ class VpnRegionSelectionViewModel(
                     )
                 }
             }
+            all.add(0, autoRegion)
         }
 
         favorites.addAll(all.filter { (it.type as ItemType.Content).isFavorite }.distinct())
