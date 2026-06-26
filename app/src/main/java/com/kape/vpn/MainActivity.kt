@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        shortcutManager.createDynamicShortcuts()
+        ioScope.launch { shortcutManager.createDynamicShortcuts() }
     }
 
     // region private
