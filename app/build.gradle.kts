@@ -9,11 +9,11 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-val googleAppVersionCode = 704
+val googleAppVersionCode = 705
 val amazonAppVersionCode = googleAppVersionCode.plus(10000)
 val noInAppVersionCode = googleAppVersionCode.plus(10000)
 val metaVersionCode = googleAppVersionCode.plus((10000))
-val appVersionName = "4.0.34"
+val appVersionName = "4.0.35"
 
 configure<ApplicationExtension> {
     namespace = "com.kape.vpn"
