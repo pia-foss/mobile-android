@@ -6,11 +6,16 @@ import android.content.Intent
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import com.kape.contracts.IsUserLoggedInUseCase
+import com.kape.data.DI
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnlauncher.VpnLauncher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 
 @Singleton
 class OnAppUpdateReceiver :
@@ -19,6 +24,7 @@ class OnAppUpdateReceiver :
     private val settingsPrefs: SettingsPrefs by inject()
     private val userLoggedInUseCase: IsUserLoggedInUseCase by inject()
     private val vpnLauncher: VpnLauncher by inject()
+    private val ioScope: CoroutineScope by inject(named(DI.IO_SCOPE))
 
     override fun onReceive(
         context: Context,
@@ -27,8 +33,10 @@ class OnAppUpdateReceiver :
         WebStorage.getInstance().deleteAllData()
         CookieManager.getInstance().removeAllCookies(null)
 
-        if (settingsPrefs.isConnectOnAppUpdateEnabled.value && userLoggedInUseCase.invoke()) {
-            vpnLauncher.launchVpn()
+        ioScope.launch {
+            if (settingsPrefs.isConnectOnAppUpdateEnabled.first() && userLoggedInUseCase.invoke()) {
+                vpnLauncher.launchVpn()
+            }
         }
     }
 }
