@@ -10,7 +10,6 @@ import com.kape.data.DI
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnlauncher.VpnLauncher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
@@ -34,7 +33,7 @@ class OnAppUpdateReceiver :
         CookieManager.getInstance().removeAllCookies(null)
 
         ioScope.launch {
-            if (settingsPrefs.isConnectOnAppUpdateEnabled.first() && userLoggedInUseCase.invoke()) {
+            if (settingsPrefs.isConnectOnAppUpdateEnabledNow() && userLoggedInUseCase.invoke()) {
                 vpnLauncher.launchVpn()
             }
         }
