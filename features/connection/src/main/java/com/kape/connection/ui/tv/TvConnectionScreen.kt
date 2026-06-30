@@ -169,17 +169,19 @@ private fun DisplayComponent(
 
     when (screenElement) {
         Element.VpnRegionSelection -> {
-            VpnLocationPicker(
-                modifier =
-                    Modifier.focusProperties {
-                        down = startQuickConnectFocusRequester
-                    },
-                server = state.server,
-                vpnIp = vpnIp,
-                isConnected = connectionStatus == ConnectionStatus.CONNECTED,
-                isOptimal = state.isCurrentServerOptimal,
-            ) {
-                viewModel.showVpnRegionSelection()
+            state.server?.let { server ->
+                VpnLocationPicker(
+                    modifier =
+                        Modifier.focusProperties {
+                            down = startQuickConnectFocusRequester
+                        },
+                    server = server,
+                    vpnIp = vpnIp,
+                    isConnected = connectionStatus == ConnectionStatus.CONNECTED,
+                    isOptimal = state.isCurrentServerOptimal,
+                ) {
+                    viewModel.showVpnRegionSelection()
+                }
             }
         }
 

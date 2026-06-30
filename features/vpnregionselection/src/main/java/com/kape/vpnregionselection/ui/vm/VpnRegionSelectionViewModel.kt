@@ -81,14 +81,14 @@ class VpnRegionSelectionViewModel(
     }
 
     fun onVpnRegionSelected(server: VpnServer) {
-        val connectTo =
-            if (server.endpoints.isEmpty()) {
-                regionListProvider.getOptimalServer()
-            } else {
-                server
-            }
         connectionManager.connectJob =
             viewModelScope.launch(ioDispatcher) {
+                val connectTo =
+                    if (server.endpoints.isEmpty()) {
+                        regionListProvider.getOptimalServer()
+                    } else {
+                        server
+                    }
                 if (connectionManager.isConnectionInProgress()) {
                     connectionManager.disconnect().getOrNull()
                 }
