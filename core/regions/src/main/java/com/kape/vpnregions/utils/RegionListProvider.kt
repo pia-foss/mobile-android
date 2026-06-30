@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.koin.core.annotation.Named
 import java.util.Locale
 
@@ -29,9 +28,20 @@ class RegionListProvider(
         setRegionsListToDefault()
     }
 
-    fun getOptimalServer(): VpnServer {
+    fun getOptimalServerOrNull(): VpnServer? {
+        val servers = _servers.value
+        if (servers.isEmpty()) return null
+        val optimalServerOptions = servers.filter { it.autoRegion && it.isGeo.not() }
+        return if (optimalServerOptions.none { it.latency != null }) {
+            optimalServerOptions.randomOrNull() ?: servers.firstOrNull()
+        } else {
+            optimalServerOptions.sortedBy { it.latency?.toInt() }.firstOrNull()
+        }
+    }
+
+    suspend fun getOptimalServer(): VpnServer {
         if (_servers.value.isEmpty()) {
-            runBlocking { _servers.first { it.isNotEmpty() } }
+            _servers.first { it.isNotEmpty() }
         }
         val optimalServerOptions = _servers.value.filter { it.autoRegion && it.isGeo.not() }
         return if (optimalServerOptions.none { it.latency != null }) {

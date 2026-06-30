@@ -217,12 +217,14 @@ private fun DisplayComponent(
         }
 
         Element.VpnRegionSelection -> {
-            VpnLocationPicker(
-                modifier = modifier,
-                server = state.value.server,
-                isConnected = connectionStatus == ConnectionStatus.CONNECTED,
-                state.value.isCurrentServerOptimal,
-            ) {}
+            state.value.server?.let { server ->
+                VpnLocationPicker(
+                    modifier = modifier,
+                    server = server,
+                    isConnected = connectionStatus == ConnectionStatus.CONNECTED,
+                    state.value.isCurrentServerOptimal,
+                ) {}
+            }
         }
 
         Element.ShadowsocksRegionSelection -> {

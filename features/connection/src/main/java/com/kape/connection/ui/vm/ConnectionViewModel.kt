@@ -82,23 +82,15 @@ class ConnectionViewModel(
 ) : ViewModel() {
     private var isAutoMode: Boolean = false
     private var selectedLocation: VpnServer? = null
-    private val serverToConnectTo =
-        selectedLocation?.let {
-            if (it.endpoints.isNotEmpty()) {
-                it
-            } else {
-                regionListProvider.getOptimalServer()
-            }
-        } ?: regionListProvider.getOptimalServer()
-
-    private val defaultState =
-        ConnectionScreenState(
-            server = serverToConnectTo,
-            isCurrentServerOptimal = isAutoMode,
-            showOptimalLocationInfo = isAutoMode && regionListProvider.isDefaultList.value,
-            ratingDialogType = ratingTool.showRating.value,
+    private val _state: MutableStateFlow<ConnectionScreenState> =
+        MutableStateFlow(
+            ConnectionScreenState(
+                server = regionListProvider.getOptimalServerOrNull(),
+                isCurrentServerOptimal = true,
+                showOptimalLocationInfo = regionListProvider.isDefaultList.value,
+                ratingDialogType = ratingTool.showRating.value,
+            ),
         )
-    private val _state: MutableStateFlow<ConnectionScreenState> = MutableStateFlow(defaultState)
     val state: StateFlow<ConnectionScreenState> = _state
     val isConnected = networkConnectionListener.isConnected
     val isSnoozeActive = snoozeHandler.isSnoozeActive
@@ -116,11 +108,20 @@ class ConnectionViewModel(
 
         connectionInfoProvider.requestClientIp()
 
+        // If no servers were available synchronously, wait and update state once they are.
+        if (_state.value.server == null) {
+            viewModelScope.launch(ioDispatcher) {
+                val server = regionListProvider.getOptimalServer()
+                _state.update { it.copy(server = server, isCurrentServerOptimal = true) }
+            }
+        }
+
         viewModelScope.launch(ioDispatcher) {
             prefs.selectedVpnServer.collectLatest {
                 it?.let {
                     isAutoMode = false
                     selectedLocation = it
+                    _state.update { state -> state.copy(server = it, isCurrentServerOptimal = false) }
                 } ?: run {
                     isAutoMode = true
                 }
@@ -372,13 +373,8 @@ class ConnectionViewModel(
     private fun connect() {
         viewModelScope.launch(ioDispatcher) {
             val connectTo =
-                if (state.value.server.endpoints
-                        .isEmpty()
-                ) {
-                    regionListProvider.getOptimalServer()
-                } else {
-                    state.value.server
-                }
+                state.value.server?.takeIf { it.endpoints.isNotEmpty() }
+                    ?: regionListProvider.getOptimalServer()
             prefs.setSelectedVpnServer(connectTo)
             prefs.addToQuickConnect(connectTo.key, connectTo.isDedicatedIp)
             snoozeHandler.cancelSnooze()
@@ -408,8 +404,6 @@ class ConnectionViewModel(
         }
     }
 
-    private fun isOptimalLocation(serverKey: String): Boolean = regionListProvider.getOptimalServer().key == serverKey
-
     fun showReviewPrompt() = _state.update { it.copy(ratingDialogType = RatingDialogType.Review) }
 
     fun showFeedbackPrompt() = _state.update { it.copy(ratingDialogType = RatingDialogType.Feedback) }
@@ -438,7 +432,7 @@ class ConnectionViewModel(
         _state.update {
             val selectedServer = prefs.selectedVpnServer.value
             it.copy(
-                server = selectedServer ?: regionListProvider.getOptimalServer(),
+                server = selectedServer ?: regionListProvider.getOptimalServerOrNull() ?: it.server,
                 isCurrentServerOptimal = selectedServer == null,
                 showOptimalLocationInfo = selectedServer == null && regionListProvider.isDefaultList.value,
             )

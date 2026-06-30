@@ -395,13 +395,15 @@ private fun DisplayComponent(
             }
 
             Element.VpnRegionSelection -> {
-                VpnLocationPicker(
-                    modifier = Modifier.testTag(":ConnectionScreen:VpnLocationPicker"),
-                    server = screenState.server,
-                    isConnected = connectionStatus == ConnectionStatus.CONNECTED,
-                    isOptimal = screenState.isCurrentServerOptimal,
-                ) {
-                    viewModel.showVpnRegionSelection()
+                screenState.server?.let { server ->
+                    VpnLocationPicker(
+                        modifier = Modifier.testTag(":ConnectionScreen:VpnLocationPicker"),
+                        server = server,
+                        isConnected = connectionStatus == ConnectionStatus.CONNECTED,
+                        isOptimal = screenState.isCurrentServerOptimal,
+                    ) {
+                        viewModel.showVpnRegionSelection()
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
