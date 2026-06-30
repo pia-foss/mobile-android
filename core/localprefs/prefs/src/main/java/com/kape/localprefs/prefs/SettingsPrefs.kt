@@ -149,6 +149,8 @@ class SettingsPrefs(
 
     suspend fun isShadowsocksObfuscationEnabledNow(): Boolean = getShadowsocksObfuscationEnabled().first()
 
+    suspend fun isConnectOnAppUpdateEnabledNow(): Boolean = getConnectOnAppUpdateEnabled().first()
+
     suspend fun setShadowsocksObfuscationEnabled(enabled: Boolean) {
         dataStore.edit { it[SHADOWSOCKS_OBFUSCATION_ENABLED] = enabled }
     }

@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-val googleAppVersionCode = 707
+val googleAppVersionCode = 708
 val amazonAppVersionCode = googleAppVersionCode.plus(10000)
 val noInAppVersionCode = googleAppVersionCode.plus(10000)
 val metaVersionCode = googleAppVersionCode.plus((10000))
