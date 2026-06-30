@@ -127,6 +127,26 @@ class SettingsPrefs(
         dataStore.edit { it[CUSTOM_DNS_SETTINGS] = Json.encodeToString(customDns) }
     }
 
+    suspend fun getSelectedProtocolNow(): VpnProtocols = getSelectedProtocol().first()
+
+    suspend fun getOpenVpnSettingsNow(): OpenVpnSettings = getOpenVpnSettings().first()
+
+    suspend fun getWireGuardSettingsNow(): WireGuardSettings = getWireGuardSettings().first()
+
+    suspend fun isMaceEnabledNow(): Boolean = getMaceEnabled().first()
+
+    suspend fun getSelectedDnsOptionNow(): DnsOptions = getSelectedDnsOption().first()
+
+    suspend fun getCustomDnsNow(): CustomDns = getCustomDns().first()
+
+    suspend fun getVpnExcludedAppsNow(): List<String> = getVpnExcludedApps().first()
+
+    suspend fun isAllowLocalTrafficEnabledNow(): Boolean = getAllowLocalTrafficEnabled().first()
+
+    suspend fun isAutomationEnabledNow(): Boolean = getAutomationEnabled().first()
+
+    suspend fun isExternalProxyAppEnabledNow(): Boolean = getExternalProxyAppEnabled().first()
+
     suspend fun isShadowsocksObfuscationEnabledNow(): Boolean = getShadowsocksObfuscationEnabled().first()
 
     suspend fun setShadowsocksObfuscationEnabled(enabled: Boolean) {

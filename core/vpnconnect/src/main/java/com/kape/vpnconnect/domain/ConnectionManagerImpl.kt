@@ -115,9 +115,11 @@ class ConnectionManagerImpl :
             val shadowsocksOk = startShadowsocks(stopCallback)
             if (!shadowsocksOk) return
 
+            val clientConfiguration =
+                connectionConfigurationUseCase.generateConnectionConfiguration(server)
             connectionSource
                 .startConnection(
-                    connectionConfigurationUseCase.generateConnectionConfiguration(server),
+                    clientConfiguration,
                     connectionStatusProvider,
                 ).fold(
                     onSuccess = { startPortForwarding() },
