@@ -199,6 +199,7 @@ dependencies {
     androidTestImplementation(libs.bundles.koinandroidtest)
     implementation(libs.multiplatform.settings)
     implementation(libs.coroutines)
+    implementation(libs.crypto)
     "googleImplementation"(libs.shortcuts)
     "amazonImplementation"(libs.shortcuts)
     "noinappImplementation"(libs.shortcuts)

@@ -7,6 +7,8 @@ import android.content.Intent
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.vpn.di.AppModule
@@ -38,6 +40,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        recoverCorruptedAccountPrefs()
         ProcessLifecycleOwner
             .get()
             .lifecycle
@@ -47,6 +50,33 @@ class App : Application() {
             workManagerFactory()
         }
         observeConnectionStateForWidget()
+    }
+
+    // The account library stores credentials in EncryptedSharedPreferences. If the app is
+    // reinstalled or restored from backup the Keystore master key changes but the encrypted
+    // file survives, causing AEADBadTagException inside the library's static initializer —
+    // which permanently poisons the class and crashes the process. Probing the file here
+    // before Koin starts lets us delete it if the current Keystore key can't open it.
+    // The user is logged out, but the app no longer crashes.
+    private fun recoverCorruptedAccountPrefs() {
+        val prefsName = "account_shared_preferences"
+        try {
+            val masterKey =
+                MasterKey
+                    .Builder(this)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .setUserAuthenticationRequired(false)
+                    .build()
+            EncryptedSharedPreferences.create(
+                this,
+                prefsName,
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM,
+            )
+        } catch (e: Exception) {
+            deleteSharedPreferences(prefsName)
+        }
     }
 
     private fun observeConnectionStateForWidget() {
