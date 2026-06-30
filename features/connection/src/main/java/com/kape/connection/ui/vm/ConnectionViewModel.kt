@@ -205,21 +205,13 @@ class ConnectionViewModel(
                 if (connectOnLaunchEnabled || shortcutConnect) {
                     shortcutPrefs.setShortcutConnectToVpn(false)
                     if (!connectionInfoProvider.isConnected()) {
-                        prefs.selectedVpnServer.value?.let {
-                            connectionManager.connect(
-                                it,
-                                false,
-                                ::callback,
-                                ::showProtocolNotAvailable,
-                            )
-                        } ?: run {
-                            connectionManager.connect(
-                                regionListProvider.getOptimalServer(),
-                                false,
-                                ::callback,
-                                ::showProtocolNotAvailable,
-                            )
-                        }
+                        val server = prefs.getSelectedVpnServerNow() ?: regionListProvider.getOptimalServer()
+                        connectionManager.connect(
+                            server,
+                            false,
+                            ::callback,
+                            ::showProtocolNotAvailable,
+                        )
                     }
                 }
                 if (shortcutDisconnect) {
