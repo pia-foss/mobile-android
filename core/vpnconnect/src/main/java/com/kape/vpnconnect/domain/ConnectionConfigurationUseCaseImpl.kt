@@ -4,15 +4,16 @@ import android.app.Notification
 import android.app.PendingIntent
 import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.data.NOTIFICATION_ID
+import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.obfuscator.domain.StartObfuscatorProcess.Companion.OBFUSCATOR_PROXY_HOST
 import com.kape.obfuscator.domain.StartObfuscatorProcess.Companion.OBFUSCATOR_PROXY_PORT
+import com.kape.settings.data.CustomDns
 import com.kape.settings.data.DataEncryption
 import com.kape.settings.data.DnsOptions
-import com.kape.settings.data.ProtocolSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.vpnmanager.api.OpenVpnSocksProxyDetails
@@ -45,9 +46,23 @@ class ConnectionConfigurationUseCaseImpl(
     private val automationPendingIntent: PendingIntent,
 ) : ConnectionConfigurationUseCase,
     KoinComponent {
-    override fun generateConnectionConfiguration(server: VpnServer): ClientConfiguration {
+    override suspend fun generateConnectionConfiguration(server: VpnServer): ClientConfiguration {
+        val selectedProtocol = settingsPrefs.getSelectedProtocolNow()
+        val openVpnSettings = settingsPrefs.getOpenVpnSettingsNow()
+        val wireGuardSettings = settingsPrefs.getWireGuardSettingsNow()
+        val maceEnabled = settingsPrefs.isMaceEnabledNow()
+        val selectedDnsOption = settingsPrefs.getSelectedDnsOptionNow()
+        val customDns = settingsPrefs.getCustomDnsNow()
+        val vpnExcludedApps = settingsPrefs.getVpnExcludedAppsNow()
+        val isAllowLocalTrafficEnabled = settingsPrefs.isAllowLocalTrafficEnabledNow()
+        val isAutomationEnabled = settingsPrefs.isAutomationEnabledNow()
+        val isShadowsocksEnabled = settingsPrefs.isShadowsocksObfuscationEnabledNow()
+        val isExternalProxyEnabled = settingsPrefs.isExternalProxyAppEnabledNow()
+        val selectedShadowsocksServer = shadowsocksRegionPrefs.getSelectedShadowsocksServerNow()
+        val selectedVpnServer = connectionPrefs.getSelectedVpnServerNow()
+
         val cipher =
-            when (settingsPrefs.openVpnSettings.value.dataEncryption) {
+            when (openVpnSettings.dataEncryption) {
                 DataEncryption.AES_128_GCM -> "AES-128-GCM"
                 DataEncryption.AES_256_GCM -> "AES-256-GCM"
                 DataEncryption.CHA_CHA_20 -> "CHACHA20-POLY1305"
@@ -62,29 +77,61 @@ class ConnectionConfigurationUseCaseImpl(
         additionalOpenVpnParams += "--block-ipv6"
 
         notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
-        if (settingsPrefs.isAutomationEnabled.value) {
+        if (isAutomationEnabled) {
             notificationBuilder.setContentIntent(automationPendingIntent)
         } else {
             notificationBuilder.setContentIntent(configureIntent)
         }
 
+        val protocolTarget: VPNManagerProtocolTarget
+        val mtu: Int
+        when (selectedProtocol) {
+            VpnProtocols.WireGuard -> {
+                protocolTarget = VPNManagerProtocolTarget.WIREGUARD
+                mtu = wireGuardSettings.mtu
+            }
+            VpnProtocols.OpenVPN -> {
+                protocolTarget = VPNManagerProtocolTarget.OPENVPN
+                mtu = openVpnSettings.mtu
+            }
+        }
+
         return ClientConfiguration(
             sessionName = Clock.System.now().toString(),
             configureIntent = configureIntent,
-            protocolTarget = getProtocolInfo().first,
-            mtu = getProtocolInfo().second.mtu,
+            protocolTarget = protocolTarget,
+            mtu = mtu,
             notificationId = NOTIFICATION_ID,
             notification = notificationBuilder.build(),
             allowedApplicationPackages = emptyList(),
-            disallowedApplicationPackages = settingsPrefs.vpnExcludedApps.value,
-            allowLocalNetworkAccess = settingsPrefs.isAllowLocalTrafficEnabled.value,
-            serverList = ServerList(servers = getEndpoints(server)),
+            disallowedApplicationPackages = vpnExcludedApps,
+            allowLocalNetworkAccess = isAllowLocalTrafficEnabled,
+            serverList =
+                ServerList(
+                    servers =
+                        getEndpoints(
+                            server,
+                            selectedProtocol,
+                            openVpnSettings.transport,
+                            openVpnSettings.dataEncryption,
+                            selectedDnsOption,
+                            openVpnSettings.port,
+                            maceEnabled,
+                            customDns,
+                        ),
+                ),
             openVpnClientConfiguration =
                 OpenVpnClientConfiguration(
                     caCertificate = certificate,
                     username = getUsernameAndPassword().first,
                     password = getUsernameAndPassword().second,
-                    socksProxy = getProxyDetails(),
+                    socksProxy =
+                        getProxyDetails(
+                            isShadowsocksEnabled,
+                            selectedShadowsocksServer,
+                            isExternalProxyEnabled,
+                            selectedVpnServer,
+                        ),
                     additionalParameters = additionalOpenVpnParams,
                 ),
             wireguardClientConfiguration =
@@ -95,14 +142,39 @@ class ConnectionConfigurationUseCaseImpl(
         )
     }
 
-    override suspend fun updateServerConfig(server: VpnServer): Boolean =
-        connectionSource.updateConfigurationServers(ServerList(getEndpoints(server)))
+    override suspend fun updateServerConfig(
+        server: VpnServer,
+        protocol: VpnProtocols,
+        transport: Transport,
+        dataEncryption: DataEncryption,
+        selectedDnsOptions: DnsOptions,
+        port: String,
+        maceEnabled: Boolean,
+        customDns: CustomDns,
+    ): Boolean =
+        connectionSource.updateConfigurationServers(
+            ServerList(
+                getEndpoints(
+                    server,
+                    protocol,
+                    transport,
+                    dataEncryption,
+                    selectedDnsOptions,
+                    port,
+                    maceEnabled,
+                    customDns,
+                ),
+            ),
+        )
 
-    private fun getServerGroup(): VpnServer.ServerGroup =
-        when (settingsPrefs.selectedProtocol.value) {
+    private fun getServerGroup(
+        protocol: VpnProtocols,
+        transport: Transport,
+    ): VpnServer.ServerGroup =
+        when (protocol) {
             VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
             VpnProtocols.OpenVPN -> {
-                if (settingsPrefs.openVpnSettings.value.transport == Transport.UDP) {
+                if (transport == Transport.UDP) {
                     VpnServer.ServerGroup.OPENVPN_UDP
                 } else {
                     VpnServer.ServerGroup.OPENVPN_TCP
@@ -123,11 +195,15 @@ class ConnectionConfigurationUseCaseImpl(
         return Pair(username, password)
     }
 
-    private fun getDnsList(): List<String> =
-        if (settingsPrefs.isMaceEnabled.value) {
+    private fun getDnsList(
+        maceEnabled: Boolean,
+        selectedDnsOptions: DnsOptions,
+        customDns: CustomDns,
+    ): List<String> =
+        if (maceEnabled) {
             listOf(MACE_DNS)
         } else {
-            when (settingsPrefs.selectedDnsOption.value) {
+            when (selectedDnsOptions) {
                 DnsOptions.PIA -> {
                     listOf(PIA_DNS)
                 }
@@ -138,7 +214,6 @@ class ConnectionConfigurationUseCaseImpl(
 
                 DnsOptions.CUSTOM -> {
                     val result = mutableListOf<String>()
-                    val customDns = settingsPrefs.customDns.value
                     if (customDns.primaryDns.isNotEmpty()) {
                         result.add(customDns.primaryDns)
                     }
@@ -150,51 +225,78 @@ class ConnectionConfigurationUseCaseImpl(
             }
         }
 
-    private fun getProtocolInfo(): Pair<VPNManagerProtocolTarget, ProtocolSettings> {
-        val protocolTarget: VPNManagerProtocolTarget
-        val settings: ProtocolSettings
-        when (settingsPrefs.selectedProtocol.value) {
-            VpnProtocols.WireGuard -> {
-                protocolTarget = VPNManagerProtocolTarget.WIREGUARD
-                settings = settingsPrefs.wireGuardSettings.value
-            }
-
-            VpnProtocols.OpenVPN -> {
-                protocolTarget = VPNManagerProtocolTarget.OPENVPN
-                settings = settingsPrefs.openVpnSettings.value
-            }
-        }
-        return Pair(protocolTarget, settings)
-    }
-
-    private fun getEndpoints(server: VpnServer): List<ServerList.Server> {
-        val details = server.endpoints[getServerGroup()]
+    private fun getEndpoints(
+        server: VpnServer,
+        protocol: VpnProtocols,
+        transport: Transport,
+        dataEncryption: DataEncryption,
+        selectedDnsOptions: DnsOptions,
+        port: String,
+        maceEnabled: Boolean,
+        customDns: CustomDns,
+    ): List<ServerList.Server> {
+        val details = server.endpoints[getServerGroup(protocol, transport)]
         val serverList = mutableListOf<ServerList.Server>()
         if (details.isNullOrEmpty()) {
-            serverList.add(createServer("", "", 8080, server, emptyList()))
+            serverList.add(
+                createServer(
+                    "",
+                    "",
+                    8080,
+                    server,
+                    emptyList(),
+                    transport,
+                    dataEncryption,
+                    selectedDnsOptions,
+                ),
+            )
         } else {
             for (endpoint in details) {
                 if (endpoint.ip.contains(":")) {
                     val ip = endpoint.ip.substring(0, endpoint.ip.indexOf(":"))
                     val port = endpoint.ip.substring(endpoint.ip.indexOf(":") + 1).toInt()
-                    serverList.add(createServer(ip, endpoint.cn, port, server, getDnsList()))
+                    serverList.add(
+                        createServer(
+                            ip,
+                            endpoint.cn,
+                            port,
+                            server,
+                            getDnsList(maceEnabled, selectedDnsOptions, customDns),
+                            transport,
+                            dataEncryption,
+                            selectedDnsOptions,
+                        ),
+                    )
                 } else {
                     val ip = endpoint.ip
-                    val port =
-                        settingsPrefs.openVpnSettings.value.port
-                            .toInt()
-                    serverList.add(createServer(ip, endpoint.cn, port, server, getDnsList()))
+                    serverList.add(
+                        createServer(
+                            ip,
+                            endpoint.cn,
+                            port.toInt(),
+                            server,
+                            getDnsList(maceEnabled, selectedDnsOptions, customDns),
+                            transport,
+                            dataEncryption,
+                            selectedDnsOptions,
+                        ),
+                    )
                 }
             }
         }
         return serverList.toList()
     }
 
-    private fun getProxyDetails(): OpenVpnSocksProxyDetails? {
+    private fun getProxyDetails(
+        shadowSocksEnabled: Boolean,
+        selectedShadowsocksServer: ShadowsocksServer?,
+        externalProxyEnabled: Boolean,
+        selectedVpnServer: VpnServer?,
+    ): OpenVpnSocksProxyDetails? {
         var proxyDetails: OpenVpnSocksProxyDetails? = null
-        if (settingsPrefs.isShadowsocksObfuscationEnabled.value) {
+        if (shadowSocksEnabled) {
             proxyDetails =
-                shadowsocksRegionPrefs.selectedShadowsocksServer.value?.let {
+                selectedShadowsocksServer?.let {
                     OpenVpnSocksProxyDetails(
                         clientProxyAddress = OBFUSCATOR_PROXY_HOST,
                         clientProxyPort = OBFUSCATOR_PROXY_PORT,
@@ -202,9 +304,9 @@ class ConnectionConfigurationUseCaseImpl(
                     )
                 }
         }
-        if (settingsPrefs.isExternalProxyAppEnabled.value) {
+        if (externalProxyEnabled) {
             proxyDetails =
-                connectionPrefs.selectedVpnServer.value?.let {
+                selectedVpnServer?.let {
                     OpenVpnSocksProxyDetails(
                         clientProxyAddress = OBFUSCATOR_PROXY_HOST,
                         clientProxyPort = connectionPrefs.proxyPort.value.toInt(),
@@ -221,18 +323,21 @@ class ConnectionConfigurationUseCaseImpl(
         port: Int,
         server: VpnServer,
         dnsList: List<String>,
+        transport: Transport,
+        dataEncryption: DataEncryption,
+        selectedDnsOptions: DnsOptions,
     ): ServerList.Server =
         ServerList.Server(
             ip = ip,
             port = port,
             commonOrDistinguishedName = cn,
             transport =
-                when (settingsPrefs.openVpnSettings.value.transport) {
+                when (transport) {
                     Transport.UDP -> TransportProtocol.UDP
                     Transport.TCP -> TransportProtocol.TCP
                 },
             ciphers =
-                when (settingsPrefs.openVpnSettings.value.dataEncryption) {
+                when (dataEncryption) {
                     DataEncryption.AES_128_GCM -> listOf(ProtocolCipher.AES_128_GCM)
                     DataEncryption.AES_256_GCM -> listOf(ProtocolCipher.AES_256_GCM)
                     DataEncryption.CHA_CHA_20 -> listOf(ProtocolCipher.CHA_CHA_20)
@@ -241,7 +346,7 @@ class ConnectionConfigurationUseCaseImpl(
             dnsInformation =
                 DnsInformation(
                     dnsList = dnsList,
-                    systemDnsResolverEnabled = settingsPrefs.selectedDnsOption.value == DnsOptions.SYSTEM,
+                    systemDnsResolverEnabled = selectedDnsOptions == DnsOptions.SYSTEM,
                 ),
         )
 }

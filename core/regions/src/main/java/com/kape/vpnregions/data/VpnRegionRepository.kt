@@ -6,6 +6,7 @@ import com.kape.data.vpnserver.VpnServer
 import com.kape.data.vpnserver.VpnServerInfo
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.DipPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.kape.vpnregions.utils.adaptServersInfo
 import com.kape.vpnregions.utils.adaptVpnServers
@@ -21,6 +22,7 @@ class VpnRegionRepository(
     private val source: VpnRegionDataSource,
     private val dipPrefs: DipPrefs,
     private val connectionPrefs: ConnectionPrefs,
+    private val settingsPrefs: SettingsPrefs,
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val connectionConfigurationUseCase: ConnectionConfigurationUseCase,
 ) {
@@ -48,7 +50,17 @@ class VpnRegionRepository(
                     serverList
                         .firstOrNull { it == connectionPrefs.selectedVpnServer.value }
                         ?.let {
-                            connectionConfigurationUseCase.updateServerConfig(it)
+                            val openVpnSettings = settingsPrefs.getOpenVpnSettingsNow()
+                            connectionConfigurationUseCase.updateServerConfig(
+                                server = it,
+                                protocol = settingsPrefs.getSelectedProtocolNow(),
+                                transport = openVpnSettings.transport,
+                                dataEncryption = openVpnSettings.dataEncryption,
+                                selectedDnsOptions = settingsPrefs.getSelectedDnsOptionNow(),
+                                port = openVpnSettings.port,
+                                maceEnabled = settingsPrefs.isMaceEnabledNow(),
+                                customDns = settingsPrefs.getCustomDnsNow(),
+                            )
                         }
                 }
             }

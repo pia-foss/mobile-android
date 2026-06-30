@@ -13,6 +13,7 @@ import com.kape.localprefs.Prefs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.Json
@@ -95,6 +96,8 @@ class ConnectionPrefs(
     suspend fun setVpnIp(vpnIp: String) {
         dataStore.edit { it[VPN_IP] = vpnIp }
     }
+
+    suspend fun getSelectedVpnServerNow(): VpnServer? = getSelectedVpnServer().first()
 
     suspend fun setSelectedVpnServer(server: VpnServer?) {
         dataStore.edit { it[PRE_SELECTED_VPN_SERVER] = Json.encodeToString(server) }
