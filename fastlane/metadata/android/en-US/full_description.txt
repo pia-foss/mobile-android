@@ -1,53 +1,15 @@
-Private Internet Access (PIA): The Best VPN for Digital Privacy
+  Private Internet Access (PIA) is an open-source VPN client for Android.
+  It encrypts your internet traffic and masks your IP address, helping protect
+  your privacy on public Wi-Fi and other networks.
 
-Unlock the full potential of your Android device with PIA VPN – the unrivaled choice for securing your digital privacy. PIA is a leading VPN provider with the best VPN apps, security standards, and features.
+  Features include:
 
-Our 7-day free trial lets you try PIA without worry and make an informed decision about your VPN protection. With our top VPN apps, you can – hide your IP address, spoof your location, safeguard your data, prevent monitoring on public Wi-Fi hotspots, and more. You won't find this level of security in any proxy server or private browser.
+  * WireGuard and OpenVPN protocol support
+  * Kill switch to block traffic if the VPN drops
+  * Split tunneling to choose which apps use the VPN
+  * DNS-based ad and tracker blocking (PIA MACE)
+  * Customizable encryption settings
+  * Servers in 90+ countries
 
-PIA’s VPN service gives you seamless browsing and gaming from anywhere. Say goodbye to restrictions with our VPN location changer, and enjoy peace of mind with our safe and secure VPN protocols. Elevate your online experience on your Android device starting today.
-
-Get PIA VPN and explore the web without boundaries, restrictions, network slowdowns, trackers, and online threats. ✅ 🌐 🔐
-
-
-✔ 7-Day Free VPN Trial
-Download Private Internet Access, and use the app for free for the next seven days. We also have a 30-day money-back guarantee if you want to keep and try PIA for longer.
-
-✔ Top VPN IP Changer
-Mask your private IP address. Connect to one of PIA’s servers to hide your IP address and IP data for better privacy, security, and anonymity online.
-
-✔ Digital Location Changer
-Change location with PIA’s vast VPN server network across 90+ countries, including all 50 US states. It’s easy and fast to choose a server and switch your location.
-
-✔ Ultra-Fast VPN Servers
-Enjoy blazing-fast VPN speeds with our 10-Gbps server network. Watch videos in UHD quality, play multiplayer online games without interruptions, avoid buffering, and lower your ping.
-
-✔ Safe Connection on Public Wi-Fi
-Keep your connection private when you’re using public Wi-Fi hotspots. Connect to one of our servers to send your internet traffic through a secure VPN tunnel.
-
-✔ Ironclad VPN Encryption
-Shield your IP address and data with Private Internet Access. PIA encrypts all internet communications coming from your device so no one can monitor your browsing history.
-
-✔ Unlimited Connections
-Protect all your devices at once with just one PIA VPN account. You don’t have to choose or prioritize – with PIA, you can simultaneously enjoy a secure VPN connection on countless devices.
-
-✔ Native VPN Apps
-Get PIA VPN for Android and gain access to all our other easy-to-use VPN apps. We have apps for Windows, macOS, Linux, and other operating systems. We also have dedicated browser VPN apps for Chrome, Firefox, and Opera.
-
-✔ Open Source Transparency
-Private Internet Access is one of the only top VPN providers that offer 100% open-source VPN apps, which means its code is publicly available for anyone to inspect and analyze.
-
-
-- MORE PIA VPN FEATURES & BENEFITS -
-
-⭐ Full GDPR compliance
-⭐ Court-proven no-logs policy
-⭐ 24/7 customer support via live chat or email
-
-⭐ Advanced split tunneling
-⭐ Unlimited VPN bandwidth
-⭐ WireGuard® VPN protocol
-⭐ PIA MACE DNS-based ad blocker
-⭐ Solid-strong 256-bit AES encryption ciphers
-⭐ Kill switch feature for sudden network disconnects
-
-Don't compromise on your online security. Choose Private Internet Access for a reliable, fast, and safe VPN experience on your Android device.
+  Note: This is the open-source client app only. Using it requires a paid
+  subscription to PIA's proprietary backend VPN service.
