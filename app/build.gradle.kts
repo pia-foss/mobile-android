@@ -9,10 +9,9 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
+// Please update both and keep them static, otherwise Fdroid fails to pull
 val googleAppVersionCode = 708
-val amazonAppVersionCode = googleAppVersionCode.plus(10000)
-val noInAppVersionCode = googleAppVersionCode.plus(10000)
-val metaVersionCode = googleAppVersionCode.plus((10000))
+val nonGoogleAppVersionCode = 10708
 val appVersionName = "4.0.36"
 
 configure<ApplicationExtension> {
@@ -61,7 +60,7 @@ configure<ApplicationExtension> {
         create("amazon") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
-            versionCode = amazonAppVersionCode
+            versionCode = nonGoogleAppVersionCode
             buildConfigField(
                 "String",
                 "UPDATE_URL",
@@ -81,19 +80,19 @@ configure<ApplicationExtension> {
         create("noinapp") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
-            versionCode = noInAppVersionCode
+            versionCode = nonGoogleAppVersionCode
             buildConfigField("String", "UPDATE_URL", "\"\"")
         }
         create("meta") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
-            versionCode = metaVersionCode
+            versionCode = nonGoogleAppVersionCode
             buildConfigField("String", "UPDATE_URL", "\"\"")
         }
         create("fdroid") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
-            versionCode = noInAppVersionCode
+            versionCode = nonGoogleAppVersionCode
             buildConfigField("String", "UPDATE_URL", "\"\"")
         }
     }
@@ -260,5 +259,5 @@ tasks.register("printPlayStoreVersionCode") {
 }
 
 tasks.register("printNonPlayStoreVersionCode") {
-    doLast { println(noInAppVersionCode) }
+    doLast { println(nonGoogleAppVersionCode) }
 }
