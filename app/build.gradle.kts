@@ -11,7 +11,7 @@ plugins {
 
 // Please update both and keep them static, otherwise Fdroid fails to pull
 val googleAppVersionCode = 708
-val nonGoogleAppVersionCode = 10708
+val noInAppVersionCode = 10708
 val appVersionName = "4.0.36"
 
 configure<ApplicationExtension> {
@@ -60,7 +60,7 @@ configure<ApplicationExtension> {
         create("amazon") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
-            versionCode = nonGoogleAppVersionCode
+            versionCode = noInAppVersionCode
             buildConfigField(
                 "String",
                 "UPDATE_URL",
@@ -80,19 +80,19 @@ configure<ApplicationExtension> {
         create("noinapp") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
-            versionCode = nonGoogleAppVersionCode
+            versionCode = noInAppVersionCode
             buildConfigField("String", "UPDATE_URL", "\"\"")
         }
         create("meta") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
-            versionCode = nonGoogleAppVersionCode
+            versionCode = noInAppVersionCode
             buildConfigField("String", "UPDATE_URL", "\"\"")
         }
         create("fdroid") {
             dimension = "provider"
             applicationId = "com.privateinternetaccess.android"
-            versionCode = nonGoogleAppVersionCode
+            versionCode = noInAppVersionCode
             buildConfigField("String", "UPDATE_URL", "\"\"")
         }
     }
@@ -259,5 +259,5 @@ tasks.register("printPlayStoreVersionCode") {
 }
 
 tasks.register("printNonPlayStoreVersionCode") {
-    doLast { println(nonGoogleAppVersionCode) }
+    doLast { println(noInAppVersionCode) }
 }
