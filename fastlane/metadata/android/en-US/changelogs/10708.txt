@@ -1,0 +1,2 @@
+ - Crash fixes
+ - Per App Settings issue fixed
