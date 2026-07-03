@@ -323,6 +323,7 @@ class AppModule {
             .setCertificate(configInfo.certificate)
             .setUserAgent(configInfo.userAgent)
             .setEndPointProvider(endpointProvider)
+            .setRequestTimeoutMs(10000)
             .addLogProviders(
                 csiDataProvider.applicationInformationProvider,
                 csiDataProvider.deviceInformationProvider,
