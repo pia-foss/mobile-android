@@ -14,6 +14,7 @@ object Config {
     const val COMPILE_SDK = 37
     const val MIN_SDK = 24
     const val TARGET_SDK = 37
+    const val F_DROID_BUILD_TOOLS_VERSION = "34.0.0"
 }
 
 class ConfigurationPlugin : Plugin<Project> {
@@ -33,6 +34,7 @@ class ConfigurationPlugin : Plugin<Project> {
     /** Shared config for all modules */
     private fun CommonExtension.applySharedConfig(project: Project) {
         compileSdk = Config.COMPILE_SDK
+        buildToolsVersion = Config.F_DROID_BUILD_TOOLS_VERSION
 
         // Kotlin JVM target for all modules
         project.tasks.withType<KotlinJvmCompile>().configureEach {
