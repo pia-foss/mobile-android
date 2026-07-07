@@ -27,7 +27,7 @@ python3 check_versions.py
 
 Product flavors: `google`, `amazon`, `noinapp`, `meta`. Substitute `Google` in task names for other flavors (e.g., `assembleAmazonDebug`).
 
-Region JSON assets are auto-fetched from `serverlist.piaservers.net` before every build via the `fetchRegionsInformation` pre-build task.
+Region JSON assets (`app/src/main/assets/*-regions.json`) are committed to the repo, not fetched at build time — this keeps builds (including F-Droid's network-less reproducible build) deterministic from a given commit/tag. Refresh them from `serverlist.piaservers.net` by running `./gradlew updateRegionsInformation` and commit the resulting diff when bumping the version.
 
 ## Required Environment Variables
 

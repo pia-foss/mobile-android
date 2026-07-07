@@ -213,41 +213,38 @@ ktlint {
     outputColorName.set("RED")
 }
 
-val fetchRegionsInformation =
-    tasks.register("fetchRegionsInformation") {
-        group = "custom"
-        description = "Fetches VPN and Shadowsocks region metadata"
-        doLast {
-            val assetsDir = File("$rootDir/app/src/main/assets")
-            if (!assetsDir.exists()) assetsDir.mkdirs()
+// Not wired to preBuild: region metadata is committed to app/src/main/assets so that every
+// build (including F-Droid's network-less, reproducible build) uses the same checked-in data.
+// Run this manually and commit the result when bumping the version.
+tasks.register("updateRegionsInformation") {
+    group = "custom"
+    description = "Fetches latest VPN and Shadowsocks region metadata into app/src/main/assets for committing"
+    doLast {
+        val assetsDir = File("$rootDir/app/src/main/assets")
+        if (!assetsDir.exists()) assetsDir.mkdirs()
 
-            fun fetchFile(
-                urlString: String,
-                targetFile: File,
-            ) {
-                val url = URI(urlString).toURL()
-                targetFile.writeText(url.readText())
-            }
-            fetchFile(
-                "https://serverlist.piaservers.net/vpninfo/regions/v2",
-                File(assetsDir, "metadata-regions.json"),
-            )
-            fetchFile(
-                "https://serverlist.piaservers.net/vpninfo/servers/v6",
-                File(assetsDir, "vpn-regions.json"),
-            )
-            fetchFile(
-                "https://serverlist.piaservers.net/shadow_socks",
-                File(assetsDir, "shadowsocks-regions.json"),
-            )
-
-            println("Region information files updated successfully!")
+        fun fetchFile(
+            urlString: String,
+            targetFile: File,
+        ) {
+            val url = URI(urlString).toURL()
+            targetFile.writeText(url.readText())
         }
-    }
+        fetchFile(
+            "https://serverlist.piaservers.net/vpninfo/regions/v2",
+            File(assetsDir, "metadata-regions.json"),
+        )
+        fetchFile(
+            "https://serverlist.piaservers.net/vpninfo/servers/v6",
+            File(assetsDir, "vpn-regions.json"),
+        )
+        fetchFile(
+            "https://serverlist.piaservers.net/shadow_socks",
+            File(assetsDir, "shadowsocks-regions.json"),
+        )
 
-// Hook the task to run before every build
-tasks.named("preBuild") {
-    dependsOn(fetchRegionsInformation)
+        println("Region information files updated. Review the diff and commit.")
+    }
 }
 
 tasks.register("printVersionName") {
