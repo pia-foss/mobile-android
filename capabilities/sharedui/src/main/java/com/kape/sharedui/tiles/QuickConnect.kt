@@ -99,11 +99,8 @@ fun QuickConnect(
                             modifier =
                                 Modifier
                                     .weight(1f)
-                                    .clickable {
-                                        servers.keys.toList()[index]?.let {
-                                            onClick(it)
-                                        }
-                                    }.testTag(":QuickConnect:server_$index"),
+                                    .clickable { onClick(current) }
+                                    .testTag(":QuickConnect:server_$index"),
                         )
                     } ?: run {
                         QuickConnectItem(modifier = Modifier.weight(1f))

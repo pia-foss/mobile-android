@@ -66,11 +66,7 @@ fun QuickConnect(
                         modifier = itemModifier.weight(1f),
                         server = current,
                         isFavorite = servers[current] ?: false,
-                        onClick = {
-                            servers.keys.toList()[index]?.let {
-                                onClick(it)
-                            }
-                        },
+                        onClick = { onClick(current) },
                     )
                 } ?: run {
                     QuickConnectItem(
