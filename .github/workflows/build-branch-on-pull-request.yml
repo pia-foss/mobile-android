@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: read
+  actions: write   # required for Gradle cache write (setup-java cache: gradle)
+
 jobs:
   build:
     name: Build PR APK
