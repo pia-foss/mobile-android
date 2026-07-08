@@ -24,6 +24,7 @@ import java.security.cert.X509Certificate
 import java.util.Arrays
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLPeerUnverifiedException
+import javax.net.ssl.SSLSession
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.TrustManagerFactory
 import javax.net.ssl.X509TrustManager
@@ -36,70 +37,16 @@ class CertificatePinningClientImpl(
     private lateinit var knownEndpointCommonName: List<Pair<String, String>>
 
     override fun client(): HttpClient {
-        var trustManager: X509TrustManager? = null
-        var sslSocketFactory: SSLSocketFactory? = null
-        try {
-            val keyStore = KeyStore.getInstance("AndroidKeyStore")
-            keyStore.load(null)
-            val inputStream = certificate.byteInputStream()
-            val certificateFactory = CertificateFactory.getInstance("X.509")
-            val certificate = certificateFactory.generateCertificate(inputStream)
-            keyStore.setCertificateEntry("pia", certificate)
-            inputStream.close()
-            val trustManagerFactory =
-                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
-            trustManagerFactory.init(keyStore)
-            val trustManagers = trustManagerFactory.trustManagers
-            check(!(trustManagers.size != 1 || trustManagers[0] !is X509TrustManager)) {
-                "Unexpected default trust managers:" + Arrays.toString(trustManagers)
-            }
-            trustManager = trustManagers[0] as X509TrustManager
-            val sslContext = SSLContext.getInstance("SSL")
-            sslContext.init(null, trustManagers, SecureRandom())
-            sslSocketFactory = sslContext.socketFactory
-        } catch (e: KeyStoreException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: CertificateException) {
-            e.printStackTrace()
-        } catch (e: NoSuchAlgorithmException) {
-            e.printStackTrace()
-        } catch (e: KeyManagementException) {
-            e.printStackTrace()
-        }
+        val (trustManager, sslSocketFactory) = buildTrustMaterial()
 
         val client =
             HttpClient(OkHttp) {
                 engine {
                     config {
-                        if (trustManager != null && sslSocketFactory != null) {
-                            sslSocketFactory(sslSocketFactory, trustManager)
-                        }
+                        sslSocketFactory(sslSocketFactory, trustManager)
 
                         hostnameVerifier { endpoint, session ->
-                            var verified = false
-                            try {
-                                val x509CertificateChain =
-                                    session.peerCertificates as Array<out X509Certificate>
-                                trustManager?.checkServerTrusted(x509CertificateChain, "RSA")
-                                val sessionCertificate = session.peerCertificates.first()
-                                verified =
-                                    verifyCommonName(endpoint, sessionCertificate as X509Certificate)
-                            } catch (e: SSLPeerUnverifiedException) {
-                                e.printStackTrace()
-                            } catch (e: CertificateException) {
-                                e.printStackTrace()
-                            } catch (e: InvalidKeyException) {
-                                e.printStackTrace()
-                            } catch (e: NoSuchAlgorithmException) {
-                                e.printStackTrace()
-                            } catch (e: NoSuchProviderException) {
-                                e.printStackTrace()
-                            } catch (e: SignatureException) {
-                                e.printStackTrace()
-                            }
-                            verified
+                            verifySession(trustManager, endpoint, session)
                         }
                     }
                 }
@@ -108,6 +55,78 @@ class CertificatePinningClientImpl(
                 }
             }
         return client
+    }
+
+    /**
+     * Builds the pinned trust manager/socket factory, or throws if pinning cannot be
+     * established. We fail closed here: a client that silently falls back to the system
+     * trust store would defeat certificate pinning without any observable signal.
+     */
+    private fun buildTrustMaterial(): Pair<X509TrustManager, SSLSocketFactory> =
+        try {
+            val keyStore = KeyStore.getInstance("AndroidKeyStore")
+            keyStore.load(null)
+            val inputStream = certificate.byteInputStream()
+            val certificateFactory = CertificateFactory.getInstance("X.509")
+            val pinnedCertificate = certificateFactory.generateCertificate(inputStream)
+            keyStore.setCertificateEntry("pia", pinnedCertificate)
+            inputStream.close()
+            val trustManagerFactory =
+                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+            trustManagerFactory.init(keyStore)
+            val trustManagers = trustManagerFactory.trustManagers
+            check(!(trustManagers.size != 1 || trustManagers[0] !is X509TrustManager)) {
+                "Unexpected default trust managers:" + Arrays.toString(trustManagers)
+            }
+            val trustManager = trustManagers[0] as X509TrustManager
+            val sslContext = SSLContext.getInstance("SSL")
+            sslContext.init(null, trustManagers, SecureRandom())
+            Pair(trustManager, sslContext.socketFactory)
+        } catch (e: KeyStoreException) {
+            throw pinningSetupFailed(e)
+        } catch (e: IOException) {
+            throw pinningSetupFailed(e)
+        } catch (e: CertificateException) {
+            throw pinningSetupFailed(e)
+        } catch (e: NoSuchAlgorithmException) {
+            throw pinningSetupFailed(e)
+        } catch (e: KeyManagementException) {
+            throw pinningSetupFailed(e)
+        }
+
+    private fun pinningSetupFailed(cause: Exception): IllegalStateException =
+        IllegalStateException("Certificate pinning setup failed", cause)
+
+    /**
+     * [trustManager] is non-null by construction: [buildTrustMaterial] never returns without
+     * one, so there is no degraded path where chain validation is silently skipped.
+     */
+    private fun verifySession(
+        trustManager: X509TrustManager,
+        endpoint: String,
+        session: SSLSession,
+    ): Boolean {
+        var verified = false
+        try {
+            val x509CertificateChain =
+                session.peerCertificates as Array<out X509Certificate>
+            trustManager.checkServerTrusted(x509CertificateChain, "RSA")
+            val sessionCertificate = session.peerCertificates.first()
+            verified = verifyCommonName(endpoint, sessionCertificate as X509Certificate)
+        } catch (e: SSLPeerUnverifiedException) {
+            e.printStackTrace()
+        } catch (e: CertificateException) {
+            e.printStackTrace()
+        } catch (e: InvalidKeyException) {
+            e.printStackTrace()
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        } catch (e: NoSuchProviderException) {
+            e.printStackTrace()
+        } catch (e: SignatureException) {
+            e.printStackTrace()
+        }
+        return verified
     }
 
     override fun setKnownEndpointCommonName(knownEndpointCommonName: List<Pair<String, String>>) {
