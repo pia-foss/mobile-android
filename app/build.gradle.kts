@@ -18,7 +18,13 @@ configure<ApplicationExtension> {
     namespace = "com.kape.vpn"
 
     defaultConfig {
-        testInstrumentationRunnerArguments += mapOf("clearPackageData" to "true")
+        testInstrumentationRunnerArguments +=
+            mapOf(
+                "clearPackageData" to "true",
+                "PIA_VALID_USERNAME" to System.getenv("PIA_VALID_USERNAME").orEmpty(),
+                "PIA_VALID_PASSWORD" to System.getenv("PIA_VALID_PASSWORD").orEmpty(),
+                "PIA_VALID_DIP_TOKEN" to System.getenv("PIA_VALID_DIP_TOKEN").orEmpty(),
+            )
         applicationId = "com.kape.vpn"
         versionName = appVersionName
 
@@ -34,23 +40,6 @@ configure<ApplicationExtension> {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
-            )
-        }
-        getByName("debug") {
-            buildConfigField(
-                "String",
-                "PIA_VALID_USERNAME",
-                "\"${System.getenv("PIA_VALID_USERNAME")}\"",
-            )
-            buildConfigField(
-                "String",
-                "PIA_VALID_PASSWORD",
-                "\"${System.getenv("PIA_VALID_PASSWORD")}\"",
-            )
-            buildConfigField(
-                "String",
-                "PIA_VALID_DIP_TOKEN",
-                "\"${System.getenv("PIA_VALID_DIP_TOKEN")}\"",
             )
         }
     }
