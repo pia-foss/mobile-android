@@ -1,11 +1,21 @@
 package e2e
 
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Until
 import androidx.test.uiautomator.uiAutomator
 import com.kape.vpn.BuildConfig
 import junit.framework.TestCase.assertNotNull
 import java.util.regex.Pattern
+
+object TestCredentials {
+    val username: String =
+        InstrumentationRegistry.getArguments().getString("PIA_VALID_USERNAME").orEmpty()
+    val password: String =
+        InstrumentationRegistry.getArguments().getString("PIA_VALID_PASSWORD").orEmpty()
+    val dipToken: String =
+        InstrumentationRegistry.getArguments().getString("PIA_VALID_DIP_TOKEN").orEmpty()
+}
 
 const val INVALID = "invalid"
 const val PROTECTED = "Protected"
@@ -86,9 +96,9 @@ fun login() =
     uiAutomator {
         reachLogin()
         onElement { viewIdResourceName == Login.USERNAME_FIELD }.text =
-            BuildConfig.PIA_VALID_USERNAME
+            TestCredentials.username
         onElement { viewIdResourceName == Login.PASSWORD_FIELD }.text =
-            BuildConfig.PIA_VALID_PASSWORD
+            TestCredentials.password
         onElement { viewIdResourceName == Login.LOGIN_BUTTON }.click()
         onElementOrNull(TIMEOUT) { viewIdResourceName == Login.VPN_PROFILE_OK_BUTTON }?.click()
         onElementOrNull(TIMEOUT) { viewIdResourceName == Login.ANDROID_OK_BUTTON }?.click()
@@ -100,9 +110,9 @@ fun loginFromCurrent() =
     uiAutomator {
         onElement { viewIdResourceName == SignUp.LOGIN_BUTTON }.click()
         onElement { viewIdResourceName == Login.USERNAME_FIELD }.text =
-            BuildConfig.PIA_VALID_USERNAME
+            TestCredentials.username
         onElement { viewIdResourceName == Login.PASSWORD_FIELD }.text =
-            BuildConfig.PIA_VALID_PASSWORD
+            TestCredentials.password
         onElement { viewIdResourceName == Login.LOGIN_BUTTON }.click()
         onElementOrNull(TIMEOUT) { viewIdResourceName == Login.VPN_PROFILE_OK_BUTTON }?.click()
         onElementOrNull(TIMEOUT) { viewIdResourceName == Login.ANDROID_OK_BUTTON }?.click()

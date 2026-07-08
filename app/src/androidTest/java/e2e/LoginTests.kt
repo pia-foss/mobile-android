@@ -1,7 +1,6 @@
 package e2e
 
 import androidx.test.uiautomator.uiAutomator
-import com.kape.vpn.test.BuildConfig
 import org.junit.Test
 import kotlin.test.assertNotNull
 
@@ -36,7 +35,7 @@ class LoginTests {
         uiAutomator {
             reachLogin()
             onElement { viewIdResourceName == Login.USERNAME_FIELD }.text =
-                BuildConfig.PIA_VALID_USERNAME
+                TestCredentials.username
             onElement { viewIdResourceName == Login.PASSWORD_FIELD }.text = INVALID
             onElement { viewIdResourceName == Login.LOGIN_BUTTON }.click()
             assertNotNull(onElementOrNull { viewIdResourceName == Login.ERROR_FIELD })
@@ -48,7 +47,7 @@ class LoginTests {
             reachLogin()
             onElement { viewIdResourceName == Login.USERNAME_FIELD }.text = INVALID
             onElement { viewIdResourceName == Login.PASSWORD_FIELD }.text =
-                BuildConfig.PIA_VALID_PASSWORD
+                TestCredentials.password
             onElement { viewIdResourceName == Login.LOGIN_BUTTON }.click()
             assertNotNull(onElementOrNull { viewIdResourceName == Login.ERROR_FIELD })
         }
