@@ -49,6 +49,10 @@ jobs:
             app/build/outputs/bundle/googleRelease/app-google-release.aab \
             "${{ secrets.SIGNING_PLAYSTORE_KEY_ALIAS }}"
 
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f keystore.jks
+
       - run: echo "Build status report=${{ job.status }}."
 
       - name: Upload App Bundle
