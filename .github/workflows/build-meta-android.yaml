@@ -1,5 +1,7 @@
 name: Build Meta Android
 on: [workflow_call]
+permissions:
+  contents: read
 jobs:
   build:
     name: Generate APK

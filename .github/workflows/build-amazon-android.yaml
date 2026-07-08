@@ -1,5 +1,7 @@
 name: Build Amazon Android
 on: [workflow_call]
+permissions:
+  contents: read
 jobs:
   build:
     name: Generate APK
