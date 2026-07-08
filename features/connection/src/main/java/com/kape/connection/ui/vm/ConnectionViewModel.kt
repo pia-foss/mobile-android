@@ -112,7 +112,14 @@ class ConnectionViewModel(
         if (_state.value.server == null) {
             viewModelScope.launch(ioDispatcher) {
                 val server = regionListProvider.getOptimalServer()
-                _state.update { it.copy(server = server, isCurrentServerOptimal = true) }
+                _state.update { current ->
+                    // Only apply optimal server if no explicit selection arrived while loading
+                    if (current.server == null) {
+                        current.copy(server = server, isCurrentServerOptimal = true)
+                    } else {
+                        current
+                    }
+                }
             }
         }
 
@@ -121,7 +128,12 @@ class ConnectionViewModel(
                 it?.let {
                     isAutoMode = false
                     selectedLocation = it
-                    _state.update { state -> state.copy(server = it, isCurrentServerOptimal = false) }
+                    _state.update { state ->
+                        state.copy(
+                            server = it,
+                            isCurrentServerOptimal = false,
+                        )
+                    }
                 } ?: run {
                     isAutoMode = true
                 }
@@ -205,7 +217,8 @@ class ConnectionViewModel(
                 if (connectOnLaunchEnabled || shortcutConnect) {
                     shortcutPrefs.setShortcutConnectToVpn(false)
                     if (!connectionInfoProvider.isConnected()) {
-                        val server = prefs.getSelectedVpnServerNow() ?: regionListProvider.getOptimalServer()
+                        val server =
+                            prefs.getSelectedVpnServerNow() ?: regionListProvider.getOptimalServer()
                         connectionManager.connect(
                             server,
                             false,
