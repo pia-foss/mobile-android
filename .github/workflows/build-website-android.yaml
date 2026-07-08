@@ -49,6 +49,10 @@ jobs:
             --out app-noinapp-release-signed.apk \
             app/build/outputs/apk/noinapp/release/app-noinapp-release-unsigned.apk
 
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f keystore.jks
+
       - run: echo "Build status report=${{ job.status }}."
 
       - name: Upload APK

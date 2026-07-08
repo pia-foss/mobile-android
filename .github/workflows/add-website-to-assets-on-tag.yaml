@@ -73,6 +73,10 @@ jobs:
             --out app-fdroid-release-signed.apk \
             app/build/outputs/apk/fdroid/release/app-fdroid-release-unsigned.apk
 
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f keystore.jks
+
       - name: Rename APKs
         run: |
           mv app-noinapp-release-signed.apk \

@@ -49,6 +49,10 @@ jobs:
             --out app-meta-release-signed.apk \
             app/build/outputs/apk/meta/release/app-meta-release-unsigned.apk
 
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f keystore.jks
+
       - run: echo "Build status report=${{ job.status }}."
 
       - name: Upload APK
