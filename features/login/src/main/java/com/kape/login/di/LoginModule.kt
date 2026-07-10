@@ -20,6 +20,7 @@ import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.ui.vm.mobile.LoginWithEmailViewModel
 import com.kape.login.ui.vm.tv.LoginPasswordViewModel
 import com.kape.login.ui.vm.tv.LoginUsernameViewModel
+import com.kape.login.utils.TokenAuthenticationUtil
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.utils.NetworkConnectionListener
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -58,6 +59,13 @@ class LoginModule {
 
     @Singleton
     fun provideLoginUsernameUseCase(): LoginUsernameUseCase = LoginUsernameUseCase()
+
+    @Singleton
+    fun provideTokenAuthenticationUtil(
+        dataSource: AuthenticationDataSource,
+        router: Router,
+        permissionUtil: PermissionUtil,
+    ): TokenAuthenticationUtil = TokenAuthenticationUtil(dataSource, router, permissionUtil)
 
     @KoinViewModel
     fun provideLoginViewModel(
