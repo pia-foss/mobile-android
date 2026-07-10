@@ -12,7 +12,6 @@ import com.kape.vpnlauncher.VpnLauncher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
 import java.util.Calendar
@@ -65,8 +64,8 @@ class SnoozeHandler(
         countDownJob =
             ioScope.launch {
                 while (true) {
-                    timeUntilResume.intValue =
-                        (((connectionPrefs.lastSnoozeEndTime.first() - Calendar.getInstance().timeInMillis) / MINUTE) + 1).toInt()
+                    val remaining = end - Calendar.getInstance().timeInMillis
+                    timeUntilResume.intValue = ((remaining + MINUTE - 1) / MINUTE).toInt()
                     delay(MINUTE)
                 }
             }
