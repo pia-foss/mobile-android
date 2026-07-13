@@ -1,6 +1,5 @@
 package com.kape.vpn
 
-import android.app.ComponentCaller
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -177,11 +176,8 @@ class MainActivity : AppCompatActivity() {
         ioScope.launch { shortcutManager.createDynamicShortcuts() }
     }
 
-    override fun onNewIntent(
-        intent: Intent,
-        caller: ComponentCaller,
-    ) {
-        super.onNewIntent(intent, caller)
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
         deepLinkLogin(intent)
     }
 
