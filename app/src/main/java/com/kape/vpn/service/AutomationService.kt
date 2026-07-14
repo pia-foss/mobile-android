@@ -26,8 +26,14 @@ class AutomationService :
         flags: Int,
         startId: Int,
     ): Int {
+        // notificationBuilder is a shared singleton also mutated from other threads
+        // (see ConnectionConfigurationUseCaseImpl); synchronize to avoid racing writes.
         val notification =
-            automationManager.notificationBuilder.setContentIntent(automationPendingIntent).build()
+            synchronized(automationManager.notificationBuilder) {
+                automationManager.notificationBuilder
+                    .setContentIntent(automationPendingIntent)
+                    .build()
+            }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
                 123,

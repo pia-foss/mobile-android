@@ -9,7 +9,13 @@ class NotificationHandler(
     private val notificationBuilder: Notification.Builder,
 ) {
     fun update(status: String) {
-        notificationBuilder.setContentText(status)
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+        // notificationBuilder is a shared singleton also mutated from other threads
+        // (see ConnectionConfigurationUseCaseImpl); synchronize to avoid racing writes.
+        val notification =
+            synchronized(notificationBuilder) {
+                notificationBuilder.setContentText(status)
+                notificationBuilder.build()
+            }
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 }

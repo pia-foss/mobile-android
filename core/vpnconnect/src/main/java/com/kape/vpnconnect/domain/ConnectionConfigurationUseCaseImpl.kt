@@ -76,12 +76,19 @@ class ConnectionConfigurationUseCaseImpl(
         // block ipv6
         additionalOpenVpnParams += "--block-ipv6"
 
-        notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
-        if (isAutomationEnabled) {
-            notificationBuilder.setContentIntent(automationPendingIntent)
-        } else {
-            notificationBuilder.setContentIntent(configureIntent)
-        }
+        // notificationBuilder is a singleton also mutated by NotificationHandler and
+        // AutomationService from other threads; synchronize the whole read-modify-build
+        // sequence on it to avoid racing writes into its underlying Bundle/ArrayMap.
+        val notification =
+            synchronized(notificationBuilder) {
+                notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
+                if (isAutomationEnabled) {
+                    notificationBuilder.setContentIntent(automationPendingIntent)
+                } else {
+                    notificationBuilder.setContentIntent(configureIntent)
+                }
+                notificationBuilder.build()
+            }
 
         val protocolTarget: VPNManagerProtocolTarget
         val mtu: Int
@@ -102,7 +109,7 @@ class ConnectionConfigurationUseCaseImpl(
             protocolTarget = protocolTarget,
             mtu = mtu,
             notificationId = NOTIFICATION_ID,
-            notification = notificationBuilder.build(),
+            notification = notification,
             allowedApplicationPackages = emptyList(),
             disallowedApplicationPackages = vpnExcludedApps,
             allowLocalNetworkAccess = isAllowLocalTrafficEnabled,
