@@ -4,6 +4,7 @@ import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.ConnectionStatusProvider
+import com.kape.data.DI
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -22,6 +23,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.named
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ConnectionManagerImpl :
@@ -38,8 +40,7 @@ class ConnectionManagerImpl :
     private val portForwardingUseCase: PortForwardingUseCase by inject()
     private val connectionStatusProvider: ConnectionStatusProvider by inject()
 
-    // Dedicated scope for serial VPN operations (must be provided via DI)
-    private val vpnScope: CoroutineScope by inject()
+    private val vpnScope: CoroutineScope by inject(named(DI.IO_SCOPE))
 
     /**
      * Conflated channel ensures:
@@ -113,7 +114,10 @@ class ConnectionManagerImpl :
             connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
 
             val shadowsocksOk = startShadowsocks(stopCallback)
-            if (!shadowsocksOk) return
+            if (!shadowsocksOk) {
+                connectionInProgress.set(false)
+                return
+            }
 
             val clientConfiguration =
                 connectionConfigurationUseCase.generateConnectionConfiguration(server)
