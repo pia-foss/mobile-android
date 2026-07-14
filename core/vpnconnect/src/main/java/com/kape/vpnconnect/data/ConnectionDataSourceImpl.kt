@@ -48,7 +48,7 @@ class ConnectionDataSourceImpl(
     ): Result<Unit> =
         suspendCancellableCoroutine { cont ->
             cont.invokeOnCancellation {
-                CoroutineScope(cont.context).launch {
+                ioScope.launch {
                     stopConnection().getOrNull()
                 }
             }
