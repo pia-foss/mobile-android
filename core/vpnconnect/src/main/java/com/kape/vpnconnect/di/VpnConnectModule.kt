@@ -1,6 +1,5 @@
 package com.kape.vpnconnect.di
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -20,6 +19,7 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
+import com.kape.utils.VpnNotificationManager
 import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
 import com.kape.vpnconnect.domain.ClientStateDataSource
@@ -68,8 +68,8 @@ class VpnConnectModule {
     @Singleton
     fun provideNotificationHandler(
         notificationManager: NotificationManager,
-        notificationBuilder: Notification.Builder,
-    ): NotificationHandler = NotificationHandler(notificationManager, notificationBuilder)
+        vpnNotificationManager: VpnNotificationManager,
+    ): NotificationHandler = NotificationHandler(notificationManager, vpnNotificationManager)
 
     @Singleton([ConnectionStatusProvider::class, VPNManagerConnectionListener::class])
     fun provideConnectionStatusProvider(
@@ -140,7 +140,7 @@ class VpnConnectModule {
         connectionPrefs: ConnectionPrefs,
         shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
         getActiveInterfaceDnsUseCase: GetActiveInterfaceDnsUseCase,
-        notificationBuilder: Notification.Builder,
+        vpnNotificationManager: VpnNotificationManager,
         configureIntent: PendingIntent,
         @Named(DI.AUTOMATION_PENDING_INTENT) automationPendingIntent: PendingIntent,
     ): ConnectionConfigurationUseCase =
@@ -151,7 +151,7 @@ class VpnConnectModule {
             connectionPrefs,
             shadowsocksRegionPrefs,
             getActiveInterfaceDnsUseCase,
-            notificationBuilder,
+            vpnNotificationManager,
             configureIntent,
             automationPendingIntent,
         )

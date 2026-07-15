@@ -1,6 +1,5 @@
 package com.kape.utils
 
-import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -8,7 +7,7 @@ import android.os.Build
 class AutomationManager(
     private val context: Context,
     private val automationServiceIntent: Intent,
-    val notificationBuilder: Notification.Builder,
+    val vpnNotificationManager: VpnNotificationManager,
 ) {
     fun startAutomationService() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
