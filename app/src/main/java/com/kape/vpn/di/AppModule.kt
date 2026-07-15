@@ -1,14 +1,10 @@
 package com.kape.vpn.di
 
-import android.app.Notification
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.kape.appbar.di.AppBarModule
 import com.kape.automation.di.AutomationModule
 import com.kape.buildconfig.data.BuildConfigProvider
@@ -37,7 +33,6 @@ import com.kape.location.di.LocationModule
 import com.kape.login.di.LoginModule
 import com.kape.login.di.LoginWithReceiptModule
 import com.kape.networkmanagement.di.NetworkManagementModule
-import com.kape.notifications.data.NotificationChannelManager
 import com.kape.notifications.data.NotificationPermissionManager
 import com.kape.obfuscationregionselection.di.ShadowsocksRegionModule
 import com.kape.obfuscator.di.ObfuscatorModule
@@ -63,6 +58,7 @@ import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_AUTOMATION
 import com.kape.ui.utils.PriceFormatter
 import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
+import com.kape.utils.VpnNotificationManager
 import com.kape.utils.di.UtilsModule
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
@@ -339,8 +335,8 @@ class AppModule {
     fun provideAutomationManager(
         context: Context,
         @Named(DI.AUTOMATION_SERVICE_INTENT) automationServiceIntent: Intent,
-        notificationBuilder: Notification.Builder,
-    ): AutomationManager = AutomationManager(context, automationServiceIntent, notificationBuilder)
+        vpnNotificationManager: VpnNotificationManager,
+    ): AutomationManager = AutomationManager(context, automationServiceIntent, vpnNotificationManager)
 
     @Singleton
     fun provideNetworkManager(
@@ -423,18 +419,8 @@ class AppModule {
         )
 
     @Singleton
-    fun provideNotification(context: Context): Notification.Builder {
-        val notificationBuilder: Notification.Builder =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationBuilder(context)
-            } else {
-                Notification.Builder(context)
-            }
-        notificationBuilder.setSmallIcon(R.drawable.ic_stat_pia_robot_white)
-        notificationBuilder.setCategory(Notification.CATEGORY_SERVICE)
-        notificationBuilder.setOngoing(true)
-        return notificationBuilder
-    }
+    fun provideVpnNotificationManager(context: Context): VpnNotificationManager =
+        VpnNotificationManager(context, R.drawable.ic_stat_pia_robot_white)
 
     @Singleton
     @Named(DI.WIDGET_PENDING_INTENT)
@@ -445,22 +431,4 @@ class AppModule {
             Intent(context, WidgetProviderService::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-private fun createNotificationBuilder(context: Context): Notification.Builder {
-    val notificationChannel =
-        NotificationChannel(
-            NotificationChannelManager.CHANNEL_ID,
-            NotificationChannelManager.CHANNEL_NAME,
-            NotificationManager.IMPORTANCE_MIN,
-        )
-    notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
-    val service =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    service.createNotificationChannel(notificationChannel)
-    return Notification.Builder(
-        context,
-        NotificationChannelManager.CHANNEL_ID,
-    )
 }

@@ -1,6 +1,5 @@
 package com.kape.vpnconnect.domain
 
-import android.app.Notification
 import android.app.PendingIntent
 import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.data.NOTIFICATION_ID
@@ -16,6 +15,7 @@ import com.kape.settings.data.DataEncryption
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
+import com.kape.utils.VpnNotificationManager
 import com.kape.vpnmanager.api.OpenVpnSocksProxyDetails
 import com.kape.vpnmanager.data.models.ClientConfiguration
 import com.kape.vpnmanager.data.models.DnsInformation
@@ -41,7 +41,7 @@ class ConnectionConfigurationUseCaseImpl(
     private val connectionPrefs: ConnectionPrefs,
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
     private val getActiveInterfaceDnsUseCase: GetActiveInterfaceDnsUseCase,
-    private val notificationBuilder: Notification.Builder,
+    private val vpnNotificationManager: VpnNotificationManager,
     private val configureIntent: PendingIntent,
     private val automationPendingIntent: PendingIntent,
 ) : ConnectionConfigurationUseCase,
@@ -76,12 +76,11 @@ class ConnectionConfigurationUseCaseImpl(
         // block ipv6
         additionalOpenVpnParams += "--block-ipv6"
 
-        notificationBuilder.setContentTitle("${server.name} - privateinternetaccess.com")
-        if (isAutomationEnabled) {
-            notificationBuilder.setContentIntent(automationPendingIntent)
-        } else {
-            notificationBuilder.setContentIntent(configureIntent)
-        }
+        val notification =
+            vpnNotificationManager.updateConnectionInfo(
+                title = "${server.name} - privateinternetaccess.com",
+                intent = if (isAutomationEnabled) automationPendingIntent else configureIntent,
+            )
 
         val protocolTarget: VPNManagerProtocolTarget
         val mtu: Int
@@ -102,7 +101,7 @@ class ConnectionConfigurationUseCaseImpl(
             protocolTarget = protocolTarget,
             mtu = mtu,
             notificationId = NOTIFICATION_ID,
-            notification = notificationBuilder.build(),
+            notification = notification,
             allowedApplicationPackages = emptyList(),
             disallowedApplicationPackages = vpnExcludedApps,
             allowLocalNetworkAccess = isAllowLocalTrafficEnabled,

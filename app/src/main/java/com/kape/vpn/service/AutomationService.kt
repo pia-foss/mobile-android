@@ -26,8 +26,7 @@ class AutomationService :
         flags: Int,
         startId: Int,
     ): Int {
-        val notification =
-            automationManager.notificationBuilder.setContentIntent(automationPendingIntent).build()
+        val notification = automationManager.vpnNotificationManager.updateContentIntent(automationPendingIntent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(
                 123,

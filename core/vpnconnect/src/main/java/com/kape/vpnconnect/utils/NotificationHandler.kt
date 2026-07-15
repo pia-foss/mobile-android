@@ -1,15 +1,14 @@
 package com.kape.vpnconnect.utils
 
-import android.app.Notification
 import android.app.NotificationManager
 import com.kape.data.NOTIFICATION_ID
+import com.kape.utils.VpnNotificationManager
 
 class NotificationHandler(
     private val notificationManager: NotificationManager,
-    private val notificationBuilder: Notification.Builder,
+    private val vpnNotificationManager: VpnNotificationManager,
 ) {
     fun update(status: String) {
-        notificationBuilder.setContentText(status)
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+        notificationManager.notify(NOTIFICATION_ID, vpnNotificationManager.updateStatusText(status))
     }
 }
