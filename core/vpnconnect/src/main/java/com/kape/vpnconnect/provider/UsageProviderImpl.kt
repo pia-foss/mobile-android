@@ -3,17 +3,15 @@ package com.kape.vpnconnect.provider
 import android.content.Context
 import androidx.compose.runtime.snapshots.Snapshot
 import com.kape.contracts.UsageProvider
-import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.annotation.Singleton
 import kotlin.math.ln
 import kotlin.math.pow
 
-@Singleton([UsageProvider::class, VPNManagerProtocolByteCountDependency::class])
+@Singleton([UsageProvider::class])
 class UsageProviderImpl(
     private val context: Context,
-) : VPNManagerProtocolByteCountDependency,
-    UsageProvider {
+) : UsageProvider {
     override val download = MutableStateFlow(humanReadableByteCountSI(0))
     override val upload = MutableStateFlow(humanReadableByteCountSI(0))
 
