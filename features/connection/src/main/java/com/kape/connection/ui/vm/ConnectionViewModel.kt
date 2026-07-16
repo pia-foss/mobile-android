@@ -232,7 +232,7 @@ class ConnectionViewModel(
                 }
                 if (shortcutDisconnect) {
                     shortcutPrefs.setShortcutDisconnectVpn(false)
-                    connectionManager.disconnect().getOrNull()
+                    connectionManager.disconnect()
                 }
             }.collect()
         }
@@ -407,7 +407,7 @@ class ConnectionViewModel(
             connectionManager.connectJob?.cancel()
             connectionManager.connectJob = null
             viewModelScope.launch(ioDispatcher) {
-                connectionManager.disconnect().getOrNull()
+                connectionManager.disconnect()
             }
         }
     }
@@ -450,7 +450,7 @@ class ConnectionViewModel(
 
     private fun callback() {
         viewModelScope.launch(ioDispatcher) {
-            connectionManager.disconnect().getOrNull()
+            connectionManager.disconnect()
         }
     }
 }

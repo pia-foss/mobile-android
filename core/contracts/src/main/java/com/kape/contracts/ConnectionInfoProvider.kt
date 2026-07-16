@@ -4,13 +4,13 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 import com.kape.data.ConnectionStatus
 import com.kape.data.portforwarding.PortForwardingStatus
-import com.kape.vpnmanager.api.VPNManagerConnectionStatus
+import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
 import kotlinx.coroutines.flow.StateFlow
 
 interface ConnectionInfoProvider {
     val status: StateFlow<ConnectionStatus>
     val title: StateFlow<String>
-    val vpnManagerConnectionStatus: StateFlow<VPNManagerConnectionStatus?>
+    val vpnManagerConnectionStatus: StateFlow<KapeVPNConnectionStatus?>
     var name: String
     var iso: String
     var isManual: Boolean

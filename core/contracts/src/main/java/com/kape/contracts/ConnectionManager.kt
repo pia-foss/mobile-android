@@ -13,7 +13,7 @@ interface ConnectionManager {
         showDialog: () -> Unit,
     )
 
-    suspend fun disconnect(): Result<Unit>
+    suspend fun disconnect()
 
     suspend fun reconnect(
         server: VpnServer,

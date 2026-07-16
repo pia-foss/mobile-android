@@ -1,0 +1,217 @@
+package com.kape.vpnconnect.platformsdk
+
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
+import android.net.VpnService
+import android.os.Binder
+import android.os.Build
+import android.os.IBinder
+import com.kape.contracts.ConfigInfo
+import com.kape.contracts.UsageProvider
+import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.platformsdk.vpn.openvpn.OpenVpnConnectionController
+import com.kape.platformsdk.vpn.service.KapeSessionController
+import com.kape.platformsdk.vpn.service.KapeSystemTunnel
+import com.kape.platformsdk.vpn.service.VpnServiceLogger
+import com.kape.platformsdk.vpn.service.models.IpAddress
+import com.kape.platformsdk.vpn.service.models.KapeKillSwitchMode
+import com.kape.platformsdk.vpn.service.models.KapeSplitTunnelAppMode
+import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
+import com.kape.platformsdk.vpn.wireguard.KapeWireGuardConnectionController
+import com.kape.portforwarding.domain.PortForwardingUseCase
+import com.kape.settings.data.DnsOptions
+import com.kape.utils.VpnNotificationManager
+import com.kape.vpnconnect.domain.ConnectionDataSource
+import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.koin.core.annotation.Singleton
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+
+@Singleton
+class PiaService :
+    VpnService(),
+    KoinComponent {
+    private val configInfo: ConfigInfo by inject()
+    private val connectionSource: ConnectionDataSource by inject()
+    private val settingsPrefs: SettingsPrefs by inject()
+    private val connectionPrefs: ConnectionPrefs by inject()
+    private val getActiveInterfaceDnsUseCase: GetActiveInterfaceDnsUseCase by inject()
+    private val vpnNotificationManager: VpnNotificationManager by inject()
+    private val configureIntent: PendingIntent by inject()
+    private val usageProvider: UsageProvider by inject()
+    private val portForwardingUseCase: PortForwardingUseCase by inject()
+    private var sessionController: KapeSessionController? = null
+    private var statusCollectionJob: Job? = null
+
+    private val _connectionStatus = MutableStateFlow(KapeVPNConnectionStatus.Disconnected)
+    val connectionStatus: StateFlow<KapeVPNConnectionStatus> = _connectionStatus.asStateFlow()
+
+    private val job = SupervisorJob()
+    val scope = CoroutineScope(Dispatchers.IO + job)
+
+    private val logger = KapeLogger("com.kape.vpn", "VpnService")
+
+    inner class LocalBinder : Binder() {
+        fun getService(): PiaService = this@PiaService
+    }
+
+    private val binder = LocalBinder()
+
+    init {
+        scope.launch {
+            connectionStatus.collectLatest { status ->
+                println("--- $status")
+                if (status == KapeVPNConnectionStatus.Connected) {
+                    val ip = sessionController?.getGatewayForCurrentConnection()
+                    connectionPrefs.setGateway(ip?.asString() ?: "")
+                    startPortForwarding()
+                }
+            }
+        }
+    }
+
+    override fun onBind(intent: Intent): IBinder = binder
+
+    // VpnService has system-level recognition via BIND_VPN_SERVICE and is exempt from the
+    // standard foregroundServiceType requirement. No declared type fits a VPN tunnel semantically.
+    @SuppressLint("ForegroundServiceType")
+    override fun onStartCommand(
+        intent: Intent?,
+        flags: Int,
+        startId: Int,
+    ): Int {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(CHANNEL_ID, "VPN", NotificationManager.IMPORTANCE_LOW)
+            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+        }
+        val notification = vpnNotificationManager.updateContentIntent(configureIntent)
+        startForeground(NOTIFICATION_ID, notification)
+
+        return START_STICKY
+    }
+
+    fun startVpn(selectedDnsOptions: DnsOptions) {
+        logger.info("startVpn invoked")
+        sessionController?.stop()
+        sessionController = null
+        statusCollectionJob?.cancel()
+        statusCollectionJob = null
+
+        val systemTunnel =
+            KapeSystemTunnel(
+                this,
+                logger,
+                killSwitchMode = KapeKillSwitchMode.Standard,
+                splitTunnelAppMode = KapeSplitTunnelAppMode.Off,
+            )
+        val authenticator =
+            PiaWgAuthenticator(
+                selectedDnsOptions,
+                configInfo.certificate,
+                connectionSource,
+                connectionPrefs,
+                protect = systemTunnel::protect,
+            )
+        val wireGuardController =
+            KapeWireGuardConnectionController(
+                systemTunnel = systemTunnel,
+                authenticator = authenticator,
+                logger = KapeLogger("com.kape.vpn", "WireGuardController") as VpnServiceLogger,
+            )
+        val openVpnController =
+            OpenVpnConnectionController(
+                context = this,
+                systemTunnel = systemTunnel,
+                coroutineScope = scope,
+                logger = KapeLogger("com.kape.vpn", "SessionController") as VpnServiceLogger,
+            )
+        println("--- ovpnController: $openVpnController")
+
+        val configurationGenerator =
+            ConfigurationGenerator(
+                configInfo.certificate,
+                connectionSource,
+                settingsPrefs,
+                connectionPrefs,
+                getActiveInterfaceDnsUseCase,
+                this,
+            )
+        println("--- generator: $configurationGenerator")
+
+        val controller =
+            KapeSessionController(
+                configurationGenerator = configurationGenerator,
+                connectionControllers = listOf(openVpnController, wireGuardController),
+                systemTunnel = systemTunnel,
+            )
+
+        sessionController = controller
+
+        scope.launch {
+            sessionController?.state?.trafficStats?.collectLatest {
+                usageProvider.byteCount(it.bytesSent, it.bytesReceived)
+            }
+        }
+
+        statusCollectionJob =
+            scope.launch {
+                controller.state.connectionStatus.collect { status ->
+                    _connectionStatus.update { status }
+                }
+            }
+
+        scope.launch { controller.start() }
+    }
+
+    fun stopSessionController() {
+        statusCollectionJob?.cancel()
+        statusCollectionJob = null
+        sessionController?.stop()
+        sessionController = null
+        usageProvider.reset()
+        _connectionStatus.update { KapeVPNConnectionStatus.Disconnected }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopSessionController()
+        job.cancel()
+    }
+
+    override fun onRevoke() {
+        stopSessionController()
+        stopSelf()
+    }
+
+    private suspend fun startPortForwarding() {
+        if (!settingsPrefs.isPortForwardingEnabled.first()) return
+        portForwardingUseCase.bindPort(connectionSource.getVpnToken())
+        connectionSource.startPortForwarding()
+    }
+
+    private fun IpAddress.asString(): String =
+        when (this) {
+            is IpAddress.V4 -> value
+            is IpAddress.V6 -> value
+        }
+
+    companion object {
+        private const val CHANNEL_ID = "kape_vpn"
+        private const val NOTIFICATION_ID = 1
+    }
+}
