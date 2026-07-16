@@ -52,7 +52,6 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
-    implementation(libs.mobile.android.vpn.manager)
     implementation(libs.bundles.serialization)
     implementation(libs.drawablepainter)
     implementation(libs.constraintlayout)

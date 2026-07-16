@@ -16,7 +16,6 @@ dependencies {
     implementation(libs.mobile.shared.kpi)
     implementation(libs.coroutines)
     implementation(libs.bundles.serialization)
-    implementation(libs.mobile.android.vpn.manager)
     implementation(libs.compose.ui.graphics)
     implementation(libs.material3)
 }

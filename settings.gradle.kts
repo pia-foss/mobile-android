@@ -13,6 +13,9 @@ dependencyResolutionManagement {
         mavenLocal()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
+        maven {
+            url = uri("https://dl.cloudsmith.io/public/expressvpn/kp_platform_sdks_public/maven/")
+        }
     }
 }
 

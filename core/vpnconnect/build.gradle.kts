@@ -21,7 +21,6 @@ dependencies {
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:ui"))
     implementation(libs.material3)
-    implementation(libs.mobile.android.vpn.manager)
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)
@@ -32,6 +31,7 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
+    implementation(libs.kape.platform.sdk.vpn.pia)
 }
 
 koinCompiler {
