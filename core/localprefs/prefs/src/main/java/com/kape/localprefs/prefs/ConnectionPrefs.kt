@@ -99,6 +99,8 @@ class ConnectionPrefs(
 
     suspend fun getSelectedVpnServerNow(): VpnServer? = getSelectedVpnServer().first()
 
+    suspend fun getGatewayNow(): String = getGateway().first()
+
     suspend fun setSelectedVpnServer(server: VpnServer?) {
         dataStore.edit { it[PRE_SELECTED_VPN_SERVER] = Json.encodeToString(server) }
     }

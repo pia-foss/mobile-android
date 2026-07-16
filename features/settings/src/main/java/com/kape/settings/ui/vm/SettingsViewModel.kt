@@ -438,7 +438,7 @@ class SettingsViewModel(
             connectionManager.connectJob =
                 viewModelScope.launch(ioDispatcher) {
                     if (connectionManager.isConnectionInProgress()) {
-                        connectionManager.disconnect().getOrNull()
+                        connectionManager.disconnect()
                     }
                     connectionManager.connect(
                         it,
@@ -455,7 +455,7 @@ class SettingsViewModel(
     fun getDownloadLink(): String = updateAvailableManager.getDownloadUrl()
 
     private fun callback() {
-        viewModelScope.launch(ioDispatcher) { connectionManager.disconnect().getOrNull() }
+        viewModelScope.launch(ioDispatcher) { connectionManager.disconnect() }
     }
 
     fun isConnected() = connectionInfoProvider.isConnected()

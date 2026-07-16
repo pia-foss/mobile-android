@@ -3,7 +3,7 @@ package com.kape.vpnconnect.utils
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
-import com.kape.vpnmanager.api.VPNManagerConnectionStatus
+import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,41 +31,38 @@ class ConnectionStatusProviderImpl(
     private val _title =
         MutableStateFlow(connectionValues[ConnectionStatus.DISCONNECTED] ?: "")
     override val title: StateFlow<String> = _title.asStateFlow()
-    private val _vpnManagerConnectionStatus = MutableStateFlow<VPNManagerConnectionStatus?>(null)
-    override val vpnManagerConnectionStatus: StateFlow<VPNManagerConnectionStatus?> =
+    private val _vpnManagerConnectionStatus = MutableStateFlow<KapeVPNConnectionStatus?>(null)
+    override val vpnManagerConnectionStatus: StateFlow<KapeVPNConnectionStatus?> =
         _vpnManagerConnectionStatus.asStateFlow()
 
-//    override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
-//        val currentStatus =
-//            when (status) {
-//                VPNManagerConnectionStatus.Disconnecting -> ConnectionStatus.DISCONNECTING
-//                is VPNManagerConnectionStatus.Disconnected -> {
-//                    cancelTimerJob()
-//                    ConnectionStatus.DISCONNECTED
-//                }
-//
-//                VPNManagerConnectionStatus.Authenticating,
-//                VPNManagerConnectionStatus.LinkUp,
-//                VPNManagerConnectionStatus.Configuring,
-//                VPNManagerConnectionStatus.Connecting,
-//                -> ConnectionStatus.CONNECTING
-//
-//                VPNManagerConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
-//                is VPNManagerConnectionStatus.Connected -> {
-//                    if (timerJob == null) {
-//                        startTimer(System.currentTimeMillis())
-//                    }
-//                    ConnectionStatus.CONNECTED
-//                }
-//            }
-//
-//        if (currentStatus != _status.value) {
-//            notificationHandler.update(currentStatus.toString())
-//        }
-//        _status.update { currentStatus }
-//        _vpnManagerConnectionStatus.update { status }
-//        setConnectionValuesTitle(timer)
-//    }
+    override fun handleConnectionStatusChange(status: KapeVPNConnectionStatus) {
+        println("--- handleConnectionStatusChange: $status")
+        val currentStatus =
+            when (status) {
+                KapeVPNConnectionStatus.Disconnecting -> ConnectionStatus.DISCONNECTING
+                KapeVPNConnectionStatus.Disconnected -> {
+                    cancelTimerJob()
+                    ConnectionStatus.DISCONNECTED
+                }
+
+                KapeVPNConnectionStatus.Connecting -> ConnectionStatus.CONNECTING
+
+                KapeVPNConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
+                KapeVPNConnectionStatus.Connected -> {
+                    if (timerJob == null) {
+                        startTimer(System.currentTimeMillis())
+                    }
+                    ConnectionStatus.CONNECTED
+                }
+            }
+
+        if (currentStatus != _status.value) {
+            notificationHandler.update(currentStatus.toString())
+        }
+        _status.update { currentStatus }
+        _vpnManagerConnectionStatus.update { status }
+        setConnectionValuesTitle(timer)
+    }
 
     private fun cancelTimerJob() {
         timerJob?.cancel()

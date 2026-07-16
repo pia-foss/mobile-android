@@ -90,7 +90,7 @@ class VpnRegionSelectionViewModel(
                         server
                     }
                 if (connectionManager.isConnectionInProgress()) {
-                    connectionManager.disconnect().getOrNull()
+                    connectionManager.disconnect()
                 }
                 connectionManager.connect(
                     connectTo,
@@ -105,7 +105,7 @@ class VpnRegionSelectionViewModel(
     }
 
     private fun callback() {
-        viewModelScope.launch(ioDispatcher) { connectionManager.disconnect().getOrNull() }
+        viewModelScope.launch(ioDispatcher) { connectionManager.disconnect() }
     }
 
     fun onFavoriteVpnClicked(serverData: ServerData) =
