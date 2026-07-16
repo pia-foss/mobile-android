@@ -20,6 +20,7 @@ dependencies {
     implementation(project(":core:localprefs:data"))
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:ui"))
+    implementation(libs.kape.platform.sdk.vpn.pia)
     implementation(libs.material3)
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.kointest)
@@ -31,7 +32,6 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
-    implementation(libs.kape.platform.sdk.vpn.pia)
 }
 
 koinCompiler {

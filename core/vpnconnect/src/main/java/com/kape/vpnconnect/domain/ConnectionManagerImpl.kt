@@ -1,6 +1,5 @@
 package com.kape.vpnconnect.domain
 
-import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.ConnectionStatusProvider
@@ -32,7 +31,6 @@ class ConnectionManagerImpl :
     private val connectionSource: ConnectionDataSource by inject()
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val connectionPrefs: ConnectionPrefs by inject()
-    private val connectionConfigurationUseCase: ConnectionConfigurationUseCase by inject()
     private val settingsPrefs: SettingsPrefs by inject()
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs by inject()
     private val startObfuscatorProcess: StartObfuscatorProcess by inject()
@@ -119,16 +117,16 @@ class ConnectionManagerImpl :
                 return
             }
 
-            val clientConfiguration =
-                connectionConfigurationUseCase.generateConnectionConfiguration(server)
-            connectionSource
-                .startConnection(
-                    clientConfiguration,
-                    connectionStatusProvider,
-                ).fold(
-                    onSuccess = { startPortForwarding() },
-                    onFailure = { disconnect().getOrNull() },
-                )
+//            val clientConfiguration =
+//                connectionConfigurationUseCase.generateConnectionConfiguration(server)
+//            connectionSource
+//                .startConnection(
+//                    clientConfiguration,
+//                    connectionStatusProvider,
+//                ).fold(
+//                    onSuccess = { startPortForwarding() },
+//                    onFailure = { disconnect().getOrNull() },
+//                )
         }
     }
 
@@ -188,8 +186,8 @@ class ConnectionManagerImpl :
 
     private suspend fun stopConnection(): Result<Unit> =
         runCatching {
+//            connectionSource.stopConnection().getOrThrow()
             connectionInfoProvider.resetConnectionInfo()
-            connectionSource.stopConnection().getOrThrow()
         }.also {
             connectionInProgress.set(false)
         }

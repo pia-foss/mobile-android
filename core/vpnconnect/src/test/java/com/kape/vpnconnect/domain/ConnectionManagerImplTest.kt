@@ -1,6 +1,5 @@
 package com.kape.vpnconnect.domain
 
-import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.DI

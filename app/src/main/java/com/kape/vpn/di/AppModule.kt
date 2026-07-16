@@ -16,7 +16,6 @@ import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.DeviceInfo
 import com.kape.contracts.LicenceReader
 import com.kape.contracts.NetworkManager
-import com.kape.contracts.UsageProvider
 import com.kape.csi.di.CsiModule
 import com.kape.customization.di.CustomizationModule
 import com.kape.data.DI
@@ -73,7 +72,6 @@ import com.kape.vpn.provider.KPI_PREFS_NAME
 import com.kape.vpn.provider.KpiModuleStateProvider
 import com.kape.vpn.provider.MetaEndpointsProvider
 import com.kape.vpn.provider.RegionsModuleStateProvider
-import com.kape.vpn.provider.VpnManagerProvider
 import com.kape.vpn.receiver.OnRulesChangedReceiver
 import com.kape.vpn.service.AutomationService
 import com.kape.vpn.service.WidgetProviderService
@@ -83,9 +81,6 @@ import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.di.VpnConnectModule
 import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnlauncher.di.VpnLauncherModule
-import com.kape.vpnmanager.presenters.VPNManagerAPI
-import com.kape.vpnmanager.presenters.VPNManagerBuilder
-import com.kape.vpnmanager.presenters.VPNManagerProtocolByteCountDependency
 import com.kape.vpnregions.di.VpnServersModule
 import com.kape.vpnregionselection.di.VpnRegionModule
 import com.privateinternetaccess.account.AccountBuilder
@@ -290,20 +285,6 @@ class AppModule {
             .setVpnRegionsRequestPath("/vpninfo/servers/v6")
             .setShadowsocksRegionsRequestPath("/shadow_socks")
             .setPlatformInstancesProvider(platformProvider)
-            .build()
-
-    @Singleton([VPNManagerAPI::class])
-    fun provideVpnManagerApi(
-        context: Context,
-        usageProvider: UsageProvider,
-        vpnManagerProvider: VpnManagerProvider,
-    ): VPNManagerAPI =
-        VPNManagerBuilder()
-            .setContext(context)
-            .setClientCoroutineContext(Dispatchers.Main)
-            .setProtocolByteCountDependency(usageProvider as VPNManagerProtocolByteCountDependency)
-            .setPermissionsDependency(vpnManagerProvider)
-            .setDebugLoggingDependency(vpnManagerProvider)
             .build()
 
     @Singleton

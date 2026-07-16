@@ -12,6 +12,7 @@ android {
 dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:localprefs:data"))
+    implementation(libs.kape.platform.sdk.vpn.pia)
     implementation(libs.mobile.shared.account)
     implementation(libs.mobile.shared.kpi)
     implementation(libs.coroutines)
