@@ -12,5 +12,4 @@ android {
 dependencies {
     implementation(libs.coroutines)
     implementation(libs.bundles.serialization)
-    implementation(libs.mobile.android.vpn.manager)
 }

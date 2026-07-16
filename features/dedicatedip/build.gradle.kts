@@ -57,7 +57,6 @@ dependencies {
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
     implementation(libs.constraintlayout)
-    implementation(libs.mobile.android.vpn.manager)
 }
 
 koinCompiler {
