@@ -10,8 +10,10 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import com.kape.contracts.ConfigInfo
+import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.UsageProvider
+import com.kape.data.NOTIFICATION_ID
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.platformsdk.vpn.openvpn.OpenVpnConnectionController
@@ -30,6 +32,7 @@ import com.kape.settings.data.DnsOptions
 import com.kape.utils.VpnNotificationManager
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
+import com.kape.vpnconnect.utils.NotificationHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -59,6 +62,8 @@ class PiaService :
     private val usageProvider: UsageProvider by inject()
     private val portForwardingUseCase: PortForwardingUseCase by inject()
     private val connectionManager: ConnectionManager by inject()
+    private val connectionInfoProvider: ConnectionInfoProvider by inject()
+    private val notificationHandler: NotificationHandler by inject()
     private var sessionController: KapeSessionController? = null
     private var statusCollectionJob: Job? = null
 
@@ -132,6 +137,11 @@ class PiaService :
         sessionController = null
         statusCollectionJob?.cancel()
         statusCollectionJob = null
+
+        notificationHandler.updateConnectionInfo(
+            getString(com.kape.ui.R.string.vpn_notification_title_format, connectionInfoProvider.name),
+            configureIntent,
+        )
 
         val killSwitchMode =
             if (settingsPrefs.isAllowLocalTrafficEnabledNow()) {
@@ -252,7 +262,6 @@ class PiaService :
 
     companion object {
         private const val CHANNEL_ID = "kape_vpn"
-        private const val NOTIFICATION_ID = 1
         const val EXTRA_MANUAL_START = "manual_start"
     }
 }
