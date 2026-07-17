@@ -105,7 +105,7 @@ class PiaService :
         return START_STICKY
     }
 
-    fun startVpn(selectedDnsOptions: DnsOptions) {
+    fun startVpn(selectedDnsOptions: DnsOptions, vpnExcluded: List<String>) {
         logger.info("startVpn invoked")
         sessionController?.stop()
         sessionController = null
@@ -117,7 +117,9 @@ class PiaService :
                 this,
                 logger,
                 killSwitchMode = KapeKillSwitchMode.Standard,
-                splitTunnelAppMode = KapeSplitTunnelAppMode.Off,
+                splitTunnelAppMode = if (vpnExcluded.isEmpty()) KapeSplitTunnelAppMode.Off else KapeSplitTunnelAppMode.Disallow(
+                    vpnExcluded,
+                ),
             )
         val authenticator =
             PiaWgAuthenticator(
