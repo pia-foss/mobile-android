@@ -116,23 +116,8 @@
 
         <service
             android:name="com.kape.vpnconnect.platformsdk.PiaService"
-            android:exported="false"
-            android:foregroundServiceType="specialUse"
-            android:permission="android.permission.BIND_VPN_SERVICE">
-            <intent-filter>
-                <action android:name="android.net.VpnService" />
-            </intent-filter>
-        </service>
-
-        <service
-            android:name=".service.AutomationService"
-            android:exported="false"
-            android:foregroundServiceType="specialUse"
-            android:permission="android.permission.BIND_VPN_SERVICE" />
-
-        <service
-            android:name=".service.VpnAlwaysOnService"
             android:exported="true"
+            android:foregroundServiceType="specialUse"
             android:permission="android.permission.BIND_VPN_SERVICE">
             <intent-filter>
                 <action android:name="android.net.VpnService" />
@@ -141,6 +126,12 @@
                 android:name="android.net.VpnService.SUPPORTS_ALWAYS_ON"
                 android:value="true" />
         </service>
+
+        <service
+            android:name=".service.AutomationService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            android:permission="android.permission.BIND_VPN_SERVICE" />
 
         <service
             android:name=".service.WidgetProviderService"

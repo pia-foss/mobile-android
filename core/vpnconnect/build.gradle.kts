@@ -9,6 +9,11 @@ plugins {
 
 android {
     namespace = "com.kape.vpnconnect"
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
@@ -20,6 +25,7 @@ dependencies {
     implementation(project(":core:obfuscator"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
+    implementation(project(":core:regions"))
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:ui"))
     implementation(libs.kape.platform.sdk.vpn.pia)
