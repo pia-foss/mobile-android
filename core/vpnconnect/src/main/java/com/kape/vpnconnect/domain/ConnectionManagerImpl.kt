@@ -151,7 +151,8 @@ class ConnectionManagerImpl :
             scope.launch {
                 val service = startServiceIfNeeded()
                 println("--- service started if needed")
-                service.startVpn(dns)
+                val excluded = settingsPrefs.getVpnExcludedAppsNow()
+                service.startVpn(dns, excluded)
             }
 
 //            val clientConfiguration =
