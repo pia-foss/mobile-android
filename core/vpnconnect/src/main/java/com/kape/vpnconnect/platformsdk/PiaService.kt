@@ -17,10 +17,12 @@ import com.kape.platformsdk.vpn.openvpn.OpenVpnConnectionController
 import com.kape.platformsdk.vpn.service.KapeSessionController
 import com.kape.platformsdk.vpn.service.KapeSystemTunnel
 import com.kape.platformsdk.vpn.service.VpnServiceLogger
+import com.kape.platformsdk.vpn.service.analytics.DisconnectReason
 import com.kape.platformsdk.vpn.service.models.IpAddress
 import com.kape.platformsdk.vpn.service.models.KapeKillSwitchMode
 import com.kape.platformsdk.vpn.service.models.KapeSplitTunnelAppMode
 import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
+import com.kape.platformsdk.vpn.service.models.KapeVpnTrafficStats
 import com.kape.platformsdk.vpn.wireguard.KapeWireGuardConnectionController
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.data.DnsOptions
@@ -60,6 +62,8 @@ class PiaService :
 
     private val _connectionStatus = MutableStateFlow(KapeVPNConnectionStatus.Disconnected)
     val connectionStatus: StateFlow<KapeVPNConnectionStatus> = _connectionStatus.asStateFlow()
+    private val _trafficStats = MutableStateFlow(KapeVpnTrafficStats.ZERO)
+    val trafficStats: StateFlow<KapeVpnTrafficStats> = _trafficStats.asStateFlow()
 
     private val job = SupervisorJob()
     val scope = CoroutineScope(Dispatchers.IO + job)
@@ -78,7 +82,10 @@ class PiaService :
                 println("--- $status")
                 if (status == KapeVPNConnectionStatus.Connected) {
                     val ip = sessionController?.getGatewayForCurrentConnection()
-                    connectionPrefs.setGateway(ip?.asString() ?: "")
+                    if (connectionPrefs.getGatewayNow().isEmpty()) {
+                        connectionPrefs.setGateway(ip?.asString() ?: "")
+                    }
+                    connectionPrefs.gateway.first { it.isNotEmpty() }
                     startPortForwarding()
                 }
             }
@@ -105,7 +112,10 @@ class PiaService :
         return START_STICKY
     }
 
-    fun startVpn(selectedDnsOptions: DnsOptions, vpnExcluded: List<String>) {
+    suspend fun startVpn(
+        selectedDnsOptions: DnsOptions,
+        vpnExcluded: List<String>,
+    ) {
         logger.info("startVpn invoked")
         sessionController?.stop()
         sessionController = null
@@ -117,9 +127,14 @@ class PiaService :
                 this,
                 logger,
                 killSwitchMode = KapeKillSwitchMode.Standard,
-                splitTunnelAppMode = if (vpnExcluded.isEmpty()) KapeSplitTunnelAppMode.Off else KapeSplitTunnelAppMode.Disallow(
-                    vpnExcluded,
-                ),
+                splitTunnelAppMode =
+                    if (vpnExcluded.isEmpty()) {
+                        KapeSplitTunnelAppMode.Off
+                    } else {
+                        KapeSplitTunnelAppMode.Disallow(
+                            vpnExcluded,
+                        )
+                    },
             )
         val authenticator =
             PiaWgAuthenticator(
@@ -180,23 +195,27 @@ class PiaService :
         scope.launch { controller.start() }
     }
 
-    fun stopSessionController() {
+    suspend fun stopSessionController(reason: DisconnectReason = DisconnectReason.UserInitiated) {
+        logger.info("stopSessionController invoked")
         statusCollectionJob?.cancel()
         statusCollectionJob = null
-        sessionController?.stop()
+        sessionController?.stop(reason)
         sessionController = null
         usageProvider.reset()
         _connectionStatus.update { KapeVPNConnectionStatus.Disconnected }
+        _trafficStats.update { KapeVpnTrafficStats.ZERO }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        stopSessionController()
+        scope.launch { stopSessionController() }.invokeOnCompletion { job.cancel() }
         job.cancel()
     }
 
     override fun onRevoke() {
-        stopSessionController()
+        scope
+            .launch { stopSessionController(DisconnectReason.Revoked) }
+            .invokeOnCompletion { stopSelf() }
         stopSelf()
     }
 
