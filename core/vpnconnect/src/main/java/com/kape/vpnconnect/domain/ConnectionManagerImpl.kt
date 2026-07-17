@@ -52,9 +52,7 @@ class ConnectionManagerImpl :
     private val stopObfuscatorProcess: StopObfuscatorProcess by inject()
     private val portForwardingUseCase: PortForwardingUseCase by inject()
     private val connectionStatusProvider: ConnectionStatusProvider by inject()
-
     private val vpnScope: CoroutineScope by inject(named(DI.IO_SCOPE))
-
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val context: Context by inject()
 
@@ -154,17 +152,6 @@ class ConnectionManagerImpl :
                 val excluded = settingsPrefs.getVpnExcludedAppsNow()
                 service.startVpn(dns, excluded)
             }
-
-//            val clientConfiguration =
-//                connectionConfigurationUseCase.generateConnectionConfiguration(server)
-//            connectionSource
-//                .startConnection(
-//                    clientConfiguration,
-//                    connectionStatusProvider,
-//                ).fold(
-//                    onSuccess = { startPortForwarding() },
-//                    onFailure = { disconnect().getOrNull() },
-//                )
         }
     }
 

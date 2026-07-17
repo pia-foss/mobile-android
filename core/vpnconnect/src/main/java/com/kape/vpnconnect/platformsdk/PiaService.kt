@@ -122,11 +122,19 @@ class PiaService :
         statusCollectionJob?.cancel()
         statusCollectionJob = null
 
+        val killSwitchMode =
+            if (settingsPrefs.isAllowLocalTrafficEnabledNow()) {
+                KapeKillSwitchMode.Standard
+            } else {
+                // Advanced routes 0.0.0.0/0 with no local-range carve-out, so LAN traffic is
+                // blocked rather than allowed to bypass the tunnel.
+                KapeKillSwitchMode.Advanced
+            }
         val systemTunnel =
             KapeSystemTunnel(
                 this,
                 logger,
-                killSwitchMode = KapeKillSwitchMode.Standard,
+                killSwitchMode = killSwitchMode,
                 splitTunnelAppMode =
                     if (vpnExcluded.isEmpty()) {
                         KapeSplitTunnelAppMode.Off
