@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import androidx.core.content.ContextCompat
+import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.ConnectionStatusProvider
@@ -23,6 +24,7 @@ import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.vpnconnect.platformsdk.PiaService
+import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,6 +35,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -52,6 +55,8 @@ class ConnectionManagerImpl :
     private val stopObfuscatorProcess: StopObfuscatorProcess by inject()
     private val portForwardingUseCase: PortForwardingUseCase by inject()
     private val connectionStatusProvider: ConnectionStatusProvider by inject()
+    private val regionListProvider: RegionListProvider by inject()
+    private val authenticationDataSource: AuthenticationDataSource by inject()
     private val vpnScope: CoroutineScope by inject(named(DI.IO_SCOPE))
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val context: Context by inject()
@@ -153,6 +158,35 @@ class ConnectionManagerImpl :
                 service.startVpn(dns, excluded)
             }
         }
+    }
+
+    override suspend fun connectToLastKnownOrOptimalServer() {
+        if (!authenticationDataSource.isUserLoggedIn()) return
+
+        if (settingsPrefs.isAutomationEnabled.value && connectionPrefs.isDisconnectedByUser.value) {
+            connectionPrefs.setDisconnectedByUser(false)
+            return
+        }
+
+        val server =
+            connectionPrefs.selectedVpnServer.value
+                ?: run {
+                    if (regionListProvider.isDefaultList.first().not()) {
+                        regionListProvider.getOptimalServer()
+                    } else {
+                        regionListProvider.updateServerLatencies(isConnected = false, isUserInitiated = false)
+                        regionListProvider.getOptimalServer()
+                    }
+                }
+
+        connect(
+            server,
+            isManual = false,
+            stopCallback = { scope.launch { disconnect() } },
+            showDialog = {
+                // no-op for now, might be used for fallback
+            },
+        )
     }
 
     override suspend fun disconnect() {
@@ -278,7 +312,8 @@ class ConnectionManagerImpl :
             bindAttempted = true
             ContextCompat.startForegroundService(
                 context,
-                Intent(context, PiaService::class.java),
+                Intent(context, PiaService::class.java)
+                    .putExtra(PiaService.EXTRA_MANUAL_START, true),
             )
             context.bindService(
                 Intent(context, PiaService::class.java),

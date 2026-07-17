@@ -3,23 +3,15 @@ package com.kape.vpnlauncher
 import android.content.Context
 import android.net.VpnService
 import com.kape.contracts.ConnectionManager
-import com.kape.data.vpnserver.VpnServer
-import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.SettingsPrefs
-import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import kotlin.coroutines.CoroutineContext
 
 class VpnLauncher(
     private val context: Context,
-    private val connectionPrefs: ConnectionPrefs,
-    private val settingsPrefs: SettingsPrefs,
-    private val regionListProvider: RegionListProvider,
     private val connectionManager: ConnectionManager,
 ) : CoroutineScope,
     KoinComponent {
@@ -33,43 +25,11 @@ class VpnLauncher(
 
         if (vpnIntent == null) {
             // vpn permission is provided, initiate a connection
-            if (settingsPrefs.isAutomationEnabled.value && connectionPrefs.isDisconnectedByUser.value) {
-                launch {
-                    connectionPrefs.setDisconnectedByUser(false)
-                    return@launch
-                }
-            } else {
-                val server: VpnServer? = connectionPrefs.selectedVpnServer.value
-                launch {
-                    server?.let {
-                        initiateConnection(it)
-                    } ?: run {
-                        if (regionListProvider.isDefaultList.first().not()) {
-                            initiateConnection(regionListProvider.getOptimalServer())
-                        } else {
-                            regionListProvider.updateServerLatencies(
-                                isConnected = false,
-                                isUserInitiated = false,
-                            )
-                            initiateConnection(regionListProvider.getOptimalServer())
-                        }
-                    }
-                }
-            }
+            launch { connectionManager.connectToLastKnownOrOptimalServer() }
         } else {
             // TODO: define what happens here
         }
     }
-
-    private suspend fun initiateConnection(server: VpnServer) =
-        connectionManager.connect(
-            server,
-            false,
-            ::stopVpn,
-            {
-                // no-op for now, might be used for fallback
-            },
-        )
 
     fun stopVpn() {
         launch {

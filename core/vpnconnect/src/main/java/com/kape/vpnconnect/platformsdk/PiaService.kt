@@ -10,6 +10,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import com.kape.contracts.ConfigInfo
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.UsageProvider
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -57,6 +58,7 @@ class PiaService :
     private val configureIntent: PendingIntent by inject()
     private val usageProvider: UsageProvider by inject()
     private val portForwardingUseCase: PortForwardingUseCase by inject()
+    private val connectionManager: ConnectionManager by inject()
     private var sessionController: KapeSessionController? = null
     private var statusCollectionJob: Job? = null
 
@@ -108,6 +110,15 @@ class PiaService :
         }
         val notification = vpnNotificationManager.updateContentIntent(configureIntent)
         startForeground(NOTIFICATION_ID, notification)
+
+        // This is the component flagged android.net.VpnService.SUPPORTS_ALWAYS_ON, so the system
+        // starts it directly (Always-on VPN, boot, a START_STICKY restart) without going through
+        // ConnectionManagerImpl.connect() first — EXTRA_MANUAL_START is only ever set by our own
+        // connect flow, so its absence means the system started us and expects a connection.
+        if (intent?.getBooleanExtra(EXTRA_MANUAL_START, false) != true) {
+            logger.info("System-triggered start — connecting to last known/optimal server")
+            scope.launch { connectionManager.connectToLastKnownOrOptimalServer() }
+        }
 
         return START_STICKY
     }
@@ -242,5 +253,6 @@ class PiaService :
     companion object {
         private const val CHANNEL_ID = "kape_vpn"
         private const val NOTIFICATION_ID = 1
+        const val EXTRA_MANUAL_START = "manual_start"
     }
 }
