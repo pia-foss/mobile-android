@@ -67,7 +67,12 @@ class VpnConnectModule {
         connectionValues: Map<ConnectionStatus, String>,
         notificationHandler: NotificationHandler,
         @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
-    ): ConnectionStatusProvider = ConnectionStatusProviderImpl(connectionValues, notificationHandler, ioScope)
+    ): ConnectionStatusProvider =
+        ConnectionStatusProviderImpl(
+            connectionValues,
+            notificationHandler,
+            ioScope,
+        )
 
     @Singleton([ConnectionInfoProvider::class])
     fun provideConnectionInfoProvider(
