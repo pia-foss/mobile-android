@@ -12,6 +12,7 @@ import android.os.IBinder
 import com.kape.contracts.ConfigInfo
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
+import com.kape.contracts.KpiDataSource
 import com.kape.contracts.UsageProvider
 import com.kape.data.NOTIFICATION_ID
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -64,6 +65,7 @@ class PiaService :
     private val connectionManager: ConnectionManager by inject()
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val notificationHandler: NotificationHandler by inject()
+    private val kpiDataSource: KpiDataSource by inject()
     private var sessionController: KapeSessionController? = null
     private var statusCollectionJob: Job? = null
 
@@ -86,7 +88,6 @@ class PiaService :
     init {
         scope.launch {
             connectionStatus.collectLatest { status ->
-                println("--- $status")
                 if (status == KapeVPNConnectionStatus.Connected) {
                     val ip = sessionController?.getGatewayForCurrentConnection()
                     if (connectionPrefs.getGatewayNow().isEmpty()) {
@@ -133,13 +134,23 @@ class PiaService :
         vpnExcluded: List<String>,
     ) {
         logger.info("startVpn invoked")
+
+        if (settingsPrefs.isHelpImprovePiaEnabled.first()) {
+            kpiDataSource.start()
+        } else {
+            kpiDataSource.stop()
+        }
+
         sessionController?.stop()
         sessionController = null
         statusCollectionJob?.cancel()
         statusCollectionJob = null
 
         notificationHandler.updateConnectionInfo(
-            getString(com.kape.ui.R.string.vpn_notification_title_format, connectionInfoProvider.name),
+            getString(
+                com.kape.ui.R.string.vpn_notification_title_format,
+                connectionInfoProvider.name,
+            ),
             configureIntent,
         )
 
@@ -186,7 +197,6 @@ class PiaService :
                 coroutineScope = scope,
                 logger = KapeLogger("com.kape.vpn", "SessionController") as VpnServiceLogger,
             )
-        println("--- ovpnController: $openVpnController")
 
         val configurationGenerator =
             ConfigurationGenerator(
@@ -197,8 +207,6 @@ class PiaService :
                 getActiveInterfaceDnsUseCase,
                 this,
             )
-        println("--- generator: $configurationGenerator")
-
         val controller =
             KapeSessionController(
                 configurationGenerator = configurationGenerator,
