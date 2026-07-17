@@ -1,6 +1,6 @@
 package com.kape.portforwarding.data
 
-import android.net.Uri
+import androidx.core.net.toUri
 import com.kape.connection.model.PortBindInformation
 import com.kape.httpclient.domain.CertificatePinningClient
 import com.kape.portforwarding.domain.PortForwardingApi
@@ -26,8 +26,8 @@ class PortForwardingApiImpl(
         gateway: String,
     ): PortBindInformation? {
         val urlEncodedEndpoint: String =
-            Uri
-                .parse("https://$gateway:19999/getSignature")
+            "https://$gateway:19999/getSignature"
+                .toUri()
                 .buildUpon()
                 .appendQueryParameter("token", vpnToken)
                 .build()
@@ -60,8 +60,8 @@ class PortForwardingApiImpl(
         endpoint: String,
     ): Boolean {
         val urlEncodedEndpoint: String =
-            Uri
-                .parse("https://$endpoint:19999/bindPort")
+            "https://$endpoint:19999/bindPort"
+                .toUri()
                 .buildUpon()
                 .appendQueryParameter("payload", payload)
                 .appendQueryParameter("signature", signature)

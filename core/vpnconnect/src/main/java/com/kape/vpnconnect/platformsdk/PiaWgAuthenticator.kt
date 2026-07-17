@@ -60,13 +60,14 @@ class PiaWgAuthenticator(
             "addKey request to $authIp failed with status ${response.status}"
         }
         val addKeyResponse = json.decodeFromString<WireguardAddKeyResponse>(response.body())
-        connectionPrefs.setGateway(addKeyResponse.peerIp)
+        connectionPrefs.setGateway(addKeyResponse.serverVip)
         return WireGuardAuthConfiguration(
             psk = NO_PRESHARED_KEY_BASE64,
             serverPublicKey = addKeyResponse.serverKey,
             clientPrivateKey = keyPair.privateKey.toBase64(),
             internalIp = addKeyResponse.peerIp,
             dnsServers = addKeyResponse.dnsServers,
+            gatewayIp = IpAddress.V4(addKeyResponse.serverVip),
         )
     }
 
