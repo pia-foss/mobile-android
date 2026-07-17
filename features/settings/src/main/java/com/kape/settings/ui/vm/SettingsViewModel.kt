@@ -441,21 +441,23 @@ class SettingsViewModel(
     }
 
     fun reconnect() {
-        connectionPrefs.selectedVpnServer.value?.let {
-            connectionManager.connectJob =
-                viewModelScope.launch(ioDispatcher) {
-                    if (connectionManager.isConnectionInProgress()) {
-                        connectionManager.disconnect()
+        viewModelScope.launch {
+            connectionPrefs.selectedVpnServer.first()?.let {
+                connectionManager.connectJob =
+                    viewModelScope.launch(ioDispatcher) {
+                        if (connectionManager.isConnectionInProgress()) {
+                            connectionManager.disconnect()
+                        }
+                        connectionManager.connect(
+                            it,
+                            true,
+                            ::callback,
+                            {
+                                // no-op for now, might be used for fallback
+                            },
+                        )
                     }
-                    connectionManager.connect(
-                        it,
-                        true,
-                        ::callback,
-                        {
-                            // no-op for now, might be used for fallback
-                        },
-                    )
-                }
+            }
         }
     }
 

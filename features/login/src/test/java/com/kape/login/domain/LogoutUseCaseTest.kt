@@ -48,7 +48,7 @@ internal class LogoutUseCaseTest : BaseTest() {
         expected: Boolean,
     ) = runTest {
         coEvery { source.logout() } returns result
-        coEvery { connectionManager.disconnect() } returns Result.success(Unit)
+        coEvery { connectionManager.disconnect() } returns Unit
         every { settingsPrefs.isAutomationEnabled.value } returns isAutomationEnabled
         coEvery { connectionPrefs.setDisconnectedByUser(any()) } returns Unit
         coEvery { connectionPrefs.clear() } returns Unit

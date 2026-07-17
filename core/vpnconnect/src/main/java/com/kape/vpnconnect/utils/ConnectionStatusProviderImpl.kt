@@ -36,7 +36,6 @@ class ConnectionStatusProviderImpl(
         _vpnManagerConnectionStatus.asStateFlow()
 
     override fun handleConnectionStatusChange(status: KapeVPNConnectionStatus) {
-        println("--- handleConnectionStatusChange: $status")
         val currentStatus =
             when (status) {
                 KapeVPNConnectionStatus.Disconnecting -> ConnectionStatus.DISCONNECTING

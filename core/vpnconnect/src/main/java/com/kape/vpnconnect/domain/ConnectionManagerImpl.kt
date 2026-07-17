@@ -151,12 +151,12 @@ class ConnectionManagerImpl :
                 return
             }
 
-            scope.launch {
-                val service = startServiceIfNeeded()
-                println("--- service started if needed")
-                val excluded = settingsPrefs.getVpnExcludedAppsNow()
-                service.startVpn(dns, excluded)
-            }
+            scope
+                .launch {
+                    val service = startServiceIfNeeded()
+                    val excluded = settingsPrefs.getVpnExcludedAppsNow()
+                    service.startVpn(dns, excluded)
+                }.join()
         }
     }
 
@@ -190,25 +190,26 @@ class ConnectionManagerImpl :
     }
 
     override suspend fun disconnect() {
-        scope.launch {
-            serviceDeferred?.cancel()
-            serviceDeferred = null
-            boundService?.stopSessionController()
-            statusCollectionJob?.cancel()
-            statusCollectionJob = null
-            if (bindAttempted) {
-                bindAttempted = false
-                boundService = null
-                context.unbindService(serviceConnection)
-            }
-            context.stopService(Intent(context, PiaService::class.java))
-            _connectionStatus.update { KapeVPNConnectionStatus.Disconnected }
-            connectionStatusProvider.handleConnectionStatusChange(KapeVPNConnectionStatus.Disconnected)
-            stopObfuscatorProcess()
-            cancelPortForwarding()
-            connectionInfoProvider.resetConnectionInfo()
-            connectionInProgress.set(false)
-        }
+        scope
+            .launch {
+                serviceDeferred?.cancel()
+                serviceDeferred = null
+                boundService?.stopSessionController()
+                statusCollectionJob?.cancel()
+                statusCollectionJob = null
+                if (bindAttempted) {
+                    bindAttempted = false
+                    boundService = null
+                    context.unbindService(serviceConnection)
+                }
+                context.stopService(Intent(context, PiaService::class.java))
+                _connectionStatus.update { KapeVPNConnectionStatus.Disconnected }
+                connectionStatusProvider.handleConnectionStatusChange(KapeVPNConnectionStatus.Disconnected)
+                stopObfuscatorProcess()
+                cancelPortForwarding()
+                connectionInfoProvider.resetConnectionInfo()
+                connectionInProgress.set(false)
+            }.join()
     }
 
     /**
@@ -275,7 +276,6 @@ class ConnectionManagerImpl :
                 name: ComponentName,
                 binder: IBinder,
             ) {
-                println("--- onServiceConnected")
                 val service = (binder as PiaService.LocalBinder).getService()
                 boundService = service
                 serviceDeferred?.complete(service)
@@ -284,16 +284,12 @@ class ConnectionManagerImpl :
                     scope.launch {
                         service.connectionStatus.collect { status ->
                             _connectionStatus.update { status }
-                            if (status == KapeVPNConnectionStatus.Connected) {
-                                println("--- gateway: ${connectionPrefs.getGatewayNow()}")
-                            }
                             connectionStatusProvider.handleConnectionStatusChange(status)
                         }
                     }
             }
 
             override fun onServiceDisconnected(name: ComponentName) {
-                println("--- onServiceDisconnected")
                 boundService = null
                 statusCollectionJob?.cancel()
                 statusCollectionJob = null

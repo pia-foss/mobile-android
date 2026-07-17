@@ -77,7 +77,6 @@ class ConfigurationGenerator(
         server: VpnServer?,
         dnsServers: List<String> = emptyList(),
     ): List<OpenVpnConfiguration> {
-        println("--- server: $server")
         val result = mutableListOf<OpenVpnConfiguration>()
         val transport =
             when (openVpnSettings.transport) {
