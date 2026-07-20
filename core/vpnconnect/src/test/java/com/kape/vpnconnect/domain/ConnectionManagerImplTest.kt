@@ -37,6 +37,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -406,6 +407,39 @@ class ConnectionManagerImplTest {
 
             coVerify { piaService.stopSessionController() }
             coVerify(atLeast = 1) { piaService.startVpn(any(), any()) }
+        }
+
+    @Test
+    fun `reconnect - previous attempt still awaiting service bind - drops it and connects to the new server`() =
+        runTest {
+            val server2 = server.copy(name = "EU West", iso = "eu", key = "eu-west")
+
+            // Bind never completes for this attempt, so connect() is left suspended awaiting it.
+            every {
+                context.bindService(any<Intent>(), any<ServiceConnection>(), any<Int>())
+            } returns true
+
+            val firstConnect =
+                launch(Dispatchers.Unconfined) {
+                    connectionManager.connect(server, isManual = true, {}) {}
+                }
+
+            assertFalse(firstConnect.isCompleted)
+            coVerify(exactly = 0) { piaService.startVpn(any(), any()) }
+
+            // Restore normal bind behavior so the reconnect's own attempt can proceed.
+            every {
+                context.bindService(any<Intent>(), any<ServiceConnection>(), any<Int>())
+            } answers {
+                secondArg<ServiceConnection>().onServiceConnected(mockk<ComponentName>(), localBinder)
+                true
+            }
+
+            connectionManager.reconnect(server2) {}
+
+            assertTrue(firstConnect.isCompleted)
+            coVerify { connectionPrefs.setSelectedVpnServer(server2) }
+            coVerify { piaService.startVpn(any(), any()) }
         }
 
     @Test

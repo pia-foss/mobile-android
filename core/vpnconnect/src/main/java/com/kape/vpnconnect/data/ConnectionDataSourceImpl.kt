@@ -3,12 +3,9 @@ package com.kape.vpnconnect.data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.kape.contracts.KpiDataSource
-import com.kape.contracts.UsageProvider
 import com.kape.data.DI
 import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.vpnconnect.domain.ConnectionDataSource
@@ -28,77 +25,9 @@ class ConnectionDataSourceImpl(
     private val connectionPrefs: ConnectionPrefs,
     private val workManager: WorkManager,
     private val settingsPrefs: SettingsPrefs,
-    private val kpiDataSource: KpiDataSource,
-    private val usageProvider: UsageProvider,
-    private val csiPrefs: CsiPrefs,
     @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : ConnectionDataSource,
     KoinComponent {
-//    override suspend fun startConnection(
-//        clientConfiguration: ClientConfiguration,
-//        connectionStatusProvider: ConnectionStatusProvider,
-//    ): Result<Unit> =
-//        suspendCancellableCoroutine { cont ->
-//            cont.invokeOnCancellation {
-//                ioScope.launch {
-//                    stopConnection().getOrNull()
-//                }
-//            }
-//            connectionApi.addConnectionListener(
-//                connectionStatusProvider as VPNManagerConnectionListener,
-//            ) {}
-//
-//            if (settingsPrefs.isHelpImprovePiaEnabled.value) {
-//                kpiDataSource.start()
-//            } else {
-//                kpiDataSource.stop()
-//            }
-//
-//            connectionApi.startConnection(clientConfiguration) { result ->
-//                result.getOrNull()?.let { serverPeerInfo ->
-//                    ioScope.launch {
-//                        connectionPrefs.setGateway(serverPeerInfo.gateway)
-//                        if (cont.isActive) {
-//                            // Convert Result<ServerPeerInfo> → Result<Unit>
-//                            cont.resume(result.map { Unit })
-//                        }
-//                    }
-//                } ?: run {
-//                    ioScope.launch {
-//                        csiPrefs.addCustomDebugLogs(
-//                            "startConnection failed: $result",
-//                            settingsPrefs.isDebugLoggingEnabled.value,
-//                        )
-//                        connectionApi.stopConnection {}
-//                        if (cont.isActive) {
-//                            // Convert Result<ServerPeerInfo> → Result<Unit>
-//                            cont.resume(result.map { Unit })
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//    override suspend fun stopConnection(): Result<Unit> =
-//        suspendCancellableCoroutine { continuation ->
-//            connectionApi.stopConnection { result ->
-//                ioScope.launch {
-//                    usageProvider.reset()
-//                    stopPortForwarding()
-//                    if (result.isFailure) {
-//                        csiPrefs.addCustomDebugLogs(
-//                            "stop connection failed: ${result.exceptionOrNull()}",
-//                            settingsPrefs.isDebugLoggingEnabled.value,
-//                        )
-//                    }
-//                    // Resume coroutine with result
-//                    if (continuation.isActive) {
-//                        continuation.resume(result)
-//                    }
-//                }
-//            }
-//        }
-
     override fun getVpnToken(): String = accountApi.vpnToken() ?: ""
 
     override fun startPortForwarding() {
@@ -130,11 +59,4 @@ class ConnectionDataSourceImpl(
             }
         return ServiceLogger(tag).getLogs()
     }
-
-//    override suspend fun updateConfigurationServers(servers: ServerList): Boolean =
-//        suspendCancellableCoroutine { cont ->
-//            connectionApi.updateConfigurationServers(servers) {
-//                cont.resume(it.isSuccess)
-//            }
-//        }
 }

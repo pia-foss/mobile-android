@@ -31,8 +31,18 @@ class ServiceLogger(
     suspend fun getLogs(): List<String> =
         withContext(Dispatchers.IO) {
             val process =
-                ProcessBuilder("logcat", "-b", "all", "-t", "2000", "-d", "-v", "threadtime", "*:V")
-                    .redirectErrorStream(true)
+                ProcessBuilder(
+                    "logcat",
+                    "-b",
+                    "all",
+                    "-t",
+                    "2000",
+                    "-d",
+                    "-v",
+                    "threadtime",
+                    "${tag.prefix}:V",
+                    "*:S",
+                ).redirectErrorStream(true)
                     .start()
             process.inputStream.bufferedReader().useLines { it.toList() }
         }

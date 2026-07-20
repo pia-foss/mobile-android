@@ -6,12 +6,10 @@ import androidx.work.WorkManager
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.ConnectionStatusProvider
-import com.kape.contracts.KpiDataSource
 import com.kape.contracts.UsageProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
@@ -111,9 +109,6 @@ class VpnConnectModule {
         connectionPrefs: ConnectionPrefs,
         workManager: WorkManager,
         settingsPrefs: SettingsPrefs,
-        kpiDataSource: KpiDataSource,
-        usageProvider: UsageProvider,
-        csiPrefs: CsiPrefs,
         @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
     ): ConnectionDataSource =
         ConnectionDataSourceImpl(
@@ -121,9 +116,6 @@ class VpnConnectModule {
             connectionPrefs,
             workManager,
             settingsPrefs,
-            kpiDataSource,
-            usageProvider,
-            csiPrefs,
             ioScope,
         )
 
