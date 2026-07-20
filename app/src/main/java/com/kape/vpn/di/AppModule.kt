@@ -295,8 +295,7 @@ class AppModule {
         csiPrefs: CsiPrefs,
         settingsPrefs: SettingsPrefs,
         configInfo: ConfigInfo,
-        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
-    ): CsiDataProvider = CsiDataProvider(csiPrefs, settingsPrefs, configInfo.userAgent, ioScope)
+    ): CsiDataProvider = CsiDataProvider(csiPrefs, settingsPrefs, configInfo.userAgent)
 
     @Singleton([CSIAPI::class])
     fun provideCsiApi(
@@ -319,7 +318,6 @@ class AppModule {
                 csiDataProvider.regionInformationProvider,
                 csiDataProvider.userSettingsProvider,
                 csiDataProvider.protocolDebugLogsProvider,
-                csiDataProvider.debugLogProvider,
             ).build()
 
     @Singleton

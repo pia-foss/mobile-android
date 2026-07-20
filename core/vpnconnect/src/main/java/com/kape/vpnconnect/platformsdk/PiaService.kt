@@ -16,6 +16,7 @@ import com.kape.contracts.KpiDataSource
 import com.kape.contracts.UsageProvider
 import com.kape.data.NOTIFICATION_ID
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.platformsdk.vpn.openvpn.OpenVpnConnectionController
 import com.kape.platformsdk.vpn.service.KapeSessionController
@@ -56,6 +57,7 @@ class PiaService :
     private val connectionSource: ConnectionDataSource by inject()
     private val settingsPrefs: SettingsPrefs by inject()
     private val connectionPrefs: ConnectionPrefs by inject()
+    private val consentPrefs: ConsentPrefs by inject()
     private val getActiveInterfaceDnsUseCase: GetActiveInterfaceDnsUseCase by inject()
     private val vpnNotificationManager: VpnNotificationManager by inject()
     private val configureIntent: PendingIntent by inject()
@@ -127,12 +129,6 @@ class PiaService :
         selectedDnsOptions: DnsOptions,
         vpnExcluded: List<String>,
     ) {
-        if (settingsPrefs.isHelpImprovePiaEnabled.first()) {
-            kpiDataSource.start()
-        } else {
-            kpiDataSource.stop()
-        }
-
         sessionController?.stop()
         sessionController = null
         statusCollectionJob?.cancel()

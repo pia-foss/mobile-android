@@ -83,8 +83,6 @@ class ConnectionInfoProviderImpl(
             ConnectionStatus.RECONNECTING,
         ).contains(currentConnectionStatus.value)
 
-    override fun isNotDisconnected(): Boolean = currentConnectionStatus.value != ConnectionStatus.DISCONNECTED
-
     override fun updateInfo(
         name: String,
         iso: String,

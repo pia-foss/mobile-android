@@ -2,11 +2,8 @@ package com.kape.vpnconnect.data
 
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
-import com.kape.contracts.KpiDataSource
-import com.kape.contracts.UsageProvider
 import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.vpnconnect.platformsdk.ServiceLogger
@@ -38,9 +35,6 @@ class ConnectionDataSourceImplTest {
     private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)
     private val workManager = mockk<WorkManager>(relaxed = true)
     private val settingsPrefs = mockk<SettingsPrefs>(relaxed = true)
-    private val kpiDataSource = mockk<KpiDataSource>(relaxed = true)
-    private val usageProvider = mockk<UsageProvider>(relaxed = true)
-    private val csiPrefs = mockk<CsiPrefs>(relaxed = true)
 
     private fun newDataSource(scope: CoroutineScope) =
         ConnectionDataSourceImpl(
@@ -48,9 +42,6 @@ class ConnectionDataSourceImplTest {
             connectionPrefs = connectionPrefs,
             workManager = workManager,
             settingsPrefs = settingsPrefs,
-            kpiDataSource = kpiDataSource,
-            usageProvider = usageProvider,
-            csiPrefs = csiPrefs,
             ioScope = scope,
         )
 

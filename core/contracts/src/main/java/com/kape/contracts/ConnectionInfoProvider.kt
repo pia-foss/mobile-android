@@ -23,8 +23,6 @@ interface ConnectionInfoProvider {
 
     fun isInConnectState(): Boolean
 
-    fun isNotDisconnected(): Boolean
-
     fun updateInfo(
         name: String,
         iso: String,

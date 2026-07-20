@@ -161,7 +161,7 @@ class SettingsViewModel(
         viewModelScope.launch(ioDispatcher) {
             prefs.setDebugLoggingEnabled(enabled)
             if (enabled.not()) {
-                csiPrefs.clearCustomDebugLogs()
+                csiPrefs.clearProtocolDebugLogs()
             }
         }
 
@@ -417,11 +417,11 @@ class SettingsViewModel(
 
     fun sendLogs() =
         viewModelScope.launch(ioDispatcher) {
-            val logs = connectionDataSource.getDebugLogs()
+            val logs = getDebugLogsUseCase.getDebugLogs()
             csiPrefs.setProtocolDebugLogs(logs.joinToString(separator = "\n"))
             val result = sendLogUseCase.sendLog()
             requestId.value = result
-            csiPrefs.clearCustomDebugLogs()
+            csiPrefs.clearProtocolDebugLogs()
         }
 
     fun resetRequestId() {
@@ -443,20 +443,19 @@ class SettingsViewModel(
     fun reconnect() {
         viewModelScope.launch {
             connectionPrefs.selectedVpnServer.first()?.let {
-                connectionManager.connectJob =
-                    viewModelScope.launch(ioDispatcher) {
-                        if (connectionManager.isConnectionInProgress()) {
-                            connectionManager.disconnect()
-                        }
-                        connectionManager.connect(
-                            it,
-                            true,
-                            ::callback,
-                            {
-                                // no-op for now, might be used for fallback
-                            },
-                        )
+                viewModelScope.launch(ioDispatcher) {
+                    if (connectionManager.isConnectionInProgress()) {
+                        connectionManager.disconnect()
                     }
+                    connectionManager.connect(
+                        it,
+                        true,
+                        ::callback,
+                        {
+                            // no-op for now, might be used for fallback
+                        },
+                    )
+                }
             }
         }
     }

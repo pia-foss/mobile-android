@@ -10,7 +10,6 @@ import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.ConnectionStatusProvider
-import com.kape.data.DI
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -28,10 +27,9 @@ import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,7 +38,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.qualifier.named
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ConnectionManagerImpl :
@@ -57,7 +54,6 @@ class ConnectionManagerImpl :
     private val connectionStatusProvider: ConnectionStatusProvider by inject()
     private val regionListProvider: RegionListProvider by inject()
     private val authenticationDataSource: AuthenticationDataSource by inject()
-    private val vpnScope: CoroutineScope by inject(named(DI.IO_SCOPE))
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val context: Context by inject()
 
@@ -73,61 +69,11 @@ class ConnectionManagerImpl :
     // Non-null only while a bind is in progress (service not yet connected).
     private var serviceDeferred: CompletableDeferred<PiaService>? = null
 
-    /**
-     * Conflated channel ensures:
-     * - rapid reconnect calls overwrite previous ones
-     * - only the latest request is processed
-     */
-    private val reconnectChannel =
-        Channel<Pair<VpnServer, () -> Unit>>(capacity = Channel.CONFLATED)
+    // The in-flight connect() attempt, if any. disconnect() cancels it so a newer
+    // request always supersedes one that hasn't reached Connected yet.
+    private var connectionJob: Job? = null
 
     private val connectionInProgress = AtomicBoolean(false)
-
-    override var connectJob: Job? = null
-
-    init {
-        startReconnectProcessor()
-    }
-
-    /**
-     * Single consumer loop that guarantees:
-     * - sequential VPN transitions
-     * - no UI blocking
-     * - no reconnect storms
-     */
-    private fun startReconnectProcessor() {
-        vpnScope.launch {
-            for ((server, stopCallback) in reconnectChannel) {
-                handleReconnect(server, stopCallback)
-            }
-        }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private suspend fun handleReconnect(
-        server: VpnServer,
-        stopCallback: () -> Unit,
-    ) {
-        connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
-
-        disconnect()
-
-        // A newer reconnect request arrived during disconnect; let the loop handle it.
-        if (!reconnectChannel.isEmpty) return
-
-        try {
-            connect(
-                server,
-                isManual = true,
-                stopCallback,
-                {
-                    // TODO: this function will be used as the upcoming fallback implementation
-                },
-            )
-        } catch (_: Exception) {
-            // Swallow to keep processor alive and allow newer state to apply
-        }
-    }
 
     override suspend fun connect(
         server: VpnServer,
@@ -137,27 +83,28 @@ class ConnectionManagerImpl :
     ) {
         if (server.endpoints[mapProtocolToServerGroup()].isNullOrEmpty()) {
             showDialog()
-        } else {
-            connectionInProgress.set(true)
-
-            connectionInfoProvider.updateInfo(server.name, server.iso, isManual)
-            connectionPrefs.setSelectedVpnServer(server)
-            connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
-
-            val dns = settingsPrefs.getSelectedDnsOptionNow()
-            val shadowsocksOk = startShadowsocks(stopCallback)
-            if (!shadowsocksOk) {
-                connectionInProgress.set(false)
-                return
-            }
-
-            scope
-                .launch {
-                    val service = startServiceIfNeeded()
-                    val excluded = settingsPrefs.getVpnExcludedAppsNow()
-                    service.startVpn(dns, excluded)
-                }.join()
+            return
         }
+
+        connectionInProgress.set(true)
+
+        connectionInfoProvider.updateInfo(server.name, server.iso, isManual)
+        connectionPrefs.setSelectedVpnServer(server)
+        connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
+
+        val dns = settingsPrefs.getSelectedDnsOptionNow()
+        if (!startShadowsocks(stopCallback)) {
+            connectionInProgress.set(false)
+            return
+        }
+
+        connectionJob =
+            scope.launch {
+                val service = startServiceIfNeeded()
+                val excluded = settingsPrefs.getVpnExcludedAppsNow()
+                service.startVpn(dns, excluded)
+            }
+        connectionJob?.join()
     }
 
     override suspend fun connectToLastKnownOrOptimalServer() {
@@ -190,6 +137,9 @@ class ConnectionManagerImpl :
     }
 
     override suspend fun disconnect() {
+        connectionJob?.cancelAndJoin()
+        connectionJob = null
+
         scope
             .launch {
                 serviceDeferred?.cancel()
@@ -212,18 +162,22 @@ class ConnectionManagerImpl :
             }.join()
     }
 
-    /**
-     * Non-blocking:
-     * - only enqueues latest server request
-     * - never suspends caller
-     */
     override suspend fun reconnect(
         server: VpnServer,
         stopCallback: () -> Unit,
     ) {
         connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
 
-        reconnectChannel.trySend(server to stopCallback)
+        disconnect()
+
+        connect(
+            server,
+            isManual = true,
+            stopCallback,
+            showDialog = {
+                // TODO: this function will be used as the upcoming fallback implementation
+            },
+        )
     }
 
     override fun isConnectionInProgress(): Boolean = connectionInProgress.get()
