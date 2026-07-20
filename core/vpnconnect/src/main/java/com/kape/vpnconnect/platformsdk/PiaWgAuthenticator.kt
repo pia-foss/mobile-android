@@ -30,13 +30,11 @@ class PiaWgAuthenticator(
     // captured and silently dropped, and every WireGuard connection attempt times out.
     protect: (Socket) -> Boolean,
 ) : WireGuardAuthenticator {
-    private val logger = KapeLogger("com.kape.vpn", "--- WireGuardAuthenticator")
     private val certificatePinningClient = CertificatePinningClientImpl(caCertificate, protect)
     private val client = certificatePinningClient.client()
 
     override suspend fun authenticate(endpointConfiguration: WireGuardEndpointConfiguration): WireGuardAuthConfiguration {
         val authIp = endpointConfiguration.authIp.asString()
-        logger.debug("Fetching WireGuard token — endpoint=$authIp:${endpointConfiguration.authPort}")
 
         certificatePinningClient.setKnownEndpointCommonName(
             listOf(authIp to endpointConfiguration.certDn),

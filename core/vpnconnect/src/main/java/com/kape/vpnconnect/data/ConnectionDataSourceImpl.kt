@@ -10,12 +10,13 @@ import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.settings.data.VpnProtocols
 import com.kape.vpnconnect.domain.ConnectionDataSource
+import com.kape.vpnconnect.platformsdk.ServiceLogger
 import com.kape.vpnconnect.worker.PortForwardingWorker
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
@@ -121,21 +122,14 @@ class ConnectionDataSourceImpl(
         }
     }
 
-    override suspend fun getDebugLogs(): List<String> =
-        suspendCancellableCoroutine { cont ->
-//            val target =
-//                when (settingsPrefs.selectedProtocol.value) {
-//                    VpnProtocols.WireGuard -> VPNManagerProtocolTarget.WIREGUARD
-//                    VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
-//                }
-//            connectionApi.getVpnProtocolLogs(target) {
-//                if (it.isSuccess) {
-//                    cont.resume(it.getOrDefault(emptyList()))
-//                } else {
-//                    cont.resume(emptyList())
-//                }
-//            }
-        }
+    override suspend fun getDebugLogs(): List<String> {
+        val tag =
+            when (settingsPrefs.getSelectedProtocolNow()) {
+                VpnProtocols.WireGuard -> ServiceLogger.VpnServiceLoggerTag.WireGuard
+                VpnProtocols.OpenVPN -> ServiceLogger.VpnServiceLoggerTag.OpenVpn
+            }
+        return ServiceLogger(tag).getLogs()
+    }
 
 //    override suspend fun updateConfigurationServers(servers: ServerList): Boolean =
 //        suspendCancellableCoroutine { cont ->

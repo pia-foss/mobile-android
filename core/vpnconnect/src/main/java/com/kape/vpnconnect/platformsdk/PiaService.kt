@@ -20,16 +20,15 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.platformsdk.vpn.openvpn.OpenVpnConnectionController
 import com.kape.platformsdk.vpn.service.KapeSessionController
 import com.kape.platformsdk.vpn.service.KapeSystemTunnel
-import com.kape.platformsdk.vpn.service.VpnServiceLogger
 import com.kape.platformsdk.vpn.service.analytics.DisconnectReason
 import com.kape.platformsdk.vpn.service.models.IpAddress
 import com.kape.platformsdk.vpn.service.models.KapeKillSwitchMode
 import com.kape.platformsdk.vpn.service.models.KapeSplitTunnelAppMode
 import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
-import com.kape.platformsdk.vpn.service.models.KapeVpnTrafficStats
 import com.kape.platformsdk.vpn.wireguard.KapeWireGuardConnectionController
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.data.DnsOptions
+import com.kape.settings.data.VpnProtocols
 import com.kape.utils.VpnNotificationManager
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
@@ -71,13 +70,9 @@ class PiaService :
 
     private val _connectionStatus = MutableStateFlow(KapeVPNConnectionStatus.Disconnected)
     val connectionStatus: StateFlow<KapeVPNConnectionStatus> = _connectionStatus.asStateFlow()
-    private val _trafficStats = MutableStateFlow(KapeVpnTrafficStats.ZERO)
-    val trafficStats: StateFlow<KapeVpnTrafficStats> = _trafficStats.asStateFlow()
 
     private val job = SupervisorJob()
     val scope = CoroutineScope(Dispatchers.IO + job)
-
-    private val logger = KapeLogger("com.kape.vpn", "VpnService")
 
     inner class LocalBinder : Binder() {
         fun getService(): PiaService = this@PiaService
@@ -122,7 +117,6 @@ class PiaService :
         // ConnectionManagerImpl.connect() first — EXTRA_MANUAL_START is only ever set by our own
         // connect flow, so its absence means the system started us and expects a connection.
         if (intent?.getBooleanExtra(EXTRA_MANUAL_START, false) != true) {
-            logger.info("System-triggered start — connecting to last known/optimal server")
             scope.launch { connectionManager.connectToLastKnownOrOptimalServer() }
         }
 
@@ -133,8 +127,6 @@ class PiaService :
         selectedDnsOptions: DnsOptions,
         vpnExcluded: List<String>,
     ) {
-        logger.info("startVpn invoked")
-
         if (settingsPrefs.isHelpImprovePiaEnabled.first()) {
             kpiDataSource.start()
         } else {
@@ -162,10 +154,19 @@ class PiaService :
                 // blocked rather than allowed to bypass the tunnel.
                 KapeKillSwitchMode.Advanced
             }
+
+        val vpnServiceLogger =
+            ServiceLogger(
+                when (settingsPrefs.getSelectedProtocolNow()) {
+                    VpnProtocols.WireGuard -> ServiceLogger.VpnServiceLoggerTag.WireGuard
+                    VpnProtocols.OpenVPN -> ServiceLogger.VpnServiceLoggerTag.OpenVpn
+                },
+            )
+
         val systemTunnel =
             KapeSystemTunnel(
                 this,
-                logger,
+                vpnServiceLogger,
                 killSwitchMode = killSwitchMode,
                 splitTunnelAppMode =
                     if (vpnExcluded.isEmpty()) {
@@ -188,14 +189,14 @@ class PiaService :
             KapeWireGuardConnectionController(
                 systemTunnel = systemTunnel,
                 authenticator = authenticator,
-                logger = KapeLogger("com.kape.vpn", "WireGuardController") as VpnServiceLogger,
+                logger = vpnServiceLogger,
             )
         val openVpnController =
             OpenVpnConnectionController(
                 context = this,
                 systemTunnel = systemTunnel,
                 coroutineScope = scope,
-                logger = KapeLogger("com.kape.vpn", "SessionController") as VpnServiceLogger,
+                logger = vpnServiceLogger,
             )
 
         val configurationGenerator =
@@ -233,14 +234,12 @@ class PiaService :
     }
 
     suspend fun stopSessionController(reason: DisconnectReason = DisconnectReason.UserInitiated) {
-        logger.info("stopSessionController invoked")
         statusCollectionJob?.cancel()
         statusCollectionJob = null
         sessionController?.stop(reason)
         sessionController = null
         usageProvider.reset()
         _connectionStatus.update { KapeVPNConnectionStatus.Disconnected }
-        _trafficStats.update { KapeVpnTrafficStats.ZERO }
     }
 
     override fun onDestroy() {

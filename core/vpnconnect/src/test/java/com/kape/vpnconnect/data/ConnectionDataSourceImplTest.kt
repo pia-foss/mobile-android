@@ -8,18 +8,21 @@ import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.settings.data.VpnProtocols
+import com.kape.vpnconnect.platformsdk.ServiceLogger
 import com.privateinternetaccess.account.AndroidAccountAPI
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.unmockkConstructor
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 /**
@@ -113,17 +116,21 @@ class ConnectionDataSourceImplTest {
     // region getDebugLogs
 
     @Test
-    fun `getDebugLogs - current stub body never resumes the caller`() =
+    fun `getDebugLogs - delegates to a ServiceLogger tagged for the selected protocol`() =
         runTest {
-            val dataSource = newDataSource(this)
+            mockkConstructor(ServiceLogger::class)
+            try {
+                coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.WireGuard
+                coEvery { anyConstructed<ServiceLogger>().getLogs() } returns listOf("log1", "log2")
 
-            // getDebugLogs()'s body is entirely commented out pending the platform-SDK
-            // migration, so the suspendCancellableCoroutine it returns is never resumed. This
-            // pins down that known gap so restoring the implementation forces this test to be
-            // updated, rather than the regression going unnoticed.
-            val result = withTimeoutOrNull(100) { dataSource.getDebugLogs() }
+                val dataSource = newDataSource(this)
 
-            assertNull(result)
+                val result = dataSource.getDebugLogs()
+
+                assertEquals(listOf("log1", "log2"), result)
+            } finally {
+                unmockkConstructor(ServiceLogger::class)
+            }
         }
 
     // endregion
