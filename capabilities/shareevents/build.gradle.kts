@@ -8,9 +8,6 @@ plugins {
 
 android {
     namespace = "com.kape.shareevents"
-
-    compileOptions {
-    }
 }
 
 dependencies {

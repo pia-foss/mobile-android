@@ -17,6 +17,8 @@ import com.kape.login.utils.LoginState
 import com.kape.login.utils.getScreenState
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.permissions.utils.PermissionUtil
+import com.kape.shareevents.data.processingSuccess
+import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +34,7 @@ class LoginViewModel(
     private val loginWithReceiptHandler: LoginWithReceiptHandler,
     private val buildConfigProvider: BuildConfigProvider,
     private val permissionsUtil: PermissionUtil,
+    private val submitKpiEventUseCase: SubmitKpiEventUseCase,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
@@ -82,6 +85,7 @@ class LoginViewModel(
                                 packageName,
                             )
                         if (state == LoginState.Successful) {
+                            submitKpiEventUseCase.submitEvent(processingSuccess())
                             router.updateDestination(permissionsUtil.getNextDestination())
                         } else {
                             _state.emit(getScreenState(state))

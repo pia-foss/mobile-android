@@ -54,6 +54,7 @@ dependencies {
     implementation(project(":core:vpnconnect"))
 
     implementation(project(":capabilities:buildconfig"))
+    implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:ui"))
 
     implementation(project(":features:permissions"))
@@ -61,6 +62,7 @@ dependencies {
     // prefs
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
+    implementation(libs.mobile.shared.kpi)
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.android)

@@ -5,6 +5,7 @@ import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.permissions.utils.PermissionUtil
+import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.signup.data.EmailDataSourceImpl
 import com.kape.signup.data.Identifier
 import com.kape.signup.data.IdentifierImpl
@@ -56,6 +57,7 @@ class SignupModule {
         signupHandler: SignupHandler,
         permissionUtil: PermissionUtil,
         networkConnectionListener: NetworkConnectionListener,
+        submitEventUseCase: SubmitKpiEventUseCase,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): SignupViewModel =
@@ -65,6 +67,7 @@ class SignupModule {
             consentUseCase,
             signupHandler,
             permissionUtil,
+            submitEventUseCase,
             ioDispatcher,
             mainDispatcher,
             networkConnectionListener,
