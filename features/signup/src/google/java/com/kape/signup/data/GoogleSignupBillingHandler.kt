@@ -72,7 +72,7 @@ class GoogleSignupBillingHandler(
                                             }
                                         },
                                         true,
-                                        mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice),
+                                        mainPrice = formatter.formatYearlyPlanV2(yearlyPlan.formattedPrice),
                                         secondaryPrice =
                                             formatter.formatYearlyPerMonth(
                                                 yearlyPlan.formattedPrice,

@@ -114,7 +114,7 @@ fun SignupDedicatedIpScreen() =
                         viewModel.dipYearlyPlan.value
                             ?.yearlyPrice
                             .toString(),
-                    perMonthPrice =
+                    additionalText =
                         viewModel.dipYearlyPlan.value
                             ?.monthlyPrice
                             .toString(),

@@ -13,6 +13,7 @@ class PriceFormatter(
     private val context: Context,
 ) {
     fun formatYearlyPlan(cost: String): String = context.getString(com.kape.ui.R.string.yearly_ending).format(cost)
+    fun formatYearlyPlanV2(cost: String): String = context.getString(com.kape.ui.R.string.year_ending).format(cost)
 
     fun formatYearlyPerMonth(
         cost: String,

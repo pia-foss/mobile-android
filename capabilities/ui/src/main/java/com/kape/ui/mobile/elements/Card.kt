@@ -26,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
@@ -53,8 +52,11 @@ import com.kape.ui.utils.LocalColors
 fun YearlySubscriptionCard(
     selected: Boolean,
     price: String,
-    perMonthPrice: String,
+    additionalText: String,
     modifier: Modifier,
+    selectedCardColor: Color = LocalColors.current.surface,
+    unselectedCardColor: Color = Color.Transparent,
+    bestValueBannerText: String = stringResource(id = R.string.best_value),
     onClick: () -> Unit,
 ) {
     Card(
@@ -65,7 +67,7 @@ fun YearlySubscriptionCard(
         shape = RoundedCornerShape(12.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = if (selected) LocalColors.current.surface else Color.Transparent,
+                containerColor = if (selected) selectedCardColor else unselectedCardColor,
             ),
         border =
             if (selected) {
@@ -94,7 +96,7 @@ fun YearlySubscriptionCard(
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     SignUpPricePerMonthText(
-                        content = perMonthPrice,
+                        content = additionalText,
                         modifier = Modifier.align(CenterVertically),
                     )
                 }
@@ -109,7 +111,7 @@ fun YearlySubscriptionCard(
                             ),
                 ) {
                     BestValueBannerText(
-                        content = stringResource(id = R.string.best_value),
+                        content = bestValueBannerText,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     )
                 }
@@ -123,6 +125,9 @@ fun MonthlySubscriptionCard(
     selected: Boolean,
     price: String,
     modifier: Modifier,
+    additionalText: String = "",
+    selectedCardColor: Color = LocalColors.current.surface,
+    unselectedCardColor: Color = Color.Transparent,
     onClick: () -> Unit,
 ) {
     Card(
@@ -133,7 +138,7 @@ fun MonthlySubscriptionCard(
         shape = RoundedCornerShape(12.dp),
         colors =
             CardDefaults.cardColors(
-                containerColor = if (selected) LocalColors.current.surface else Color.Transparent,
+                containerColor = if (selected) selectedCardColor else unselectedCardColor,
             ),
         border =
             if (selected) {
@@ -155,10 +160,17 @@ fun MonthlySubscriptionCard(
                     content = stringResource(id = R.string.monthly),
                     modifier = Modifier.padding(vertical = 16.dp),
                 )
-                SignUpPriceText(
-                    content = price,
-                    modifier = Modifier.wrapContentWidth(),
-                )
+                Row {
+                    SignUpPriceText(
+                        content = price,
+                        modifier = Modifier.wrapContentWidth(),
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    SignUpPricePerMonthText(
+                        content = additionalText,
+                        modifier = Modifier.align(CenterVertically),
+                    )
+                }
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
