@@ -128,6 +128,7 @@ private fun AppBarContent(
                         title = title,
                         onRightIconClick = onRightIconClick,
                         R.drawable.ic_reorder,
+                        rightIconTestTag = ":AppBar:reorder",
                     )
                 }
 
@@ -137,6 +138,7 @@ private fun AppBarContent(
                         title = title,
                         onRightIconClick = onRightIconClick,
                         R.drawable.ic_save,
+                        rightIconTestTag = ":AppBar:save",
                     )
                 }
 
@@ -199,6 +201,7 @@ private fun AppBarConnectionStatus(
     title: String? = null,
     onRightIconClick: (() -> Unit)? = null,
     rightIconId: Int? = null,
+    rightIconTestTag: String? = null,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -226,6 +229,7 @@ private fun AppBarConnectionStatus(
                 modifier =
                     Modifier
                         .align(CenterEnd)
+                        .testTag(rightIconTestTag.orEmpty())
                         .semantics {
                             hideFromAccessibility()
                         },

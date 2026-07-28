@@ -60,6 +60,7 @@ fun SettingsScreen() =
                         onClick = {
                             viewModel.navigateToGeneralSettings()
                         },
+                        testTag = ":SettingsScreen:General",
                     )
                     SettingsItem(
                         iconId = R.drawable.ic_settings_protocols,
@@ -94,6 +95,7 @@ fun SettingsScreen() =
                         onClick = {
                             viewModel.navigateToAutomation()
                         },
+                        testTag = ":SettingsScreen:Automation",
                     )
                     if (shouldShowObfuscation) {
                         SettingsItem(

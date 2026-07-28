@@ -351,13 +351,17 @@ fun IPText(
 }
 
 @Composable
-fun ConnectionInfoText(content: String) {
+fun ConnectionInfoText(
+    content: String,
+    testTag: String = "",
+) {
     Text(
         text = content,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         color = LocalColors.current.onSurface,
         style = PiaTypography.body3,
+        modifier = Modifier.testTag(testTag),
     )
 }
 

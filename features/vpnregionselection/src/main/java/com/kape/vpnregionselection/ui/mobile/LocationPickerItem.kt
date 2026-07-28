@@ -143,7 +143,9 @@ fun LocationPickerItem(
                         Spacer(modifier = Modifier.width(8.dp))
                         RegionSelectionLatencyText(
                             "${server.latency}ms",
-                            Modifier.align(CenterVertically),
+                            Modifier
+                                .align(CenterVertically)
+                                .testTag("$testTag:latency"),
                         )
                     }
                 }
@@ -155,6 +157,7 @@ fun LocationPickerItem(
                     modifier =
                         Modifier
                             .align(CenterVertically)
+                            .testTag("$testTag:favorite")
                             .clickable {
                                 onFavoriteVpnClick(server.name)
                             },

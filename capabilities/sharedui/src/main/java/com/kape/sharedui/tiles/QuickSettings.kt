@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -43,6 +44,7 @@ fun QuickSettings(
                 modifier =
                     Modifier
                         .weight(1f)
+                        .testTag(":QuickSettings:automation")
                         .clickable {
                             onAutomationClick()
                         },
@@ -54,6 +56,7 @@ fun QuickSettings(
                 modifier =
                     Modifier
                         .weight(1f)
+                        .testTag(":QuickSettings:kill_switch")
                         .clickable {
                             onKillSwitchClick()
                         },
@@ -65,6 +68,7 @@ fun QuickSettings(
                 modifier =
                     Modifier
                         .weight(1f)
+                        .testTag(":QuickSettings:protocols")
                         .clickable { onProtocolsClick() },
             )
         }

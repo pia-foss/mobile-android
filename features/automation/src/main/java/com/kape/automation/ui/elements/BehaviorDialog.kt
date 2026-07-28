@@ -18,9 +18,13 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.kape.ui.R
@@ -28,7 +32,7 @@ import com.kape.ui.mobile.text.DialogActionText
 import com.kape.ui.mobile.text.DialogTitleText
 import com.kape.ui.utils.LocalColors
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun BehaviorDialog(
     status: String,
@@ -64,7 +68,11 @@ fun BehaviorDialog(
                 }
 
             Column(
-                Modifier.fillMaxWidth(),
+                Modifier
+                    .fillMaxWidth()
+                    .semantics {
+                        testTagsAsResourceId = true
+                    },
             ) {
                 DialogTitleText(
                     content = stringResource(id = R.string.dialog_title),
@@ -75,10 +83,11 @@ fun BehaviorDialog(
                                 LocalColors.current.surface,
                             ).padding(16.dp),
                 )
-                radioOptions.forEach { text ->
+                radioOptions.forEachIndexed { index, text ->
                     Row(
                         Modifier
                             .fillMaxWidth()
+                            .testTag(":BehaviorDialog:option_$index")
                             .selectable(
                                 selected = (text == selectedOption.value),
                                 onClick = {
@@ -107,18 +116,22 @@ fun BehaviorDialog(
                     DialogActionText(
                         content = stringResource(id = android.R.string.cancel),
                         modifier =
-                            Modifier.clickable {
-                                showDialog.value = false
-                            },
+                            Modifier
+                                .testTag(":BehaviorDialog:cancel")
+                                .clickable {
+                                    showDialog.value = false
+                                },
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     DialogActionText(
                         content = stringResource(id = android.R.string.ok),
                         modifier =
-                            Modifier.clickable {
-                                onItemSelected(selectedOption.value)
-                                showDialog.value = false
-                            },
+                            Modifier
+                                .testTag(":BehaviorDialog:ok")
+                                .clickable {
+                                    onItemSelected(selectedOption.value)
+                                    showDialog.value = false
+                                },
                     )
                 }
             }

@@ -91,8 +91,9 @@ jobs:
           api-level: 33
           arch: x86_64
           profile: pixel_4
-          disk-size: 2G
-          ram-size: 2048M
+          cores: 4
+          disk-size: 4G
+          ram-size: 4096M
           emulator-boot-timeout: 480
           disable-animations: true
           disable-spellchecker: true

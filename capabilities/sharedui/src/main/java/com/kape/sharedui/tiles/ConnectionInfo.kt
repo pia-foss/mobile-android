@@ -42,14 +42,14 @@ fun ConnectionInfo(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                InfoRow(iconId = R.drawable.ic_connection, label = connection)
-                InfoRow(iconId = R.drawable.ic_port, label = port)
-                InfoRow(iconId = R.drawable.ic_authentication, label = auth)
+                InfoRow(iconId = R.drawable.ic_connection, label = connection, testTag = ":Text:connectionInfoConnection")
+                InfoRow(iconId = R.drawable.ic_port, label = port, testTag = ":Text:connectionInfoPort")
+                InfoRow(iconId = R.drawable.ic_authentication, label = auth, testTag = ":Text:connectionInfoAuth")
             }
             Column(modifier = Modifier.weight(1f)) {
-                InfoRow(iconId = R.drawable.ic_socket, label = transport)
-                InfoRow(iconId = R.drawable.ic_encryption, label = encryption)
-                InfoRow(iconId = R.drawable.ic_handshake, label = handshake)
+                InfoRow(iconId = R.drawable.ic_socket, label = transport, testTag = ":Text:connectionInfoTransport")
+                InfoRow(iconId = R.drawable.ic_encryption, label = encryption, testTag = ":Text:connectionInfoEncryption")
+                InfoRow(iconId = R.drawable.ic_handshake, label = handshake, testTag = ":Text:connectionInfoHandshake")
             }
         }
     }
@@ -59,6 +59,7 @@ fun ConnectionInfo(
 fun InfoRow(
     iconId: Int,
     label: String,
+    testTag: String = "",
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -71,6 +72,6 @@ fun InfoRow(
             modifier = Modifier.size(24.dp),
         )
         Spacer(modifier = Modifier.width(8.dp))
-        ConnectionInfoText(content = label)
+        ConnectionInfoText(content = label, testTag = testTag)
     }
 }

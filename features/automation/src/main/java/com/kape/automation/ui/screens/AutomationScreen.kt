@@ -21,10 +21,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
@@ -88,6 +91,7 @@ fun AutomationScreen() =
         }
     }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AutomationScreenContent(
     appBarViewModel: AppBarViewModel,
@@ -104,7 +108,10 @@ fun AutomationScreenContent(
             modifier =
                 Modifier
                     .padding(it)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .semantics {
+                        testTagsAsResourceId = true
+                    },
             horizontalAlignment = CenterHorizontally,
         ) {
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
@@ -161,6 +168,7 @@ fun AutomationScreenContent(
                             onClick = {
                                 onNetworkCardClick(networkItem)
                             },
+                            testTag = ":AutomationScreen:networkCard_${networkItem.networkType}",
                         )
                     }
                 }

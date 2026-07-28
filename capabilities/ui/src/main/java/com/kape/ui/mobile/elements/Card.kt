@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -289,11 +290,13 @@ fun NetworkCard(
     color: Color,
     isDefault: Boolean,
     onClick: () -> Unit,
+    testTag: String = "",
 ) {
     Card(
         modifier =
             Modifier
                 .padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp)
+                .testTag(testTag)
                 .clickable {
                     onClick()
                 },

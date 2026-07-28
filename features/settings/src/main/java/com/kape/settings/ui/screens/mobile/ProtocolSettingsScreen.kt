@@ -136,12 +136,14 @@ fun OpenVpnProtocolSettingsScreen(
     SettingsItem(
         titleId = R.string.protocol_transport_title,
         subtitle = openVpnSettings.transport.value,
+        testTag = ":ProtocolSettingsScreen:transport",
     ) {
         transportDialogVisible.value = !transportDialogVisible.value
     }
     SettingsItem(
         titleId = R.string.protocol_data_encryption_title,
         subtitle = openVpnSettings.dataEncryption.value,
+        testTag = ":ProtocolSettingsScreen:data_encryption",
     ) {
         encryptionDialogVisible.value = !encryptionDialogVisible.value
     }
