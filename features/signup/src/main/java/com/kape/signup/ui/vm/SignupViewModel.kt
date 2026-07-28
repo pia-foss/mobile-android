@@ -10,6 +10,8 @@ import com.kape.data.LoginWithCredentials
 import com.kape.data.TvWelcome
 import com.kape.data.WebDestination
 import com.kape.permissions.utils.PermissionUtil
+import com.kape.shareevents.data.processingPurchaseEvent
+import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.domain.SignupHandler
@@ -36,6 +38,7 @@ class SignupViewModel(
     private val consentUseCase: ConsentUseCase,
     private val signupHandler: SignupHandler,
     private val permissionUtil: PermissionUtil,
+    private val submitKpiEventUseCase: SubmitKpiEventUseCase,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
@@ -63,6 +66,7 @@ class SignupViewModel(
         id: String,
         activity: Activity,
     ) = viewModelScope.launch(ioDispatcher) {
+        submitKpiEventUseCase.submitEvent(processingPurchaseEvent())
         billingHandler.purchase(id, activity)
     }
 

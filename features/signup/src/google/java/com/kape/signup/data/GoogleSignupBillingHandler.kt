@@ -6,6 +6,9 @@ import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseState
+import com.kape.shareevents.data.processingFailure
+import com.kape.shareevents.data.processingSuccess
+import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.utils.CONSENT
 import com.kape.signup.utils.LOADING
@@ -30,6 +33,7 @@ class GoogleSignupBillingHandler(
     private val subscriptionPrefs: SubscriptionPrefs,
     private val subscriptionsUseCase: GetSubscriptionsUseCase,
     private val formatter: PriceFormatter,
+    private val submitEventUseCase: SubmitKpiEventUseCase,
 ) : SignupBillingHandler {
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
     override val billingState: Flow<SignupScreenState> = _billingState
@@ -100,9 +104,12 @@ class GoogleSignupBillingHandler(
                         }
                     }
                     PurchaseState.PurchaseFailed -> {
-                        // TODO: handle error
+                        submitEventUseCase.submitEvent(processingFailure("PurchaseFailed"))
                     }
-                    PurchaseState.PurchaseSuccess -> _billingState.emit(CONSENT)
+                    PurchaseState.PurchaseSuccess -> {
+                        submitEventUseCase.submitEvent(processingSuccess())
+                        _billingState.emit(CONSENT)
+                    }
                     PurchaseState.NoInAppPurchase -> _billingState.emit(NO_IN_APP_SUBSCRIPTIONS)
                     PurchaseState.Disconnected -> {}
                 }

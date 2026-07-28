@@ -32,7 +32,7 @@ class SubmitKpiEventUseCaseTest : KoinTest {
         isManualConnection: Boolean,
         event: KpiConnectionEvent,
     ) {
-        every { api.submit(any(), any()) } returns Unit
+        every { api.submitConnectionEvent(any(), any()) } returns Unit
         mockkStatic(SystemClock::class)
         every { SystemClock.elapsedRealtime() } returns 0
         val expected =
@@ -41,7 +41,7 @@ class SubmitKpiEventUseCaseTest : KoinTest {
             useCase.submitConnectionEvent(KpiConnectionStatus.Connecting, isManualConnection)
         }
         useCase.submitConnectionEvent(status, isManualConnection)
-        verify { api.submit(event, expected) }
+        verify { api.submitConnectionEvent(event, expected) }
     }
 
     companion object {

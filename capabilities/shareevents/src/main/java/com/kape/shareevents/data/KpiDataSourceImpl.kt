@@ -32,7 +32,7 @@ class KpiDataSourceImpl(
         api.stop { }
     }
 
-    override fun submit(
+    override fun submitConnectionEvent(
         connectionEvent: KpiConnectionEvent,
         connectionSource: KpiConnectionSource,
     ) {
@@ -52,10 +52,14 @@ class KpiDataSourceImpl(
         val event =
             KPIClientEvent(
                 eventName = connectionEvent.value,
-                eventProperties = getEventProperties(connectionEvent, connectionSource),
+                eventProperties = getConnectionEventProperties(connectionEvent, connectionSource),
                 eventInstant = Clock.System.now(),
             )
         api.submit(event) { }
+    }
+
+    override fun submitEvent(event: KPIClientEvent) {
+        api.submit(event) {}
     }
 
     override fun flush() {
@@ -69,7 +73,7 @@ class KpiDataSourceImpl(
             }
         }
 
-    private fun getEventProperties(
+    private fun getConnectionEventProperties(
         connectionEvent: KpiConnectionEvent,
         connectionSource: KpiConnectionSource,
     ): Map<String, String> {

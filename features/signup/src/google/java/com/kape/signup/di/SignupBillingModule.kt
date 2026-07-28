@@ -5,6 +5,7 @@ import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
+import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.signup.data.GoogleSignupBillingHandler
 import com.kape.signup.data.SignupDataSourceImpl
 import com.kape.signup.data.SignupHandlerImpl
@@ -30,12 +31,14 @@ class SignupBillingModule {
         subscriptionPrefs: SubscriptionPrefs,
         subscriptionsUseCase: GetSubscriptionsUseCase,
         formatter: PriceFormatter,
+        submitEventUseCase: SubmitKpiEventUseCase,
     ): SignupBillingHandler =
         GoogleSignupBillingHandler(
             vpnSubscriptionPaymentProvider,
             subscriptionPrefs,
             subscriptionsUseCase,
             formatter,
+            submitEventUseCase,
         )
 
     @Singleton

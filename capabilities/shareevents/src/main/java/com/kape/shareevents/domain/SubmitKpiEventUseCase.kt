@@ -4,6 +4,7 @@ import com.kape.contracts.KpiDataSource
 import com.kape.data.kpi.KpiConnectionEvent
 import com.kape.data.kpi.KpiConnectionSource
 import com.kape.data.kpi.KpiConnectionStatus
+import com.privateinternetaccess.kpi.KPIClientEvent
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -23,16 +24,16 @@ class SubmitKpiEventUseCase(
         }
         when (status) {
             KpiConnectionStatus.Connected -> {
-                api.submit(KpiConnectionEvent.ConnectionEstablished, connectionSource)
+                api.submitConnectionEvent(KpiConnectionEvent.ConnectionEstablished, connectionSource)
             }
 
             KpiConnectionStatus.Connecting -> {
-                api.submit(KpiConnectionEvent.ConnectionAttempt, connectionSource)
+                api.submitConnectionEvent(KpiConnectionEvent.ConnectionAttempt, connectionSource)
             }
 
             KpiConnectionStatus.NotConnected -> {
                 if (kpiConnectionStatus == KpiConnectionStatus.Connecting) {
-                    api.submit(KpiConnectionEvent.ConnectionCancelled, connectionSource)
+                    api.submitConnectionEvent(KpiConnectionEvent.ConnectionCancelled, connectionSource)
                 }
             }
 
@@ -41,5 +42,9 @@ class SubmitKpiEventUseCase(
             }
         }
         kpiConnectionStatus = status
+    }
+
+    fun submitEvent(event: KPIClientEvent) {
+        api.submitEvent(event)
     }
 }

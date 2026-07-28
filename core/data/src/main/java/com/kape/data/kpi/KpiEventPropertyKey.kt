@@ -10,4 +10,10 @@ sealed class KpiEventPropertyKey(
     data object VpnProtocol : KpiEventPropertyKey("vpn_protocol")
 
     data object TimeToConnect : KpiEventPropertyKey("time_to_connect")
+
+    data object Origin : KpiEventPropertyKey("origin")
+
+    data object Environment : KpiEventPropertyKey("environment")
+
+    data object Error : KpiEventPropertyKey("error")
 }

@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.mobile.shared.account)
 
     implementation(project(":capabilities:buildconfig"))
+    implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:ui"))
 
     implementation(project(":core:localprefs:prefs"))
@@ -56,6 +57,7 @@ dependencies {
     implementation(project(":features:login"))
     implementation(project(":features:permissions"))
 
+    implementation(libs.mobile.shared.kpi)
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.android)

@@ -22,6 +22,7 @@ import com.kape.login.ui.vm.tv.LoginPasswordViewModel
 import com.kape.login.ui.vm.tv.LoginUsernameViewModel
 import com.kape.login.utils.TokenAuthenticationUtil
 import com.kape.permissions.utils.PermissionUtil
+import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.utils.NetworkConnectionListener
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineDispatcher
@@ -74,6 +75,7 @@ class LoginModule {
         loginWithReceiptHandler: LoginWithReceiptHandler,
         buildConfigProvider: BuildConfigProvider,
         permissionsUtil: PermissionUtil,
+        submitKpiEventUseCase: SubmitKpiEventUseCase,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): LoginViewModel =
@@ -83,6 +85,7 @@ class LoginModule {
             loginWithReceiptHandler,
             buildConfigProvider,
             permissionsUtil,
+            submitKpiEventUseCase,
             ioDispatcher,
             networkConnectionListener,
         )

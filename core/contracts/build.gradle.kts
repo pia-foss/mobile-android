@@ -13,6 +13,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:localprefs:data"))
     implementation(libs.mobile.shared.account)
+    implementation(libs.mobile.shared.kpi)
     implementation(libs.coroutines)
     implementation(libs.bundles.serialization)
     implementation(libs.mobile.android.vpn.manager)
