@@ -29,7 +29,8 @@ import com.kape.ui.mobile.text.BestValueBannerText
 import com.kape.ui.mobile.text.SignUpDurationText
 import com.kape.ui.mobile.text.SignUpPricePerMonthText
 import com.kape.ui.mobile.text.SignUpPriceText
-import com.kape.ui.theme.warning30
+import com.kape.ui.theme.PiaTypography
+import com.kape.ui.theme.sunglow
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -49,9 +50,8 @@ fun YearlySubscriptionCard(
             ),
         colors =
             CardDefaults.colors(
-                containerColor = LocalColors.current.onPrimary,
+                containerColor = LocalColors.current.onPrimaryContainer,
                 contentColor = LocalColors.current.onSurfaceVariant,
-                focusedContainerColor = LocalColors.current.onPrimaryContainer,
                 focusedContentColor = LocalColors.current.onSurfaceVariant,
             ),
         border =
@@ -78,7 +78,8 @@ fun YearlySubscriptionCard(
             Column {
                 SignUpDurationText(
                     content = stringResource(id = R.string.yearly),
-                    modifier = Modifier.padding(vertical = 16.dp),
+                    modifier = Modifier.padding(vertical = 12.dp),
+                    style = PiaTypography.subtitle3,
                 )
                 Row {
                     SignUpPriceText(
@@ -94,10 +95,10 @@ fun YearlySubscriptionCard(
                 Box(
                     modifier =
                         Modifier
-                            .padding(vertical = 16.dp)
+                            .padding(vertical = 12.dp)
                             .wrapContentWidth()
                             .background(
-                                LocalColors.current.warning30(),
+                                LocalColors.current.sunglow(),
                                 shape = RoundedCornerShape(4.dp),
                             ),
                 ) {
@@ -127,9 +128,8 @@ fun MonthlySubscriptionCard(
             ),
         colors =
             CardDefaults.colors(
-                containerColor = LocalColors.current.onPrimary,
+                containerColor = LocalColors.current.onPrimaryContainer,
                 contentColor = LocalColors.current.onSurfaceVariant,
-                focusedContainerColor = LocalColors.current.onPrimaryContainer,
                 focusedContentColor = LocalColors.current.onSurfaceVariant,
             ),
         border =
@@ -156,7 +156,7 @@ fun MonthlySubscriptionCard(
             Column {
                 SignUpDurationText(
                     content = stringResource(id = R.string.monthly),
-                    modifier = Modifier.padding(vertical = 16.dp),
+                    modifier = Modifier.padding(vertical = 12.dp),
                 )
                 SignUpPriceText(
                     content = price,

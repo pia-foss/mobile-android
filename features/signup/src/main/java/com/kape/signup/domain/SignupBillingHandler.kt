@@ -12,6 +12,7 @@ interface SignupBillingHandler {
     fun initialize(
         scope: CoroutineScope,
         dispatcher: CoroutineDispatcher,
+        mainDispatcher: CoroutineDispatcher,
     )
 
     fun loadPrices(

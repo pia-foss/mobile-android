@@ -12,8 +12,16 @@ import java.util.Locale
 class PriceFormatter(
     private val context: Context,
 ) {
-    fun formatYearlyPlan(cost: String): String = context.getString(com.kape.ui.R.string.yearly_ending).format(cost)
-    fun formatYearlyPlanV2(cost: String): String = context.getString(com.kape.ui.R.string.year_ending).format(cost)
+    fun formatYearlyPlan(
+        cost: String,
+        slashVersion: Boolean = false
+    ): String = context.getString(
+        if (slashVersion) {
+            com.kape.ui.R.string.year_ending
+        } else {
+            com.kape.ui.R.string.yearly_ending
+        }
+    ).format(cost)
 
     fun formatYearlyPerMonth(
         cost: String,
@@ -48,6 +56,7 @@ class PriceFormatter(
         price: String,
         locale: Locale = Locale.getDefault(),
     ): Double? {
+        // TODO fix /100
         val cleaned = price.replace("[^\\d.,]".toRegex(), "").trim()
         return try {
             NumberFormat.getNumberInstance(locale).parse(cleaned)?.toDouble()

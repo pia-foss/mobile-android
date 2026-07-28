@@ -140,6 +140,8 @@ fun ColorScheme.connectionDefault() = clientDarkYellow
 
 fun ColorScheme.connectionError() = clientRed
 
+fun ColorScheme.sunglow() = Color(0xFFFFC933)
+
 private fun latencyGreen(): Color = brandGreen
 
 private fun latencyYellow(): Color = Color(0xffe6b400)

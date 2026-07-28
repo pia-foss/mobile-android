@@ -18,6 +18,7 @@ class NoOpSignupBillingHandler(
     override fun initialize(
         scope: CoroutineScope,
         dispatcher: CoroutineDispatcher,
+        mainDispatcher: CoroutineDispatcher,
     ) {
         // no-op
     }

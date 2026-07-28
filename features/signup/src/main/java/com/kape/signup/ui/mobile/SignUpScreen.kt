@@ -20,12 +20,9 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -47,19 +44,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import com.kape.signup.ui.shared.CheckmarkText
+import com.kape.signup.ui.shared.SubscriptionDescriptionText
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
-import com.kape.signup.utils.Plan
 import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
@@ -70,7 +63,6 @@ import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.YearlySubscriptionCard
 import com.kape.ui.theme.PiaTypography
-import com.kape.ui.theme.brandGreen
 import com.kape.ui.utils.LocalColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,7 +90,9 @@ fun SignUpScreen(
                 .paint(
                     painter = painterResource(com.kape.signup.R.drawable.background),
                     alignment = Alignment.TopEnd,
-                ).semantics {
+                    alpha = 0.2f,
+                )
+                .semantics {
                     testTagsAsResourceId = true
                 },
     ) {
@@ -209,7 +203,7 @@ private fun ColumnScope.PlansPresentContent(
     Spacer(modifier = Modifier.height(24.dp))
 
     Card(
-        colors = CardDefaults.cardColors(containerColor = LocalColors.current.onPrimaryContainer),
+        colors = CardDefaults.cardColors(containerColor = LocalColors.current.surfaceVariant),
     ) {
         ConstraintLayout(
             modifier =
@@ -310,13 +304,15 @@ private fun ColumnScope.PlansPresentContent(
         text = stringResource(id = R.string.subscribe_screen_log_in).uppercase(),
         style = PiaTypography.body3,
         textAlign = TextAlign.Center,
+        color = LocalColors.current.primary,
         modifier =
             Modifier
                 .padding(vertical = 12.dp)
                 .fillMaxWidth()
                 .clickable {
                     onNavigateToLogin()
-                }.testTag(":SignUpScreen:Login"),
+                }
+                .testTag(":SignUpScreen:Login"),
     )
 
     if (showBottomSheet) {
@@ -327,7 +323,7 @@ private fun ColumnScope.PlansPresentContent(
                 showBottomSheet = false
             },
             sheetState = bottomSheetState,
-            containerColor = LocalColors.current.onPrimaryContainer,
+            containerColor = LocalColors.current.surfaceVariant,
         ) {
             Column(
                 modifier =
@@ -392,6 +388,7 @@ private fun ColumnScope.PlansPresentContent(
                     text = stringResource(id = R.string.subscribe_screen_maybe_later).uppercase(),
                     style = PiaTypography.body3,
                     textAlign = TextAlign.Center,
+                    color = LocalColors.current.primary,
                     modifier =
                         Modifier
                             .padding(vertical = 12.dp)
@@ -425,36 +422,5 @@ private fun ColumnScope.NoPlansContent(onNavigateToLogin: () -> Unit) {
         modifier =
             Modifier.fillMaxWidth(),
         onClick = onNavigateToLogin,
-    )
-}
-
-@Composable
-private fun SubscriptionDescriptionText(
-    subscriptionData: SubscriptionData,
-    selectedPlan: Plan,
-) {
-    Text(
-        text =
-            buildAnnotatedString {
-                if (selectedPlan == subscriptionData.yearly) {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(
-                            stringResource(R.string.subscribe_screen_trial_annually_description_headline)
-                                .format(subscriptionData.yearly.mainPrice),
-                        )
-                    }
-                    append(" ${stringResource(id = R.string.subscribe_screen_trial_annually_description)}")
-                } else {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append(
-                            stringResource(R.string.subscribe_screen_trial_monthly_description_headline)
-                                .format(subscriptionData.monthly.mainPrice),
-                        )
-                    }
-                    append(" ${stringResource(id = R.string.subscribe_screen_trial_monthly_description)}")
-                }
-            },
-        style = PiaTypography.caption1,
-        textAlign = TextAlign.Center,
     )
 }

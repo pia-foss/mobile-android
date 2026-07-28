@@ -33,12 +33,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.signup.ui.shared.CheckmarkText
+import com.kape.signup.ui.shared.SubscriptionDescriptionText
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -47,8 +47,6 @@ import com.kape.ui.tv.elements.MonthlySubscriptionCard
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.elements.TertiaryButton
 import com.kape.ui.tv.elements.YearlySubscriptionCard
-import com.kape.ui.tv.text.OnboardingDescriptionText
-import com.kape.ui.tv.text.OnboardingTitleText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -108,7 +106,6 @@ fun TvSignUpScreen() =
                         stringResource(id = R.string.subscribe_screen_unlimited_devices),
                     )
                     Spacer(modifier = Modifier.height(20.dp))
-//                    Spacer(modifier = Modifier.weight(1f))
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
@@ -182,26 +179,33 @@ fun TvSignUpScreen() =
                     Modifier
                         .weight(1f)
                         .fillMaxSize()
-                        .padding(horizontal = 48.dp, vertical = 64.dp),
+                        .padding(horizontal = 24.dp, vertical = 64.dp),
             ) {
                 Text(
                     text = buildAnnotatedString {
-                        append(stringResource(id = R.string.tv_subscribe_screen_description)
-                            .format(subscriptionData?.yearly?.mainPrice)
-                        )
-                        withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
-
-                    }
+                        val template = stringResource(id = R.string.tv_subscribe_screen_description)
+                        val price = subscriptionData?.yearly?.mainPrice ?: ""
+                        val placeholderIndex = template.indexOf("%s")
+                        if (placeholderIndex >= 0) {
+                            append(template.substring(0, placeholderIndex))
+                            withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
+                                append(price)
+                            }
+                            append(template.substring(placeholderIndex + "%s".length))
+                        } else {
+                            append(template)
+                        }
                     },
                     color = LocalColors.current.onSurface,
                     style = PiaTypography.subtitle1,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.weight(1f))
                 YearlySubscriptionCard(
                     selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
                     price = subscriptionData?.yearly?.mainPrice ?: "",
                     perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
                     modifier = Modifier
+                        .padding(horizontal = 20.dp)
                         .fillMaxWidth()
                         .focusRequester(initialFocusRequester),
                 ) {
@@ -213,22 +217,40 @@ fun TvSignUpScreen() =
                 MonthlySubscriptionCard(
                     selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
                     price = subscriptionData?.monthly?.mainPrice ?: "",
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .fillMaxWidth(),
                 ) {
                     subscriptionData?.let {
                         subscriptionData.selected.value = subscriptionData.monthly
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                PrimaryButton(
-                    text = stringResource(id = R.string.subscribe_now),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    subscriptionData?.let {
-                        viewModel.purchase(subscriptionData.selected.value.id, context as Activity)
+                subscriptionData?.let {
+                    Spacer(modifier = Modifier.weight(1f))
+                    SubscriptionDescriptionText(
+                        subscriptionData = it,
+                        selectedPlan = it.selected.value,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    PrimaryButton(
+                        text =
+                            if (it.selected.value.hasFreeTrial) {
+                                stringResource(id = R.string.subscribe_screen_trial_start_button)
+                            } else {
+                                "${stringResource(id = R.string.subscribe)} • ${it.selected.value.mainPrice}"
+                            },
+                        modifier = Modifier.fillMaxWidth(),
+                        containerColor = LocalColors.current.primary,
+                        contentColor = LocalColors.current.onPrimary,
+                        uppercase = false,
+                    ) {
+                        viewModel.purchase(
+                            it.selected.value.id,
+                            context as Activity,
+                        )
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(4.dp))
                 Row(modifier = Modifier.fillMaxWidth()) {
                     TertiaryButton(
                         modifier = Modifier.weight(1f),

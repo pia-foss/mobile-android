@@ -52,7 +52,7 @@ class SignupViewModel(
         viewModelScope.launch(ioDispatcher) {
             billingHandler.billingState.collect { _state.emit(it) }
         }
-        billingHandler.initialize(viewModelScope, ioDispatcher)
+        billingHandler.initialize(viewModelScope, ioDispatcher, mainDispatcher)
     }
 
     fun loadPrices(activity: Activity) = billingHandler.loadPrices(viewModelScope, ioDispatcher, mainDispatcher, activity)

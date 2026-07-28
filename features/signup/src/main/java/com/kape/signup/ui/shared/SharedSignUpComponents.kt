@@ -12,8 +12,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.kape.signup.utils.Plan
+import com.kape.signup.utils.SubscriptionData
+import com.kape.ui.R
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.brandGreen
 import com.kape.ui.utils.LocalColors
@@ -44,4 +52,35 @@ internal fun CheckmarkText(
             textAlign = TextAlign.Center,
         )
     }
+}
+
+@Composable
+internal fun SubscriptionDescriptionText(
+    subscriptionData: SubscriptionData,
+    selectedPlan: Plan,
+) {
+    Text(
+        text =
+            buildAnnotatedString {
+                if (selectedPlan == subscriptionData.yearly) {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(
+                            stringResource(R.string.subscribe_screen_trial_annually_description_headline)
+                                .format(subscriptionData.yearly.mainPrice),
+                        )
+                    }
+                    append(" ${stringResource(id = R.string.subscribe_screen_trial_annually_description)}")
+                } else {
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(
+                            stringResource(R.string.subscribe_screen_trial_monthly_description_headline)
+                                .format(subscriptionData.monthly.mainPrice),
+                        )
+                    }
+                    append(" ${stringResource(id = R.string.subscribe_screen_trial_monthly_description)}")
+                }
+            },
+        style = PiaTypography.caption1,
+        textAlign = TextAlign.Center,
+    )
 }
