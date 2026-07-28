@@ -76,14 +76,15 @@ class ConnectionStatusProviderImpl(
     }
 
     private fun startTimer(connectedAt: Long) {
+        timer = getTimer(0)
         timerJob =
             ioScope.launch {
                 while (true) {
+                    delay(1_000L.milliseconds)
                     timer = getTimer(System.currentTimeMillis() - connectedAt)
                     withContext(Dispatchers.Main) {
                         setConnectionValuesTitle(timer)
                     }
-                    delay(1_000L.milliseconds)
                 }
             }
     }
