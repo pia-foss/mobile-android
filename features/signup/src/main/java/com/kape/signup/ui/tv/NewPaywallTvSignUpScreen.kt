@@ -111,16 +111,18 @@ fun NewPaywallTvSignUpScreen(
                         ),
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
                             text = stringResource(R.string.subscribe_screen_trial_title),
-                            style = PiaTypography.subtitle3.copy(
-                                lineHeight = 19.sp,
-                            ),
+                            style =
+                                PiaTypography.subtitle3.copy(
+                                    lineHeight = 19.sp,
+                                ),
                             modifier =
                                 Modifier
                                     .fillMaxHeight()
@@ -178,20 +180,21 @@ fun NewPaywallTvSignUpScreen(
                     .padding(horizontal = 24.dp, vertical = 64.dp),
         ) {
             Text(
-                text = buildAnnotatedString {
-                    val template = stringResource(id = R.string.tv_subscribe_screen_description)
-                    val price = subscriptionData?.yearly?.mainPrice ?: ""
-                    val placeholderIndex = template.indexOf("%s")
-                    if (placeholderIndex >= 0) {
-                        append(template.substring(0, placeholderIndex))
-                        withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
-                            append(price)
+                text =
+                    buildAnnotatedString {
+                        val template = stringResource(id = R.string.tv_subscribe_screen_description)
+                        val price = subscriptionData?.yearly?.mainPrice ?: ""
+                        val placeholderIndex = template.indexOf("%s")
+                        if (placeholderIndex >= 0) {
+                            append(template.substring(0, placeholderIndex))
+                            withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
+                                append(price)
+                            }
+                            append(template.substring(placeholderIndex + "%s".length))
+                        } else {
+                            append(template)
                         }
-                        append(template.substring(placeholderIndex + "%s".length))
-                    } else {
-                        append(template)
-                    }
-                },
+                    },
                 color = LocalColors.current.onSurface,
                 style = PiaTypography.subtitle1,
             )
@@ -200,10 +203,11 @@ fun NewPaywallTvSignUpScreen(
                 selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
                 price = subscriptionData?.yearly?.mainPrice ?: "",
                 perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .fillMaxWidth()
-                    .focusRequester(initialFocusRequester),
+                modifier =
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .fillMaxWidth()
+                        .focusRequester(initialFocusRequester),
             ) {
                 subscriptionData?.let {
                     subscriptionData.selected.value = subscriptionData.yearly
@@ -213,9 +217,10 @@ fun NewPaywallTvSignUpScreen(
             MonthlySubscriptionCard(
                 selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
                 price = subscriptionData?.monthly?.mainPrice ?: "",
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .padding(horizontal = 20.dp)
+                        .fillMaxWidth(),
             ) {
                 subscriptionData?.let {
                     subscriptionData.selected.value = subscriptionData.monthly

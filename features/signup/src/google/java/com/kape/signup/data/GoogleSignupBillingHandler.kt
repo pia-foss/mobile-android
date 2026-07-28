@@ -75,10 +75,11 @@ class GoogleSignupBillingHandler(
                                             }
                                         },
                                         hasFreeTrial = yearlyPlan.freeTrialDuration?.isNotBlank() ?: false,
-                                        mainPrice = formatter.formatYearlyPlan(
-                                            cost = yearlyPlan.formattedPrice,
-                                            slashVersion = !platformUtils.isTv()
-                                        ),
+                                        mainPrice =
+                                            formatter.formatYearlyPlan(
+                                                cost = yearlyPlan.formattedPrice,
+                                                slashVersion = !platformUtils.isTv(),
+                                            ),
                                         secondaryPrice =
                                             formatter.formatYearlyPerMonth(
                                                 yearlyPlan.formattedPrice,

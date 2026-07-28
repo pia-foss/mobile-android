@@ -14,14 +14,16 @@ class PriceFormatter(
 ) {
     fun formatYearlyPlan(
         cost: String,
-        slashVersion: Boolean = false
-    ): String = context.getString(
-        if (slashVersion) {
-            com.kape.ui.R.string.year_ending
-        } else {
-            com.kape.ui.R.string.yearly_ending
-        }
-    ).format(cost)
+        slashVersion: Boolean = false,
+    ): String =
+        context
+            .getString(
+                if (slashVersion) {
+                    com.kape.ui.R.string.year_ending
+                } else {
+                    com.kape.ui.R.string.yearly_ending
+                },
+            ).format(cost)
 
     fun formatYearlyPerMonth(
         cost: String,

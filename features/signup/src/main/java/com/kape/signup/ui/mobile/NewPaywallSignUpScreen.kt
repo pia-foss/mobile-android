@@ -89,8 +89,7 @@ fun NewPaywallSignUpScreen(
                     painter = painterResource(com.kape.signup.R.drawable.background),
                     alignment = Alignment.TopEnd,
                     alpha = 0.2f,
-                )
-                .semantics {
+                ).semantics {
                     testTagsAsResourceId = true
                 },
     ) {
@@ -309,8 +308,7 @@ private fun ColumnScope.PlansPresentContent(
                 .fillMaxWidth()
                 .clickable {
                     onNavigateToLogin()
-                }
-                .testTag(":SignUpScreen:Login"),
+                }.testTag(":SignUpScreen:Login"),
     )
 
     if (showBottomSheet) {

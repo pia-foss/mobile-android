@@ -46,16 +46,17 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TvSignUpScreen() = Screen {
-    val viewModel: SignupViewModel = koinViewModel()
-    val state by viewModel.state.collectAsStateWithLifecycle()
+fun TvSignUpScreen() =
+    Screen {
+        val viewModel: SignupViewModel = koinViewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
 
-    if (state.subscriptionData?.yearly?.hasFreeTrial == true) {
-        NewPaywallTvSignUpScreen(viewModel, state.subscriptionData)
-    } else {
-        OldTvSignUpScreen(viewModel, state.subscriptionData)
+        if (state.subscriptionData?.yearly?.hasFreeTrial == true) {
+            NewPaywallTvSignUpScreen(viewModel, state.subscriptionData)
+        } else {
+            OldTvSignUpScreen(viewModel, state.subscriptionData)
+        }
     }
-}
 
 @Composable
 fun OldTvSignUpScreen(
@@ -152,9 +153,10 @@ fun OldTvSignUpScreen(
                 selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
                 price = subscriptionData?.yearly?.mainPrice ?: "",
                 perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(initialFocusRequester),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .focusRequester(initialFocusRequester),
             ) {
                 subscriptionData?.let {
                     subscriptionData.selected.value = subscriptionData.yearly
