@@ -32,7 +32,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tv.elements.MonthlySubscriptionCard
@@ -52,17 +51,17 @@ fun TvSignUpScreen() =
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         if (state.subscriptionData?.yearly?.hasFreeTrial == true) {
-            NewPaywallTvSignUpScreen(viewModel, state.subscriptionData)
+            NewPaywallTvSignUpScreen()
         } else {
-            OldTvSignUpScreen(viewModel, state.subscriptionData)
+            OldTvSignUpScreen()
         }
     }
 
 @Composable
-fun OldTvSignUpScreen(
-    viewModel: SignupViewModel,
-    subscriptionData: SubscriptionData?,
-) {
+fun OldTvSignUpScreen() {
+    val viewModel: SignupViewModel = koinViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val subscriptionData = state.subscriptionData
     val initialFocusRequester = remember { FocusRequester() }
     val context = LocalContext.current
 

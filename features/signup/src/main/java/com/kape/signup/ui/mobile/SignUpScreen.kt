@@ -36,12 +36,12 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.META_SUBSCRIPTIONS
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
 import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
-import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.MonthlySubscriptionCard
@@ -52,25 +52,27 @@ import com.kape.ui.mobile.elements.YearlySubscriptionCard
 import com.kape.ui.mobile.text.OnboardingDescriptionPaymentText
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SignUpScreen(
-    viewModel: SignupViewModel,
-    subscriptionData: SubscriptionData?,
-) = Screen {
-    if (subscriptionData?.yearly?.hasFreeTrial == true) {
-        NewPaywallSignUpScreen(viewModel, subscriptionData)
-    } else {
-        OldSignUpScreen(viewModel, subscriptionData)
+fun SignUpScreen() =
+    Screen {
+        val viewModel: SignupViewModel = koinViewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val subscriptionData = state.subscriptionData
+
+        if (subscriptionData?.yearly?.hasFreeTrial == true) {
+            NewPaywallSignUpScreen()
+        } else {
+            OldSignUpScreen()
+        }
     }
-}
 
 @Composable
-fun OldSignUpScreen(
-    viewModel: SignupViewModel,
-    subscriptionData: SubscriptionData?,
-) {
+fun OldSignUpScreen() {
+    val viewModel: SignupViewModel = koinViewModel()
     val screenState by viewModel.state.collectAsState()
+    val subscriptionData = screenState.subscriptionData
     val context = LocalContext.current
     val activity = LocalActivity.current
 

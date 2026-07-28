@@ -49,7 +49,6 @@ internal fun CheckmarkText(
             text = text,
             color = LocalColors.current.onSurface,
             style = PiaTypography.body3,
-            textAlign = TextAlign.Center,
         )
     }
 }

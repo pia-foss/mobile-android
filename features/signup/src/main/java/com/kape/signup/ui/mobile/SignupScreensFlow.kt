@@ -59,7 +59,7 @@ fun SignupScreensFlow() {
         }
 
         is SignupStep.Subscriptions -> {
-            SignUpScreen(viewModel = viewModel, state.subscriptionData)
+            SignUpScreen()
         }
 
         SignupStep.LoadingPlans -> {

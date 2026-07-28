@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
@@ -63,13 +64,13 @@ import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.YearlySubscriptionCard
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.utils.LocalColors
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun NewPaywallSignUpScreen(
-    viewModel: SignupViewModel,
-    subscriptionData: SubscriptionData?,
-) {
+fun NewPaywallSignUpScreen() {
+    val viewModel: SignupViewModel = koinViewModel()
     val screenState by viewModel.state.collectAsState()
+    val subscriptionData = screenState.subscriptionData
     val context = LocalContext.current
     val activity = LocalActivity.current
 
@@ -107,7 +108,7 @@ fun NewPaywallSignUpScreen(
                 screenState == SUBSCRIPTIONS_FAILED_TO_LOAD
             ) {
                 Spacer(Modifier.weight(1f))
-                CommonContent()
+                LogoWithReviewsAndGlobe()
                 Spacer(Modifier.height(16.dp))
                 NoPlansContent(
                     onNavigateToLogin = {
@@ -115,7 +116,7 @@ fun NewPaywallSignUpScreen(
                     },
                 )
             } else {
-                CommonContent()
+                LogoWithReviewsAndGlobe()
                 Spacer(modifier = Modifier.height(24.dp))
                 PlansPresentContent(
                     subscriptionData = subscriptionData,
@@ -141,7 +142,7 @@ fun NewPaywallSignUpScreen(
 }
 
 @Composable
-private fun CommonContent() {
+private fun LogoWithReviewsAndGlobe() {
     Image(
         painter = painterResource(id = com.kape.signup.R.drawable.pia_full_name),
         contentDescription = stringResource(id = R.string.pia_signup),
@@ -276,7 +277,7 @@ private fun ColumnScope.PlansPresentContent(
         }
     }
 
-    Spacer(Modifier.weight(1f))
+    Spacer(Modifier.heightIn(min = 48.dp))
     SubscriptionDescriptionText(
         subscriptionData = subscriptionData,
         selectedPlan = subscriptionData.yearly,

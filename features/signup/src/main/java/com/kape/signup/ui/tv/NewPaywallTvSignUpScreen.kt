@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,10 +36,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.signup.ui.shared.CheckmarkText
 import com.kape.signup.ui.shared.SubscriptionDescriptionText
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.tv.elements.MonthlySubscriptionCard
@@ -46,12 +47,13 @@ import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.elements.TertiaryButton
 import com.kape.ui.tv.elements.YearlySubscriptionCard
 import com.kape.ui.utils.LocalColors
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun NewPaywallTvSignUpScreen(
-    viewModel: SignupViewModel,
-    subscriptionData: SubscriptionData?,
-) {
+fun NewPaywallTvSignUpScreen() {
+    val viewModel: SignupViewModel = koinViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val subscriptionData = state.subscriptionData
     val initialFocusRequester = remember { FocusRequester() }
     val context = LocalContext.current
 
