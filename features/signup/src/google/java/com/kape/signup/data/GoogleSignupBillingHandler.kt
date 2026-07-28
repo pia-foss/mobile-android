@@ -74,7 +74,7 @@ class GoogleSignupBillingHandler(
                                                 first.toString()
                                             }
                                         },
-                                        true,
+                                        hasFreeTrial = yearlyPlan.freeTrialDuration?.isNotBlank() ?: false,
                                         mainPrice = formatter.formatYearlyPlan(
                                             cost = yearlyPlan.formattedPrice,
                                             slashVersion = !platformUtils.isTv()

@@ -56,7 +56,6 @@ class PriceFormatter(
         price: String,
         locale: Locale = Locale.getDefault(),
     ): Double? {
-        // TODO fix /100
         val cleaned = price.replace("[^\\d.,]".toRegex(), "").trim()
         return try {
             NumberFormat.getNumberInstance(locale).parse(cleaned)?.toDouble()
