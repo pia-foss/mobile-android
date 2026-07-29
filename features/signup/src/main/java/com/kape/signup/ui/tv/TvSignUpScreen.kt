@@ -38,7 +38,6 @@ import com.kape.ui.tv.elements.MonthlySubscriptionCard
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.elements.TertiaryButton
 import com.kape.ui.tv.elements.YearlySubscriptionCard
-import com.kape.ui.tv.text.OnboardingDescriptionText
 import com.kape.ui.tv.text.OnboardingTitleText
 import com.kape.ui.tv.text.SignUpTitleText
 import com.kape.ui.utils.LocalColors
