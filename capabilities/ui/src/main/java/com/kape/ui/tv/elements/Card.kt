@@ -39,6 +39,7 @@ fun YearlySubscriptionCard(
     price: String,
     perMonthPrice: String,
     modifier: Modifier,
+    isFreeTrialAvailable: Boolean = true,
     onClick: () -> Unit,
 ) {
     Card(
@@ -92,21 +93,24 @@ fun YearlySubscriptionCard(
                         modifier = Modifier.align(Alignment.CenterVertically),
                     )
                 }
-                Box(
-                    modifier =
-                        Modifier
-                            .padding(vertical = 12.dp)
-                            .wrapContentWidth()
-                            .background(
-                                LocalColors.current.sunglow(),
-                                shape = RoundedCornerShape(4.dp),
-                            ),
-                ) {
-                    BestValueBannerText(
-                        content = stringResource(id = R.string.best_value),
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    )
+                if (isFreeTrialAvailable) {
+                    Box(
+                        modifier =
+                            Modifier
+                                .padding(top = 12.dp)
+                                .wrapContentWidth()
+                                .background(
+                                    LocalColors.current.sunglow(),
+                                    shape = RoundedCornerShape(4.dp),
+                                ),
+                    ) {
+                        BestValueBannerText(
+                            content = stringResource(id = R.string.best_value),
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        )
+                    }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

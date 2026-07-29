@@ -140,18 +140,12 @@ fun OldTvSignUpScreen() {
             OnboardingTitleText(
                 content = stringResource(id = R.string.subscribe_screen_title),
             )
-            OnboardingDescriptionText(
-                content =
-                    stringResource(id = R.string.tv_subscribe_screen_description).format(
-                        subscriptionData?.yearly?.mainPrice,
-                    ),
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
             YearlySubscriptionCard(
                 selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
                 price = subscriptionData?.yearly?.mainPrice ?: "",
                 perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
+                isFreeTrialAvailable = false,
                 modifier =
                     Modifier
                         .fillMaxWidth()
