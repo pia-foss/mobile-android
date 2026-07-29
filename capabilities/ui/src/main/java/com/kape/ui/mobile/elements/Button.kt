@@ -131,11 +131,13 @@ fun RoundIconButton(
 fun OptionButton(
     selected: Boolean,
     modifier: Modifier,
+    selectedTint: Color = LocalColors.current.primary,
+    notSelectedTint: Color = LocalColors.current.onSurfaceVariant,
 ) {
     Icon(
         painter = painterResource(id = if (selected) R.drawable.ic_radio_button_selected else R.drawable.ic_radio_button_default),
         contentDescription = null,
-        tint = LocalColors.current.primary,
+        tint = if (selected) selectedTint else notSelectedTint,
         modifier = modifier,
     )
 }

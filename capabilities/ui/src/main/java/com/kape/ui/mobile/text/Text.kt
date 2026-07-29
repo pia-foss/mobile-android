@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -133,12 +134,13 @@ fun SignInText(
 fun SignUpDurationText(
     content: String,
     modifier: Modifier,
+    style: TextStyle = PiaTypography.body3,
 ) {
     Text(
         text = content,
         color = LocalColors.current.onSurfaceVariant,
-        style = PiaTypography.body3,
         modifier = modifier,
+        style = style,
     )
 }
 

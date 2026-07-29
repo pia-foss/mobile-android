@@ -38,7 +38,6 @@ import com.kape.ui.tv.elements.MonthlySubscriptionCard
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.elements.TertiaryButton
 import com.kape.ui.tv.elements.YearlySubscriptionCard
-import com.kape.ui.tv.text.OnboardingDescriptionText
 import com.kape.ui.tv.text.OnboardingTitleText
 import com.kape.ui.tv.text.SignUpTitleText
 import com.kape.ui.utils.LocalColors
@@ -47,140 +46,149 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun TvSignUpScreen() =
     Screen {
-        val initialFocusRequester = remember { FocusRequester() }
         val viewModel: SignupViewModel = koinViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
-        val subscriptionData = state.subscriptionData
-        val context = LocalContext.current
 
-        LaunchedEffect(key1 = Unit) {
-            initialFocusRequester.requestFocus()
+        if (state.subscriptionData?.yearly?.hasFreeTrial == true) {
+            NewPaywallTvSignUpScreen()
+        } else {
+            OldTvSignUpScreen()
         }
+    }
 
-        Row(
+@Composable
+fun OldTvSignUpScreen() {
+    val viewModel: SignupViewModel = koinViewModel()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val subscriptionData = state.subscriptionData
+    val initialFocusRequester = remember { FocusRequester() }
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        initialFocusRequester.requestFocus()
+    }
+
+    Row(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(LocalColors.current.background),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(
             modifier =
                 Modifier
-                    .fillMaxSize()
-                    .background(LocalColors.current.background),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+                    .weight(1f)
+                    .padding(64.dp),
         ) {
             Column(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .padding(64.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+                Image(
+                    painter = painterResource(id = R.drawable.ic_logo_large),
+                    contentDescription = null,
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(40.dp),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                SignUpTitleText(
+                    content = stringResource(id = R.string.signup),
+                )
+                Spacer(modifier = Modifier.height(64.dp))
+                Card(
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = LocalColors.current.onPrimaryContainer,
+                        ),
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.ic_logo_large),
+                        painter = painterResource(id = com.kape.signup.R.drawable.ic_tv_signup),
+                        contentScale = ContentScale.Fit,
                         contentDescription = null,
                         modifier =
                             Modifier
-                                .width(100.dp)
-                                .height(40.dp),
+                                .fillMaxSize()
+                                .padding(horizontal = 8.dp, vertical = 16.dp),
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    SignUpTitleText(
-                        content = stringResource(id = R.string.signup),
-                    )
-                    Spacer(modifier = Modifier.height(64.dp))
-                    Card(
-                        modifier =
-                            Modifier
-                                .fillMaxSize(),
-                        shape = RoundedCornerShape(12.dp),
-                        colors =
-                            CardDefaults.cardColors(
-                                containerColor = LocalColors.current.onPrimaryContainer,
-                            ),
-                    ) {
-                        Image(
-                            painter = painterResource(id = com.kape.signup.R.drawable.ic_tv_signup),
-                            contentScale = ContentScale.Fit,
-                            contentDescription = null,
-                            modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 8.dp, vertical = 16.dp),
-                        )
-                    }
                 }
             }
-            VerticalDivider(
-                modifier =
-                    Modifier
-                        .fillMaxHeight()
-                        .padding(vertical = 64.dp)
-                        .width(0.5.dp),
-                color = LocalColors.current.primaryContainer,
+        }
+        VerticalDivider(
+            modifier =
+                Modifier
+                    .fillMaxHeight()
+                    .padding(vertical = 64.dp)
+                    .width(0.5.dp),
+            color = LocalColors.current.primaryContainer,
+        )
+        Column(
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .padding(horizontal = 48.dp, vertical = 64.dp),
+        ) {
+            OnboardingTitleText(
+                content = stringResource(id = R.string.subscribe_screen_title),
             )
-            Column(
+            Spacer(modifier = Modifier.height(32.dp))
+            YearlySubscriptionCard(
+                selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
+                price = subscriptionData?.yearly?.mainPrice ?: "",
+                perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
+                isFreeTrialAvailable = false,
                 modifier =
                     Modifier
-                        .weight(1f)
-                        .fillMaxSize()
-                        .padding(horizontal = 48.dp, vertical = 64.dp),
+                        .fillMaxWidth()
+                        .focusRequester(initialFocusRequester),
             ) {
-                OnboardingTitleText(
-                    content = stringResource(id = R.string.subscribe_screen_title),
-                )
-                OnboardingDescriptionText(
-                    content =
-                        stringResource(id = R.string.tv_subscribe_screen_description).format(
-                            subscriptionData?.yearly?.mainPrice,
-                        ),
-                    modifier = Modifier.padding(vertical = 8.dp),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                YearlySubscriptionCard(
-                    selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
-                    price = subscriptionData?.yearly?.mainPrice ?: "",
-                    perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
-                    modifier = Modifier.fillMaxWidth().focusRequester(initialFocusRequester),
-                ) {
-                    subscriptionData?.let {
-                        subscriptionData.selected.value = subscriptionData.yearly
-                    }
+                subscriptionData?.let {
+                    subscriptionData.selected.value = subscriptionData.yearly
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                MonthlySubscriptionCard(
-                    selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
-                    price = subscriptionData?.monthly?.mainPrice ?: "",
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    subscriptionData?.let {
-                        subscriptionData.selected.value = subscriptionData.monthly
-                    }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            MonthlySubscriptionCard(
+                selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
+                price = subscriptionData?.monthly?.mainPrice ?: "",
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                subscriptionData?.let {
+                    subscriptionData.selected.value = subscriptionData.monthly
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                PrimaryButton(
-                    text = stringResource(id = R.string.subscribe_now),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    subscriptionData?.let {
-                        viewModel.purchase(subscriptionData.selected.value.id, context as Activity)
-                    }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            PrimaryButton(
+                text = stringResource(id = R.string.subscribe_now),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                subscriptionData?.let {
+                    viewModel.purchase(subscriptionData.selected.value.id, context as Activity)
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    TertiaryButton(
-                        modifier = Modifier.weight(1f),
-                        text = stringResource(id = R.string.drawer_item_title_privacy_policy),
-                    ) {
-                        viewModel.navigateToPrivacyPolicy()
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    TertiaryButton(
-                        modifier = Modifier.weight(1f),
-                        text = stringResource(id = R.string.terms_of_service),
-                    ) {
-                        viewModel.navigateToTermsOfService()
-                    }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                TertiaryButton(
+                    modifier = Modifier.weight(1f),
+                    text = stringResource(id = R.string.drawer_item_title_privacy_policy),
+                ) {
+                    viewModel.navigateToPrivacyPolicy()
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                TertiaryButton(
+                    modifier = Modifier.weight(1f),
+                    text = stringResource(id = R.string.terms_of_service),
+                ) {
+                    viewModel.navigateToTermsOfService()
                 }
             }
         }
     }
+}

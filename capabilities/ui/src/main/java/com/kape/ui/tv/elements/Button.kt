@@ -25,10 +25,13 @@ import com.kape.ui.utils.LocalColors
 @Composable
 fun PrimaryButton(
     text: String,
-    textAlign: TextAlign = TextAlign.Center,
     modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.Center,
+    containerColor: Color = LocalColors.current.primaryContainer,
+    contentColor: Color = LocalColors.current.onSurfaceVariant,
     focusedContainerColor: Color = LocalColors.current.primary,
     focusedContentColor: Color = LocalColors.current.onPrimary,
+    uppercase: Boolean = true,
     onClick: () -> Unit,
 ) {
     Button(
@@ -39,15 +42,15 @@ fun PrimaryButton(
             ),
         colors =
             ButtonDefaults.colors(
-                containerColor = LocalColors.current.primaryContainer,
-                contentColor = LocalColors.current.onSurfaceVariant,
+                containerColor = containerColor,
+                contentColor = contentColor,
                 focusedContainerColor = focusedContainerColor,
                 focusedContentColor = focusedContentColor,
             ),
         onClick = onClick,
     ) {
         PrimaryButtonText(
-            content = text.uppercase(),
+            content = if (uppercase) text.uppercase() else text,
             textAlign = textAlign,
         )
     }
@@ -85,8 +88,8 @@ fun SecondaryButton(
 @Composable
 fun TertiaryButton(
     text: String,
-    textAlign: TextAlign = TextAlign.Center,
     modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.Center,
     onClick: () -> Unit,
 ) {
     Button(
@@ -105,7 +108,7 @@ fun TertiaryButton(
         onClick = onClick,
     ) {
         TertiaryButtonText(
-            content = text.uppercase(),
+            content = text,
             textAlign = textAlign,
         )
     }

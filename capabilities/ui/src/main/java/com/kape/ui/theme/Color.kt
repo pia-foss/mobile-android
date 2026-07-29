@@ -5,6 +5,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
+private val brandGreen = Color(0xFF4CB649)
 private val darkGreen = Color(0xFF037900)
 private val lightGreen = Color(0xFF5DDF5A)
 private val white = Color(0xFFFFFFFF)
@@ -97,17 +98,19 @@ val DarkColorScheme =
 
 fun ColorScheme.defaultGradient(scheme: ColorScheme): List<Color> = listOf(scheme.surface, scheme.surface)
 
-fun ColorScheme.connectedGradient(): List<Color> = listOf(Color(0xff4cb649), Color(0xff5ddf5a))
+fun ColorScheme.connectedGradient(): List<Color> = listOf(brandGreen, Color(0xff5ddf5a))
 
 fun ColorScheme.connectingGradient(): List<Color> = listOf(Color(0xffe6b400), Color(0xfff9cf01))
 
 fun ColorScheme.errorGradient(): List<Color> = listOf(Color(0xffb2352d), Color(0xfff24458))
 
+fun ColorScheme.brandGreen() = brandGreen
+
 fun ColorScheme.warning30() = warning30
 
 fun ColorScheme.statusBarDefault(scheme: ColorScheme) = scheme.surface
 
-fun ColorScheme.statusBarConnected() = Color(0xff4cb649)
+fun ColorScheme.statusBarConnected() = brandGreen
 
 fun ColorScheme.statusBarConnecting() = Color(0xffe6b400)
 
@@ -137,7 +140,9 @@ fun ColorScheme.connectionDefault() = clientDarkYellow
 
 fun ColorScheme.connectionError() = clientRed
 
-private fun latencyGreen(): Color = Color(0xff4cb649)
+fun ColorScheme.sunglow() = Color(0xFFFFC933)
+
+private fun latencyGreen(): Color = brandGreen
 
 private fun latencyYellow(): Color = Color(0xffe6b400)
 

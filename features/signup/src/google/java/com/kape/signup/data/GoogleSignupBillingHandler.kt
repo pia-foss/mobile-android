@@ -19,6 +19,7 @@ import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.utils.PriceFormatter
+import com.kape.utils.PlatformUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +34,7 @@ class GoogleSignupBillingHandler(
     private val subscriptionPrefs: SubscriptionPrefs,
     private val subscriptionsUseCase: GetSubscriptionsUseCase,
     private val formatter: PriceFormatter,
+    private val platformUtils: PlatformUtils,
     private val submitEventUseCase: SubmitKpiEventUseCase,
 ) : SignupBillingHandler {
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
@@ -42,6 +44,7 @@ class GoogleSignupBillingHandler(
     override fun initialize(
         scope: CoroutineScope,
         dispatcher: CoroutineDispatcher,
+        mainDispatcher: CoroutineDispatcher,
     ) {
         scope.launch(dispatcher) {
             vpnSubscriptionPaymentProvider.purchaseState.collect {
@@ -71,8 +74,12 @@ class GoogleSignupBillingHandler(
                                                 first.toString()
                                             }
                                         },
-                                        true,
-                                        mainPrice = formatter.formatYearlyPlan(yearlyPlan.formattedPrice),
+                                        hasFreeTrial = yearlyPlan.freeTrialDuration?.isNotBlank() ?: false,
+                                        mainPrice =
+                                            formatter.formatYearlyPlan(
+                                                cost = yearlyPlan.formattedPrice,
+                                                slashVersion = !platformUtils.isTv(),
+                                            ),
                                         secondaryPrice =
                                             formatter.formatYearlyPerMonth(
                                                 yearlyPlan.formattedPrice,
@@ -93,11 +100,13 @@ class GoogleSignupBillingHandler(
                                         mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
                                     )
                                 val data =
-                                    SubscriptionData(
-                                        mutableStateOf(yearly),
-                                        yearly,
-                                        monthly,
-                                    )
+                                    withContext(mainDispatcher) {
+                                        SubscriptionData(
+                                            mutableStateOf(yearly),
+                                            yearly,
+                                            monthly,
+                                        )
+                                    }
                                 subscriptionData = data
                                 _billingState.emit(SUBSCRIPTIONS(data))
                             }
