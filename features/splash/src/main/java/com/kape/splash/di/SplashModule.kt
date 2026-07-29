@@ -1,5 +1,6 @@
 package com.kape.splash.di
 
+import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.GetAppLatestVersion
@@ -40,6 +41,7 @@ class SplashModule {
         connectionInfoProvider: ConnectionInfoProvider,
         isUserLoggedIn: IsUserLoggedInUseCase,
         platformUtils: PlatformUtils,
+        authenticationDataSource: AuthenticationDataSource,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): SplashViewModel =
         SplashViewModel(
@@ -52,6 +54,7 @@ class SplashModule {
             connectionInfoProvider,
             isUserLoggedIn,
             platformUtils,
+            authenticationDataSource,
             ioDispatcher,
         )
 }

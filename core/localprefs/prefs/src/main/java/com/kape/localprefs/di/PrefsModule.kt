@@ -6,6 +6,7 @@ import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.CustomizationPrefs
 import com.kape.localprefs.prefs.DipPrefs
+import com.kape.localprefs.prefs.FeaturePrefs
 import com.kape.localprefs.prefs.KpiPrefs
 import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.localprefs.prefs.RatingPrefs
@@ -53,4 +54,7 @@ class PrefsModule {
 
     @Singleton
     fun provideCustomizationPrefs(context: Context): CustomizationPrefs = CustomizationPrefs(context)
+
+    @Singleton
+    fun provideFeaturePrefs(context: Context): FeaturePrefs = FeaturePrefs(context)
 }

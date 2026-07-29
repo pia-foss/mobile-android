@@ -21,4 +21,6 @@ interface AuthenticationDataSource {
     ): ApiResult
 
     suspend fun migrateToken(apiToken: String): ApiResult
+
+    suspend fun featureFlags(): ApiResult
 }
