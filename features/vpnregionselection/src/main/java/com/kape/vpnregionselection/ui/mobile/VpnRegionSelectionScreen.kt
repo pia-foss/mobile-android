@@ -94,6 +94,7 @@ fun VpnRegionSelectionScreen() =
                 val message = stringResource(id = R.string.error_pinging_while_connected)
 
                 PullToRefreshBox(
+                    modifier = Modifier.testTag(":VpnRegionSelectionScreen:list"),
                     state = rememberPullToRefreshState(),
                     isRefreshing = isLoading.value,
                     onRefresh = {
@@ -163,7 +164,10 @@ fun VpnRegionSelectionScreen() =
                                 ItemType.HeadingFavorites -> {
                                     MenuText(
                                         content = stringResource(id = R.string.favorite),
-                                        modifier = Modifier.padding(16.dp),
+                                        modifier =
+                                            Modifier
+                                                .padding(16.dp)
+                                                .testTag(":VpnRegionSelectionScreen:favoritesHeading"),
                                     )
                                 }
                             }

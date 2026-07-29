@@ -20,10 +20,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
@@ -50,6 +54,7 @@ import org.koin.androidx.compose.koinViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CustomizationScreen() =
     Screen {
@@ -86,7 +91,11 @@ fun CustomizationScreen() =
                 modifier =
                     Modifier
                         .padding(it)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .testTag(":CustomizationScreen:elements_list")
+                        .semantics {
+                            testTagsAsResourceId = true
+                        },
                 state = lazyListState,
             ) {
                 items(viewModel.items, key = { it.name }) {
@@ -147,10 +156,12 @@ fun CreateCustomizableElement(
         Visibility(
             isChecked = visible.value,
             modifier =
-                Modifier.clickable {
-                    visible.value = !visible.value
-                    onVisibilityToggled(screenElement.element, !screenElement.isVisible)
-                },
+                Modifier
+                    .testTag(":CustomizationScreen:visibility_${screenElement.name}")
+                    .clickable {
+                        visible.value = !visible.value
+                        onVisibilityToggled(screenElement.element, !screenElement.isVisible)
+                    },
         )
         DisplayComponent(
             modifier = Modifier.weight(1f),

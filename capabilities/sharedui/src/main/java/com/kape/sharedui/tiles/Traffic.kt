@@ -45,7 +45,7 @@ fun Traffic(modifier: Modifier = Modifier) {
             ) {
                 TileTitleText(content = stringResource(id = R.string.download))
                 Spacer(modifier = Modifier.height(4.dp))
-                IPText(content = download)
+                IPText(content = download, testTag = ":Text:trafficDownload")
             }
 
             Icon(
@@ -65,7 +65,7 @@ fun Traffic(modifier: Modifier = Modifier) {
             ) {
                 TileTitleText(content = stringResource(id = R.string.upload))
                 Spacer(modifier = Modifier.height(4.dp))
-                IPText(content = upload)
+                IPText(content = upload, testTag = ":Text:trafficUpload")
             }
         }
     }

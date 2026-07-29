@@ -18,9 +18,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -34,6 +38,7 @@ import com.kape.ui.mobile.text.OnboardingTitleText
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LocationPermissionScreen() =
     Screen {
@@ -63,7 +68,10 @@ fun LocationPermissionScreen() =
                         .fillMaxSize()
                         .padding(it)
                         .verticalScroll(rememberScrollState())
-                        .background(LocalColors.current.background),
+                        .background(LocalColors.current.background)
+                        .semantics {
+                            testTagsAsResourceId = true
+                        },
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -118,7 +126,8 @@ fun LocationPermissionScreen() =
                             Modifier
                                 .fillMaxWidth()
                                 .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
-                                .align(Alignment.CenterHorizontally),
+                                .align(Alignment.CenterHorizontally)
+                                .testTag(":LocationPermissionScreen:action"),
                     ) {
                         launcher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                     }
