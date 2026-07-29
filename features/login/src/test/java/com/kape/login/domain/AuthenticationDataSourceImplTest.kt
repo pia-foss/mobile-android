@@ -2,6 +2,7 @@ package com.kape.login.domain
 
 import com.kape.contracts.AuthenticationDataSource
 import com.kape.data.auth.ApiResult
+import com.kape.localprefs.prefs.FeaturePrefs
 import com.kape.login.BaseTest
 import com.kape.login.data.AuthenticationDataSourceImpl
 import com.privateinternetaccess.account.AccountRequestError
@@ -19,6 +20,7 @@ import org.koin.core.context.stopKoin
 
 internal class AuthenticationDataSourceImplTest : BaseTest() {
     private val api: AndroidAccountAPI = mockk(relaxed = true)
+    private val featurePrefs: FeaturePrefs = mockk(relaxed = true)
 
     private lateinit var source: AuthenticationDataSource
 
@@ -26,7 +28,7 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
     internal fun setUp() {
         stopKoin()
         startKoin {}
-        source = AuthenticationDataSourceImpl(api)
+        source = AuthenticationDataSourceImpl(api, featurePrefs)
     }
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")

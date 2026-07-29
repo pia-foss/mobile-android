@@ -8,6 +8,7 @@ import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.FeaturePrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.login.data.AuthenticationDataSourceImpl
 import com.kape.login.domain.LogoutHandler
@@ -34,7 +35,10 @@ import org.koin.core.annotation.Singleton
 @Module
 class LoginModule {
     @Singleton(binds = [AuthenticationDataSource::class])
-    fun provideAuthenticationDataSource(api: AndroidAccountAPI): AuthenticationDataSource = AuthenticationDataSourceImpl(api)
+    fun provideAuthenticationDataSource(
+        api: AndroidAccountAPI,
+        featurePrefs: FeaturePrefs,
+    ): AuthenticationDataSource = AuthenticationDataSourceImpl(api, featurePrefs)
 
     @Singleton
     fun provideLoginUseCase(source: AuthenticationDataSource): LoginUseCase = LoginUseCase(source)

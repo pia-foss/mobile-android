@@ -2,6 +2,7 @@ package com.kape.splash.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.GetAppLatestVersion
@@ -31,9 +32,16 @@ class SplashViewModel(
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val isUserLoggedIn: IsUserLoggedInUseCase,
     private val platformUtils: PlatformUtils,
+    private val authenticationDataSource: AuthenticationDataSource,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private var updateUrl: String = ""
+
+    init {
+        viewModelScope.launch(ioDispatcher) {
+            authenticationDataSource.featureFlags()
+        }
+    }
 
     fun load() {
         if (regionListProvider.isDefaultList.value) {
