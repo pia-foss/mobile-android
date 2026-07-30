@@ -89,6 +89,7 @@ class LoginModule {
         appInfo: AppInfo,
         deviceInfo: DeviceInfo,
         loginFailureTracker: LoginFailureTracker,
+        featurePrefs: FeaturePrefs,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): LoginViewModel =
@@ -102,6 +103,7 @@ class LoginModule {
             appInfo,
             deviceInfo,
             loginFailureTracker,
+            featurePrefs,
             ioDispatcher,
             networkConnectionListener,
         )

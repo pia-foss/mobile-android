@@ -8,6 +8,8 @@ import com.kape.contracts.DeviceInfo
 import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.data.LoginWithEmail
+import com.kape.localprefs.prefs.FeaturePrefs
+import com.kape.localprefs.prefs.SUPPORT_DIALOG_FEATURE_FLAG
 import com.kape.login.domain.mobile.LoginFailureTracker
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.domain.mobile.LoginWithReceiptHandler
@@ -30,6 +32,7 @@ import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
@@ -46,6 +49,7 @@ class LoginViewModel(
     private val appInfo: AppInfo,
     private val deviceInfo: DeviceInfo,
     private val loginFailureTracker: LoginFailureTracker,
+    private val featurePrefs: FeaturePrefs,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
@@ -77,7 +81,7 @@ class LoginViewModel(
             return@launch
         }
         _state.emit(getScreenState(it))
-        if (it is QualifyingFailure) {
+        if (it is QualifyingFailure && isSupportDialogEnabled()) {
             pendingSupportTicket = buildSupportTicketInfo(it, username)
             if (loginFailureTracker.recordQualifyingFailure()) {
                 _showSupportDialog.emit(true)
@@ -86,6 +90,8 @@ class LoginViewModel(
             loginFailureTracker.recordNonQualifyingFailure()
         }
     }
+
+    private suspend fun isSupportDialogEnabled(): Boolean = featurePrefs.getFlags().first().contains(SUPPORT_DIALOG_FEATURE_FLAG)
 
     fun onSupportDialogDismissed() =
         viewModelScope.launch {

@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
 private val FEATURE_FLAGS = stringPreferencesKey("feature-flags")
+const val SUPPORT_DIALOG_FEATURE_FLAG = "login-support-dialog"
 
 @Singleton
 class FeaturePrefs(
