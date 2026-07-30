@@ -168,10 +168,16 @@ object SignUp {
 }
 
 object SideMenu {
+    const val ACCOUNT = ":SideMenu:Account"
     const val SETTINGS_BUTTON = ":SideMenu:Settings"
     const val DEDICATED_IP = ":SideMenu:DedicatedIP"
+    const val PER_APP_SETTINGS = ":SideMenu:PerAppSettings"
     const val LOGOUT_BUTTON = ":SideMenu:Logout"
     const val LOGOUT_DIALOG_CONFIRM_BUTTON = ":SideMenu:ConfirmButton"
+    const val LOGOUT_DIALOG_DISMISS_BUTTON = ":SideMenu:DismissButton"
+    const val ABOUT = ":SideMenu:About"
+    const val PRIVACY_POLICY = ":SideMenu:PrivacyPolicy"
+    const val CONTACT_SUPPORT = ":SideMenu:ContactSupport"
     const val USERNAME = ":SideMenu:Username"
 }
 
