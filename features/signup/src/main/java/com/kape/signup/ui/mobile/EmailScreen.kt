@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -34,7 +36,10 @@ import com.kape.ui.utils.LocalColors
 @Composable
 fun EmailScreen(viewModel: SignupViewModel) =
     Screen {
+        val invalidEmailMessage = stringResource(R.string.error_missing_email)
+
         val email = remember { mutableStateOf("") }
+        var emailErrorMessage by remember { mutableStateOf<String?>(null) }
 
         Column(
             modifier =
@@ -79,6 +84,7 @@ fun EmailScreen(viewModel: SignupViewModel) =
                     maskInput = false,
                     keyboard = KeyboardType.Email,
                     content = email,
+                    errorMessage = emailErrorMessage,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 PrimaryButton(
@@ -88,7 +94,11 @@ fun EmailScreen(viewModel: SignupViewModel) =
                             .fillMaxWidth()
                             .padding(16.dp),
                 ) {
-                    viewModel.register(email.value)
+                    if (viewModel.isValidEmail(email.value)) {
+                        viewModel.register(email.value)
+                    } else {
+                        emailErrorMessage = invalidEmailMessage
+                    }
                 }
             }
         }
