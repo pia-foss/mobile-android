@@ -55,9 +55,24 @@ jobs:
         run: ./gradlew testGoogleDebugUnitTest
 
   e2e-testing:
-    name: Run end to end instrumentation tests
+    name: Run end to end instrumentation tests (${{ matrix.test-class }})
     needs: ktlintCheck
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test-class:
+          - DedicatedIpTests
+          - E2ETests
+          - HelpSettingsTests
+          - LoginTests
+          - LogoutTests
+          - ProtocolTests
+          - QuickConnectTests
+          - QuickSettingsTests
+          - RegionLatencyRefreshTests
+          - SideMenuTests
+          - WireGuardLocationAndEncryptionTests
     steps:
       - name: Checkout the code
         uses: actions/checkout@v6
@@ -91,7 +106,7 @@ jobs:
           api-level: 33
           arch: x86_64
           profile: pixel_4
-          cores: 4
+          cores: 2
           disk-size: 4G
           ram-size: 4096M
           emulator-boot-timeout: 480
@@ -101,12 +116,12 @@ jobs:
             adb shell settings put global window_animation_scale 0
             adb shell settings put global transition_animation_scale 0
             adb shell settings put global animator_duration_scale 0
-            ./gradlew :app:connectedNoinappDebugAndroidTest
+            ./gradlew :app:connectedNoinappDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=e2e.${{ matrix.test-class }}
 
       - name: Upload E2E report
         uses: actions/upload-artifact@v6
         if: always()
         with:
-          name: e2e-report
+          name: e2e-report-${{ matrix.test-class }}
           path: ${{ github.workspace }}/app/build/reports/androidTests/connected/debug/flavors/noinapp/*
           overwrite: true

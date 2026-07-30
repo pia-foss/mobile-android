@@ -19,10 +19,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -36,6 +39,7 @@ import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HelpScreen() =
     Screen {
@@ -62,7 +66,9 @@ fun HelpScreen() =
                     Modifier
                         .padding(it)
                         .fillMaxWidth()
-                        .semantics {},
+                        .semantics {
+                            testTagsAsResourceId = true
+                        },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {
@@ -94,6 +100,7 @@ fun HelpScreen() =
                                 },
                             )
                         },
+                        testTag = ":HelpScreen:Version",
                     )
                     SettingsItem(
                         titleId = R.string.help_view_debug_log_title,
@@ -101,6 +108,7 @@ fun HelpScreen() =
                         onClick = {
                             viewModel.navigateToDebugLogs()
                         },
+                        testTag = ":HelpScreen:ViewDebugLog",
                     )
                     SettingsToggle(
                         titleId = R.string.help_enable_debug_logging_title,
@@ -109,6 +117,7 @@ fun HelpScreen() =
                         toggle = {
                             viewModel.toggleDebugLogging(it)
                         },
+                        testTag = ":HelpScreen:EnableDebugLogging",
                     )
                     SettingsItem(
                         titleId = R.string.help_send_log_title,
@@ -116,6 +125,7 @@ fun HelpScreen() =
                             showSpinner.value = true
                             viewModel.sendLogs()
                         },
+                        testTag = ":HelpScreen:SendLog",
                     )
                     SettingsToggle(
                         titleId = R.string.help_improve_pia_title,
@@ -124,6 +134,7 @@ fun HelpScreen() =
                         toggle = {
                             viewModel.toggleImprovePia(it)
                         },
+                        testTag = ":HelpScreen:ImprovePia",
                     )
                     if (improvePiaEnabled) {
                         SettingsItem(
@@ -131,6 +142,7 @@ fun HelpScreen() =
                             onClick = {
                                 viewModel.navigateToConnectionStats()
                             },
+                            testTag = ":HelpScreen:ViewSharedData",
                         )
                     }
 
@@ -165,6 +177,7 @@ fun HelpScreen() =
         }
     }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SuccessDialog(
     requestId: String,
@@ -172,6 +185,7 @@ fun SuccessDialog(
     reset: () -> Unit,
 ) {
     AlertDialog(
+        modifier = Modifier.semantics { testTagsAsResourceId = true },
         onDismissRequest = {
             showDialog.value = false
             reset()
@@ -198,6 +212,7 @@ fun SuccessDialog(
                     showDialog.value = false
                     reset()
                 },
+                modifier = Modifier.testTag(":HelpScreen:SendLogSuccessOk"),
             ) {
                 Text(
                     text = stringResource(id = R.string.ok),

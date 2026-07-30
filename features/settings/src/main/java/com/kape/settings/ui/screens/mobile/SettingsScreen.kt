@@ -112,6 +112,7 @@ fun SettingsScreen() =
                         onClick = {
                             viewModel.navigateToHelpSettings()
                         },
+                        testTag = ":SettingsScreen:Help",
                     )
                 }
             }

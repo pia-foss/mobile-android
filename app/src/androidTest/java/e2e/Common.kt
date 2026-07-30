@@ -144,6 +144,17 @@ object Settings {
     const val GENERAL_BUTTON = ":SettingsScreen:General"
     const val PROTOCOLS_BUTTON = ":SettingsScreen:Protocols"
     const val AUTOMATION_BUTTON = ":SettingsScreen:Automation"
+    const val HELP_BUTTON = ":SettingsScreen:Help"
+}
+
+object Help {
+    const val VERSION = ":HelpScreen:Version"
+    const val VIEW_DEBUG_LOG = ":HelpScreen:ViewDebugLog"
+    const val ENABLE_DEBUG_LOGGING_TOGGLE = ":HelpScreen:EnableDebugLogging"
+    const val SEND_LOG = ":HelpScreen:SendLog"
+    const val IMPROVE_PIA_TOGGLE = ":HelpScreen:ImprovePia"
+    const val VIEW_SHARED_DATA = ":HelpScreen:ViewSharedData"
+    const val SEND_LOG_SUCCESS_OK = ":HelpScreen:SendLogSuccessOk"
 }
 
 object GeneralSettings {
@@ -398,6 +409,35 @@ fun setNetworkRuleBehavior(
     onElement { viewIdResourceName == behaviorOptionTag }.click()
     onElement { viewIdResourceName == BehaviorDialog.OK_BUTTON }.click()
 }
+
+// Returning to the connection screen re-triggers its LaunchedEffect(Unit) autoConnect check,
+// so the hamburger button can take a beat longer to settle than a plain connect-button wait -
+// give it more headroom than the default onElement timeout before giving up.
+fun openSideMenu() =
+    uiAutomator {
+        device.waitForIdle()
+        onElement(timeoutMs = NETWORK_TRANSITION_TIMEOUT) { viewIdResourceName == Main.SIDE_MENU }.click()
+        device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
+    }
+
+// Confirms an option is displayed and enabled before exercising the click - the subsequent
+// navigation/state assertion at each call site is what proves the click itself did something.
+fun assertInteractableAndClick(viewId: String) =
+    uiAutomator {
+        val item = onElement { viewIdResourceName == viewId }
+        assertTrue(item.isEnabled)
+        item.click()
+    }
+
+fun navigateToHelpScreen() =
+    uiAutomator {
+        openSideMenu()
+        assertInteractableAndClick(SideMenu.SETTINGS_BUTTON)
+        assertInteractableAndClick(Settings.HELP_BUTTON)
+        assertNotNull(
+            device.wait(Until.hasObject(By.textContains("Help")), TIMEOUT),
+        )
+    }
 
 fun returnToConnectionScreen() =
     uiAutomator {
