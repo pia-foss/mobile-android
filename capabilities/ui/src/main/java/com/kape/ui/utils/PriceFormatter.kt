@@ -48,28 +48,46 @@ class PriceFormatter(
         val currency = Currency.getInstance(currencyCode)
         val format = NumberFormat.getCurrencyInstance()
         format.currency = currency
-        val separator = decimalSeparator(originalFormattedPrice, currency.defaultFractionDigits)
-        if (format is DecimalFormat && separator != null) {
+        val style = digitStyle(originalFormattedPrice, currency.defaultFractionDigits)
+        if (format is DecimalFormat && style != null) {
             format.decimalFormatSymbols =
                 format.decimalFormatSymbols.apply {
-                    decimalSeparator = separator
-                    monetaryDecimalSeparator = separator
+                    zeroDigit = style.zeroDigit
+                    decimalSeparator = style.separator
+                    monetaryDecimalSeparator = style.separator
                 }
         }
         return format.format(amount)
     }
 
-    // Google Play formats prices using the price's own locale, which can differ from the device's
-    // default locale - reuse its decimal separator so both prices on screen render consistently.
-    private fun decimalSeparator(
+    // Google Play formats prices using the price's own script and locale conventions - both the
+    // digits themselves (Latin, Arabic-Indic, Devanagari, Thai, ...) and the decimal separator
+    // can differ from what the device's default locale would otherwise produce. Reusing both
+    // (rather than matching specific separator characters) keeps the computed per-month price
+    // consistent with the price already on screen, regardless of script.
+    private fun digitStyle(
         formattedPrice: String,
         fractionDigits: Int,
-    ): Char? {
+    ): DigitStyle? {
         if (fractionDigits <= 0) return null
-        return Regex("[.,](?=\\d{$fractionDigits}(?!\\d))")
-            .findAll(formattedPrice)
-            .lastOrNull()
-            ?.value
-            ?.first()
+
+        val digitIndices = formattedPrice.indices.filter { formattedPrice[it].isDigit() }
+        if (digitIndices.size < fractionDigits) return null
+
+        val fractionStartIndex = digitIndices[digitIndices.size - fractionDigits]
+        val separatorIndex = fractionStartIndex - 1
+        if (separatorIndex < 0) return null
+
+        val separator = formattedPrice[separatorIndex]
+        if (separator.isDigit()) return null
+
+        val sampleDigit = formattedPrice[digitIndices.first()]
+        val zeroDigit = sampleDigit - Character.digit(sampleDigit, 10)
+        return DigitStyle(zeroDigit, separator)
     }
+
+    private data class DigitStyle(
+        val zeroDigit: Char,
+        val separator: Char,
+    )
 }
