@@ -34,7 +34,8 @@ class GetDipYearlyPlan(
                             DedicatedIpYearlyPlan(
                                 id = productDetails.first,
                                 yearlyPrice = formatter.formatYearlyPlan(productDetails.second),
-                                monthlyPrice = formatter.formatYearlyPerMonth(productDetails.second, "USD"),
+                                // 0L added to match formatYearlyPerMonth signature. To be fixed when dip goes live.
+                                monthlyPrice = formatter.formatYearlyPerMonth(0L, productDetails.second, "USD"),
                             ),
                         )
                     },
