@@ -13,19 +13,19 @@ open class BaseTest {
             Stream.of(
                 Arguments.of(
                     listOf(AccountRequestError(code = 600, message = null)),
-                    ApiResult.Error(ApiError.Unknown),
+                    ApiResult.Error(ApiError.Unknown, 600, null),
                 ),
                 Arguments.of(
                     listOf(AccountRequestError(code = 429, message = null)),
-                    ApiResult.Error(ApiError.Throttled),
+                    ApiResult.Error(ApiError.Throttled, 429, null),
                 ),
                 Arguments.of(
                     listOf(AccountRequestError(code = 401, message = null)),
-                    ApiResult.Error(ApiError.AuthFailed),
+                    ApiResult.Error(ApiError.AuthFailed, 401, null),
                 ),
                 Arguments.of(
                     listOf(AccountRequestError(code = 402, message = null)),
-                    ApiResult.Error(ApiError.AccountExpired),
+                    ApiResult.Error(ApiError.AccountExpired, 402, null),
                 ),
                 Arguments.of(emptyList<AccountRequestError>(), ApiResult.Success),
             )

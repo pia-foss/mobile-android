@@ -1,8 +1,10 @@
 package com.kape.login.di
 
 import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.contracts.AppInfo
 import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.ConnectionManager
+import com.kape.contracts.DeviceInfo
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
@@ -13,6 +15,7 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.login.data.AuthenticationDataSourceImpl
 import com.kape.login.domain.LogoutHandler
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
+import com.kape.login.domain.mobile.LoginFailureTracker
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.domain.mobile.LoginWithReceiptHandler
 import com.kape.login.domain.mobile.LogoutUseCaseImpl
@@ -66,6 +69,9 @@ class LoginModule {
     fun provideLoginUsernameUseCase(): LoginUsernameUseCase = LoginUsernameUseCase()
 
     @Singleton
+    fun provideLoginFailureTracker(): LoginFailureTracker = LoginFailureTracker()
+
+    @Singleton
     fun provideTokenAuthenticationUtil(
         dataSource: AuthenticationDataSource,
         router: Router,
@@ -80,6 +86,9 @@ class LoginModule {
         buildConfigProvider: BuildConfigProvider,
         permissionsUtil: PermissionUtil,
         submitKpiEventUseCase: SubmitKpiEventUseCase,
+        appInfo: AppInfo,
+        deviceInfo: DeviceInfo,
+        loginFailureTracker: LoginFailureTracker,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): LoginViewModel =
@@ -90,6 +99,9 @@ class LoginModule {
             buildConfigProvider,
             permissionsUtil,
             submitKpiEventUseCase,
+            appInfo,
+            deviceInfo,
+            loginFailureTracker,
             ioDispatcher,
             networkConnectionListener,
         )

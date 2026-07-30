@@ -16,13 +16,14 @@ class LoginUseCase(
     ): LoginState =
         when (val result = source.login(username, password)) {
             ApiResult.Success -> LoginState.Successful
-            is ApiResult.Error ->
+            is ApiResult.Error -> {
                 when (result.error) {
                     ApiError.AccountExpired -> LoginState.Expired
                     ApiError.AuthFailed -> LoginState.Failed
-                    ApiError.Throttled -> LoginState.Throttled
-                    ApiError.Unknown -> LoginState.Failed
+                    ApiError.Throttled -> LoginState.Throttled(result.code, result.message)
+                    ApiError.Unknown -> LoginState.ServiceUnavailable(result.code, result.message)
                 }
+            }
         }
 
     suspend fun loginWithEmail(email: String): LoginState =
@@ -32,8 +33,8 @@ class LoginUseCase(
                 when (result.error) {
                     ApiError.AccountExpired -> LoginState.Expired
                     ApiError.AuthFailed -> LoginState.Failed
-                    ApiError.Throttled -> LoginState.Throttled
-                    ApiError.Unknown -> LoginState.Failed
+                    ApiError.Throttled -> LoginState.Throttled(result.code, result.message)
+                    ApiError.Unknown -> LoginState.ServiceUnavailable(result.code, result.message)
                 }
         }
 
@@ -48,8 +49,8 @@ class LoginUseCase(
                 when (result.error) {
                     ApiError.AccountExpired -> LoginState.Expired
                     ApiError.AuthFailed -> LoginState.Failed
-                    ApiError.Throttled -> LoginState.Throttled
-                    ApiError.Unknown -> LoginState.Failed
+                    ApiError.Throttled -> LoginState.Throttled(result.code, result.message)
+                    ApiError.Unknown -> LoginState.ServiceUnavailable(result.code, result.message)
                 }
         }
 }

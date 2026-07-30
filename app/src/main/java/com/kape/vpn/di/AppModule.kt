@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.kape.appbar.di.AppBarModule
 import com.kape.automation.di.AutomationModule
 import com.kape.buildconfig.data.BuildConfigProvider
@@ -12,6 +13,7 @@ import com.kape.connection.di.ConnectionModule
 import com.kape.contracts.AppInfo
 import com.kape.contracts.ConfigInfo
 import com.kape.contracts.ConnectionStatusProvider
+import com.kape.contracts.DeviceInfo
 import com.kape.contracts.LicenceReader
 import com.kape.contracts.NetworkManager
 import com.kape.contracts.UsageProvider
@@ -155,6 +157,14 @@ class AppModule {
             override val buildType: String = BuildConfig.BUILD_TYPE
             override val versionName: String = BuildConfig.VERSION_NAME
             override val versionCode: Int = BuildConfig.VERSION_CODE
+        }
+
+    @Singleton(binds = [DeviceInfo::class])
+    fun provideDeviceInfo(): DeviceInfo =
+        object : DeviceInfo {
+            override val manufacturer: String = Build.MANUFACTURER
+            override val model: String = Build.MODEL
+            override val osVersion: String = Build.VERSION.RELEASE
         }
 
     @Singleton(binds = [ConfigInfo::class])

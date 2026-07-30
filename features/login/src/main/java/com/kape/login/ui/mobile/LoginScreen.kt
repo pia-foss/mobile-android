@@ -1,5 +1,6 @@
 package com.kape.login.ui.mobile
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.kape.login.R
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.utils.LoginError
@@ -48,6 +50,7 @@ import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.Input
 import com.kape.ui.mobile.text.SignInText
+import com.kape.ui.tiles.Dialog
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -59,6 +62,7 @@ fun LoginScreen() =
 
         val state by remember(viewModel) { viewModel.state }.collectAsState()
         val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
+        val showSupportDialog by remember(viewModel) { viewModel.showSupportDialog }.collectAsState()
         val currentContext = LocalContext.current
         val noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet)
 
@@ -188,6 +192,26 @@ fun LoginScreen() =
                             },
                 )
             }
+        }
+
+        if (showSupportDialog) {
+            Dialog(
+                title = stringResource(id = com.kape.ui.R.string.login_support_dialog_title),
+                text = stringResource(id = com.kape.ui.R.string.login_support_dialog_message),
+                onConfirmButtonText = stringResource(id = com.kape.ui.R.string.drawer_item_title_contact_support),
+                onDismissButtonText = stringResource(id = com.kape.ui.R.string.cancel),
+                onConfirm = {
+                    viewModel.getSupportTicketUrl()?.let { url ->
+                        val launchIntent = Intent(Intent.ACTION_VIEW, url.toUri())
+                        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        currentContext.startActivity(launchIntent)
+                    }
+                    viewModel.onSupportDialogDismissed()
+                },
+                onDismiss = {
+                    viewModel.onSupportDialogDismissed()
+                },
+            )
         }
     }
 

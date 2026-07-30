@@ -3,9 +3,12 @@ package com.kape.login.ui.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.contracts.AppInfo
+import com.kape.contracts.DeviceInfo
 import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.data.LoginWithEmail
+import com.kape.login.domain.mobile.LoginFailureTracker
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.domain.mobile.LoginWithReceiptHandler
 import com.kape.login.utils.FAILED
@@ -14,7 +17,11 @@ import com.kape.login.utils.INVALID
 import com.kape.login.utils.LOADING
 import com.kape.login.utils.LoginScreenState
 import com.kape.login.utils.LoginState
+import com.kape.login.utils.QualifyingFailure
+import com.kape.login.utils.SupportTicketInfo
+import com.kape.login.utils.buildSupportTicketUrl
 import com.kape.login.utils.getScreenState
+import com.kape.login.utils.maskAccountIdentifier
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.shareevents.data.processingSuccess
@@ -26,6 +33,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
+import kotlin.time.Clock
 
 @KoinViewModel
 class LoginViewModel(
@@ -35,6 +43,9 @@ class LoginViewModel(
     private val buildConfigProvider: BuildConfigProvider,
     private val permissionsUtil: PermissionUtil,
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
+    private val appInfo: AppInfo,
+    private val deviceInfo: DeviceInfo,
+    private val loginFailureTracker: LoginFailureTracker,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
@@ -42,6 +53,11 @@ class LoginViewModel(
     val state: StateFlow<LoginScreenState> = _state
     val isConnected = networkConnectionListener.isConnected
     val shouldShowLoginWithReceiptButton: Boolean = buildConfigProvider.isGoogleFlavor()
+
+    private val _showSupportDialog = MutableStateFlow(false)
+    val showSupportDialog: StateFlow<Boolean> = _showSupportDialog
+
+    private var pendingSupportTicket: SupportTicketInfo? = null
 
     private lateinit var packageName: String
 
@@ -56,11 +72,42 @@ class LoginViewModel(
         }
         val it = loginUseCase.login(username, password)
         if (it == LoginState.Successful) {
+            loginFailureTracker.recordSuccess()
             router.updateDestination(permissionsUtil.getNextDestination())
+            return@launch
+        }
+        _state.emit(getScreenState(it))
+        if (it is QualifyingFailure) {
+            pendingSupportTicket = buildSupportTicketInfo(it, username)
+            if (loginFailureTracker.recordQualifyingFailure()) {
+                _showSupportDialog.emit(true)
+            }
         } else {
-            _state.emit(getScreenState(it))
+            loginFailureTracker.recordNonQualifyingFailure()
         }
     }
+
+    fun onSupportDialogDismissed() =
+        viewModelScope.launch {
+            _showSupportDialog.emit(false)
+        }
+
+    fun getSupportTicketUrl(): String? = pendingSupportTicket?.let(::buildSupportTicketUrl)
+
+    private fun buildSupportTicketInfo(
+        failure: QualifyingFailure,
+        username: String,
+    ) = SupportTicketInfo(
+        errorCode = failure.code,
+        errorMessage = failure.message,
+        timestampUtc = Clock.System.now().toString(),
+        appVersionName = appInfo.versionName,
+        appVersionCode = appInfo.versionCode,
+        osVersion = deviceInfo.osVersion,
+        manufacturer = deviceInfo.manufacturer,
+        model = deviceInfo.model,
+        maskedAccountId = maskAccountIdentifier(username),
+    )
 
     fun loginWithReceipt(packageName: String) {
         this.packageName = packageName
