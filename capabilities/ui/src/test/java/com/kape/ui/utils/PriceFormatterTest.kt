@@ -19,36 +19,35 @@ class PriceFormatterTest {
         priceFormatter = PriceFormatter(context)
     }
 
-    @ParameterizedTest(name = "price: {0}, code: {1}, formatted: {2}")
+    @ParameterizedTest(name = "priceInMicros: {0}, code: {1}, originalFormattedPrice: {2}, formatted: {3}")
     @MethodSource("arguments")
     fun verifyVariousPrices(
-        price: String,
+        priceInMicros: Long,
         currencyCode: String,
+        originalFormattedPrice: String,
         expected: String,
     ) {
         every { context.getString(any()) } returns PER_MONTH
-        val formatted = priceFormatter.formatYearlyPerMonth(price, currencyCode)
+        val formatted = priceFormatter.formatYearlyPerMonth(priceInMicros, currencyCode, originalFormattedPrice)
         assertEquals(expected, formatted)
     }
 
     companion object {
-        const val PERSIAN = "۴۴۹۹"
-        const val PERSIAN_CODE = "IRR"
-        const val ARABIC = "٤٤٩٩"
-        const val ARABIC_CODE = "SAR"
-        const val HINDI = "४,४९९"
-        const val ENGLISH = "4499"
-
         const val PER_MONTH = "%s/mo"
 
         @JvmStatic
         fun arguments() =
             Stream.of(
-                Arguments.of(PERSIAN, PERSIAN_CODE, "IRR374.92/mo"),
-                Arguments.of(ARABIC, ARABIC_CODE, "SAR374.92/mo"),
-                Arguments.of(HINDI, "INR", "₹0.37/mo"),
-                Arguments.of(ENGLISH, "GBP", "£374.92/mo"),
-                Arguments.of(ENGLISH, "EUR", "€374.92/mo"),
+                Arguments.of(4_499_000_000L, "GBP", "£4499.00", "£374.92/mo"),
+                Arguments.of(4_499_000_000L, "USD", "$4499.00", "$374.92/mo"),
+                Arguments.of(4_499_000_000L, "EUR", "4.499,00 €", "€374,92/mo"),
+                Arguments.of(12_000_000L, "USD", "$12,00", "$1,00/mo"),
+                Arguments.of(1_200_000_000L, "PLN", "1200,00 PLN", "PLN100,00/mo"),
+                Arguments.of(120_000L, "PLN", "0,12 PLN", "PLN0,01/mo"),
+                // Persian - Extended Arabic-Indic digits with the Arabic decimal separator (٫).
+                Arguments.of(4_499_000_000L, "IRR", "۴۴۹۹٫۰۰ ﷼", "IRR۳۷۴٫۹۲/mo"),
+                // Hindi - Devanagari digits.
+                Arguments.of(4_499_000_000L, "INR", "₹४,४९९.००", "₹३७४.९२/mo"),
             )
     }
 }

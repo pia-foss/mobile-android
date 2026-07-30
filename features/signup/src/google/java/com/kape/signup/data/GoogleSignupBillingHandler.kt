@@ -82,8 +82,9 @@ class GoogleSignupBillingHandler(
                                             ),
                                         secondaryPrice =
                                             formatter.formatYearlyPerMonth(
-                                                yearlyPlan.formattedPrice,
+                                                yearlyPlan.priceInMicros,
                                                 yearlyPlan.currencyCode,
+                                                yearlyPlan.formattedPrice,
                                             ),
                                     )
                                 val monthly =
