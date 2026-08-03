@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">U moet een gebruikersnaam en wachtwoord invoeren</string>
   <string name="error_missing_email">U moet een geldig e-mailadres opgeven</string>
   <string name="error_account_expired">Je account is verlopen.</string>
+  <string name="login_support_dialog_title">Nog steeds problemen?</string>
+  <string name="login_support_dialog_message">Het lijkt erop dat er iets niet werkt. Je kunt contact opnemen met de klantenservice met de technische gegevens al ingevuld, zodat je de fout niet zelf hoeft te beschrijven.</string>
   <string name="sort_regions_title">Sorteer regio\'s op</string>
   <string name="name">Naam</string>
   <string name="latency">Latentie</string>

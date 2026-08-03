@@ -30,13 +30,6 @@ internal class SupportTicketTest {
     }
 
     @Test
-    fun `description omits http status for the network-error sentinel code`() {
-        val info = supportTicketInfo(errorCode = 600, errorMessage = "Unable to resolve host")
-        val description = buildSupportTicketDescription(info)
-        assertFalse(description.contains("HTTP status"))
-    }
-
-    @Test
     fun `description falls back to N-A when error details are missing`() {
         val info = supportTicketInfo(errorCode = null, errorMessage = null)
         val description = buildSupportTicketDescription(info)

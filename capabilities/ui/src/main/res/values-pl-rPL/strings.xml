@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">Musisz podać nazwę użytkownika i hasło</string>
   <string name="error_missing_email">Musisz podać prawidłowy adres e-mail</string>
   <string name="error_account_expired">Ważność konta wygasła.</string>
+  <string name="login_support_dialog_title">Nadal masz problemy?</string>
+  <string name="login_support_dialog_message">Wygląda na to, że coś nie działa. Możesz skontaktować się z pomocą techniczną — szczegóły techniczne zostaną wypełnione automatycznie, więc nie musisz samodzielnie opisywać błędu.</string>
   <string name="sort_regions_title">Uporządkuj regiony wg</string>
   <string name="name">Nazwa</string>
   <string name="latency">Opóźnienie</string>

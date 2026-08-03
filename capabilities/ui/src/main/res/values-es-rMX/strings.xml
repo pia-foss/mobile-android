@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">Debes ingresar un nombre de usuario y una contraseña</string>
   <string name="error_missing_email">Tienes que proporcionar una dirección de email válida</string>
   <string name="error_account_expired">Su cuenta ha caducado.</string>
+  <string name="login_support_dialog_title">¿Sigues teniendo problemas?</string>
+  <string name="login_support_dialog_message">Parece que algo no está funcionando. Puedes contactar a soporte con los detalles técnicos ya completados, así no tendrás que describir el error tú mismo.</string>
   <string name="sort_regions_title">Ordenar regiones por</string>
   <string name="name">Nombre</string>
   <string name="latency">Latencia</string>

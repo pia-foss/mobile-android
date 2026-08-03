@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">ユーザー名とパスワードを入力してください</string>
   <string name="error_missing_email">有効なメールアドレスを入力してください</string>
   <string name="error_account_expired">アカウントの有効期限が切れています。</string>
+  <string name="login_support_dialog_title">まだ問題がありますか？</string>
+  <string name="login_support_dialog_message">何か不具合が発生しているようです。技術的な詳細を入力済みの状態でサポートにお問い合わせいただけるため、エラーの内容をご自身で説明する必要はありません。</string>
   <string name="sort_regions_title">地域並べ替え条件：</string>
   <string name="name">名前</string>
   <string name="latency">レイテンシ</string>

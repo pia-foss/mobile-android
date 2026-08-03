@@ -4,7 +4,6 @@ import java.net.URLEncoder
 
 private const val HELPDESK_URL = "https://helpdesk.privateinternetaccess.com/hc/en-us/requests/new"
 private const val SUPPORT_TICKET_SUBJECT = "[Android] Login issue"
-private const val NETWORK_ERROR_CODE = 600
 private const val MASKED_PREFIX_LENGTH = 3
 private const val MASKED_SUFFIX_LENGTH = 2
 
@@ -34,7 +33,7 @@ fun buildSupportTicketDescription(info: SupportTicketInfo): String {
             "Error code: ${info.errorCode ?: "N/A"}",
             "Error message: ${info.errorMessage ?: "N/A"}",
         )
-    if (info.errorCode != null && info.errorCode != NETWORK_ERROR_CODE) {
+    if (info.errorCode != null) {
         lines += "HTTP status: ${info.errorCode}"
     }
     lines +=

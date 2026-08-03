@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">Você deve inserir um nome de usuário e senha</string>
   <string name="error_missing_email">Você precisa fornecer um endereço de e-mail válido</string>
   <string name="error_account_expired">Sua conta expirou.</string>
+  <string name="login_support_dialog_title">Ainda com problemas?</string>
+  <string name="login_support_dialog_message">Parece que algo não está funcionando. Você pode entrar em contato com o suporte com os detalhes técnicos já preenchidos, então não é necessário descrever o erro você mesmo.</string>
   <string name="sort_regions_title">Ordenar regiões por</string>
   <string name="name">Nome</string>
   <string name="latency">Latência</string>

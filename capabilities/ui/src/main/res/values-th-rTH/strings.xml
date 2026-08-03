@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">คุณต้องกรอกชื่อผู้ใช้และรหัสผ่าน</string>
   <string name="error_missing_email">คุณต้องใส่ที่อยู่อีเมลที่ถูกต้อง</string>
   <string name="error_account_expired">บัญชีของคุณหมดอายุแล้ว</string>
+  <string name="login_support_dialog_title">ยังพบปัญหาอยู่ใช่ไหม</string>
+  <string name="login_support_dialog_message">ดูเหมือนว่ามีบางอย่างทำงานไม่ถูกต้อง คุณสามารถติดต่อฝ่ายสนับสนุนโดยมีรายละเอียดทางเทคนิคกรอกไว้ให้แล้ว จึงไม่จำเป็นต้องอธิบายข้อผิดพลาดด้วยตัวเอง</string>
   <string name="sort_regions_title">เรียงภูมิภาคตาม</string>
   <string name="name">ชื่อ</string>
   <string name="latency">เวลาแฝง</string>
