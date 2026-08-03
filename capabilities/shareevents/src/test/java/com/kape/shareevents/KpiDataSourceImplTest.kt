@@ -2,7 +2,7 @@ package com.kape.shareevents
 
 import com.kape.contracts.ConfigInfo
 import com.kape.contracts.KpiDataSource
-import com.kape.contracts.data.kpi.KpiConnectionEvent
+import com.kape.data.kpi.KpiConnectionEvent
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.shareevents.data.KpiDataSourceImpl
@@ -11,6 +11,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -46,7 +47,7 @@ internal class KpiDataSourceImplTest {
     @Test
     fun `verify submit calls api`() =
         runTest {
-            every { prefs.getSelectedProtocol() } returns VpnProtocols.OpenVPN
+            every { prefs.selectedProtocol } returns MutableStateFlow(VpnProtocols.OpenVPN)
             source.submitConnectionEvent(KpiConnectionEvent.ConnectionCancelled)
             verify(exactly = 1) { api.submit(any(), any()) }
         }

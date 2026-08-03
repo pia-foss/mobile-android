@@ -3,6 +3,7 @@ package com.kape.vpnconnect.domain
 import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionStatusProvider
+import com.kape.data.DI
 import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -33,6 +34,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -60,7 +62,7 @@ class ConnectionManagerImplTest {
             single { stopObfuscatorProcess }
             single { portForwardingUseCase }
             single { connectionStatusProvider }
-            single<CoroutineScope> { CoroutineScope(Dispatchers.Unconfined) }
+            single<CoroutineScope>(named(DI.IO_SCOPE)) { CoroutineScope(Dispatchers.Unconfined) }
         }
 
     // Default server with WireGuard endpoint (matches @BeforeEach selectedProtocol stub).
@@ -127,8 +129,8 @@ class ConnectionManagerImplTest {
                 )
             every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.OpenVPN
             every { settingsPrefs.openVpnSettings.value } returns OpenVpnSettings(transport = Transport.UDP)
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(openvpnUdpServer) } returns clientConfig
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(openvpnUdpServer) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
             connectionManager.connect(openvpnUdpServer, isManual = false, {}) {}
@@ -150,8 +152,8 @@ class ConnectionManagerImplTest {
                 )
             every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.OpenVPN
             every { settingsPrefs.openVpnSettings.value } returns OpenVpnSettings(transport = Transport.TCP)
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(openvpnTcpServer) } returns clientConfig
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(openvpnTcpServer) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
             connectionManager.connect(openvpnTcpServer, isManual = false, {}) {}
@@ -163,8 +165,8 @@ class ConnectionManagerImplTest {
     fun `connect - shadowsocks disabled - VPN succeeds - updates info, sets server and quick connect`() =
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
             connectionManager.connect(server, isManual = true, {}) {}
@@ -178,9 +180,9 @@ class ConnectionManagerImplTest {
     fun `connect - shadowsocks disabled - VPN succeeds - port forwarding disabled - does not start port forwarding`() =
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
             every { settingsPrefs.isPortForwardingEnabled.value } returns false
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
             connectionManager.connect(server, isManual = false, {}) {}
@@ -193,10 +195,10 @@ class ConnectionManagerImplTest {
     fun `connect - shadowsocks disabled - VPN succeeds - port forwarding enabled - binds port and starts port forwarding`() =
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
             every { settingsPrefs.isPortForwardingEnabled.value } returns true
             every { connectionSource.getVpnToken() } returns "vpn_token"
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
             connectionManager.connect(server, isManual = false, {}) {}
@@ -209,8 +211,8 @@ class ConnectionManagerImplTest {
     fun `connect - shadowsocks disabled - VPN fails - calls disconnect`() =
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery {
                 connectionSource.startConnection(clientConfig, connectionStatusProvider)
             } returns Result.failure(RuntimeException("VPN failed"))
@@ -224,8 +226,8 @@ class ConnectionManagerImplTest {
     @Test
     fun `connect - shadowsocks enabled - no server selected - returns early without starting VPN`() =
         runTest {
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns true
-            every { shadowsocksRegionPrefs.selectedShadowsocksServer.value } returns null
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns true
+            coEvery { shadowsocksRegionPrefs.getSelectedShadowsocksServerNow() } returns null
 
             connectionManager.connect(server, isManual = false, {}) {}
 
@@ -244,10 +246,10 @@ class ConnectionManagerImplTest {
                     cipher = "aes-256-gcm",
                 )
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns true
-            every { shadowsocksRegionPrefs.selectedShadowsocksServer.value } returns shadowsocksServer
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns true
+            coEvery { shadowsocksRegionPrefs.getSelectedShadowsocksServerNow() } returns shadowsocksServer
             coEvery { startObfuscatorProcess(any(), any()) } returns Result.success(Unit)
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
             connectionManager.connect(server, isManual = false, {}) {}
@@ -266,8 +268,8 @@ class ConnectionManagerImplTest {
                     key = "test-key",
                     cipher = "aes-256-gcm",
                 )
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns true
-            every { shadowsocksRegionPrefs.selectedShadowsocksServer.value } returns shadowsocksServer
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns true
+            coEvery { shadowsocksRegionPrefs.getSelectedShadowsocksServerNow() } returns shadowsocksServer
             coEvery { startObfuscatorProcess(any(), any()) } returns Result.failure(RuntimeException("obfuscator failed"))
 
             connectionManager.connect(server, isManual = false, {}) {}
@@ -334,8 +336,8 @@ class ConnectionManagerImplTest {
     fun `reconnect - disconnects then connects to the requested server`() =
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.stopConnection() } returns Result.success(Unit)
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)
 
@@ -355,7 +357,7 @@ class ConnectionManagerImplTest {
                     key = "eu-west",
                 )
             val disconnectSignal = CompletableDeferred<Unit>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
             coEvery { connectionSource.stopConnection() } coAnswers {
                 disconnectSignal.await()
                 Result.success(Unit)
@@ -388,8 +390,8 @@ class ConnectionManagerImplTest {
                 )
             val clientConfig2 = mockk<ClientConfiguration>()
             val disconnectSignal = CompletableDeferred<Unit>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(server2) } returns clientConfig2
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(server2) } returns clientConfig2
             coEvery { connectionSource.stopConnection() } coAnswers {
                 disconnectSignal.await()
                 Result.success(Unit)
@@ -428,9 +430,9 @@ class ConnectionManagerImplTest {
             val clientConfig = mockk<ClientConfiguration>()
             val clientConfig2 = mockk<ClientConfiguration>()
             val connectToServerSignal = CompletableDeferred<Unit>()
-            every { settingsPrefs.isShadowsocksObfuscationEnabled.value } returns false
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
-            every { connectionConfigurationUseCase.generateConnectionConfiguration(server2) } returns clientConfig2
+            coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
+            coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(server2) } returns clientConfig2
             coEvery { connectionSource.stopConnection() } returns Result.success(Unit)
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } coAnswers {
                 connectToServerSignal.await()

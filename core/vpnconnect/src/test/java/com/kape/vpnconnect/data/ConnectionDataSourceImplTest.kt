@@ -23,14 +23,17 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class ConnectionDataSourceImplTest {
     private val connectionApi = mockk<VPNManagerAPI>()
     private val accountApi = mockk<AndroidAccountAPI>()
@@ -43,8 +46,11 @@ class ConnectionDataSourceImplTest {
 
     private val connectionStatusProvider =
         object : ConnectionStatusProvider, VPNManagerConnectionListener {
-            override val state: StateFlow<VpnConnectionStatus> =
-                MutableStateFlow(VpnConnectionStatus(ConnectionStatus.DISCONNECTED, ""))
+            override val status: StateFlow<ConnectionStatus> =
+                MutableStateFlow(ConnectionStatus.DISCONNECTED)
+            override val title: StateFlow<String> = MutableStateFlow("")
+            override val vpnManagerConnectionStatus: StateFlow<VPNManagerConnectionStatus?> =
+                MutableStateFlow(null)
 
             override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {}
         }
@@ -106,6 +112,7 @@ class ConnectionDataSourceImplTest {
             every { settingsPrefs.isHelpImprovePiaEnabled.value } returns false
             every { settingsPrefs.isDebugLoggingEnabled.value } returns false
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
+            every { connectionApi.stopConnection(any()) } answers { }
             every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
                 slot.captured.invoke(Result.failure(RuntimeException("connection failed")))
             }
@@ -329,6 +336,7 @@ class ConnectionDataSourceImplTest {
                     ioScope = this,
                 )
             dataSource.stopPortForwarding()
+            advanceUntilIdle()
 
             coVerify { connectionPrefs.clearGateway() }
             coVerify { connectionPrefs.clearPortBindingInfo() }

@@ -2,9 +2,9 @@ package com.kape.shareevents.domain
 
 import android.os.SystemClock
 import com.kape.contracts.KpiDataSource
-import com.kape.contracts.data.kpi.KpiConnectionEvent
-import com.kape.contracts.data.kpi.KpiConnectionSource
-import com.kape.contracts.data.kpi.KpiConnectionStatus
+import com.kape.data.kpi.KpiConnectionEvent
+import com.kape.data.kpi.KpiConnectionSource
+import com.kape.data.kpi.KpiConnectionStatus
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic

@@ -4,9 +4,11 @@ import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.shadowsocksregions.data.ShadowsocksRegionRepository
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
@@ -48,12 +50,13 @@ internal class GetShadowsocksRegionsUseCaseTest {
     fun `get selected shadowsocks region set and return a default when none has been selected by the user`(
         expected: List<ShadowsocksServer>,
     ) = runTest {
-        every { shadowsocksRegionPrefs.getShadowsocksServers() } returns expected
-        every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns null
+        every { shadowsocksRegionPrefs.shadowsocksServers } returns MutableStateFlow(expected)
+        every { shadowsocksRegionPrefs.selectedShadowsocksServer } returns MutableStateFlow(null)
 
-        getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
+        val actual = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer().first()
 
-        verify {
+        assertEquals(expected.first(), actual)
+        coVerify {
             setShadowsocksRegionsUseCase.setSelectShadowsocksServer(expected.first())
         }
     }

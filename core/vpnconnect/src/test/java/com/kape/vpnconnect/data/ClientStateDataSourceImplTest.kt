@@ -2,7 +2,6 @@ package com.kape.vpnconnect.data
 
 import com.kape.data.NO_IP
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.vpnconnect.utils.SHORT_DELAY
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.ClientStatusInformation
@@ -32,7 +31,7 @@ class ClientStateDataSourceImplTest {
                     ioScope = this,
                 )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
+            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
                 slot.captured.invoke(ClientStatusInformation(connected = false, ip = "192.168.1.1"), emptyList())
             }
 
@@ -53,7 +52,7 @@ class ClientStateDataSourceImplTest {
                     ioScope = this,
                 )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
+            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
                 slot.captured.invoke(ClientStatusInformation(connected = true, ip = "10.0.0.1"), emptyList())
             }
 
@@ -74,7 +73,7 @@ class ClientStateDataSourceImplTest {
                 )
 
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
+            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
                 slot.captured.invoke(null, emptyList())
             }
 
@@ -97,7 +96,7 @@ class ClientStateDataSourceImplTest {
                     ioScope = this,
                 )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
+            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
                 slot.captured.invoke(ClientStatusInformation(connected = true, ip = "10.8.0.1"), emptyList())
             }
 
@@ -117,7 +116,7 @@ class ClientStateDataSourceImplTest {
                     ioScope = this,
                 )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
+            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
                 slot.captured.invoke(ClientStatusInformation(connected = false, ip = NO_IP), emptyList())
             }
 
@@ -136,7 +135,7 @@ class ClientStateDataSourceImplTest {
                     ioScope = this,
                 )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(SHORT_DELAY, capture(slot)) } answers {
+            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
                 slot.captured.invoke(null, emptyList())
             }
 
