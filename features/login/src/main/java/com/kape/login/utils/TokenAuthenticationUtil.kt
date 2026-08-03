@@ -1,6 +1,7 @@
 package com.kape.login.utils
 
 import android.net.Uri
+import androidx.core.net.toUri
 import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.Router
 import com.kape.permissions.utils.PermissionUtil
@@ -33,11 +34,13 @@ class TokenAuthenticationUtil(
         } else if (url.contains(qrLogin)) {
             url = url.replace(qrLogin, loginUrl)
         }
-        openUri = Uri.parse(url)
+        openUri = url.toUri()
         val token = openUri.getQueryParameter("token")
         token?.let {
             launch {
-                dataSource.migrateToken(it)
+                if (!dataSource.isUserLoggedIn()) {
+                    dataSource.migrateToken(it)
+                }
                 router.updateDestination(permissionUtil.getNextDestination())
             }
         }
