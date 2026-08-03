@@ -22,8 +22,8 @@ fun getScreenState(state: LoginState): LoginScreenState =
         LoginState.Expired -> EXPIRED
         LoginState.Failed -> FAILED
         LoginState.Successful -> SUCCESS
-        LoginState.Throttled -> THROTTLED
-        LoginState.ServiceUnavailable -> SERVICE_UNAVAILABLE
+        is LoginState.Throttled -> THROTTLED
+        is LoginState.ServiceUnavailable -> SERVICE_UNAVAILABLE
     }
 
 sealed class LoginError {

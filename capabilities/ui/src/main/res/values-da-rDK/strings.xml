@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">Du skal angive et brugernavn og en adgangskode</string>
   <string name="error_missing_email">Du skal give en gyldig e-mailadresse</string>
   <string name="error_account_expired">Din konto er udløbet.</string>
+  <string name="login_support_dialog_title">Stadig problemer?</string>
+  <string name="login_support_dialog_message">Det ser ud til, at noget ikke fungerer. Du kan kontakte support med de tekniske detaljer allerede udfyldt, så du ikke behøver at beskrive fejlen selv.</string>
   <string name="sort_regions_title">Sortér regioner efter</string>
   <string name="name">Navn</string>
   <string name="latency">Forsinkelse</string>

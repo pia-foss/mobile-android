@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">您必须输入用户名和密码</string>
   <string name="error_missing_email">您必须提供有效的电子邮箱地址</string>
   <string name="error_account_expired">您的订阅已过期。</string>
+  <string name="login_support_dialog_title">仍然遇到问题？</string>
+  <string name="login_support_dialog_message">看起来出现了一些问题。您可以联系支持团队，技术细节已自动填写，无需您自行描述错误。</string>
   <string name="sort_regions_title">地区排序方式</string>
   <string name="name">名称</string>
   <string name="latency">延迟</string>

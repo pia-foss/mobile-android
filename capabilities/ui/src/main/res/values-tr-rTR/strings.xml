@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">Bir kullanıcı adı ile şifre girmelisiniz</string>
   <string name="error_missing_email">Geçerli bir e-posta adresi sağlamanız gerekiyor</string>
   <string name="error_account_expired">Hesabınızın süresi doldu.</string>
+  <string name="login_support_dialog_title">Hâlâ sorun mu yaşıyorsunuz?</string>
+  <string name="login_support_dialog_message">Görünüşe göre bir şeyler ters gitti. Destek ekibiyle iletişime geçebilirsiniz; hatayı uzun uzun anlatmaniza gerek kalmasın diye teknik detayları sizin için otomatik doldurduk.</string>
   <string name="sort_regions_title">Bölgeleri sırala:</string>
   <string name="name">Ad</string>
   <string name="latency">Gecikme</string>

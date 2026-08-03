@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">Devi inserire nome utente e password</string>
   <string name="error_missing_email">Devi fornire un indirizzo email valido</string>
   <string name="error_account_expired">Il tuo account è scaduto.</string>
+  <string name="login_support_dialog_title">Ancora problemi?</string>
+  <string name="login_support_dialog_message">Sembra che qualcosa non funzioni. Puoi contattare l\'assistenza con i dettagli tecnici già compilati, quindi non è necessario descrivere l\'errore da solo.</string>
   <string name="sort_regions_title">Ordina regioni per</string>
   <string name="name">Nome</string>
   <string name="latency">Latenza</string>

@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">Необходимо ввести действительное имя пользователя и пароль</string>
   <string name="error_missing_email">Укажите действительный адрес эл. почты</string>
   <string name="error_account_expired">Срок действия вашей учетной записи истек.</string>
+  <string name="login_support_dialog_title">Проблема не устранена?</string>
+  <string name="login_support_dialog_message">Похоже, что-то не работает. Вы можете обратиться в службу поддержки — технические данные уже будут заполнены, поэтому вам не придется самостоятельно описывать ошибку.</string>
   <string name="sort_regions_title">Упорядочить регионы по</string>
   <string name="name">Имя</string>
   <string name="latency">Время задержки</string>

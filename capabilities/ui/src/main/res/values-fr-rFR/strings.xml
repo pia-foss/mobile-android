@@ -177,6 +177,8 @@
   <string name="error_missing_credentials">Vous devez saisir un nom d\'utilisateur et un mot de passe.</string>
   <string name="error_missing_email">Vous devez saisir une adresse e-mail valide</string>
   <string name="error_account_expired">Votre compte a expiré.</string>
+  <string name="login_support_dialog_title">Toujours des difficultés ?</string>
+  <string name="login_support_dialog_message">Il semble qu\'un problème persiste. Vous pouvez contacter l\'assistance avec les détails techniques déjà renseignés, il n\'est donc pas nécessaire de décrire l\'erreur vous-même.</string>
   <string name="sort_regions_title">Trier les localisations par</string>
   <string name="name">Nom</string>
   <string name="latency">Latence</string>

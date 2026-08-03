@@ -27,7 +27,7 @@ internal class LoginUseCaseTest : BaseTest() {
     }
 
     @ParameterizedTest(name = "repo: {0}, expected: {1}")
-    @MethodSource("useCaseLogin")
+    @MethodSource("useCaseLoginMobile")
     fun login(
         result: ApiResult,
         expected: LoginState,
@@ -66,8 +66,30 @@ internal class LoginUseCaseTest : BaseTest() {
                 Arguments.of(ApiResult.Success, LoginState.Successful),
                 Arguments.of(ApiResult.Error(ApiError.AuthFailed), LoginState.Failed),
                 Arguments.of(ApiResult.Error(ApiError.AccountExpired), LoginState.Expired),
-                Arguments.of(ApiResult.Error(ApiError.Throttled), LoginState.Throttled),
-                Arguments.of(ApiResult.Error(ApiError.Unknown), LoginState.Failed),
+                Arguments.of(
+                    ApiResult.Error(ApiError.Throttled, 429, "Too many requests"),
+                    LoginState.Throttled(429, "Too many requests"),
+                ),
+                Arguments.of(
+                    ApiResult.Error(ApiError.Unknown, 600, "boom"),
+                    LoginState.ServiceUnavailable(600, "boom"),
+                ),
+            )
+
+        @JvmStatic
+        fun useCaseLoginMobile() =
+            Stream.of(
+                Arguments.of(ApiResult.Success, LoginState.Successful),
+                Arguments.of(ApiResult.Error(ApiError.AuthFailed), LoginState.Failed),
+                Arguments.of(ApiResult.Error(ApiError.AccountExpired), LoginState.Expired),
+                Arguments.of(
+                    ApiResult.Error(ApiError.Throttled, 429, "Too many requests"),
+                    LoginState.Throttled(429, "Too many requests"),
+                ),
+                Arguments.of(
+                    ApiResult.Error(ApiError.Unknown, 600, "boom"),
+                    LoginState.ServiceUnavailable(600, "boom"),
+                ),
             )
     }
 }

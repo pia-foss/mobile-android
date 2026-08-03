@@ -7,6 +7,8 @@ sealed class ApiResult {
 
     data class Error(
         val error: ApiError,
+        val code: Int? = null,
+        val message: String? = null,
     ) : ApiResult() {
         override fun toString() = "$error"
     }
