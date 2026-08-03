@@ -39,10 +39,11 @@ class VpnRegionRepository(
         val serverList = mutableListOf<VpnServer>()
         if (serverMap.isEmpty() || System.currentTimeMillis() - lastUpdate >= UPDATE_INTERVAL_MS) {
             val response = source.fetchVpnRegions(locale)
-            lastUpdate = System.currentTimeMillis()
             if (response == null) {
-                serverList.clear()
+                serverList.addAll(serverMap.values.toList())
+                return addDipsToServerList(serverList)
             } else {
+                lastUpdate = System.currentTimeMillis()
                 serverMap = adaptVpnServers(response)
                 serverInfo = adaptServersInfo(response)
                 serverList.addAll(addDipsToServerList(serverMap.values.toList()))
