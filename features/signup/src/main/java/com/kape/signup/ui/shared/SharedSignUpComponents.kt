@@ -16,7 +16,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.kape.signup.utils.Plan
@@ -72,8 +74,12 @@ internal fun SubscriptionDescriptionText(
                 } else {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append(
-                            stringResource(R.string.subscribe_screen_trial_monthly_description_headline)
-                                .format(subscriptionData.monthly.mainPrice),
+                            "${subscriptionData.monthly.mainPrice} " +
+                                "${stringResource(R.string.subscribe_screen_per_month_ending)}, " +
+                                "${
+                                    stringResource(R.string.subscribe_screen_billed_monthly)
+                                        .toLowerCase(Locale.current)
+                                }.",
                         )
                     }
                     append(" ${stringResource(id = R.string.subscribe_screen_trial_monthly_description)}")

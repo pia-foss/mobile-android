@@ -339,7 +339,7 @@ private fun ColumnScope.PlansPresentContent(
                     stringResource(id = R.string.subscription_option)
                 YearlySubscriptionCard(
                     selected = selectedPlan == subscriptionData.yearly,
-                    price = subscriptionData.yearly.mainPrice,
+                    price = stringResource(R.string.year_ending, subscriptionData.yearly.mainPrice),
                     additionalText = stringResource(R.string.subscribe_screen_billed_annually),
                     selectedCardColor = Color.Transparent,
                     bestValueBannerText = stringResource(R.string.subscribe_screen_best_value),
@@ -353,7 +353,7 @@ private fun ColumnScope.PlansPresentContent(
                 Spacer(modifier = Modifier.height(16.dp))
                 MonthlySubscriptionCard(
                     selected = selectedPlan == subscriptionData.monthly,
-                    price = subscriptionData.monthly.mainPrice,
+                    price = stringResource(R.string.monthly_ending, subscriptionData.monthly.mainPrice),
                     additionalText = stringResource(R.string.subscribe_screen_billed_monthly),
                     selectedCardColor = Color.Transparent,
                     modifier =

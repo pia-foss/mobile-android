@@ -137,7 +137,7 @@ fun OldSignUpScreen() {
                         } else {
                             "${
                                 stringResource(id = R.string.subscribe_screen_description).format(
-                                    subscriptionData?.yearly?.mainPrice,
+                                    "${subscriptionData?.yearly?.mainPrice} ${stringResource(R.string.subscribe_screen_per_year_ending)}",
                                 )
                             } ${stringResource(id = R.string.subscribe_screen_description_cancel_anytime)}"
                         },
@@ -151,7 +151,7 @@ fun OldSignUpScreen() {
                     val subscriptionOptions = stringResource(id = R.string.subscription_option)
                     YearlySubscriptionCard(
                         selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
-                        price = subscriptionData?.yearly?.mainPrice ?: "",
+                        price = stringResource(R.string.yearly_ending, subscriptionData?.yearly?.mainPrice ?: ""),
                         additionalText = subscriptionData?.yearly?.secondaryPrice ?: "",
                         modifier =
                             Modifier
@@ -166,7 +166,7 @@ fun OldSignUpScreen() {
                     Spacer(modifier = Modifier.height(16.dp))
                     MonthlySubscriptionCard(
                         selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
-                        price = subscriptionData?.monthly?.mainPrice ?: "",
+                        price = stringResource(R.string.monthly_ending, subscriptionData?.monthly?.mainPrice ?: ""),
                         modifier =
                             Modifier
                                 .fillMaxWidth()

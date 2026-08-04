@@ -19,7 +19,6 @@ import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.utils.PriceFormatter
-import com.kape.utils.PlatformUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +33,6 @@ class GoogleSignupBillingHandler(
     private val subscriptionPrefs: SubscriptionPrefs,
     private val subscriptionsUseCase: GetSubscriptionsUseCase,
     private val formatter: PriceFormatter,
-    private val platformUtils: PlatformUtils,
     private val submitEventUseCase: SubmitKpiEventUseCase,
 ) : SignupBillingHandler {
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
@@ -75,11 +73,7 @@ class GoogleSignupBillingHandler(
                                             }
                                         },
                                         hasFreeTrial = yearlyPlan.freeTrialDuration?.isNotBlank() ?: false,
-                                        mainPrice =
-                                            formatter.formatYearlyPlan(
-                                                cost = yearlyPlan.formattedPrice,
-                                                slashVersion = !platformUtils.isTv(),
-                                            ),
+                                        mainPrice = yearlyPlan.formattedPrice,
                                         secondaryPrice =
                                             formatter.formatYearlyPerMonth(
                                                 yearlyPlan.priceInMicros,
@@ -98,7 +92,7 @@ class GoogleSignupBillingHandler(
                                             }
                                         },
                                         false,
-                                        mainPrice = formatter.formatMonthlyPlan(monthlyPlan.formattedPrice),
+                                        mainPrice = monthlyPlan.formattedPrice,
                                     )
                                 val data =
                                     withContext(mainDispatcher) {

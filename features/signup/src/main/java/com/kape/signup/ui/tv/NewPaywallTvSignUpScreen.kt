@@ -185,7 +185,7 @@ fun NewPaywallTvSignUpScreen() {
                 text =
                     buildAnnotatedString {
                         val template = stringResource(id = R.string.tv_subscribe_screen_description)
-                        val price = subscriptionData?.yearly?.mainPrice ?: ""
+                        val price = subscriptionData?.yearly?.mainPrice?.let { stringResource(R.string.yearly_ending, it) } ?: ""
                         val placeholderIndex = template.indexOf("%s")
                         if (placeholderIndex >= 0) {
                             append(template.substring(0, placeholderIndex))
@@ -203,7 +203,7 @@ fun NewPaywallTvSignUpScreen() {
             Spacer(modifier = Modifier.weight(1f))
             YearlySubscriptionCard(
                 selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
-                price = subscriptionData?.yearly?.mainPrice ?: "",
+                price = stringResource(R.string.yearly_ending, subscriptionData?.yearly?.mainPrice ?: ""),
                 perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
                 modifier =
                     Modifier
@@ -218,7 +218,10 @@ fun NewPaywallTvSignUpScreen() {
             Spacer(modifier = Modifier.height(16.dp))
             MonthlySubscriptionCard(
                 selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
-                price = subscriptionData?.monthly?.mainPrice ?: "",
+                price =
+                    subscriptionData?.monthly?.mainPrice?.let {
+                        "$it ${stringResource(R.string.subscribe_screen_per_month_ending)}"
+                    } ?: "",
                 modifier =
                     Modifier
                         .padding(horizontal = 20.dp)
