@@ -103,7 +103,7 @@ class VpnRegionRepositoryTest {
             }
 
         @JvmStatic
-        fun regions(): Stream<Arguments?>? =
+        fun regions() =
             Stream.of(
                 Arguments.of(response, emptyList<VpnServer>()),
                 Arguments.of(
