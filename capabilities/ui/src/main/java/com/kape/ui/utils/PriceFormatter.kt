@@ -13,19 +13,6 @@ private const val MICROS_PER_UNIT = 1_000_000.0
 class PriceFormatter(
     private val context: Context,
 ) {
-    fun formatYearlyPlan(
-        cost: String,
-        slashVersion: Boolean = false,
-    ): String =
-        context
-            .getString(
-                if (slashVersion) {
-                    com.kape.ui.R.string.year_ending
-                } else {
-                    com.kape.ui.R.string.yearly_ending
-                },
-            ).format(cost)
-
     fun formatYearlyPerMonth(
         priceInMicros: Long,
         currencyCode: String,
@@ -36,8 +23,6 @@ class PriceFormatter(
             .getString(com.kape.ui.R.string.yearly_month_ending)
             .format(formatPrice(costPerMonth, currencyCode, originalFormattedPrice))
     }
-
-    fun formatMonthlyPlan(cost: String): String = context.getString(com.kape.ui.R.string.monthly_ending).format(cost)
 
     @VisibleForTesting
     private fun formatPrice(

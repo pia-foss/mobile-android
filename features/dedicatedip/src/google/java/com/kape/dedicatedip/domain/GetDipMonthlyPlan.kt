@@ -4,7 +4,6 @@ import com.kape.dedicatedip.data.DipSignupRepository
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
 import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.utils.MONTHLY_SUBSCRIPTION
-import com.kape.ui.utils.PriceFormatter
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import kotlin.coroutines.resume
@@ -13,7 +12,6 @@ import kotlin.coroutines.resume
 class GetDipMonthlyPlan(
     private val dipSignupRepository: DipSignupRepository,
     private val dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
-    private val formatter: PriceFormatter,
 ) {
     suspend operator fun invoke(): DedicatedIpMonthlyPlan? {
         val subscriptions = dipSignupRepository.signupPlans() ?: return null
@@ -33,7 +31,7 @@ class GetDipMonthlyPlan(
                         cont.resume(
                             DedicatedIpMonthlyPlan(
                                 id = productDetails.first,
-                                monthlyPrice = formatter.formatYearlyPlan(productDetails.second),
+                                monthlyPrice = productDetails.second,
                             ),
                         )
                     },
