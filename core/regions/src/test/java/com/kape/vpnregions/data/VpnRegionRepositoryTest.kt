@@ -12,6 +12,7 @@ import com.privateinternetaccess.regions.model.VpnRegionsResponse
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -38,8 +39,8 @@ class VpnRegionRepositoryTest {
                 dipPrefs,
                 connectionPrefs,
                 settingsPrefs,
-                lazy { connectionInfoProvider },
-                lazy { connectionConfigurationUseCase },
+                connectionInfoProvider,
+                connectionConfigurationUseCase,
             )
     }
 
@@ -50,7 +51,7 @@ class VpnRegionRepositoryTest {
         expected: List<VpnServer>,
     ) = runTest {
         coEvery { source.fetchVpnRegions(any()) } returns response
-        every { dipPrefs.getDedicatedIps() } returns emptyList()
+        every { dipPrefs.dedicatedIps } returns MutableStateFlow(emptyList())
 
         val actual = repository.fetchVpnRegions("en")
         Assertions.assertEquals(expected, actual)
@@ -65,7 +66,7 @@ class VpnRegionRepositoryTest {
     ) = runTest {
         coEvery { source.fetchVpnRegions(any()) } returns regionsResponse
         coEvery { source.pingRequests() } returns response
-        every { dipPrefs.getDedicatedIps() } returns emptyList()
+        every { dipPrefs.dedicatedIps } returns MutableStateFlow(emptyList())
 
         repository.fetchVpnRegions("en")
         val actual = repository.fetchLatencies(false)

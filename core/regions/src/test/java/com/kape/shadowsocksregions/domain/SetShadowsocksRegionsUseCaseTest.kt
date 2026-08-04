@@ -3,8 +3,11 @@ package com.kape.shadowsocksregions.domain
 import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.shadowsocksregions.data.ShadowsocksRegionRepository
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,11 +43,11 @@ internal class SetShadowsocksRegionsUseCaseTest {
     fun `set shadowsocks servers list`() =
         runTest {
             val expected = ShadowsocksServer(region = "", host = "", key = "", port = 0, cipher = "")
-            every { shadowsocksRegionPrefs.setSelectShadowsocksServer(any()) } returns Unit
-            every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns expected
-            every { shadowsocksRegionPrefs.getShadowsocksServers() } returns listOf(expected)
+            coEvery { shadowsocksRegionPrefs.setSelectShadowsocksServer(any()) } returns Unit
+            every { shadowsocksRegionPrefs.selectedShadowsocksServer } returns MutableStateFlow(expected)
+            every { shadowsocksRegionPrefs.shadowsocksServers } returns MutableStateFlow(listOf(expected))
             setShadowsocksRegionsUseCase.setSelectShadowsocksServer(expected)
-            val actual = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer()
+            val actual = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer().first()
             assertEquals(expected, actual)
         }
 
@@ -52,8 +55,8 @@ internal class SetShadowsocksRegionsUseCaseTest {
     fun `set selected shadowsocks server`() =
         runTest {
             val expected: List<ShadowsocksServer> = listOf(mockk())
-            every { shadowsocksRegionPrefs.setShadowsocksServers(any()) } returns Unit
-            every { shadowsocksRegionPrefs.getShadowsocksServers() } returns expected
+            coEvery { shadowsocksRegionPrefs.setShadowsocksServers(any()) } returns Unit
+            every { shadowsocksRegionPrefs.shadowsocksServers } returns MutableStateFlow(expected)
             setShadowsocksRegionsUseCase.setShadowsocksServers(expected)
             val actual = getShadowsocksRegionsUseCase.getShadowsocksServers()
             assertEquals(expected, actual)

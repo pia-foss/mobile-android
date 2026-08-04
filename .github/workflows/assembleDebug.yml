@@ -48,11 +48,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
-      - name: Run GoogleDebugUnitTests
+      - name: Run Debug and GoogleDebug Unit Tests
         env:
           GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
           GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-        run: ./gradlew testGoogleDebugUnitTest
+        run: ./gradlew testGoogleDebugUnitTest testDebugUnitTest --parallel
 
   e2e-testing:
     name: Run end to end instrumentation tests (${{ matrix.test-class }})
@@ -72,7 +72,8 @@ jobs:
           - QuickSettingsTests
           - RegionLatencyRefreshTests
           - SideMenuTests
-          - WireGuardLocationAndEncryptionTests
+          - WireGuardLocationTests
+          - OpenVpnEncryptionTests
     steps:
       - name: Checkout the code
         uses: actions/checkout@v6
