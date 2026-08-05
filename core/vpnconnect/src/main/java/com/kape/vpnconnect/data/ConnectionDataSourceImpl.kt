@@ -21,6 +21,7 @@ import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Named
@@ -55,13 +56,13 @@ class ConnectionDataSourceImpl(
             connectionApi.addConnectionListener(
                 connectionStatusProvider as VPNManagerConnectionListener,
             ) {}
-
-            if (settingsPrefs.isHelpImprovePiaEnabled.value) {
-                kpiDataSource.start()
-            } else {
-                kpiDataSource.stop()
+            ioScope.launch {
+                if (settingsPrefs.isHelpImprovePiaEnabled.first()) {
+                    kpiDataSource.start()
+                } else {
+                    kpiDataSource.stop()
+                }
             }
-
             connectionApi.startConnection(clientConfiguration) { result ->
                 result.getOrNull()?.let { serverPeerInfo ->
                     ioScope.launch {

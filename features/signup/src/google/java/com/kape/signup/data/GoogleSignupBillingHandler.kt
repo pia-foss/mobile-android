@@ -2,6 +2,7 @@ package com.kape.signup.data
 
 import android.app.Activity
 import androidx.compose.runtime.mutableStateOf
+import com.kape.contracts.KpiDataSource
 import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
@@ -34,6 +35,7 @@ class GoogleSignupBillingHandler(
     private val subscriptionsUseCase: GetSubscriptionsUseCase,
     private val formatter: PriceFormatter,
     private val submitEventUseCase: SubmitKpiEventUseCase,
+    private val kpiDataSource: KpiDataSource,
 ) : SignupBillingHandler {
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
     override val billingState: Flow<SignupScreenState> = _billingState
@@ -45,6 +47,7 @@ class GoogleSignupBillingHandler(
         mainDispatcher: CoroutineDispatcher,
     ) {
         scope.launch(dispatcher) {
+            kpiDataSource.start()
             vpnSubscriptionPaymentProvider.purchaseState.collect {
                 when (it) {
                     PurchaseState.Default -> {}
