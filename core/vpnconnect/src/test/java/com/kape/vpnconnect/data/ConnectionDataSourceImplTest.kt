@@ -78,7 +78,7 @@ class ConnectionDataSourceImplTest {
             val serverPeerInfo = ServerPeerInformation(networkInterface = "wg0", gateway = "10.0.0.1")
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns false
+            every { settingsPrefs.isHelpImprovePiaEnabled } returns MutableStateFlow(false)
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
             every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
                 slot.captured.invoke(Result.success(serverPeerInfo))
@@ -109,7 +109,7 @@ class ConnectionDataSourceImplTest {
             val clientConfiguration = mockk<ClientConfiguration>()
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns false
+            every { settingsPrefs.isHelpImprovePiaEnabled } returns MutableStateFlow(false)
             every { settingsPrefs.isDebugLoggingEnabled.value } returns false
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
             every { connectionApi.stopConnection(any()) } answers { }
@@ -142,13 +142,14 @@ class ConnectionDataSourceImplTest {
             val clientConfiguration = mockk<ClientConfiguration>()
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns true
+            every { settingsPrefs.isHelpImprovePiaEnabled } returns MutableStateFlow(true)
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
             every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
                 slot.captured.invoke(Result.success(mockk(relaxed = true)))
             }
 
             dataSource.startConnection(clientConfiguration, connectionStatusProvider)
+            advanceUntilIdle()
 
             verify { kpiDataSource.start() }
         }
@@ -171,13 +172,14 @@ class ConnectionDataSourceImplTest {
             val clientConfiguration = mockk<ClientConfiguration>()
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns false
+            every { settingsPrefs.isHelpImprovePiaEnabled } returns MutableStateFlow(false)
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
             every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
                 slot.captured.invoke(Result.success(mockk(relaxed = true)))
             }
 
             dataSource.startConnection(clientConfiguration, connectionStatusProvider)
+            advanceUntilIdle()
 
             verify { kpiDataSource.stop() }
         }
