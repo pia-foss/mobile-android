@@ -13,7 +13,7 @@ class SubmitKpiEventUseCase(
 ) {
     private var kpiConnectionStatus: KpiConnectionStatus = KpiConnectionStatus.NotConnected
 
-    fun submitConnectionEvent(
+    suspend fun submitConnectionEvent(
         status: KpiConnectionStatus,
         isManualConnection: Boolean,
     ) {
@@ -44,7 +44,7 @@ class SubmitKpiEventUseCase(
         kpiConnectionStatus = status
     }
 
-    fun submitEvent(event: KPIClientEvent) {
+    suspend fun submitEvent(event: KPIClientEvent) {
         api.submitEvent(event)
     }
 }

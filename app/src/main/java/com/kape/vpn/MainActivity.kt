@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.kape.about.screens.mobile.AboutScreen
 import com.kape.about.screens.tv.TvAboutScreen
 import com.kape.automation.ui.screens.AddNewRuleScreen
@@ -33,6 +34,7 @@ import com.kape.data.AutomationMain
 import com.kape.data.AutomationSettings
 import com.kape.data.Connection
 import com.kape.data.ConnectionStats
+import com.kape.data.Consent
 import com.kape.data.Customization
 import com.kape.data.DI
 import com.kape.data.DebugLogs
@@ -59,6 +61,7 @@ import com.kape.data.Settings
 import com.kape.data.ShadowsocksRegionSelection
 import com.kape.data.Splash
 import com.kape.data.Subscribe
+import com.kape.data.TvConsent
 import com.kape.data.TvLoginPassword
 import com.kape.data.TvLoginUsername
 import com.kape.data.TvSideMenu
@@ -112,7 +115,9 @@ import com.kape.settings.ui.screens.tv.TvPrivacySettingsScreen
 import com.kape.settings.ui.screens.tv.TvProtocolSettingsScreen
 import com.kape.settings.ui.screens.tv.TvSettingsScreen
 import com.kape.sidemenu.ui.screens.tv.TvSideMenuScreen
+import com.kape.signup.ui.mobile.ConsentScreen
 import com.kape.signup.ui.mobile.SignupScreensFlow
+import com.kape.signup.ui.tv.TvConsentScreen
 import com.kape.signup.ui.tv.TvSignupScreensFlow
 import com.kape.splash.ui.SplashScreen
 import com.kape.splash.ui.UpdateScreen
@@ -205,6 +210,10 @@ class MainActivity : AppCompatActivity() {
     private fun NavGraphBuilder.defineNavigationGraph() {
         if (platformUtils.isTv()) {
             composable<Splash> { SplashScreen() }
+            composable<TvConsent> { backStackEntry ->
+                val route = backStackEntry.toRoute<TvConsent>()
+                TvConsentScreen(route.isFirstScreen)
+            }
             composable<TvWelcome> { TvWelcomeScreen() }
             composable<TvSubscribe> { TvSignupScreensFlow() }
             composable<TvLoginUsername> { LoginUsernameScreen() }
@@ -232,6 +241,10 @@ class MainActivity : AppCompatActivity() {
             composable<PrivacySettings> { TvPrivacySettingsScreen() }
             composable<ConnectionStats> { TvConnectionStatsScreen() }
         } else {
+            composable<Consent> { backStackEntry ->
+                val route = backStackEntry.toRoute<Consent>()
+                ConsentScreen(route.isFirstScreen)
+            }
             composable<LoginWithCredentials> { LoginScreen() }
             composable<LoginWithEmail> { LoginWithEmailScreen() }
             composable<Settings> { SettingsScreen() }

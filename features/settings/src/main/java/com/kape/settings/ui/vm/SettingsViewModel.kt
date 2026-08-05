@@ -26,6 +26,7 @@ import com.kape.data.PrivacySettings
 import com.kape.data.ProtocolSettings
 import com.kape.data.WebDestination
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.CustomDns
@@ -55,6 +56,7 @@ class SettingsViewModel(
     private val router: Router,
     private val appInfo: AppInfo,
     private val prefs: SettingsPrefs,
+    private val consentPrefs: ConsentPrefs,
     private val connectionPrefs: ConnectionPrefs,
     private val csiPrefs: CsiPrefs,
     private val regionsRepository: VpnRegionRepository,
@@ -76,7 +78,7 @@ class SettingsViewModel(
     val connectOnStart = prefs.isConnectOnLaunchEnabled
     val connectOnUpdate = prefs.isConnectOnAppUpdateEnabled
     val showGeoLocatedServers = prefs.isShowGeoLocatedServersEnabled
-    val improvePiaEnabled = prefs.isHelpImprovePiaEnabled
+    val improvePiaEnabled = consentPrefs.allowSharing
     val debugLoggingEnabled = prefs.isDebugLoggingEnabled
     val shadowsocksObfuscationEnabled = prefs.isShadowsocksObfuscationEnabled
     val vpnExcludedApps = prefs.vpnExcludedApps
@@ -152,7 +154,7 @@ class SettingsViewModel(
 
     fun toggleImprovePia(enabled: Boolean) =
         viewModelScope.launch(ioDispatcher) {
-            prefs.setHelpImprovePiaEnabled(enabled)
+            consentPrefs.setAllowSharing(enabled)
         }
 
     fun toggleDebugLogging(enabled: Boolean) =
@@ -263,7 +265,12 @@ class SettingsViewModel(
                 } else {
                     regionsRepository.getTcpPorts()
                 }
-            prefs.setOpenVpnSettings(currentSettings.copy(transport = transport, port = ports[0].toString()))
+            prefs.setOpenVpnSettings(
+                currentSettings.copy(
+                    transport = transport,
+                    port = ports[0].toString(),
+                ),
+            )
 
             if (hasSettingChanged) {
                 showReconnectDialogIfVpnConnected()

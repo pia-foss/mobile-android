@@ -35,7 +35,7 @@ import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TvConsentScreen() {
+fun TvConsentScreen(isFirstScreen: Boolean) {
     val viewModel: SignupViewModel = koinViewModel()
 
     Row(
@@ -127,7 +127,7 @@ fun TvConsentScreen() {
                     Modifier
                         .fillMaxWidth(),
             ) {
-                viewModel.allowEventSharing(true)
+                viewModel.allowEventSharing(true, isFirstScreen)
             }
             Spacer(modifier = Modifier.height(8.dp))
             SecondaryButton(
@@ -136,7 +136,7 @@ fun TvConsentScreen() {
                     Modifier
                         .fillMaxWidth(),
             ) {
-                viewModel.allowEventSharing(false)
+                viewModel.allowEventSharing(false, isFirstScreen)
             }
         }
     }

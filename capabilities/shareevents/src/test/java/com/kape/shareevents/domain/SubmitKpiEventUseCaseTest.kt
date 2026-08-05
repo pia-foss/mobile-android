@@ -5,10 +5,12 @@ import com.kape.contracts.KpiDataSource
 import com.kape.data.kpi.KpiConnectionEvent
 import com.kape.data.kpi.KpiConnectionSource
 import com.kape.data.kpi.KpiConnectionStatus
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -31,8 +33,8 @@ class SubmitKpiEventUseCaseTest : KoinTest {
         status: KpiConnectionStatus,
         isManualConnection: Boolean,
         event: KpiConnectionEvent,
-    ) {
-        every { api.submitConnectionEvent(any(), any()) } returns Unit
+    ) = runTest {
+        coEvery { api.submitConnectionEvent(any(), any()) } returns Unit
         mockkStatic(SystemClock::class)
         every { SystemClock.elapsedRealtime() } returns 0
         val expected =
@@ -41,7 +43,7 @@ class SubmitKpiEventUseCaseTest : KoinTest {
             useCase.submitConnectionEvent(KpiConnectionStatus.Connecting, isManualConnection)
         }
         useCase.submitConnectionEvent(status, isManualConnection)
-        verify { api.submitConnectionEvent(event, expected) }
+        coVerify { api.submitConnectionEvent(event, expected) }
     }
 
     companion object {

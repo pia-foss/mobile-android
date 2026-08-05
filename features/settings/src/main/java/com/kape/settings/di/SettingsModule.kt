@@ -8,6 +8,7 @@ import com.kape.contracts.Router
 import com.kape.csi.domain.SendLogUseCase
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.domain.IsNumericIpAddressUseCase
@@ -33,6 +34,7 @@ class SettingsModule {
         router: Router,
         appInfo: AppInfo,
         prefs: SettingsPrefs,
+        consentPrefs: ConsentPrefs,
         connectionPrefs: ConnectionPrefs,
         csiPrefs: CsiPrefs,
         regionsRepository: VpnRegionRepository,
@@ -50,6 +52,7 @@ class SettingsModule {
             router,
             appInfo,
             prefs,
+            consentPrefs,
             connectionPrefs,
             csiPrefs,
             regionsRepository,

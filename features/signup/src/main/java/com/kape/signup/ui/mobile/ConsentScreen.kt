@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,10 +33,12 @@ import com.kape.ui.R
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ConsentScreen(viewModel: SignupViewModel) =
+fun ConsentScreen(isFirstScreen: Boolean) =
     Screen {
+        val viewModel: SignupViewModel = koinViewModel()
         val showMoreInfo = remember { mutableStateOf(false) }
 
         Column(
@@ -42,7 +46,8 @@ fun ConsentScreen(viewModel: SignupViewModel) =
                 Modifier
                     .verticalScroll(rememberScrollState())
                     .fillMaxSize()
-                    .padding(WindowInsets.systemBars.asPaddingValues()),
+                    .padding(WindowInsets.systemBars.asPaddingValues())
+                    .semantics { testTagsAsResourceId = true },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
@@ -88,7 +93,7 @@ fun ConsentScreen(viewModel: SignupViewModel) =
                             .fillMaxWidth()
                             .padding(16.dp),
                 ) {
-                    viewModel.allowEventSharing(true)
+                    viewModel.allowEventSharing(true, isFirstScreen)
                 }
                 SecondaryButton(
                     text = stringResource(id = R.string.no_thanks),
@@ -96,9 +101,9 @@ fun ConsentScreen(viewModel: SignupViewModel) =
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
-                            .testTag(":SignUpScreen:Login"),
+                            .testTag(":ConsentScreen:NoThanks"),
                 ) {
-                    viewModel.allowEventSharing(false)
+                    viewModel.allowEventSharing(false, isFirstScreen)
                 }
             }
         }

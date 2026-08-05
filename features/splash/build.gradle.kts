@@ -22,6 +22,7 @@ dependencies {
     implementation(project(":core:httpclient"))
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:utils"))
+    implementation(project(":core:localprefs:prefs"))
     implementation(project(":capabilities:ui"))
     implementation(project(":capabilities:notifications"))
     implementation(project(":capabilities:featureflags"))
