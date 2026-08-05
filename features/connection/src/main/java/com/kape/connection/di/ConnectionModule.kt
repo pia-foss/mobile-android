@@ -1,6 +1,7 @@
 package com.kape.connection.di
 
 import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.connection.domain.PaymentIssueHandler
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
@@ -48,6 +49,7 @@ class ConnectionModule {
         dipPurchaseHandler: DipPurchaseHandler,
         updateAvailableManager: UpdateAvailableManager,
         screenElementProvider: ScreenElementProvider,
+        paymentIssueHandler: PaymentIssueHandler,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): ConnectionViewModel =
@@ -69,6 +71,7 @@ class ConnectionModule {
             dipPurchaseHandler,
             updateAvailableManager,
             screenElementProvider,
+            paymentIssueHandler,
             ioDispatcher,
             connectionInfoProvider,
             networkConnectionListener,

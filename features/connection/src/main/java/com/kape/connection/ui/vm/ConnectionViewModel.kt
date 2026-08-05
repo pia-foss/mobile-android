@@ -1,9 +1,11 @@
 package com.kape.connection.ui.vm
 
+import android.app.Activity
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.connection.domain.PaymentIssueHandler
 import com.kape.connection.model.QuickConnectServer
 import com.kape.connection.utils.ConnectionScreenState
 import com.kape.contracts.ConnectionInfoProvider
@@ -76,6 +78,7 @@ class ConnectionViewModel(
     private val dipPurchaseHandler: DipPurchaseHandler,
     private val updateAvailableManager: UpdateAvailableManager,
     private val screenElementProvider: ScreenElementProvider,
+    private val paymentIssueHandler: PaymentIssueHandler,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     val connectionInfoProvider: ConnectionInfoProvider,
     networkConnectionListener: NetworkConnectionListener,
@@ -442,6 +445,8 @@ class ConnectionViewModel(
                 showOptimalLocationInfo = selectedServer == null && regionListProvider.isDefaultList.value,
             )
         }
+
+    fun checkForPaymentIssues(activity: Activity) = paymentIssueHandler.checkForPaymentIssues(activity)
 
     private fun callback() {
         viewModelScope.launch(ioDispatcher) {

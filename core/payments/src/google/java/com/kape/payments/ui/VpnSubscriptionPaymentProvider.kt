@@ -3,6 +3,7 @@ package com.kape.payments.ui
 import android.app.Activity
 import com.kape.data.model.Subscription
 import com.kape.payments.data.SubscriptionPlan
+import com.kape.payments.utils.InAppMessageState
 import com.kape.payments.utils.PurchaseHistoryState
 import com.kape.payments.utils.PurchaseState
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +14,14 @@ interface VpnSubscriptionPaymentProvider {
 
     val purchaseHistoryState: MutableStateFlow<PurchaseHistoryState>
 
-    fun register(activity: Activity)
+    val inAppMessageState: MutableStateFlow<InAppMessageState>
+
+    fun register(
+        activity: Activity,
+        onReady: () -> Unit = {},
+    )
+
+    fun showInAppMessages(activity: Activity)
 
     @Deprecated("Deprecated in favor of SubscriptionPlan")
     fun getMonthlySubscription(): Subscription?

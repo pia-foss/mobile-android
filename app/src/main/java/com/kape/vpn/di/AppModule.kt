@@ -10,6 +10,7 @@ import com.kape.appbar.di.AppBarModule
 import com.kape.automation.di.AutomationModule
 import com.kape.buildconfig.data.BuildConfigProvider
 import com.kape.connection.di.ConnectionModule
+import com.kape.connection.di.PaymentIssueModule
 import com.kape.contracts.AppInfo
 import com.kape.contracts.ConfigInfo
 import com.kape.contracts.ConnectionStatusProvider
@@ -121,6 +122,7 @@ import java.io.BufferedReader
         LoginWithReceiptModule::class,
         SplashModule::class,
         ConnectionModule::class,
+        PaymentIssueModule::class,
         SettingsModule::class,
         ProfileModule::class,
         SignupModule::class,
