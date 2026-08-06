@@ -159,7 +159,7 @@ class SettingsViewModel(
         viewModelScope.launch(ioDispatcher) {
             prefs.setDebugLoggingEnabled(enabled)
             if (enabled.not()) {
-                csiPrefs.clearCustomDebugLogs()
+                csiPrefs.clearProtocolDebugLogs()
             }
         }
 
@@ -410,11 +410,11 @@ class SettingsViewModel(
 
     fun sendLogs() =
         viewModelScope.launch(ioDispatcher) {
-            val logs = connectionDataSource.getDebugLogs()
+            val logs = getDebugLogsUseCase.getDebugLogs()
             csiPrefs.setProtocolDebugLogs(logs.joinToString(separator = "\n"))
             val result = sendLogUseCase.sendLog()
             requestId.value = result
-            csiPrefs.clearCustomDebugLogs()
+            csiPrefs.clearProtocolDebugLogs()
         }
 
     fun resetRequestId() {
@@ -434,11 +434,11 @@ class SettingsViewModel(
     }
 
     fun reconnect() {
-        connectionPrefs.selectedVpnServer.value?.let {
-            connectionManager.connectJob =
+        viewModelScope.launch {
+            connectionPrefs.selectedVpnServer.first()?.let {
                 viewModelScope.launch(ioDispatcher) {
                     if (connectionManager.isConnectionInProgress()) {
-                        connectionManager.disconnect().getOrNull()
+                        connectionManager.disconnect()
                     }
                     connectionManager.connect(
                         it,
@@ -449,13 +449,14 @@ class SettingsViewModel(
                         },
                     )
                 }
+            }
         }
     }
 
     fun getDownloadLink(): String = updateAvailableManager.getDownloadUrl()
 
     private fun callback() {
-        viewModelScope.launch(ioDispatcher) { connectionManager.disconnect().getOrNull() }
+        viewModelScope.launch(ioDispatcher) { connectionManager.disconnect() }
     }
 
     fun isConnected() = connectionInfoProvider.isConnected()

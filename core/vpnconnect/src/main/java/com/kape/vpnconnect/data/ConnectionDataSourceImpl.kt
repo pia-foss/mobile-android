@@ -3,111 +3,31 @@ package com.kape.vpnconnect.data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.kape.contracts.ConnectionStatusProvider
-import com.kape.contracts.KpiDataSource
-import com.kape.contracts.UsageProvider
 import com.kape.data.DI
 import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.vpnconnect.domain.ConnectionDataSource
+import com.kape.vpnconnect.platformsdk.ServiceLogger
 import com.kape.vpnconnect.worker.PortForwardingWorker
-import com.kape.vpnmanager.data.models.ClientConfiguration
-import com.kape.vpnmanager.data.models.ServerList
-import com.kape.vpnmanager.presenters.VPNManagerAPI
-import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
-import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.resume
 
 @Singleton(binds = [ConnectionDataSource::class])
 class ConnectionDataSourceImpl(
-    private val connectionApi: VPNManagerAPI,
     private val accountApi: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
     private val workManager: WorkManager,
     private val settingsPrefs: SettingsPrefs,
-    private val kpiDataSource: KpiDataSource,
-    private val usageProvider: UsageProvider,
-    private val csiPrefs: CsiPrefs,
     @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : ConnectionDataSource,
     KoinComponent {
-    override suspend fun startConnection(
-        clientConfiguration: ClientConfiguration,
-        connectionStatusProvider: ConnectionStatusProvider,
-    ): Result<Unit> =
-        suspendCancellableCoroutine { cont ->
-            cont.invokeOnCancellation {
-                ioScope.launch {
-                    stopConnection().getOrNull()
-                }
-            }
-            connectionApi.addConnectionListener(
-                connectionStatusProvider as VPNManagerConnectionListener,
-            ) {}
-            ioScope.launch {
-                if (settingsPrefs.isHelpImprovePiaEnabled.first()) {
-                    kpiDataSource.start()
-                } else {
-                    kpiDataSource.stop()
-                }
-            }
-            connectionApi.startConnection(clientConfiguration) { result ->
-                result.getOrNull()?.let { serverPeerInfo ->
-                    ioScope.launch {
-                        connectionPrefs.setGateway(serverPeerInfo.gateway)
-                        if (cont.isActive) {
-                            // Convert Result<ServerPeerInfo> → Result<Unit>
-                            cont.resume(result.map { Unit })
-                        }
-                    }
-                } ?: run {
-                    ioScope.launch {
-                        csiPrefs.addCustomDebugLogs(
-                            "startConnection failed: $result",
-                            settingsPrefs.isDebugLoggingEnabled.value,
-                        )
-                        connectionApi.stopConnection {}
-                        if (cont.isActive) {
-                            // Convert Result<ServerPeerInfo> → Result<Unit>
-                            cont.resume(result.map { Unit })
-                        }
-                    }
-                }
-            }
-        }
-
-    override suspend fun stopConnection(): Result<Unit> =
-        suspendCancellableCoroutine { continuation ->
-            connectionApi.stopConnection { result ->
-                ioScope.launch {
-                    usageProvider.reset()
-                    stopPortForwarding()
-                    if (result.isFailure) {
-                        csiPrefs.addCustomDebugLogs(
-                            "stop connection failed: ${result.exceptionOrNull()}",
-                            settingsPrefs.isDebugLoggingEnabled.value,
-                        )
-                    }
-                    // Resume coroutine with result
-                    if (continuation.isActive) {
-                        continuation.resume(result)
-                    }
-                }
-            }
-        }
-
     override fun getVpnToken(): String = accountApi.vpnToken() ?: ""
 
     override fun startPortForwarding() {
@@ -131,26 +51,12 @@ class ConnectionDataSourceImpl(
         }
     }
 
-    override suspend fun getDebugLogs(): List<String> =
-        suspendCancellableCoroutine { cont ->
-            val target =
-                when (settingsPrefs.selectedProtocol.value) {
-                    VpnProtocols.WireGuard -> VPNManagerProtocolTarget.WIREGUARD
-                    VpnProtocols.OpenVPN -> VPNManagerProtocolTarget.OPENVPN
-                }
-            connectionApi.getVpnProtocolLogs(target) {
-                if (it.isSuccess) {
-                    cont.resume(it.getOrDefault(emptyList()))
-                } else {
-                    cont.resume(emptyList())
-                }
+    override suspend fun getDebugLogs(): List<String> {
+        val tag =
+            when (settingsPrefs.getSelectedProtocolNow()) {
+                VpnProtocols.WireGuard -> ServiceLogger.VpnServiceLoggerTag.WireGuard
+                VpnProtocols.OpenVPN -> ServiceLogger.VpnServiceLoggerTag.OpenVpn
             }
-        }
-
-    override suspend fun updateConfigurationServers(servers: ServerList): Boolean =
-        suspendCancellableCoroutine { cont ->
-            connectionApi.updateConfigurationServers(servers) {
-                cont.resume(it.isSuccess)
-            }
-        }
+        return ServiceLogger(tag).getLogs()
+    }
 }

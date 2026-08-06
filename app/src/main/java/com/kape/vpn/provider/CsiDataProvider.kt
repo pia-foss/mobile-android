@@ -1,16 +1,12 @@
 package com.kape.vpn.provider
 
 import android.os.Build
-import com.kape.data.DI
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.privateinternetaccess.csi.ICSIProvider
 import com.privateinternetaccess.csi.ProviderType
 import com.privateinternetaccess.csi.ReportType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import org.koin.core.annotation.Named
 import java.util.Locale
 
 private const val CSI_APPLICATION_INFORMATION_FILENAME = "application_information"
@@ -20,22 +16,12 @@ private const val CSI_PROTOCOL_INFORMATION_FILENAME = "protocol_information"
 private const val CSI_REGION_INFORMATION_FILENAME = "regions_information"
 private const val CSI_USER_SETTINGS_FILENAME = "user_settings"
 private const val CSI_PROTOCOL_DEBUG_LOGS_FILENAME = "protocol_debug_logs"
-private const val CSI_DEBUG_LOGS_FILENAME = "debug_logs"
 
 class CsiDataProvider(
     private val csiPrefs: CsiPrefs,
     private val settingsPrefs: SettingsPrefs,
     private val userAgent: String,
-    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) {
-    init {
-        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
-            ioScope.launch {
-                csiPrefs.setLastKnownException(throwable.stackTraceToString())
-            }
-        }
-    }
-
     val protocolInformationProvider =
         object : ICSIProvider {
             override val filename: String
@@ -134,20 +120,6 @@ class CsiDataProvider(
                 get() = redactIPsFromString(csiPrefs.protocolDebugLogs.value)
         }
 
-    val debugLogProvider =
-        object : ICSIProvider {
-            override val filename: String?
-                get() = CSI_DEBUG_LOGS_FILENAME
-            override val isPersistedData: Boolean
-                get() = false
-            override val providerType: ProviderType
-                get() = ProviderType.EXPERIMENTS_INFORMATION
-            override val reportType: ReportType
-                get() = ReportType.DIAGNOSTIC
-            override val value: String
-                get() = redactIPsFromString(getDebugLogs())
-        }
-
     // region private
     private fun getProtocolInformation(): String {
         val activeProtocol = settingsPrefs.selectedProtocol.value
@@ -196,9 +168,6 @@ class CsiDataProvider(
         sb.append("Connect on Boot: ${settingsPrefs.isLaunchOnStartupEnabled.value}\n")
         sb.append("Connect on App Updated: ${settingsPrefs.isConnectOnAppUpdateEnabled.value}\n")
         sb.append("\n~~~~~ End User Settings ~~~~~\n")
-        sb.append("\n~~ VPN Logs ~~\n\n")
-        // TODO: implement vpn logs as part of https://polymoon.atlassian.net/browse/PIA-377
-        sb.append("\n~~~~~ End VPN Logs ~~~~~\n\n")
         return redactIPsFromString(sb.toString())
     }
 
@@ -223,8 +192,6 @@ class CsiDataProvider(
         sb.append("Model: ${Build.MODEL}").append("\n")
         return sb.toString()
     }
-
-    private fun getDebugLogs(): String = csiPrefs.customDebugLogs.value
 
     private fun redactIPsFromString(redact: String): String = redact.replace("\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b".toRegex(), "REDACTED")
 }

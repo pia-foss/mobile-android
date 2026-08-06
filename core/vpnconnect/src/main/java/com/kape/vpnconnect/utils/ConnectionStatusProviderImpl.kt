@@ -3,8 +3,7 @@ package com.kape.vpnconnect.utils
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
-import com.kape.vpnmanager.api.VPNManagerConnectionStatus
-import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
+import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,8 +23,7 @@ class ConnectionStatusProviderImpl(
     private val connectionValues: Map<ConnectionStatus, String>,
     private val notificationHandler: NotificationHandler,
     @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
-) : ConnectionStatusProvider,
-    VPNManagerConnectionListener {
+) : ConnectionStatusProvider {
     private var timerJob: Job? = null
     private var timer: Timer? = null
     private val _status = MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
@@ -33,27 +31,23 @@ class ConnectionStatusProviderImpl(
     private val _title =
         MutableStateFlow(connectionValues[ConnectionStatus.DISCONNECTED] ?: "")
     override val title: StateFlow<String> = _title.asStateFlow()
-    private val _vpnManagerConnectionStatus = MutableStateFlow<VPNManagerConnectionStatus?>(null)
-    override val vpnManagerConnectionStatus: StateFlow<VPNManagerConnectionStatus?> =
+    private val _vpnManagerConnectionStatus = MutableStateFlow<KapeVPNConnectionStatus?>(null)
+    override val vpnManagerConnectionStatus: StateFlow<KapeVPNConnectionStatus?> =
         _vpnManagerConnectionStatus.asStateFlow()
 
-    override fun handleConnectionStatusChange(status: VPNManagerConnectionStatus) {
+    override fun handleConnectionStatusChange(status: KapeVPNConnectionStatus) {
         val currentStatus =
             when (status) {
-                VPNManagerConnectionStatus.Disconnecting -> ConnectionStatus.DISCONNECTING
-                is VPNManagerConnectionStatus.Disconnected -> {
+                KapeVPNConnectionStatus.Disconnecting -> ConnectionStatus.DISCONNECTING
+                KapeVPNConnectionStatus.Disconnected -> {
                     cancelTimerJob()
                     ConnectionStatus.DISCONNECTED
                 }
 
-                VPNManagerConnectionStatus.Authenticating,
-                VPNManagerConnectionStatus.LinkUp,
-                VPNManagerConnectionStatus.Configuring,
-                VPNManagerConnectionStatus.Connecting,
-                -> ConnectionStatus.CONNECTING
+                KapeVPNConnectionStatus.Connecting -> ConnectionStatus.CONNECTING
 
-                VPNManagerConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
-                is VPNManagerConnectionStatus.Connected -> {
+                KapeVPNConnectionStatus.Reconnecting -> ConnectionStatus.RECONNECTING
+                KapeVPNConnectionStatus.Connected -> {
                     if (timerJob == null) {
                         startTimer(System.currentTimeMillis())
                     }

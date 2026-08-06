@@ -4,10 +4,16 @@ plugins {
     alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.junit5)
+    alias(libs.plugins.serialization)
 }
 
 android {
     namespace = "com.kape.vpnconnect"
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
 }
 
 dependencies {
@@ -15,13 +21,17 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:utils"))
     implementation(project(":core:portforwarding"))
+    implementation(project(":core:httpclient"))
     implementation(project(":core:obfuscator"))
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
+    implementation(project(":core:regions"))
     implementation(project(":capabilities:shareevents"))
     implementation(project(":capabilities:ui"))
+    implementation(libs.kape.platform.sdk.vpn.pia)
+    implementation(libs.androidx.core)
+    implementation(libs.bundles.ktor)
     implementation(libs.material3)
-    implementation(libs.mobile.android.vpn.manager)
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)

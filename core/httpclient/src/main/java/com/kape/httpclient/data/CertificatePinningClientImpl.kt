@@ -9,6 +9,7 @@ import org.spongycastle.asn1.x500.X500Name
 import org.spongycastle.asn1.x500.style.BCStyle
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.net.Socket
 import java.security.InvalidKeyException
 import java.security.KeyManagementException
 import java.security.KeyStore
@@ -22,6 +23,7 @@ import java.security.cert.CertificateException
 import java.security.cert.CertificateFactory
 import java.security.cert.X509Certificate
 import java.util.Arrays
+import javax.net.SocketFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLPeerUnverifiedException
 import javax.net.ssl.SSLSession
@@ -33,6 +35,11 @@ import javax.security.auth.x500.X500Principal
 @Singleton([CertificatePinningClient::class])
 class CertificatePinningClientImpl(
     private val certificate: String,
+    // Non-null only for requests that must bypass an active VPN tunnel (e.g. the WireGuard
+    // addKey call, which needs to reach the server before that server's tunnel exists). Left
+    // null for requests that are supposed to go through the tunnel, such as port forwarding's
+    // calls to the VPN gateway, which would be unreachable if protected.
+    private val protect: ((Socket) -> Boolean)? = null,
 ) : CertificatePinningClient {
     private lateinit var knownEndpointCommonName: List<Pair<String, String>>
 
@@ -48,6 +55,8 @@ class CertificatePinningClientImpl(
                         hostnameVerifier { endpoint, session ->
                             verifySession(trustManager, endpoint, session)
                         }
+
+                        protect?.let { socketFactory(protectingSocketFactory(it)) }
                     }
                 }
                 install(HttpTimeout) {
@@ -56,6 +65,58 @@ class CertificatePinningClientImpl(
             }
         return client
     }
+
+    /**
+     * A [SocketFactory] that hands out sockets pre-protected via [protect], so the resulting
+     * connection routes over the underlying network instead of being captured by whatever VPN
+     * tunnel is currently active. OkHttp's connection setup calls the no-arg [createSocket] and
+     * connects it itself; the host/port overloads are implemented for interface completeness and
+     * aren't exercised by OkHttp in practice.
+     */
+    private fun protectingSocketFactory(protect: (Socket) -> Boolean): SocketFactory =
+        object : SocketFactory() {
+            // A freshly-constructed Socket has no underlying native fd until it's bound or
+            // connected — protect() needs a real fd, so bind to an ephemeral port first to force
+            // its creation before protecting. The eventual real connect() still works normally on
+            // an already-bound socket.
+            override fun createSocket(): Socket =
+                Socket().apply {
+                    bind(java.net.InetSocketAddress(0))
+                    protect(this)
+                }
+
+            override fun createSocket(
+                host: String,
+                port: Int,
+            ): Socket = createSocket().apply { connect(java.net.InetSocketAddress(host, port)) }
+
+            override fun createSocket(
+                host: String,
+                port: Int,
+                localHost: java.net.InetAddress,
+                localPort: Int,
+            ): Socket =
+                createSocket().apply {
+                    bind(java.net.InetSocketAddress(localHost, localPort))
+                    connect(java.net.InetSocketAddress(host, port))
+                }
+
+            override fun createSocket(
+                host: java.net.InetAddress,
+                port: Int,
+            ): Socket = createSocket().apply { connect(java.net.InetSocketAddress(host, port)) }
+
+            override fun createSocket(
+                address: java.net.InetAddress,
+                port: Int,
+                localAddress: java.net.InetAddress,
+                localPort: Int,
+            ): Socket =
+                createSocket().apply {
+                    bind(java.net.InetSocketAddress(localAddress, localPort))
+                    connect(java.net.InetSocketAddress(address, port))
+                }
+        }
 
     /**
      * Builds the pinned trust manager/socket factory, or throws if pinning cannot be
