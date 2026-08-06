@@ -1,7 +1,6 @@
-package com.kape.connection.domain
+package com.kape.payments.domain
 
 import android.app.Activity
-import com.kape.payments.domain.RefreshSubscriptionStatusUseCase
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.InAppMessageState
 import io.mockk.coVerify

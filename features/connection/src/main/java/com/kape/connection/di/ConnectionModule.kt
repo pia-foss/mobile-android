@@ -1,7 +1,6 @@
 package com.kape.connection.di
 
 import com.kape.buildconfig.data.BuildConfigProvider
-import com.kape.connection.domain.PaymentIssueHandler
 import com.kape.connection.ui.vm.ConnectionViewModel
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
@@ -15,6 +14,7 @@ import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
+import com.kape.payments.domain.PaymentIssueHandler
 import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.rating.utils.RatingTool
 import com.kape.snooze.SnoozeHandler

@@ -1,4 +1,4 @@
-package com.kape.connection.domain
+package com.kape.payments.domain
 
 import android.app.Activity
 

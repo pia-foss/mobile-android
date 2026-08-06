@@ -6,6 +6,8 @@ import com.kape.data.DI
 import com.kape.payments.data.SubscriptionDataSourceImpl
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.payments.domain.GetSubscriptionsUseCase
+import com.kape.payments.domain.GooglePaymentIssueHandlerImpl
+import com.kape.payments.domain.PaymentIssueHandler
 import com.kape.payments.domain.RefreshSubscriptionStatusUseCase
 import com.kape.payments.domain.SubscriptionDataSource
 import com.kape.payments.prefs.SubscriptionPrefs
@@ -46,6 +48,13 @@ class PaymentsModule {
         prefs: SubscriptionPrefs,
         @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
     ): VpnSubscriptionPaymentProvider = VpnSubscriptionPaymentProviderImpl(prefs, ioScope = ioScope)
+
+    @Singleton(binds = [PaymentIssueHandler::class])
+    fun providePaymentIssueHandler(
+        vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
+        refreshSubscriptionStatusUseCase: RefreshSubscriptionStatusUseCase,
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
+    ): PaymentIssueHandler = GooglePaymentIssueHandlerImpl(vpnSubscriptionPaymentProvider, refreshSubscriptionStatusUseCase, ioScope)
 
     @Singleton(binds = [DipSubscriptionPaymentProvider::class])
     fun provideDipSubscriptionPaymentProvider(context: Context): DipSubscriptionPaymentProvider =

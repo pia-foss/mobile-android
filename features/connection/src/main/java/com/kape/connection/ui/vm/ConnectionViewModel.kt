@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.buildconfig.data.BuildConfigProvider
-import com.kape.connection.domain.PaymentIssueHandler
 import com.kape.connection.model.QuickConnectServer
 import com.kape.connection.utils.ConnectionScreenState
 import com.kape.contracts.ConnectionInfoProvider
@@ -33,6 +32,7 @@ import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
+import com.kape.payments.domain.PaymentIssueHandler
 import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.utils.RatingTool
