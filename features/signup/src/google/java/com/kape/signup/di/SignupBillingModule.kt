@@ -1,6 +1,6 @@
 package com.kape.signup.di
 
-import com.kape.contracts.KpiDataSource
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.payments.domain.GetSubscriptionsUseCase
@@ -33,7 +33,7 @@ class SignupBillingModule {
         subscriptionsUseCase: GetSubscriptionsUseCase,
         formatter: PriceFormatter,
         submitEventUseCase: SubmitKpiEventUseCase,
-        kpiDataSource: KpiDataSource,
+        consentPrefs: ConsentPrefs,
     ): SignupBillingHandler =
         GoogleSignupBillingHandler(
             vpnSubscriptionPaymentProvider,
@@ -41,7 +41,7 @@ class SignupBillingModule {
             subscriptionsUseCase,
             formatter,
             submitEventUseCase,
-            kpiDataSource,
+            consentPrefs,
         )
 
     @Singleton

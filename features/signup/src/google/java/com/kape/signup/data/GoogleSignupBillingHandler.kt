@@ -2,7 +2,7 @@ package com.kape.signup.data
 
 import android.app.Activity
 import androidx.compose.runtime.mutableStateOf
-import com.kape.contracts.KpiDataSource
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
@@ -12,6 +12,7 @@ import com.kape.shareevents.data.processingSuccess
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.utils.CONSENT
+import com.kape.signup.utils.EMAIL
 import com.kape.signup.utils.LOADING
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
 import com.kape.signup.utils.Plan
@@ -25,6 +26,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -35,7 +37,7 @@ class GoogleSignupBillingHandler(
     private val subscriptionsUseCase: GetSubscriptionsUseCase,
     private val formatter: PriceFormatter,
     private val submitEventUseCase: SubmitKpiEventUseCase,
-    private val kpiDataSource: KpiDataSource,
+    private val consentPrefs: ConsentPrefs,
 ) : SignupBillingHandler {
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
     override val billingState: Flow<SignupScreenState> = _billingState
@@ -47,20 +49,24 @@ class GoogleSignupBillingHandler(
         mainDispatcher: CoroutineDispatcher,
     ) {
         scope.launch(dispatcher) {
-            kpiDataSource.start()
             vpnSubscriptionPaymentProvider.purchaseState.collect {
                 when (it) {
                     PurchaseState.Default -> {}
                     PurchaseState.InitFailed -> _billingState.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
                     PurchaseState.InitSuccess -> {}
-                    PurchaseState.ProductsLoadedFailed -> _billingState.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
+                    PurchaseState.ProductsLoadedFailed ->
+                        _billingState.emit(
+                            SUBSCRIPTIONS_FAILED_TO_LOAD,
+                        )
+
                     PurchaseState.ProductsLoadedSuccess -> {
                         scope.launch(dispatcher) {
                             subscriptionPrefs.vpnSubscriptionPlans.collectLatest { _ ->
                                 val yearlyPlan =
                                     vpnSubscriptionPaymentProvider.getFreeTrialYearlySubscriptionPlan()
                                         ?: vpnSubscriptionPaymentProvider.getYearlySubscriptionPlan()
-                                val monthlyPlan = vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
+                                val monthlyPlan =
+                                    vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
                                 if (yearlyPlan == null || monthlyPlan == null) {
                                     _billingState.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
                                     return@collectLatest
@@ -75,7 +81,9 @@ class GoogleSignupBillingHandler(
                                                 first.toString()
                                             }
                                         },
-                                        hasFreeTrial = yearlyPlan.freeTrialDuration?.isNotBlank() ?: false,
+                                        hasFreeTrial =
+                                            yearlyPlan.freeTrialDuration?.isNotBlank()
+                                                ?: false,
                                         mainPrice = yearlyPlan.formattedPrice,
                                         secondaryPrice =
                                             formatter.formatYearlyPerMonth(
@@ -110,13 +118,20 @@ class GoogleSignupBillingHandler(
                             }
                         }
                     }
+
                     PurchaseState.PurchaseFailed -> {
                         submitEventUseCase.submitEvent(processingFailure("PurchaseFailed"))
                     }
+
                     PurchaseState.PurchaseSuccess -> {
                         submitEventUseCase.submitEvent(processingSuccess())
-                        _billingState.emit(CONSENT)
+                        if (consentPrefs.hasMadeConsentDecision.first()) {
+                            _billingState.emit(EMAIL)
+                        } else {
+                            _billingState.emit(CONSENT)
+                        }
                     }
+
                     PurchaseState.NoInAppPurchase -> _billingState.emit(NO_IN_APP_SUBSCRIPTIONS)
                     PurchaseState.Disconnected -> {}
                 }

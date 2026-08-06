@@ -1,6 +1,7 @@
 package com.kape.data
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 interface ComposeDestination {
     val navOptions: DestinationNavOptions get() = DestinationNavOptions.None
@@ -21,6 +22,15 @@ sealed interface DestinationNavOptions {
 
 @Serializable
 object Splash : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.ClearAll
+}
+
+@Serializable
+data class Consent(
+    val isFirstScreen: Boolean,
+) : ComposeDestination {
+    @Transient
     override val navOptions: DestinationNavOptions =
         DestinationNavOptions.ClearAll
 }
@@ -187,6 +197,16 @@ sealed class WebDestination(
 }
 
 // TV screens
+
+@Serializable
+data class TvConsent(
+    val isFirstScreen: Boolean,
+) : ComposeDestination {
+    @Transient
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.ClearAll
+}
+
 @Serializable
 object TvLogin : ComposeDestination
 

@@ -25,7 +25,7 @@ fun SignupScreensFlow() {
     val context = LocalContext.current
 
     when (state.step) {
-        SignupStep.Consent -> ConsentScreen(viewModel = viewModel)
+        is SignupStep.Consent -> ConsentScreen(false)
         SignupStep.Default -> {
             when (connectionState) {
                 true -> {

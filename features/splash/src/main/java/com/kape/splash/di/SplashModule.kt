@@ -8,6 +8,7 @@ import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.featureflags.domain.ForceUpdateUseCase
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.splash.data.LatestAppVersionDataSourceImpl
 import com.kape.splash.domain.GetAppLatestVersionUseCase
 import com.kape.splash.domain.LatestAppVersionDataSource
@@ -42,6 +43,7 @@ class SplashModule {
         isUserLoggedIn: IsUserLoggedInUseCase,
         platformUtils: PlatformUtils,
         authenticationDataSource: AuthenticationDataSource,
+        consentPrefs: ConsentPrefs,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): SplashViewModel =
         SplashViewModel(
@@ -55,6 +57,7 @@ class SplashModule {
             isUserLoggedIn,
             platformUtils,
             authenticationDataSource,
+            consentPrefs,
             ioDispatcher,
         )
 }

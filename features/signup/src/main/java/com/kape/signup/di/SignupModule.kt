@@ -19,6 +19,7 @@ import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.domain.SignupHandler
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.utils.NetworkConnectionListener
+import com.kape.utils.PlatformUtils
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
@@ -58,6 +59,7 @@ class SignupModule {
         permissionUtil: PermissionUtil,
         networkConnectionListener: NetworkConnectionListener,
         submitEventUseCase: SubmitKpiEventUseCase,
+        platformUtils: PlatformUtils,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): SignupViewModel =
@@ -68,6 +70,7 @@ class SignupModule {
             signupHandler,
             permissionUtil,
             submitEventUseCase,
+            platformUtils,
             ioDispatcher,
             mainDispatcher,
             networkConnectionListener,

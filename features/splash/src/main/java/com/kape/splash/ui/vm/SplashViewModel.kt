@@ -9,14 +9,18 @@ import com.kape.contracts.GetAppLatestVersion
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
 import com.kape.data.Connection
+import com.kape.data.Consent
 import com.kape.data.DI
 import com.kape.data.Subscribe
+import com.kape.data.TvConsent
 import com.kape.data.TvWelcome
 import com.kape.data.Update
 import com.kape.featureflags.domain.ForceUpdateUseCase
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.utils.PlatformUtils
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
@@ -33,13 +37,20 @@ class SplashViewModel(
     private val isUserLoggedIn: IsUserLoggedInUseCase,
     private val platformUtils: PlatformUtils,
     private val authenticationDataSource: AuthenticationDataSource,
+    private val consentPrefs: ConsentPrefs,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private var updateUrl: String = ""
+    private var hasMadeConsentDecision: Boolean = false
 
     init {
         viewModelScope.launch(ioDispatcher) {
             authenticationDataSource.featureFlags()
+        }
+        viewModelScope.launch {
+            consentPrefs.hasMadeConsentDecision.collectLatest {
+                hasMadeConsentDecision = it
+            }
         }
     }
 
@@ -76,9 +87,17 @@ class SplashViewModel(
             router.updateDestination(Connection)
         } else {
             if (platformUtils.isTv()) {
-                router.updateDestination(TvWelcome)
+                if (hasMadeConsentDecision) {
+                    router.updateDestination(TvWelcome)
+                } else {
+                    router.updateDestination(TvConsent(true))
+                }
             } else {
-                router.updateDestination(Subscribe)
+                if (hasMadeConsentDecision) {
+                    router.updateDestination(Subscribe)
+                } else {
+                    router.updateDestination(Consent(true))
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.privateinternetaccess.kpi.KPIAPI
 import com.privateinternetaccess.kpi.KPIClientEvent
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.datetime.Clock
 import org.koin.core.annotation.Singleton
@@ -32,7 +33,7 @@ class KpiDataSourceImpl(
         api.stop { }
     }
 
-    override fun submitConnectionEvent(
+    override suspend fun submitConnectionEvent(
         connectionEvent: KpiConnectionEvent,
         connectionSource: KpiConnectionSource,
     ) {
@@ -58,7 +59,7 @@ class KpiDataSourceImpl(
         api.submit(event) { }
     }
 
-    override fun submitEvent(event: KPIClientEvent) {
+    override suspend fun submitEvent(event: KPIClientEvent) {
         api.submit(event) {}
     }
 
@@ -73,7 +74,7 @@ class KpiDataSourceImpl(
             }
         }
 
-    private fun getConnectionEventProperties(
+    private suspend fun getConnectionEventProperties(
         connectionEvent: KpiConnectionEvent,
         connectionSource: KpiConnectionSource,
     ): Map<String, String> {
@@ -83,7 +84,7 @@ class KpiDataSourceImpl(
         eventProperties[KpiEventPropertyKey.ConnectionSource.value] = connectionSource.value
         eventProperties[KpiEventPropertyKey.UserAgent.value] = configInfo.userAgent
         eventProperties[KpiEventPropertyKey.VpnProtocol.value] =
-            when (settingsPrefs.selectedProtocol.value) {
+            when (settingsPrefs.selectedProtocol.first()) {
                 VpnProtocols.WireGuard -> VpnProtocols.WireGuard.name
                 VpnProtocols.OpenVPN -> VpnProtocols.OpenVPN.name
             }
