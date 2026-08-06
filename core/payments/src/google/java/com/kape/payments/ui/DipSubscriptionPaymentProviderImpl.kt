@@ -22,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
 
 @Singleton([DipSubscriptionPaymentProvider::class])
 class DipSubscriptionPaymentProviderImpl(
-    private val context: Context,
+    context: Context,
 ) : DipSubscriptionPaymentProvider,
     CoroutineScope {
     private val availableProducts: MutableList<ProductDetails> = mutableListOf()
@@ -122,18 +122,15 @@ class DipSubscriptionPaymentProviderImpl(
                             availableProducts.add(product)
                         }
 
-                        product.subscriptionOfferDetails?.let {
-                            result.add(
-                                Pair(
-                                    product.productId,
-                                    it
-                                        .last()
-                                        .pricingPhases.pricingPhaseList
-                                        .first()
-                                        .formattedPrice,
-                                ),
-                            )
-                        }
+                        product.subscriptionOfferDetails
+                            ?.firstOrNull()
+                            ?.pricingPhases
+                            ?.pricingPhaseList
+                            ?.firstOrNull()
+                            ?.formattedPrice
+                            ?.let { price ->
+                                result.add(Pair(product.productId, price))
+                            }
                     }
                     callback(Result.success(result))
                 } else {
