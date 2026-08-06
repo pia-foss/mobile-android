@@ -414,7 +414,10 @@
             • Connection Attempt\n
             • Connection Canceled\n
             • Connection Established\n
-            • Time to Connect\n\n
+            • Time to Connect\n
+            • In-app processing purchase\n
+            • In-app processing success\n
+            • In-app processing failure\n\n
         For all of these events, we will collect the following information:\n\n
             • Platform\n
             • App version\n
