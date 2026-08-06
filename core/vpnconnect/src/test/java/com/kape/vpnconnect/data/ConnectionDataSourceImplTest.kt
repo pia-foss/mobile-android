@@ -3,7 +3,6 @@ package com.kape.vpnconnect.data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
 import com.kape.contracts.ConnectionStatusProvider
-import com.kape.contracts.KpiDataSource
 import com.kape.data.ConnectionStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
@@ -41,7 +40,6 @@ class ConnectionDataSourceImplTest {
     private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)
     private val workManager = mockk<WorkManager>(relaxed = true)
     private val settingsPrefs = mockk<SettingsPrefs>(relaxed = true)
-    private val kpiDataSource = mockk<KpiDataSource>(relaxed = true)
     private val usageProvider = mockk<UsageProviderImpl>(relaxed = true)
     private val csiPrefs = mockk<CsiPrefs>(relaxed = true)
     private val consentPrefs = mockk<ConsentPrefs>(relaxed = true)
@@ -71,7 +69,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -102,7 +99,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -139,7 +135,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -169,7 +164,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -201,7 +195,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -223,7 +216,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -249,7 +241,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -273,7 +264,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -300,7 +290,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -328,7 +317,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -356,7 +344,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -387,7 +374,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -414,7 +400,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
