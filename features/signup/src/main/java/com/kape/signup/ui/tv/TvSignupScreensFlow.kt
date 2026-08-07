@@ -44,7 +44,7 @@ fun TvSignupScreensFlow() {
             TvCredentialsScreen(credentials = (state.step as SignupStep.SignedUp).credentials)
         }
         SignupStep.Consent -> {
-            TvConsentScreen()
+            TvConsentScreen(false)
         }
         SignupStep.Email -> {
             TvEmailScreen()

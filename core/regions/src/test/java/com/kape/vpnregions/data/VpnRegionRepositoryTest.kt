@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -72,6 +73,25 @@ class VpnRegionRepositoryTest {
         val actual = repository.fetchLatencies(false)
         Assertions.assertEquals(expected, actual)
     }
+
+    @Test
+    fun fetchCachedListWhenRefreshFails() =
+        runTest {
+            every { dipPrefs.dedicatedIps } returns MutableStateFlow(emptyList())
+            coEvery { source.fetchVpnRegions(any()) } returns anotherResponse
+
+            val cachedList = repository.fetchVpnRegions("en")
+
+            VpnRegionRepository::class.java.getDeclaredField("lastUpdate").apply {
+                isAccessible = true
+                setLong(repository, 0L)
+            }
+            coEvery { source.fetchVpnRegions(any()) } returns null
+
+            val actual = repository.fetchVpnRegions("en")
+
+            Assertions.assertEquals(cachedList, actual)
+        }
 
     companion object {
         private val response = VpnRegionsResponse()

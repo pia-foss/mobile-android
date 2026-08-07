@@ -36,7 +36,6 @@ private val CUSTOM_OBFUSCATION_SETTINGS = stringPreferencesKey("custom-obfuscati
 private val SHADOWSOCKS_OBFUSCATION_ENABLED = booleanPreferencesKey("shadowsocks-obfuscation-enabled")
 private val EXTERNAL_PROXY_APP_ENABLED = booleanPreferencesKey("external-proxy-app-enabled")
 private val EXTERNAL_PROXY_APP_PACKAGE_NAME = stringPreferencesKey("external-proxy-app-package-name")
-private val HELP_IMPROVE_PIA = booleanPreferencesKey("help-improve-pia")
 private val DEBUG_LOGGING = booleanPreferencesKey("debug-logging")
 private val VPN_EXCLUDED_APPS = stringSetPreferencesKey("vpn-excluded-apps")
 private val PORT_FORWARDING = booleanPreferencesKey("port-forwarding")
@@ -76,8 +75,6 @@ class SettingsPrefs(
         getSelectedObfuscationOption().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), ObfuscationOptions.PIA)
     val customObfuscation: StateFlow<CustomObfuscation?> =
         getCustomObfuscation().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
-    val isHelpImprovePiaEnabled: StateFlow<Boolean> =
-        getHelpImprovePiaEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
     val isDebugLoggingEnabled: StateFlow<Boolean> =
         getDebugLoggingEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
     val vpnExcludedApps: StateFlow<List<String>> =
@@ -171,10 +168,6 @@ class SettingsPrefs(
         dataStore.edit { it[CUSTOM_OBFUSCATION_SETTINGS] = Json.encodeToString(customObfuscation) }
     }
 
-    suspend fun setHelpImprovePiaEnabled(enabled: Boolean) {
-        dataStore.edit { it[HELP_IMPROVE_PIA] = enabled }
-    }
-
     suspend fun setDebugLoggingEnabled(enabled: Boolean) {
         dataStore.edit { it[DEBUG_LOGGING] = enabled }
     }
@@ -247,8 +240,6 @@ class SettingsPrefs(
         dataStore.data.map { prefs ->
             prefs[CUSTOM_OBFUSCATION_SETTINGS]?.let { Json.decodeFromString(it) }
         }
-
-    private fun getHelpImprovePiaEnabled(): Flow<Boolean> = dataStore.data.map { it[HELP_IMPROVE_PIA] ?: false }
 
     private fun getDebugLoggingEnabled(): Flow<Boolean> = dataStore.data.map { it[DEBUG_LOGGING] ?: false }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.data.LoginWithCredentials
+import com.kape.data.Subscribe
 import com.kape.data.TvWelcome
 import com.kape.data.WebDestination
 import com.kape.permissions.utils.PermissionUtil
@@ -24,6 +25,7 @@ import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.signedUp
 import com.kape.utils.NetworkConnectionListener
+import com.kape.utils.PlatformUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +41,7 @@ class SignupViewModel(
     private val signupHandler: SignupHandler,
     private val permissionUtil: PermissionUtil,
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
+    private val platformUtils: PlatformUtils,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
@@ -91,11 +94,21 @@ class SignupViewModel(
         router.updateDestination(WebDestination.NoInAppRegistration)
     }
 
-    fun allowEventSharing(allow: Boolean) =
-        viewModelScope.launch(ioDispatcher) {
-            consentUseCase.setConsent(allow)
+    fun allowEventSharing(
+        allow: Boolean,
+        isFirstScreen: Boolean,
+    ) = viewModelScope.launch(ioDispatcher) {
+        consentUseCase.setConsent(allow)
+        if (isFirstScreen) {
+            if (platformUtils.isTv()) {
+                router.updateDestination(TvWelcome)
+            } else {
+                router.updateDestination(Subscribe)
+            }
+        } else {
             _state.emit(EMAIL)
         }
+    }
 
     fun isValidEmail(email: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
 

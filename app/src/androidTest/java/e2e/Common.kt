@@ -178,6 +178,10 @@ object SignUp {
     const val LOGIN_BUTTON = ":SignUpScreen:Login"
 }
 
+object Consent {
+    const val NO_THANKS_BUTTON = ":ConsentScreen:NoThanks"
+}
+
 object SideMenu {
     const val ACCOUNT = ":SideMenu:Account"
     const val SETTINGS_BUTTON = ":SideMenu:Settings"
@@ -202,6 +206,9 @@ fun reachLogin() =
         // first test of a run.
         device.executeShellCommand("appops set ${BuildConfig.APPLICATION_ID} ACTIVATE_VPN allow")
         startApp(BuildConfig.APPLICATION_ID)
+        // The one-time data-sharing consent screen is now the first screen for a logged-out
+        // user (see ConsentScreen.kt) - dismiss it before the paywall's real Login link appears.
+        onElement(timeoutMs = LONG_TIMEOUT) { viewIdResourceName == Consent.NO_THANKS_BUTTON }.click()
         onElement(timeoutMs = LONG_TIMEOUT) { viewIdResourceName == SignUp.LOGIN_BUTTON }.click()
     }
 

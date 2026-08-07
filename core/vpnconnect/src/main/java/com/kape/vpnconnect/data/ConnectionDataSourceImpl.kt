@@ -4,7 +4,6 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.kape.contracts.ConnectionStatusProvider
-import com.kape.contracts.KpiDataSource
 import com.kape.contracts.UsageProvider
 import com.kape.data.DI
 import com.kape.data.WorkerTags
@@ -19,7 +18,10 @@ import com.kape.vpnmanager.data.models.ServerList
 import com.kape.vpnmanager.presenters.VPNManagerAPI
 import com.kape.vpnmanager.presenters.VPNManagerConnectionListener
 import com.kape.vpnmanager.presenters.VPNManagerProtocolTarget
+import com.kape.vpnprotocol.presenters.VPNProtocolError
+import com.kape.vpnprotocol.presenters.VPNProtocolErrorCode
 import com.privateinternetaccess.account.AndroidAccountAPI
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -36,7 +38,6 @@ class ConnectionDataSourceImpl(
     private val connectionPrefs: ConnectionPrefs,
     private val workManager: WorkManager,
     private val settingsPrefs: SettingsPrefs,
-    private val kpiDataSource: KpiDataSource,
     private val usageProvider: UsageProvider,
     private val csiPrefs: CsiPrefs,
     @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
@@ -55,23 +56,40 @@ class ConnectionDataSourceImpl(
             connectionApi.addConnectionListener(
                 connectionStatusProvider as VPNManagerConnectionListener,
             ) {}
+            attemptStartConnection(clientConfiguration, cont, retryOnConfigurationNotReady = true)
+        }
 
-            if (settingsPrefs.isHelpImprovePiaEnabled.value) {
-                kpiDataSource.start()
-            } else {
-                kpiDataSource.stop()
-            }
-
-            connectionApi.startConnection(clientConfiguration) { result ->
-                result.getOrNull()?.let { serverPeerInfo ->
-                    ioScope.launch {
-                        connectionPrefs.setGateway(serverPeerInfo.gateway)
-                        if (cont.isActive) {
-                            // Convert Result<ServerPeerInfo> → Result<Unit>
-                            cont.resume(result.map { Unit })
-                        }
+    // A ServerList with several candidates lets the SDK's own StartIteratingConnection silently
+    // fall back to the next one when this happens; a DIP ServerList only ever has one entry, so we
+    // retry once ourselves to give the transient failure the same chance to clear.
+    private fun attemptStartConnection(
+        clientConfiguration: ClientConfiguration,
+        cont: CancellableContinuation<Result<Unit>>,
+        retryOnConfigurationNotReady: Boolean,
+    ) {
+        connectionApi.startConnection(clientConfiguration) { result ->
+            result.getOrNull()?.let { serverPeerInfo ->
+                ioScope.launch {
+                    connectionPrefs.setGateway(serverPeerInfo.gateway)
+                    if (cont.isActive) {
+                        // Convert Result<ServerPeerInfo> → Result<Unit>
+                        cont.resume(result.map { Unit })
                     }
-                } ?: run {
+                }
+            } ?: run {
+                val error = result.exceptionOrNull()
+                if (retryOnConfigurationNotReady &&
+                    error is VPNProtocolError &&
+                    error.code == VPNProtocolErrorCode.PROTOCOL_CONFIGURATION_NOT_READY
+                ) {
+                    ioScope.launch {
+                        csiPrefs.addCustomDebugLogs(
+                            "startConnection failed with PROTOCOL_CONFIGURATION_NOT_READY, retrying once",
+                            settingsPrefs.isDebugLoggingEnabled.value,
+                        )
+                    }
+                    attemptStartConnection(clientConfiguration, cont, retryOnConfigurationNotReady = false)
+                } else {
                     ioScope.launch {
                         csiPrefs.addCustomDebugLogs(
                             "startConnection failed: $result",
@@ -86,6 +104,7 @@ class ConnectionDataSourceImpl(
                 }
             }
         }
+    }
 
     override suspend fun stopConnection(): Result<Unit> =
         suspendCancellableCoroutine { continuation ->

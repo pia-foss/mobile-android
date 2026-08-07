@@ -1,5 +1,6 @@
 package com.kape.signup.di
 
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
 import com.kape.payments.domain.GetSubscriptionsUseCase
@@ -16,7 +17,6 @@ import com.kape.signup.domain.SignupDataSource
 import com.kape.signup.domain.SignupHandler
 import com.kape.signup.domain.SignupUseCase
 import com.kape.ui.utils.PriceFormatter
-import com.kape.utils.PlatformUtils
 import com.privateinternetaccess.account.AndroidAccountAPI
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
@@ -32,16 +32,16 @@ class SignupBillingModule {
         subscriptionPrefs: SubscriptionPrefs,
         subscriptionsUseCase: GetSubscriptionsUseCase,
         formatter: PriceFormatter,
-        platformUtils: PlatformUtils,
         submitEventUseCase: SubmitKpiEventUseCase,
+        consentPrefs: ConsentPrefs,
     ): SignupBillingHandler =
         GoogleSignupBillingHandler(
             vpnSubscriptionPaymentProvider,
             subscriptionPrefs,
             subscriptionsUseCase,
             formatter,
-            platformUtils,
             submitEventUseCase,
+            consentPrefs,
         )
 
     @Singleton

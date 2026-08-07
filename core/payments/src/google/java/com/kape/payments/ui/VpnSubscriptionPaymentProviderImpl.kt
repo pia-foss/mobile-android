@@ -68,11 +68,12 @@ class VpnSubscriptionPaymentProviderImpl(
                                 }
                             }
                     }
-
                     else -> {
                         purchaseState.value = PurchaseState.PurchaseFailed
                     }
                 }
+            } else {
+                purchaseState.value = PurchaseState.PurchaseFailed
             }
         }
 

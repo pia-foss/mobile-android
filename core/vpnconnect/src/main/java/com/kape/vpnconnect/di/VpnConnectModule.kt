@@ -9,7 +9,6 @@ import com.kape.contracts.ConnectionConfigurationUseCase
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.ConnectionStatusProvider
-import com.kape.contracts.KpiDataSource
 import com.kape.contracts.UsageProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
@@ -115,7 +114,6 @@ class VpnConnectModule {
         connectionPrefs: ConnectionPrefs,
         workManager: WorkManager,
         settingsPrefs: SettingsPrefs,
-        kpiDataSource: KpiDataSource,
         usageProvider: UsageProvider,
         csiPrefs: CsiPrefs,
         @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
@@ -126,7 +124,6 @@ class VpnConnectModule {
             connectionPrefs,
             workManager,
             settingsPrefs,
-            kpiDataSource,
             usageProvider,
             csiPrefs,
             ioScope,

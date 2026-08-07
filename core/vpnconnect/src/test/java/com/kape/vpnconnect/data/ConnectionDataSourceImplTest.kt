@@ -3,9 +3,9 @@ package com.kape.vpnconnect.data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
 import com.kape.contracts.ConnectionStatusProvider
-import com.kape.contracts.KpiDataSource
 import com.kape.data.ConnectionStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
@@ -40,9 +40,9 @@ class ConnectionDataSourceImplTest {
     private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)
     private val workManager = mockk<WorkManager>(relaxed = true)
     private val settingsPrefs = mockk<SettingsPrefs>(relaxed = true)
-    private val kpiDataSource = mockk<KpiDataSource>(relaxed = true)
     private val usageProvider = mockk<UsageProviderImpl>(relaxed = true)
     private val csiPrefs = mockk<CsiPrefs>(relaxed = true)
+    private val consentPrefs = mockk<ConsentPrefs>(relaxed = true)
 
     private val connectionStatusProvider =
         object : ConnectionStatusProvider, VPNManagerConnectionListener {
@@ -69,7 +69,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -78,7 +77,7 @@ class ConnectionDataSourceImplTest {
             val serverPeerInfo = ServerPeerInformation(networkInterface = "wg0", gateway = "10.0.0.1")
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns false
+            every { consentPrefs.allowSharing } returns MutableStateFlow(false)
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
             every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
                 slot.captured.invoke(Result.success(serverPeerInfo))
@@ -100,7 +99,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -109,7 +107,7 @@ class ConnectionDataSourceImplTest {
             val clientConfiguration = mockk<ClientConfiguration>()
             val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
 
-            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns false
+            every { consentPrefs.allowSharing } returns MutableStateFlow(false)
             every { settingsPrefs.isDebugLoggingEnabled.value } returns false
             every { connectionApi.addConnectionListener(any(), any()) } answers { }
             every { connectionApi.stopConnection(any()) } answers { }
@@ -121,65 +119,6 @@ class ConnectionDataSourceImplTest {
 
             assertTrue(result.isFailure)
             coVerify { csiPrefs.addCustomDebugLogs(any(), false) }
-        }
-
-    @Test
-    fun `startConnection - help improve PIA enabled - starts KPI`() =
-        runTest {
-            dataSource =
-                ConnectionDataSourceImpl(
-                    connectionApi = connectionApi,
-                    accountApi = accountApi,
-                    connectionPrefs = connectionPrefs,
-                    workManager = workManager,
-                    settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
-                    usageProvider = usageProvider,
-                    csiPrefs = csiPrefs,
-                    ioScope = this,
-                )
-
-            val clientConfiguration = mockk<ClientConfiguration>()
-            val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
-
-            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns true
-            every { connectionApi.addConnectionListener(any(), any()) } answers { }
-            every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
-                slot.captured.invoke(Result.success(mockk(relaxed = true)))
-            }
-
-            dataSource.startConnection(clientConfiguration, connectionStatusProvider)
-
-            verify { kpiDataSource.start() }
-        }
-
-    @Test
-    fun `startConnection - help improve PIA disabled - stops KPI`() =
-        runTest {
-            dataSource =
-                ConnectionDataSourceImpl(
-                    connectionApi = connectionApi,
-                    accountApi = accountApi,
-                    connectionPrefs = connectionPrefs,
-                    workManager = workManager,
-                    settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
-                    usageProvider = usageProvider,
-                    csiPrefs = csiPrefs,
-                    ioScope = this,
-                )
-            val clientConfiguration = mockk<ClientConfiguration>()
-            val slot = slot<(Result<ServerPeerInformation>) -> Unit>()
-
-            every { settingsPrefs.isHelpImprovePiaEnabled.value } returns false
-            every { connectionApi.addConnectionListener(any(), any()) } answers { }
-            every { connectionApi.startConnection(clientConfiguration, capture(slot)) } answers {
-                slot.captured.invoke(Result.success(mockk(relaxed = true)))
-            }
-
-            dataSource.startConnection(clientConfiguration, connectionStatusProvider)
-
-            verify { kpiDataSource.stop() }
         }
 
     // endregion
@@ -196,7 +135,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -226,7 +164,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -258,7 +195,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -280,7 +216,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -306,7 +241,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -330,7 +264,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -357,7 +290,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -385,7 +317,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -413,7 +344,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -444,7 +374,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,
@@ -471,7 +400,6 @@ class ConnectionDataSourceImplTest {
                     connectionPrefs = connectionPrefs,
                     workManager = workManager,
                     settingsPrefs = settingsPrefs,
-                    kpiDataSource = kpiDataSource,
                     usageProvider = usageProvider,
                     csiPrefs = csiPrefs,
                     ioScope = this,

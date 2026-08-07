@@ -8,12 +8,15 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.KpiDataSource
+import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.vpn.di.AppModule
 import com.kape.widget.WidgetReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -27,12 +30,21 @@ class App : Application() {
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val kpiDataSource: KpiDataSource by inject()
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
+    private val consentPrefs: ConsentPrefs by inject()
+    private val userLoggedInUseCase: IsUserLoggedInUseCase by inject()
 
     private val lifecycleObserver =
         object : DefaultLifecycleObserver {
             override fun onStop(owner: LifecycleOwner) {
                 kpiDataSource.flush()
                 super.onStop(owner)
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                if (!userLoggedInUseCase.invoke()) {
+                    consentPrefs.setConsentDecisionMade(false)
+                }
+                super.onDestroy(owner)
             }
         }
 
@@ -47,6 +59,14 @@ class App : Application() {
             workManagerFactory()
         }
         observeConnectionStateForWidget()
+        appScope.launch {
+            consentPrefs.allowSharing.collectLatest {
+                when (it) {
+                    true -> kpiDataSource.start()
+                    false -> kpiDataSource.stop()
+                }
+            }
+        }
     }
 
     private fun observeConnectionStateForWidget() {

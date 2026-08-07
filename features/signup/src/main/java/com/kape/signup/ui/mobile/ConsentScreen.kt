@@ -14,15 +14,21 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,18 +37,22 @@ import com.kape.ui.R
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
+import com.kape.ui.utils.LocalColors
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ConsentScreen(viewModel: SignupViewModel) =
+fun ConsentScreen(isFirstScreen: Boolean) =
     Screen {
-        val showMoreInfo = remember { mutableStateOf(false) }
+        val viewModel: SignupViewModel = koinViewModel()
+        var showMoreInfo by remember { mutableStateOf(false) }
 
         Column(
             modifier =
                 Modifier
                     .verticalScroll(rememberScrollState())
                     .fillMaxSize()
-                    .padding(WindowInsets.systemBars.asPaddingValues()),
+                    .padding(WindowInsets.systemBars.asPaddingValues())
+                    .semantics { testTagsAsResourceId = true },
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
@@ -77,7 +87,7 @@ fun ConsentScreen(viewModel: SignupViewModel) =
                         Modifier
                             .align(Alignment.CenterHorizontally)
                             .clickable {
-                                showMoreInfo.value = true
+                                showMoreInfo = true
                             },
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -88,7 +98,7 @@ fun ConsentScreen(viewModel: SignupViewModel) =
                             .fillMaxWidth()
                             .padding(16.dp),
                 ) {
-                    viewModel.allowEventSharing(true)
+                    viewModel.allowEventSharing(true, isFirstScreen)
                 }
                 SecondaryButton(
                     text = stringResource(id = R.string.no_thanks),
@@ -96,10 +106,35 @@ fun ConsentScreen(viewModel: SignupViewModel) =
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
-                            .testTag(":SignUpScreen:Login"),
+                            .testTag(":ConsentScreen:NoThanks"),
                 ) {
-                    viewModel.allowEventSharing(false)
+                    viewModel.allowEventSharing(false, isFirstScreen)
                 }
             }
+        }
+
+        if (showMoreInfo) {
+            AlertDialog(
+                text = {
+                    Text(
+                        text = stringResource(id = R.string.consent_more_info),
+                        modifier = Modifier.verticalScroll(rememberScrollState()),
+                    )
+                },
+                onDismissRequest = { showMoreInfo = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showMoreInfo = false
+                        },
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.ok),
+                            fontSize = 14.sp,
+                            color = LocalColors.current.primary,
+                        )
+                    }
+                },
+            )
         }
     }

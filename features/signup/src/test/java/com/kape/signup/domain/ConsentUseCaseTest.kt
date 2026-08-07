@@ -4,6 +4,7 @@ import com.kape.localprefs.prefs.ConsentPrefs
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -29,7 +30,8 @@ class ConsentUseCaseTest {
         expected: Boolean,
     ) = runTest {
         coEvery { prefs.setAllowSharing(any()) } returns Unit
-        every { prefs.allowSharing.value } returns expected
+        every { prefs.setConsentDecisionMade(any()) } returns Unit
+        every { prefs.allowSharing } returns MutableStateFlow(expected)
 
         useCase.setConsent(result)
         assertEquals(expected, useCase.getConsent())

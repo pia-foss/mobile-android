@@ -74,8 +74,7 @@ class DipPurchaseModule {
     fun provideGetDipMonthlyPlan(
         dipSignupRepository: DipSignupRepository,
         dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
-        formatter: PriceFormatter,
-    ): GetDipMonthlyPlan = GetDipMonthlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider, formatter)
+    ): GetDipMonthlyPlan = GetDipMonthlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider)
 
     @Singleton
     fun provideGetDipYearlyPlan(
