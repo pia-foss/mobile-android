@@ -126,6 +126,7 @@ fun ConnectionScreen() =
         LaunchedEffect(lifecycleOwner) {
             lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.refreshState()
+                activity?.let { viewModel.checkForPaymentIssues(it) }
             }
         }
 
