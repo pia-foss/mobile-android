@@ -35,7 +35,12 @@ class GetDipYearlyPlan(
                                 id = productDetails.first,
                                 yearlyPrice = productDetails.second,
                                 // 0L added to match formatYearlyPerMonth signature. To be fixed when dip goes live.
-                                monthlyPrice = formatter.formatYearlyPerMonth(0L, productDetails.second, "USD"),
+                                monthlyPrice =
+                                    formatter.formatYearlyPerMonth(
+                                        priceInMicros = 0L,
+                                        currencyCode = "USD",
+                                        originalFormattedPrice = productDetails.second,
+                                    ),
                             ),
                         )
                     },
