@@ -10,6 +10,7 @@ import com.kape.data.DI
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnlauncher.VpnLauncher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
@@ -32,9 +33,14 @@ class OnAppUpdateReceiver :
         WebStorage.getInstance().deleteAllData()
         CookieManager.getInstance().removeAllCookies(null)
 
+        val pendingResult = goAsync()
         ioScope.launch {
-            if (settingsPrefs.isConnectOnAppUpdateEnabledNow() && userLoggedInUseCase.invoke()) {
-                vpnLauncher.launchVpn()
+            try {
+                if (settingsPrefs.isConnectOnAppUpdateEnabled.first() && userLoggedInUseCase.invoke()) {
+                    vpnLauncher.launchVpn()
+                }
+            } finally {
+                pendingResult.finish()
             }
         }
     }
