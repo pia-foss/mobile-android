@@ -37,10 +37,14 @@ class App : Application() {
         object : DefaultLifecycleObserver {
             override fun onStop(owner: LifecycleOwner) {
                 kpiDataSource.flush()
+                super.onStop(owner)
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
                 if (!userLoggedInUseCase.invoke()) {
                     consentPrefs.setConsentDecisionMade(false)
                 }
-                super.onStop(owner)
+                super.onDestroy(owner)
             }
         }
 
