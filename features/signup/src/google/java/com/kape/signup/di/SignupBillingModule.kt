@@ -51,6 +51,7 @@ class SignupBillingModule {
         emailDataSource: EmailDataSource,
         purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
         getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase,
+        subscriptionPrefs: SubscriptionPrefs,
     ): SignupUseCase =
         SignupUseCase(
             signupDataSource,
@@ -58,6 +59,7 @@ class SignupBillingModule {
             emailDataSource,
             purchaseDetailsUseCase,
             getObfuscatedDeviceIdentifierUseCase,
+            subscriptionPrefs,
         )
 
     @Singleton(binds = [SignupHandler::class])

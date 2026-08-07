@@ -15,7 +15,9 @@ class ConsentUseCase(
 
     suspend fun getConsent() = prefs.allowSharing.first()
 
-    fun setConsentDecisionMade(made: Boolean) {
+    suspend fun setConsentDecisionMade(made: Boolean) {
         prefs.setConsentDecisionMade(made)
     }
+
+    suspend fun hasMadeConsentDecision() = prefs.hasMadeConsentDecision.first()
 }

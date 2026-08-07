@@ -53,6 +53,10 @@ class SubscriptionPrefs(
         dataStore.edit { it[VPN_PURCHASE_DATA] = purchaseData.toString() }
     }
 
+    suspend fun removeVpnPurchaseData() {
+        dataStore.edit { it.remove(VPN_PURCHASE_DATA) }
+    }
+
     suspend fun storeDipPurchaseData(purchaseData: DipPurchaseData) {
         dataStore.edit { it[DIP_PURCHASE_DATA] = Json.encodeToString(purchaseData) }
     }

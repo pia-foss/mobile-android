@@ -43,5 +43,6 @@ class BillingLogoutHandler(
         kpiPrefs.clear()
         consentPrefs.clear()
         ratingPrefs.clear()
+        subscriptionPrefs.clear()
     }
 }

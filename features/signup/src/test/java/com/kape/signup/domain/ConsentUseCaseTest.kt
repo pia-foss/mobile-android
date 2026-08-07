@@ -30,7 +30,7 @@ class ConsentUseCaseTest {
         expected: Boolean,
     ) = runTest {
         coEvery { prefs.setAllowSharing(any()) } returns Unit
-        every { prefs.setConsentDecisionMade(any()) } returns Unit
+        coEvery { prefs.setConsentDecisionMade(any()) } returns Unit
         every { prefs.allowSharing } returns MutableStateFlow(expected)
 
         useCase.setConsent(result)

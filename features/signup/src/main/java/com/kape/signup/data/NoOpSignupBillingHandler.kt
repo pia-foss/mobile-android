@@ -48,4 +48,6 @@ class NoOpSignupBillingHandler(
     override fun reset() {
         // no-op
     }
+
+    override suspend fun hasResumablePurchase(): Boolean = false
 }

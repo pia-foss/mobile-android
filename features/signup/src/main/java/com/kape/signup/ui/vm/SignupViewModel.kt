@@ -16,6 +16,7 @@ import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.domain.SignupHandler
+import com.kape.signup.utils.CONSENT
 import com.kape.signup.utils.DEFAULT
 import com.kape.signup.utils.EMAIL
 import com.kape.signup.utils.ERROR_EMAIL_INVALID
@@ -58,7 +59,18 @@ class SignupViewModel(
         billingHandler.initialize(viewModelScope, ioDispatcher, mainDispatcher)
     }
 
-    fun loadPrices(activity: Activity) = billingHandler.loadPrices(viewModelScope, ioDispatcher, mainDispatcher, activity)
+    fun loadPrices(activity: Activity) =
+        viewModelScope.launch(ioDispatcher) {
+            // A purchase may already have completed on a previous run (its token is durably
+            // persisted) with no account created for it yet - e.g. the app was killed on the
+            // email-entry step. Resume there instead of sending the user back through plan
+            // selection to buy a subscription they already paid for.
+            if (billingHandler.hasResumablePurchase()) {
+                _state.emit(if (consentUseCase.hasMadeConsentDecision()) EMAIL else CONSENT)
+            } else {
+                billingHandler.loadPrices(viewModelScope, ioDispatcher, mainDispatcher, activity)
+            }
+        }
 
     fun loadEmptyPrices() =
         viewModelScope.launch(ioDispatcher) {
