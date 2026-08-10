@@ -44,7 +44,7 @@ class LogoutTests {
             assertNotNull(
                 device.wait(Until.hasObject(By.res(SignUp.LOGIN_BUTTON)), TIMEOUT),
             )
-            loginFromCurrent()
+            login(firstTime = false)
             onElement { viewIdResourceName == Main.SIDE_MENU }.click()
             device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
             onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
