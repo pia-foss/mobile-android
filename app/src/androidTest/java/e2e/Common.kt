@@ -212,9 +212,7 @@ fun reachLogin() =
         onElement(timeoutMs = LONG_TIMEOUT) { viewIdResourceName == SignUp.LOGIN_BUTTON }.click()
     }
 
-fun login(
-    firstTime: Boolean = true,
-) =
+fun login(firstTime: Boolean = true) =
     uiAutomator {
         if (firstTime) {
             reachLogin()
