@@ -172,5 +172,5 @@ class GoogleSignupBillingHandler(
         vpnSubscriptionPaymentProvider.reset()
     }
 
-    override suspend fun hasResumablePurchase(): Boolean = subscriptionPrefs.vpnPurchaseData.first() != null
+    override suspend fun hasResumablePurchase(): Boolean = subscriptionPrefs.getVpnPurchaseDataOnce() != null
 }

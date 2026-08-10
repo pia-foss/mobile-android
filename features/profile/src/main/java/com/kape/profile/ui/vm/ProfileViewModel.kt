@@ -7,7 +7,6 @@ import com.kape.contracts.Router
 import com.kape.data.AccountDeleted
 import com.kape.data.DI
 import com.kape.data.LoginWithCredentials
-import com.kape.data.Splash
 import com.kape.data.Subscribe
 import com.kape.data.WebDestination
 import com.kape.profile.data.models.Profile
@@ -44,7 +43,7 @@ class ProfileViewModel(
     fun logout() =
         viewModelScope.launch(ioDispatcher) {
             logoutUseCase.logout()
-            router.updateDestination(Splash)
+            router.updateDestination(LoginWithCredentials)
         }
 
     fun navigateToLogin() = router.updateDestination(LoginWithCredentials)

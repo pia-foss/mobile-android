@@ -36,7 +36,10 @@ data class Consent(
 }
 
 @Serializable
-object LoginWithCredentials : ComposeDestination
+object LoginWithCredentials : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
+}
 
 @Serializable
 object LoginWithEmail : ComposeDestination

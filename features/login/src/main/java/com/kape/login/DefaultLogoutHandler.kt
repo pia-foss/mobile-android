@@ -39,7 +39,7 @@ class DefaultLogoutHandler(
         vpnRegionPrefs.clear()
         settingsPrefs.clear()
         kpiPrefs.clear()
-        consentPrefs.clear()
+        consentPrefs.clearAllowSharing()
         ratingPrefs.clear()
     }
 }

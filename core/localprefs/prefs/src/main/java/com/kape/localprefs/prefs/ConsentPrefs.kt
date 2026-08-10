@@ -23,10 +23,6 @@ class ConsentPrefs(
         getAllowSharing()
             .stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
 
-    // Persisted (not just in-memory) so it survives process death - otherwise a user killed
-    // mid-signup (after accepting consent but before finishing) is sent back through the
-    // consent screen on relaunch instead of resuming where they left off. Cleared on logout
-    // via Prefs.clear().
     val hasMadeConsentDecision: StateFlow<Boolean> =
         getConsentDecisionMade()
             .stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
@@ -37,6 +33,10 @@ class ConsentPrefs(
 
     suspend fun setConsentDecisionMade(made: Boolean) {
         dataStore.edit { it[CONSENT_DECISION_MADE] = made }
+    }
+
+    suspend fun clearAllowSharing() {
+        dataStore.edit { it.remove(SHARE_EVENTS_CONSENT) }
     }
 
     private fun getAllowSharing(): Flow<Boolean> = dataStore.data.map { it[SHARE_EVENTS_CONSENT] ?: false }
