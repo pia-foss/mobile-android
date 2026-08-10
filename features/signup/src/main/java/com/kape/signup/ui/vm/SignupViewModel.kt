@@ -61,10 +61,6 @@ class SignupViewModel(
 
     fun loadPrices(activity: Activity) =
         viewModelScope.launch(ioDispatcher) {
-            // A purchase may already have completed on a previous run (its token is durably
-            // persisted) with no account created for it yet - e.g. the app was killed on the
-            // email-entry step. Resume there instead of sending the user back through plan
-            // selection to buy a subscription they already paid for.
             if (billingHandler.hasResumablePurchase()) {
                 _state.emit(if (consentUseCase.hasMadeConsentDecision()) EMAIL else CONSENT)
             } else {

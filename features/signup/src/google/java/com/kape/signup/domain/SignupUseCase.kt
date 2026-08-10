@@ -39,8 +39,6 @@ class SignupUseCase(
         return if (loginState == LoginState.Successful) {
             val successful = emailDataSource.setEmail(email)
             if (successful) {
-                // The purchase has now been redeemed into an account - clear it so it can't be
-                // mistaken for a still-pending purchase on a later signup attempt.
                 subscriptionPrefs.removeVpnPurchaseData()
                 credentials
             } else {

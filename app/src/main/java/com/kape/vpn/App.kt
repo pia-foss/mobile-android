@@ -31,10 +31,6 @@ class App : Application() {
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val consentPrefs: ConsentPrefs by inject()
 
-    // NOTE: consent decision is intentionally not reset here on backgrounding/process
-    // teardown - it's persisted in ConsentPrefs (DataStore) and only cleared on logout
-    // (see BillingLogoutHandler/DefaultLogoutHandler#clearLocalStorage). ProcessLifecycleOwner
-    // never dispatches ON_DESTROY, so any reset attempted from onDestroy here would never run.
     private val lifecycleObserver =
         object : DefaultLifecycleObserver {
             override fun onStop(owner: LifecycleOwner) {
