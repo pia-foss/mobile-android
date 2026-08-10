@@ -5,6 +5,8 @@ import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.InAppMessageParams
+import com.android.billingclient.api.InAppMessageResult
 import com.android.billingclient.api.PendingPurchasesParams
 import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
@@ -17,6 +19,7 @@ import com.kape.data.model.PurchaseData
 import com.kape.data.model.Subscription
 import com.kape.payments.data.SubscriptionPlan
 import com.kape.payments.prefs.SubscriptionPrefs
+import com.kape.payments.utils.InAppMessageState
 import com.kape.payments.utils.MONTHLY
 import com.kape.payments.utils.MONTHLY_SUBSCRIPTION
 import com.kape.payments.utils.PurchaseHistoryState
@@ -77,8 +80,12 @@ class VpnSubscriptionPaymentProviderImpl(
     override val purchaseState = MutableStateFlow<PurchaseState>(PurchaseState.Default)
     override val purchaseHistoryState =
         MutableStateFlow<PurchaseHistoryState>(PurchaseHistoryState.Default)
+    override val inAppMessageState = MutableStateFlow<InAppMessageState>(InAppMessageState.Default)
 
-    override fun register(activity: Activity) {
+    override fun register(
+        activity: Activity,
+        onReady: () -> Unit,
+    ) {
         billingClient =
             BillingClient
                 .newBuilder(activity)
@@ -92,6 +99,7 @@ class VpnSubscriptionPaymentProviderImpl(
                 override fun onBillingSetupFinished(billingResult: BillingResult) {
                     if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                         purchaseState.value = PurchaseState.InitSuccess
+                        onReady()
                     } else {
                         purchaseState.value = PurchaseState.InitFailed
                     }
@@ -102,6 +110,30 @@ class VpnSubscriptionPaymentProviderImpl(
                 }
             },
         )
+    }
+
+    override fun showInAppMessages(activity: Activity) {
+        if (isClientRegistered()) {
+            triggerInAppMessage(activity)
+        } else {
+            register(activity) { triggerInAppMessage(activity) }
+        }
+    }
+
+    private fun triggerInAppMessage(activity: Activity) {
+        val params =
+            InAppMessageParams
+                .newBuilder()
+                .addInAppMessageCategoryToShow(InAppMessageParams.InAppMessageCategoryId.TRANSACTIONAL)
+                .build()
+        billingClient.showInAppMessages(activity, params) { result ->
+            inAppMessageState.value =
+                when (result.responseCode) {
+                    InAppMessageResult.InAppMessageResponseCode.SUBSCRIPTION_STATUS_UPDATED ->
+                        InAppMessageState.SubscriptionStatusUpdated(result.purchaseToken.orEmpty())
+                    else -> InAppMessageState.NoActionNeeded
+                }
+        }
     }
 
     @Deprecated("Deprecated in favor of SubscriptionPlan")

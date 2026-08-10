@@ -14,6 +14,7 @@ import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
+import com.kape.payments.domain.PaymentIssueHandler
 import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.rating.utils.RatingTool
 import com.kape.snooze.SnoozeHandler
@@ -48,6 +49,7 @@ class ConnectionModule {
         dipPurchaseHandler: DipPurchaseHandler,
         updateAvailableManager: UpdateAvailableManager,
         screenElementProvider: ScreenElementProvider,
+        paymentIssueHandler: PaymentIssueHandler,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): ConnectionViewModel =
@@ -69,6 +71,7 @@ class ConnectionModule {
             dipPurchaseHandler,
             updateAvailableManager,
             screenElementProvider,
+            paymentIssueHandler,
             ioDispatcher,
             connectionInfoProvider,
             networkConnectionListener,

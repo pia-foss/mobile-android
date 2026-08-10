@@ -1,5 +1,6 @@
 package com.kape.connection.ui.vm
 
+import android.app.Activity
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +32,7 @@ import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
+import com.kape.payments.domain.PaymentIssueHandler
 import com.kape.permissions.domain.IsVpnProfileInstalledUseCase
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.utils.RatingTool
@@ -76,6 +78,7 @@ class ConnectionViewModel(
     private val dipPurchaseHandler: DipPurchaseHandler,
     private val updateAvailableManager: UpdateAvailableManager,
     private val screenElementProvider: ScreenElementProvider,
+    private val paymentIssueHandler: PaymentIssueHandler,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     val connectionInfoProvider: ConnectionInfoProvider,
     networkConnectionListener: NetworkConnectionListener,
@@ -442,6 +445,8 @@ class ConnectionViewModel(
                 showOptimalLocationInfo = selectedServer == null && regionListProvider.isDefaultList.value,
             )
         }
+
+    fun checkForPaymentIssues(activity: Activity) = paymentIssueHandler.checkForPaymentIssues(activity)
 
     private fun callback() {
         viewModelScope.launch(ioDispatcher) {
