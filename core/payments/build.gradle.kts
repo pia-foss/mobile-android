@@ -57,6 +57,7 @@ dependencies {
     androidTestImplementation(libs.bundles.coroutines.androidtest)
     implementation(libs.bundles.serialization)
     "googleImplementation"(libs.billing.google)
+    "googleImplementation"(project(":core:contracts"))
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
 }
