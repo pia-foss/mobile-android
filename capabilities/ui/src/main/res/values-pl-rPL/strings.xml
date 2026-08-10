@@ -178,7 +178,7 @@
   <string name="error_missing_email">Musisz podać prawidłowy adres e-mail</string>
   <string name="error_account_expired">Ważność konta wygasła.</string>
   <string name="login_support_dialog_title">Nadal masz problemy?</string>
-  <string name="login_support_dialog_message">Wygląda na to, że coś nie działa. Możesz skontaktować się z pomocą techniczną — szczegóły techniczne zostaną wypełnione automatycznie, więc nie musisz samodzielnie opisywać błędu.</string>
+  <string name="login_support_dialog_message">Wygląda na to, że coś nie działa. Możesz skontaktować się z pomocą techniczną – dane techniczne są już wypełnione, więc nie musisz samodzielnie opisywać błędu.</string>
   <string name="sort_regions_title">Uporządkuj regiony wg</string>
   <string name="name">Nazwa</string>
   <string name="latency">Opóźnienie</string>
@@ -372,19 +372,22 @@
   <string name="consent_title">Prosimy o pomoc w ulepszeniu naszych usług</string>
   <string name="consent_message">Aby pomóc nam zapewnić najlepszą wydajność naszych usług, możesz anonimowo udostępniać nam swoje statystyki połączeń. Raporty te nie zawierają żadnych informacji umożliwiających identyfikację osób.</string>
   <string name="find_out_more">Dowiedz się więcej</string>
-  <string name="consent_more_info">Te minimalne informacje pomagają nam zidentyfikować i naprawić potencjalne problemy z połączeniem. Pamiętaj, że udostępnianie tych informacji wymaga zgody i ręcznej aktywacji, ponieważ jest domyślnie wyłączone. Będziemy zbierać informacje o następujących zdarzeniach:\n\n
-            • Próba połączenia\n
+  <string name="consent_more_info">Te podstawowe informacje pomagają nam zidentyfikować i rozwiązać potencjalne problemy z połączeniem. Należy pamiętać, że udostępnienie tych informacji wymaga zgody i ręcznej aktywacji, ponieważ funkcja ta jest domyślnie wyłączona. Będziemy gromadzić informacje dotyczące następujących zdarzeń:\n\n
+            • Próba nawiązania połączenia\n
             • Połączenie anulowane\n
-            • Połączenie ustanowione\n
-            • Czas na połączenie\n\n
-        W przypadku wszystkich tych wydarzeń zbieramy następujące informacje:\n\n
-            • Platforma\n
+            • Połączenie nawiązane\n
+            • Czas nawiązania połączenia\n
+            • Przetwarzanie zakupu w aplikacji\n
+            • Pomyślne przetworzenie zakupu w aplikacji\n
+            • Niepowodzenie przetworzenia zakupu w aplikacji\n\n
+        W przypadku wszystkich tych zdarzeń będziemy gromadzić następujące informacje:\n\n
+             •  Platforma\n
             • Wersja aplikacji\n
-            • Typ aplikacji (w wersji wstępnej lub nie)\n
-            • Używany protokół\n
-            • Źródło połączenia (ręcznie lub za pomocą automatyzacji)\n\n
-        Wszystkie zdarzenia będą zawierały unikalny identyfikator, który jest generowany losowo. Ten identyfikator nie jest powiązany z Twoim kontem użytkownika. Ten unikalny identyfikator jest codziennie ponownie generowany w celu zachowania prywatności.\n\n
-        Zawsze będziesz mieć kontrolę. Możesz zobaczyć, jakie dane zebraliśmy w Ustawieniach, i możesz wyłączyć zbieranie danych w dowolnym momencie.</string>
+            • Typ aplikacji (wersja przedpremierowa czy nie)\n
+            • Użyty protokół\n
+            • Źródło połączenia (ręczne lub automatyczne)\n\n
+            Wszystkie zdarzenia będą zawierały unikalny identyfikator, generowany losowo. Identyfikator ten nie jest powiązany z Twoim kontem użytkownika. Ze względu na ochronę prywatności ten unikalny identyfikator jest generowany na nowo każdego dnia.\n\n
+        Zawsze zachowujesz kontrolę. W sekcji „Ustawienia” możesz sprawdzić, jakie dane zebraliśmy, i w dowolnym momencie wyłączyć tę funkcję.</string>
   <string name="accept">Akceptuj</string>
   <string name="no_thanks">Nie, dziękuję</string>
   <string name="loading_text">Sprawdzanie na serwerze</string>

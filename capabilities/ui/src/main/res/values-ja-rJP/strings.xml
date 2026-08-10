@@ -177,8 +177,8 @@
   <string name="error_missing_credentials">ユーザー名とパスワードを入力してください</string>
   <string name="error_missing_email">有効なメールアドレスを入力してください</string>
   <string name="error_account_expired">アカウントの有効期限が切れています。</string>
-  <string name="login_support_dialog_title">まだ問題がありますか？</string>
-  <string name="login_support_dialog_message">何か不具合が発生しているようです。技術的な詳細を入力済みの状態でサポートにお問い合わせいただけるため、エラーの内容をご自身で説明する必要はありません。</string>
+  <string name="login_support_dialog_title">問題が解決しませんか？</string>
+  <string name="login_support_dialog_message">動作に異常が発生しているようです。技術的な詳細がすでに入力された状態でサポートに連絡できるため、エラーの内容をお客様ご自身で記述いただく必要はありません。</string>
   <string name="sort_regions_title">地域並べ替え条件：</string>
   <string name="name">名前</string>
   <string name="latency">レイテンシ</string>
@@ -372,19 +372,22 @@
   <string name="consent_title">当社のサービス改善にご協力ください</string>
   <string name="consent_message">当社のサービスの接続パフォーマンス確保にご協力いただくには、接続データを匿名で当社と共有してください。これらのレポートには、個人を特定できる情報は含まれません。</string>
   <string name="find_out_more">詳しく知る</string>
-  <string name="consent_more_info">この最小限の情報は、潜在的な接続の問題を特定して修正するのに役立ちます。この情報を共有するには、同意と手動による有効化が必要であることに注意してください（この設定はデフォルトでオフになっています）。当社は次の項目に関する情報を収集します。\n\n
-            • 接続の試み\n
-            • キャンセルされた接続\n
-            • 確立された接続\n
-            • 接続時間\n\n
-        これらすべての内容について、当社は次の情報を収集します:\n\n
+  <string name="consent_more_info">接続に関する潜在的な問題の特定や修正のため、以下の最低限の情報を共有いただきます。なお、これらの情報の共有には同意が必要であり、デフォルトでは無効になっているため、手動で有効にしてください。以下のイベントに関する情報を収集します。\n\n
+            • 接続試行\n
+            • 接続キャンセル\n
+            • 接続確立\n
+            • 接続時間\n
+            • アプリ内の購入処理\n
+            • アプリ内の処理成功\n
+            • アプリ内の処理失敗\n\n
+        これらのイベントについて、以下の情報を収集します。\n\n
             • プラットフォーム\n
             • アプリのバージョン\n
-            • アプリの種類（プレリリースか否か）\n
+            • アプリのタイプ（プレリリース版かどうか）\n
             • 使用されたプロトコル\n
-            • 接続ソース（手動または自動を使用）\n\n
-        すべての項目には、ランダムに生成される一意のIDが含まれます。このIDはユーザーアカウントに関連付けられているものではありません。この一意のIDは、プライバシー保護のため毎日再生成されます。\n\n
-        主導権は常にお客さまにあります。収集されたデータは、いつでも設定から確認・オフにできます。</string>
+            • 接続ソース（手動または自動か）\n\n
+        すべてのイベントには、ランダムに生成された一意のIDが含まれます。このIDはお客様のユーザーアカウントとは関連付けられていません。プライバシー保護のため、この一意のIDは毎日再生成されます。\n\n
+        お客様は常に管理権限を保有しています。「設定」から当社が収集したデータを確認することができ、収集はいつでも無効にすることが可能です。</string>
   <string name="accept">同意する</string>
   <string name="no_thanks">結構です</string>
   <string name="loading_text">サーバーで確認中</string>

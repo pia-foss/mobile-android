@@ -177,8 +177,8 @@
   <string name="error_missing_credentials">您必須輸入使用者名稱及密碼</string>
   <string name="error_missing_email">您必須提供一個有效的電子郵件地址</string>
   <string name="error_account_expired">您的訂閱已過期。</string>
-  <string name="login_support_dialog_title">仍然遇到問題？</string>
-  <string name="login_support_dialog_message">看起來發生了一些問題。您可以聯絡支援團隊，技術細節已自動填寫，無需您自行描述錯誤。</string>
+  <string name="login_support_dialog_title">問題仍未解決？</string>
+  <string name="login_support_dialog_message">似乎出了點問題。請聯絡客戶支援團隊，系統會自動填寫相關技術資料，無須您自行描述問題。</string>
   <string name="sort_regions_title">區域排序依據</string>
   <string name="name">名稱</string>
   <string name="latency">延遲</string>
@@ -372,19 +372,22 @@
   <string name="consent_title">請協助我們改善服務</string>
   <string name="consent_message">為了確保服務的品質，您可以匿名與我們分享您的連線統計資料。這些報告不會包含任何個人識別資訊。</string>
   <string name="find_out_more">了解詳情</string>
-  <string name="consent_more_info">這些基本資訊可協助我們辨識及修正可能的連線問題。請注意，分享這些資訊需要您的同意，且該功能預設為關閉，因此必須手動開啟。我們會收集以下事件的資訊：\n\n
-            • 連線嘗試\n
-            • 取消的連線\n
-            • 建立的連線\n
-            • 連線時間\n
-        我們會針對上述事件收集下列資訊：\n\n
-            • 平台\n\n
+  <string name="consent_more_info">這些少量資料有助我們排查並修復潛在的連線問題。請注意，資料分享功能預設為關閉，只有在您同意並手動啟用後才會收集資料。PIA 會收集以下事件的相關資料：\n\n
+            • 嘗試連線\n
+            • 取消連線\n
+            • 建立連線\n
+            • 連線耗時\n\n
+            • 應用程式內購買處理中\n\n
+            • 應用程式內購買成功\n\n
+            • 應用程式內購買失敗\n\n
+        對於上述所有事件，我們會收集以下資料：\n\n
+            • 平台\n
             • 應用程式版本\n
-            • 應用程式類型（是否為預先發布版）\n
-            • 使用的通訊協定\n
-            • 連線來源（手動或自動）\n\n
-        所有事件均有一組隨機產生的不重複識別碼。此識別碼不會和您的使用者賬戶建立關聯。為保護隱私，這個唯一識別碼每天都會重新產生。\n\n
-        控制權始終都在您手中。您可以在「設定」中看到我們收集了哪些資料，且隨時可關閉此功能。</string>
+            • 應用程式類型（預發佈版本或正式版本）\n
+            • 使用的協議\n
+            • 連線方式（手動或自動連線）\n\n
+        所有事件均會包含隨機產生的唯一 ID。此 ID 不會與您的帳戶關聯。為保障用戶私隱，系統每天都會重新產生此 ID。\n\n
+        資料控制權始終在您手中。您可以在設定中查看 PIA 已收集的資料，亦可隨時關閉資料收集功能。</string>
   <string name="accept">接受</string>
   <string name="no_thanks">不了，謝謝</string>
   <string name="loading_text">正在與伺服器進行確認</string>

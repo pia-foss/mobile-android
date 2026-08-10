@@ -178,7 +178,7 @@
   <string name="error_missing_email">Geçerli bir e-posta adresi sağlamanız gerekiyor</string>
   <string name="error_account_expired">Hesabınızın süresi doldu.</string>
   <string name="login_support_dialog_title">Hâlâ sorun mu yaşıyorsunuz?</string>
-  <string name="login_support_dialog_message">Görünüşe göre bir şeyler ters gitti. Destek ekibiyle iletişime geçebilirsiniz; hatayı uzun uzun anlatmaniza gerek kalmasın diye teknik detayları sizin için otomatik doldurduk.</string>
+  <string name="login_support_dialog_message">Görünüşe göre bir şeyler düzgün çalışmıyor. Teknik bilgiler doldurulmuş şekilde destek ekibine ulaşabilirsiniz. Böylece hatayı açıklamanıza gerek kalmaz.</string>
   <string name="sort_regions_title">Bölgeleri sırala:</string>
   <string name="name">Ad</string>
   <string name="latency">Gecikme</string>
@@ -372,19 +372,22 @@
   <string name="consent_title">Lütfen hizmetimizi geliştirmemize yardımcı olun</string>
   <string name="consent_message">Hizmetimizin bağlantı performansını sağlamamıza yardımcı olmak için bağlantı istatistiklerinizi anonim olarak bizimle paylaşabilirsiniz. Bu raporlar herhangi bir kişisel olarak tanımlanabilir bilgi içermez.</string>
   <string name="find_out_more">Daha fazlasını öğrenin</string>
-  <string name="consent_more_info">Bu minimum bilgiler, olası bağlantı sorunlarını belirlememize ve çözmemize yardımcı olur. Varsayılan olarak kapalı olduğundan, bu bilgilerin paylaşılmasının onaylanması ve manuel olarak etkinleştirilmesi gerektirdiğini unutmayın. Aşağıdaki etkinlikler hakkında bilgi toplayacağız:\n\n
-            • Bağlantı Denemesi\n
+  <string name="consent_more_info">Bu az sayıdaki bilgi, olası bağlantı sorunlarını tespit edip çözmemizde bize yardımcı olur. Bu bilgilerin paylaşılması varsayılan olarak kapalı geldiğinden izin vermeniz ve manuel olarak etkinleştirmeniz gerekecektir. Aşağıdaki durumlar hakkında bilgi toplayacağız:\n\n
+            • Bağlantı Girişimi\n
             • Bağlantı İptal Edildi\n
             • Bağlantı Kuruldu\n
-            • Bağlanma süresi\n\n
-        Tüm bu etkinlikler için aşağıdaki bilgileri toplayacağız:\n\n
+            • Bağlanma Süresi\n
+            • Uygulama içi satın alma işleme\n
+            • Uygulama içi işleme başarısı\n
+            • Uygulama içi işleme hatası\n\n
+        Tüm bu durumlar için aşağıdaki bilgileri toplayacağız:\n\n
             • Platform\n
             • Uygulama sürümü\n
-            • Uygulama türü (sürüm öncesi veya değil)\n
+            • Uygulama türü (ön sürüm mü değil mi)\n
             • Kullanılan protokol\n
-            • Bağlantı kaynağı (manuel veya otomasyon kullanarak)\n\n
-        Tüm etkinlikler, rastgele oluşturulan benzersiz bir kimlik içerir. Bu kimlik, kullanıcı hesabınızla ilişkili değildir. Bu benzersiz kimlik, gizlilik amacıyla günlük olarak yeniden oluşturulur.\n\n
-        Her zaman kontrol sizde olacak. Hangi verileri topladığımızı Ayarlar bölümünden görebilir ve istediğiniz zaman kapatabilirsiniz.</string>
+            • Bağlantı kaynağı (manuel mi otomasyonlu mu)\n\n
+        Tüm durumlar rastgele oluşturulan bir kimlik numarası içerir. Bu numara, kullanıcı hesabınızla ilişkilendirilmez. Benzeri olmayan bu numara, gizlilik amacıyla her gün yeniden oluşturulur.\n\n
+        Kontrol daima sizde olacaktır. Hangi verileri topladığımızı Ayarlar\'dan görebilir ve dilediğiniz zaman kapatabilirsiniz.</string>
   <string name="accept">Kabul et</string>
   <string name="no_thanks">Hayır teşekkürler</string>
   <string name="loading_text">Sunucumuzda kontrol ediliyor</string>

@@ -177,8 +177,8 @@
   <string name="error_missing_credentials">Vous devez saisir un nom d\'utilisateur et un mot de passe.</string>
   <string name="error_missing_email">Vous devez saisir une adresse e-mail valide</string>
   <string name="error_account_expired">Votre compte a expiré.</string>
-  <string name="login_support_dialog_title">Toujours des difficultés ?</string>
-  <string name="login_support_dialog_message">Il semble qu\'un problème persiste. Vous pouvez contacter l\'assistance avec les détails techniques déjà renseignés, il n\'est donc pas nécessaire de décrire l\'erreur vous-même.</string>
+  <string name="login_support_dialog_title">Vous rencontrez encore des problèmes ?</string>
+  <string name="login_support_dialog_message">Il semble qu\'un problème affecte le bon fonctionnement de l\'app. Vous pouvez contacter le support client, les informations techniques sont déjà renseignées, vous n\'avez donc pas besoin de décrire vous-même l\'erreur.</string>
   <string name="sort_regions_title">Trier les localisations par</string>
   <string name="name">Nom</string>
   <string name="latency">Latence</string>
@@ -372,19 +372,22 @@
   <string name="consent_title">Veuillez nous aider à améliorer notre service</string>
   <string name="consent_message">Pour nous aider à garantir les meilleures performances de connexion au service, vous pouvez partager vos statistiques de connexion avec nous de manière anonyme. Ces rapports n\'incluent aucune information d\'identification personnelle.</string>
   <string name="find_out_more">En savoir plus</string>
-  <string name="consent_more_info">Ces informations nous aident à identifier et à corriger de potentiels problèmes de connexion. Veuillez noter que le partage de ces informations requiert votre consentement et une activation manuelle, car nous l\'avons désactivé par défaut. Nous collectons les informations liées aux éléments suivants :\n\n
+  <string name="consent_more_info">Ces informations essentielles nous permettent d\'identifier et de résoudre d\'éventuels problèmes de connexion. Veuillez noter que le partage de ces informations nécessite votre consentement et une activation manuelle, car cette fonctionnalité est désactivée par défaut. Nous collecterons des informations concernant les évènements suivants :\n\n
             • Tentative de connexion\n
-            • Annulation de connexion\n
-            • Établissement de connexion\n
-            • Temps de connexion\n\n
-        Les informations que nous collectons sur ces éléments sont les suivantes :\n\n
+            • Connexion interrompue\n
+            • Connexion établie\n
+            • Temps de connexion\n
+            • Traitement d\'un achat intégré à l\'app\n
+            • Réussite du traitement d\'un achat intégré à l\'app\n    
+            • Échec du traitement d’un achat intégré à l\'app\n\n
+        Pour chacun de ces évènements, nous collecterons les informations suivantes :\n\n
             • Plateforme\n
-            • Version de l\'application\n
-            • Type d\'application (version préliminaire ou non)\n
+            • Version de l\'app\n
+            • Type d\'app (version préliminaire ou non)\n
             • Protocole utilisé\n
             • Source de la connexion (manuelle ou automatisée)\n\n
-        Tous les éléments contiennent un identifiant unique généré aléatoirement. Il n\'est pas associé à votre compte utilisateur. Cet identifiant unique est généré de nouveau tous les jours pour des raisons de confidentialité.\n\n
-        Vous êtes toujours maître de la situation. Vous pouvez consulter les données collectées depuis les paramètres et êtes libre de désactiver cette fonctionnalité à tout moment.</string>
+        Tous les évènements seront associés à un identifiant unique, généré de manière aléatoire. Cet identifiant n’est pas lié à votre compte utilisateur. Pour des raisons de confidentialité, cet identifiant unique est régénéré quotidiennement.\n\n
+        Vous gardez toujours le contrôle. Vous pouvez consulter les données collectées par nos soins dans les paramètres et désactiver cette fonctionnalité à tout moment.</string>
   <string name="accept">Accepter</string>
   <string name="no_thanks">Non merci</string>
   <string name="loading_text">Vérification avec notre serveur</string>

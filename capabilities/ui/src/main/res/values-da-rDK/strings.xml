@@ -177,8 +177,8 @@
   <string name="error_missing_credentials">Du skal angive et brugernavn og en adgangskode</string>
   <string name="error_missing_email">Du skal give en gyldig e-mailadresse</string>
   <string name="error_account_expired">Din konto er udløbet.</string>
-  <string name="login_support_dialog_title">Stadig problemer?</string>
-  <string name="login_support_dialog_message">Det ser ud til, at noget ikke fungerer. Du kan kontakte support med de tekniske detaljer allerede udfyldt, så du ikke behøver at beskrive fejlen selv.</string>
+  <string name="login_support_dialog_title">Oplever du stadig problemer?</string>
+  <string name="login_support_dialog_message">Det ser ud til, at noget ikke virker. Du kan kontakte support med de tekniske detaljer, som allerede udfyldt, så du behøver ikke selv at beskrive fejlen.</string>
   <string name="sort_regions_title">Sortér regioner efter</string>
   <string name="name">Navn</string>
   <string name="latency">Forsinkelse</string>
@@ -372,19 +372,22 @@
   <string name="consent_title">Hjælp os med at forbedre vores tjeneste</string>
   <string name="consent_message">For at hjælpe os med at sikre vores tjenestes forbindelsesydeevne kan du anonymt dele din forbindelsesstatistik med os. Disse rapporter inkluderer ikke personligt identificerbare oplysninger.</string>
   <string name="find_out_more">Få mere at vide</string>
-  <string name="consent_more_info">Denne minimale information hjælper os med at identificere og løse potentielle forbindelsesproblemer. Bemærk, at deling af disse oplysninger kræver samtykke og manuel aktivering, da de er slået fra som standard. Vi indsamler oplysninger om følgende begivenheder:\n\n
+  <string name="consent_more_info">Disse minimale oplysninger hjælper os med at identificere og løse potentielle forbindelsesproblemer. Bemærk, at deling af disse oplysninger kræver samtykke og manuel aktivering, da det er slået fra som standard. Vi indsamler oplysninger om følgende hændelser:\n\n
             • Forbindelsesforsøg\n
-            • Afbrudte forbindelser\n
-            • Forbindelsesoprettelse\n
-            • Tid med forbindelse\n\n
-        For alle disse begivenheder indsamler vi følgende oplysninger:\n\n
+            • Forbindelse annulleret\n
+            • Forbindelse oprettet\n
+            • Tid til forbindelse\n
+            • Købsbehandling i appen\n
+            • Vellykket behandling i appen\n
+            • Fejl i behandling i appen\n\n
+        For alle disse hændelser indsamler vi følgende oplysninger:\n\n
             • Platform\n
             • Appversion\n
-            • Apptype (uanset om det er en tidlig udgivelse eller ej)\n
+            • Apptype (præ-udgivelse eller ej)\n
             • Anvendt protokol\n
-            • Forbindelseskilde (manuel eller ved hjælp af automatisering)\n\n
-        Alle begivenheder vil indeholde et unikt id, der genereres tilfældigt. Dette id er ikke knyttet til din brugerkonto. Dette unikke id genoprettes dagligt for din fortroligheds skyld.\n\n
-        Du vil altid have kontrol. Du kan se, hvilke data vi har indsamlet fra Indstillinger, og du kan til enhver tid slå dem fra.</string>
+            • Forbindelseskilde (manuel eller ved brug af automatisering)\n\n
+        Alle hændelser vil indeholde et unikt id, som genereres tilfældigt. Dette id  er ikke knyttet til din brugerkonto. Dette unikke ID genereres på ny hver dag af hensyn til databeskyttelse.\n\n
+        Du vil altid have fuld kontrol. Du kan se, hvilke data vi har indsamlet, under Indstillinger, og du kan til enhver tid slå det fra.</string>
   <string name="accept">Acceptér</string>
   <string name="no_thanks">Nej tak</string>
   <string name="loading_text">Tjekker vores server</string>

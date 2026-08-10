@@ -177,8 +177,8 @@
   <string name="error_missing_credentials">您必须输入用户名和密码</string>
   <string name="error_missing_email">您必须提供有效的电子邮箱地址</string>
   <string name="error_account_expired">您的订阅已过期。</string>
-  <string name="login_support_dialog_title">仍然遇到问题？</string>
-  <string name="login_support_dialog_message">看起来出现了一些问题。您可以联系支持团队，技术细节已自动填写，无需您自行描述错误。</string>
+  <string name="login_support_dialog_title">问题仍未解决？</string>
+  <string name="login_support_dialog_message">似乎出了点问题。请您联系客户支持团队，系统将自动填写相关技术详情，无需您手动填写问题描述。</string>
   <string name="sort_regions_title">地区排序方式</string>
   <string name="name">名称</string>
   <string name="latency">延迟</string>
@@ -372,19 +372,22 @@
   <string name="consent_title">请帮助我们改进服务</string>
   <string name="consent_message">为了帮助我们保持服务的连接性能，您可以匿名与我们共享您的连接统计数据。这些报告不包括任何可识别个人身份的信息。</string>
   <string name="find_out_more">了解更多</string>
-  <string name="consent_more_info">这些必要信息将帮助我们识别并解决可能出现的连接问题。请注意，默认设置中此功能为关闭状态，分享这些信息需要您同意并手动开启。我们将收集关于以下事件的信息：\n\n
+  <string name="consent_more_info">这些少量信息可帮助我们排查并修复潜在的连接故障。请注意，信息共享功能默认关闭，需要您同意并手动启用。PIA 会收集以下事件的相关信息：\n\n
             • 连接尝试\n
-            • 连接已取消\n
-            • 连接已建立\n
-            • 连接时间\n\n
+            • 已取消连接\n
+            • 已建立连接\n
+            • 连接所需时间\n\n
+            • 应用内购买处理中\n\n
+            • 应用内购买成功\n\n
+            • 应用内购买失败\n\n
         对于上述所有事件，我们将收集以下信息：\n\n
             • 平台\n
             • 应用程序版本\n
-            • 应用程序类型（预先发布或不预先发布）\n
+            • 应用程序类型（预发布版本或正式版本）\n
             • 使用的协议\n
-            • 连接来源（手动或使用自动化）\n\n
-        所有事件都将包含一个随机生成的唯一 ID。此 ID 与您的账户无关联。为了保护隐私，此 ID 每天都会重新生成。\n\n
-        您将始终处于掌控地位。您可以在设置中看到我们收集的数据，且可随时关闭。</string>
+            • 连接方式（手动或自动连接）\n\n
+        所有事件都将包含随机生成的唯一 ID。此 ID 不与您的账户关联。为了保护用户隐私，系统每天重新生成此 ID。\n\n
+        您始终拥有数据的控制权。您可以在设置中查看 PIA 收集的数据，也可随时关闭数据收集功能。</string>
   <string name="accept">接受</string>
   <string name="no_thanks">不用，谢谢</string>
   <string name="loading_text">正在检查服务器</string>
