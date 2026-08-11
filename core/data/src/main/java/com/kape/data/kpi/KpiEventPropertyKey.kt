@@ -16,4 +16,8 @@ sealed class KpiEventPropertyKey(
     data object Environment : KpiEventPropertyKey("environment")
 
     data object Error : KpiEventPropertyKey("error")
+
+    data object Platform : KpiEventPropertyKey("platform")
+
+    data object Version : KpiEventPropertyKey("version")
 }
