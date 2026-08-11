@@ -47,6 +47,7 @@ class VpnRegionSelectionViewModel(
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<ServerItem>())
     val sorted = mutableStateOf(emptyList<ServerItem>())
+    private var currentSearchQuery: String = ""
     private val _selectedServer = MutableStateFlow<VpnServer?>(null)
     val selectedServer = _selectedServer.asStateFlow()
 
@@ -123,6 +124,16 @@ class VpnRegionSelectionViewModel(
         value: String,
         isSearchEnabled: MutableState<Boolean>? = null,
     ) = viewModelScope.launch(ioDispatcher) {
+        currentSearchQuery = value
+        applyCurrentSearchQuery(isSearchEnabled)
+    }
+
+    // Re-applies the last search query against the current `servers` snapshot. filterByName()
+    // only runs on a keystroke, so without this, a search typed while the list is still empty
+    // (or refreshing after a failed fetch) would stay empty forever, even once `servers` is
+    // later populated/corrected - see arrangeVpnServers().
+    private fun applyCurrentSearchQuery(isSearchEnabled: MutableState<Boolean>? = null) {
+        val value = currentSearchQuery
         if (value.isNotEmpty()) {
             isSearchEnabled?.value = true
             sorted.value =
@@ -265,6 +276,7 @@ class VpnRegionSelectionViewModel(
         }
         list.addAll(all.distinct())
         servers.value = list
+        applyCurrentSearchQuery()
     }
 
     private fun updateVpnServers() {

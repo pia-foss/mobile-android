@@ -6,12 +6,14 @@ import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
 import com.privateinternetaccess.regions.model.VpnRegionsResponse
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
@@ -29,11 +31,16 @@ class VpnRegionRepositoryTest {
     private val settingsPrefs: SettingsPrefs = mockk(relaxed = true)
     private val connectionInfoProvider: ConnectionInfoProvider = mockk(relaxed = true)
     private val connectionConfigurationUseCase: ConnectionConfigurationUseCase = mockk(relaxed = true)
+    private val readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase = mockk()
 
     private lateinit var repository: VpnRegionRepository
 
     @BeforeEach
     fun setUp() {
+        // Matches the pre-fix behaviour (empty fallback) for every test that isn't specifically
+        // exercising the cold-start-falls-back-to-bundled-assets path below.
+        every { readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder() } returns emptyList()
+
         repository =
             VpnRegionRepository(
                 source,
@@ -42,6 +49,7 @@ class VpnRegionRepositoryTest {
                 settingsPrefs,
                 connectionInfoProvider,
                 connectionConfigurationUseCase,
+                readVpnRegionsDetailsUseCase,
             )
     }
 
@@ -93,7 +101,53 @@ class VpnRegionRepositoryTest {
             Assertions.assertEquals(cachedList, actual)
         }
 
+    @Test
+    fun `test fetchVpnRegions falls back to bundled asset data on a cold start network failure`() =
+        runTest {
+            // Nothing has ever been fetched successfully yet (serverMap starts empty) - this is
+            // the exact scenario of a fresh install with a flaky/unreachable network.
+            every { dipPrefs.dedicatedIps } returns MutableStateFlow(emptyList())
+            coEvery { source.fetchVpnRegions(any()) } returns null
+            every { readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder() } returns
+                listOf(bundledServer)
+
+            val actual = repository.fetchVpnRegions("en")
+
+            Assertions.assertEquals(listOf(bundledServer), actual)
+        }
+
+    @Test
+    fun `test fetchVpnRegions only reads the bundled assets once, not on every failed retry`() =
+        runTest {
+            every { dipPrefs.dedicatedIps } returns MutableStateFlow(emptyList())
+            coEvery { source.fetchVpnRegions(any()) } returns null
+            every { readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder() } returns
+                listOf(bundledServer)
+
+            repository.fetchVpnRegions("en")
+            repository.fetchVpnRegions("en")
+
+            verify(exactly = 1) { readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder() }
+        }
+
     companion object {
+        private val bundledServer =
+            VpnServer(
+                "Bundled",
+                "bundled",
+                "",
+                null,
+                emptyMap(),
+                "bundled-id",
+                null,
+                null,
+                false,
+                false,
+                false,
+                false,
+                null,
+                null,
+            )
         private val response = VpnRegionsResponse()
         private val server = VpnRegionsResponse.Region("id", "test", "android")
         private val anotherResponse =

@@ -363,15 +363,19 @@ fun enableConnectionInfoTile() =
         enableCustomizationElement(Customization.CONNECTION_INFO_VISIBILITY_TOGGLE)
     }
 
-// Traffic and ConnectionInfoTile sit at the bottom of the (non-lazy) scrollable connection screen,
-// so their entries fall outside Compose's accessibility bounds until scrolled into view -
-// reasserting after every settings round trip since the connection screen resets its scroll
-// position on return.
+// Traffic and ConnectionInfoTile sit at the bottom of the connection screen's column, so on a
+// short viewport their entries fall outside Compose's accessibility bounds until scrolled into
+// view - reasserting after every settings round trip since the connection screen resets its
+// scroll position on return. On a tall enough viewport (e.g. a large local emulator profile vs.
+// CI's smaller pixel_4), the enabled content can fit without overflowing at all, in which case
+// Compose's verticalScroll reports isScrollable == false (nothing to scroll) and there's no
+// scrollable container to find - so check for the plain, unscrolled element first.
 private fun scrollConnectionScreenToElement(targetViewId: String) =
     uiAutomator {
-        onElement { isScrollable }.scrollToElement(Direction.DOWN, timeoutMs = LONG_TIMEOUT) {
-            viewIdResourceName == targetViewId
-        }
+        onElementOrNull(timeoutMs = 0) { viewIdResourceName == targetViewId }
+            ?: onElement { isScrollable }.scrollToElement(Direction.DOWN, timeoutMs = LONG_TIMEOUT) {
+                viewIdResourceName == targetViewId
+            }
     }
 
 fun scrollToConnectionInfoTile() =

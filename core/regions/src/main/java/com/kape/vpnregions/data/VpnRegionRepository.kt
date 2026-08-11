@@ -7,6 +7,7 @@ import com.kape.data.vpnserver.VpnServerInfo
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.vpnregions.domain.ReadVpnRegionsDetailsUseCase
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.kape.vpnregions.utils.adaptServersInfo
 import com.kape.vpnregions.utils.adaptVpnServers
@@ -25,6 +26,7 @@ class VpnRegionRepository(
     private val settingsPrefs: SettingsPrefs,
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val connectionConfigurationUseCase: ConnectionConfigurationUseCase,
+    private val readVpnRegionsDetailsUseCase: ReadVpnRegionsDetailsUseCase,
 ) {
     private var serverMap: Map<String, VpnServer> = hashMapOf()
     private var serverInfo: VpnServerInfo = VpnServerInfo()
@@ -40,6 +42,16 @@ class VpnRegionRepository(
         if (serverMap.isEmpty() || System.currentTimeMillis() - lastUpdate >= UPDATE_INTERVAL_MS) {
             val response = source.fetchVpnRegions(locale)
             if (response == null) {
+                if (serverMap.isEmpty()) {
+                    // Cold start (fresh install, or first fetch this process) with no prior
+                    // successful network fetch to fall back on - use the bundled asset data
+                    // instead of an empty list, so a flaky/unreachable network on first launch
+                    // doesn't leave the user with no regions to pick from at all.
+                    serverMap =
+                        readVpnRegionsDetailsUseCase
+                            .readVpnRegionsDetailsFromAssetsFolder()
+                            .associateBy { it.key }
+                }
                 serverList.addAll(serverMap.values.toList())
                 return addDipsToServerList(serverList)
             } else {
