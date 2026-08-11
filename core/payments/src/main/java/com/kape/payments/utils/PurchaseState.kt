@@ -13,7 +13,9 @@ sealed class PurchaseState {
 
     data object PurchaseSuccess : PurchaseState()
 
-    data object PurchaseFailed : PurchaseState()
+    data class PurchaseFailed(
+        val reason: String,
+    ) : PurchaseState()
 
     data object NoInAppPurchase : PurchaseState()
 
