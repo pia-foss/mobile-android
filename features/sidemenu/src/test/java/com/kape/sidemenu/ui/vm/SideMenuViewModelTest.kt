@@ -3,7 +3,7 @@ package com.kape.sidemenu.ui.vm
 import com.kape.contracts.AppInfo
 import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
-import com.kape.data.LoginWithCredentials
+import com.kape.data.Subscribe
 import com.kape.profile.domain.GetProfileUseCase
 import com.kape.utils.UpdateAvailableManager
 import io.mockk.coEvery
@@ -56,7 +56,7 @@ class SideMenuViewModelTest {
     }
 
     @Test
-    fun `test logout logs out then navigates straight to Login, not through Splash`() =
+    fun `test logout logs out then navigates straight to Subscribe, not through Splash`() =
         runTest {
             coEvery { logoutUseCase.logout() } returns true
 
@@ -64,7 +64,7 @@ class SideMenuViewModelTest {
 
             coVerifyOrder {
                 logoutUseCase.logout()
-                router.updateDestination(LoginWithCredentials)
+                router.updateDestination(Subscribe)
             }
         }
 }

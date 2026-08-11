@@ -2,7 +2,7 @@ package com.kape.profile.ui.vm
 
 import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
-import com.kape.data.LoginWithCredentials
+import com.kape.data.Subscribe
 import com.kape.profile.domain.DeleteAccountUseCase
 import com.kape.profile.domain.GetProfileUseCase
 import io.mockk.coEvery
@@ -50,7 +50,7 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `test logout logs out then navigates straight to Login, not through Splash`() =
+    fun `test logout logs out then navigates straight to Subscribe, not through Splash`() =
         runTest {
             coEvery { logoutUseCase.logout() } returns true
 
@@ -58,7 +58,7 @@ class ProfileViewModelTest {
 
             coVerifyOrder {
                 logoutUseCase.logout()
-                router.updateDestination(LoginWithCredentials)
+                router.updateDestination(Subscribe)
             }
         }
 }

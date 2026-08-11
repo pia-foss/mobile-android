@@ -43,7 +43,7 @@ class ProfileViewModel(
     fun logout() =
         viewModelScope.launch(ioDispatcher) {
             logoutUseCase.logout()
-            router.updateDestination(LoginWithCredentials)
+            router.updateDestination(Subscribe)
         }
 
     fun navigateToLogin() = router.updateDestination(LoginWithCredentials)
