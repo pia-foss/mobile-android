@@ -7,8 +7,7 @@ import com.kape.payments.domain.GetSubscriptionsUseCase
 import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.payments.utils.PurchaseState
-import com.kape.shareevents.data.processingFailure
-import com.kape.shareevents.data.processingSuccess
+import com.kape.shareevents.data.KpiEventGenerator
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.utils.CONSENT
@@ -38,16 +37,22 @@ class GoogleSignupBillingHandler(
     private val formatter: PriceFormatter,
     private val submitEventUseCase: SubmitKpiEventUseCase,
     private val consentPrefs: ConsentPrefs,
+    private val eventGenerator: KpiEventGenerator,
 ) : SignupBillingHandler {
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
     override val billingState: Flow<SignupScreenState> = _billingState
     private var subscriptionData: SubscriptionData? = null
+    private var initialized = false
 
     override fun initialize(
         scope: CoroutineScope,
         dispatcher: CoroutineDispatcher,
         mainDispatcher: CoroutineDispatcher,
     ) {
+        if (initialized) {
+            return
+        }
+        initialized = true
         scope.launch(dispatcher) {
             vpnSubscriptionPaymentProvider.purchaseState.collect {
                 when (it) {
@@ -119,12 +124,12 @@ class GoogleSignupBillingHandler(
                         }
                     }
 
-                    PurchaseState.PurchaseFailed -> {
-                        submitEventUseCase.submitEvent(processingFailure("PurchaseFailed"))
+                    is PurchaseState.PurchaseFailed -> {
+                        submitEventUseCase.submitEvent(eventGenerator.getProcessingFailure(it.reason))
                     }
 
                     PurchaseState.PurchaseSuccess -> {
-                        submitEventUseCase.submitEvent(processingSuccess())
+                        submitEventUseCase.submitEvent(eventGenerator.getProcessingSuccess())
                         if (consentPrefs.hasMadeConsentDecision.first()) {
                             _billingState.emit(EMAIL)
                         } else {

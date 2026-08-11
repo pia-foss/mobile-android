@@ -177,8 +177,8 @@
   <string name="error_missing_credentials">Du må oppgi et brukernavn og passord</string>
   <string name="error_missing_email">Du må oppgi en gyldig e-postadresse</string>
   <string name="error_account_expired">Kontoen din er utløpt.</string>
-  <string name="login_support_dialog_title">Fortsatt problemer?</string>
-  <string name="login_support_dialog_message">Det ser ut som om noe ikke fungerer. Du kan kontakte kundestøtte med de tekniske detaljene allerede fylt ut, så du trenger ikke å beskrive feilen selv.</string>
+  <string name="login_support_dialog_title">Har du fremdeles problemer?</string>
+  <string name="login_support_dialog_message">Det ser ut til at noe ikke fungerer som det skal. Du kan kontakte kundestøtte med tekniske detaljer allerede ufylt, slik at du slipper å beskrive feilen selv.</string>
   <string name="sort_regions_title">Sorter regioner etter</string>
   <string name="name">Navn</string>
   <string name="latency">Forsinkelse</string>
@@ -372,19 +372,22 @@
   <string name="consent_title">Hjelp oss med å forbedre tjenesten vår</string>
   <string name="consent_message">For å hjelpe oss med å sikre tjenestens tilkoblingsytelse, kan du anonymt dele tilkoblingsstatistikken din med oss. Disse rapportene inkluderer informasjon som ikke er personlig identifiserbar.</string>
   <string name="find_out_more">Finn ut mer</string>
-  <string name="consent_more_info">Denne minimale informasjonen hjelper oss med å identifisere og rette opp potensielle tilkoblingsproblemer. Merk at deling av denne informasjonen krever samtykke og manuell aktivering fordi den er slått av som standard. Vi henter inn informasjon om følgende hendelser:\n\n
-• Tilkoblingsforsøk\n
-• Tilkoblinger som blir avbrutt\n
-• Tilkoblinger som etableres\n
-• Tilkoblingstid\n\n
-For alle disse hendelsene henter vi inn følgende informasjon:\n\n
-• Plattform\n
-• App-versjon\n
-• App-type (forhåndsutgivelse eller ikke)\n
-• Protokoll brukt\n
-• Tilkoblingskilde (manuell eller ved bruk av automatisering)\n\n
-Alle hendelsene inneholder en unik ID, som genereres tilfeldig. Denne ID-en er ikke tilknyttet brukerkontoen din. Den unike ID-en genereres på nytt hver dag for å sikre personvernet.\n\n
-Du beholder alltid kontrollen. Du kan se hvilke data vi har hentet inn fra Innstillinger, og du kan slå den av når som helst.</string>
+  <string name="consent_more_info">Denne minimale mengden informasjon hjelper oss med å identifisere og løse potensielle tilkoblingsproblemer. Merk at deling av denne informasjonen krever samtykke og manuell aktivering, siden funksjonen er deaktivert som standard. Vi innhenter informasjon om følgende hendelser:\n\n
+            • Tilkoblingsforsøk\n
+            • Avbrutt tilkobling\n
+            • Etablert tilkobling\n
+            • Tid til tilkobling\n
+            • Behandling av kjøp i app\n
+            • Behandling i app fullført\n
+            • Behandling i app mislyktes\n\n
+        For alle disse hendelsene innhenter vi følgende informasjon:\n\n
+            • Plattform\n
+            • Appversjon\n
+            • Apptype (forhåndsutgivelse eller ikke)\n
+            • Protokoll som brukes\n
+            • Tilkoblingskilde (manuelt eller automatisert)\n\n
+        Alle hendelser inneholder en tilfeldig generert og unik ID. Denne unike ID-en er ikke knyttet til brukerkontoen din, og genereres på nytt hver dag av personvernhensyn.\n\n
+        Du beholder alltid kontrollen. Du kan se hvilke data vi har innhentet under Innstillinger, og du kan når som helst slå av funksjonen.</string>
   <string name="accept">Godta</string>
   <string name="no_thanks">Nei takk</string>
   <string name="loading_text">Sjekker med serveren vår</string>

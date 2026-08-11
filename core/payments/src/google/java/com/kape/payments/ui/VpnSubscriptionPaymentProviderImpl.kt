@@ -43,9 +43,11 @@ class VpnSubscriptionPaymentProviderImpl(
     private lateinit var billingClient: BillingClient
     private var selectedProduct: ProductDetails? = null
     private val availableProducts = mutableListOf<ProductDetails>()
+    private var purchaseInProgress = false
 
     private val purchasesUpdatedListener =
         PurchasesUpdatedListener { billingResult, purchases ->
+            purchaseInProgress = false
             if (purchases != null) {
                 when (billingResult.responseCode) {
                     BillingClient.BillingResponseCode.OK -> {
@@ -68,12 +70,14 @@ class VpnSubscriptionPaymentProviderImpl(
                                 }
                             }
                     }
+
                     else -> {
-                        purchaseState.value = PurchaseState.PurchaseFailed
+                        purchaseState.value =
+                            PurchaseState.PurchaseFailed("Billing failed: ${billingResult.responseCode}\n${billingResult.debugMessage}")
                     }
                 }
             } else {
-                purchaseState.value = PurchaseState.PurchaseFailed
+                purchaseState.value = PurchaseState.PurchaseFailed("Purchase cancelled by user")
             }
         }
 
@@ -131,6 +135,7 @@ class VpnSubscriptionPaymentProviderImpl(
                 when (result.responseCode) {
                     InAppMessageResult.InAppMessageResponseCode.SUBSCRIPTION_STATUS_UPDATED ->
                         InAppMessageState.SubscriptionStatusUpdated(result.purchaseToken.orEmpty())
+
                     else -> InAppMessageState.NoActionNeeded
                 }
         }
@@ -237,10 +242,14 @@ class VpnSubscriptionPaymentProviderImpl(
         id: String,
         activity: Activity,
     ) {
-        if (!::billingClient.isInitialized) {
-            purchaseState.value = PurchaseState.PurchaseFailed
+        if (purchaseInProgress) {
             return
         }
+        if (!::billingClient.isInitialized) {
+            purchaseState.value = PurchaseState.PurchaseFailed("Billing client not initialized")
+            return
+        }
+        purchaseInProgress = true
         selectedProduct = availableProducts.first { it.productId == id }
         selectedProduct?.let { productId ->
             val billingFlowParams =
@@ -335,6 +344,7 @@ class VpnSubscriptionPaymentProviderImpl(
     override fun isClientRegistered(): Boolean = ::billingClient.isInitialized && billingClient.isReady
 
     override fun reset() {
+        purchaseInProgress = false
         purchaseState.value = PurchaseState.Default
     }
 
