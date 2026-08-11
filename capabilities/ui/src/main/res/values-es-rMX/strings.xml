@@ -177,8 +177,8 @@
   <string name="error_missing_credentials">Debes ingresar un nombre de usuario y una contraseña</string>
   <string name="error_missing_email">Tienes que proporcionar una dirección de email válida</string>
   <string name="error_account_expired">Su cuenta ha caducado.</string>
-  <string name="login_support_dialog_title">¿Sigues teniendo problemas?</string>
-  <string name="login_support_dialog_message">Parece que algo no está funcionando. Puedes contactar a soporte con los detalles técnicos ya completados, así no tendrás que describir el error tú mismo.</string>
+  <string name="login_support_dialog_title">¿Aún tiene problemas?</string>
+  <string name="login_support_dialog_message">Parece que algo no funciona. Puede contactar con soporte técnico y aportar los datos técnicos que ya están rellenos, así que no tendría que describir el error.</string>
   <string name="sort_regions_title">Ordenar regiones por</string>
   <string name="name">Nombre</string>
   <string name="latency">Latencia</string>
@@ -372,19 +372,22 @@
   <string name="consent_title">Ayúdanos a mejorar nuestro servicio</string>
   <string name="consent_message">Para ayudarnos a garantizar el rendimiento de la conexión de nuestro servicio, puedes compartir con nosotros tus estadísticas de conexión de forma anónima. Estos informes no contienen ninguna información personal identificable.</string>
   <string name="find_out_more">Más información</string>
-  <string name="consent_more_info">Esta información mínima nos ayuda a identificar y solucionar posibles problemas de conexión. Tenga en cuenta que compartir esta información requiere el consentimiento y la activación manual, ya que está desactivada por defecto. Recopilaremos información sobre los siguientes eventos:\n\n
+  <string name="consent_more_info">Esta información mínima nos ayuda a identificar y solucionar posibles problemas de conexión. Tenga en cuenta que se necesita su consentimiento y la activación manual para compartir esta información, ya que dicha función está desactivada de forma predeterminada. Recopilaremos información sobre los siguientes eventos:\n\n
             • Intento de conexión\n
             • Conexión cancelada\n
             • Conexión establecida\n
-            • Tiempo para conectarse\n\n
-        En todos estos eventos, recopilaremos la siguiente información:\n\n
-            • Plataforma\n
-            • Versión de la aplicación\n
-            • Tipo de aplicación (previa al lanzamiento o no)\n
+            • Tiempo de conexión\n
+            • Procesamiento de compra en la app\n
+            • Procesamiento correcto en la app\n
+            • Procesamiento fallido en la app\n\n
+        Recopilaremos la siguiente información para todos los eventos descritos:\n\n
+            • Platforma\n
+            • Versión de la app\n
+            • Tipo de app (versión preliminar o no)\n
             • Protocolo utilizado\n
-            • Origen de la conexión (manual o mediante automatización)\n\n
-        Todos los eventos contendrán una ID única, generada aleatoriamente. Esta ID no está asociado a su cuenta de usuario. Esta ID única se genera de nuevo a diario por motivos de privacidad.\n\n
-        Siempre tendrá el control. Podrá ver qué datos hemos recopilado en Ajustes y podrá desactivarlos en cualquier momento.</string>
+            • Fuente de la conexión (manual o automatizada)\n\n
+        Todos los eventos incluirán un identificador único generado de forma aleatoria. Este identificador no está asociado a su cuenta de usuario. Además, se genera uno nuevo cada día para proteger su privacidad.\n\n
+        Usted siempre tendrá el control. Podrá consultar los datos que hemos recopilado desde Configuración y desactivar esta función en cualquier momento.</string>
   <string name="accept">Aceptar</string>
   <string name="no_thanks">No, gracias</string>
   <string name="loading_text">Revisando nuestro servidor</string>

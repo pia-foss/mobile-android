@@ -177,8 +177,8 @@
   <string name="error_missing_credentials">U moet een gebruikersnaam en wachtwoord invoeren</string>
   <string name="error_missing_email">U moet een geldig e-mailadres opgeven</string>
   <string name="error_account_expired">Je account is verlopen.</string>
-  <string name="login_support_dialog_title">Nog steeds problemen?</string>
-  <string name="login_support_dialog_message">Het lijkt erop dat er iets niet werkt. Je kunt contact opnemen met de klantenservice met de technische gegevens al ingevuld, zodat je de fout niet zelf hoeft te beschrijven.</string>
+  <string name="login_support_dialog_title">Heb je nog steeds problemen?</string>
+  <string name="login_support_dialog_message">Het lijkt erop dat er iets niet werkt. Je kunt contact opnemen met de helpdesk. De technische gegevens worden automatisch toegevoegd, dus je hoeft het probleem niet zelf te beschrijven.</string>
   <string name="sort_regions_title">Sorteer regio\'s op</string>
   <string name="name">Naam</string>
   <string name="latency">Latentie</string>
@@ -372,19 +372,22 @@
   <string name="consent_title">Help ons bij het verbeteren van onze dienstverlening</string>
   <string name="consent_message">Om ons te helpen bij het verbeteren van de prestaties van onze verbindingen, kunt u anoniem statistische gegevens over uw verbinding met ons delen. Deze rapporten bevatten geen persoonlijke informatie.</string>
   <string name="find_out_more">Meer weten</string>
-  <string name="consent_more_info">Deze minimale informatie helpt ons bij het herkennen en verhelpen van potentiële problemen met uw verbinding. Houd er rekening mee er toestemming en handmatige activering nodig is om deze informatie te delen. Deze optie is standaard uitgeschakeld. We verzamelen informatie over de volgende gebeurtenissen:\n\n
+  <string name="consent_more_info">Deze minimale hoeveelheid gegevens helpt ons mogelijke verbindingsproblemen op te sporen en op te lossen. Houd er rekening mee dat je toestemming moet geven en deze functie handmatig moet inschakelen, omdat deze standaard is uitgeschakeld. We verzamelen informatie over de volgende gebeurtenissen:\n\n
             • Verbindingspoging\n
-            • Geannuleerde verbinding\n
+            • Verbinding geannuleerd\n
             • Verbinding tot stand gebracht\n
-            • Tijd voor verbinding\n\n
-        Voor al deze gebeurtenissen zullen we de volgende informatie verzamelen:\n\n
+            • Tijd tot verbinding\n
+            • Verwerking van in-app-aankoop\n
+            • In-app-aankoop succesvol verwerkter\n
+            • In-app-aankoop niet verwerkt\n\n
+        Voor al deze gebeurtenissen verzamelen we de volgende gegevens:\n\n
             • Platform\n
             • Appversie\n
-            • Type app (voorlopige release of niet)\n
+            • Apptype (pre-release of niet)\n
             • Gebruikt protocol\n
-            • Verbindingsbron (handmatig of met behulp van automatisering)\n\n
-        Alle gebeurtenissen bevatten een unieke ID, die willekeurig gegenereerd wordt. Deze ID is niet gekoppeld aan uw gebruikersaccount. Uit privacyoverwegingen wordt deze unieke ID elke dag opnieuw gegenereerd.\n\n
-        U behoudt altijd de controle. U kunt via Instellingen zien welke gegevens we verzameld hebben en u kunt deze optie op elk moment uitschakelen.</string>
+            • Verbindingsbron (handmatig of automatisch)\n\n
+        Alle gebeurtenissen bevatten een willekeurig gegenereerde unieke ID. Deze ID is niet gekoppeld aan je gebruikersaccount. Om je privacy te beschermen, wordt deze unieke ID elke dag opnieuw gegenereerd.\n\n
+        Jij houdt altijd de regie. In Instellingen kun je bekijken welke gegevens we hebben verzameld en je kunt deze functie op elk moment uitschakelen.</string>
   <string name="accept">Accepteren</string>
   <string name="no_thanks">Nee, bedankt</string>
   <string name="loading_text">Verifiëren met onze server</string>

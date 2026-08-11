@@ -177,8 +177,8 @@
   <string name="error_missing_credentials">Sie müssen einen Benutzernamen und ein Passwort eingeben.</string>
   <string name="error_missing_email">Sie müssen eine gültige E-Mail-Adresse eingeben.</string>
   <string name="error_account_expired">Dein Konto ist abgelaufen.</string>
-  <string name="login_support_dialog_title">Immer noch Probleme?</string>
-  <string name="login_support_dialog_message">Es sieht so aus, als würde etwas nicht funktionieren. Du kannst den Support kontaktieren – die technischen Details sind bereits ausgefüllt, sodass du den Fehler nicht selbst beschreiben musst.</string>
+  <string name="login_support_dialog_title">Hast du immer noch Probleme?</string>
+  <string name="login_support_dialog_message">Anscheinend funktioniert etwas nicht. Du kannst dich gerne mit unserem Support in Verbindung setzen. Dabei sind die technischen Details bereits ausgefüllt, sodass du den Fehler nicht selbst beschreiben musst.</string>
   <string name="sort_regions_title">Regionen sortieren nach</string>
   <string name="name">Name</string>
   <string name="latency">Latenz</string>
@@ -372,19 +372,24 @@
   <string name="consent_title">Helfen Sie uns, unseren Dienst zu verbessern.</string>
   <string name="consent_message">Um uns zu helfen, die Verbindungsleistung unseres Dienstes sicherzustellen, können Sie Ihre Verbindungsstatistiken anonym mit uns teilen. Diese Berichte enthalten keine persönlich identifizierbaren Daten.</string>
   <string name="find_out_more">Mehr erfahren</string>
-  <string name="consent_more_info">Diese minimalen Informationen helfen uns, mögliche Verbindungsprobleme zu erkennen und zu beheben. Beachte bitte, dass die Weitergabe dieser Informationen eine Zustimmung und manuelle Aktivierung erfordert, da sie standardmäßig deaktiviert ist. Wir erfassen Daten über folgende Ereignisse:\n\n
-            - Verbindungsversuche\n
-            - Abgebrochene Verbindungen\n
-            - Hergestellte Verbindungen\n
-            - Zeit für Verbindungsaufbau\n\n
-        Für alle diese Ereignisse werden wir folgende Daten erfassen:\n\n
-            - Plattform\n
-            - App-Version\n
-            - App-Typ (Vorabversion oder nicht)\n
-            - Verwendetes Protokoll\n
-            - Verbindungsquelle (manuell oder über Automatisierung)\n\n
-        Alle Ereignisse enthalten eine eindeutige ID, die zufällig generiert wird. Diese ID ist nicht mit deinem Benutzerkonto verknüpft. Diese eindeutige ID wird aus Datenschutzgründen täglich neu generiert.\n\n
-        Du wirst immer die Kontrolle haben. Du kannst über die Einstellungen sehen, welche Daten wir erfasst haben, und du kannst sie jederzeit deaktivieren.</string>
+  <string name="consent_more_info">Diese grundlegenden Informationen helfen uns dabei, mögliche Verbindungsprobleme zu erkennen und zu beheben. Bitte beachte, dass die Weitergabe dieser Informationen deine Zustimmung und eine manuelle Aktivierung erfordert, da diese Funktion standardmäßig deaktiviert ist. Wir erfassen Informationen zu folgenden Ereignissen:\n\n
+            • Verbindungsversuche\n
+            • Abgebrochene Verbindungen\n
+            • Hergestellte Verbindungen\n
+            • Zeit bis zur Verbindungsherstellung\n
+            • Verarbeitung eines In-App-Kaufs in der App\n
+            • Erfolgreicher Prozess in der App\n
+            
+• Fehlgeschlagener Prozess in der App\n\n
+        Für alle diese Ereignisse erfassen wir die folgenden Informationen:\n\n
+            • Plattform\n
+            • App-Version\n
+            • App-Typ (Vorabversion oder nicht)\n
+            • Verwendetes Protokoll\n
+            • Verbindungsquelle (manuell oder über Automatisierung)\n\n
+        
+Alle Ereignisse enthalten eine eindeutige ID, die zufällig generiert wird. Diese ID ist nicht mit deinem Benutzerkonto verknüpft. Aus Datenschutzgründen wird diese eindeutige ID täglich neu generiert.\n\n
+        Du behältst stets die Kontrolle. In den Einstellungen kannst du sehen, welche Daten wir erfasst haben, und du kannst die Erfassung jederzeit deaktivieren.</string>
   <string name="accept">Zustimmen</string>
   <string name="no_thanks">Nein, danke</string>
   <string name="loading_text">Server-Überprüfung</string>
