@@ -1,6 +1,7 @@
 package com.kape.signup.ui.mobile
 
 import android.app.Activity
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
@@ -46,6 +47,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.Lifecycle
@@ -54,7 +56,10 @@ import com.kape.signup.ui.shared.CheckmarkText
 import com.kape.signup.ui.shared.SubscriptionDescriptionText
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
+import com.kape.signup.utils.Plan
+import com.kape.signup.utils.SUBSCRIPTIONS
 import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
+import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
@@ -63,6 +68,7 @@ import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.YearlySubscriptionCard
 import com.kape.ui.theme.PiaTypography
+import com.kape.ui.theme.PreviewTheme
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -70,16 +76,30 @@ import org.koin.androidx.compose.koinViewModel
 fun NewPaywallSignUpScreen() {
     val viewModel: SignupViewModel = koinViewModel()
     val screenState by viewModel.state.collectAsState()
-    val subscriptionData = screenState.subscriptionData
     val context = LocalContext.current
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.registerClientIfNeeded(context as Activity)
+    }
+
+    NewPaywallSignUpScreenContent(
+        screenState = screenState,
+        onPurchase = { id -> viewModel.purchase(id, context as Activity) },
+        onNavigateToLogin = { viewModel.navigateToLogin() },
+    )
+}
+
+@Composable
+private fun NewPaywallSignUpScreenContent(
+    screenState: SignupScreenState,
+    onPurchase: (String) -> Unit,
+    onNavigateToLogin: () -> Unit,
+) {
+    val subscriptionData = screenState.subscriptionData
     val activity = LocalActivity.current
 
     BackHandler {
         activity?.finish()
-    }
-
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        viewModel.registerClientIfNeeded(context as Activity)
     }
 
     Column(
@@ -111,21 +131,15 @@ fun NewPaywallSignUpScreen() {
                 LogoWithReviewsAndGlobe()
                 Spacer(Modifier.height(16.dp))
                 NoPlansContent(
-                    onNavigateToLogin = {
-                        viewModel.navigateToLogin()
-                    },
+                    onNavigateToLogin = onNavigateToLogin,
                 )
             } else {
                 LogoWithReviewsAndGlobe()
                 Spacer(modifier = Modifier.height(24.dp))
                 PlansPresentContent(
                     subscriptionData = subscriptionData,
-                    onPurchase = {
-                        viewModel.purchase(it, context as Activity)
-                    },
-                    onNavigateToLogin = {
-                        viewModel.navigateToLogin()
-                    },
+                    onPurchase = onPurchase,
+                    onNavigateToLogin = onNavigateToLogin,
                 )
             }
 
@@ -420,4 +434,54 @@ private fun ColumnScope.NoPlansContent(onNavigateToLogin: () -> Unit) {
             Modifier.fillMaxWidth(),
         onClick = onNavigateToLogin,
     )
+}
+
+private val PREVIEW_YEARLY_PLAN =
+    Plan(
+        id = "yearly",
+        period = "Yearly",
+        hasFreeTrial = true,
+        mainPrice = "$39.95",
+        secondaryPrice = "$3.33/mo",
+    )
+
+private val PREVIEW_MONTHLY_PLAN =
+    Plan(
+        id = "monthly",
+        period = "Monthly",
+        hasFreeTrial = false,
+        mainPrice = "$11.95",
+    )
+
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewNewPaywallSignUpScreenWithPlans() {
+    PreviewTheme {
+        NewPaywallSignUpScreenContent(
+            screenState =
+                SUBSCRIPTIONS(
+                    SubscriptionData(
+                        selected = remember { mutableStateOf(PREVIEW_YEARLY_PLAN) },
+                        yearly = PREVIEW_YEARLY_PLAN,
+                        monthly = PREVIEW_MONTHLY_PLAN,
+                    ),
+                ),
+            onPurchase = {},
+            onNavigateToLogin = {},
+        )
+    }
+}
+
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewNewPaywallSignUpScreenNoPlans() {
+    PreviewTheme {
+        NewPaywallSignUpScreenContent(
+            screenState = NO_IN_APP_SUBSCRIPTIONS,
+            onPurchase = {},
+            onNavigateToLogin = {},
+        )
+    }
 }
