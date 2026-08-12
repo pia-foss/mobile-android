@@ -14,7 +14,7 @@ import com.kape.data.DedicatedIpActivateToken
 import com.kape.data.PerAppSettings
 import com.kape.data.Profile
 import com.kape.data.Settings
-import com.kape.data.Subscribe
+import com.kape.data.Splash
 import com.kape.data.WebDestination
 import com.kape.profile.domain.GetProfileUseCase
 import com.kape.utils.UpdateAvailableManager
@@ -51,7 +51,7 @@ class SideMenuViewModel(
     fun logout() =
         viewModelScope.launch(ioDispatcher) {
             logoutUseCase.logout()
-            router.updateDestination(Subscribe)
+            router.updateDestination(Splash)
         }
 
     fun getDownloadLink(): String = updateAvailableManager.getDownloadUrl()

@@ -212,11 +212,23 @@ fun reachLogin() =
         onElement(timeoutMs = LONG_TIMEOUT) { viewIdResourceName == SignUp.LOGIN_BUTTON }.click()
     }
 
-fun login(firstTime: Boolean = true) =
+fun login() =
     uiAutomator {
-        if (firstTime) {
-            reachLogin()
-        }
+        reachLogin()
+        onElement { viewIdResourceName == Login.USERNAME_FIELD }.text =
+            TestCredentials.username
+        onElement { viewIdResourceName == Login.PASSWORD_FIELD }.text =
+            TestCredentials.password
+        onElement { viewIdResourceName == Login.LOGIN_BUTTON }.click()
+        onElementOrNull(TIMEOUT) { viewIdResourceName == Login.VPN_PROFILE_OK_BUTTON }?.click()
+        onElementOrNull(TIMEOUT) { viewIdResourceName == Login.ANDROID_OK_BUTTON }?.click()
+        onElementOrNull(TIMEOUT) { viewIdResourceName == Login.APP_ALLOW_NOTIFICATIONS }?.click()
+        onElementOrNull(TIMEOUT) { viewIdResourceName == Login.ANDROID_ALLOW_NOTIFICATIONS }?.click()
+    }
+
+fun loginFromCurrent() =
+    uiAutomator {
+        onElement { viewIdResourceName == SignUp.LOGIN_BUTTON }.click()
         onElement { viewIdResourceName == Login.USERNAME_FIELD }.text =
             TestCredentials.username
         onElement { viewIdResourceName == Login.PASSWORD_FIELD }.text =

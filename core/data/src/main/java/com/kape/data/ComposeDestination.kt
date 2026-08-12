@@ -73,8 +73,6 @@ object Profile : ComposeDestination
 
 @Serializable
 object Subscribe : ComposeDestination {
-    // Same reasoning as LoginWithCredentials: reached directly from Splash, from Consent, and
-    // from a logged-in session (logout) - only ClearAll empties the stack in all three.
     override val navOptions: DestinationNavOptions =
         DestinationNavOptions.ClearAll
 }
