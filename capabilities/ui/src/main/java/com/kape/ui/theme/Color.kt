@@ -34,6 +34,8 @@ private val info50 = Color(0xFFEDF5FE)
 private val clientRed = Color(0xfff24458)
 private val clientDarkYellow = Color(0xFFE6B400)
 
+private val naturalSpace = Color(0xff263238)
+
 val LightColorScheme =
     lightColorScheme(
         primary = darkGreen,
@@ -141,6 +143,8 @@ fun ColorScheme.connectionDefault() = clientDarkYellow
 fun ColorScheme.connectionError() = clientRed
 
 fun ColorScheme.sunglow() = Color(0xFFFFC933)
+
+fun ColorScheme.naturalSpace(): Color = if (this === DarkColorScheme) white else naturalSpace
 
 private fun latencyGreen(): Color = brandGreen
 

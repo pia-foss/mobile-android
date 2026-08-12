@@ -69,6 +69,7 @@ import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.YearlySubscriptionCard
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.PreviewTheme
+import com.kape.ui.theme.naturalSpace
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
@@ -240,6 +241,7 @@ private fun ColumnScope.PlansPresentContent(
             Text(
                 text = stringResource(R.string.subscribe_screen_trial_title),
                 style = PiaTypography.subtitle2,
+                color = LocalColors.current.naturalSpace(),
                 modifier =
                     Modifier
                         .padding(start = 16.dp, top = 8.dp, bottom = 12.dp)
@@ -261,6 +263,7 @@ private fun ColumnScope.PlansPresentContent(
                 Text(
                     text = stringResource(R.string.subscribe_screen_trial_today),
                     style = PiaTypography.subtitle3,
+                    color = LocalColors.current.naturalSpace(),
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
@@ -281,6 +284,7 @@ private fun ColumnScope.PlansPresentContent(
                 Text(
                     text = stringResource(R.string.subscribe_screen_trial_day_7),
                     style = PiaTypography.subtitle3,
+                    color = LocalColors.current.naturalSpace(),
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
