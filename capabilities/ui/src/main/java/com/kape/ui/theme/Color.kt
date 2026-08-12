@@ -144,7 +144,7 @@ fun ColorScheme.connectionError() = clientRed
 
 fun ColorScheme.sunglow() = Color(0xFFFFC933)
 
-fun ColorScheme.naturalSpace(): Color = if (this === DarkColorScheme) white else naturalSpace
+fun ColorScheme.naturalSpace(): Color = if (this == DarkColorScheme) white else naturalSpace
 
 private fun latencyGreen(): Color = brandGreen
 
