@@ -71,6 +71,23 @@ class KpiEventGenerator(
             eventInstant = Clock.System.now(),
         )
 
+    fun getProcessingRetry(
+        retryCount: Int,
+        error: String,
+    ): KPIClientEvent =
+        KPIClientEvent(
+            eventName = IAP_PROCESSING_RETRY,
+            eventProperties =
+                getDefaultEventProperties() +
+                    mapOf(
+                        KpiEventPropertyKey.Origin.value to ORIGIN,
+                        KpiEventPropertyKey.Environment.value to ENVIRONMENT,
+                        KpiEventPropertyKey.Error.value to error,
+                        KpiEventPropertyKey.RetryCount.value to "$retryCount",
+                    ),
+            eventInstant = Clock.System.now(),
+        )
+
     suspend fun getConnectionEvent(
         connectionEvent: KpiConnectionEvent,
         connectionSource: KpiConnectionSource,

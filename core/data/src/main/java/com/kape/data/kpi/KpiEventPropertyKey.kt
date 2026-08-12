@@ -20,4 +20,6 @@ sealed class KpiEventPropertyKey(
     data object Platform : KpiEventPropertyKey("platform")
 
     data object Version : KpiEventPropertyKey("version")
+
+    data object RetryCount : KpiEventPropertyKey("retryCount")
 }
