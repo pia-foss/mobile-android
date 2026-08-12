@@ -3,6 +3,7 @@ package com.kape.signup.ui.vm
 import android.app.Activity
 import com.kape.contracts.Router
 import com.kape.permissions.utils.PermissionUtil
+import com.kape.shareevents.data.KpiEventGenerator
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.SignupBillingHandler
@@ -38,6 +39,7 @@ class SignupViewModelTest {
     private val permissionUtil: PermissionUtil = mockk()
     private val submitKpiEventUseCase: SubmitKpiEventUseCase = mockk(relaxed = true)
     private val platformUtils: PlatformUtils = mockk()
+    private val eventGenerator: KpiEventGenerator = mockk(relaxed = true)
     private val networkConnectionListener: NetworkConnectionListener = mockk()
     private val activity: Activity = mockk()
 
@@ -60,6 +62,7 @@ class SignupViewModelTest {
                 permissionUtil,
                 submitKpiEventUseCase,
                 platformUtils,
+                eventGenerator,
                 testDispatcher,
                 testDispatcher,
                 networkConnectionListener,
@@ -72,27 +75,15 @@ class SignupViewModelTest {
     }
 
     @Test
-    fun `test loadPrices resumes at Email when a purchase is pending and consent was already made`() =
+    fun `test loadPrices resumes at Email when a purchase is pending, regardless of consent decision`() =
         runTest {
             coEvery { billingHandler.hasResumablePurchase() } returns true
-            coEvery { consentUseCase.hasMadeConsentDecision() } returns true
 
             viewModel.loadPrices(activity)
 
             assertEquals(SignupStep.Email, viewModel.state.value.step)
             coVerify(exactly = 0) { billingHandler.loadPrices(any(), any(), any(), any()) }
-        }
-
-    @Test
-    fun `test loadPrices resumes at Consent when a purchase is pending but consent was never made`() =
-        runTest {
-            coEvery { billingHandler.hasResumablePurchase() } returns true
-            coEvery { consentUseCase.hasMadeConsentDecision() } returns false
-
-            viewModel.loadPrices(activity)
-
-            assertEquals(SignupStep.Consent, viewModel.state.value.step)
-            coVerify(exactly = 0) { billingHandler.loadPrices(any(), any(), any(), any()) }
+            coVerify(exactly = 0) { consentUseCase.hasMadeConsentDecision() }
         }
 
     @Test

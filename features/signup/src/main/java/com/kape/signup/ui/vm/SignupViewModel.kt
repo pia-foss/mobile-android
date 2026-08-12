@@ -16,7 +16,6 @@ import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.signup.domain.ConsentUseCase
 import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.domain.SignupHandler
-import com.kape.signup.utils.CONSENT
 import com.kape.signup.utils.DEFAULT
 import com.kape.signup.utils.EMAIL
 import com.kape.signup.utils.ERROR_EMAIL_INVALID
@@ -63,7 +62,7 @@ class SignupViewModel(
     fun loadPrices(activity: Activity) =
         viewModelScope.launch(ioDispatcher) {
             if (billingHandler.hasResumablePurchase()) {
-                _state.emit(if (consentUseCase.hasMadeConsentDecision()) EMAIL else CONSENT)
+                _state.emit(EMAIL)
             } else {
                 billingHandler.loadPrices(viewModelScope, ioDispatcher, mainDispatcher, activity)
             }

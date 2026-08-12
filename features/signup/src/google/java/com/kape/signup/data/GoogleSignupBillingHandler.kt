@@ -22,7 +22,6 @@ import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.utils.PriceFormatter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -39,116 +38,111 @@ class GoogleSignupBillingHandler(
     private val submitEventUseCase: SubmitKpiEventUseCase,
     private val consentPrefs: ConsentPrefs,
     private val eventGenerator: KpiEventGenerator,
+    private val ioScope: CoroutineScope,
 ) : SignupBillingHandler {
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
     override val billingState: Flow<SignupScreenState> = _billingState
     private var subscriptionData: SubscriptionData? = null
-    private var collectorJob: Job? = null
+    private var initialized = false
 
     override fun initialize(
         scope: CoroutineScope,
         dispatcher: CoroutineDispatcher,
         mainDispatcher: CoroutineDispatcher,
     ) {
-        // This handler is a singleton, but `scope` is a per-visit viewModelScope: once the
-        // ViewModel that started the collector is cleared (e.g. leaving Subscribe after
-        // signup), that scope dies with it. Guarding on a plain "already initialized"
-        // boolean would then skip relaunching it on a later visit (e.g. after logout),
-        // leaving nothing to ever emit past LOADING. Guard on the job still being active
-        // instead, so a dead collector gets relaunched in the new scope.
-        if (collectorJob?.isActive == true) {
+        if (initialized) {
             return
         }
-        collectorJob =
-            scope.launch(dispatcher) {
-                vpnSubscriptionPaymentProvider.purchaseState.collect {
-                    when (it) {
-                        PurchaseState.Default -> {}
-                        PurchaseState.InitFailed -> _billingState.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
-                        PurchaseState.InitSuccess -> {}
-                        PurchaseState.ProductsLoadedFailed ->
-                            _billingState.emit(
-                                SUBSCRIPTIONS_FAILED_TO_LOAD,
-                            )
+        initialized = true
+        ioScope.launch(dispatcher) {
+            vpnSubscriptionPaymentProvider.purchaseState.collect {
+                when (it) {
+                    PurchaseState.Default -> {}
+                    PurchaseState.InitFailed -> _billingState.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
+                    PurchaseState.InitSuccess -> {}
+                    PurchaseState.ProductsLoadedFailed ->
+                        _billingState.emit(
+                            SUBSCRIPTIONS_FAILED_TO_LOAD,
+                        )
 
-                        PurchaseState.ProductsLoadedSuccess -> {
-                            scope.launch(dispatcher) {
-                                subscriptionPrefs.vpnSubscriptionPlans.collectLatest { _ ->
-                                    val yearlyPlan =
-                                        vpnSubscriptionPaymentProvider.getFreeTrialYearlySubscriptionPlan()
-                                            ?: vpnSubscriptionPaymentProvider.getYearlySubscriptionPlan()
-                                    val monthlyPlan =
-                                        vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
-                                    if (yearlyPlan == null || monthlyPlan == null) {
-                                        _billingState.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
-                                        return@collectLatest
-                                    }
-                                    val yearly =
-                                        Plan(
-                                            yearlyPlan.id,
-                                            yearlyPlan.plan.replaceFirstChar { first ->
-                                                if (first.isLowerCase()) {
-                                                    first.titlecase(Locale.getDefault())
-                                                } else {
-                                                    first.toString()
-                                                }
-                                            },
-                                            hasFreeTrial =
-                                                yearlyPlan.freeTrialDuration?.isNotBlank()
-                                                    ?: false,
-                                            mainPrice = yearlyPlan.formattedPrice,
-                                            secondaryPrice =
-                                                formatter.formatYearlyPerMonth(
-                                                    yearlyPlan.priceInMicros,
-                                                    yearlyPlan.currencyCode,
-                                                    yearlyPlan.formattedPrice,
-                                                ),
-                                        )
-                                    val monthly =
-                                        Plan(
-                                            monthlyPlan.id,
-                                            monthlyPlan.plan.replaceFirstChar { first ->
-                                                if (first.isLowerCase()) {
-                                                    first.titlecase(Locale.getDefault())
-                                                } else {
-                                                    first.toString()
-                                                }
-                                            },
-                                            false,
-                                            mainPrice = monthlyPlan.formattedPrice,
-                                        )
-                                    val data =
-                                        withContext(mainDispatcher) {
-                                            SubscriptionData(
-                                                mutableStateOf(yearly),
-                                                yearly,
-                                                monthly,
-                                            )
-                                        }
-                                    subscriptionData = data
-                                    _billingState.emit(SUBSCRIPTIONS(data))
+                    PurchaseState.ProductsLoadedSuccess -> {
+                        ioScope.launch(dispatcher) {
+                            subscriptionPrefs.vpnSubscriptionPlans.collectLatest { _ ->
+                                val yearlyPlan =
+                                    vpnSubscriptionPaymentProvider.getFreeTrialYearlySubscriptionPlan()
+                                        ?: vpnSubscriptionPaymentProvider.getYearlySubscriptionPlan()
+                                val monthlyPlan =
+                                    vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
+                                if (yearlyPlan == null || monthlyPlan == null) {
+                                    _billingState.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
+                                    return@collectLatest
                                 }
+                                val yearly =
+                                    Plan(
+                                        yearlyPlan.id,
+                                        yearlyPlan.plan.replaceFirstChar { first ->
+                                            if (first.isLowerCase()) {
+                                                first.titlecase(Locale.getDefault())
+                                            } else {
+                                                first.toString()
+                                            }
+                                        },
+                                        hasFreeTrial =
+                                            yearlyPlan.freeTrialDuration?.isNotBlank()
+                                                ?: false,
+                                        mainPrice = yearlyPlan.formattedPrice,
+                                        secondaryPrice =
+                                            formatter.formatYearlyPerMonth(
+                                                yearlyPlan.priceInMicros,
+                                                yearlyPlan.currencyCode,
+                                                yearlyPlan.formattedPrice,
+                                            ),
+                                    )
+                                val monthly =
+                                    Plan(
+                                        monthlyPlan.id,
+                                        monthlyPlan.plan.replaceFirstChar { first ->
+                                            if (first.isLowerCase()) {
+                                                first.titlecase(Locale.getDefault())
+                                            } else {
+                                                first.toString()
+                                            }
+                                        },
+                                        false,
+                                        mainPrice = monthlyPlan.formattedPrice,
+                                    )
+                                val data =
+                                    withContext(mainDispatcher) {
+                                        SubscriptionData(
+                                            mutableStateOf(yearly),
+                                            yearly,
+                                            monthly,
+                                        )
+                                    }
+                                subscriptionData = data
+                                _billingState.emit(SUBSCRIPTIONS(data))
                             }
                         }
-
-                        is PurchaseState.PurchaseFailed -> {
-                            submitEventUseCase.submitEvent(eventGenerator.getProcessingFailure(it.reason))
-                        }
-
-                        PurchaseState.PurchaseSuccess -> {
-                            submitEventUseCase.submitEvent(eventGenerator.getProcessingSuccess())
-                            if (consentPrefs.hasMadeConsentDecision.first()) {
-                                _billingState.emit(EMAIL)
-                            } else {
-                                _billingState.emit(CONSENT)
-                            }
-                        }
-
-                        PurchaseState.NoInAppPurchase -> _billingState.emit(NO_IN_APP_SUBSCRIPTIONS)
-                        PurchaseState.Disconnected -> {}
                     }
+
+                    is PurchaseState.PurchaseFailed -> {
+                        submitEventUseCase.submitEvent(eventGenerator.getProcessingFailure(it.reason))
+                    }
+
+                    PurchaseState.PurchaseSuccess -> {
+                        submitEventUseCase.submitEvent(eventGenerator.getProcessingSuccess())
+                        if (consentPrefs.hasMadeConsentDecision.first()) {
+                            _billingState.emit(EMAIL)
+                        } else {
+                            _billingState.emit(CONSENT)
+                        }
+                    }
+
+                    PurchaseState.NoInAppPurchase -> _billingState.emit(NO_IN_APP_SUBSCRIPTIONS)
+                    PurchaseState.Disconnected -> {}
                 }
             }
+        }
     }
 
     override fun loadPrices(
