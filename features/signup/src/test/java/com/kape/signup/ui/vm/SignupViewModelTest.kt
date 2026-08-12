@@ -50,7 +50,7 @@ class SignupViewModelTest {
         Dispatchers.setMain(testDispatcher)
 
         every { billingHandler.billingState } returns emptyFlow()
-        every { billingHandler.initialize(any(), any(), any()) } returns Unit
+        every { billingHandler.initialize(any()) } returns Unit
         every { networkConnectionListener.isConnected } returns MutableStateFlow(true)
 
         viewModel =

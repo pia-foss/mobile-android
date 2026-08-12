@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.configuration)
     alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
-    alias(libs.plugins.junit5)
     alias(libs.plugins.compose)
 }
 
