@@ -25,7 +25,11 @@ import org.koin.core.annotation.Singleton
 @Module
 class SignupBillingModule {
     @Singleton(binds = [SignupDataSource::class])
-    fun provideSignupDataSource(api: AndroidAccountAPI): SignupDataSource = SignupDataSourceImpl(api)
+    fun provideSignupDataSource(
+        api: AndroidAccountAPI,
+        eventGenerator: KpiEventGenerator,
+        submitKpiEventUseCase: SubmitKpiEventUseCase,
+    ): SignupDataSource = SignupDataSourceImpl(api, eventGenerator, submitKpiEventUseCase)
 
     @Singleton(binds = [SignupBillingHandler::class])
     fun provideSignupBillingHandler(
