@@ -59,6 +59,7 @@ dependencies {
 
     implementation(libs.mobile.shared.kpi)
     implementation(libs.bundles.compose)
+    debugImplementation(libs.debug.tooling)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.bundles.android)
     implementation(libs.bundles.koin)
