@@ -36,10 +36,7 @@ data class Consent(
 }
 
 @Serializable
-object LoginWithCredentials : ComposeDestination {
-    override val navOptions: DestinationNavOptions =
-        DestinationNavOptions.ClearAll
-}
+object LoginWithCredentials : ComposeDestination
 
 @Serializable
 object LoginWithEmail : ComposeDestination
