@@ -71,7 +71,7 @@ object Profile : ComposeDestination
 @Serializable
 object Subscribe : ComposeDestination {
     override val navOptions: DestinationNavOptions =
-        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
+        DestinationNavOptions.ClearAll
 }
 
 @Serializable

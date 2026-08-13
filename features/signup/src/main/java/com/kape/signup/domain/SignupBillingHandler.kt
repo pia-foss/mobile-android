@@ -9,11 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface SignupBillingHandler {
     val billingState: Flow<SignupScreenState>
 
-    fun initialize(
-        scope: CoroutineScope,
-        dispatcher: CoroutineDispatcher,
-        mainDispatcher: CoroutineDispatcher,
-    )
+    fun initialize(mainDispatcher: CoroutineDispatcher)
 
     fun loadPrices(
         scope: CoroutineScope,
@@ -30,4 +26,6 @@ interface SignupBillingHandler {
     fun registerClientIfNeeded(activity: Activity)
 
     fun reset()
+
+    suspend fun hasResumablePurchase(): Boolean
 }

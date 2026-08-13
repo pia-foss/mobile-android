@@ -3,6 +3,7 @@ package com.kape.signup.domain
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.LoginState
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.signup.data.models.Credentials
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -16,6 +17,7 @@ class SignupUseCase(
     private val emailDataSource: EmailDataSource,
     private val purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
     private val getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase,
+    private val subscriptionPrefs: SubscriptionPrefs,
 ) {
     suspend fun vpnSignup(email: String): Credentials? {
         val purchaseData =
@@ -36,7 +38,12 @@ class SignupUseCase(
         val loginState = loginUseCase.login(credentials.username, credentials.password)
         return if (loginState == LoginState.Successful) {
             val successful = emailDataSource.setEmail(email)
-            if (successful) credentials else null
+            if (successful) {
+                subscriptionPrefs.removeVpnPurchaseData()
+                credentials
+            } else {
+                null
+            }
         } else {
             null
         }

@@ -35,5 +35,9 @@ class ConsentPrefs(
         _hasMadeConsentDecision.value = made
     }
 
+    suspend fun clearAllowSharing() {
+        dataStore.edit { it.remove(SHARE_EVENTS_CONSENT) }
+    }
+
     private fun getAllowSharing(): Flow<Boolean> = dataStore.data.map { it[SHARE_EVENTS_CONSENT] ?: false }
 }

@@ -15,11 +15,7 @@ class NoOpSignupBillingHandler(
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
     override val billingState: Flow<SignupScreenState> = _billingState
 
-    override fun initialize(
-        scope: CoroutineScope,
-        dispatcher: CoroutineDispatcher,
-        mainDispatcher: CoroutineDispatcher,
-    ) {
+    override fun initialize(mainDispatcher: CoroutineDispatcher) {
         // no-op
     }
 
@@ -48,4 +44,6 @@ class NoOpSignupBillingHandler(
     override fun reset() {
         // no-op
     }
+
+    override suspend fun hasResumablePurchase(): Boolean = false
 }

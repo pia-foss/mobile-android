@@ -12,6 +12,7 @@ import com.kape.payments.data.SubscriptionPlan
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.Json
@@ -52,6 +53,12 @@ class SubscriptionPrefs(
     suspend fun storeVpnPurchaseData(purchaseData: PurchaseData) {
         dataStore.edit { it[VPN_PURCHASE_DATA] = purchaseData.toString() }
     }
+
+    suspend fun removeVpnPurchaseData() {
+        dataStore.edit { it.remove(VPN_PURCHASE_DATA) }
+    }
+
+    suspend fun getVpnPurchaseDataOnce(): PurchaseData? = getVpnPurchaseData().first()
 
     suspend fun storeDipPurchaseData(purchaseData: DipPurchaseData) {
         dataStore.edit { it[DIP_PURCHASE_DATA] = Json.encodeToString(purchaseData) }

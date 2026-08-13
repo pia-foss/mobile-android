@@ -8,7 +8,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.kape.contracts.ConnectionInfoProvider
-import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.KpiDataSource
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.vpn.di.AppModule
@@ -31,20 +30,12 @@ class App : Application() {
     private val kpiDataSource: KpiDataSource by inject()
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val consentPrefs: ConsentPrefs by inject()
-    private val userLoggedInUseCase: IsUserLoggedInUseCase by inject()
 
     private val lifecycleObserver =
         object : DefaultLifecycleObserver {
             override fun onStop(owner: LifecycleOwner) {
                 kpiDataSource.flush()
                 super.onStop(owner)
-            }
-
-            override fun onDestroy(owner: LifecycleOwner) {
-                if (!userLoggedInUseCase.invoke()) {
-                    consentPrefs.setConsentDecisionMade(false)
-                }
-                super.onDestroy(owner)
             }
         }
 

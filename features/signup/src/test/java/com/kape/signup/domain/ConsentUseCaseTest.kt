@@ -37,12 +37,28 @@ class ConsentUseCaseTest {
         assertEquals(expected, useCase.getConsent())
     }
 
+    @ParameterizedTest(name = "made: {0}")
+    @MethodSource("singleBoolean")
+    fun `test hasMadeConsentDecision reads through to prefs`(made: Boolean) =
+        runTest {
+            every { prefs.hasMadeConsentDecision } returns MutableStateFlow(made)
+
+            assertEquals(made, useCase.hasMadeConsentDecision())
+        }
+
     companion object {
         @JvmStatic
         fun booleans() =
             Stream.of(
                 Arguments.of(true, true),
                 Arguments.of(false, false),
+            )
+
+        @JvmStatic
+        fun singleBoolean() =
+            Stream.of(
+                Arguments.of(true),
+                Arguments.of(false),
             )
     }
 }

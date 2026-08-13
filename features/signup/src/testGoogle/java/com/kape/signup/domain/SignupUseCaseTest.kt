@@ -4,8 +4,10 @@ import com.kape.data.model.PurchaseData
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.LoginState
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
+import com.kape.payments.prefs.SubscriptionPrefs
 import com.kape.signup.data.models.Credentials
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,6 +25,7 @@ internal class SignupUseCaseTest {
     private val loginUseCase: LoginUseCase = mockk()
     private val emailDataSource: EmailDataSource = mockk()
     private val getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase = mockk()
+    private val subscriptionPrefs: SubscriptionPrefs = mockk()
 
     private lateinit var useCase: SignupUseCase
 
@@ -35,6 +38,7 @@ internal class SignupUseCaseTest {
                 emailDataSource,
                 purchaseDetailsUseCase,
                 getObfuscatedDeviceIdentifierUseCase,
+                subscriptionPrefs,
             )
     }
 
@@ -50,9 +54,13 @@ internal class SignupUseCaseTest {
         coEvery { loginUseCase.login(any(), any()) } returns LoginState.Successful
         coEvery { emailDataSource.setEmail(any()) } returns true
         coEvery { signupDataSource.vpnSignup(*anyVararg()) } returns expected
+        coEvery { subscriptionPrefs.removeVpnPurchaseData() } returns Unit
 
         val actual = useCase.vpnSignup("email")
         assertEquals(expected, actual)
+        if (expected != null) {
+            coVerify(exactly = 1) { subscriptionPrefs.removeVpnPurchaseData() }
+        }
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.kape.signup.di
 
+import com.kape.data.DI
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.payments.domain.GetPurchaseDetailsUseCase
@@ -19,7 +20,9 @@ import com.kape.signup.domain.SignupHandler
 import com.kape.signup.domain.SignupUseCase
 import com.kape.ui.utils.PriceFormatter
 import com.privateinternetaccess.account.AndroidAccountAPI
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 @Module
@@ -40,6 +43,7 @@ class SignupBillingModule {
         submitEventUseCase: SubmitKpiEventUseCase,
         consentPrefs: ConsentPrefs,
         eventGenerator: KpiEventGenerator,
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
     ): SignupBillingHandler =
         GoogleSignupBillingHandler(
             vpnSubscriptionPaymentProvider,
@@ -49,6 +53,7 @@ class SignupBillingModule {
             submitEventUseCase,
             consentPrefs,
             eventGenerator,
+            ioScope,
         )
 
     @Singleton
@@ -58,6 +63,7 @@ class SignupBillingModule {
         emailDataSource: EmailDataSource,
         purchaseDetailsUseCase: GetPurchaseDetailsUseCase,
         getObfuscatedDeviceIdentifierUseCase: GetObfuscatedDeviceIdentifierUseCase,
+        subscriptionPrefs: SubscriptionPrefs,
     ): SignupUseCase =
         SignupUseCase(
             signupDataSource,
@@ -65,6 +71,7 @@ class SignupBillingModule {
             emailDataSource,
             purchaseDetailsUseCase,
             getObfuscatedDeviceIdentifierUseCase,
+            subscriptionPrefs,
         )
 
     @Singleton(binds = [SignupHandler::class])

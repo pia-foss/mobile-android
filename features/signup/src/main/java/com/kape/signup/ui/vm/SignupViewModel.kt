@@ -56,10 +56,17 @@ class SignupViewModel(
         viewModelScope.launch(ioDispatcher) {
             billingHandler.billingState.collect { _state.emit(it) }
         }
-        billingHandler.initialize(viewModelScope, ioDispatcher, mainDispatcher)
+        billingHandler.initialize(mainDispatcher)
     }
 
-    fun loadPrices(activity: Activity) = billingHandler.loadPrices(viewModelScope, ioDispatcher, mainDispatcher, activity)
+    fun loadPrices(activity: Activity) =
+        viewModelScope.launch(ioDispatcher) {
+            if (billingHandler.hasResumablePurchase()) {
+                _state.emit(EMAIL)
+            } else {
+                billingHandler.loadPrices(viewModelScope, ioDispatcher, mainDispatcher, activity)
+            }
+        }
 
     fun loadEmptyPrices() =
         viewModelScope.launch(ioDispatcher) {
