@@ -5,27 +5,25 @@ import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.utils.SignupScreenState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 class NoOpSignupBillingHandler(
     private val signupScreenState: SignupScreenState,
 ) : SignupBillingHandler {
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
-    override val billingState: Flow<SignupScreenState> = _billingState
+    override val billingState: SharedFlow<SignupScreenState> = _billingState
 
     override fun initialize(mainDispatcher: CoroutineDispatcher) {
         // no-op
     }
 
     override fun loadPrices(
-        scope: CoroutineScope,
-        ioDispatcher: CoroutineDispatcher,
         mainDispatcher: CoroutineDispatcher,
         activity: Activity,
     ) {
-        scope.launch(ioDispatcher) {
+        CoroutineScope(mainDispatcher).launch {
             _billingState.emit(signupScreenState)
         }
     }

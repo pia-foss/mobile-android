@@ -1,5 +1,6 @@
 package com.kape.splash.ui.vm
 
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.AuthenticationDataSource
@@ -17,6 +18,7 @@ import com.kape.data.TvWelcome
 import com.kape.data.Update
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.localprefs.prefs.ConsentPrefs
+import com.kape.signup.domain.SignupBillingHandler
 import com.kape.utils.PlatformUtils
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,7 +40,9 @@ class SplashViewModel(
     private val platformUtils: PlatformUtils,
     private val authenticationDataSource: AuthenticationDataSource,
     private val consentPrefs: ConsentPrefs,
+    private val billingHandler: SignupBillingHandler,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+    @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private var updateUrl: String = ""
     private var hasMadeConsentDecision: Boolean = false
@@ -51,6 +55,9 @@ class SplashViewModel(
             consentPrefs.hasMadeConsentDecision.collectLatest {
                 hasMadeConsentDecision = it
             }
+        }
+        if (shouldPreloadPrices()) {
+            billingHandler.initialize(mainDispatcher)
         }
     }
 
@@ -81,6 +88,12 @@ class SplashViewModel(
         }
 
     fun isConnected() = connectionInfoProvider.isConnected()
+
+    fun shouldPreloadPrices(): Boolean = !isUserLoggedIn.invoke()
+
+    fun loadPrices(activity: Activity) {
+        billingHandler.loadPrices(mainDispatcher, activity)
+    }
 
     private fun handleSplashExit() {
         if (isUserLoggedIn.invoke()) {

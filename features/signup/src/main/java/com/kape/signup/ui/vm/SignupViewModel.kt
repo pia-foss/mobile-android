@@ -47,7 +47,8 @@ class SignupViewModel(
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(DEFAULT)
+    private val _state =
+        MutableStateFlow(billingHandler.billingState.replayCache.firstOrNull() ?: DEFAULT)
     val state: StateFlow<SignupScreenState> = _state
 
     val isConnected = networkConnectionListener.isConnected
@@ -64,7 +65,7 @@ class SignupViewModel(
             if (billingHandler.hasResumablePurchase()) {
                 _state.emit(EMAIL)
             } else {
-                billingHandler.loadPrices(viewModelScope, ioDispatcher, mainDispatcher, activity)
+                billingHandler.loadPrices(mainDispatcher, activity)
             }
         }
 
