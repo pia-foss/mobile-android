@@ -13,15 +13,16 @@ import com.kape.localprefs.prefs.SUPPORT_DIALOG_FEATURE_FLAG
 import com.kape.login.domain.mobile.LoginFailureTracker
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.domain.mobile.LoginWithReceiptHandler
-import com.kape.login.utils.FAILED
 import com.kape.login.utils.IDLE
 import com.kape.login.utils.INVALID
 import com.kape.login.utils.LOADING
 import com.kape.login.utils.LoginScreenState
 import com.kape.login.utils.LoginState
 import com.kape.login.utils.QualifyingFailure
+import com.kape.login.utils.RECEIPT_FAILED
 import com.kape.login.utils.SupportTicketInfo
 import com.kape.login.utils.buildSupportTicketUrl
+import com.kape.login.utils.getReceiptScreenState
 import com.kape.login.utils.getScreenState
 import com.kape.login.utils.maskAccountIdentifier
 import com.kape.payments.utils.PurchaseHistoryState
@@ -142,7 +143,7 @@ class LoginViewModel(
                             submitKpiEventUseCase.submitEvent(eventGenerator.getProcessingSuccess())
                             router.updateDestination(permissionsUtil.getNextDestination())
                         } else {
-                            _state.emit(getScreenState(state))
+                            _state.emit(getReceiptScreenState(state))
                         }
                     }
 
@@ -150,7 +151,7 @@ class LoginViewModel(
                         _state.emit(IDLE)
                     }
 
-                    PurchaseHistoryState.PurchaseHistoryFailed -> _state.emit(FAILED)
+                    PurchaseHistoryState.PurchaseHistoryFailed -> _state.emit(RECEIPT_FAILED)
                 }
             }
         }

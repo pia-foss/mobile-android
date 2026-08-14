@@ -127,6 +127,7 @@ fun ShowLoginPasswordScreen(
 
                 LoginError.Invalid,
                 LoginError.Failed,
+                LoginError.ReceiptFailed,
                 LoginError.Expired,
                 LoginError.ServiceUnavailable,
                 ->

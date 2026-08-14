@@ -201,6 +201,7 @@
     <string name="error_missing_credentials">You must enter a username and password</string>
     <string name="error_missing_email">You must provide a valid email address</string>
     <string name="error_account_expired">Your account has expired.</string>
+    <string name="error_receipt_login_failed">We couldn\'t verify your purchase. Please try logging in with your username and password.</string>
     <string name="login_support_dialog_title">Still having trouble?</string>
     <string name="login_support_dialog_message">It looks like something\'s not working. You can contact support with the technical details already filled in, so there\'s no need to describe the error yourself.</string>
 
