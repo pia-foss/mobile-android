@@ -220,6 +220,7 @@ private fun getErrorMessage(state: LoginScreenState): String? =
     when (state.error) {
         LoginError.Expired -> stringResource(com.kape.ui.R.string.error_account_expired)
         LoginError.Failed -> stringResource(id = com.kape.ui.R.string.error_username_password_invalid)
+        LoginError.ReceiptFailed -> stringResource(id = com.kape.ui.R.string.error_receipt_login_failed)
         LoginError.Invalid -> stringResource(id = com.kape.ui.R.string.error_missing_credentials)
         LoginError.Throttled -> stringResource(id = com.kape.ui.R.string.error_throttled)
         LoginError.ServiceUnavailable -> stringResource(id = com.kape.ui.R.string.error_operation_failed)

@@ -112,6 +112,7 @@ private fun getErrorMessage(state: LoginScreenState): String? =
     when (state.error) {
         LoginError.Expired -> "account expired flow" // TODO: handle when signup module is built
         LoginError.Failed,
+        LoginError.ReceiptFailed,
         LoginError.Invalid,
         LoginError.Throttled,
         -> stringResource(id = com.kape.ui.R.string.error_missing_email)
