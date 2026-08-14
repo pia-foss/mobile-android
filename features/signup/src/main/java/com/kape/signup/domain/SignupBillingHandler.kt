@@ -3,17 +3,14 @@ package com.kape.signup.domain
 import android.app.Activity
 import com.kape.signup.utils.SignupScreenState
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 
 interface SignupBillingHandler {
-    val billingState: Flow<SignupScreenState>
+    val billingState: SharedFlow<SignupScreenState>
 
     fun initialize(mainDispatcher: CoroutineDispatcher)
 
     fun loadPrices(
-        scope: CoroutineScope,
-        ioDispatcher: CoroutineDispatcher,
         mainDispatcher: CoroutineDispatcher,
         activity: Activity,
     )

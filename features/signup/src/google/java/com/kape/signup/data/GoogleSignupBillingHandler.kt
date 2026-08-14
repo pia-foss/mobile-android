@@ -22,8 +22,8 @@ import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.utils.PriceFormatter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -41,7 +41,7 @@ class GoogleSignupBillingHandler(
     private val ioScope: CoroutineScope,
 ) : SignupBillingHandler {
     private val _billingState = MutableSharedFlow<SignupScreenState>(replay = 1)
-    override val billingState: Flow<SignupScreenState> = _billingState
+    override val billingState: SharedFlow<SignupScreenState> = _billingState
     private var subscriptionData: SubscriptionData? = null
     private var initialized = false
 
@@ -142,12 +142,10 @@ class GoogleSignupBillingHandler(
     }
 
     override fun loadPrices(
-        scope: CoroutineScope,
-        ioDispatcher: CoroutineDispatcher,
         mainDispatcher: CoroutineDispatcher,
         activity: Activity,
     ) {
-        scope.launch(ioDispatcher) {
+        ioScope.launch {
             withContext(mainDispatcher) {
                 vpnSubscriptionPaymentProvider.register(activity)
             }

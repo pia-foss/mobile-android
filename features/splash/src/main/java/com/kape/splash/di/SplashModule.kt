@@ -9,6 +9,7 @@ import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.localprefs.prefs.ConsentPrefs
+import com.kape.signup.domain.SignupBillingHandler
 import com.kape.splash.data.LatestAppVersionDataSourceImpl
 import com.kape.splash.domain.GetAppLatestVersionUseCase
 import com.kape.splash.domain.LatestAppVersionDataSource
@@ -44,7 +45,9 @@ class SplashModule {
         platformUtils: PlatformUtils,
         authenticationDataSource: AuthenticationDataSource,
         consentPrefs: ConsentPrefs,
+        billingHandler: SignupBillingHandler,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+        @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): SplashViewModel =
         SplashViewModel(
             router,
@@ -58,6 +61,8 @@ class SplashModule {
             platformUtils,
             authenticationDataSource,
             consentPrefs,
+            billingHandler,
             ioDispatcher,
+            mainDispatcher,
         )
 }
