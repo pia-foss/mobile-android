@@ -188,8 +188,9 @@ class ConnectionManagerImpl :
 
     private suspend fun stopConnection(): Result<Unit> =
         runCatching {
-            connectionSource.stopConnection().getOrThrow()
             connectionInfoProvider.resetConnectionInfo()
+            connectionSource.stopConnection().getOrThrow()
+        }.also {
             connectionInProgress.set(false)
         }
 
