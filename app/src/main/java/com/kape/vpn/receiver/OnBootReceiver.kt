@@ -8,8 +8,7 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnlauncher.VpnLauncher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
@@ -28,13 +27,14 @@ class OnBootReceiver :
         context: Context,
         intent: Intent,
     ) {
-        val receiverScope = CoroutineScope(ioDispatcher)
-        receiverScope.launch {
-            settingsPrefs.isLaunchOnStartupEnabled.collectLatest {
-                if (it) {
+        val pendingResult = goAsync()
+        CoroutineScope(ioDispatcher).launch {
+            try {
+                if (settingsPrefs.isLaunchOnStartupEnabled.first()) {
                     vpnLauncher.launchVpn()
-                    receiverScope.cancel()
                 }
+            } finally {
+                pendingResult.finish()
             }
         }
     }
