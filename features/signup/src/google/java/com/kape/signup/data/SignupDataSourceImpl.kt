@@ -21,7 +21,7 @@ private const val INITIAL_RETRY_DELAY_MS = 2_000L
 // The SDK never surfaces connectivity failures as a thrown exception: it catches them
 // internally and reports them through the callback as an AccountRequestError with code >= 600.
 // Codes below that are real HTTP responses from the server, i.e. authoritative rejections.
-private const val LOCAL_ERROR_CODE_THRESHOLD = 600
+private const val NETWORK_ERROR_CODE = 601
 
 @Singleton([SignupDataSource::class])
 class SignupDataSourceImpl(
@@ -69,4 +69,4 @@ class SignupDataSourceImpl(
     }
 }
 
-private fun List<AccountRequestError>.isNetworkError(): Boolean = isNotEmpty() && all { it.code >= LOCAL_ERROR_CODE_THRESHOLD }
+private fun List<AccountRequestError>.isNetworkError(): Boolean = isNotEmpty() && any { it.code == NETWORK_ERROR_CODE }
