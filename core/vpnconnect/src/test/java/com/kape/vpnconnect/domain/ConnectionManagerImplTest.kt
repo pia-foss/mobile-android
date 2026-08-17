@@ -196,7 +196,7 @@ class ConnectionManagerImplTest {
         runTest {
             val clientConfig = mockk<ClientConfiguration>()
             coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
-            every { settingsPrefs.isPortForwardingEnabled.value } returns true
+            coEvery { settingsPrefs.isPortForwardingEnabledNow() } returns true
             every { connectionSource.getVpnToken() } returns "vpn_token"
             coEvery { connectionConfigurationUseCase.generateConnectionConfiguration(server) } returns clientConfig
             coEvery { connectionSource.startConnection(clientConfig, connectionStatusProvider) } returns Result.success(Unit)

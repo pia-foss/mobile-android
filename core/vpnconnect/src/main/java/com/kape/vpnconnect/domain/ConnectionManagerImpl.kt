@@ -181,7 +181,7 @@ class ConnectionManagerImpl :
     }
 
     private suspend fun startPortForwarding() {
-        if (!settingsPrefs.isPortForwardingEnabled.value) return
+        if (!settingsPrefs.isPortForwardingEnabledNow()) return
         portForwardingUseCase.bindPort(connectionSource.getVpnToken())
         connectionSource.startPortForwarding()
     }
