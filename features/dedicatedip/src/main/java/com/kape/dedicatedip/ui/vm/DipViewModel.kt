@@ -329,7 +329,7 @@ class DipViewModel(
             }
         }
 
-    private fun disconnect() = viewModelScope.launch(ioDispatcher) { connectionManager.disconnect().getOrNull() }
+    private fun disconnect() = viewModelScope.launch(ioDispatcher) { connectionManager.disconnect() }
 
     private fun navigateToDedicatedIpPurchaseSuccess() =
         viewModelScope.launch(ioDispatcher) {

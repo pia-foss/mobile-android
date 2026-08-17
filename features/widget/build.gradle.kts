@@ -26,7 +26,6 @@ dependencies {
     coreLibraryDesugaring(libs.desugar)
     implementation(libs.bundles.glance)
     implementation(libs.bundles.koin)
-    implementation(libs.mobile.android.vpn.manager)
     implementation(project(":core:vpnconnect"))
     implementation(project(":core:data"))
     implementation(project(":core:contracts"))

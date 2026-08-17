@@ -22,7 +22,7 @@ class LogoutUseCaseImpl(
             connectionPrefs.setDisconnectedByUser(true)
         }
         if (connectionManager.isConnectionInProgress()) {
-            connectionManager.disconnect().getOrNull()
+            connectionManager.disconnect()
         }
         return performLogout()
     }

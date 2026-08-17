@@ -10,5 +10,10 @@ interface UsageProvider {
     val widgetUploadSpeed: StateFlow<String>
     val widgetUpload: StateFlow<String>
 
+    fun byteCount(
+        tx: Long,
+        rx: Long,
+    )
+
     fun reset()
 }

@@ -10,6 +10,7 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.KpiDataSource
 import com.kape.localprefs.prefs.ConsentPrefs
+import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.vpn.di.AppModule
 import com.kape.widget.WidgetReceiver
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +19,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.koin.workManagerFactory
@@ -30,6 +32,7 @@ class App : Application() {
     private val kpiDataSource: KpiDataSource by inject()
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val consentPrefs: ConsentPrefs by inject()
+    private val csiPrefs: CsiPrefs by inject()
 
     private val lifecycleObserver =
         object : DefaultLifecycleObserver {
@@ -57,6 +60,14 @@ class App : Application() {
                     false -> kpiDataSource.stop()
                 }
             }
+        }
+
+        val previousHandler = Thread.getDefaultUncaughtExceptionHandler()
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            runBlocking {
+                csiPrefs.setLastKnownException(throwable.stackTraceToString())
+            }
+            previousHandler?.uncaughtException(thread, throwable)
         }
     }
 
