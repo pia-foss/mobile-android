@@ -127,5 +127,5 @@ class LoginModule {
         useCase: LoginUseCase,
         networkConnectionListener: NetworkConnectionListener,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-    ): LoginWithEmailViewModel = LoginWithEmailViewModel(router, useCase, ioDispatcher, networkConnectionListener)
+    ): LoginWithEmailViewModel = LoginWithEmailViewModel(router, useCase, networkConnectionListener)
 }

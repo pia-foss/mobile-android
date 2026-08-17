@@ -3,27 +3,25 @@ package com.kape.login.ui.vm.mobile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
-import com.kape.data.DI
 import com.kape.data.LoginWithCredentials
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.utils.IDLE
 import com.kape.login.utils.INVALID
 import com.kape.login.utils.LOADING
 import com.kape.login.utils.LoginScreenState
+import com.kape.login.utils.LoginState
 import com.kape.login.utils.SUCCESS
+import com.kape.login.utils.getScreenState
 import com.kape.utils.NetworkConnectionListener
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.annotation.Named
 
 @KoinViewModel
 class LoginWithEmailViewModel(
     private val router: Router,
     private val useCase: LoginUseCase,
-    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
 ) : ViewModel() {
     private val _state = MutableStateFlow(IDLE)
@@ -31,14 +29,18 @@ class LoginWithEmailViewModel(
     val isConnected = networkConnectionListener.isConnected
 
     fun loginWithEmail(email: String) =
-        viewModelScope.launch(ioDispatcher) {
+        viewModelScope.launch {
             _state.emit(LOADING)
             if (email.isEmpty()) {
                 _state.emit(INVALID)
                 return@launch
             }
-            useCase.loginWithEmail(email)
-            _state.emit(SUCCESS)
+            val result = useCase.loginWithEmail(email)
+            if (result == LoginState.Successful) {
+                _state.emit(SUCCESS)
+            } else {
+                _state.emit(getScreenState(result))
+            }
         }
 
     fun navigateToLoginWithCredentials() = router.updateDestination(LoginWithCredentials)
