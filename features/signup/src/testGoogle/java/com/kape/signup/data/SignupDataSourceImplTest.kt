@@ -68,7 +68,7 @@ internal class SignupDataSourceImplTest {
             coEvery { api.vpnSignUp(any(), any()) } answers {
                 lastArg<(VpnSignUpInformation?, List<AccountRequestError>) -> Unit>().invoke(
                     null,
-                    listOf(AccountRequestError(600, "No internet connection")),
+                    listOf(AccountRequestError(601, "No internet connection")),
                 )
             }
 
