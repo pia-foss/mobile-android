@@ -24,8 +24,6 @@ private val SHADOWSOCKS_SERVERS = stringPreferencesKey("shadowsocks-servers")
 class ShadowsocksRegionPrefs(
     context: Context,
 ) : Prefs(context, "shadowsocks-regions") {
-    val selectedShadowsocksServer: StateFlow<ShadowsocksServer?> =
-        getSelectedShadowsocksServer().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
     val shadowsocksServers: StateFlow<List<ShadowsocksServer>> =
         getShadowsocksServers().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
 
@@ -69,7 +67,7 @@ class ShadowsocksRegionPrefs(
         dataStore.edit { it[SHADOWSOCKS_SERVERS] = Json.encodeToString(shadowsocksServers) }
     }
 
-    private fun getSelectedShadowsocksServer(): Flow<ShadowsocksServer?> =
+    fun getSelectedShadowsocksServer(): Flow<ShadowsocksServer?> =
         dataStore.data.map { prefs ->
             prefs[SHADOWSOCKS_SELECTED_SERVER]?.let { Json.decodeFromString(it) }
         }

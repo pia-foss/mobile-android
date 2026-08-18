@@ -19,7 +19,8 @@ class GetShadowsocksRegionsUseCase(
         shadowsocksRegionRepository.fetchShadowsocksServers(locale)
 
     fun getSelectedShadowsocksServer(): Flow<ShadowsocksServer> =
-        shadowsocksRegionPrefs.selectedShadowsocksServer
+        shadowsocksRegionPrefs
+            .getSelectedShadowsocksServer()
             .map { selectedServer ->
                 val matchedServer =
                     getShadowsocksServers().firstOrNull {
