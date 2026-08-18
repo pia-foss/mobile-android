@@ -133,8 +133,14 @@ class VpnSubscriptionPaymentProviderImpl(
         billingClient.showInAppMessages(activity, params) { result ->
             inAppMessageState.value =
                 when (result.responseCode) {
-                    InAppMessageResult.InAppMessageResponseCode.SUBSCRIPTION_STATUS_UPDATED ->
-                        InAppMessageState.SubscriptionStatusUpdated(result.purchaseToken.orEmpty())
+                    InAppMessageResult.InAppMessageResponseCode.SUBSCRIPTION_STATUS_UPDATED -> {
+                        val token = result.purchaseToken
+                        if (token.isNullOrBlank()) {
+                            InAppMessageState.NoActionNeeded
+                        } else {
+                            InAppMessageState.SubscriptionStatusUpdated(token)
+                        }
+                    }
 
                     else -> InAppMessageState.NoActionNeeded
                 }
