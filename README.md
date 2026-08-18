@@ -96,7 +96,15 @@ Whenever you bump a dependency version (e.g. `kape-platform-sdk-vpn-pia`, or any
 
 Review the diff in `gradle/verification-metadata.xml` before committing to confirm only the expected components changed, then commit it alongside your dependency bump.
 
-If a build fails with `Dependency verification failed` for a task not listed above (e.g. an instrumentation test or another flavor's assemble task), re-run the command above with that task added, review the diff, and commit — this is expected the first time a given task's classpath is exercised.
+If a build fails with `Dependency verification failed`, `--write-verification-metadata` often won't fix it even when you add the failing task to the command above — some files (a BOM's own `.pom`, or a `*-parent.pom` pulled in via Maven's parent-POM inheritance walk) are only fetched by Gradle's normal verified resolution path, not by write-metadata mode, no matter which task you run. In that case, add the missing hash by hand:
+
+1. Note the exact `<group>:<name>:<version>` and filename (`.pom`/`.module`/classified `.jar`) from the error.
+2. Get the file: check `~/.gradle/caches/modules-2/files-2.1/<group>/<name>/<version>/` first (Gradle may have already fetched it for a different resolution path); otherwise download it from `https://repo1.maven.org/maven2/<group-as-path>/<name>/<version>/<filename>` (Google-hosted artifacts, e.g. `com.android.tools.build`, live at `https://dl.google.com/android/maven2/...` instead — check for a `.sha256` sidecar at the same URL to cross-verify).
+3. Hash it (`shasum -a 256 <file>`) and add the `<component>`/`<artifact>`/`<sha256>` entry by hand next to its sibling versions in `gradle/verification-metadata.xml`.
+
+Note: this repo's metadata has so far only ever been regenerated on macOS, while CI runs on Linux. A handful of AGP build tools (currently just `aapt2`) publish a separate, differently-hashed jar per OS (`-osx`, `-linux`, `-windows` classifiers) — regenerating locally only ever captures the macOS one, so the Linux one always needs the manual step above. If you hit `Dependency verification failed` naming a `-linux.jar`, that's this case.
+
+This is expected to happen occasionally as new tasks/flavors get exercised for the first time — it's not a sign the approach is broken.
 
 ### License
 
