@@ -44,6 +44,23 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Verify dependency verification metadata is up to date
+        env:
+          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          COMMITTED_HASH=$(sha256sum gradle/verification-metadata.xml | cut -d' ' -f1)
+          cp gradle/verification-metadata.xml /tmp/verification-metadata.committed.xml
+          ./gradlew --write-verification-metadata sha256 help ktlintCheck testGoogleDebugUnitTest testDebugUnitTest assembleGoogleDebug --no-daemon
+          REGENERATED_HASH=$(sha256sum gradle/verification-metadata.xml | cut -d' ' -f1)
+          if [ "$COMMITTED_HASH" != "$REGENERATED_HASH" ]; then
+            echo "::error::gradle/verification-metadata.xml is out of date (a task's dependency classpath resolved artifacts not in the committed metadata)."
+            echo "Diff between committed and regenerated metadata:"
+            diff /tmp/verification-metadata.committed.xml gradle/verification-metadata.xml || true
+            echo "Run './gradlew --write-verification-metadata sha256 help ktlintCheck testGoogleDebugUnitTest testDebugUnitTest assembleGoogleDebug', review the diff, and commit the result."
+            exit 1
+          fi
+
       - name: Build debug APK
         env:
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}

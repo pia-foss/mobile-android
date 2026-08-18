@@ -84,6 +84,20 @@ They need to have the format `PIA_VALID_USERNAME`, `PIA_VALID_PASSWORD` and `PIA
 
 To trigger a build for testing along with all other builds from the latest main, push a branch with branch name starting with `rc`.
 
+### Dependency Verification
+
+`gradle/verification-metadata.xml` pins every resolved dependency by SHA-256 content hash, so a tampered or substituted artifact fails the build before any code executes. CI regenerates this file on every PR and fails if it diverges from the committed version.
+
+Whenever you bump a dependency version (e.g. `kape-platform-sdk-vpn-pia`, or any of the KAPE/JitPack libraries), regenerate it locally and commit the result. Include the tasks CI actually runs, not just `help` — some tools (e.g. ktlint) resolve their own tool classpath lazily, only when their task executes, so `help` alone won't capture it:
+
+```bash
+./gradlew --write-verification-metadata sha256 help ktlintCheck testGoogleDebugUnitTest testDebugUnitTest assembleGoogleDebug
+```
+
+Review the diff in `gradle/verification-metadata.xml` before committing to confirm only the expected components changed, then commit it alongside your dependency bump.
+
+If a build fails with `Dependency verification failed` for a task not listed above (e.g. an instrumentation test or another flavor's assemble task), re-run the command above with that task added, review the diff, and commit — this is expected the first time a given task's classpath is exercised.
+
 ### License
 
 This project is licensed under the [MIT (Expat) license](https://choosealicense.com/licenses/mit/), which can be found [here](/LICENSE).
