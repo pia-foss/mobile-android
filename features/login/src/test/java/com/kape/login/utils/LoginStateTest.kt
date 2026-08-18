@@ -6,13 +6,13 @@ import kotlin.test.assertTrue
 
 internal class LoginStateTest {
     @Test
-    fun `throttled and service-unavailable are qualifying failures`() {
-        assertTrue(isQualifyingFailure(LoginState.Throttled(429, null)))
+    fun `service-unavailable is qualifying failures`() {
         assertTrue(isQualifyingFailure(LoginState.ServiceUnavailable(600, null)))
     }
 
     @Test
-    fun `account-state failures are not qualifying failures`() {
+    fun `account-state failures and throttled are not qualifying failures`() {
+        assertFalse(isQualifyingFailure(LoginState.Throttled))
         assertFalse(isQualifyingFailure(LoginState.Failed))
         assertFalse(isQualifyingFailure(LoginState.Expired))
     }
