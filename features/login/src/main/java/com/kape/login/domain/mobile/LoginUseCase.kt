@@ -20,7 +20,7 @@ class LoginUseCase(
                 when (result.error) {
                     ApiError.AccountExpired -> LoginState.Expired
                     ApiError.AuthFailed -> LoginState.Failed
-                    ApiError.Throttled -> LoginState.Throttled(result.code, result.message)
+                    ApiError.Throttled -> LoginState.Throttled
                     ApiError.Unknown -> LoginState.ServiceUnavailable(result.code, result.message)
                 }
             }
@@ -33,7 +33,7 @@ class LoginUseCase(
                 when (result.error) {
                     ApiError.AccountExpired -> LoginState.Expired
                     ApiError.AuthFailed -> LoginState.Failed
-                    ApiError.Throttled -> LoginState.Throttled(result.code, result.message)
+                    ApiError.Throttled -> LoginState.Throttled
                     ApiError.Unknown -> LoginState.ServiceUnavailable(result.code, result.message)
                 }
         }
@@ -49,7 +49,7 @@ class LoginUseCase(
                 when (result.error) {
                     ApiError.AccountExpired -> LoginState.Expired
                     ApiError.AuthFailed -> LoginState.Failed
-                    ApiError.Throttled -> LoginState.Throttled(result.code, result.message)
+                    ApiError.Throttled -> LoginState.Throttled
                     ApiError.Unknown -> LoginState.ServiceUnavailable(result.code, result.message)
                 }
         }
