@@ -31,8 +31,10 @@ import com.kape.shareevents.data.KpiEventGenerator
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
@@ -58,6 +60,7 @@ class LoginViewModel(
     private val _state = MutableStateFlow(IDLE)
     val state: StateFlow<LoginScreenState> = _state
     val isConnected = networkConnectionListener.isConnected
+    private var purchaseHistoryCollectorJob: Job? = null
     val shouldShowLoginWithReceiptButton: Boolean = buildConfigProvider.isGoogleFlavor()
 
     private val _showSupportDialog = MutableStateFlow(false)
@@ -128,32 +131,34 @@ class LoginViewModel(
     fun navigateToLoginWithEmail() = router.updateDestination(LoginWithEmail)
 
     private fun collectPurchaseHistory() {
-        viewModelScope.launch(ioDispatcher) {
-            loginWithReceiptHandler.purchaseHistoryState.collect {
-                _state.emit(LOADING)
-                when (it) {
-                    is PurchaseHistoryState.PurchaseHistorySuccess -> {
-                        val state =
-                            loginUseCase.loginWithReceipt(
-                                it.purchaseToken,
-                                it.productId,
-                                packageName,
-                            )
-                        if (state == LoginState.Successful) {
-                            submitKpiEventUseCase.submitEvent(eventGenerator.getProcessingSuccess())
-                            router.updateDestination(permissionsUtil.getNextDestination())
-                        } else {
-                            _state.emit(getReceiptScreenState(state))
+        purchaseHistoryCollectorJob?.cancel()
+        purchaseHistoryCollectorJob =
+            viewModelScope.launch(ioDispatcher) {
+                loginWithReceiptHandler.purchaseHistoryState.collectLatest {
+                    _state.emit(LOADING)
+                    when (it) {
+                        is PurchaseHistoryState.PurchaseHistorySuccess -> {
+                            val state =
+                                loginUseCase.loginWithReceipt(
+                                    it.purchaseToken,
+                                    it.productId,
+                                    packageName,
+                                )
+                            if (state == LoginState.Successful) {
+                                submitKpiEventUseCase.submitEvent(eventGenerator.getProcessingSuccess())
+                                router.updateDestination(permissionsUtil.getNextDestination())
+                            } else {
+                                _state.emit(getReceiptScreenState(state))
+                            }
                         }
-                    }
 
-                    PurchaseHistoryState.Default -> {
-                        _state.emit(IDLE)
-                    }
+                        PurchaseHistoryState.Default -> {
+                            _state.emit(IDLE)
+                        }
 
-                    PurchaseHistoryState.PurchaseHistoryFailed -> _state.emit(RECEIPT_FAILED)
+                        PurchaseHistoryState.PurchaseHistoryFailed -> _state.emit(RECEIPT_FAILED)
+                    }
                 }
             }
-        }
     }
 }
