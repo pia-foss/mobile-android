@@ -126,10 +126,10 @@ class ConnectionManagerImplTest {
         coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
         coEvery { settingsPrefs.getSelectedDnsOptionNow() } returns DnsOptions.PIA
         coEvery { settingsPrefs.getVpnExcludedAppsNow() } returns emptyList()
-        every { settingsPrefs.isAutomationEnabled.value } returns false
+        coEvery { settingsPrefs.isAutomationEnabledNow() } returns false
         every { authenticationDataSource.isUserLoggedIn() } returns true
         every { connectionPrefs.isDisconnectedByUser.value } returns false
-        every { connectionPrefs.selectedVpnServer.value } returns null
+        coEvery { connectionPrefs.getSelectedVpnServerNow() } returns null
 
         every { localBinder.getService() } returns piaService
         every { piaService.connectionStatus } returns MutableStateFlow(KapeVPNConnectionStatus.Disconnected)
@@ -298,7 +298,7 @@ class ConnectionManagerImplTest {
     @Test
     fun `connectToLastKnownOrOptimalServer - automation enabled and user disconnected - resets flag without connecting`() =
         runTest {
-            every { settingsPrefs.isAutomationEnabled.value } returns true
+            coEvery { settingsPrefs.isAutomationEnabledNow() } returns true
             every { connectionPrefs.isDisconnectedByUser.value } returns true
 
             connectionManager.connectToLastKnownOrOptimalServer()
@@ -310,7 +310,7 @@ class ConnectionManagerImplTest {
     @Test
     fun `connectToLastKnownOrOptimalServer - no selected server and stale list - refreshes latencies then connects to optimal server`() =
         runTest {
-            every { connectionPrefs.selectedVpnServer.value } returns null
+            coEvery { connectionPrefs.getSelectedVpnServerNow() } returns null
             every { regionListProvider.isDefaultList } returns MutableStateFlow(true)
             coEvery {
                 regionListProvider.updateServerLatencies(isConnected = false, isUserInitiated = false)
@@ -326,7 +326,7 @@ class ConnectionManagerImplTest {
     @Test
     fun `connectToLastKnownOrOptimalServer - no selected server and fresh list - connects to optimal server`() =
         runTest {
-            every { connectionPrefs.selectedVpnServer.value } returns null
+            coEvery { connectionPrefs.getSelectedVpnServerNow() } returns null
             every { regionListProvider.isDefaultList } returns MutableStateFlow(false)
             coEvery { regionListProvider.getOptimalServer() } returns server
 
@@ -339,7 +339,7 @@ class ConnectionManagerImplTest {
     @Test
     fun `connectToLastKnownOrOptimalServer - server already selected - connects directly without consulting region list`() =
         runTest {
-            every { connectionPrefs.selectedVpnServer.value } returns server
+            coEvery { connectionPrefs.getSelectedVpnServerNow() } returns server
 
             connectionManager.connectToLastKnownOrOptimalServer()
 

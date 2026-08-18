@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.webkit.CookieManager
 import android.webkit.WebStorage
-import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.data.DI
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnlauncher.VpnLauncher
@@ -21,7 +20,6 @@ class OnAppUpdateReceiver :
     BroadcastReceiver(),
     KoinComponent {
     private val settingsPrefs: SettingsPrefs by inject()
-    private val userLoggedInUseCase: IsUserLoggedInUseCase by inject()
     private val vpnLauncher: VpnLauncher by inject()
     private val ioScope: CoroutineScope by inject(named(DI.IO_SCOPE))
 
@@ -35,7 +33,10 @@ class OnAppUpdateReceiver :
         val pendingResult = goAsync()
         ioScope.launch {
             try {
-                if (settingsPrefs.isConnectOnAppUpdateEnabledNow() && userLoggedInUseCase.invoke()) {
+                // Login state is re-checked (with retry) inside connectToLastKnownOrOptimalServer(),
+                // since a single unretried check here can transiently see a stale logged-out state
+                // right after an update restarts the process.
+                if (settingsPrefs.isConnectOnAppUpdateEnabledNow()) {
                     vpnLauncher.launchVpn()
                 }
             } finally {
