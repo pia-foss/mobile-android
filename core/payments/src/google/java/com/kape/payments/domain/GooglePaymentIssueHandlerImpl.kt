@@ -19,6 +19,7 @@ class GooglePaymentIssueHandlerImpl(
                 if (state is InAppMessageState.SubscriptionStatusUpdated) {
                     refreshSubscriptionStatusUseCase.refresh(state.purchaseToken)
                 }
+                vpnSubscriptionPaymentProvider.inAppMessageState.value = InAppMessageState.Default
             }
         }
     }
