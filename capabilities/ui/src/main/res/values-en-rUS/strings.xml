@@ -57,12 +57,6 @@
   <string name="no_favorite_locations_available">No Favorite Locations Available</string>
   <string name="no_favorite_message">You didn\'t mark any servers as favorite yet.\n\nLong press the center of the clickpad on your TV remote at the location selection screen to mark a location as favorite.</string>
   <string name="app_name">PIA VPN</string>
-  <string name="url_terms_of_service">https://www.privateinternetaccess.com/pages/terms-of-service/</string>
-  <string name="url_privacy_policy">https://www.privateinternetaccess.com/pages/privacy-policy/</string>
-  <string name="url_support">https://www.privateinternetaccess.com/helpdesk/</string>
-  <string name="url_registration">https://www.privateinternetaccess.com/account/client-sign-in#subscription-overview</string>
-  <string name="url_support_new_ticket">https://www.privateinternetaccess.com/helpdesk/new-ticket</string>
-  <string name="url_delete_account">https://helpdesk.privateinternetaccess.com/guides/account-changes/change-account-information/delete-pia-account</string>
   <string name="qs_title">Connect to PIA</string>
   <string name="change_server">Change Server</string>
   <string name="qs_disconnect">Disconnect VPN (%s)</string>
@@ -77,14 +71,6 @@
   <string name="vpn_protected">Protected</string>
   <string name="vpn_protected_to_format">Protected | %s</string>
   <string name="vpn_not_protected">Not Protected</string>
-  <string name="bits_per_second">%.0f bit/s</string>
-  <string name="kbits_per_second">%.1f kbit/s</string>
-  <string name="mbits_per_second">%.1f Mbit/s</string>
-  <string name="gbits_per_second">%.1f Gbit/s</string>
-  <string name="volume_byte">%.0f B</string>
-  <string name="volume_kbyte">%.1f kB</string>
-  <string name="volume_mbyte">%.1f MB</string>
-  <string name="volume_gbyte">%.1f GB</string>
   <string name="about">About</string>
   <string name="trusted_network_singular">Trusted Network</string>
   <string name="trusted_network_plural">Trusted Networks</string>
@@ -177,6 +163,7 @@
   <string name="error_missing_credentials">You must enter a username and password</string>
   <string name="error_missing_email">You must provide a valid email address</string>
   <string name="error_account_expired">Your account has expired.</string>
+  <string name="error_receipt_login_failed">We couldn\'t verify your purchase. Please try logging in with your username and password.</string>
   <string name="login_support_dialog_title">Still having trouble?</string>
   <string name="login_support_dialog_message">It looks like something\'s not working. You can contact support with the technical details already filled in, so there\'s no need to describe the error yourself.</string>
   <string name="sort_regions_title">Sort regions by</string>
@@ -213,17 +200,21 @@
   <string name="save">Save</string>
   <string name="default_option">Default</string>
   <string name="edit">Edit</string>
-  <string name="general" comment="general General">General</string>
+  <!--    General     -->
+  <string name="general">General</string>
   <string name="networks">Networks</string>
   <string name="privacy">Privacy</string>
   <string name="obfuscation">Obfuscation</string>
   <string name="help">Help</string>
-  <string name="open_vpn" comment="open_vpn Protocols">OpenVPN</string>
+  <!--    Protocols      -->
+  <string name="open_vpn">OpenVPN</string>
   <string name="wire_guard">Wireguard</string>
-  <string name="enabled" comment="enabled Automation">Enabled</string>
+  <!--    Automation     -->
+  <string name="enabled">Enabled</string>
   <string name="disabled">Disabled</string>
   <string name="manage_automation">Manage Automation</string>
-  <string name="connect_on_boot_title" comment="connect_on_boot_title General Settings">Launch on System Startup</string>
+  <!--    General Settings    -->
+  <string name="connect_on_boot_title">Launch on System Startup</string>
   <string name="connect_on_boot_description">Connect on system start</string>
   <string name="connect_on_launch_title">Connect on Launch</string>
   <string name="connect_on_launch_description">Connect when app is started</string>
@@ -237,7 +228,8 @@
   <string name="protocol_use_small_packets_description">Will slightly lower the IP packet size to improve compatibility with some routers and mobile networks.</string>
   <string name="protocol_handshake_title">Handshake</string>
   <string name="protocol_handshake_description">RSA4096</string>
-  <string name="network_dns_title" comment="network_dns_title Networks Settings">DNS</string>
+  <!--    Networks Settings    -->
+  <string name="network_dns_title">DNS</string>
   <string name="network_dns_selection_title">DNS Selection</string>
   <string name="network_dns_selection_system">System DNS Resolver</string>
   <string name="network_dns_selection_system_lan_requirement">To access the System\'s DNS Resolver, we need to Allow LAN Traffic.</string>
@@ -250,7 +242,8 @@
   <string name="network_port_forwarding_description">Will allow incoming connections to your mobile device over an external port</string>
   <string name="network_allow_lan_traffic_title">Allow LAN Traffic</string>
   <string name="network_allow_lan_traffic_description">Always permits traffic between devices on your local network</string>
-  <string name="obfuscation_external_proxy_app_title" comment="obfuscation_external_proxy_app_title Obfuscation Settings">External Proxy App</string>
+  <!--    Obfuscation Settings    -->
+  <string name="obfuscation_external_proxy_app_title">External Proxy App</string>
   <string name="obfuscation_external_proxy_app_description">Make sure you exclude the app you are using to connect in the per app settings.</string>
   <string name="obfuscation_shadowsocks_title">Shadowsocks</string>
   <string name="obfuscation_shadowsocks_subtitle">Shadowsocks Configuration</string>
@@ -308,7 +301,7 @@
   <string name="external_proxy_problem_title">Proxy Requirements</string>
   <string name="external_proxy_problem_message">TCP is required in order for the app to work. Would you like to enable TCP?</string>
   <string name="drawer_item_description_app_version_format">Version %1$s (%2$s)</string>
-  <string name="drawer_item_title_subscription_expires_format" comment="drawer_item_title_subscription_expires_format format string: placeholder will be replaced with 'x days', 'x hours' or 'x minutes'">Your subscription expires in %1$s.</string>
+  <string name="drawer_item_title_subscription_expires_format" comment="format string: placeholder will be replaced with 'x days', 'x hours' or 'x minutes'">Your subscription expires in %1$s.</string>
   <string name="drawer_item_title_subscription_expired">Your subscription is expired</string>
   <string name="drawer_item_description_update_account">UPDATE ACCOUNT</string>
   <string name="drawer_item_title_account">Account</string>
@@ -379,7 +372,8 @@
             • Time to Connect\n
             • In-app processing purchase\n
             • In-app processing success\n
-            • In-app processing failure\n\n
+            • In-app processing failure\n
+            • In-app processing retry\n\n
         For all of these events, we will collect the following information:\n\n
             • Platform\n
             • App version\n
@@ -419,7 +413,8 @@
   <string name="account_deletion_confirmation_message">You can log in again if you have another account, or resubscribe at any time.</string>
   <string name="subscribe">Subscribe</string>
   <string name="error_pinging_while_connected">Unable to update latency while being connected to the VPN</string>
-  <string name="yes" comment="yes Rating">Yes</string>
+  <!-- Rating -->
+  <string name="yes">Yes</string>
   <string name="no">No</string>
   <string name="rating_prompt">How are we doing?</string>
   <string name="rating_review_title">How about a review in Google Play?</string>
