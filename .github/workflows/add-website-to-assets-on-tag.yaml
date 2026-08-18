@@ -33,8 +33,11 @@ jobs:
       - name: Grant Gradle execute permission
         run: chmod +x gradlew
 
-      - name: Assemble 'noinappRelease' and 'fdroidRelease' with Gradle
-        run: ./gradlew assembleNoinappRelease assembleFdroidRelease
+      - name: Assemble 'noinappRelease' with Gradle
+        run: ./gradlew assembleNoinappRelease -Dorg.gradle.jvmargs=-Xmx4096m
+
+      - name: Assemble 'fdroidRelease' with Gradle
+        run: ./gradlew assembleFdroidRelease -Dorg.gradle.jvmargs=-Xmx4096m
 
       - name: Extract version info
         id: version

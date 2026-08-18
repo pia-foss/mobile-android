@@ -25,7 +25,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Assemble 'amazonRelease' with Gradle
-        run: ./gradlew assembleAmazonRelease
+        run: ./gradlew assembleAmazonRelease -Dorg.gradle.jvmargs=-Xmx4096m
 
       - name: Extract version info
         id: version

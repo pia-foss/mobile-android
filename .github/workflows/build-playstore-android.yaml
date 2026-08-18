@@ -25,7 +25,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Bundle 'googleRelease' with Gradle
-        run: ./gradlew bundleGoogleRelease
+        run: ./gradlew bundleGoogleRelease -Dorg.gradle.jvmargs=-Xmx4096m
 
       - name: Extract version info
         id: version

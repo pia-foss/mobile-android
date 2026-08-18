@@ -9,6 +9,7 @@ import com.kape.data.DI
 import com.kape.data.kpi.KpiConnectionStatus
 import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.ui.theme.statusBarConnected
@@ -16,14 +17,12 @@ import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.theme.statusBarError
 import com.kape.vpnconnect.domain.ClientStateDataSource
-import com.kape.vpnmanager.api.VPNManagerConnectionStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,7 +42,7 @@ class ConnectionInfoProviderImpl(
         MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
     override val status: StateFlow<ConnectionStatus> = connectionStatusProvider.status
     override val title: StateFlow<String> = connectionStatusProvider.title
-    override val vpnManagerConnectionStatus: StateFlow<VPNManagerConnectionStatus?> =
+    override val vpnManagerConnectionStatus: StateFlow<KapeVPNConnectionStatus?> =
         connectionStatusProvider.vpnManagerConnectionStatus
     override var name: String = ""
     override var iso: String = ""
@@ -57,7 +56,6 @@ class ConnectionInfoProviderImpl(
     init {
         ioScope.launch {
             connectionStatusProvider.status
-                .distinctUntilChangedBy { it == ConnectionStatus.CONNECTED || it == ConnectionStatus.DISCONNECTED }
                 .collectLatest { latestConnectionStatus ->
                     currentConnectionStatus.update { latestConnectionStatus }
                     vpnManagerConnectionStatus.first()?.let {
@@ -84,8 +82,6 @@ class ConnectionInfoProviderImpl(
             ConnectionStatus.CONNECTING,
             ConnectionStatus.RECONNECTING,
         ).contains(currentConnectionStatus.value)
-
-    override fun isNotDisconnected(): Boolean = currentConnectionStatus.value != ConnectionStatus.DISCONNECTED
 
     override fun updateInfo(
         name: String,
@@ -121,19 +117,13 @@ class ConnectionInfoProviderImpl(
         }
     }
 
-    private fun getKpiConnectionStatus(status: VPNManagerConnectionStatus): KpiConnectionStatus =
+    private fun getKpiConnectionStatus(status: KapeVPNConnectionStatus): KpiConnectionStatus =
         when (status) {
-            VPNManagerConnectionStatus.Disconnecting,
-            is VPNManagerConnectionStatus.Disconnected,
+            KapeVPNConnectionStatus.Connected -> KpiConnectionStatus.Connected
+            KapeVPNConnectionStatus.Connecting -> KpiConnectionStatus.Connecting
+            KapeVPNConnectionStatus.Reconnecting -> KpiConnectionStatus.Reconnecting
+            KapeVPNConnectionStatus.Disconnected,
+            KapeVPNConnectionStatus.Disconnecting,
             -> KpiConnectionStatus.NotConnected
-
-            VPNManagerConnectionStatus.Authenticating,
-            VPNManagerConnectionStatus.LinkUp,
-            VPNManagerConnectionStatus.Configuring,
-            VPNManagerConnectionStatus.Connecting,
-            -> KpiConnectionStatus.Connecting
-
-            VPNManagerConnectionStatus.Reconnecting -> KpiConnectionStatus.Reconnecting
-            is VPNManagerConnectionStatus.Connected -> KpiConnectionStatus.Connected
         }
 }

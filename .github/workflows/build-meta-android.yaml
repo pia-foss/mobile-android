@@ -25,7 +25,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Assemble 'metaRelease' with Gradle
-        run: ./gradlew assembleMetaRelease
+        run: ./gradlew assembleMetaRelease -Dorg.gradle.jvmargs=-Xmx4096m
 
       - name: Extract version info
         id: version

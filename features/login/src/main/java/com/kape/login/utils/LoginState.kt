@@ -19,11 +19,7 @@ sealed class LoginState {
         override fun toString() = "LoginState.Expired"
     }
 
-    data class Throttled(
-        override val code: Int?,
-        override val message: String?,
-    ) : LoginState(),
-        QualifyingFailure {
+    object Throttled : LoginState() {
         override fun toString() = "LoginState.Throttled"
     }
 

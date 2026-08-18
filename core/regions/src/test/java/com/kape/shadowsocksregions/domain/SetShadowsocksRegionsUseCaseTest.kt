@@ -8,6 +8,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -44,7 +45,7 @@ internal class SetShadowsocksRegionsUseCaseTest {
         runTest {
             val expected = ShadowsocksServer(region = "", host = "", key = "", port = 0, cipher = "")
             coEvery { shadowsocksRegionPrefs.setSelectShadowsocksServer(any()) } returns Unit
-            every { shadowsocksRegionPrefs.selectedShadowsocksServer } returns MutableStateFlow(expected)
+            every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns flowOf(expected)
             every { shadowsocksRegionPrefs.shadowsocksServers } returns MutableStateFlow(listOf(expected))
             setShadowsocksRegionsUseCase.setSelectShadowsocksServer(expected)
             val actual = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer().first()

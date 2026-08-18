@@ -232,7 +232,7 @@ class ConnectionViewModel(
                 }
                 if (shortcutDisconnect) {
                     shortcutPrefs.setShortcutDisconnectVpn(false)
-                    connectionManager.disconnect().getOrNull()
+                    connectionManager.disconnect()
                 }
             }.collect()
         }
@@ -355,21 +355,18 @@ class ConnectionViewModel(
             )
 
     fun quickConnect(server: VpnServer) {
+        if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
+            router.updateDestination(VpnPermission)
+            return
+        }
+        _state.update {
+            it.copy(
+                server = server,
+            )
+        }
         viewModelScope.launch(ioDispatcher) {
-            if (!isVpnProfileInstalledUseCase.isVpnProfileInstalled()) {
-                router.updateDestination(VpnPermission)
-            } else {
-                vpnRegionPrefs.selectVpnServer(server)
-                connectionManager.connectJob =
-                    viewModelScope.launch(ioDispatcher) {
-                        connectionManager.reconnect(server, ::callback)
-                    }
-                _state.update {
-                    it.copy(
-                        server = server,
-                    )
-                }
-            }
+            vpnRegionPrefs.selectVpnServer(server)
+            connectionManager.reconnect(server, ::callback)
         }
     }
 
@@ -386,16 +383,15 @@ class ConnectionViewModel(
             prefs.setSelectedVpnServer(connectTo)
             prefs.addToQuickConnect(connectTo.key, connectTo.isDedicatedIp)
             snoozeHandler.cancelSnooze()
-            connectionManager.connectJob?.cancel()
-            connectionManager.connectJob =
-                viewModelScope.launch(ioDispatcher) {
-                    connectionManager.connect(
-                        server = connectTo,
-                        true,
-                        ::callback,
-                        ::showProtocolNotAvailable,
-                    )
-                }
+            if (connectionManager.isConnectionInProgress()) {
+                connectionManager.disconnect()
+            }
+            connectionManager.connect(
+                server = connectTo,
+                true,
+                ::callback,
+                ::showProtocolNotAvailable,
+            )
         }
     }
 
@@ -404,11 +400,7 @@ class ConnectionViewModel(
             if (settingsPrefs.isAutomationEnabled.value) {
                 prefs.setDisconnectedByUser(true)
             }
-            connectionManager.connectJob?.cancel()
-            connectionManager.connectJob = null
-            viewModelScope.launch(ioDispatcher) {
-                connectionManager.disconnect().getOrNull()
-            }
+            connectionManager.disconnect()
         }
     }
 
@@ -450,7 +442,7 @@ class ConnectionViewModel(
 
     private fun callback() {
         viewModelScope.launch(ioDispatcher) {
-            connectionManager.disconnect().getOrNull()
+            connectionManager.disconnect()
         }
     }
 }

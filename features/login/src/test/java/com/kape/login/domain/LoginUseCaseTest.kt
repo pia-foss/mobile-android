@@ -68,7 +68,7 @@ internal class LoginUseCaseTest : BaseTest() {
                 Arguments.of(ApiResult.Error(ApiError.AccountExpired), LoginState.Expired),
                 Arguments.of(
                     ApiResult.Error(ApiError.Throttled, 429, "Too many requests"),
-                    LoginState.Throttled(429, "Too many requests"),
+                    LoginState.Throttled,
                 ),
                 Arguments.of(
                     ApiResult.Error(ApiError.Unknown, 600, "boom"),
@@ -84,7 +84,7 @@ internal class LoginUseCaseTest : BaseTest() {
                 Arguments.of(ApiResult.Error(ApiError.AccountExpired), LoginState.Expired),
                 Arguments.of(
                     ApiResult.Error(ApiError.Throttled, 429, "Too many requests"),
-                    LoginState.Throttled(429, "Too many requests"),
+                    LoginState.Throttled,
                 ),
                 Arguments.of(
                     ApiResult.Error(ApiError.Unknown, 600, "boom"),
