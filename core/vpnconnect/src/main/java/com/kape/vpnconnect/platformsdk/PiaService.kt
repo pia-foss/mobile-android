@@ -241,7 +241,6 @@ class PiaService :
     override fun onDestroy() {
         super.onDestroy()
         scope.launch { stopSessionController() }.invokeOnCompletion { job.cancel() }
-        job.cancel()
     }
 
     override fun onRevoke() {
