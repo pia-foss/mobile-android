@@ -232,7 +232,9 @@ class ConnectionViewModel(
                 }
                 if (shortcutDisconnect) {
                     shortcutPrefs.setShortcutDisconnectVpn(false)
-                    connectionManager.disconnect()
+                    if (connectionInfoProvider.isConnected()) {
+                        connectionManager.disconnect()
+                    }
                 }
             }.collect()
         }

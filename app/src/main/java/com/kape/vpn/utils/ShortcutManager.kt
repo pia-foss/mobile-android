@@ -87,7 +87,11 @@ class ShortcutManager(
                     },
                 ).build()
 
-        ShortcutManagerCompat.setDynamicShortcuts(context, listOf(connect, servers, settings))
+        try {
+            ShortcutManagerCompat.setDynamicShortcuts(context, listOf(connect, servers, settings))
+        } catch (_: IllegalStateException) {
+            // Android rate-limits shortcut mutations; swallow so this doesn't cancel the shared ioScope.
+        }
     }
 
     companion object {
