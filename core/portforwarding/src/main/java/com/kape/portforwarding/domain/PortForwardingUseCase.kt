@@ -30,6 +30,7 @@ class PortForwardingUseCase(
         val gateway = connectionPrefs.gateway.first()
         if (gateway.isEmpty()) {
             portForwardingStatus.value = PortForwardingStatus.Error
+            return
         }
 
         // Set the gateway's CN for the selected protocol before the binding request
