@@ -251,7 +251,7 @@ class PiaService :
     }
 
     private suspend fun startPortForwarding() {
-        if (!settingsPrefs.isPortForwardingEnabled.first()) return
+        if (!settingsPrefs.isPortForwardingEnabledNow()) return
         portForwardingUseCase.bindPort(connectionSource.getVpnToken())
         connectionSource.startPortForwarding()
     }
