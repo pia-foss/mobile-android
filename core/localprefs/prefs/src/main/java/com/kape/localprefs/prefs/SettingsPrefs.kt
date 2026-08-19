@@ -150,6 +150,8 @@ class SettingsPrefs(
 
     suspend fun isPortForwardingEnabledNow(): Boolean = getPortForwardingEnabled().first()
 
+    suspend fun isLaunchOnBootEnabledNow(): Boolean = getLaunchOnStartupEnabled().first()
+
     suspend fun setShadowsocksObfuscationEnabled(enabled: Boolean) {
         dataStore.edit { it[SHADOWSOCKS_OBFUSCATION_ENABLED] = enabled }
     }

@@ -8,7 +8,6 @@ import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.vpnlauncher.VpnLauncher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
@@ -30,7 +29,7 @@ class OnBootReceiver :
         val pendingResult = goAsync()
         CoroutineScope(ioDispatcher).launch {
             try {
-                if (settingsPrefs.isLaunchOnStartupEnabled.first()) {
+                if (settingsPrefs.isLaunchOnBootEnabledNow()) {
                     vpnLauncher.launchVpn()
                 }
             } finally {
