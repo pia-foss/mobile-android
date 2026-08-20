@@ -86,7 +86,7 @@ To trigger a build for testing along with all other builds from the latest main,
 
 ### Dependency Verification
 
-`gradle/verification-metadata.xml` pins every resolved dependency by SHA-256 content hash, so a tampered or substituted artifact fails the build before any code executes. CI regenerates this file on every PR and fails if it diverges from the committed version.
+`gradle/verification-metadata.xml` pins every resolved dependency by SHA-256 content hash, so a tampered or substituted artifact fails the build before any code executes. CI regenerates this file and fails if it diverges from the committed version, but only runs that check when a push/PR touches a dependency-related file (any `build.gradle(.kts)`, `settings.gradle(.kts)`, `gradle.properties`, `libs.versions.toml`, `gradle/verification-metadata.xml`, or `gradle/wrapper/gradle-wrapper.properties`) — see `detect-dependency-changes` in `.github/workflows/assembleDebug.yml`.
 
 Whenever you bump a dependency version (e.g. `kape-platform-sdk-vpn-pia`, or any of the KAPE/JitPack libraries), regenerate it locally and commit the result. Include the tasks CI actually runs, not just `help` — some tools (e.g. ktlint) resolve their own tool classpath lazily, only when their task executes, so `help` alone won't capture it:
 
