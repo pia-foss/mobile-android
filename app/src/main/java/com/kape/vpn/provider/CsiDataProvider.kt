@@ -127,6 +127,7 @@ class CsiDataProvider(
             when (activeProtocol) {
                 VpnProtocols.WireGuard -> settingsPrefs.wireGuardSettings.value
                 VpnProtocols.OpenVPN -> settingsPrefs.openVpnSettings.value
+                VpnProtocols.Automatic -> settingsPrefs.autoSettings.value
             }
         val sb = StringBuilder()
         sb.append("~~ Connection Settings ~~\n")

@@ -132,6 +132,7 @@ class KpiEventGenerator(
             when (settingsPrefs.selectedProtocol.first()) {
                 VpnProtocols.WireGuard -> VpnProtocols.WireGuard.name
                 VpnProtocols.OpenVPN -> VpnProtocols.OpenVPN.name
+                VpnProtocols.Automatic -> VpnProtocols.Automatic.name
             }
         if (connectionEvent == KpiConnectionEvent.ConnectionEstablished) {
             eventProperties[KpiEventPropertyKey.TimeToConnect.value] = timeToConnect.toString()

@@ -95,6 +95,7 @@ class SettingsViewModel(
     val maceEnabled = prefs.isMaceEnabled
     val wireGuardSettings = prefs.wireGuardSettings
     val openVpnSettings = prefs.openVpnSettings
+    val autoSettings = prefs.autoSettings
     val hasUpdateAvailable = updateAvailableManager.hasUpdateAvailable
 
     private val isDnsNumeric = mutableStateOf(true)
@@ -332,6 +333,18 @@ class SettingsViewModel(
         }
     }
 
+    fun setAutoEnableSmallPackets(enabled: Boolean) {
+        viewModelScope.launch(ioDispatcher) {
+            val currentSettings = autoSettings.first()
+            val hasSettingChanged = currentSettings.useSmallPackets != enabled
+            prefs.setAutoSettings(currentSettings.copy(useSmallPackets = enabled))
+
+            if (hasSettingChanged) {
+                showReconnectDialogIfVpnConnected()
+            }
+        }
+    }
+
     fun getPorts(): Map<Int, String> {
         val availablePorts = mutableMapOf<Int, String>()
         when (openVpnSettings.value.transport) {
@@ -346,6 +359,8 @@ class SettingsViewModel(
                     availablePorts[it] = it.toString()
                 }
             }
+
+            Transport.AUTO -> {}
         }
         return availablePorts
     }

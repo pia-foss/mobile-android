@@ -5,4 +5,5 @@ enum class Transport(
 ) {
     UDP("UDP"),
     TCP("TCP"),
+    AUTO("AUTO"),
 }

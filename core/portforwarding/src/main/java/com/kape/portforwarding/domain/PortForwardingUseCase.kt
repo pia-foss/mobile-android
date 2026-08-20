@@ -27,22 +27,35 @@ class PortForwardingUseCase(
 
     suspend fun bindPort(vpnToken: String) {
         portForwardingStatus.value = PortForwardingStatus.Requesting
-        val gateway = connectionPrefs.gateway.first()
+        val gateway = connectionPrefs.getGatewayNow()
         if (gateway.isEmpty()) {
             portForwardingStatus.value = PortForwardingStatus.Error
             return
         }
 
         // Set the gateway's CN for the selected protocol before the binding request
-        val server = connectionPrefs.selectedVpnServer.first()
-        server?.let {
-            it.endpoints[getServerGroup()]?.let { serverEndpointDetails ->
+        val server = connectionPrefs.getSelectedVpnServerNow()
+        if (server == null) {
+            portForwardingStatus.value = PortForwardingStatus.Error
+            return
+        }
+        val serverGroup = getServerGroup()
+        serverGroup?.let {
+            server.endpoints[serverGroup]?.let { serverEndpointDetails ->
                 val tunnelCommonName = mutableListOf<Pair<String, String>>()
                 for ((_, commonName) in serverEndpointDetails) {
                     tunnelCommonName.add(Pair(gateway, commonName))
                 }
                 api.setKnownEndpointCommonName(tunnelCommonName)
             }
+        } ?: run {
+            val tunnelCommonName = mutableListOf<Pair<String, String>>()
+            for (detailsPerProtocol in server.endpoints.values) {
+                for ((_, commonName) in detailsPerProtocol) {
+                    tunnelCommonName.add(Pair(gateway, commonName))
+                }
+            }
+            api.setKnownEndpointCommonName(tunnelCommonName)
         }
 
         if (vpnToken.isEmpty()) {
@@ -92,7 +105,7 @@ class PortForwardingUseCase(
         port.value = ""
     }
 
-    private suspend fun getServerGroup(): VpnServer.ServerGroup =
+    private suspend fun getServerGroup(): VpnServer.ServerGroup? =
         when (settingsPrefs.selectedProtocol.first()) {
             VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
             VpnProtocols.OpenVPN -> {
@@ -102,6 +115,8 @@ class PortForwardingUseCase(
                     VpnServer.ServerGroup.OPENVPN_TCP
                 }
             }
+
+            VpnProtocols.Automatic -> null
         }
 
     private fun tokenExpirationDateDaysLeft(tokenExpirationDate: String): Long {

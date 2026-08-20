@@ -56,6 +56,7 @@ class ConnectionDataSourceImpl(
             when (settingsPrefs.getSelectedProtocolNow()) {
                 VpnProtocols.WireGuard -> ServiceLogger.VpnServiceLoggerTag.WireGuard
                 VpnProtocols.OpenVPN -> ServiceLogger.VpnServiceLoggerTag.OpenVpn
+                VpnProtocols.Automatic -> ServiceLogger.VpnServiceLoggerTag.Automatic
             }
         return ServiceLogger(tag).getLogs()
     }

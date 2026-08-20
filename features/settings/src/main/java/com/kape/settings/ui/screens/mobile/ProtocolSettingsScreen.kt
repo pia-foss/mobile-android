@@ -47,6 +47,7 @@ fun ProtocolSettingsScreen() =
         val protocolDialogVisible = remember { mutableStateOf(false) }
         val protocolSelection by viewModel.selectedProtocol.collectAsStateWithLifecycle()
         val wireGuardSettings by viewModel.wireGuardSettings.collectAsStateWithLifecycle()
+        val autoSettings by viewModel.autoSettings.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -79,6 +80,19 @@ fun ProtocolSettingsScreen() =
                                 wireGuardSettings = wireGuardSettings,
                             )
                         }
+
+                        VpnProtocols.Automatic -> {
+                            ProtocolSelectionLine(
+                                name = VpnProtocols.Automatic.name,
+                                protocolDialogVisible,
+                            )
+                            UseSmallPacketsLine(
+                                enabled = autoSettings.useSmallPackets,
+                                onClick = {
+                                    viewModel.setAutoEnableSmallPackets(it)
+                                },
+                            )
+                        }
                     }
 
                     if (protocolDialogVisible.value) {
@@ -88,6 +102,7 @@ fun ProtocolSettingsScreen() =
                                 mapOf(
                                     VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
                                     VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
+                                    VpnProtocols.Automatic to VpnProtocols.Automatic.name,
                                 ),
                             buttons = getDefaultButtons(),
                             onDismiss = { protocolDialogVisible.value = false },
@@ -135,14 +150,14 @@ fun OpenVpnProtocolSettingsScreen(
     )
     SettingsItem(
         titleId = R.string.protocol_transport_title,
-        subtitle = openVpnSettings.transport.value,
+        subtitle = openVpnSettings.transport?.value,
         testTag = ":ProtocolSettingsScreen:transport",
     ) {
         transportDialogVisible.value = !transportDialogVisible.value
     }
     SettingsItem(
         titleId = R.string.protocol_data_encryption_title,
-        subtitle = openVpnSettings.dataEncryption.value,
+        subtitle = openVpnSettings.dataEncryption?.value,
         testTag = ":ProtocolSettingsScreen:data_encryption",
     ) {
         encryptionDialogVisible.value = !encryptionDialogVisible.value
@@ -165,7 +180,7 @@ fun OpenVpnProtocolSettingsScreen(
         TransportSelectionDialog(
             viewModel = viewModel,
             transportDialogVisible = transportDialogVisible,
-            transportSelection = openVpnSettings.transport,
+            transportSelection = openVpnSettings.transport ?: Transport.UDP,
             portSelection = portSelection,
             openVpnSettings,
         )
@@ -175,7 +190,7 @@ fun OpenVpnProtocolSettingsScreen(
         EncryptionSelectionDialog(
             viewModel = viewModel,
             encryptionDialogVisible = encryptionDialogVisible,
-            encryptionSelection = openVpnSettings.dataEncryption,
+            encryptionSelection = openVpnSettings.dataEncryption ?: DataEncryption.AES_128_GCM,
         )
     }
 
