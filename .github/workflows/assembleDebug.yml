@@ -32,8 +32,53 @@ jobs:
       - name: Run Ktlint Check
         run: ./gradlew ktlintCheck
 
+  detect-dependency-changes:
+    name: Detect dependency-related changes
+    runs-on: ubuntu-latest
+    outputs:
+      dependencies-changed: ${{ steps.filter.outputs.changed }}
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check for dependency-related file changes
+        id: filter
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            BASE_SHA="${{ github.event.before }}"
+            HEAD_SHA="${{ github.event.after }}"
+          fi
+
+          # "before" is all-zeros on the first push of a new branch; fall back to the parent commit.
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            BASE_SHA=$(git rev-parse "$HEAD_SHA~1" 2>/dev/null || echo "")
+          fi
+
+          if [ -z "$BASE_SHA" ]; then
+            echo "No usable base commit found - running dependency verification to be safe."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          if echo "$CHANGED_FILES" | grep -E -q '(^|/)(build\.gradle(\.kts)?|settings\.gradle(\.kts)?|gradle\.properties|libs\.versions\.toml)$|^gradle/verification-metadata\.xml$|^gradle/wrapper/gradle-wrapper\.properties$'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
   verifyDependencyMetadata:
     name: Verify dependency verification metadata is up to date
+    needs: [detect-dependency-changes]
+    if: needs.detect-dependency-changes.outputs.dependencies-changed == 'true'
     runs-on: ubuntu-latest
     env:
       GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
@@ -99,6 +144,10 @@ jobs:
 
   unit-tests:
     needs: [ktlintCheck, verifyDependencyMetadata]
+    if: |
+      always() &&
+      needs.ktlintCheck.result == 'success' &&
+      (needs.verifyDependencyMetadata.result == 'success' || needs.verifyDependencyMetadata.result == 'skipped')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
@@ -122,7 +171,11 @@ jobs:
   build-apk:
     name: Build PR APK
     needs: [ktlintCheck, verifyDependencyMetadata]
-    if: github.event_name == 'pull_request'
+    if: |
+      always() &&
+      github.event_name == 'pull_request' &&
+      needs.ktlintCheck.result == 'success' &&
+      (needs.verifyDependencyMetadata.result == 'success' || needs.verifyDependencyMetadata.result == 'skipped')
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -176,6 +229,10 @@ jobs:
   e2e-testing:
     name: Run end to end instrumentation tests (${{ matrix.test-class }})
     needs: [ktlintCheck, verifyDependencyMetadata]
+    if: |
+      always() &&
+      needs.ktlintCheck.result == 'success' &&
+      (needs.verifyDependencyMetadata.result == 'success' || needs.verifyDependencyMetadata.result == 'skipped')
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
