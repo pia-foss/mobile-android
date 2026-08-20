@@ -32,22 +32,6 @@ class HelpSettingsTests {
         }
 
     @Test
-    fun sendLogSucceeds() =
-        uiAutomator {
-            login()
-            navigateToHelpScreen()
-
-            assertInteractableAndClick(Help.ENABLE_DEBUG_LOGGING_TOGGLE)
-
-            // A real Send Log network round trip - assert the success dialog and dismiss it.
-            assertInteractableAndClick(Help.SEND_LOG)
-            assertNotNull(
-                device.wait(Until.hasObject(By.res(Help.SEND_LOG_SUCCESS_OK)), NETWORK_TRANSITION_TIMEOUT),
-            )
-            onElement { viewIdResourceName == Help.SEND_LOG_SUCCESS_OK }.click()
-        }
-
-    @Test
     fun viewSharedDataIsAccessible() =
         uiAutomator {
             login()

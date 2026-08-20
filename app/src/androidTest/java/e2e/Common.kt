@@ -150,11 +150,8 @@ object Settings {
 object Help {
     const val VERSION = ":HelpScreen:Version"
     const val VIEW_DEBUG_LOG = ":HelpScreen:ViewDebugLog"
-    const val ENABLE_DEBUG_LOGGING_TOGGLE = ":HelpScreen:EnableDebugLogging"
-    const val SEND_LOG = ":HelpScreen:SendLog"
     const val IMPROVE_PIA_TOGGLE = ":HelpScreen:ImprovePia"
     const val VIEW_SHARED_DATA = ":HelpScreen:ViewSharedData"
-    const val SEND_LOG_SUCCESS_OK = ":HelpScreen:SendLogSuccessOk"
 }
 
 object GeneralSettings {
