@@ -1,10 +1,12 @@
 package com.kape.featureflags.domain
 
+import com.kape.localprefs.prefs.FeaturePrefs
+import kotlinx.coroutines.flow.first
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class ForceUpdateUseCase(
-    private val featureFlagsDataSource: FeatureFlagsDataSource,
+    private val featurePrefs: FeaturePrefs,
 ) {
-    suspend fun requiresForceUpdate(): Boolean = featureFlagsDataSource.invoke().contains("force-update-required")
+    suspend fun requiresForceUpdate(): Boolean = featurePrefs.getFlags().first().contains("force-update-required")
 }

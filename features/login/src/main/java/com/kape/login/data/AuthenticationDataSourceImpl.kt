@@ -3,11 +3,8 @@ package com.kape.login.data
 import com.kape.contracts.AuthenticationDataSource
 import com.kape.data.auth.ApiResult
 import com.kape.data.auth.getApiError
-import com.kape.localprefs.prefs.FeaturePrefs
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import kotlin.coroutines.resume
@@ -22,7 +19,6 @@ private fun List<AccountRequestError>.toApiError(): ApiResult.Error {
 @Singleton(binds = [AuthenticationDataSource::class])
 class AuthenticationDataSourceImpl(
     private val api: AndroidAccountAPI,
-    private val featurePrefs: FeaturePrefs,
 ) : AuthenticationDataSource {
     override fun isUserLoggedIn(): Boolean = !api.apiToken().isNullOrEmpty() && !api.vpnToken().isNullOrEmpty()
 
@@ -85,20 +81,6 @@ class AuthenticationDataSourceImpl(
                     return@migrateApiToken
                 }
                 cont.resume(ApiResult.Success)
-            }
-        }
-
-    override suspend fun featureFlags(): ApiResult =
-        suspendCancellableCoroutine { continuation ->
-            api.featureFlags { details, error ->
-                if (error.isNotEmpty()) {
-                    continuation.resume(error.toApiError())
-                    return@featureFlags
-                }
-                CoroutineScope(continuation.context).launch {
-                    featurePrefs.setFlags(details?.flags ?: emptyList())
-                    continuation.resume(ApiResult.Success)
-                }
             }
         }
 }
