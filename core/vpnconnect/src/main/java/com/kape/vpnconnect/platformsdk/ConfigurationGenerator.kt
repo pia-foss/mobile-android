@@ -250,5 +250,5 @@ class ConfigurationGenerator(
 
     private fun automaticOpenVpnUdpSettings() = OpenVpnSettings()
 
-    private fun automaticOpenVpnTcpSettings() = OpenVpnSettings(transport = Transport.TCP)
+    private fun automaticOpenVpnTcpSettings() = OpenVpnSettings(transport = Transport.TCP, port = "80")
 }
