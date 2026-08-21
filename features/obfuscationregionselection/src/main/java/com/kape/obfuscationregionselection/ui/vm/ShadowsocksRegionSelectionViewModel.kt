@@ -11,6 +11,8 @@ import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
 import com.kape.obfuscationregionselection.util.ItemType
 import com.kape.obfuscationregionselection.util.ShadowsocksServerItem
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
+import com.kape.utils.arrangeServers
+import com.kape.utils.filterServersByName
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -59,81 +61,29 @@ class ShadowsocksRegionSelectionViewModel(
         value: String,
         isSearchEnabled: MutableState<Boolean>,
     ) = viewModelScope.launch(ioDispatcher) {
-        if (value.isNotEmpty()) {
-            isSearchEnabled.value = true
-            sorted.value =
-                servers.value.filter {
-                    it.type is ItemType.Content &&
-                        it.type.server.region
-                            .lowercase()
-                            .contains(value.lowercase())
-                }
-        } else {
-            isSearchEnabled.value = false
-        }
+        isSearchEnabled.value = value.isNotEmpty()
+        sorted.value =
+            filterServersByName(servers.value, value) { item ->
+                (item.type as? ItemType.Content)?.server?.region
+            }
     }
 
     private fun isShadowsocksServerFavorite(serverName: String): Flow<Boolean> = shadowsocksRegionPrefs.isFavorite(serverName)
 
     private fun arrangeShadowsocksServers(items: List<ShadowsocksServer>? = null) =
         viewModelScope.launch(ioDispatcher) {
-            val list = mutableListOf<ShadowsocksServerItem>()
-            val favorites = mutableListOf<ShadowsocksServerItem>()
-            val all = mutableListOf<ShadowsocksServerItem>()
-            items?.let {
-                for (server in it) {
-                    if (isShadowsocksServerFavorite(server.region).first()) {
-                        favorites.add(
-                            ShadowsocksServerItem(
-                                type =
-                                    ItemType.Content(
-                                        isFavorite = true,
-                                        server = server,
-                                    ),
-                            ),
-                        )
-                    } else {
-                        all.add(
-                            ShadowsocksServerItem(
-                                ItemType.Content(
-                                    isFavorite = false,
-                                    server = server,
-                                ),
-                            ),
-                        )
-                    }
-                }
-            } ?: run {
-                for (item in servers.value.filter { it.type is ItemType.Content }) {
-                    if (isShadowsocksServerFavorite((item.type as ItemType.Content).server.region).first()) {
-                        favorites.add(
-                            ShadowsocksServerItem(
-                                type =
-                                    ItemType.Content(
-                                        isFavorite = true,
-                                        server = item.type.server,
-                                    ),
-                            ),
-                        )
-                    } else {
-                        all.add(
-                            ShadowsocksServerItem(
-                                ItemType.Content(
-                                    isFavorite = false,
-                                    server = item.type.server,
-                                ),
-                            ),
-                        )
-                    }
-                }
-            }
-
-            if (favorites.isNotEmpty()) {
-                list.add(0, ShadowsocksServerItem(type = ItemType.HeadingFavorites))
-                list.addAll(favorites)
-                list.add(ShadowsocksServerItem(type = ItemType.HeadingAll))
-            }
-            list.addAll(all)
-            servers.value = list
+            servers.value =
+                arrangeServers(
+                    items = items,
+                    currentItems = servers.value,
+                    toServer = { item -> (item.type as? ItemType.Content)?.server },
+                    isFavorite = { server -> isShadowsocksServerFavorite(server.region).first() },
+                    toItem = { server, favorite ->
+                        ShadowsocksServerItem(type = ItemType.Content(isFavorite = favorite, server = server))
+                    },
+                    headingFavorites = ShadowsocksServerItem(type = ItemType.HeadingFavorites),
+                    headingAll = ShadowsocksServerItem(type = ItemType.HeadingAll),
+                    includeFavoritesInAll = false,
+                )
         }
 }

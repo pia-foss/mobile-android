@@ -22,6 +22,7 @@ dependencies {
     implementation(project(":core:contracts"))
     implementation(project(":core:regions"))
     implementation(project(":core:localprefs:prefs"))
+    implementation(project(":core:utils"))
     implementation(project(":capabilities:ui"))
     implementation(project(":features:appbar"))
 
