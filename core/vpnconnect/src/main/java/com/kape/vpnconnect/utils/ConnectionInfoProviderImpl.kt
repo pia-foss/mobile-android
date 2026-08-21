@@ -109,6 +109,7 @@ class ConnectionInfoProviderImpl(
                 )
 
             ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTING -> scheme.statusBarConnecting()
+            ConnectionStatus.PAUSED -> scheme.statusBarError() // to be confirmed
         }
 
     override fun requestClientIp() {
@@ -125,5 +126,7 @@ class ConnectionInfoProviderImpl(
             KapeVPNConnectionStatus.Disconnected,
             KapeVPNConnectionStatus.Disconnecting,
             -> KpiConnectionStatus.NotConnected
+
+            KapeVPNConnectionStatus.Paused -> KpiConnectionStatus.Paused
         }
 }

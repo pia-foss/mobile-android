@@ -8,4 +8,6 @@ sealed class KpiConnectionStatus {
     data object Reconnecting : KpiConnectionStatus()
 
     data object Connected : KpiConnectionStatus()
+
+    data object Paused : KpiConnectionStatus()
 }

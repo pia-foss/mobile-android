@@ -11,5 +11,7 @@ sealed class ConnectionStatus {
 
     data object RECONNECTING : ConnectionStatus()
 
+    data object PAUSED : ConnectionStatus()
+
     data object ERROR : ConnectionStatus()
 }

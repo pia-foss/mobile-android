@@ -1,5 +1,5 @@
 [versions]
-kape-platform-sdk-vpn-pia = "0.1.0"
+kape-platform-sdk-vpn-pia = "0.2.0"
 mobile-android-obfuscation-proxy = "0.1.6.1"
 mobile-android-openvpn = "0.4.15-pia"
 mobile-shared-account = "1.6.2"

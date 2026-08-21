@@ -157,7 +157,7 @@ private fun getTopBarConnectionColor(
     when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING ->
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING, ConnectionStatus.PAUSED ->
             scheme.statusBarDefault(
                 scheme,
             )

@@ -184,7 +184,7 @@ private fun getAppBarBackgroundColor(
     scheme: ColorScheme,
 ): Brush =
     when (status) {
-        ConnectionStatus.ERROR, ConnectionStatus.DISCONNECTING, ConnectionStatus.DISCONNECTED ->
+        ConnectionStatus.ERROR, ConnectionStatus.DISCONNECTING, ConnectionStatus.DISCONNECTED, ConnectionStatus.PAUSED ->
             Brush.verticalGradient(
                 scheme.errorGradient(),
             )

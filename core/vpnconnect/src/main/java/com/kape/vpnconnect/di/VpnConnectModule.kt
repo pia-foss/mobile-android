@@ -49,6 +49,8 @@ class VpnConnectModule {
             context.getString(com.kape.ui.R.string.vpn_not_protected)
         values[ConnectionStatus.RECONNECTING] =
             context.getString(com.kape.ui.R.string.reconnecting)
+        values[ConnectionStatus.PAUSED] =
+            context.getString(com.kape.ui.R.string.not_connected)
         return values
     }
 

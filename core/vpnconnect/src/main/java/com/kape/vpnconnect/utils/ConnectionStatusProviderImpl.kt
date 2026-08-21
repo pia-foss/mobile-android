@@ -53,6 +53,8 @@ class ConnectionStatusProviderImpl(
                     }
                     ConnectionStatus.CONNECTED
                 }
+
+                KapeVPNConnectionStatus.Paused -> ConnectionStatus.PAUSED
             }
 
         if (currentStatus != _status.value) {
