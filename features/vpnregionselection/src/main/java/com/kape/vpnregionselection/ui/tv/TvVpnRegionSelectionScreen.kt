@@ -39,6 +39,7 @@ import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
 import com.kape.appbar.view.tv.TvHomeHeaderItem
 import com.kape.contracts.ConnectionInfoProvider
+import com.kape.data.RegionItemType
 import com.kape.regions.data.ServerData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -47,7 +48,6 @@ import com.kape.ui.tv.text.RegionSelectionGridSectionText
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
-import com.kape.vpnregionselection.util.ItemType
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -80,7 +80,8 @@ fun TvVpnRegionSelectionScreen() =
         val serverItems =
             if (isFavoriteSelected.value) {
                 viewModel.getTvVpnServers().value.filter {
-                    it.type is ItemType.Content && it.type.isFavorite
+                    val type = it.type
+                    type is RegionItemType.Content && type.isFavorite
                 }
             } else {
                 if (isSearchEnabled.value &&
@@ -228,25 +229,25 @@ fun TvVpnRegionSelectionScreen() =
                         ) {
                             items(serverItems.size) { index ->
                                 val serverItem = serverItems[index]
-                                when (serverItem.type) {
-                                    is ItemType.Content -> {
+                                when (val type = serverItem.type) {
+                                    is RegionItemType.Content -> {
                                         TvLocationPickerItem(
-                                            vpnServerIso = serverItem.type.server.iso,
-                                            vpnServerName = serverItem.type.server.name,
-                                            vpnServerLatency = serverItem.type.server.latency,
+                                            vpnServerIso = type.server.iso,
+                                            vpnServerName = type.server.name,
+                                            vpnServerLatency = type.server.latency,
                                             vpnServerLatencyTimeout = VPN_REGIONS_PING_TIMEOUT.toString(),
-                                            enableFavorite = serverItem.type.enableFavorite,
-                                            isFavorite = serverItem.type.isFavorite,
-                                            isDedicatedIp = serverItem.type.server.isDedicatedIp,
+                                            enableFavorite = type.enableFavorite,
+                                            isFavorite = type.isFavorite,
+                                            isDedicatedIp = type.server.isDedicatedIp,
                                             onClick = {
-                                                viewModel.onVpnRegionSelected(serverItem.type.server)
+                                                viewModel.onVpnRegionSelected(type.server)
                                             },
                                             onLongClick = {
-                                                if (serverItem.type.enableFavorite) {
+                                                if (type.enableFavorite) {
                                                     viewModel.onFavoriteVpnClicked(
                                                         ServerData(
-                                                            serverItem.type.server.name,
-                                                            serverItem.type.server.isDedicatedIp,
+                                                            type.server.name,
+                                                            type.server.isDedicatedIp,
                                                         ),
                                                     )
                                                 }
@@ -254,8 +255,8 @@ fun TvVpnRegionSelectionScreen() =
                                         )
                                     }
 
-                                    ItemType.HeadingAll -> {}
-                                    ItemType.HeadingFavorites -> {}
+                                    RegionItemType.HeadingAll -> {}
+                                    RegionItemType.HeadingFavorites -> {}
                                 }
                             }
                         }

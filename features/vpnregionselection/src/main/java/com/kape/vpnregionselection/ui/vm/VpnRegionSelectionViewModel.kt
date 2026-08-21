@@ -11,6 +11,8 @@ import com.kape.data.AUTO_KEY
 import com.kape.data.Connection
 import com.kape.data.DI
 import com.kape.data.HelpSettings
+import com.kape.data.RegionItemType
+import com.kape.data.RegionServerItem
 import com.kape.data.TvSideMenu
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
@@ -23,8 +25,6 @@ import com.kape.utils.UpdateAvailableManager
 import com.kape.utils.arrangeServers
 import com.kape.utils.filterServersByName
 import com.kape.vpnregions.utils.RegionListProvider
-import com.kape.vpnregionselection.util.ItemType
-import com.kape.vpnregionselection.util.ServerItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,8 +46,8 @@ class VpnRegionSelectionViewModel(
     private val updateAvailableManager: UpdateAvailableManager,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    val servers = mutableStateOf(emptyList<ServerItem>())
-    val sorted = mutableStateOf(emptyList<ServerItem>())
+    val servers = mutableStateOf(emptyList<RegionServerItem<VpnServer>>())
+    val sorted = mutableStateOf(emptyList<RegionServerItem<VpnServer>>())
     private val _selectedServer = MutableStateFlow<VpnServer?>(null)
     val selectedServer = _selectedServer.asStateFlow()
 
@@ -126,7 +126,7 @@ class VpnRegionSelectionViewModel(
         isSearchEnabled?.value = value.isNotEmpty()
         sorted.value =
             filterServersByName(servers.value, value) { item ->
-                (item.type as? ItemType.Content)?.server?.name
+                (item.type as? RegionItemType.Content)?.server?.name
             }
     }
 
@@ -142,12 +142,13 @@ class VpnRegionSelectionViewModel(
         router.updateDestination(Connection)
     }
 
-    fun getTvVpnServers(): MutableState<List<ServerItem>> {
+    fun getTvVpnServers(): MutableState<List<RegionServerItem<VpnServer>>> {
         var autoRegionIndex =
-            servers.value.indexOfFirst { serverItem: ServerItem ->
-                serverItem.type is ItemType.Content &&
-                    serverItem.type.server.iso == autoRegionIso &&
-                    serverItem.type.server.name == autoRegionName
+            servers.value.indexOfFirst { serverItem: RegionServerItem<VpnServer> ->
+                val type = serverItem.type
+                type is RegionItemType.Content &&
+                    type.server.iso == autoRegionIso &&
+                    type.server.name == autoRegionName
             }
         if (autoRegionIndex == -1) {
             autoRegionIndex = 0
@@ -155,12 +156,13 @@ class VpnRegionSelectionViewModel(
         return mutableStateOf(servers.value.subList(autoRegionIndex, servers.value.size))
     }
 
-    fun getTvSearchVpnServers(): MutableState<List<ServerItem>> {
+    fun getTvSearchVpnServers(): MutableState<List<RegionServerItem<VpnServer>>> {
         var autoRegionIndex =
-            sorted.value.indexOfFirst { serverItem: ServerItem ->
-                serverItem.type is ItemType.Content &&
-                    serverItem.type.server.iso == autoRegionIso &&
-                    serverItem.type.server.name == autoRegionName
+            sorted.value.indexOfFirst { serverItem: RegionServerItem<VpnServer> ->
+                val type = serverItem.type
+                type is RegionItemType.Content &&
+                    type.server.iso == autoRegionIso &&
+                    type.server.name == autoRegionName
             }
         if (autoRegionIndex == -1) {
             autoRegionIndex = 0
@@ -177,9 +179,9 @@ class VpnRegionSelectionViewModel(
     suspend fun arrangeVpnServers(items: List<VpnServer>? = null) {
         val serverGroup = mapProtocolToServerGroup()
         val showGeoLocatedServers = settingsPrefs.isShowGeoLocatedServersEnabled.first()
-        val autoRegion = (getAutoRegion(autoRegionName, autoRegionIso).type as ItemType.Content).server
+        val autoRegion = (getAutoRegion(autoRegionName, autoRegionIso).type as RegionItemType.Content).server
 
-        val sourceServers = items ?: servers.value.mapNotNull { (it.type as? ItemType.Content)?.server }
+        val sourceServers = items ?: servers.value.mapNotNull { (it.type as? RegionItemType.Content)?.server }
         val sortedServers =
             sourceServers
                 .filterNot { it.key == AUTO_KEY }
@@ -189,20 +191,20 @@ class VpnRegionSelectionViewModel(
             arrangeServers(
                 items = listOf(autoRegion) + sortedServers,
                 currentItems = servers.value,
-                toServer = { item -> (item.type as? ItemType.Content)?.server },
+                toServer = { item -> (item.type as? RegionItemType.Content)?.server },
                 isFavorite = { server -> isVpnServerFavorite(ServerData(server.name, server.isDedicatedIp)).first() },
                 toItem = { server, favorite ->
-                    ServerItem(
+                    RegionServerItem(
                         type =
-                            ItemType.Content(
+                            RegionItemType.Content(
                                 isFavorite = favorite,
                                 enableFavorite = server.key != AUTO_KEY,
                                 server = server,
                             ),
                     )
                 },
-                headingFavorites = ServerItem(type = ItemType.HeadingFavorites),
-                headingAll = ServerItem(type = ItemType.HeadingAll),
+                headingFavorites = RegionServerItem(type = RegionItemType.HeadingFavorites),
+                headingAll = RegionServerItem(type = RegionItemType.HeadingAll),
                 filter = { server ->
                     server.key == AUTO_KEY ||
                         (
@@ -214,10 +216,15 @@ class VpnRegionSelectionViewModel(
     }
 
     private fun updateVpnServers() {
-        val updatedList = mutableListOf<ServerItem>()
+        val updatedList = mutableListOf<RegionServerItem<VpnServer>>()
         for (item in sorted.value) {
-            val current = item.type as ItemType.Content
-            updatedList.add(servers.value.first { it.type is ItemType.Content && it.type.server.name == current.server.name })
+            val current = item.type as RegionItemType.Content<VpnServer>
+            updatedList.add(
+                servers.value.first {
+                    val type = it.type
+                    type is RegionItemType.Content && type.server.name == current.server.name
+                },
+            )
         }
         sorted.value = updatedList
     }
@@ -225,10 +232,10 @@ class VpnRegionSelectionViewModel(
     private fun getAutoRegion(
         name: String,
         iso: String,
-    ): ServerItem =
-        ServerItem(
+    ): RegionServerItem<VpnServer> =
+        RegionServerItem(
             type =
-                ItemType.Content(
+                RegionItemType.Content(
                     isFavorite = false,
                     enableFavorite = false,
                     server =

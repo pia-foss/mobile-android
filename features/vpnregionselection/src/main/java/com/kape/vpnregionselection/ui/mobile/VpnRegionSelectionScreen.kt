@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.data.RegionItemType
 import com.kape.regions.data.ServerData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -42,7 +43,6 @@ import com.kape.ui.mobile.elements.Search
 import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
-import com.kape.vpnregionselection.util.ItemType
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -122,18 +122,18 @@ fun VpnRegionSelectionScreen() =
                             }
                         items(items.size) { index ->
                             val item = items[index]
-                            when (item.type) {
-                                is ItemType.Content -> {
+                            when (val type = item.type) {
+                                is RegionItemType.Content -> {
                                     LocationPickerItem(
-                                        server = item.type.server,
-                                        isFavorite = item.type.isFavorite,
-                                        enableFavorite = item.type.enableFavorite,
+                                        server = type.server,
+                                        isFavorite = type.isFavorite,
+                                        enableFavorite = type.enableFavorite,
                                         isPortForwardingEnabled = viewModel.isPortForwardingEnabled.collectAsState().value,
-                                        isOffline = item.type.server.isOffline,
+                                        isOffline = type.server.isOffline,
                                         onClick = {
                                             if (viewModel.isVpnConnectionActive()) {
                                                 showChangeLocationDialog.value =
-                                                    viewModel.selectServer(item.type.server)
+                                                    viewModel.selectServer(type.server)
                                                 if (!showChangeLocationDialog.value) {
                                                     appBarViewModel.navigateBack()
                                                 }
@@ -145,8 +145,8 @@ fun VpnRegionSelectionScreen() =
                                         onFavoriteVpnClick = {
                                             viewModel.onFavoriteVpnClicked(
                                                 ServerData(
-                                                    item.type.server.name,
-                                                    item.type.server.isDedicatedIp,
+                                                    type.server.name,
+                                                    type.server.isDedicatedIp,
                                                 ),
                                             )
                                         },
@@ -154,14 +154,14 @@ fun VpnRegionSelectionScreen() =
                                     )
                                 }
 
-                                ItemType.HeadingAll -> {
+                                RegionItemType.HeadingAll -> {
                                     MenuText(
                                         content = stringResource(id = R.string.all_locations),
                                         modifier = Modifier.padding(16.dp),
                                     )
                                 }
 
-                                ItemType.HeadingFavorites -> {
+                                RegionItemType.HeadingFavorites -> {
                                     MenuText(
                                         content = stringResource(id = R.string.favorite),
                                         modifier =
