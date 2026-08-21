@@ -20,6 +20,8 @@ import com.kape.regions.data.ServerData
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.UpdateAvailableManager
+import com.kape.utils.arrangeServers
+import com.kape.utils.filterServersByName
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.util.ItemType
 import com.kape.vpnregionselection.util.ServerItem
@@ -31,7 +33,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
-import java.util.Collections
 
 @KoinViewModel
 class VpnRegionSelectionViewModel(
@@ -122,20 +123,11 @@ class VpnRegionSelectionViewModel(
         value: String,
         isSearchEnabled: MutableState<Boolean>? = null,
     ) = viewModelScope.launch(ioDispatcher) {
-        if (value.isNotEmpty()) {
-            isSearchEnabled?.value = true
-            sorted.value =
-                servers.value
-                    .filter {
-                        it.type is ItemType.Content &&
-                            it.type.server.name
-                                .lowercase()
-                                .contains(value.lowercase())
-                    }.distinct()
-        } else {
-            sorted.value = emptyList()
-            isSearchEnabled?.value = false
-        }
+        isSearchEnabled?.value = value.isNotEmpty()
+        sorted.value =
+            filterServersByName(servers.value, value) { item ->
+                (item.type as? ItemType.Content)?.server?.name
+            }
     }
 
     fun navigateToHelp() {
@@ -183,125 +175,42 @@ class VpnRegionSelectionViewModel(
     private fun isVpnServerFavorite(serverData: ServerData) = vpnRegionPrefs.isFavorite(serverData)
 
     suspend fun arrangeVpnServers(items: List<VpnServer>? = null) {
-        val autoRegion = getAutoRegion(autoRegionName, autoRegionIso)
-        val list = mutableListOf<ServerItem>()
-        val favorites = mutableListOf<ServerItem>()
-        val all = mutableListOf<ServerItem>()
         val serverGroup = mapProtocolToServerGroup()
-        items?.let {
-            for (server in it) {
-                if (settingsPrefs.isShowGeoLocatedServersEnabled.first().not() && server.isGeo) {
-                    continue
-                }
-                serverGroup?.let {
-                    if (server.endpoints[serverGroup].isNullOrEmpty()) {
-                        // ignore server as it does not currently support selected protocols
-                    } else {
-                        all.add(
-                            ServerItem(
-                                type =
-                                    ItemType.Content(
-                                        isFavorite =
-                                            isVpnServerFavorite(
-                                                ServerData(
-                                                    server.name,
-                                                    server.isDedicatedIp,
-                                                ),
-                                            ).first(),
-                                        server = server,
-                                    ),
-                            ),
-                        )
-                    }
-                } ?: run {
-                    all.add(
-                        ServerItem(
-                            type =
-                                ItemType.Content(
-                                    isFavorite =
-                                        isVpnServerFavorite(
-                                            ServerData(
-                                                server.name,
-                                                server.isDedicatedIp,
-                                            ),
-                                        ).first(),
-                                    server = server,
-                                ),
-                        ),
-                    )
-                }
-            }
-            all.add(0, autoRegion)
-        } ?: run {
-            for (item in servers.value.filter { it.type is ItemType.Content }) {
-                val content = item.type as ItemType.Content
-                if (settingsPrefs
-                        .isShowGeoLocatedServersEnabled.value
-                        .not() &&
-                    content.server.isGeo
-                ) {
-                    continue
-                }
-                serverGroup?.let {
-                    if (content.server.endpoints[serverGroup].isNullOrEmpty()) {
-                        // ignore server as it does not currently support selected protocols
-                    } else {
-                        all.add(
-                            ServerItem(
-                                type =
-                                    ItemType.Content(
-                                        isFavorite =
-                                            isVpnServerFavorite(
-                                                ServerData(
-                                                    content.server.name,
-                                                    content.server.isDedicatedIp,
-                                                ),
-                                            ).first(),
-                                        enableFavorite = content.enableFavorite,
-                                        server = content.server,
-                                    ),
-                            ),
-                        )
-                    }
-                } ?: run {
-                    all.add(
-                        ServerItem(
-                            type =
-                                ItemType.Content(
-                                    isFavorite =
-                                        isVpnServerFavorite(
-                                            ServerData(
-                                                content.server.name,
-                                                content.server.isDedicatedIp,
-                                            ),
-                                        ).first(),
-                                    enableFavorite = content.enableFavorite,
-                                    server = content.server,
-                                ),
-                        ),
-                    )
-                }
-            }
-            all.add(0, autoRegion)
-        }
+        val showGeoLocatedServers = settingsPrefs.isShowGeoLocatedServersEnabled.first()
+        val autoRegion = (getAutoRegion(autoRegionName, autoRegionIso).type as ItemType.Content).server
 
-        favorites.addAll(all.filter { (it.type as ItemType.Content).isFavorite }.distinct())
-        if (favorites.isNotEmpty()) {
-            list.add(0, ServerItem(type = ItemType.HeadingFavorites))
-            favorites.sortBy { (it.type as ItemType.Content).server.latency?.toInt() }
-            list.addAll(favorites)
-            list.add(ServerItem(type = ItemType.HeadingAll))
-        }
+        val sourceServers = items ?: servers.value.mapNotNull { (it.type as? ItemType.Content)?.server }
+        val sortedServers =
+            sourceServers
+                .filterNot { it.key == AUTO_KEY }
+                .sortedWith(compareByDescending<VpnServer> { it.isDedicatedIp }.thenBy { it.latency?.toInt() })
 
-        all.sortBy { (it.type as ItemType.Content).server.latency?.toInt() }
-        all.sortByDescending { (it.type as ItemType.Content).server.isDedicatedIp }
-        val autoIndex =
-            all.indexOfFirst { it.type is ItemType.Content && it.type.server.name == autoRegionName }
-        if (all.isNotEmpty() && autoIndex >= 0) {
-            Collections.swap(all, 0, autoIndex)
-        }
-        list.addAll(all.distinct())
-        servers.value = list
+        servers.value =
+            arrangeServers(
+                items = listOf(autoRegion) + sortedServers,
+                currentItems = servers.value,
+                toServer = { item -> (item.type as? ItemType.Content)?.server },
+                isFavorite = { server -> isVpnServerFavorite(ServerData(server.name, server.isDedicatedIp)).first() },
+                toItem = { server, favorite ->
+                    ServerItem(
+                        type =
+                            ItemType.Content(
+                                isFavorite = favorite,
+                                enableFavorite = server.key != AUTO_KEY,
+                                server = server,
+                            ),
+                    )
+                },
+                headingFavorites = ServerItem(type = ItemType.HeadingFavorites),
+                headingAll = ServerItem(type = ItemType.HeadingAll),
+                filter = { server ->
+                    server.key == AUTO_KEY ||
+                        (
+                            (showGeoLocatedServers || server.isGeo.not()) &&
+                                (serverGroup == null || server.endpoints[serverGroup].isNullOrEmpty().not())
+                        )
+                },
+            )
     }
 
     private fun updateVpnServers() {
