@@ -49,6 +49,7 @@ fun ConnectButton(
             ConnectionStatus.ERROR,
             ConnectionStatus.DISCONNECTING,
             ConnectionStatus.DISCONNECTED,
+            ConnectionStatus.PAUSED,
             -> colorScheme.connectionError()
 
             ConnectionStatus.CONNECTED,
@@ -89,6 +90,7 @@ fun ConnectButton(
             ConnectionStatus.CONNECTED,
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
+            ConnectionStatus.PAUSED,
             ConnectionStatus.ERROR,
             ->
                 ButtonBackground(

@@ -56,6 +56,7 @@ class RatingTool(
                         ConnectionStatus.CONNECTING,
                         ConnectionStatus.DISCONNECTING,
                         ConnectionStatus.ERROR,
+                        ConnectionStatus.PAUSED,
                         ConnectionStatus.RECONNECTING,
                         -> {
                             // no-op

@@ -40,6 +40,10 @@ class SubmitKpiEventUseCase(
             KpiConnectionStatus.Reconnecting -> {
                 // no-op
             }
+
+            KpiConnectionStatus.Paused -> {
+                // no-op
+            }
         }
         kpiConnectionStatus = status
     }

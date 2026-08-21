@@ -189,7 +189,7 @@ private fun getTopTextConnectionColor(
     when (status) {
         ConnectionStatus.ERROR -> scheme.statusBarError()
         ConnectionStatus.CONNECTED -> scheme.statusBarConnected()
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> LocalColors.current.onSurface
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING, ConnectionStatus.PAUSED -> LocalColors.current.onSurface
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTING,
         -> scheme.statusBarConnecting()
@@ -198,10 +198,12 @@ private fun getTopTextConnectionColor(
 @Composable
 private fun getTopTextConnectionString(status: ConnectionStatus): String =
     when (status) {
-        ConnectionStatus.ERROR -> stringResource(id = com.kape.ui.R.string.connection_error)
-        ConnectionStatus.CONNECTED -> stringResource(id = com.kape.ui.R.string.connected)
-        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> stringResource(id = com.kape.ui.R.string.not_connected)
+        ConnectionStatus.ERROR -> stringResource(id = R.string.connection_error)
+        ConnectionStatus.CONNECTED -> stringResource(id = R.string.connected)
+        ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING -> stringResource(id = R.string.not_connected)
         ConnectionStatus.RECONNECTING,
         ConnectionStatus.CONNECTING,
-        -> stringResource(id = com.kape.ui.R.string.connecting)
+        -> stringResource(id = R.string.connecting)
+
+        ConnectionStatus.PAUSED -> stringResource(R.string.vpn_snooze)
     }

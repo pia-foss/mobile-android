@@ -408,6 +408,7 @@ class Widget(
 
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
+            ConnectionStatus.PAUSED,
             ConnectionStatus.ERROR,
             -> ImageProvider(R.drawable.background_red)
         }
@@ -421,6 +422,7 @@ class Widget(
 
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
+            ConnectionStatus.PAUSED,
             ConnectionStatus.ERROR,
             -> ImageProvider(R.drawable.outline_red)
         }
@@ -434,6 +436,7 @@ class Widget(
 
             ConnectionStatus.DISCONNECTED,
             ConnectionStatus.DISCONNECTING,
+            ConnectionStatus.PAUSED,
             ConnectionStatus.ERROR,
             -> ImageProvider(R.drawable.ic_power_red)
         }
