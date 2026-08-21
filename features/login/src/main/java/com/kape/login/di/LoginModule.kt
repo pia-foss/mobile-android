@@ -39,10 +39,7 @@ import org.koin.core.annotation.Singleton
 @Module
 class LoginModule {
     @Singleton(binds = [AuthenticationDataSource::class])
-    fun provideAuthenticationDataSource(
-        api: AndroidAccountAPI,
-        featurePrefs: FeaturePrefs,
-    ): AuthenticationDataSource = AuthenticationDataSourceImpl(api, featurePrefs)
+    fun provideAuthenticationDataSource(api: AndroidAccountAPI): AuthenticationDataSource = AuthenticationDataSourceImpl(api)
 
     @Singleton
     fun provideLoginUseCase(source: AuthenticationDataSource): LoginUseCase = LoginUseCase(source)

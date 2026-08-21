@@ -1,12 +1,12 @@
 package com.kape.splash.di
 
-import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.GetAppLatestVersion
 import com.kape.contracts.IsUserLoggedInUseCase
 import com.kape.contracts.Router
 import com.kape.data.DI
+import com.kape.featureflags.domain.FeatureFlagsDataSource
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.signup.domain.SignupBillingHandler
@@ -43,9 +43,9 @@ class SplashModule {
         connectionInfoProvider: ConnectionInfoProvider,
         isUserLoggedIn: IsUserLoggedInUseCase,
         platformUtils: PlatformUtils,
-        authenticationDataSource: AuthenticationDataSource,
         consentPrefs: ConsentPrefs,
         billingHandler: SignupBillingHandler,
+        featureFlagsDataSource: FeatureFlagsDataSource,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): SplashViewModel =
@@ -59,9 +59,9 @@ class SplashModule {
             connectionInfoProvider,
             isUserLoggedIn,
             platformUtils,
-            authenticationDataSource,
             consentPrefs,
             billingHandler,
+            featureFlagsDataSource,
             ioDispatcher,
             mainDispatcher,
         )

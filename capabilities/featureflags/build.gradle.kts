@@ -14,6 +14,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugar)
 
     implementation(libs.mobile.shared.account)
+    implementation(project(":core:localprefs:prefs"))
 
     implementation(libs.bundles.serialization)
     implementation(libs.bundles.koin)

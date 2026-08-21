@@ -3,7 +3,6 @@ package com.kape.splash.ui.vm
 import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.GetAppLatestVersion
@@ -16,6 +15,7 @@ import com.kape.data.Subscribe
 import com.kape.data.TvConsent
 import com.kape.data.TvWelcome
 import com.kape.data.Update
+import com.kape.featureflags.domain.FeatureFlagsDataSource
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.signup.domain.SignupBillingHandler
@@ -38,9 +38,9 @@ class SplashViewModel(
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val isUserLoggedIn: IsUserLoggedInUseCase,
     private val platformUtils: PlatformUtils,
-    private val authenticationDataSource: AuthenticationDataSource,
     private val consentPrefs: ConsentPrefs,
     private val billingHandler: SignupBillingHandler,
+    private val featureFlagsDataSource: FeatureFlagsDataSource,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
@@ -49,7 +49,7 @@ class SplashViewModel(
 
     init {
         viewModelScope.launch(ioDispatcher) {
-            authenticationDataSource.featureFlags()
+            featureFlagsDataSource.invoke()
         }
         viewModelScope.launch {
             consentPrefs.hasMadeConsentDecision.collectLatest {
