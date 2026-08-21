@@ -53,5 +53,7 @@ class ServiceLogger(
         data object OpenVpn : VpnServiceLoggerTag("OpenVPN")
 
         data object WireGuard : VpnServiceLoggerTag("WireGuard")
+
+        data object Automatic : VpnServiceLoggerTag("Automatic")
     }
 }

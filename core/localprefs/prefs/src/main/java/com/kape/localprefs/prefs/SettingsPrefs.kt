@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.kape.localprefs.Prefs
+import com.kape.localprefs.data.settings.AutomaticSettings
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.CustomObfuscation
 import com.kape.settings.data.DnsOptions
@@ -29,13 +30,17 @@ private val SHOW_GEO_SERVERS = booleanPreferencesKey("show-geo-located-servers")
 private val SELECTED_PROTOCOL = stringPreferencesKey("selected-protocol")
 private val WIRE_GUARD_SETTINGS = stringPreferencesKey("wireguard-settings")
 private val OPEN_VPN_SETTINGS = stringPreferencesKey("openvpn-settings")
+private val AUTO_SETTINGS = stringPreferencesKey("auto-settings")
 private val SELECTED_DNS_OPTION_SETTINGS = stringPreferencesKey("selected-dns-option-settings")
 private val CUSTOM_DNS_SETTINGS = stringPreferencesKey("custom-dns-settings")
-private val SELECTED_OBFUSCATION_OPTION_SETTINGS = stringPreferencesKey("selected-obfuscation-option-settings")
+private val SELECTED_OBFUSCATION_OPTION_SETTINGS =
+    stringPreferencesKey("selected-obfuscation-option-settings")
 private val CUSTOM_OBFUSCATION_SETTINGS = stringPreferencesKey("custom-obfuscation-settings")
-private val SHADOWSOCKS_OBFUSCATION_ENABLED = booleanPreferencesKey("shadowsocks-obfuscation-enabled")
+private val SHADOWSOCKS_OBFUSCATION_ENABLED =
+    booleanPreferencesKey("shadowsocks-obfuscation-enabled")
 private val EXTERNAL_PROXY_APP_ENABLED = booleanPreferencesKey("external-proxy-app-enabled")
-private val EXTERNAL_PROXY_APP_PACKAGE_NAME = stringPreferencesKey("external-proxy-app-package-name")
+private val EXTERNAL_PROXY_APP_PACKAGE_NAME =
+    stringPreferencesKey("external-proxy-app-package-name")
 private val DEBUG_LOGGING = booleanPreferencesKey("debug-logging")
 private val VPN_EXCLUDED_APPS = stringSetPreferencesKey("vpn-excluded-apps")
 private val PORT_FORWARDING = booleanPreferencesKey("port-forwarding")
@@ -52,27 +57,71 @@ class SettingsPrefs(
     val isConnectOnLaunchEnabled: StateFlow<Boolean> =
         getConnectOnLaunchEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
     val isConnectOnAppUpdateEnabled: StateFlow<Boolean> =
-        getConnectOnAppUpdateEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
+        getConnectOnAppUpdateEnabled().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            false,
+        )
     val isShowGeoLocatedServersEnabled: StateFlow<Boolean> =
-        getShowGeoLocatedServersEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), true)
+        getShowGeoLocatedServersEnabled().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            true,
+        )
     val selectedProtocol: StateFlow<VpnProtocols> =
-        getSelectedProtocol().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), VpnProtocols.WireGuard)
+        getSelectedProtocol().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            VpnProtocols.WireGuard,
+        )
     val wireGuardSettings: StateFlow<WireGuardSettings> =
-        getWireGuardSettings().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), WireGuardSettings())
+        getWireGuardSettings().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            WireGuardSettings(),
+        )
     val openVpnSettings: StateFlow<OpenVpnSettings> =
-        getOpenVpnSettings().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), OpenVpnSettings())
+        getOpenVpnSettings().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            OpenVpnSettings(),
+        )
+
+    val autoSettings: StateFlow<AutomaticSettings> =
+        getAutoSettings().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            AutomaticSettings(),
+        )
+
     val selectedDnsOption: StateFlow<DnsOptions> =
-        getSelectedDnsOption().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), DnsOptions.PIA)
+        getSelectedDnsOption().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            DnsOptions.PIA,
+        )
     val customDns: StateFlow<CustomDns> =
         getCustomDns().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), CustomDns())
     val isShadowsocksObfuscationEnabled: StateFlow<Boolean> =
-        getShadowsocksObfuscationEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
+        getShadowsocksObfuscationEnabled().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            false,
+        )
     val isExternalProxyAppEnabled: StateFlow<Boolean> =
         getExternalProxyAppEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
     val externalProxyAppPackageName: StateFlow<String> =
-        getExternalProxyAppPackageName().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
+        getExternalProxyAppPackageName().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            "",
+        )
     val selectedObfuscationOption: StateFlow<ObfuscationOptions> =
-        getSelectedObfuscationOption().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), ObfuscationOptions.PIA)
+        getSelectedObfuscationOption().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            ObfuscationOptions.PIA,
+        )
     val customObfuscation: StateFlow<CustomObfuscation?> =
         getCustomObfuscation().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
     val isDebugLoggingEnabled: StateFlow<Boolean> =
@@ -82,7 +131,11 @@ class SettingsPrefs(
     val isPortForwardingEnabled: StateFlow<Boolean> =
         getPortForwardingEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
     val isAllowLocalTrafficEnabled: StateFlow<Boolean> =
-        getAllowLocalTrafficEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
+        getAllowLocalTrafficEnabled().stateIn(
+            scope,
+            SharingStarted.WhileSubscribed(waitTime),
+            false,
+        )
     val isAutomationEnabled: StateFlow<Boolean> =
         getAutomationEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
     val isMaceEnabled: StateFlow<Boolean> =
@@ -114,6 +167,10 @@ class SettingsPrefs(
 
     suspend fun setOpenVpnSettings(settings: OpenVpnSettings) {
         dataStore.edit { it[OPEN_VPN_SETTINGS] = Json.encodeToString(settings) }
+    }
+
+    suspend fun setAutoSettings(settings: AutomaticSettings) {
+        dataStore.edit { it[AUTO_SETTINGS] = Json.encodeToString(settings) }
     }
 
     suspend fun setSelectedDnsOption(dnsOptions: DnsOptions) {
@@ -165,7 +222,9 @@ class SettingsPrefs(
     }
 
     suspend fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) {
-        dataStore.edit { it[SELECTED_OBFUSCATION_OPTION_SETTINGS] = Json.encodeToString(obfuscationOptions) }
+        dataStore.edit {
+            it[SELECTED_OBFUSCATION_OPTION_SETTINGS] = Json.encodeToString(obfuscationOptions)
+        }
     }
 
     suspend fun setCustomObfuscation(customObfuscation: CustomObfuscation) {
@@ -219,6 +278,11 @@ class SettingsPrefs(
             prefs[OPEN_VPN_SETTINGS]?.let { Json.decodeFromString(it) } ?: OpenVpnSettings()
         }
 
+    private fun getAutoSettings(): Flow<AutomaticSettings> =
+        dataStore.data.map { prefs ->
+            prefs[AUTO_SETTINGS]?.let { Json.decodeFromString(it) } ?: AutomaticSettings()
+        }
+
     private fun getSelectedDnsOption(): Flow<DnsOptions> =
         dataStore.data.map { prefs ->
             prefs[SELECTED_DNS_OPTION_SETTINGS]?.let { Json.decodeFromString(it) } ?: DnsOptions.PIA
@@ -237,7 +301,8 @@ class SettingsPrefs(
 
     private fun getSelectedObfuscationOption(): Flow<ObfuscationOptions> =
         dataStore.data.map { prefs ->
-            prefs[SELECTED_OBFUSCATION_OPTION_SETTINGS]?.let { Json.decodeFromString(it) } ?: ObfuscationOptions.PIA
+            prefs[SELECTED_OBFUSCATION_OPTION_SETTINGS]?.let { Json.decodeFromString(it) }
+                ?: ObfuscationOptions.PIA
         }
 
     private fun getCustomObfuscation(): Flow<CustomObfuscation?> =

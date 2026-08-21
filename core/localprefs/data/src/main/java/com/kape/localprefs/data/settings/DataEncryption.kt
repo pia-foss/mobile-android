@@ -6,4 +6,5 @@ enum class DataEncryption(
     AES_128_GCM("AES-128-GCM"),
     AES_256_GCM("AES-256-GCM"),
     CHA_CHA_20("ChaCha20"),
+    AUTO("Auto"),
 }

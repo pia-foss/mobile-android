@@ -83,9 +83,11 @@ class ConnectionManagerImpl :
         stopCallback: () -> Unit,
         showDialog: () -> Unit,
     ) {
-        if (server.endpoints[mapProtocolToServerGroup()].isNullOrEmpty()) {
-            showDialog()
-            return
+        if (settingsPrefs.getSelectedProtocolNow() != VpnProtocols.Automatic) {
+            if (server.endpoints[mapProtocolToServerGroup()].isNullOrEmpty()) {
+                showDialog()
+                return
+            }
         }
 
         connectionInProgress.set(true)
@@ -222,15 +224,18 @@ class ConnectionManagerImpl :
         return Result.success(Unit)
     }
 
-    private fun mapProtocolToServerGroup(): VpnServer.ServerGroup =
+    private fun mapProtocolToServerGroup(): VpnServer.ServerGroup? =
         when (settingsPrefs.selectedProtocol.value) {
             VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
             VpnProtocols.OpenVPN -> {
                 when (settingsPrefs.openVpnSettings.value.transport) {
                     Transport.UDP -> VpnServer.ServerGroup.OPENVPN_UDP
                     Transport.TCP -> VpnServer.ServerGroup.OPENVPN_TCP
+                    Transport.AUTO -> null
                 }
             }
+
+            VpnProtocols.Automatic -> null
         }
 
     private val serviceConnection =

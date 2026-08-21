@@ -53,6 +53,12 @@ class ConfigurationGenerator(
                     settingsPrefs.getWireGuardSettingsNow(),
                     connectionPrefs.getSelectedVpnServerNow(),
                 )
+
+            VpnProtocols.Automatic ->
+                generateAutomaticConfigurations(
+                    connectionPrefs.getSelectedVpnServerNow(),
+                    getDnsServers(),
+                )
         }
 
     private suspend fun getDnsServers(): List<String> =
@@ -82,6 +88,7 @@ class ConfigurationGenerator(
             when (openVpnSettings.transport) {
                 Transport.UDP -> OpenVpnTransport.UDP
                 Transport.TCP -> OpenVpnTransport.TCP
+                Transport.AUTO -> OpenVpnTransport.UDP
             }
         val port = openVpnSettings.port.toInt()
         val mtu = openVpnSettings.mtu
@@ -91,6 +98,7 @@ class ConfigurationGenerator(
             when (transport) {
                 OpenVpnTransport.UDP -> VpnServer.ServerGroup.OPENVPN_UDP
                 OpenVpnTransport.TCP -> VpnServer.ServerGroup.OPENVPN_TCP
+                null -> null
             }
 
         fun params(
@@ -103,6 +111,7 @@ class ConfigurationGenerator(
                     DataEncryption.AES_128_GCM -> "AES-128-GCM"
                     DataEncryption.AES_256_GCM -> "AES-256-GCM"
                     DataEncryption.CHA_CHA_20 -> "CHACHA20-POLY1305"
+                    DataEncryption.AUTO -> "" // never used
                 }
             val commandLineParams =
                 mutableListOf(
@@ -117,7 +126,7 @@ class ConfigurationGenerator(
                     "dev tun",
                     "auth-user-pass",
                     "client",
-                    "proto ${transport.name.lowercase()}",
+                    "proto ${transport?.name?.lowercase()}",
                     "connect-retry 2 300",
                     "allow-recursive-routing",
                     "resolv-retry infinite",
@@ -198,6 +207,32 @@ class ConfigurationGenerator(
         return result
     }
 
+    private fun generateAutomaticConfigurations(
+        server: VpnServer?,
+        dnsServers: List<String> = emptyList(),
+    ): List<VpnConfiguration> {
+        val result =
+            mutableListOf<VpnConfiguration>().apply {
+                addAll(generateWireGuardVpnConfigurations(automaticWireGuardSettings(), server))
+                addAll(
+                    generateOpenVpnConfigurations(
+                        automaticOpenVpnUdpSettings(),
+                        server,
+                        dnsServers,
+                    ),
+                )
+                addAll(
+                    generateOpenVpnConfigurations(
+                        automaticOpenVpnTcpSettings(),
+                        server,
+                        dnsServers,
+                    ),
+                )
+            }
+
+        return result
+    }
+
     private fun getUsernameAndPassword(): Pair<String, String> {
         var username = ""
         var password = ""
@@ -210,4 +245,10 @@ class ConfigurationGenerator(
         }
         return Pair(username, password)
     }
+
+    private fun automaticWireGuardSettings() = WireGuardSettings()
+
+    private fun automaticOpenVpnUdpSettings() = OpenVpnSettings()
+
+    private fun automaticOpenVpnTcpSettings() = OpenVpnSettings(transport = Transport.TCP)
 }

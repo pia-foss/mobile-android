@@ -5,4 +5,5 @@ enum class VpnProtocols(
 ) {
     WireGuard("WireGuard"),
     OpenVPN("OpenVPN"),
+    Automatic("Automatic"),
 }

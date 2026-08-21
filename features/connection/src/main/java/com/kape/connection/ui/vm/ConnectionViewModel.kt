@@ -345,6 +345,7 @@ class ConnectionViewModel(
                 when (protocol) {
                     VpnProtocols.WireGuard -> settingsPrefs.wireGuardSettings
                     VpnProtocols.OpenVPN -> settingsPrefs.openVpnSettings
+                    VpnProtocols.Automatic -> settingsPrefs.autoSettings
                 }
             }.stateIn(
                 scope = viewModelScope,
@@ -353,6 +354,7 @@ class ConnectionViewModel(
                     when (settingsPrefs.selectedProtocol.value) {
                         VpnProtocols.WireGuard -> settingsPrefs.wireGuardSettings.value
                         VpnProtocols.OpenVPN -> settingsPrefs.openVpnSettings.value
+                        VpnProtocols.Automatic -> settingsPrefs.autoSettings.value
                     },
             )
 

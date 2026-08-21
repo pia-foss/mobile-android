@@ -53,6 +53,7 @@ fun TvProtocolSettingsScreen() =
         val viewModel: SettingsViewModel = koinViewModel()
         val openVpnSettings by viewModel.openVpnSettings.collectAsStateWithLifecycle()
         val wireGuardSettings by viewModel.wireGuardSettings.collectAsStateWithLifecycle()
+        val autoSettings by viewModel.autoSettings.collectAsStateWithLifecycle()
         val connectionInfoProvider: ConnectionInfoProvider = koinInject()
         val initialFocusRequester = remember { FocusRequester() }
 
@@ -133,6 +134,24 @@ fun TvProtocolSettingsScreen() =
                                     portDialogVisible = portDialogVisible,
                                     openVpnSettings,
                                 )
+
+                            VpnProtocols.Automatic -> {
+                                TvSettingsItem(
+                                    modifier = Modifier.focusRequester(initialFocusRequester),
+                                    titleId = R.string.protocol_selection_title,
+                                    subtitle = VpnProtocols.Automatic.name,
+                                ) {
+                                    protocolDialogVisible.value = true
+                                }
+                                TvSettingsToggle(
+                                    titleId = R.string.protocol_use_small_packets_title,
+                                    subtitleId = R.string.protocol_use_small_packets_description,
+                                    enabled = autoSettings.useSmallPackets,
+                                    toggle = {
+                                        viewModel.setAutoEnableSmallPackets(it)
+                                    },
+                                )
+                            }
                         }
                     }
                     Column(
@@ -159,6 +178,7 @@ fun TvProtocolSettingsScreen() =
                             mapOf(
                                 VpnProtocols.OpenVPN to VpnProtocols.OpenVPN.name,
                                 VpnProtocols.WireGuard to VpnProtocols.WireGuard.name,
+                                VpnProtocols.Automatic to VpnProtocols.Automatic.name,
                             ),
                         buttons = getDefaultButtons(),
                         onDismiss = { protocolDialogVisible.value = false },
