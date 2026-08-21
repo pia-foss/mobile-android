@@ -6,10 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
 import com.kape.data.DI
+import com.kape.data.RegionItemType
+import com.kape.data.RegionServerItem
 import com.kape.data.shadowsocksserver.ShadowsocksServer
 import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
-import com.kape.obfuscationregionselection.util.ItemType
-import com.kape.obfuscationregionselection.util.ShadowsocksServerItem
 import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
 import com.kape.utils.arrangeServers
 import com.kape.utils.filterServersByName
@@ -27,8 +27,8 @@ class ShadowsocksRegionSelectionViewModel(
     private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    val servers = mutableStateOf(emptyList<ShadowsocksServerItem>())
-    val sorted = mutableStateOf(emptyList<ShadowsocksServerItem>())
+    val servers = mutableStateOf(emptyList<RegionServerItem<ShadowsocksServer>>())
+    val sorted = mutableStateOf(emptyList<RegionServerItem<ShadowsocksServer>>())
 
     fun getShadowsocksRegions() = arrangeShadowsocksServers(getShadowsocksRegionsUseCase.getShadowsocksServers())
 
@@ -64,7 +64,7 @@ class ShadowsocksRegionSelectionViewModel(
         isSearchEnabled.value = value.isNotEmpty()
         sorted.value =
             filterServersByName(servers.value, value) { item ->
-                (item.type as? ItemType.Content)?.server?.region
+                (item.type as? RegionItemType.Content)?.server?.region
             }
     }
 
@@ -76,13 +76,13 @@ class ShadowsocksRegionSelectionViewModel(
                 arrangeServers(
                     items = items,
                     currentItems = servers.value,
-                    toServer = { item -> (item.type as? ItemType.Content)?.server },
+                    toServer = { item -> (item.type as? RegionItemType.Content)?.server },
                     isFavorite = { server -> isShadowsocksServerFavorite(server.region).first() },
                     toItem = { server, favorite ->
-                        ShadowsocksServerItem(type = ItemType.Content(isFavorite = favorite, server = server))
+                        RegionServerItem(type = RegionItemType.Content(isFavorite = favorite, server = server))
                     },
-                    headingFavorites = ShadowsocksServerItem(type = ItemType.HeadingFavorites),
-                    headingAll = ShadowsocksServerItem(type = ItemType.HeadingAll),
+                    headingFavorites = RegionServerItem(type = RegionItemType.HeadingFavorites),
+                    headingAll = RegionServerItem(type = RegionItemType.HeadingAll),
                     includeFavoritesInAll = false,
                 )
         }

@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.data.RegionItemType
 import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
-import com.kape.obfuscationregionselection.util.ItemType
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Search
@@ -86,12 +86,12 @@ fun ShadowsocksRegionSelectionScreen() =
                             }
                         items(items.size) { index ->
                             val item = items[index]
-                            when (item.type) {
-                                is ItemType.Content -> {
+                            when (val type = item.type) {
+                                is RegionItemType.Content -> {
                                     LocationPickerItem(
-                                        server = item.type.server,
-                                        isFavorite = item.type.isFavorite,
-                                        enableFavorite = item.type.enableFavorite,
+                                        server = type.server,
+                                        isFavorite = type.isFavorite,
+                                        enableFavorite = type.enableFavorite,
                                         onClick = {
                                             viewModel.onShadowsocksRegionSelected(it)
                                             appBarViewModel.navigateBack()
@@ -104,14 +104,14 @@ fun ShadowsocksRegionSelectionScreen() =
                                     )
                                 }
 
-                                ItemType.HeadingAll -> {
+                                RegionItemType.HeadingAll -> {
                                     MenuText(
                                         content = stringResource(id = R.string.all_locations),
                                         modifier = Modifier.padding(16.dp),
                                     )
                                 }
 
-                                ItemType.HeadingFavorites -> {
+                                RegionItemType.HeadingFavorites -> {
                                     MenuText(
                                         content = stringResource(id = R.string.favorites),
                                         modifier = Modifier.padding(16.dp),
