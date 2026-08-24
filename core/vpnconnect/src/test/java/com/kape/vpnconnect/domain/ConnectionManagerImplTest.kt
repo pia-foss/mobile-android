@@ -178,7 +178,7 @@ class ConnectionManagerImplTest {
                                 listOf(VpnServer.ServerEndpointDetails("1.2.3.4", "us-east.example.com")),
                         ),
                 )
-            every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.OpenVPN
+            coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.OpenVPN
             every { settingsPrefs.openVpnSettings.value } returns OpenVpnSettings(transport = Transport.UDP)
 
             connectionManager.connect(openvpnUdpServer, isManual = false, {}) {}
@@ -197,7 +197,7 @@ class ConnectionManagerImplTest {
                                 listOf(VpnServer.ServerEndpointDetails("1.2.3.4", "us-east.example.com")),
                         ),
                 )
-            every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.OpenVPN
+            coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.OpenVPN
             every { settingsPrefs.openVpnSettings.value } returns OpenVpnSettings(transport = Transport.TCP)
 
             connectionManager.connect(openvpnTcpServer, isManual = false, {}) {}
