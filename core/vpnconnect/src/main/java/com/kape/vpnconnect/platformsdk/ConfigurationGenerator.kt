@@ -1,6 +1,7 @@
 package com.kape.vpnconnect.platformsdk
 
 import android.content.Context
+import com.kape.connection.model.AwgObfuscationSettings
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -21,6 +22,7 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
+import kotlinx.coroutines.flow.first
 import com.kape.vpnconnect.utils.COUNTRY_LIST
 import com.kape.vpnconnect.utils.CountryDetector
 
@@ -32,6 +34,28 @@ private const val WG_AUTH_PORT = 1337
 // on the SDK's gateway-address fallback.
 private const val PIA_DNS = "10.0.0.243"
 private const val MACE_DNS = "10.0.0.241"
+
+// Automatic's WireGuard leg always targets this single static AmneziaWG test box
+// (pia-gb-lhr-dp-001), not a real region server — there is no region/server selection for it yet.
+// Replace with real per-region AWG endpoints once AWG rolls out beyond this test box.
+private const val AWG_TEST_SERVER_IP = "138.199.31.184"
+private const val AWG_TEST_SERVER_CN = "pia-gb-lhr-dp-001"
+private const val AWG_PORT = 1338
+
+// This test box's live obfuscation settings, used only until the first successful add-awg-key
+// response seeds connectionPrefs.awgObfuscation with the server's actual (self-reported) values.
+private val AWG_TEST_SERVER_DEFAULT_OBFUSCATION =
+    AwgObfuscationSettings(
+        junkPacketCount = 5,
+        junkPacketMinSize = 25,
+        junkPacketMaxSize = 100,
+        initPacketJunkSize = 5,
+        responsePacketJunkSize = 3,
+        initPacketMagicHeader = 1234567891,
+        responsePacketMagicHeader = 1234567892,
+        underloadPacketMagicHeader = 1234567893,
+        transportPacketMagicHeader = 1234567894,
+    )
 
 class ConfigurationGenerator(
     private val caCertificate: String,
@@ -213,14 +237,40 @@ class ConfigurationGenerator(
         return result
     }
 
-    private fun generateAutomaticConfigurations(
+    fun generateAwgVpnConfigurations(
+        mtu: Int,
+        obfuscation: AwgObfuscationSettings?,
+    ): List<WireGuardVpnConfiguration> {
+        val amnezia = (obfuscation ?: AWG_TEST_SERVER_DEFAULT_OBFUSCATION).toAmnezia()
+        return listOf(
+            WireGuardVpnConfiguration(
+                endpointConfiguration =
+                    WireGuardEndpointConfiguration(
+                        ip = IpAddress.V4(AWG_TEST_SERVER_IP),
+                        port = AWG_PORT,
+                        authIp = IpAddress.V4(AWG_TEST_SERVER_IP),
+                        authPort = AWG_PORT,
+                        certDn = AWG_TEST_SERVER_CN,
+                        obfuscation = amnezia,
+                    ),
+                host = AWG_TEST_SERVER_IP,
+                port = AWG_PORT,
+                obfuscation = amnezia,
+                mtu = mtu,
+            ),
+        )
+    }
+
+    // Automatic's WireGuard leg targets the static AmneziaWG test box (see AWG_TEST_SERVER_IP)
+    // instead of the user's selected region — there's no per-region AWG endpoint yet.
+    private suspend fun generateAutomaticConfigurations(
         server: VpnServer?,
         dnsServers: List<String> = emptyList(),
     ): List<VpnConfiguration> {
         val result =
             mutableListOf<VpnConfiguration>().apply {
                 if (COUNTRY_LIST.contains(countryDetector.detectCountry())) {
-                    // TODO: Add amnezia
+                    addAll(generateAwgVpnConfigurations(automaticWireGuardSettings().mtu, connectionPrefs.awgObfuscation.first()))
                 }
                 addAll(generateWireGuardVpnConfigurations(automaticWireGuardSettings(), server, dnsServers))
                 addAll(
@@ -261,3 +311,16 @@ class ConfigurationGenerator(
 
     private fun automaticOpenVpnTcpSettings() = OpenVpnSettings(transport = Transport.TCP, port = "80")
 }
+
+fun AwgObfuscationSettings.toAmnezia(): WireGuardObfuscation.Amnezia =
+    WireGuardObfuscation.Amnezia(
+        initPacketJunkSize = initPacketJunkSize,
+        responsePacketJunkSize = responsePacketJunkSize,
+        junkPacketCount = junkPacketCount,
+        junkPacketMinSize = junkPacketMinSize,
+        junkPacketMaxSize = junkPacketMaxSize,
+        initPacketMagicHeader = initPacketMagicHeader,
+        responsePacketMagicHeader = responsePacketMagicHeader,
+        underloadPacketMagicHeader = underloadPacketMagicHeader,
+        transportPacketMagicHeader = transportPacketMagicHeader,
+    )

@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.kape.connection.model.AwgObfuscationSettings
 import com.kape.connection.model.PortBindInformation
 import com.kape.connection.model.QuickConnectServer
 import com.kape.data.NO_IP
@@ -29,6 +30,7 @@ private val PORT_BINDING_INFO = stringPreferencesKey("port-binding-info")
 private val DISCONNECTED_BY_USER = booleanPreferencesKey("disconnected-by-user")
 private val PROXY_PORT = stringPreferencesKey("proxy-port")
 private const val DEFAULT_PROXY_PORT_VALUE = "8080"
+private val AWG_OBFUSCATION = stringPreferencesKey("awg-obfuscation")
 
 @Singleton
 class ConnectionPrefs(
@@ -60,6 +62,8 @@ class ConnectionPrefs(
             SharingStarted.WhileSubscribed(waitTime),
             DEFAULT_PROXY_PORT_VALUE,
         )
+    val awgObfuscation: StateFlow<AwgObfuscationSettings?> =
+        getAwgObfuscation().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
 
     suspend fun addToQuickConnect(
         serverKey: String,
@@ -131,6 +135,12 @@ class ConnectionPrefs(
         }
     }
 
+    suspend fun setAwgObfuscation(obfuscation: AwgObfuscationSettings?) {
+        dataStore.edit { prefs ->
+            if (obfuscation != null) prefs[AWG_OBFUSCATION] = Json.encodeToString(obfuscation) else prefs.remove(AWG_OBFUSCATION)
+        }
+    }
+
     private fun getQuickConnectServers(): Flow<List<QuickConnectServer>> =
         dataStore.data.map { prefs ->
             prefs[QUICK_CONNECT]?.let { Json.decodeFromString(it) } ?: emptyList()
@@ -157,4 +167,9 @@ class ConnectionPrefs(
     private fun getDisconnectedByUser(): Flow<Boolean> = dataStore.data.map { it[DISCONNECTED_BY_USER] ?: false }
 
     private fun getProxyPort(): Flow<String> = dataStore.data.map { it[PROXY_PORT] ?: DEFAULT_PROXY_PORT_VALUE }
+
+    private fun getAwgObfuscation(): Flow<AwgObfuscationSettings?> =
+        dataStore.data.map { prefs ->
+            prefs[AWG_OBFUSCATION]?.let { Json.decodeFromString(it) }
+        }
 }

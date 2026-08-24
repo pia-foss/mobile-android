@@ -172,9 +172,10 @@ class PiaService :
                 KapeKillSwitchMode.Advanced
             }
 
+        val selectedProtocol = settingsPrefs.getSelectedProtocolNow()
         val vpnServiceLogger =
             ServiceLogger(
-                when (settingsPrefs.getSelectedProtocolNow()) {
+                when (selectedProtocol) {
                     VpnProtocols.WireGuard -> ServiceLogger.VpnServiceLoggerTag.WireGuard
                     VpnProtocols.OpenVPN -> ServiceLogger.VpnServiceLoggerTag.OpenVpn
                     VpnProtocols.Automatic -> ServiceLogger.VpnServiceLoggerTag.Automatic
@@ -195,14 +196,24 @@ class PiaService :
                         )
                     },
             )
+        // Automatic's WireGuard leg targets the static AmneziaWG test box (see ConfigurationGenerator),
+        // so it needs the AWG authenticator; an explicit WireGuard selection still uses real regions.
         val authenticator =
-            PiaWgAuthenticator(
-                selectedDnsOptions,
-                configInfo.certificate,
-                connectionSource,
-                connectionPrefs,
-                protect = systemTunnel::protect,
-            )
+            if (selectedProtocol == VpnProtocols.Automatic) {
+                PiaAwgAuthenticator(
+                    connectionSource,
+                    connectionPrefs,
+                    protect = systemTunnel::protect,
+                )
+            } else {
+                PiaWgAuthenticator(
+                    selectedDnsOptions,
+                    configInfo.certificate,
+                    connectionSource,
+                    connectionPrefs,
+                    protect = systemTunnel::protect,
+                )
+            }
         val wireGuardController =
             KapeWireGuardConnectionController(
                 systemTunnel = systemTunnel,
