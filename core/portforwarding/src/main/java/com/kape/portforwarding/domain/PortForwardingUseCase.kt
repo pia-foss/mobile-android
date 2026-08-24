@@ -60,6 +60,7 @@ class PortForwardingUseCase(
 
         if (vpnToken.isEmpty()) {
             portForwardingStatus.value = PortForwardingStatus.Error
+            return
         }
 
         // If there is active data persisted. Send the bind port reminder request to keep the NAT
