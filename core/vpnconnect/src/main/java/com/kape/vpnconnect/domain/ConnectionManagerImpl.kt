@@ -224,8 +224,8 @@ class ConnectionManagerImpl :
         return Result.success(Unit)
     }
 
-    private fun mapProtocolToServerGroup(): VpnServer.ServerGroup? =
-        when (settingsPrefs.selectedProtocol.value) {
+    private suspend fun mapProtocolToServerGroup(): VpnServer.ServerGroup? =
+        when (settingsPrefs.getSelectedProtocolNow()) {
             VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
             VpnProtocols.OpenVPN -> {
                 when (settingsPrefs.openVpnSettings.value.transport) {
