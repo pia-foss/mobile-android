@@ -27,6 +27,11 @@ android {
         }
     }
     namespace = "com.kape.customization"
+
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+    }
+
     testOptions {
         unitTests {
             isReturnDefaultValues = true
