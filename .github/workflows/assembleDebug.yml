@@ -226,13 +226,50 @@ jobs:
           path: app/build/outputs/apk/google/debug/${{ steps.build_id.outputs.build_id }}.apk
           retention-days: 7
 
-  e2e-testing:
-    name: Run end to end instrumentation tests (${{ matrix.test-class }})
+  build-e2e-apk:
+    name: Build E2E test APKs
     needs: [ktlintCheck, verifyDependencyMetadata]
     if: |
       always() &&
       needs.ktlintCheck.result == 'success' &&
       (needs.verifyDependencyMetadata.result == 'success' || needs.verifyDependencyMetadata.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v6
+
+      - name: Setup JAVA 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-read-only: false   # write so the e2e-testing matrix jobs can read a warm build cache
+
+      # All 12 e2e-testing matrix legs build this exact same noinapp debug + androidTest
+      # variant (they only differ by which test class they filter to). Building it once here
+      # with the Gradle build cache enabled means the matrix jobs hit cache on compile/dex/
+      # resource tasks instead of redundantly rebuilding the app from scratch 12 times in parallel.
+      # Scoped to :app: (matching what :app:connectedNoinappDebugAndroidTest itself builds) so we
+      # don't also build every library module's own standalone androidTest variant, which nothing
+      # in this workflow otherwise exercises.
+      - name: Build E2E APKs
+        env:
+          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+        run: ./gradlew :app:assembleNoinappDebug :app:assembleNoinappDebugAndroidTest
+
+  e2e-testing:
+    name: Run end to end instrumentation tests (${{ matrix.test-class }})
+    needs: [ktlintCheck, verifyDependencyMetadata, build-e2e-apk]
+    if: |
+      always() &&
+      needs.ktlintCheck.result == 'success' &&
+      (needs.verifyDependencyMetadata.result == 'success' || needs.verifyDependencyMetadata.result == 'skipped') &&
+      needs.build-e2e-apk.result == 'success'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -270,6 +307,34 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      # Shared across all matrix legs (same api-level/arch/profile) so a snapshot built by one
+      # workflow run is reused by every job, on this and later runs, instead of every leg
+      # cold-booting the emulator from scratch.
+      - name: AVD cache
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-33-x86_64-pixel_4
+
+      - name: Create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          arch: x86_64
+          profile: pixel_4
+          cores: 2
+          disk-size: 4G
+          ram-size: 4096M
+          emulator-boot-timeout: 480
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          script: echo "Generated AVD snapshot for caching."
+
       - name: Run end to end instrumentation tests on emulator
         uses: reactivecircus/android-emulator-runner@v2
         env:
@@ -287,6 +352,8 @@ jobs:
           disk-size: 4G
           ram-size: 4096M
           emulator-boot-timeout: 480
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           disable-spellchecker: true
           script: |

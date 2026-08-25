@@ -24,6 +24,7 @@ import com.kape.signup.domain.SignupBillingHandler
 import com.kape.utils.PlatformUtils
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -49,11 +50,13 @@ class SplashViewModel(
 ) : ViewModel() {
     private var updateUrl: String = ""
     private var hasMadeConsentDecision: Boolean = false
+    private val featureFlagsFetchJob: Job
 
     init {
-        viewModelScope.launch(ioDispatcher) {
-            featureFlagsDataSource.invoke()
-        }
+        featureFlagsFetchJob =
+            viewModelScope.launch(ioDispatcher) {
+                featureFlagsDataSource.invoke()
+            }
         viewModelScope.launch {
             consentPrefs.hasMadeConsentDecision.collectLatest {
                 hasMadeConsentDecision = it
@@ -69,6 +72,7 @@ class SplashViewModel(
             regionListProvider.loadVpnServerLatencies()
         }
         viewModelScope.launch(ioDispatcher) {
+            featureFlagsFetchJob.join()
             val requiresUpdate = forceUpdateUseCase.requiresForceUpdate()
             if (requiresUpdate) {
                 val latestVersion = getAppLatestVersionUseCase.invoke()
