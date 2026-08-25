@@ -262,7 +262,7 @@ class VpnRegionSelectionViewModel(
         when (settingsPrefs.getSelectedProtocolNow()) {
             VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
             VpnProtocols.OpenVPN -> {
-                when (settingsPrefs.openVpnSettings.value.transport) {
+                when (settingsPrefs.getOpenVpnSettingsNow().transport) {
                     Transport.UDP -> VpnServer.ServerGroup.OPENVPN_UDP
                     Transport.TCP -> VpnServer.ServerGroup.OPENVPN_TCP
                     Transport.AUTO -> VpnServer.ServerGroup.OPENVPN_UDP // never used

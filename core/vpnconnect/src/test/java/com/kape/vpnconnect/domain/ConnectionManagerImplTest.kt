@@ -198,7 +198,7 @@ class ConnectionManagerImplTest {
                         ),
                 )
             coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.OpenVPN
-            every { settingsPrefs.openVpnSettings.value } returns OpenVpnSettings(transport = Transport.TCP)
+            coEvery { settingsPrefs.getOpenVpnSettingsNow() } returns OpenVpnSettings(transport = Transport.TCP)
 
             connectionManager.connect(openvpnTcpServer, isManual = false, {}) {}
 
