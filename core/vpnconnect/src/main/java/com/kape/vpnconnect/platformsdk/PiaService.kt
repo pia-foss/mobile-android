@@ -33,6 +33,7 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.utils.VpnNotificationManager
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
+import com.kape.vpnconnect.utils.CountryDetector
 import com.kape.vpnconnect.utils.NotificationHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,6 +67,7 @@ class PiaService :
     private val connectionManager: ConnectionManager by inject()
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val notificationHandler: NotificationHandler by inject()
+    private val countryDetector: CountryDetector by inject()
     private val kpiDataSource: KpiDataSource by inject()
     private var sessionController: KapeSessionController? = null
     private var statusCollectionJob: Job? = null
@@ -204,6 +206,7 @@ class PiaService :
                 connectionPrefs,
                 getActiveInterfaceDnsUseCase,
                 this,
+                countryDetector,
             )
         val controller =
             KapeSessionController(

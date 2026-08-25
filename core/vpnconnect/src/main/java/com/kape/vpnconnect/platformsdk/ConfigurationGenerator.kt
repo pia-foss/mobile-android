@@ -21,6 +21,8 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
+import com.kape.vpnconnect.utils.COUNTRY_LIST
+import com.kape.vpnconnect.utils.CountryDetector
 
 // PIA's WireGuard addKey control-plane port — fixed, independent of the user's configurable WG data port.
 private const val WG_AUTH_PORT = 1337
@@ -38,6 +40,7 @@ class ConfigurationGenerator(
     private val connectionPrefs: ConnectionPrefs,
     private val getActiveInterfaceDnsUseCase: GetActiveInterfaceDnsUseCase,
     private val context: Context,
+    private val countryDetector: CountryDetector,
 ) : VpnConfigurationGenerator {
     override suspend fun generateConfigurations(): List<VpnConfiguration> =
         when (settingsPrefs.getSelectedProtocolNow()) {
@@ -213,6 +216,9 @@ class ConfigurationGenerator(
     ): List<VpnConfiguration> {
         val result =
             mutableListOf<VpnConfiguration>().apply {
+                if (COUNTRY_LIST.contains(countryDetector.detectCountry())) {
+                    // TODO: Add amnezia
+                }
                 addAll(generateWireGuardVpnConfigurations(automaticWireGuardSettings(), server))
                 addAll(
                     generateOpenVpnConfigurations(
