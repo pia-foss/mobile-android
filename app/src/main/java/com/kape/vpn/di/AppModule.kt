@@ -83,6 +83,7 @@ import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnlauncher.di.VpnLauncherModule
 import com.kape.vpnregions.di.VpnServersModule
 import com.kape.vpnregionselection.di.VpnRegionModule
+import com.kape.welcomeback.di.WelcomeBackModule
 import com.privateinternetaccess.account.AccountBuilder
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.Platform
@@ -115,6 +116,7 @@ import java.io.BufferedReader
         LoginModule::class,
         LoginWithReceiptModule::class,
         SplashModule::class,
+        WelcomeBackModule::class,
         ConnectionModule::class,
         SettingsModule::class,
         ProfileModule::class,

@@ -47,6 +47,7 @@ include(":core:vpnlauncher")
 
 include(":features")
 include(":features:splash")
+include(":features:welcomeback")
 include(":features:appbar")
 include(":features:signup")
 include(":features:login")

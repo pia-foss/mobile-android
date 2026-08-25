@@ -67,10 +67,12 @@ import com.kape.data.TvLoginUsername
 import com.kape.data.TvSideMenu
 import com.kape.data.TvSubscribe
 import com.kape.data.TvWelcome
+import com.kape.data.TvWelcomeBack
 import com.kape.data.Update
 import com.kape.data.VpnPermission
 import com.kape.data.VpnRegionSelection
 import com.kape.data.WebDestination
+import com.kape.data.WelcomeBack
 import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpScreen
 import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpCountryScreen
 import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpPurchaseSuccessScreen
@@ -132,6 +134,8 @@ import com.kape.utils.PlatformUtils
 import com.kape.vpn.utils.ShortcutManager
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
+import com.kape.welcomeback.ui.WelcomeBackScreen
+import com.kape.welcomeback.ui.tv.TvWelcomeBackScreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -215,6 +219,7 @@ class MainActivity : AppCompatActivity() {
                 TvConsentScreen(route.isFirstScreen)
             }
             composable<TvWelcome> { TvWelcomeScreen() }
+            composable<TvWelcomeBack> { TvWelcomeBackScreen() }
             composable<TvSubscribe> { TvSignupScreensFlow() }
             composable<TvLoginUsername> { LoginUsernameScreen() }
             composable<TvLoginPassword> { LoginPasswordScreen() }
@@ -259,6 +264,7 @@ class MainActivity : AppCompatActivity() {
             composable<Connection> { ConnectionScreen() }
             composable<Profile> { ProfileScreen() }
             composable<Subscribe> { SignupScreensFlow() }
+            composable<WelcomeBack> { WelcomeBackScreen() }
             composable<VpnRegionSelection> { VpnRegionSelectionScreen() }
             composable<ShadowsocksRegionSelection> {
                 ShadowsocksRegionSelectionScreen()

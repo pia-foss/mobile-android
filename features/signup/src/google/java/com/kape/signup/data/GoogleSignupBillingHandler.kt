@@ -22,13 +22,18 @@ import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.utils.PriceFormatter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Locale
+import kotlin.time.Duration.Companion.milliseconds
+
+private const val BILLING_READY_TIMEOUT_MS = 5_000L
 
 class GoogleSignupBillingHandler(
     private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
@@ -147,7 +152,7 @@ class GoogleSignupBillingHandler(
     ) {
         ioScope.launch {
             withContext(mainDispatcher) {
-                vpnSubscriptionPaymentProvider.register(activity)
+                registerClientIfNeeded(activity)
             }
             _billingState.emit(LOADING)
             subscriptionsUseCase.getVpnSubscriptions()
@@ -173,4 +178,20 @@ class GoogleSignupBillingHandler(
     }
 
     override suspend fun hasResumablePurchase(): Boolean = subscriptionPrefs.getVpnPurchaseDataOnce() != null
+
+    override fun hasActiveSubscription(): Flow<Boolean> = vpnSubscriptionPaymentProvider.hasActiveSubscription()
+
+    override suspend fun registerAndAwaitReady(
+        mainDispatcher: CoroutineDispatcher,
+        activity: Activity,
+    ) {
+        withContext(mainDispatcher) {
+            registerClientIfNeeded(activity)
+        }
+        withTimeoutOrNull(BILLING_READY_TIMEOUT_MS.milliseconds) {
+            vpnSubscriptionPaymentProvider.purchaseState.first {
+                it == PurchaseState.InitSuccess || it == PurchaseState.InitFailed || it == PurchaseState.Disconnected
+            }
+        }
+    }
 }

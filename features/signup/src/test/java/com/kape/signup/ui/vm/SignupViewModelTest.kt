@@ -2,6 +2,10 @@ package com.kape.signup.ui.vm
 
 import android.app.Activity
 import com.kape.contracts.Router
+import com.kape.data.Subscribe
+import com.kape.data.TvWelcome
+import com.kape.data.TvWelcomeBack
+import com.kape.data.WelcomeBack
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.shareevents.data.KpiEventGenerator
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
@@ -15,10 +19,12 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -95,5 +101,53 @@ class SignupViewModelTest {
 
             coVerify(exactly = 1) { billingHandler.loadPrices(testDispatcher, activity) }
             coVerify(exactly = 0) { consentUseCase.hasMadeConsentDecision() }
+        }
+
+    @Test
+    fun `allowEventSharing navigates to TvWelcomeBack when TV has an active subscription`() =
+        runTest {
+            coEvery { consentUseCase.setConsent(any()) } returns Unit
+            every { platformUtils.isTv() } returns true
+            every { billingHandler.hasActiveSubscription() } returns flowOf(true)
+
+            viewModel.allowEventSharing(allow = true, isFirstScreen = true)
+
+            verify { router.updateDestination(TvWelcomeBack) }
+        }
+
+    @Test
+    fun `allowEventSharing navigates to TvWelcome when TV has no active subscription`() =
+        runTest {
+            coEvery { consentUseCase.setConsent(any()) } returns Unit
+            every { platformUtils.isTv() } returns true
+            every { billingHandler.hasActiveSubscription() } returns flowOf(false)
+
+            viewModel.allowEventSharing(allow = true, isFirstScreen = true)
+
+            verify { router.updateDestination(TvWelcome) }
+        }
+
+    @Test
+    fun `allowEventSharing navigates to WelcomeBack on mobile with an active subscription`() =
+        runTest {
+            coEvery { consentUseCase.setConsent(any()) } returns Unit
+            every { platformUtils.isTv() } returns false
+            every { billingHandler.hasActiveSubscription() } returns flowOf(true)
+
+            viewModel.allowEventSharing(allow = true, isFirstScreen = true)
+
+            verify { router.updateDestination(WelcomeBack) }
+        }
+
+    @Test
+    fun `allowEventSharing navigates to Subscribe on mobile with no active subscription`() =
+        runTest {
+            coEvery { consentUseCase.setConsent(any()) } returns Unit
+            every { platformUtils.isTv() } returns false
+            every { billingHandler.hasActiveSubscription() } returns flowOf(false)
+
+            viewModel.allowEventSharing(allow = true, isFirstScreen = true)
+
+            verify { router.updateDestination(Subscribe) }
         }
 }

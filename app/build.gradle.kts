@@ -159,6 +159,7 @@ dependencies {
     implementation(project(":capabilities:location"))
 
     implementation(project(":features:splash"))
+    implementation(project(":features:welcomeback"))
     implementation(project(":features:tvwelcome"))
     implementation(project(":features:signup"))
     implementation(project(":features:login"))
