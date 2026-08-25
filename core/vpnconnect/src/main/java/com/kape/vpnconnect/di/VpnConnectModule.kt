@@ -25,6 +25,7 @@ import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnconnect.provider.UsageProviderImpl
 import com.kape.vpnconnect.utils.ConnectionInfoProviderImpl
 import com.kape.vpnconnect.utils.ConnectionStatusProviderImpl
+import com.kape.vpnconnect.utils.CountryDetector
 import com.kape.vpnconnect.utils.NotificationHandler
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineDispatcher
@@ -126,4 +127,7 @@ class VpnConnectModule {
 
     @Singleton([ConnectionManager::class])
     fun provideConnectionManager(): ConnectionManager = ConnectionManagerImpl()
+
+    @Singleton
+    fun provideCountryDetector(context: Context): CountryDetector = CountryDetector(context)
 }
