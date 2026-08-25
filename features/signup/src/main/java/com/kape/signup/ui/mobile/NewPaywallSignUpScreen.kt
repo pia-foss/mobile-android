@@ -282,7 +282,7 @@ private fun ColumnScope.PlansPresentContent(
                         },
             ) {
                 Text(
-                    text = stringResource(R.string.subscribe_screen_trial_day_7),
+                    text = stringResource(R.string.subscribe_screen_trial_day_to_format),
                     style = PiaTypography.subtitle3,
                     color = LocalColors.current.naturalSpace(),
                 )
@@ -302,7 +302,7 @@ private fun ColumnScope.PlansPresentContent(
     )
     Spacer(Modifier.height(20.dp))
     PrimaryButton(
-        text = stringResource(id = R.string.subscribe_screen_trial_start_button),
+        text = stringResource(id = R.string.subscribe_screen_trial_start_button_to_format),
         modifier = Modifier.fillMaxWidth(),
     ) {
         onPurchase(subscriptionData.yearly.id)
@@ -390,7 +390,7 @@ private fun ColumnScope.PlansPresentContent(
                 PrimaryButton(
                     text =
                         if (selectedPlan.hasFreeTrial) {
-                            stringResource(id = R.string.subscribe_screen_trial_start_button)
+                            stringResource(id = R.string.subscribe_screen_trial_start_button_to_format)
                         } else {
                             "${stringResource(id = R.string.subscribe)} • ${selectedPlan.mainPrice}"
                         },

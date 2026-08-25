@@ -328,7 +328,6 @@
     <string name="subscribe_screen_description_cancel_anytime">Sin compromiso. Cancele en cualquier momento durante la prueba gratuita.</string>
     <string name="subscribe_screen_description_payment">El cargo solo se cobrará a su cuenta al final del periodo de prueba.</string>
     <string name="subscribe_screen_description_no_in_app">Con servidores en todo el mundo, siempre estarás protegido.</string>
-    <string name="tv_subscribe_screen_description">Inicia tu periodo de prueba gratis de 7 días y luego %s.</string>
     <string name="subscription_option">Opciones de suscripción</string>
     <string name="subscribe_now">Suscríbete ahora</string>
     <string name="footer"><a href="web-screen-privacy">Política de Privacidad</a> y <a href="web-screen-terms">Términos del servicio</a></string>
@@ -349,13 +348,10 @@
     <string name="subscribe_screen_trial_title">Cómo funciona la prueba gratis</string>
     <string name="subscribe_screen_trial_today">Hoy</string>
     <string name="subscribe_screen_trial_today_description">Acceso total al instante</string>
-    <string name="subscribe_screen_trial_day_7">Día 7</string>
     <string name="subscribe_screen_trial_day_7_description">Se inicia la suscripción. Cancele cuando quiera</string>
-    <string name="subscribe_screen_trial_annually_description_headline">Gratis 7 días, luego %s/año. Cancele cuando quiera.</string>
     <string name="subscribe_screen_trial_annually_description">Se le cobrará el último día de la prueba gratis si no cancela antes de finalizar el periodo de la prueba.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, pago mensual. </string>
     <string name="subscribe_screen_trial_monthly_description">Se renueva automáticamente si no se cancela al menos 24 h antes de la fecha de vencimiento.</string>
-    <string name="subscribe_screen_trial_start_button">Iniciar prueba gratis de 7 días</string>
     <string name="subscribe_screen_trial_other_plans_button">Ver otros planes</string>
     <string name="subscribe_screen_per_month_ending">al mes</string>
     <string name="subscribe_screen_per_year_ending">al año</string>

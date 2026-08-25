@@ -153,7 +153,7 @@ fun NewPaywallTvSignUpScreen() {
                             )
                             Spacer(Modifier.weight(1f))
                             Text(
-                                text = stringResource(R.string.subscribe_screen_trial_day_7),
+                                text = stringResource(R.string.subscribe_screen_trial_day_to_format),
                                 style = PiaTypography.subtitle3,
                             )
                             Spacer(Modifier.height(4.dp))
@@ -184,7 +184,7 @@ fun NewPaywallTvSignUpScreen() {
             Text(
                 text =
                     buildAnnotatedString {
-                        val template = stringResource(id = R.string.tv_subscribe_screen_description)
+                        val template = stringResource(id = R.string.tv_subscribe_screen_description_to_format)
                         val price = subscriptionData?.yearly?.mainPrice?.let { stringResource(R.string.yearly_ending, it) } ?: ""
                         val placeholderIndex = template.indexOf("%s")
                         if (placeholderIndex >= 0) {
@@ -241,7 +241,7 @@ fun NewPaywallTvSignUpScreen() {
                 PrimaryButton(
                     text =
                         if (it.selected.value.hasFreeTrial) {
-                            stringResource(id = R.string.subscribe_screen_trial_start_button)
+                            stringResource(id = R.string.subscribe_screen_trial_start_button_to_format)
                         } else {
                             "${stringResource(id = R.string.subscribe)} • ${it.selected.value.mainPrice}"
                         },

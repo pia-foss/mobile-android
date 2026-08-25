@@ -328,7 +328,6 @@
     <string name="subscribe_screen_description_cancel_anytime">Geen verplichting. Zeg op elk moment op tijdens de gratis proefperiode.</string>
     <string name="subscribe_screen_description_payment">De betaling wordt pas aan het einde van uw proefperiode van uw rekening afgeschreven.</string>
     <string name="subscribe_screen_description_no_in_app">Met servers over de hele wereld ben je altijd beschermd.</string>
-    <string name="tv_subscribe_screen_description">Begin je gratis proefperiode van 7 dagen %s.</string>
     <string name="subscription_option">Abonnement optie</string>
     <string name="subscribe_now">Nu abonneren</string>
     <string name="footer"><a href="web-screen-privacy">Privacybeleid</a> en <a href="web-screen-terms">Servicevoorwaarden</a></string>
@@ -349,13 +348,10 @@
     <string name="subscribe_screen_trial_title">Zie hoe je gratis proefperiode werkt</string>
     <string name="subscribe_screen_trial_today">Vandaag</string>
     <string name="subscribe_screen_trial_today_description">Direct volledige toegang beschikbaar</string>
-    <string name="subscribe_screen_trial_day_7">Dag 7</string>
     <string name="subscribe_screen_trial_day_7_description">Abonnement begint, op elk moment opzegbaar</string>
-    <string name="subscribe_screen_trial_annually_description_headline">7 dagen gratis, daarna %s/jaar. Op elk moment opzegbaar.</string>
     <string name="subscribe_screen_trial_annually_description">Op de laatste dag van je proefperiode worden er kosten in rekening gebracht, tenzij je opzegt voordat je gratis proefperiode eindigt.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, maandelijks gefactureerd. </string>
     <string name="subscribe_screen_trial_monthly_description">Wordt automatisch verlengd, tenzij je het abonnement ten minste 24 uur vóór de vervaldatum opzegt.</string>
-    <string name="subscribe_screen_trial_start_button">Start mijn 7-daagse gratis proefperiode</string>
     <string name="subscribe_screen_trial_other_plans_button">Andere abonnementen bekijken</string>
     <string name="subscribe_screen_per_month_ending">per maand</string>
     <string name="subscribe_screen_per_year_ending">per jaar</string>

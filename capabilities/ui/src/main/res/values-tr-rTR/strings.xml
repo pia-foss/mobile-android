@@ -328,7 +328,6 @@
     <string name="subscribe_screen_description_cancel_anytime">Taahhüt yok. Ücretsiz deneme sırasında istediğiniz zaman iptal edin.</string>
     <string name="subscribe_screen_description_payment">Ödeme yalnızca deneme sürenizin sonunda hesabınızdan tahsil edilecektir.</string>
     <string name="subscribe_screen_description_no_in_app">Dünyanın dört bir yanındaki sunucularla her zaman koruma altındasınız.</string>
-    <string name="tv_subscribe_screen_description">Sonrasında %s ile 7 gün ücretsiz denemenizi başlatın.</string>
     <string name="subscription_option">Abonelik seçeneği</string>
     <string name="subscribe_now">Şimdi abone olun</string>
     <string name="footer"><a href="web-screen-privacy">Gizlilik Politikası</a> ve <a href="web-screen-terms">Hizmet Şartları</a></string>
@@ -349,13 +348,10 @@
     <string name="subscribe_screen_trial_title">Ücretsiz deneme nasıl çalışır</string>
     <string name="subscribe_screen_trial_today">Bugün</string>
     <string name="subscribe_screen_trial_today_description">Anında tam erişim</string>
-    <string name="subscribe_screen_trial_day_7">7. Gün</string>
     <string name="subscribe_screen_trial_day_7_description">Abonelik başlar, dilediğiniz zaman iptal edilebilir</string>
-    <string name="subscribe_screen_trial_annually_description_headline">7 gün boyunca ücretsiz, sonra %s/yıl. Dilediğiniz zaman iptal edilebilir.</string>
     <string name="subscribe_screen_trial_annually_description">Ücretsiz denemeniz sona ermeden önce iptal etmediğiniz takdirde denemenizin son gününde ücret tahsil edilir.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, aylık faturalandırılır. </string>
     <string name="subscribe_screen_trial_monthly_description">Sona erme tarihinden en az 24 saat önce iptal edilmediği takdirde otomatik yenilenir.</string>
-    <string name="subscribe_screen_trial_start_button">7 Günlük Ücretsiz Denememi Başlat</string>
     <string name="subscribe_screen_trial_other_plans_button">Diğer Planları Gör</string>
     <string name="subscribe_screen_per_month_ending">her ay</string>
     <string name="subscribe_screen_per_year_ending">her yıl</string>

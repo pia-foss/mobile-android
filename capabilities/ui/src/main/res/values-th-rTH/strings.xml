@@ -328,7 +328,6 @@
     <string name="subscribe_screen_description_cancel_anytime">ไม่มีความรับผิดชอบ. ยกเลิกได้ตลอดเวลาระหว่างช่วงทดลองใช้ฟรี</string>
     <string name="subscribe_screen_description_payment">การชำระเงินจะถูกหักออกจากบัญชีของคุณเมื่อสิ้นสุดการทดลองใช้เท่านั้น</string>
     <string name="subscribe_screen_description_no_in_app">ด้วยเซิร์ฟเวอร์ที่มีอยู่ทั่วโลก คุณจะได้รับความคุ้มครองตลอดเวลา</string>
-    <string name="tv_subscribe_screen_description">เริ่มทดลองใช้ฟรี 7 วัน จากนั้น%s</string>
     <string name="subscription_option">ตัวเลือกการสมัครสมาชิก</string>
     <string name="subscribe_now">สมัครสมาชิกตอนนี้</string>
     <string name="footer"><a href="web-screen-privacy">นโยบายความเป็นส่วนตัว</a>และ<a href="web-screen-terms">ข้อกำหนดในการให้บริการ</a></string>
@@ -349,13 +348,10 @@
     <string name="subscribe_screen_trial_title">การทดลองใช้ฟรีเป็นอย่างไร</string>
     <string name="subscribe_screen_trial_today">วันนี้</string>
     <string name="subscribe_screen_trial_today_description">ปลดล็อกการเข้าถึงอย่างเต็มรูปแบบในทันที</string>
-    <string name="subscribe_screen_trial_day_7">วันที่ 7</string>
     <string name="subscribe_screen_trial_day_7_description">เริ่มต้นการสมัครสมาชิก ยกเลิกได้ทุกเมื่อ</string>
-    <string name="subscribe_screen_trial_annually_description_headline">ฟรีเป็นเวลา 7 วัน จากนั้น %s/ปี ยกเลิกได้ทุกเมื่อ</string>
     <string name="subscribe_screen_trial_annually_description">คุณจะถูกเรียกเก็บเงินในวันทดลองใช้วันสุดท้าย ยกเว้นว่าคุณจะยกเลิกก่อนที่การทดลองใช้ฟรีของคุณจะสิ้นสุด</string>
     <string name="subscribe_screen_trial_monthly_description_headline">เรียกเก็บเงิน %s รายเดือน </string>
     <string name="subscribe_screen_trial_monthly_description">ต่ออายุอัตโนมัติยกเว้นว่าจะถูกยกเลิกเป็นเวลาอย่างน้อย 24 ชั่วโมงก่อนวันหมดอายุ</string>
-    <string name="subscribe_screen_trial_start_button">เริ่มทดลองใช้ฟรี 7 วัน</string>
     <string name="subscribe_screen_trial_other_plans_button">ดูแผนอื่น ๆ</string>
     <string name="subscribe_screen_per_month_ending">ต่อเดือน</string>
     <string name="subscribe_screen_per_year_ending">ต่อปี</string>

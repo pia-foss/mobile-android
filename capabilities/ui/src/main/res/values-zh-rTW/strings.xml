@@ -328,7 +328,6 @@
     <string name="subscribe_screen_description_cancel_anytime">沒有承諾。 免費試用期間隨時取消。</string>
     <string name="subscribe_screen_description_payment">付款只會在試用結束時從您的帳戶中扣除。</string>
     <string name="subscribe_screen_description_no_in_app">我們的伺服器遍佈全球，能為您提供全面保護。</string>
-    <string name="tv_subscribe_screen_description">開始 7 天免費試用，之後收費 %s。</string>
     <string name="subscription_option">訂閱選項</string>
     <string name="subscribe_now">即刻訂閱</string>
     <string name="footer"><a href="web-screen-privacy">隱私權政策</a> 和 <a href="web-screen-terms">服務條款</a></string>
@@ -349,13 +348,10 @@
     <string name="subscribe_screen_trial_title">免費試用方式</string>
     <string name="subscribe_screen_trial_today">今日</string>
     <string name="subscribe_screen_trial_today_description">立即解鎖完整功能</string>
-    <string name="subscribe_screen_trial_day_7">第 7 日</string>
     <string name="subscribe_screen_trial_day_7_description">訂閱正式開始，可隨時取消</string>
-    <string name="subscribe_screen_trial_annually_description_headline">免費試用 7 日，其後每年 %s。可隨時取消。</string>
     <string name="subscribe_screen_trial_annually_description">除非您在免費試用結束前取消，否則 PIA 會在試用期最後一日向您收費。</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s，按月收費。</string>
     <string name="subscribe_screen_trial_monthly_description">除非您在到期日前至少 24 小時取消，否則訂閱將自動續期。</string>
-    <string name="subscribe_screen_trial_start_button">開啟 7 日免費試用</string>
     <string name="subscribe_screen_trial_other_plans_button">瀏覽其他計劃</string>
     <string name="subscribe_screen_per_month_ending">/月</string>
     <string name="subscribe_screen_per_year_ending">/年</string>

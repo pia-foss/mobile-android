@@ -66,7 +66,7 @@ internal fun SubscriptionDescriptionText(
                 if (selectedPlan == subscriptionData.yearly) {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append(
-                            stringResource(R.string.subscribe_screen_trial_annually_description_headline)
+                            stringResource(R.string.subscribe_screen_trial_annually_description_headline_to_format)
                                 .format(subscriptionData.yearly.mainPrice),
                         )
                     }
