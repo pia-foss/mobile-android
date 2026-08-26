@@ -22,7 +22,6 @@ import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.utils.PriceFormatter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -183,8 +182,6 @@ class GoogleSignupBillingHandler(
     }
 
     override suspend fun hasResumablePurchase(): Boolean = subscriptionPrefs.getVpnPurchaseDataOnce() != null
-
-    override fun hasActiveSubscription(): Flow<Boolean> = vpnSubscriptionPaymentProvider.hasActiveSubscription()
 
     override suspend fun registerAndAwaitReady(
         mainDispatcher: CoroutineDispatcher,

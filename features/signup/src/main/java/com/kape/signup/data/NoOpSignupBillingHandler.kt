@@ -5,10 +5,8 @@ import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.utils.SignupScreenState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 class NoOpSignupBillingHandler(
@@ -46,8 +44,6 @@ class NoOpSignupBillingHandler(
     }
 
     override suspend fun hasResumablePurchase(): Boolean = false
-
-    override fun hasActiveSubscription(): Flow<Boolean> = flowOf(false)
 
     override suspend fun registerAndAwaitReady(
         mainDispatcher: CoroutineDispatcher,

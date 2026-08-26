@@ -12,6 +12,7 @@ import com.kape.data.TvWelcome
 import com.kape.data.TvWelcomeBack
 import com.kape.data.WebDestination
 import com.kape.data.WelcomeBack
+import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.shareevents.data.KpiEventGenerator
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
@@ -46,6 +47,7 @@ class SignupViewModel(
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
     private val platformUtils: PlatformUtils,
     private val eventGenerator: KpiEventGenerator,
+    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
@@ -113,12 +115,12 @@ class SignupViewModel(
         consentUseCase.setConsent(allow)
         if (isFirstScreen) {
             if (platformUtils.isTv()) {
-                if (billingHandler.hasActiveSubscription().first()) {
+                if (vpnSubscriptionPaymentProvider.hasActiveSubscription().first()) {
                     router.updateDestination(TvWelcomeBack)
                 } else {
                     router.updateDestination(TvWelcome)
                 }
-            } else if (billingHandler.hasActiveSubscription().first()) {
+            } else if (vpnSubscriptionPaymentProvider.hasActiveSubscription().first()) {
                 router.updateDestination(WelcomeBack)
             } else {
                 router.updateDestination(Subscribe)

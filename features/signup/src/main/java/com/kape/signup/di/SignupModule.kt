@@ -6,6 +6,7 @@ import com.kape.data.DI
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.login.domain.mobile.LoginUseCase
 import com.kape.login.domain.mobile.LoginWithReceiptHandler
+import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.shareevents.data.KpiEventGenerator
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
@@ -65,6 +66,7 @@ class SignupModule {
         submitEventUseCase: SubmitKpiEventUseCase,
         platformUtils: PlatformUtils,
         eventGenerator: KpiEventGenerator,
+        vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): SignupViewModel =
@@ -77,6 +79,7 @@ class SignupModule {
             submitEventUseCase,
             platformUtils,
             eventGenerator,
+            vpnSubscriptionPaymentProvider,
             ioDispatcher,
             mainDispatcher,
             networkConnectionListener,

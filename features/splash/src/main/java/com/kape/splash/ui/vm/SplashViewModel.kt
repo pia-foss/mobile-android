@@ -20,6 +20,7 @@ import com.kape.data.WelcomeBack
 import com.kape.featureflags.domain.FeatureFlagsDataSource
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.localprefs.prefs.ConsentPrefs
+import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.signup.domain.SignupBillingHandler
 import com.kape.utils.PlatformUtils
 import com.kape.vpnregions.utils.RegionListProvider
@@ -45,6 +46,7 @@ class SplashViewModel(
     private val consentPrefs: ConsentPrefs,
     private val billingHandler: SignupBillingHandler,
     private val featureFlagsDataSource: FeatureFlagsDataSource,
+    private val vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
@@ -111,7 +113,7 @@ class SplashViewModel(
         } else {
             if (platformUtils.isTv()) {
                 if (hasMadeConsentDecision) {
-                    if (billingHandler.hasActiveSubscription().first()) {
+                    if (vpnSubscriptionPaymentProvider.hasActiveSubscription().first()) {
                         router.updateDestination(TvWelcomeBack)
                     } else {
                         router.updateDestination(TvWelcome)
@@ -121,7 +123,7 @@ class SplashViewModel(
                 }
             } else {
                 if (hasMadeConsentDecision) {
-                    if (billingHandler.hasActiveSubscription().first()) {
+                    if (vpnSubscriptionPaymentProvider.hasActiveSubscription().first()) {
                         router.updateDestination(WelcomeBack)
                     } else {
                         router.updateDestination(Subscribe)

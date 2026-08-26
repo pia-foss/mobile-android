@@ -9,6 +9,7 @@ import com.kape.data.DI
 import com.kape.featureflags.domain.FeatureFlagsDataSource
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.localprefs.prefs.ConsentPrefs
+import com.kape.payments.ui.VpnSubscriptionPaymentProvider
 import com.kape.signup.domain.SignupBillingHandler
 import com.kape.splash.data.LatestAppVersionDataSourceImpl
 import com.kape.splash.domain.GetAppLatestVersionUseCase
@@ -46,6 +47,7 @@ class SplashModule {
         consentPrefs: ConsentPrefs,
         billingHandler: SignupBillingHandler,
         featureFlagsDataSource: FeatureFlagsDataSource,
+        vpnSubscriptionPaymentProvider: VpnSubscriptionPaymentProvider,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): SplashViewModel =
@@ -62,6 +64,7 @@ class SplashModule {
             consentPrefs,
             billingHandler,
             featureFlagsDataSource,
+            vpnSubscriptionPaymentProvider,
             ioDispatcher,
             mainDispatcher,
         )
