@@ -144,7 +144,7 @@ fun OldTvSignUpScreen() {
                 selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
                 price = subscriptionData?.yearly?.mainPrice ?: "",
                 perMonthPrice = subscriptionData?.yearly?.secondaryPrice ?: "",
-                isFreeTrialAvailable = false,
+                freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.yearly?.freeTrialDuration),
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -158,6 +158,7 @@ fun OldTvSignUpScreen() {
             MonthlySubscriptionCard(
                 selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
                 price = subscriptionData?.monthly?.mainPrice ?: "",
+                freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.monthly?.freeTrialDuration),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 subscriptionData?.let {

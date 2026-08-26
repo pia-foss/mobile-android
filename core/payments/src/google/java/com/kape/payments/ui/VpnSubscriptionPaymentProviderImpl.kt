@@ -161,17 +161,22 @@ class VpnSubscriptionPaymentProviderImpl(
 
     override fun getMonthlySubscriptionPlan(): SubscriptionPlan? =
         prefs.vpnSubscriptionPlans.value.firstOrNull {
-            it.billingPeriod == MONTHLY
+            it.billingPeriod == MONTHLY && it.freeTrialDuration == null
         }
 
     override fun getYearlySubscriptionPlan(): SubscriptionPlan? =
         prefs.vpnSubscriptionPlans.value.firstOrNull {
-            it.billingPeriod == YEARLY
+            it.billingPeriod == YEARLY && it.freeTrialDuration == null
         }
 
     override fun getFreeTrialYearlySubscriptionPlan(): SubscriptionPlan? =
         prefs.vpnSubscriptionPlans.value.firstOrNull {
             it.billingPeriod == YEARLY && it.freeTrialDuration != null
+        }
+
+    override fun getFreeTrialMonthlySubscriptionPlan(): SubscriptionPlan? =
+        prefs.vpnSubscriptionPlans.value.firstOrNull {
+            it.billingPeriod == MONTHLY && it.freeTrialDuration != null
         }
 
     override fun loadProducts() {

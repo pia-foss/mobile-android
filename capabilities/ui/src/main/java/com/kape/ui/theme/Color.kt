@@ -146,6 +146,8 @@ fun ColorScheme.sunglow() = Color(0xFFFFC933)
 
 fun ColorScheme.naturalSpace(): Color = if (this == DarkColorScheme) white else naturalSpace
 
+fun ColorScheme.onSuccessContainer(): Color = darkGreen
+
 private fun latencyGreen(): Color = brandGreen
 
 private fun latencyYellow(): Color = Color(0xffe6b400)

@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s мс</string>
     <string name="yearly">Ежегодно</string>
     <string name="monthly">Ежемесячно</string>
-    <string name="best_value">ПРОБНАЯ ВЕРСИЯ – ВЫГОДНО</string>
     <string name="ok">ОК</string>
     <string name="download">Загрузить</string>
     <string name="upload">Отправить</string>
@@ -328,7 +327,6 @@
     <string name="subscribe_screen_description_cancel_anytime">Никаких обязательств. Отмена в любой момент бесплатного пробного периода.</string>
     <string name="subscribe_screen_description_payment">Оплата будет списана с Вашего счета только по окончании пробного периода.</string>
     <string name="subscribe_screen_description_no_in_app">Благодаря серверам по всему миру вы всегда под защитой.</string>
-    <string name="tv_subscribe_screen_description">Начните 7-дневный бесплатный пробный период, а затем %s.</string>
     <string name="subscription_option">Продолжительность подписки</string>
     <string name="subscribe_now">Купить подписку сейчас</string>
     <string name="footer"><a href="web-screen-privacy">Политика конфиденциальности</a> и <a href="web-screen-terms">Условия использования</a></string>
@@ -343,19 +341,15 @@
     <string name="subscribe_screen_connection_speeds">Подключения 10 Гбит/с</string>
     <string name="subscribe_screen_unlimited_devices">Защита любого количества устройств</string>
     <string name="subscribe_screen_choose_your_plan">Выберите свой тариф</string>
-    <string name="subscribe_screen_best_value">7-ДН. ПРОБНАЯ ВЕРСИЯ — ВЫГОДНО</string>
     <string name="subscribe_screen_billed_annually">Ежегодная оплата</string>
     <string name="subscribe_screen_billed_monthly">Ежемесячная оплата</string>
     <string name="subscribe_screen_trial_title">Как работает пробная версия</string>
     <string name="subscribe_screen_trial_today">Сегодня</string>
     <string name="subscribe_screen_trial_today_description">Вы сразу же получаете полный доступ</string>
-    <string name="subscribe_screen_trial_day_7">7-й день</string>
     <string name="subscribe_screen_trial_day_7_description">Начинается подписка, отменить ее можно в любой момент</string>
-    <string name="subscribe_screen_trial_annually_description_headline">Первые 7 дней бесплатно, далее %s в год. Отменить подписку можно в любой момент.</string>
     <string name="subscribe_screen_trial_annually_description">Оплата будет списана в последний день пробной версии, если вы не отмените подписку до окончания пробной версии.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, ежемесячная оплата. </string>
     <string name="subscribe_screen_trial_monthly_description">Продлевается автоматически, если не отменить подписку как минимум за 24 часа до окончания ее срока действия.</string>
-    <string name="subscribe_screen_trial_start_button">Начать 7-дн. пробную версию</string>
     <string name="subscribe_screen_trial_other_plans_button">Открыть другие тарифы</string>
     <string name="subscribe_screen_per_month_ending">в месяц</string>
     <string name="subscribe_screen_per_year_ending">в год</string>

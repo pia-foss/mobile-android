@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -38,10 +39,12 @@ import com.kape.ui.mobile.text.SettingsL2TextDescription
 import com.kape.ui.mobile.text.SignUpDurationText
 import com.kape.ui.mobile.text.SignUpPricePerMonthText
 import com.kape.ui.mobile.text.SignUpPriceText
+import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.errorBackground
 import com.kape.ui.theme.errorOutline
 import com.kape.ui.theme.infoBackground
 import com.kape.ui.theme.infoOutline
+import com.kape.ui.theme.onSuccessContainer
 import com.kape.ui.theme.successBackground
 import com.kape.ui.theme.successOutline
 import com.kape.ui.theme.warning30
@@ -58,6 +61,7 @@ fun YearlySubscriptionCard(
     selectedCardColor: Color = LocalColors.current.surface,
     unselectedCardColor: Color = Color.Transparent,
     bestValueBannerText: String = stringResource(id = R.string.best_value),
+    freeTrialDays: Int?,
     onClick: () -> Unit,
 ) {
     Card(
@@ -101,20 +105,30 @@ fun YearlySubscriptionCard(
                         modifier = Modifier.align(CenterVertically),
                     )
                 }
-                Box(
-                    modifier =
-                        Modifier
-                            .padding(vertical = 16.dp)
-                            .wrapContentWidth()
-                            .background(
-                                LocalColors.current.warning30(),
-                                shape = RoundedCornerShape(4.dp),
-                            ),
-                ) {
+                Row(modifier = Modifier.padding(vertical = 16.dp)) {
                     BestValueBannerText(
                         content = bestValueBannerText,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        modifier =
+                            Modifier
+                                .background(
+                                    LocalColors.current.warning30(),
+                                    shape = RoundedCornerShape(4.dp),
+                                ).padding(horizontal = 8.dp, vertical = 4.dp),
                     )
+                    Spacer(Modifier.width(8.dp))
+                    freeTrialDays?.let {
+                        Text(
+                            text = stringResource(R.string.free_trial_to_format, it),
+                            style = PiaTypography.caption1,
+                            color = LocalColors.current.onSuccessContainer(),
+                            modifier =
+                                Modifier
+                                    .background(
+                                        LocalColors.current.successBackground(),
+                                        RoundedCornerShape(4.dp),
+                                    ).padding(horizontal = 8.dp, vertical = 4.dp),
+                        )
+                    }
                 }
             }
         }
@@ -129,13 +143,19 @@ fun MonthlySubscriptionCard(
     additionalText: String = "",
     selectedCardColor: Color = LocalColors.current.surface,
     unselectedCardColor: Color = Color.Transparent,
+    freeTrialDays: Int?,
     onClick: () -> Unit,
 ) {
     Card(
         modifier =
             modifier
                 .semantics(mergeDescendants = true) { }
-                .selectable(selected = selected, enabled = true, role = Role.RadioButton, onClick = onClick),
+                .selectable(
+                    selected = selected,
+                    enabled = true,
+                    role = Role.RadioButton,
+                    onClick = onClick,
+                ),
         shape = RoundedCornerShape(12.dp),
         colors =
             CardDefaults.cardColors(
@@ -171,6 +191,22 @@ fun MonthlySubscriptionCard(
                         content = additionalText,
                         modifier = Modifier.align(CenterVertically),
                     )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Row {
+                    freeTrialDays?.let {
+                        Text(
+                            text = stringResource(R.string.free_trial_to_format, it),
+                            style = PiaTypography.caption1,
+                            color = LocalColors.current.onSuccessContainer(),
+                            modifier =
+                                Modifier
+                                    .background(
+                                        LocalColors.current.successBackground(),
+                                        RoundedCornerShape(4.dp),
+                                    ).padding(horizontal = 8.dp, vertical = 4.dp),
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }

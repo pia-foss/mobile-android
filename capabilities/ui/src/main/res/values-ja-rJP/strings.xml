@@ -13,7 +13,6 @@
     <string name="latency_to_format">%sミリ秒</string>
     <string name="yearly">年間</string>
     <string name="monthly">月間</string>
-    <string name="best_value">最もお得 - 無料トライアル</string>
     <string name="ok">OK</string>
     <string name="download">ダウンロード</string>
     <string name="upload">アップロード</string>
@@ -328,7 +327,6 @@
     <string name="subscribe_screen_description_cancel_anytime">制限はありません。無料トライアル期間中はいつでもキャンセル可能です。</string>
     <string name="subscribe_screen_description_payment">お支払いはトライアル終了時にアカウントに請求されます。</string>
     <string name="subscribe_screen_description_no_in_app">世界中にサーバがあるので、常に保護されています。</string>
-    <string name="tv_subscribe_screen_description">7日間無料トライアルを開始、その後%s。</string>
     <string name="subscription_option">サブスクリプションプラン</string>
     <string name="subscribe_now">今すぐ登録</string>
     <string name="footer"><a href="web-screen-privacy">プライバシーポリシー</a>および<a href="web-screen-terms">利用規約</a></string>
@@ -343,19 +341,15 @@
     <string name="subscribe_screen_connection_speeds">10 Gbpsの通信速度</string>
     <string name="subscribe_screen_unlimited_devices">保護できる端末台数が無制限</string>
     <string name="subscribe_screen_choose_your_plan">プランをお選びください</string>
-    <string name="subscribe_screen_best_value">お得なプラン - 7日間の無料トライアル</string>
     <string name="subscribe_screen_billed_annually">年額課金</string>
     <string name="subscribe_screen_billed_monthly">月額課金</string>
     <string name="subscribe_screen_trial_title">無料トライアルの使い方</string>
     <string name="subscribe_screen_trial_today">本日</string>
     <string name="subscribe_screen_trial_today_description">即座に全機能が利用可能になります</string>
-    <string name="subscribe_screen_trial_day_7">7日目</string>
     <string name="subscribe_screen_trial_day_7_description">サブスクリプションが開始されます（いつでも解約可）</string>
-    <string name="subscribe_screen_trial_annually_description_headline">7日間無料、その後は%s/年。いつでも解約可能です。</string>
     <string name="subscribe_screen_trial_annually_description">無料トライアル期間終了前に解約しない限り、トライアル最終日に課金されます。</string>
     <string name="subscribe_screen_trial_monthly_description_headline">月額課金が、%s。 </string>
     <string name="subscribe_screen_trial_monthly_description">有効期限の24時間前までに解約しない限り、自動的に更新されます。</string>
-    <string name="subscribe_screen_trial_start_button">7日間の無料トライアルを開始</string>
     <string name="subscribe_screen_trial_other_plans_button">他のプランを見る</string>
     <string name="subscribe_screen_per_month_ending">月額</string>
     <string name="subscribe_screen_per_year_ending">年額</string>

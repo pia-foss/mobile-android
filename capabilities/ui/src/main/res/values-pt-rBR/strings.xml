@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Anual</string>
     <string name="monthly">Mensal</string>
-    <string name="best_value">MELHOR OFERTA - TESTE GRÁTIS</string>
     <string name="ok">OK</string>
     <string name="download">Baixar</string>
     <string name="upload">Carregar</string>
@@ -328,7 +327,6 @@
     <string name="subscribe_screen_description_cancel_anytime">Sem compromisso. Cancele a qualquer momento durante o período de teste grátis.</string>
     <string name="subscribe_screen_description_payment">O pagamento só será cobrado de sua conta no final do período de teste.</string>
     <string name="subscribe_screen_description_no_in_app">Com servidores ao redor do mundo, você está sempre protegido.</string>
-    <string name="tv_subscribe_screen_description">Comece o seu teste gratuito de 7 dias e depois %s.</string>
     <string name="subscription_option">Opção de assinatura</string>
     <string name="subscribe_now">Assine agora</string>
     <string name="footer"><a href="web-screen-privacy">Política de Privacidade</a> e <a href="web-screen-terms">Termos de Serviço</a></string>
@@ -343,19 +341,15 @@
     <string name="subscribe_screen_connection_speeds">Velocidades de conexão de 10 Gbps</string>
     <string name="subscribe_screen_unlimited_devices">Proteção para dispositivos ilimitados</string>
     <string name="subscribe_screen_choose_your_plan">Escolha seu plano</string>
-    <string name="subscribe_screen_best_value">MELHOR VALOR - 7 DIAS DE TESTE GRÁTIS</string>
     <string name="subscribe_screen_billed_annually">Cobrança anual</string>
     <string name="subscribe_screen_billed_monthly">Cobrança mensal</string>
     <string name="subscribe_screen_trial_title">Como seu teste grátis funciona</string>
     <string name="subscribe_screen_trial_today">Hoje</string>
     <string name="subscribe_screen_trial_today_description">Acesso completo desbloqueado instantaneamente</string>
-    <string name="subscribe_screen_trial_day_7">Dia 7</string>
     <string name="subscribe_screen_trial_day_7_description">Início da assinatura, cancele quando quiser</string>
-    <string name="subscribe_screen_trial_annually_description_headline">Grátis por 7 dias; em seguida, %s/ano. Cancele quando quiser.</string>
     <string name="subscribe_screen_trial_annually_description">A cobrança será efetuada no último dia do teste, a menos que você cancele antes do término do teste grátis.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, cobrança mensal. </string>
     <string name="subscribe_screen_trial_monthly_description">Renova-se automaticamente, a menos que seja cancelado pelo menos 24 horas antes da data de vencimento.</string>
-    <string name="subscribe_screen_trial_start_button">Começar meu teste grátis de 7 dias</string>
     <string name="subscribe_screen_trial_other_plans_button">Ver outros planos</string>
     <string name="subscribe_screen_per_month_ending">por mês</string>
     <string name="subscribe_screen_per_year_ending">por ano</string>

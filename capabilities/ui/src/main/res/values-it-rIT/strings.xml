@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Annuale</string>
     <string name="monthly">Mensile</string>
-    <string name="best_value">MIGLIOR OFFERTA - PROVA GRATUITA</string>
     <string name="ok">OK</string>
     <string name="download">Scarica</string>
     <string name="upload">Carica</string>
@@ -328,7 +327,6 @@
     <string name="subscribe_screen_description_cancel_anytime">Nessun impegno. Può disdire in qualsiasi momento durante la prova gratuita.</string>
     <string name="subscribe_screen_description_payment">Il pagamento verrà addebitato sul suo conto solo al termine della prova.</string>
     <string name="subscribe_screen_description_no_in_app">Con server in tutto il mondo, sei sempre protetto.</string>
-    <string name="tv_subscribe_screen_description">Inizia la tua prova gratuita di 7 giorni e %s.</string>
     <string name="subscription_option">Opzione di abbonamento</string>
     <string name="subscribe_now">Abbonati ora</string>
     <string name="footer"><a href="web-screen-privacy">Informativa sulla privacy</a> e <a href="web-screen-terms">Termini di servizio</a></string>
@@ -343,19 +341,15 @@
     <string name="subscribe_screen_connection_speeds">Velocità di connessione a 10 Gbps</string>
     <string name="subscribe_screen_unlimited_devices">Protezione su dispositivi illimitati</string>
     <string name="subscribe_screen_choose_your_plan">Scegli il tuo piano</string>
-    <string name="subscribe_screen_best_value">MIGLIOR RAPPORTO QUALITÀ/PREZZO - PROVA GRATUITA DI 7 GIORNI</string>
     <string name="subscribe_screen_billed_annually">Fatturazione annuale</string>
     <string name="subscribe_screen_billed_monthly">Fatturazione mensile</string>
     <string name="subscribe_screen_trial_title">Come funziona la tua prova gratuita</string>
     <string name="subscribe_screen_trial_today">Oggi</string>
     <string name="subscribe_screen_trial_today_description">Accesso completo sbloccato immediatamente</string>
-    <string name="subscribe_screen_trial_day_7">7° giorno</string>
     <string name="subscribe_screen_trial_day_7_description">Abbonamento attivo, cancellabile in qualsiasi momento</string>
-    <string name="subscribe_screen_trial_annually_description_headline">Gratis per 7 giorni, poi %s all’anno. Disdici in qualsiasi momento.</string>
     <string name="subscribe_screen_trial_annually_description">L\'addebito avverrà nell\'ultimo giorno del periodo di prova, a meno di cancellare l\'abbonamento prima della scadenza del periodo di prova gratuito.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, addebito mensile. </string>
     <string name="subscribe_screen_trial_monthly_description">Si rinnova automaticamente, a meno di non essere disdetto almeno 24 ore prima della data di scadenza.</string>
-    <string name="subscribe_screen_trial_start_button">Inizia la mia prova gratuita di 7 giorni</string>
     <string name="subscribe_screen_trial_other_plans_button">Vedi altri piani</string>
     <string name="subscribe_screen_per_month_ending">al mese</string>
     <string name="subscribe_screen_per_year_ending">all\'anno</string>

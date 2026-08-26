@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Årlig</string>
     <string name="monthly">Månedlig</string>
-    <string name="best_value">BEST VERDI – GRATIS PRØVEPERIODE</string>
     <string name="ok">OK</string>
     <string name="download">Last ned</string>
     <string name="upload">Last opp</string>
@@ -328,7 +327,6 @@
     <string name="subscribe_screen_description_cancel_anytime">Ingen forpliktelser. Avslutt når som helst i løpet av prøveperioden.</string>
     <string name="subscribe_screen_description_payment">Betalingen belastes kontoen din først når prøveperioden er avsluttet.</string>
     <string name="subscribe_screen_description_no_in_app">Med servere over hele verden, er du alltid beskyttet.</string>
-    <string name="tv_subscribe_screen_description">Start din 7-dagers gratis prøveperiode og %s.</string>
     <string name="subscription_option">Abonnementsalternativ</string>
     <string name="subscribe_now">Abonner nå</string>
     <string name="footer"><a href="web-screen-privacy">Personvernerklæring</a> og <a href="web-screen-terms">tjenestevilkår</a></string>
@@ -343,19 +341,15 @@
     <string name="subscribe_screen_connection_speeds">Tilkoblingshastigheter på opptil 10 Gbps</string>
     <string name="subscribe_screen_unlimited_devices">Beskyttelse på et ubegrenset antall enheter</string>
     <string name="subscribe_screen_choose_your_plan">Velg abonnement</string>
-    <string name="subscribe_screen_best_value">BEST VERDI – 7-DAGERS GRATIS PRØVEPERIODE</string>
     <string name="subscribe_screen_billed_annually">Faktureres årlig</string>
     <string name="subscribe_screen_billed_monthly">Faktureres månedlig</string>
     <string name="subscribe_screen_trial_title">Slik fungerer prøveperioden</string>
     <string name="subscribe_screen_trial_today">I dag</string>
     <string name="subscribe_screen_trial_today_description">Full tilgang umiddelbart</string>
-    <string name="subscribe_screen_trial_day_7">Dag 7</string>
     <string name="subscribe_screen_trial_day_7_description">Abonnementet starter, avslutt når som helst</string>
-    <string name="subscribe_screen_trial_annually_description_headline">Gratis i sju dager, deretter %s per år. Avslutt når som helst.</string>
     <string name="subscribe_screen_trial_annually_description">Du blir belastet den siste dagen av prøveperioden, med mindre du avslutter før prøveperioden er over.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, fakturert månedlig. </string>
     <string name="subscribe_screen_trial_monthly_description">Fornyes automatisk med mindre du avslutter senest 24 timer før utløpsdatoen.</string>
-    <string name="subscribe_screen_trial_start_button">Start min 7-dagers gratis prøveperiode</string>
     <string name="subscribe_screen_trial_other_plans_button">Se andre abonnementer</string>
     <string name="subscribe_screen_per_month_ending">per måned</string>
     <string name="subscribe_screen_per_year_ending">per år</string>

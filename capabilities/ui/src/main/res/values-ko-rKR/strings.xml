@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s밀리초</string>
     <string name="yearly">연간</string>
     <string name="monthly">월간</string>
-    <string name="best_value">최저가 - 무료 체험</string>
     <string name="ok">확인</string>
     <string name="download">다운로드</string>
     <string name="upload">업로드</string>
@@ -328,7 +327,6 @@
     <string name="subscribe_screen_description_cancel_anytime">약정없이 무료 체험 중 언제든지 취소할 수 있습니다.</string>
     <string name="subscribe_screen_description_payment">요금은 체험이 종료된 후 청구됩니다.</string>
     <string name="subscribe_screen_description_no_in_app">전 세계에 있는 서버를 통해 언제나 보호를 받습니다.</string>
-    <string name="tv_subscribe_screen_description">7일 무료 체험을 시작한 후에 %s</string>
     <string name="subscription_option">구독 옵션</string>
     <string name="subscribe_now">지금 구독하기</string>
     <string name="footer"><a href="web-screen-privacy">개인정보 취급방침</a> 및 <a href="web-screen-terms">서비스 약관</a></string>
@@ -343,19 +341,15 @@
     <string name="subscribe_screen_connection_speeds">10Gbps 연결 속도</string>
     <string name="subscribe_screen_unlimited_devices">무제한 기기 보호</string>
     <string name="subscribe_screen_choose_your_plan">요금제를 선택하세요</string>
-    <string name="subscribe_screen_best_value">최고 혜택 - 7일 무료 체험</string>
     <string name="subscribe_screen_billed_annually">연간 결제</string>
     <string name="subscribe_screen_billed_monthly">월간 결제</string>
     <string name="subscribe_screen_trial_title">무료 체험 이용 방법</string>
     <string name="subscribe_screen_trial_today">오늘</string>
     <string name="subscribe_screen_trial_today_description">모든 기능 즉시 이용 가능</string>
-    <string name="subscribe_screen_trial_day_7">7일째</string>
     <string name="subscribe_screen_trial_day_7_description">구독이 시작되며, 언제든지 취소 가능</string>
-    <string name="subscribe_screen_trial_annually_description_headline">7일 동안 무료이며, 이후 연 %s가 청구됩니다. 언제든지 취소하실 수 있습니다.</string>
     <string name="subscribe_screen_trial_annually_description">무료 체험이 종료되기 전에 취소하지 않으시면, 체험 마지막 날에 요금이 청구됩니다.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, 월간 결제. </string>
     <string name="subscribe_screen_trial_monthly_description">만료일 최소 24시간 전까지 취소하지 않으시면, 자동으로 갱신됩니다.</string>
-    <string name="subscribe_screen_trial_start_button">7일 무료 체험 시작하기</string>
     <string name="subscribe_screen_trial_other_plans_button">다른 요금제 보기</string>
     <string name="subscribe_screen_per_month_ending">/월</string>
     <string name="subscribe_screen_per_year_ending">/년</string>

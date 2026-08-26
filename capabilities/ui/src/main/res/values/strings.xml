@@ -14,7 +14,8 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Yearly</string>
     <string name="monthly">Monthly</string>
-    <string name="best_value">BEST VALUE - FREE TRIAL</string>
+    <string name="best_value">BEST VALUE</string>
+    <string name="free_trial_to_format">%d-DAY FREE TRIAL</string>
 
     <string name="ok">OK</string>
 
@@ -373,7 +374,6 @@
     <string name="subscribe_screen_description_cancel_anytime">No commitment. Cancel anytime during the free trial.</string>
     <string name="subscribe_screen_description_payment">Payment will only be charged to your account at the end of your trial.</string>
     <string name="subscribe_screen_description_no_in_app">With servers around the globe, you are always under protection.</string>
-    <string name="tv_subscribe_screen_description">Start your 7 days free trial then %s.</string>
     <string name="subscription_option">Subscription option</string>
     <string name="subscribe_now">Subscribe now</string>
     <string name="footer"><a href="web-screen-privacy">Privacy Policy</a> and <a href="web-screen-terms">Terms of Service</a></string>
@@ -389,25 +389,25 @@
     <string name="subscribe_screen_connection_speeds">10-Gbps connection speeds</string>
     <string name="subscribe_screen_unlimited_devices">Protection on unlimited devices</string>
     <string name="subscribe_screen_choose_your_plan">Choose your plan</string>
-    <string name="subscribe_screen_best_value">BEST VALUE - 7-DAY FREE TRIAL</string>
     <string name="subscribe_screen_billed_annually">Billed annually</string>
     <string name="subscribe_screen_billed_monthly">Billed monthly</string>
     <string name="subscribe_screen_trial_title">How your free trial works</string>
     <string name="subscribe_screen_trial_today">Today</string>
     <string name="subscribe_screen_trial_today_description">Full access unlocked instantly</string>
-    <string name="subscribe_screen_trial_day_7">Day 7</string>
+    <string name="subscribe_screen_trial_day_to_format">Day %d</string>
     <string name="subscribe_screen_trial_day_7_description">Subscription begins, cancel anytime</string>
-    <string name="subscribe_screen_trial_annually_description_headline">Free for 7 days, then %s/year. Cancel anytime.</string>
+    <string name="subscribe_screen_trial_annually_description_headline_to_format">Free for %1$d days, then %2$s/year. Cancel anytime.</string>
     <string name="subscribe_screen_trial_annually_description">You will be charged on the last day of your trial, unless you cancel before your free trial ends.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, billed monthly. </string>
     <string name="subscribe_screen_trial_monthly_description">Renews automatically unless cancelled at least 24 hours before expiry date.</string>
-    <string name="subscribe_screen_trial_start_button">Start My 7-day Free Trial</string>
+    <string name="subscribe_screen_trial_start_button_to_format">Start My %d-day Free Trial</string>
     <string name="subscribe_screen_trial_other_plans_button">See Other Plans</string>
     <string name="subscribe_screen_per_month_ending">per month</string>
     <string name="subscribe_screen_per_year_ending">per year</string>
     <string name="subscribe_screen_maybe_later">maybe later</string>
     <string name="subscribe_screen_log_in">log in</string>
     <string name="subscribe_screen_ratings_label">4.4 • 107K Ratings</string>
+    <string name="tv_subscribe_screen_description_to_format">Start your %1$d days free trial then %2$s.</string>
 
     <string name="consent_title">Please help us improve our service</string>
     <string name="consent_message">To help us ensure our service\'s connection performance, you can anonymously share your connection stats with us. These reports do not include any personally identifiable information.</string>

@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Roczny</string>
     <string name="monthly">Miesięczny</string>
-    <string name="best_value">NAJLEPSZA WARTOŚĆ - BEZPŁATNY OKRES PRÓBNY</string>
     <string name="ok">OK</string>
     <string name="download">Pobierz</string>
     <string name="upload">Przesyłanie</string>
@@ -328,7 +327,6 @@
     <string name="subscribe_screen_description_cancel_anytime">Brak zobowiązań. Bezpłatny okres próbny można anulować w dowolnym momencie.</string>
     <string name="subscribe_screen_description_payment">Płatność zostanie pobrana z Państwa konta dopiero po zakończeniu okresu próbnego.</string>
     <string name="subscribe_screen_description_no_in_app">Dzięki serwerom na całym świecie, zawsze jesteś pod ochroną.</string>
-    <string name="tv_subscribe_screen_description">Rozpocznij 7-dniowy darmowy okres próbny, a następnie %s.</string>
     <string name="subscription_option">Opcja subskrypcji</string>
     <string name="subscribe_now">Subskrybuj teraz</string>
     <string name="footer"><a href="web-screen-privacy">Polityka prywatności</a> i <a href="web-screen-terms">Warunki korzystania z usługi</a></string>
@@ -343,19 +341,15 @@
     <string name="subscribe_screen_connection_speeds">Prędkość połączenia na poziomie 10 Gb/s</string>
     <string name="subscribe_screen_unlimited_devices">Ochrona nieograniczonej liczby urządzeń</string>
     <string name="subscribe_screen_choose_your_plan">Wybierz plan</string>
-    <string name="subscribe_screen_best_value">NAJLEPSZA WARTOŚĆ – DARMOWA WERSJA PRÓBNA NA 7 DNI</string>
     <string name="subscribe_screen_billed_annually">Rozliczenie roczne</string>
     <string name="subscribe_screen_billed_monthly">Rozliczenie miesięczne</string>
     <string name="subscribe_screen_trial_title">Jak działa darmowa wersja próbna</string>
     <string name="subscribe_screen_trial_today">Dziś</string>
     <string name="subscribe_screen_trial_today_description">Od razu odblokowujesz pełen dostęp</string>
-    <string name="subscribe_screen_trial_day_7">7. dzień</string>
     <string name="subscribe_screen_trial_day_7_description">Uruchamia się subskrypcja, którą możesz anulować w każdej chwili</string>
-    <string name="subscribe_screen_trial_annually_description_headline">Za darmo przez 7 dni, a potem %s/rok. Subskrypcję można w każdej chwili anulować.</string>
     <string name="subscribe_screen_trial_annually_description">Opłata zostanie naliczona w ostatnim dniu okresu próbnego, chyba że anulujesz subskrypcję przed upływem darmowej wersji próbnej.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, opłata co miesiąc. </string>
     <string name="subscribe_screen_trial_monthly_description">Subskrypcja odnawia się automatycznie, o ile nie zostanie anulowana co najmniej 24 godziny przed datą wygaśnięcia.</string>
-    <string name="subscribe_screen_trial_start_button">Rozpocznij 7-dniowy bezpłatny okres próbny</string>
     <string name="subscribe_screen_trial_other_plans_button">Sprawdź inne plany</string>
     <string name="subscribe_screen_per_month_ending">miesięcznie</string>
     <string name="subscribe_screen_per_year_ending">rocznie</string>

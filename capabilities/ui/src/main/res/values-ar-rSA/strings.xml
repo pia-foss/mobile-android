@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ميلي ثانية</string>
     <string name="yearly">كل سنة</string>
     <string name="monthly">كل شهر</string>
-    <string name="best_value">أفضل عرض - تجربة مجانية</string>
     <string name="ok">موافق</string>
     <string name="download">التنزيل</string>
     <string name="upload">التحميل</string>
@@ -328,7 +327,6 @@
     <string name="subscribe_screen_description_cancel_anytime">لا التزام. يمكنك الإلغاء في أي وقت خلال الفترة التجريبية المجانية.</string>
     <string name="subscribe_screen_description_payment">سيتم فرض الدفع على حسابك فقط في نهاية الفترة التجريبية.</string>
     <string name="subscribe_screen_description_no_in_app">ستكون دائما محميا مع خوادم في جميع أنحاء العالم.</string>
-    <string name="tv_subscribe_screen_description">ابدأ تجربتك المجانية لمدة 7 أيام ثم %s.</string>
     <string name="subscription_option">خطة الاشتراك</string>
     <string name="subscribe_now">اشترك الآن</string>
     <string name="footer"><a href="web-screen-privacy">سياسة الخصوصية</a> و<a href="web-screen-terms">شروط الخدمة</a></string>
@@ -343,19 +341,15 @@
     <string name="subscribe_screen_connection_speeds">سرعات اتصال 10 جيجابايت بالثانية</string>
     <string name="subscribe_screen_unlimited_devices">الحماية على أجهزة غير محدودة</string>
     <string name="subscribe_screen_choose_your_plan">اختر باقتك</string>
-    <string name="subscribe_screen_best_value">أفضل قيمة - إصدار تجريبي مجاني 7 أيام</string>
     <string name="subscribe_screen_billed_annually">تُدفع سنويًا</string>
     <string name="subscribe_screen_billed_monthly">تُدفع شهريًا</string>
     <string name="subscribe_screen_trial_title">كيف يعمل الإصدار التجريبي المجاني</string>
     <string name="subscribe_screen_trial_today">اليوم</string>
     <string name="subscribe_screen_trial_today_description">وصول كامل بدون قيود فورًا</string>
-    <string name="subscribe_screen_trial_day_7">7 أيام</string>
     <string name="subscribe_screen_trial_day_7_description">بدأ الاشتراك، والإلغاء في أي وقت</string>
-    <string name="subscribe_screen_trial_annually_description_headline">مجانًا لمدة 7 أيام، ثم %s/سنويًا. الإلغاء في أي وقت.</string>
     <string name="subscribe_screen_trial_annually_description">سيخصم المبلغ في آخر يوم من الإصدار التجريبي، إلا إذا ألغيت قبل انتهاء الإصدار التجريبي.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s، تُدفع سنويًا. </string>
     <string name="subscribe_screen_trial_monthly_description">تجدد تلقائيًا إلا إذا ألغيت قبل 24 ساعة على الأقل من تاريخ الانتهاء.</string>
-    <string name="subscribe_screen_trial_start_button">ابدأ الإصدار التجريبي المجاني 7 أيام</string>
     <string name="subscribe_screen_trial_other_plans_button">شاهد باقات أخرى</string>
     <string name="subscribe_screen_per_month_ending">شهريًا</string>
     <string name="subscribe_screen_per_year_ending">سنويًا</string>

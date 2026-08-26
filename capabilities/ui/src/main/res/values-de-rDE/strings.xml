@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Jährlich</string>
     <string name="monthly">Monatlich</string>
-    <string name="best_value">BESTPREIS – KOSTENLOSE TESTVERSION</string>
     <string name="ok">OK</string>
     <string name="download">Herunterladen</string>
     <string name="upload">Upload</string>
@@ -328,7 +327,6 @@
     <string name="subscribe_screen_description_cancel_anytime">Keine Verpflichtung. Während der kostenlosen Testphase können Sie jederzeit kündigen.</string>
     <string name="subscribe_screen_description_payment">Die Zahlung wird Ihrem Konto erst am Ende der Testphase belastet.</string>
     <string name="subscribe_screen_description_no_in_app">Mit Servern auf der ganzen Welt sind Sie immer geschützt.</string>
-    <string name="tv_subscribe_screen_description">Starten Sie Ihre kostenlose 7-Tage-Testversion dann %s.</string>
     <string name="subscription_option">Abo-Option</string>
     <string name="subscribe_now">Jetzt abonnieren</string>
     <string name="footer"><a href="web-screen-privacy">Datenschutzerklärung</a> und <a href="web-screen-terms">Servicebedingungen</a></string>
@@ -343,19 +341,15 @@
     <string name="subscribe_screen_connection_speeds">Verbindungsgeschwindigkeit von 10-Gbit/s</string>
     <string name="subscribe_screen_unlimited_devices">Schutz auf unbegrenzt vielen Geräten</string>
     <string name="subscribe_screen_choose_your_plan">Wähle dein Abonnement</string>
-    <string name="subscribe_screen_best_value">BESTPREIS – 7-TÄGIGE KOSTENLOSE TESTVERSION</string>
     <string name="subscribe_screen_billed_annually">Jährliche Abrechnung</string>
     <string name="subscribe_screen_billed_monthly">Monatliche Abrechnung</string>
     <string name="subscribe_screen_trial_title">So funktioniert deine kostenlose Testversion</string>
     <string name="subscribe_screen_trial_today">Heute</string>
     <string name="subscribe_screen_trial_today_description">Sofortiger uneingeschränkter Zugriff</string>
-    <string name="subscribe_screen_trial_day_7">Tag 7</string>
     <string name="subscribe_screen_trial_day_7_description">Das Abonnement beginnt, jederzeit kündbar</string>
-    <string name="subscribe_screen_trial_annually_description_headline">7 Tage kostenlos, danach %s/Jahr. Jederzeit kündbar.</string>
     <string name="subscribe_screen_trial_annually_description">Die Abrechnung erfolgt am letzten Tag deiner Testphase, sofern du nicht vor Ablauf der kostenlosen Testphase kündigst.</string>
     <string name="subscribe_screen_trial_monthly_description_headline">%s, monatliche Abrechnung. </string>
     <string name="subscribe_screen_trial_monthly_description">Verlängert sich automatisch, sofern nicht mindestens 24 Stunden vor Ablauf gekündigt wird.</string>
-    <string name="subscribe_screen_trial_start_button">Meine 7-tägige kostenlose Testphase starten</string>
     <string name="subscribe_screen_trial_other_plans_button">Andere Tarife anzeigen</string>
     <string name="subscribe_screen_per_month_ending">pro Monat</string>
     <string name="subscribe_screen_per_year_ending">pro Jahr</string>
