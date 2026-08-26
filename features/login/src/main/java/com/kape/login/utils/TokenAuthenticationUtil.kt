@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.core.net.toUri
 import com.kape.contracts.AuthenticationDataSource
 import com.kape.contracts.Router
+import com.kape.data.LoginWithCredentials
+import com.kape.data.auth.ApiResult
 import com.kape.permissions.utils.PermissionUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,10 +40,16 @@ class TokenAuthenticationUtil(
         val token = openUri.getQueryParameter("token")
         token?.let {
             launch {
-                if (!dataSource.isUserLoggedIn()) {
-                    dataSource.migrateToken(it)
-                }
-                router.updateDestination(permissionUtil.getNextDestination())
+                val destination =
+                    if (dataSource.isUserLoggedIn()) {
+                        permissionUtil.getNextDestination()
+                    } else {
+                        when (dataSource.migrateToken(it)) {
+                            is ApiResult.Success -> permissionUtil.getNextDestination()
+                            is ApiResult.Error -> LoginWithCredentials
+                        }
+                    }
+                router.updateDestination(destination)
             }
         }
     }

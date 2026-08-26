@@ -201,7 +201,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun deepLinkLogin(intent: Intent?) {
         intent?.data?.let {
-            if (it.toString().contains("login")) {
+            if (it.toString().endsWith("/login")) {
                 tokenAuthenticationUtil.authenticate(it)
             }
         }
