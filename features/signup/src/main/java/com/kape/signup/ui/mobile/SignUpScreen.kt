@@ -151,13 +151,18 @@ fun OldSignUpScreen() {
                     val subscriptionOptions = stringResource(id = R.string.subscription_option)
                     YearlySubscriptionCard(
                         selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
-                        price = stringResource(R.string.yearly_ending, subscriptionData?.yearly?.mainPrice ?: ""),
+                        price =
+                            stringResource(
+                                R.string.yearly_ending,
+                                subscriptionData?.yearly?.mainPrice ?: "",
+                            ),
                         additionalText = subscriptionData?.yearly?.secondaryPrice ?: "",
                         modifier =
                             Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                                 .semantics { contentDescription = subscriptionOptions },
+                        freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.yearly?.freeTrialDuration),
                     ) {
                         subscriptionData?.let {
                             subscriptionData.selected.value = subscriptionData.yearly
@@ -166,12 +171,17 @@ fun OldSignUpScreen() {
                     Spacer(modifier = Modifier.height(16.dp))
                     MonthlySubscriptionCard(
                         selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
-                        price = stringResource(R.string.monthly_ending, subscriptionData?.monthly?.mainPrice ?: ""),
+                        price =
+                            stringResource(
+                                R.string.monthly_ending,
+                                subscriptionData?.monthly?.mainPrice ?: "",
+                            ),
                         modifier =
                             Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)
                                 .semantics { contentDescription = subscriptionOptions },
+                        freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.monthly?.freeTrialDuration),
                     ) {
                         subscriptionData?.let {
                             subscriptionData.selected.value = subscriptionData.monthly

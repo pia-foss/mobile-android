@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s 毫秒</string>
     <string name="yearly">年度</string>
     <string name="monthly">月度</string>
-    <string name="best_value">最超值 - 免费试用</string>
     <string name="ok">确定</string>
     <string name="download">下载</string>
     <string name="upload">上传</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">10 Gbps 连接速度</string>
     <string name="subscribe_screen_unlimited_devices">保护无限台设备</string>
     <string name="subscribe_screen_choose_your_plan">选择套餐</string>
-    <string name="subscribe_screen_best_value">性价比最高：免费试用 7 天</string>
     <string name="subscribe_screen_billed_annually">按年计费</string>
     <string name="subscribe_screen_billed_monthly">按月计费</string>
     <string name="subscribe_screen_trial_title">免费试用如何运作</string>

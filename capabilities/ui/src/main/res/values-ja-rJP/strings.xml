@@ -13,7 +13,6 @@
     <string name="latency_to_format">%sミリ秒</string>
     <string name="yearly">年間</string>
     <string name="monthly">月間</string>
-    <string name="best_value">最もお得 - 無料トライアル</string>
     <string name="ok">OK</string>
     <string name="download">ダウンロード</string>
     <string name="upload">アップロード</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">10 Gbpsの通信速度</string>
     <string name="subscribe_screen_unlimited_devices">保護できる端末台数が無制限</string>
     <string name="subscribe_screen_choose_your_plan">プランをお選びください</string>
-    <string name="subscribe_screen_best_value">お得なプラン - 7日間の無料トライアル</string>
     <string name="subscribe_screen_billed_annually">年額課金</string>
     <string name="subscribe_screen_billed_monthly">月額課金</string>
     <string name="subscribe_screen_trial_title">無料トライアルの使い方</string>

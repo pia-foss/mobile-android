@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Yıllık</string>
     <string name="monthly">Aylık</string>
-    <string name="best_value">EN İYİ FİYAT - ÜCRETSİZ DENEME</string>
     <string name="ok">Tamam</string>
     <string name="download">İndir</string>
     <string name="upload">Yükle</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">10 Gbps bağlantı hızı</string>
     <string name="subscribe_screen_unlimited_devices">Sınırsız sayıda cihaz için koruma</string>
     <string name="subscribe_screen_choose_your_plan">Planını seç</string>
-    <string name="subscribe_screen_best_value">EN HESAPLI - 7 GÜN ÜCRETSİZ DENEME</string>
     <string name="subscribe_screen_billed_annually">Yıllık faturalandırılır</string>
     <string name="subscribe_screen_billed_monthly">Aylık faturalandırılır</string>
     <string name="subscribe_screen_trial_title">Ücretsiz deneme nasıl çalışır</string>

@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Chaque année</string>
     <string name="monthly">Chaque mois</string>
-    <string name="best_value">MEILLEUR RAPPORT QUALITÉ-PRIX - ESSAI GRATUIT</string>
     <string name="ok">OK</string>
     <string name="download">Téléchargement</string>
     <string name="upload">Chargement</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">Débits de connexion de 10 Gb/s</string>
     <string name="subscribe_screen_unlimited_devices">Protection sur un nombre illimité d\'appareils</string>
     <string name="subscribe_screen_choose_your_plan">Choisissez votre formule</string>
-    <string name="subscribe_screen_best_value">MEILLEUR RAPPORT QUALITÉ/PRIX – 7 JOURS D\'ESSAI GRATUIT </string>
     <string name="subscribe_screen_billed_annually">Montant facturé annuellement</string>
     <string name="subscribe_screen_billed_monthly">Montant facturé mensuellement</string>
     <string name="subscribe_screen_trial_title">Fonctionnement de votre essai gratuit</string>

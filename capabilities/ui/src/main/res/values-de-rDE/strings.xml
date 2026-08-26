@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Jährlich</string>
     <string name="monthly">Monatlich</string>
-    <string name="best_value">BESTPREIS – KOSTENLOSE TESTVERSION</string>
     <string name="ok">OK</string>
     <string name="download">Herunterladen</string>
     <string name="upload">Upload</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">Verbindungsgeschwindigkeit von 10-Gbit/s</string>
     <string name="subscribe_screen_unlimited_devices">Schutz auf unbegrenzt vielen Geräten</string>
     <string name="subscribe_screen_choose_your_plan">Wähle dein Abonnement</string>
-    <string name="subscribe_screen_best_value">BESTPREIS – 7-TÄGIGE KOSTENLOSE TESTVERSION</string>
     <string name="subscribe_screen_billed_annually">Jährliche Abrechnung</string>
     <string name="subscribe_screen_billed_monthly">Monatliche Abrechnung</string>
     <string name="subscribe_screen_trial_title">So funktioniert deine kostenlose Testversion</string>

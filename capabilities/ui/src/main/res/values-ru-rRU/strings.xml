@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s мс</string>
     <string name="yearly">Ежегодно</string>
     <string name="monthly">Ежемесячно</string>
-    <string name="best_value">ПРОБНАЯ ВЕРСИЯ – ВЫГОДНО</string>
     <string name="ok">ОК</string>
     <string name="download">Загрузить</string>
     <string name="upload">Отправить</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">Подключения 10 Гбит/с</string>
     <string name="subscribe_screen_unlimited_devices">Защита любого количества устройств</string>
     <string name="subscribe_screen_choose_your_plan">Выберите свой тариф</string>
-    <string name="subscribe_screen_best_value">7-ДН. ПРОБНАЯ ВЕРСИЯ — ВЫГОДНО</string>
     <string name="subscribe_screen_billed_annually">Ежегодная оплата</string>
     <string name="subscribe_screen_billed_monthly">Ежемесячная оплата</string>
     <string name="subscribe_screen_trial_title">Как работает пробная версия</string>

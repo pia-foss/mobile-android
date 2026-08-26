@@ -122,6 +122,7 @@ fun SignupDedicatedIpScreen() =
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
+                    freeTrialDays = null,
                 ) {
                     viewModel.dipYearlyPlan.value?.let {
                         viewModel.selectPlanProductId(it.id)
@@ -138,6 +139,7 @@ fun SignupDedicatedIpScreen() =
                         Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
+                    freeTrialDays = null,
                 ) {
                     viewModel.dipMonthlyPlan.value?.let {
                         viewModel.selectPlanProductId(it.id)
@@ -219,7 +221,8 @@ private fun DipSignupSupportedCountriesDialog(
                     LazyColumn {
                         val items = it.dedicatedIpCountriesAvailable
                         items(items.size) { index ->
-                            val item: DipCountriesResponse.DedicatedIpCountriesAvailable = items[index]
+                            val item: DipCountriesResponse.DedicatedIpCountriesAvailable =
+                                items[index]
                             SupportedCountryItem(country = item)
                         }
                     }
@@ -294,7 +297,14 @@ fun DipSignupErrorDialog(
 fun SupportedCountryItem(country: DipCountriesResponse.DedicatedIpCountriesAvailable) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Image(
-            painter = painterResource(id = getFlagResource(LocalContext.current, country.countryCode)),
+            painter =
+                painterResource(
+                    id =
+                        getFlagResource(
+                            LocalContext.current,
+                            country.countryCode,
+                        ),
+                ),
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier =

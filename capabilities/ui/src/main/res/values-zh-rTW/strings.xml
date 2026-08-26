@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s 毫秒</string>
     <string name="yearly">年繳</string>
     <string name="monthly">月繳</string>
-    <string name="best_value">最超值 - 免費試用</string>
     <string name="ok">確定</string>
     <string name="download">下載</string>
     <string name="upload">上載</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">10 Gbps 連線速度</string>
     <string name="subscribe_screen_unlimited_devices">同時保護無線台裝置</string>
     <string name="subscribe_screen_choose_your_plan">選擇計劃</string>
-    <string name="subscribe_screen_best_value">最抵之選：免費試用 7 日</string>
     <string name="subscribe_screen_billed_annually">按年收費</string>
     <string name="subscribe_screen_billed_monthly">按月收費</string>
     <string name="subscribe_screen_trial_title">免費試用方式</string>

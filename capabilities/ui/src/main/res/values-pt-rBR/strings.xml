@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Anual</string>
     <string name="monthly">Mensal</string>
-    <string name="best_value">MELHOR OFERTA - TESTE GRÁTIS</string>
     <string name="ok">OK</string>
     <string name="download">Baixar</string>
     <string name="upload">Carregar</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">Velocidades de conexão de 10 Gbps</string>
     <string name="subscribe_screen_unlimited_devices">Proteção para dispositivos ilimitados</string>
     <string name="subscribe_screen_choose_your_plan">Escolha seu plano</string>
-    <string name="subscribe_screen_best_value">MELHOR VALOR - 7 DIAS DE TESTE GRÁTIS</string>
     <string name="subscribe_screen_billed_annually">Cobrança anual</string>
     <string name="subscribe_screen_billed_monthly">Cobrança mensal</string>
     <string name="subscribe_screen_trial_title">Como seu teste grátis funciona</string>

@@ -42,6 +42,7 @@ import com.kape.signup.ui.shared.SubscriptionDescriptionText
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
 import com.kape.ui.theme.PiaTypography
+import com.kape.ui.theme.sunglow
 import com.kape.ui.tv.elements.MonthlySubscriptionCard
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.elements.TertiaryButton
@@ -189,12 +190,6 @@ fun NewPaywallTvSignUpScreen() {
             Text(
                 text =
                     buildAnnotatedString {
-                        val template =
-                            stringResource(
-                                id = R.string.tv_subscribe_screen_description_to_format,
-                                viewModel.isoDurationToDays(subscriptionData?.yearly?.freeTrialDuration)
-                                    ?: 0,
-                            )
                         val price =
                             subscriptionData?.yearly?.mainPrice?.let {
                                 stringResource(
@@ -202,13 +197,25 @@ fun NewPaywallTvSignUpScreen() {
                                     it,
                                 )
                             } ?: ""
-                        val placeholderIndex = template.indexOf("%s")
+                        val template =
+                            stringResource(
+                                id = R.string.tv_subscribe_screen_description_to_format,
+                                viewModel.isoDurationToDays(subscriptionData?.yearly?.freeTrialDuration)
+                                    ?: 0,
+                                price,
+                            )
+                        val placeholderIndex = if (price.isEmpty()) -1 else template.indexOf(price)
                         if (placeholderIndex >= 0) {
                             append(template.substring(0, placeholderIndex))
-                            withStyle(SpanStyle(fontWeight = FontWeight.Normal)) {
+                            withStyle(
+                                SpanStyle(
+                                    fontWeight = FontWeight.Normal,
+                                    color = LocalColors.current.sunglow(),
+                                ),
+                            ) {
                                 append(price)
                             }
-                            append(template.substring(placeholderIndex + "%s".length))
+                            append(template.substring(placeholderIndex + price.length))
                         } else {
                             append(template)
                         }
@@ -230,6 +237,7 @@ fun NewPaywallTvSignUpScreen() {
                         .padding(horizontal = 20.dp)
                         .fillMaxWidth()
                         .focusRequester(initialFocusRequester),
+                freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.yearly?.freeTrialDuration),
             ) {
                 subscriptionData?.let {
                     subscriptionData.selected.value = subscriptionData.yearly
@@ -242,6 +250,7 @@ fun NewPaywallTvSignUpScreen() {
                     subscriptionData?.monthly?.mainPrice?.let {
                         "$it ${stringResource(R.string.subscribe_screen_per_month_ending)}"
                     } ?: "",
+                freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.monthly?.freeTrialDuration),
                 modifier =
                     Modifier
                         .padding(horizontal = 20.dp)

@@ -368,11 +368,12 @@ private fun ColumnScope.PlansPresentContent(
                     price = stringResource(R.string.year_ending, subscriptionData.yearly.mainPrice),
                     additionalText = stringResource(R.string.subscribe_screen_billed_annually),
                     selectedCardColor = Color.Transparent,
-                    bestValueBannerText = stringResource(R.string.subscribe_screen_best_value),
+                    bestValueBannerText = stringResource(R.string.best_value),
                     modifier =
                         Modifier
                             .fillMaxWidth()
                             .semantics { contentDescription = subscriptionOptions },
+                    freeTrialDays = convertToDays(subscriptionData.yearly.freeTrialDuration),
                 ) {
                     subscriptionData.selected.value = subscriptionData.yearly
                 }
@@ -390,6 +391,7 @@ private fun ColumnScope.PlansPresentContent(
                         Modifier
                             .fillMaxWidth()
                             .semantics { contentDescription = subscriptionOptions },
+                    freeTrialDays = convertToDays(subscriptionData.monthly.freeTrialDuration),
                 ) {
                     subscriptionData.selected.value = subscriptionData.monthly
                 }

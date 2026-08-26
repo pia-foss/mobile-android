@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Roczny</string>
     <string name="monthly">Miesięczny</string>
-    <string name="best_value">NAJLEPSZA WARTOŚĆ - BEZPŁATNY OKRES PRÓBNY</string>
     <string name="ok">OK</string>
     <string name="download">Pobierz</string>
     <string name="upload">Przesyłanie</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">Prędkość połączenia na poziomie 10 Gb/s</string>
     <string name="subscribe_screen_unlimited_devices">Ochrona nieograniczonej liczby urządzeń</string>
     <string name="subscribe_screen_choose_your_plan">Wybierz plan</string>
-    <string name="subscribe_screen_best_value">NAJLEPSZA WARTOŚĆ – DARMOWA WERSJA PRÓBNA NA 7 DNI</string>
     <string name="subscribe_screen_billed_annually">Rozliczenie roczne</string>
     <string name="subscribe_screen_billed_monthly">Rozliczenie miesięczne</string>
     <string name="subscribe_screen_trial_title">Jak działa darmowa wersja próbna</string>

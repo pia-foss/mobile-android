@@ -62,12 +62,13 @@ class GoogleSignupBillingHandler(
 
                         PurchaseState.ProductsLoadedSuccess -> {
                             ioScope.launch {
-                                subscriptionPrefs.vpnSubscriptionPlans.collectLatest { _ ->
+                                subscriptionPrefs.vpnSubscriptionPlans.collectLatest { plans ->
                                     val yearlyPlan =
                                         vpnSubscriptionPaymentProvider.getFreeTrialYearlySubscriptionPlan()
                                             ?: vpnSubscriptionPaymentProvider.getYearlySubscriptionPlan()
                                     val monthlyPlan =
-                                        vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
+                                        vpnSubscriptionPaymentProvider.getFreeTrialMonthlySubscriptionPlan()
+                                            ?: vpnSubscriptionPaymentProvider.getMonthlySubscriptionPlan()
                                     if (yearlyPlan == null || monthlyPlan == null) {
                                         _billingState.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
                                         return@collectLatest
@@ -104,7 +105,9 @@ class GoogleSignupBillingHandler(
                                                     first.toString()
                                                 }
                                             },
-                                            false,
+                                            hasFreeTrial =
+                                                monthlyPlan.freeTrialDuration?.isNotBlank()
+                                                    ?: false,
                                             mainPrice = monthlyPlan.formattedPrice,
                                             freeTrialDuration = monthlyPlan.freeTrialDuration,
                                         )

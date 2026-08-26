@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s밀리초</string>
     <string name="yearly">연간</string>
     <string name="monthly">월간</string>
-    <string name="best_value">최저가 - 무료 체험</string>
     <string name="ok">확인</string>
     <string name="download">다운로드</string>
     <string name="upload">업로드</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">10Gbps 연결 속도</string>
     <string name="subscribe_screen_unlimited_devices">무제한 기기 보호</string>
     <string name="subscribe_screen_choose_your_plan">요금제를 선택하세요</string>
-    <string name="subscribe_screen_best_value">최고 혜택 - 7일 무료 체험</string>
     <string name="subscribe_screen_billed_annually">연간 결제</string>
     <string name="subscribe_screen_billed_monthly">월간 결제</string>
     <string name="subscribe_screen_trial_title">무료 체험 이용 방법</string>

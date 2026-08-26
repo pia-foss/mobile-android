@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s มิลลิวินาที</string>
     <string name="yearly">รายปี</string>
     <string name="monthly">รายเดือน</string>
-    <string name="best_value">คุ้มค่าที่สุด - ทดลองใช้ฟรี</string>
     <string name="ok">ตกลง</string>
     <string name="download">ดาวน์โหลด</string>
     <string name="upload">อัพโหลด</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">ความเร็วการเชื่อมต่อ 10 Gbps</string>
     <string name="subscribe_screen_unlimited_devices">การป้องกันบนอุปกรณ์ต่าง ๆ ไม่จำกัดจำนวน</string>
     <string name="subscribe_screen_choose_your_plan">เลือกแผนของคุณ</string>
-    <string name="subscribe_screen_best_value">คุ้มค่าที่สุด - ทดลองใช้ฟรี 7 วัน</string>
     <string name="subscribe_screen_billed_annually">เรียกเก็บเงินรายปี</string>
     <string name="subscribe_screen_billed_monthly">เรียกเก็บเงินรายเดือน</string>
     <string name="subscribe_screen_trial_title">การทดลองใช้ฟรีเป็นอย่างไร</string>

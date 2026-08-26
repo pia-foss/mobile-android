@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Jaarlijks</string>
     <string name="monthly">Maandelijks</string>
-    <string name="best_value">BESTE WAARDE - GRATIS PROEFPERIODE</string>
     <string name="ok">OK</string>
     <string name="download">Downloaden</string>
     <string name="upload">Uploaden</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">Verbindingssnelheden tot 10 Gbps</string>
     <string name="subscribe_screen_unlimited_devices">Bescherming op onbeperkte apparaten</string>
     <string name="subscribe_screen_choose_your_plan">Kies je abonnement</string>
-    <string name="subscribe_screen_best_value">BESTE WAARDE - 7-DAAGSE GRATIS PROEFPERIODE</string>
     <string name="subscribe_screen_billed_annually">Jaarlijks gefactureerd</string>
     <string name="subscribe_screen_billed_monthly">Maandelijks gefactureerd</string>
     <string name="subscribe_screen_trial_title">Zie hoe je gratis proefperiode werkt</string>

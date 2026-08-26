@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Årlig</string>
     <string name="monthly">Månedlig</string>
-    <string name="best_value">BEST VERDI – GRATIS PRØVEPERIODE</string>
     <string name="ok">OK</string>
     <string name="download">Last ned</string>
     <string name="upload">Last opp</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">Tilkoblingshastigheter på opptil 10 Gbps</string>
     <string name="subscribe_screen_unlimited_devices">Beskyttelse på et ubegrenset antall enheter</string>
     <string name="subscribe_screen_choose_your_plan">Velg abonnement</string>
-    <string name="subscribe_screen_best_value">BEST VERDI – 7-DAGERS GRATIS PRØVEPERIODE</string>
     <string name="subscribe_screen_billed_annually">Faktureres årlig</string>
     <string name="subscribe_screen_billed_monthly">Faktureres månedlig</string>
     <string name="subscribe_screen_trial_title">Slik fungerer prøveperioden</string>

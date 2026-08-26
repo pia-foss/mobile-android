@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Annuale</string>
     <string name="monthly">Mensile</string>
-    <string name="best_value">MIGLIOR OFFERTA - PROVA GRATUITA</string>
     <string name="ok">OK</string>
     <string name="download">Scarica</string>
     <string name="upload">Carica</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">Velocità di connessione a 10 Gbps</string>
     <string name="subscribe_screen_unlimited_devices">Protezione su dispositivi illimitati</string>
     <string name="subscribe_screen_choose_your_plan">Scegli il tuo piano</string>
-    <string name="subscribe_screen_best_value">MIGLIOR RAPPORTO QUALITÀ/PREZZO - PROVA GRATUITA DI 7 GIORNI</string>
     <string name="subscribe_screen_billed_annually">Fatturazione annuale</string>
     <string name="subscribe_screen_billed_monthly">Fatturazione mensile</string>
     <string name="subscribe_screen_trial_title">Come funziona la tua prova gratuita</string>

@@ -4,15 +4,14 @@ package com.kape.ui.tv.elements
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +29,9 @@ import com.kape.ui.mobile.text.SignUpDurationText
 import com.kape.ui.mobile.text.SignUpPricePerMonthText
 import com.kape.ui.mobile.text.SignUpPriceText
 import com.kape.ui.theme.PiaTypography
-import com.kape.ui.theme.sunglow
+import com.kape.ui.theme.onSuccessContainer
+import com.kape.ui.theme.successBackground
+import com.kape.ui.theme.warning30
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -39,7 +40,7 @@ fun YearlySubscriptionCard(
     price: String,
     perMonthPrice: String,
     modifier: Modifier,
-    isFreeTrialAvailable: Boolean = true,
+    freeTrialDays: Int?,
     onClick: () -> Unit,
 ) {
     Card(
@@ -93,24 +94,31 @@ fun YearlySubscriptionCard(
                         modifier = Modifier.align(Alignment.CenterVertically),
                     )
                 }
-                if (isFreeTrialAvailable) {
-                    Box(
+                Row(modifier = Modifier.padding(vertical = 16.dp)) {
+                    BestValueBannerText(
+                        content = stringResource(id = R.string.best_value),
                         modifier =
                             Modifier
-                                .padding(top = 12.dp)
-                                .wrapContentWidth()
                                 .background(
-                                    LocalColors.current.sunglow(),
+                                    LocalColors.current.warning30(),
                                     shape = RoundedCornerShape(4.dp),
-                                ),
-                    ) {
-                        BestValueBannerText(
-                            content = stringResource(id = R.string.best_value),
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                ).padding(horizontal = 8.dp, vertical = 4.dp),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    freeTrialDays?.let {
+                        Text(
+                            text = stringResource(R.string.free_trial_to_format, it),
+                            style = PiaTypography.caption1,
+                            color = LocalColors.current.onSuccessContainer(),
+                            modifier =
+                                Modifier
+                                    .background(
+                                        LocalColors.current.successBackground(),
+                                        RoundedCornerShape(4.dp),
+                                    ).padding(horizontal = 8.dp, vertical = 4.dp),
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -121,6 +129,7 @@ fun MonthlySubscriptionCard(
     selected: Boolean,
     price: String,
     modifier: Modifier,
+    freeTrialDays: Int?,
     onClick: () -> Unit,
 ) {
     Card(
@@ -166,7 +175,21 @@ fun MonthlySubscriptionCard(
                     content = price,
                     modifier = Modifier.wrapContentWidth(),
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Row(modifier = Modifier.padding(vertical = 16.dp)) {
+                    freeTrialDays?.let {
+                        Text(
+                            text = stringResource(R.string.free_trial_to_format, it),
+                            style = PiaTypography.caption1,
+                            color = LocalColors.current.onSuccessContainer(),
+                            modifier =
+                                Modifier
+                                    .background(
+                                        LocalColors.current.successBackground(),
+                                        RoundedCornerShape(4.dp),
+                                    ).padding(horizontal = 8.dp, vertical = 4.dp),
+                        )
+                    }
+                }
             }
         }
     }

@@ -13,7 +13,6 @@
     <string name="latency_to_format">%s ميلي ثانية</string>
     <string name="yearly">كل سنة</string>
     <string name="monthly">كل شهر</string>
-    <string name="best_value">أفضل عرض - تجربة مجانية</string>
     <string name="ok">موافق</string>
     <string name="download">التنزيل</string>
     <string name="upload">التحميل</string>
@@ -342,7 +341,6 @@
     <string name="subscribe_screen_connection_speeds">سرعات اتصال 10 جيجابايت بالثانية</string>
     <string name="subscribe_screen_unlimited_devices">الحماية على أجهزة غير محدودة</string>
     <string name="subscribe_screen_choose_your_plan">اختر باقتك</string>
-    <string name="subscribe_screen_best_value">أفضل قيمة - إصدار تجريبي مجاني 7 أيام</string>
     <string name="subscribe_screen_billed_annually">تُدفع سنويًا</string>
     <string name="subscribe_screen_billed_monthly">تُدفع شهريًا</string>
     <string name="subscribe_screen_trial_title">كيف يعمل الإصدار التجريبي المجاني</string>

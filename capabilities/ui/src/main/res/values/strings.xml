@@ -14,7 +14,8 @@
     <string name="latency_to_format">%s ms</string>
     <string name="yearly">Yearly</string>
     <string name="monthly">Monthly</string>
-    <string name="best_value">BEST VALUE - FREE TRIAL</string>
+    <string name="best_value">BEST VALUE</string>
+    <string name="free_trial_to_format">%d-DAY FREE TRIAL</string>
 
     <string name="ok">OK</string>
 
@@ -388,7 +389,6 @@
     <string name="subscribe_screen_connection_speeds">10-Gbps connection speeds</string>
     <string name="subscribe_screen_unlimited_devices">Protection on unlimited devices</string>
     <string name="subscribe_screen_choose_your_plan">Choose your plan</string>
-    <string name="subscribe_screen_best_value">BEST VALUE - 7-DAY FREE TRIAL</string>
     <string name="subscribe_screen_billed_annually">Billed annually</string>
     <string name="subscribe_screen_billed_monthly">Billed monthly</string>
     <string name="subscribe_screen_trial_title">How your free trial works</string>
