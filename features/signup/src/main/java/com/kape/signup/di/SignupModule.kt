@@ -4,6 +4,8 @@ import android.content.Context
 import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConsentPrefs
+import com.kape.login.domain.mobile.LoginUseCase
+import com.kape.login.domain.mobile.LoginWithReceiptHandler
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.shareevents.data.KpiEventGenerator
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
@@ -19,6 +21,7 @@ import com.kape.signup.domain.SetEmailUseCase
 import com.kape.signup.domain.SignupBillingHandler
 import com.kape.signup.domain.SignupHandler
 import com.kape.signup.ui.vm.SignupViewModel
+import com.kape.signup.ui.vm.WelcomeBackViewModel
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.PlatformUtils
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -77,5 +80,27 @@ class SignupModule {
             ioDispatcher,
             mainDispatcher,
             networkConnectionListener,
+        )
+
+    @KoinViewModel
+    fun provideWelcomeBackViewModel(
+        router: Router,
+        loginUseCase: LoginUseCase,
+        loginWithReceiptHandler: LoginWithReceiptHandler,
+        permissionUtil: PermissionUtil,
+        submitKpiEventUseCase: SubmitKpiEventUseCase,
+        eventGenerator: KpiEventGenerator,
+        platformUtils: PlatformUtils,
+        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+    ): WelcomeBackViewModel =
+        WelcomeBackViewModel(
+            router,
+            loginUseCase,
+            loginWithReceiptHandler,
+            permissionUtil,
+            submitKpiEventUseCase,
+            eventGenerator,
+            platformUtils,
+            ioDispatcher,
         )
 }

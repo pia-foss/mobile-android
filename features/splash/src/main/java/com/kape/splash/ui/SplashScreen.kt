@@ -46,11 +46,9 @@ fun SplashScreen(viewModel: SplashViewModel = koinViewModel()) =
         }
 
         LaunchedEffect(key1 = Unit) {
-            viewModel.load()
-            if (viewModel.shouldPreloadPrices()) {
-                activity?.let {
-                    viewModel.loadPrices(it)
-                }
+            viewModel.load(activity)
+            if (viewModel.shouldPreloadPrices() && (activity != null)) {
+                viewModel.loadPrices(activity)
             }
         }
     }

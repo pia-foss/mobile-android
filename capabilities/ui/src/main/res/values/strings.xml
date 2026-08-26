@@ -493,4 +493,12 @@
 
     <string name="app_update_available_title">App Update Available!</string>
     <string name="app_update_available_positive_action">Download</string>
+
+    <!--    Welcome back     -->
+    <string name="welcome_back_title">Welcome Back!</string>
+    <string name="welcome_back_description">You have a Private Internet Access subscription linked to the Play Store. Sign in to protect your device and see our latest features.</string>
+    <string name="welcome_back_sign_in_with">Sign In with</string>
+    <string name="welcome_back_play_store_account">Play Store Account</string>
+    <string name="welcome_back_or">Or</string>
+    <string name="welcome_back_username_password">Username and Password</string>
 </resources>
