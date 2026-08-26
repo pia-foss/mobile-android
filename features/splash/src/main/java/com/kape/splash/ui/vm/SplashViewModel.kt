@@ -14,7 +14,9 @@ import com.kape.data.DI
 import com.kape.data.Subscribe
 import com.kape.data.TvConsent
 import com.kape.data.TvWelcome
+import com.kape.data.TvWelcomeBack
 import com.kape.data.Update
+import com.kape.data.WelcomeBack
 import com.kape.featureflags.domain.FeatureFlagsDataSource
 import com.kape.featureflags.domain.ForceUpdateUseCase
 import com.kape.localprefs.prefs.ConsentPrefs
@@ -24,6 +26,7 @@ import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
@@ -64,7 +67,7 @@ class SplashViewModel(
         }
     }
 
-    fun load() {
+    fun load(activity: Activity?) {
         if (regionListProvider.isDefaultList.value) {
             regionListProvider.loadVpnServerLatencies()
         }
@@ -78,6 +81,9 @@ class SplashViewModel(
                     router.updateDestination(Update)
                     return@launch
                 }
+            }
+            if (shouldPreloadPrices() && (activity != null)) {
+                billingHandler.registerAndAwaitReady(mainDispatcher, activity)
             }
             handleSplashExit()
         }
@@ -99,19 +105,27 @@ class SplashViewModel(
         billingHandler.loadPrices(mainDispatcher, activity)
     }
 
-    private fun handleSplashExit() {
+    private suspend fun handleSplashExit() {
         if (isUserLoggedIn.invoke()) {
             router.updateDestination(Connection)
         } else {
             if (platformUtils.isTv()) {
                 if (hasMadeConsentDecision) {
-                    router.updateDestination(TvWelcome)
+                    if (billingHandler.hasActiveSubscription().first()) {
+                        router.updateDestination(TvWelcomeBack)
+                    } else {
+                        router.updateDestination(TvWelcome)
+                    }
                 } else {
                     router.updateDestination(TvConsent(true))
                 }
             } else {
                 if (hasMadeConsentDecision) {
-                    router.updateDestination(Subscribe)
+                    if (billingHandler.hasActiveSubscription().first()) {
+                        router.updateDestination(WelcomeBack)
+                    } else {
+                        router.updateDestination(Subscribe)
+                    }
                 } else {
                     router.updateDestination(Consent(true))
                 }

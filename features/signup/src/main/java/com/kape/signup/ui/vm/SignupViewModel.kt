@@ -9,7 +9,9 @@ import com.kape.data.DI
 import com.kape.data.LoginWithCredentials
 import com.kape.data.Subscribe
 import com.kape.data.TvWelcome
+import com.kape.data.TvWelcomeBack
 import com.kape.data.WebDestination
+import com.kape.data.WelcomeBack
 import com.kape.permissions.utils.PermissionUtil
 import com.kape.shareevents.data.KpiEventGenerator
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
@@ -29,6 +31,7 @@ import com.kape.utils.PlatformUtils
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
@@ -110,7 +113,13 @@ class SignupViewModel(
         consentUseCase.setConsent(allow)
         if (isFirstScreen) {
             if (platformUtils.isTv()) {
-                router.updateDestination(TvWelcome)
+                if (billingHandler.hasActiveSubscription().first()) {
+                    router.updateDestination(TvWelcomeBack)
+                } else {
+                    router.updateDestination(TvWelcome)
+                }
+            } else if (billingHandler.hasActiveSubscription().first()) {
+                router.updateDestination(WelcomeBack)
             } else {
                 router.updateDestination(Subscribe)
             }

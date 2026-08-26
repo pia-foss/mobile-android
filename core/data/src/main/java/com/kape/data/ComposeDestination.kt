@@ -75,6 +75,12 @@ object Subscribe : ComposeDestination {
 }
 
 @Serializable
+object WelcomeBack : ComposeDestination {
+    override val navOptions: DestinationNavOptions =
+        DestinationNavOptions.ClearAll
+}
+
+@Serializable
 object TvSubscribe : ComposeDestination
 
 @Serializable
@@ -218,6 +224,11 @@ object TvLoginPassword : ComposeDestination
 
 @Serializable
 object TvWelcome : ComposeDestination {
+    override val navOptions: DestinationNavOptions = DestinationNavOptions.ClearAll
+}
+
+@Serializable
+object TvWelcomeBack : ComposeDestination {
     override val navOptions: DestinationNavOptions = DestinationNavOptions.ClearAll
 }
 

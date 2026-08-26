@@ -67,10 +67,12 @@ import com.kape.data.TvLoginUsername
 import com.kape.data.TvSideMenu
 import com.kape.data.TvSubscribe
 import com.kape.data.TvWelcome
+import com.kape.data.TvWelcomeBack
 import com.kape.data.Update
 import com.kape.data.VpnPermission
 import com.kape.data.VpnRegionSelection
 import com.kape.data.WebDestination
+import com.kape.data.WelcomeBack
 import com.kape.dedicatedip.ui.screens.mobile.DedicatedIpScreen
 import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpCountryScreen
 import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpPurchaseSuccessScreen
@@ -117,8 +119,10 @@ import com.kape.settings.ui.screens.tv.TvSettingsScreen
 import com.kape.sidemenu.ui.screens.tv.TvSideMenuScreen
 import com.kape.signup.ui.mobile.ConsentScreen
 import com.kape.signup.ui.mobile.SignupScreensFlow
+import com.kape.signup.ui.mobile.WelcomeBackScreen
 import com.kape.signup.ui.tv.TvConsentScreen
 import com.kape.signup.ui.tv.TvSignupScreensFlow
+import com.kape.signup.ui.tv.TvWelcomeBackScreen
 import com.kape.splash.ui.SplashScreen
 import com.kape.splash.ui.UpdateScreen
 import com.kape.tvwelcome.ui.TvWelcomeScreen
@@ -215,6 +219,7 @@ class MainActivity : AppCompatActivity() {
                 TvConsentScreen(route.isFirstScreen)
             }
             composable<TvWelcome> { TvWelcomeScreen() }
+            composable<TvWelcomeBack> { TvWelcomeBackScreen() }
             composable<TvSubscribe> { TvSignupScreensFlow() }
             composable<TvLoginUsername> { LoginUsernameScreen() }
             composable<TvLoginPassword> { LoginPasswordScreen() }
@@ -259,6 +264,7 @@ class MainActivity : AppCompatActivity() {
             composable<Connection> { ConnectionScreen() }
             composable<Profile> { ProfileScreen() }
             composable<Subscribe> { SignupScreensFlow() }
+            composable<WelcomeBack> { WelcomeBackScreen() }
             composable<VpnRegionSelection> { VpnRegionSelectionScreen() }
             composable<ShadowsocksRegionSelection> {
                 ShadowsocksRegionSelectionScreen()

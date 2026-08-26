@@ -3,6 +3,7 @@ package com.kape.signup.domain
 import android.app.Activity
 import com.kape.signup.utils.SignupScreenState
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 
 interface SignupBillingHandler {
@@ -25,4 +26,11 @@ interface SignupBillingHandler {
     fun reset()
 
     suspend fun hasResumablePurchase(): Boolean
+
+    fun hasActiveSubscription(): Flow<Boolean>
+
+    suspend fun registerAndAwaitReady(
+        mainDispatcher: CoroutineDispatcher,
+        activity: Activity,
+    )
 }
