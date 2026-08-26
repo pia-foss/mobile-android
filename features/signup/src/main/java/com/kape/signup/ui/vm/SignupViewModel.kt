@@ -144,4 +144,24 @@ class SignupViewModel(
     fun registerClientIfNeeded(activity: Activity) {
         billingHandler.registerClientIfNeeded(activity)
     }
+
+    fun isoDurationToDays(duration: String?): Int? {
+        val regex = Regex("^P(\\d+)([DWMY])$")
+        return duration?.let {
+            val match =
+                regex.matchEntire(duration)
+                    ?: throw IllegalArgumentException("Unsupported duration format: $duration")
+
+            val (valueStr, unit) = match.destructured
+            val value = valueStr.toInt()
+
+            return when (unit) {
+                "D" -> value * 1
+                "W" -> value * 7
+                "M" -> value * 30 // approximation
+                "Y" -> value * 365 // approximation
+                else -> null
+            }
+        }
+    }
 }

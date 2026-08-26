@@ -35,6 +35,8 @@ interface VpnSubscriptionPaymentProvider {
 
     fun getFreeTrialYearlySubscriptionPlan(): SubscriptionPlan?
 
+    fun getFreeTrialMonthlySubscriptionPlan(): SubscriptionPlan?
+
     fun loadProducts()
 
     fun purchaseSelectedProduct(

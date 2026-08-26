@@ -174,6 +174,11 @@ class VpnSubscriptionPaymentProviderImpl(
             it.billingPeriod == YEARLY && it.freeTrialDuration != null
         }
 
+    override fun getFreeTrialMonthlySubscriptionPlan(): SubscriptionPlan? =
+        prefs.vpnSubscriptionPlans.value.firstOrNull {
+            it.billingPeriod == MONTHLY && it.freeTrialDuration != null
+        }
+
     override fun loadProducts() {
         if (prefs.vpnSubscriptions.value.isEmpty()) {
             purchaseState.value = PurchaseState.ProductsLoadedFailed

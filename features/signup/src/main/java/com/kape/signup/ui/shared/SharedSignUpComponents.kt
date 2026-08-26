@@ -59,6 +59,7 @@ internal fun CheckmarkText(
 internal fun SubscriptionDescriptionText(
     subscriptionData: SubscriptionData,
     selectedPlan: Plan,
+    convertToDays: (String?) -> Int?,
 ) {
     Text(
         text =
@@ -66,8 +67,11 @@ internal fun SubscriptionDescriptionText(
                 if (selectedPlan == subscriptionData.yearly) {
                     withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                         append(
-                            stringResource(R.string.subscribe_screen_trial_annually_description_headline_to_format)
-                                .format(subscriptionData.yearly.mainPrice),
+                            stringResource(
+                                R.string.subscribe_screen_trial_annually_description_headline_to_format,
+                                convertToDays(selectedPlan.freeTrialDuration) ?: 0,
+                                subscriptionData.yearly.mainPrice,
+                            ),
                         )
                     }
                     append(" ${stringResource(id = R.string.subscribe_screen_trial_annually_description)}")

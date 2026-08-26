@@ -92,6 +92,7 @@ class GoogleSignupBillingHandler(
                                                     yearlyPlan.currencyCode,
                                                     yearlyPlan.formattedPrice,
                                                 ),
+                                            freeTrialDuration = yearlyPlan.freeTrialDuration,
                                         )
                                     val monthly =
                                         Plan(
@@ -105,6 +106,7 @@ class GoogleSignupBillingHandler(
                                             },
                                             false,
                                             mainPrice = monthlyPlan.formattedPrice,
+                                            freeTrialDuration = monthlyPlan.freeTrialDuration,
                                         )
                                     val data =
                                         withContext(mainDispatcher) {
