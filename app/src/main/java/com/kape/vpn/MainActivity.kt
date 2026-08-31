@@ -204,9 +204,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun deepLinkLogin(intent: Intent?) {
-        intent?.data?.let {
-            if (it.toString().endsWith("/login")) {
-                tokenAuthenticationUtil.authenticate(it)
+        intent?.data?.let { uri ->
+            val isAppLink =
+                uri.scheme == HTTPS_SCHEME &&
+                    uri.host == LOGIN_HOST &&
+                    uri.path?.startsWith(LOGIN_PATH) == true
+            val isLegacyDeepLink =
+                uri.scheme == LEGACY_SCHEME &&
+                    uri.schemeSpecificPart?.startsWith(LOGIN_PATH.removePrefix("/")) == true
+            if (isAppLink || isLegacyDeepLink) {
+                tokenAuthenticationUtil.authenticate(uri)
             }
         }
     }
@@ -314,4 +321,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
     // endregion
+
+    companion object {
+        private const val HTTPS_SCHEME = "https"
+        private const val LEGACY_SCHEME = "piavpn"
+        private const val LOGIN_HOST = "www.privateinternetaccess.com"
+        private const val LOGIN_PATH = "/login"
+    }
 }
