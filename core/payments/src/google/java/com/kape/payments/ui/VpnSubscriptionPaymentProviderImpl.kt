@@ -48,10 +48,9 @@ class VpnSubscriptionPaymentProviderImpl(
     private val purchasesUpdatedListener =
         PurchasesUpdatedListener { billingResult, purchases ->
             purchaseInProgress = false
-            if (purchases != null) {
-                when (billingResult.responseCode) {
-                    BillingClient.BillingResponseCode.OK -> {
-                        val purchase = purchases.first()
+            when (billingResult.responseCode) {
+                BillingClient.BillingResponseCode.OK -> {
+                    purchases?.first()?.let { purchase ->
                         purchase.products
                             .firstOrNull {
                                 it == selectedProduct?.productId
@@ -70,14 +69,16 @@ class VpnSubscriptionPaymentProviderImpl(
                                 }
                             }
                     }
-
-                    else -> {
-                        purchaseState.value =
-                            PurchaseState.PurchaseFailed("Billing failed: ${billingResult.responseCode}\n${billingResult.debugMessage}")
-                    }
                 }
-            } else {
-                purchaseState.value = PurchaseState.PurchaseFailed("Purchase cancelled by user")
+
+                BillingClient.BillingResponseCode.USER_CANCELED -> {
+                    purchaseState.value = PurchaseState.PurchaseFailed("Purchase cancelled by user")
+                }
+
+                else -> {
+                    purchaseState.value =
+                        PurchaseState.PurchaseFailed("Billing failed: ${billingResult.responseCode}:${billingResult.debugMessage}")
+                }
             }
         }
 

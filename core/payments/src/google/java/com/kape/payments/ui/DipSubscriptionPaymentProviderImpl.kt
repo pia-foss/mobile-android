@@ -29,8 +29,16 @@ class DipSubscriptionPaymentProviderImpl(
     private var purchaseCompletableDeferred: CompletableDeferred<Result<DipPurchaseData>>? = null
     private val purchasesUpdatedListener =
         PurchasesUpdatedListener { result, purchases ->
+            if (result.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+                purchaseCompletableDeferred?.complete(
+                    Result.failure(IllegalStateException("Purchase cancelled by user")),
+                )
+                return@PurchasesUpdatedListener
+            }
             if (purchases == null || result.responseCode != BillingClient.BillingResponseCode.OK) {
-                purchaseCompletableDeferred?.complete(Result.failure(IllegalStateException("Billing failed")))
+                purchaseCompletableDeferred?.complete(
+                    Result.failure(IllegalStateException("Billing failed: ${result.responseCode}:${result.debugMessage}")),
+                )
                 return@PurchasesUpdatedListener
             }
 
