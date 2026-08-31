@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -21,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -67,6 +69,10 @@ private fun WelcomeBackScreenContent(
     BackHandler {
         activity?.finish()
     }
+    val configuration = LocalConfiguration.current
+    val isLandscapeTablet =
+        configuration.orientation == Configuration.ORIENTATION_LANDSCAPE &&
+            configuration.smallestScreenWidthDp >= 600
     Column(
         modifier =
             Modifier
@@ -85,6 +91,7 @@ private fun WelcomeBackScreenContent(
                 Modifier
                     .padding(WindowInsets.systemBars.asPaddingValues())
                     .padding(horizontal = 20.dp)
+                    .widthIn(max = 520.dp)
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -98,6 +105,12 @@ private fun WelcomeBackScreenContent(
             Image(
                 painter = painterResource(id = com.kape.signup.R.drawable.welcome_back_hero),
                 contentDescription = null,
+                modifier =
+                    if (isLandscapeTablet) {
+                        Modifier.fillMaxWidth().height(160.dp)
+                    } else {
+                        Modifier
+                    },
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
