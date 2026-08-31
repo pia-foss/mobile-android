@@ -2,7 +2,7 @@
 kape-platform-sdk-vpn-pia = "0.2.0"
 mobile-android-obfuscation-proxy = "0.1.6.1"
 mobile-android-openvpn = "0.4.15-pia"
-mobile-shared-account = "1.6.2"
+mobile-shared-account = "1.6.3"
 mobile-shared-csi = "1.3.5"
 mobile-shared-kpi = "1.2.7"
 mobile-shared-regions = "1.7.5"
