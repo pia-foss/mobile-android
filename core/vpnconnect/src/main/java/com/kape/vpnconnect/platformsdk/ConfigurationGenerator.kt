@@ -22,9 +22,9 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
-import kotlinx.coroutines.flow.first
 import com.kape.vpnconnect.utils.COUNTRY_LIST
 import com.kape.vpnconnect.utils.CountryDetector
+import kotlinx.coroutines.flow.first
 
 // PIA's WireGuard addKey control-plane port — fixed, independent of the user's configurable WG data port.
 private const val WG_AUTH_PORT = 1337

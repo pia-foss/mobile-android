@@ -129,5 +129,8 @@ class VpnConnectModule {
     fun provideConnectionManager(): ConnectionManager = ConnectionManagerImpl()
 
     @Singleton
-    fun provideCountryDetector(context: Context): CountryDetector = CountryDetector(context)
+    fun provideCountryDetector(
+        context: Context,
+        accountApi: AndroidAccountAPI,
+    ): CountryDetector = CountryDetector(context, accountApi)
 }
