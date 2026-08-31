@@ -46,7 +46,7 @@ tink = "1.23.0"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "plugin-gradle" }
-kape-platform-sdk-vpn-pia = { module = "com.kape.platformsdk:kape-platform-sdk-vpn-pia", version.ref = "kape-platform-sdk-vpn-pia" }
+kape-platform-sdk-vpn-pia = { module = "com.github.pia-foss:platform-sdk", version.ref = "kape-platform-sdk-vpn-pia" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "plugin-kotlin" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
