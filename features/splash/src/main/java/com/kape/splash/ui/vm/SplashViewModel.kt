@@ -62,8 +62,10 @@ class SplashViewModel(
                 hasMadeConsentDecision = it
             }
         }
-        if (shouldPreloadPrices()) {
-            billingHandler.initialize(mainDispatcher)
+        viewModelScope.launch(ioDispatcher) {
+            if (shouldPreloadPrices()) {
+                billingHandler.initialize(mainDispatcher)
+            }
         }
     }
 
@@ -99,7 +101,7 @@ class SplashViewModel(
 
     fun isConnected() = connectionInfoProvider.isConnected()
 
-    fun shouldPreloadPrices(): Boolean = !isUserLoggedIn.invoke()
+    suspend fun shouldPreloadPrices(): Boolean = !isUserLoggedIn.invoke()
 
     fun loadPrices(activity: Activity) {
         billingHandler.loadPrices(mainDispatcher, activity)

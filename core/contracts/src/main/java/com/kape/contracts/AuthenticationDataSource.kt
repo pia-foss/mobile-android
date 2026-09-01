@@ -3,7 +3,7 @@ package com.kape.contracts
 import com.kape.data.auth.ApiResult
 
 interface AuthenticationDataSource {
-    fun isUserLoggedIn(): Boolean
+    suspend fun isUserLoggedIn(): Boolean
 
     suspend fun login(
         username: String,

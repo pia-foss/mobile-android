@@ -12,6 +12,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import org.koin.core.context.startKoin
@@ -92,6 +93,33 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
         every { api.vpnToken() } returns vpnToken
         assertEquals(expected, source.isUserLoggedIn())
     }
+
+    @Test
+    fun `isUserLoggedIn - logged in on first attempt - returns true without retrying`() =
+        runTest {
+            every { api.apiToken() } returns "apiToken"
+            every { api.vpnToken() } returns "vpnToken"
+
+            assertEquals(true, source.isUserLoggedIn())
+        }
+
+    @Test
+    fun `isUserLoggedIn - logged in only after a transient failure - retries and returns true`() =
+        runTest {
+            every { api.apiToken() } returnsMany listOf(null, "apiToken")
+            every { api.vpnToken() } returns "vpnToken"
+
+            assertEquals(true, source.isUserLoggedIn())
+        }
+
+    @Test
+    fun `isUserLoggedIn - never logged in - retries then returns false`() =
+        runTest {
+            every { api.apiToken() } returns null
+            every { api.vpnToken() } returns null
+
+            assertEquals(false, source.isUserLoggedIn())
+        }
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
     @MethodSource("accountApiResults")

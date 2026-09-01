@@ -19,9 +19,11 @@ import com.kape.data.WebDestination
 import com.kape.profile.domain.GetProfileUseCase
 import com.kape.utils.UpdateAvailableManager
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
+import kotlin.time.Duration.Companion.milliseconds
 
 @KoinViewModel
 class SideMenuViewModel(
@@ -38,12 +40,26 @@ class SideMenuViewModel(
     val updateAvailable = updateAvailableManager.hasUpdateAvailable
 
     init {
+        refreshProfile()
+    }
+
+    // getProfile() can transiently return null (network blip, encrypted token store not yet
+    // warmed up after process start) even when the user is genuinely logged in. Retry a few
+    // times so a transient failure doesn't leave the header blank for the rest of the session.
+    // Safe to call repeatedly (e.g. every time the drawer opens): it only ever overwrites the
+    // displayed values on success, never clears them on failure.
+    fun refreshProfile() {
+        if (username.value.isNotEmpty()) return
         viewModelScope.launch(ioDispatcher) {
-            val it = profileUseCase.getProfile()
-            it?.let {
-                username.value = it.username.uppercase()
-                showExpire.value = it.subscription.showExpire
-                daysRemaining.value = it.subscription.daysRemaining
+            repeat(PROFILE_FETCH_ATTEMPTS) { attempt ->
+                val profile = profileUseCase.getProfile()
+                if (profile != null) {
+                    username.value = profile.username.uppercase()
+                    showExpire.value = profile.subscription.showExpire
+                    daysRemaining.value = profile.subscription.daysRemaining
+                    return@launch
+                }
+                if (attempt < PROFILE_FETCH_ATTEMPTS - 1) delay(PROFILE_FETCH_RETRY_DELAY_MS.milliseconds)
             }
         }
     }
@@ -51,6 +67,7 @@ class SideMenuViewModel(
     fun logout() =
         viewModelScope.launch(ioDispatcher) {
             logoutUseCase.logout()
+            username.value = ""
             router.updateDestination(Splash)
         }
 
@@ -91,4 +108,9 @@ class SideMenuViewModel(
     fun getVersionName(): String = appInfo.versionName
 
     fun getVersionCode(): String = "${appInfo.versionCode}"
+
+    companion object {
+        private const val PROFILE_FETCH_ATTEMPTS = 5
+        private const val PROFILE_FETCH_RETRY_DELAY_MS = 300L
+    }
 }
