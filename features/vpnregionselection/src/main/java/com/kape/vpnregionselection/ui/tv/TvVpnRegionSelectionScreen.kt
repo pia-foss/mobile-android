@@ -64,6 +64,7 @@ fun TvVpnRegionSelectionScreen() =
         val status by connectionInfoProvider.status.collectAsStateWithLifecycle()
         val isFavoriteSelected = remember { mutableStateOf(false) }
         val isSearchEnabled = remember { mutableStateOf(false) }
+        val hasSearchQuery = remember { mutableStateOf(false) }
         val viewModel: VpnRegionSelectionViewModel =
             koinViewModel<VpnRegionSelectionViewModel>().apply {
                 autoRegionIso = stringResource(id = R.string.automatic_iso)
@@ -84,13 +85,7 @@ fun TvVpnRegionSelectionScreen() =
                     type is RegionItemType.Content && type.isFavorite
                 }
             } else {
-                if (isSearchEnabled.value &&
-                    viewModel
-                        .getTvSearchVpnServers()
-                        .value
-                        .isEmpty()
-                        .not()
-                ) {
+                if (isSearchEnabled.value && hasSearchQuery.value) {
                     viewModel.getTvSearchVpnServers().value
                 } else {
                     viewModel.getTvVpnServers().value
@@ -149,16 +144,19 @@ fun TvVpnRegionSelectionScreen() =
                             onAllSelected = {
                                 isFavoriteSelected.value = false
                                 isSearchEnabled.value = false
+                                hasSearchQuery.value = false
                             },
                             onAllFocusRequester = allButtonFocusRequester,
                             onFavoriteSelected = {
                                 isFavoriteSelected.value = true
                                 isSearchEnabled.value = false
+                                hasSearchQuery.value = false
                             },
                             onFavoriteFocusRequester = favoriteButtonFocusRequester,
                             onSearchSelected = {
                                 isFavoriteSelected.value = false
                                 isSearchEnabled.value = true
+                                hasSearchQuery.value = false
                             },
                             onSearchFocusRequester = searchButtonFocusRequester,
                         )
@@ -193,7 +191,7 @@ fun TvVpnRegionSelectionScreen() =
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp, vertical = 8.dp),
                             ) {
-                                viewModel.filterByName(it)
+                                viewModel.filterByName(it, hasSearchQuery)
                             }
                         }
                         if (isFavoriteSelected.value) {
