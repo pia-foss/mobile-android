@@ -196,24 +196,27 @@ class PiaService :
                         )
                     },
             )
-        // Automatic's WireGuard leg targets the static AmneziaWG test box (see ConfigurationGenerator),
-        // so it needs the AWG authenticator; an explicit WireGuard selection still uses real regions.
+        // Automatic mode can generate both AMNEZIA-endpoint and WIREGUARD-endpoint configurations
+        // for the same attempt (see ConfigurationGenerator), so the authenticator is picked per
+        // attempt from each endpoint's own obfuscation field rather than once from selectedProtocol.
         val authenticator =
-            if (selectedProtocol == VpnProtocols.Automatic) {
-                PiaAwgAuthenticator(
-                    connectionSource,
-                    connectionPrefs,
-                    protect = systemTunnel::protect,
-                )
-            } else {
-                PiaWgAuthenticator(
-                    selectedDnsOptions,
-                    configInfo.certificate,
-                    connectionSource,
-                    connectionPrefs,
-                    protect = systemTunnel::protect,
-                )
-            }
+            CompositeWireGuardAuthenticator(
+                wgAuthenticator =
+                    PiaWgAuthenticator(
+                        selectedDnsOptions,
+                        configInfo.certificate,
+                        connectionSource,
+                        connectionPrefs,
+                        protect = systemTunnel::protect,
+                    ),
+                awgAuthenticator =
+                    PiaAwgAuthenticator(
+                        configInfo.certificate,
+                        connectionSource,
+                        connectionPrefs,
+                        protect = systemTunnel::protect,
+                    ),
+            )
         val wireGuardController =
             KapeWireGuardConnectionController(
                 systemTunnel = systemTunnel,

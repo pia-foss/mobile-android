@@ -3,15 +3,13 @@ package com.kape.vpnconnect.platformsdk
 import android.util.Log
 import androidx.core.net.toUri
 import com.kape.connection.model.AwgObfuscationSettings
+import com.kape.httpclient.data.CertificatePinningClientImpl
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.platformsdk.vpn.service.models.IpAddress
 import com.kape.platformsdk.vpn.wireguard.WireGuardAuthConfiguration
 import com.kape.platformsdk.vpn.wireguard.WireGuardAuthenticator
 import com.kape.platformsdk.vpn.wireguard.WireGuardEndpointConfiguration
 import com.kape.vpnconnect.domain.ConnectionDataSource
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
@@ -20,18 +18,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.amnezia.awg.crypto.KeyPair
 import java.net.Socket
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import javax.net.SocketFactory
-import javax.net.ssl.SSLContext
-import javax.net.ssl.X509TrustManager
 
-// 138.199.31.184 ("pia-gb-lhr-dp-001") is a standalone AmneziaWG test box outside PIA's normal
-// cert-issuance pipeline, so its TLS certificate never passes pinning against configInfo's CA
-// (mirrors why the reference curl for this server uses `-sk`). This authenticator skips TLS
-// verification entirely via insecureTestClient() below — switch back to CertificatePinningClientImpl
-// (see PiaWgAuthenticator) once add-awg-key is served from a properly PIA-signed host.
 class PiaAwgAuthenticator(
+    caCertificate: String,
     private val connectionSource: ConnectionDataSource,
     private val connectionPrefs: ConnectionPrefs,
     // The addKey request must reach the server before that server's own tunnel exists, so its
@@ -39,10 +28,15 @@ class PiaAwgAuthenticator(
     // captured and silently dropped, and every WireGuard connection attempt times out.
     protect: (Socket) -> Boolean,
 ) : WireGuardAuthenticator {
-    private val client = insecureTestClient(protect)
+    private val certificatePinningClient = CertificatePinningClientImpl(caCertificate, protect)
+    private val client = certificatePinningClient.client()
 
     override suspend fun authenticate(endpointConfiguration: WireGuardEndpointConfiguration): WireGuardAuthConfiguration {
         val authIp = endpointConfiguration.authIp.asString()
+
+        certificatePinningClient.setKnownEndpointCommonName(
+            listOf(authIp to endpointConfiguration.certDn),
+        )
 
         val keyPair = KeyPair()
         val url =
@@ -67,8 +61,9 @@ class PiaAwgAuthenticator(
             "add-awg-key request to $authIp failed with status ${response.status}"
         }
         val addKeyResponse = json.decodeFromString<AwgAddKeyResponse>(responseBody)
+        val obfuscationSettings = addKeyResponse.obfuscation?.toSettings()
         connectionPrefs.setGateway(addKeyResponse.serverVip)
-        connectionPrefs.setAwgObfuscation(addKeyResponse.obfuscation?.toSettings())
+        connectionPrefs.setAwgObfuscation(obfuscationSettings)
         return WireGuardAuthConfiguration(
             psk = NO_PRESHARED_KEY_BASE64,
             serverPublicKey = addKeyResponse.serverKey,
@@ -76,6 +71,9 @@ class PiaAwgAuthenticator(
             internalIp = addKeyResponse.peerIp,
             dnsServers = addKeyResponse.dnsServers,
             gatewayIp = IpAddress.V4(addKeyResponse.serverVip),
+            // The addKey response is the source of truth for this attempt's obfuscation params —
+            // pass it through so the SDK applies it now instead of only on the next connection.
+            obfuscation = obfuscationSettings?.toAmnezia(),
         )
     }
 
@@ -99,87 +97,6 @@ class PiaAwgAuthenticator(
         private const val NO_PRESHARED_KEY_BASE64 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
     }
 }
-
-// Deliberately trusts every certificate and hostname — see the class-level comment on
-// PiaAwgAuthenticator for why pinning can't be used against this test server.
-private fun insecureTestClient(protect: (Socket) -> Boolean): HttpClient {
-    val trustAllCertificates =
-        object : X509TrustManager {
-            override fun checkClientTrusted(
-                chain: Array<X509Certificate>,
-                authType: String,
-            ) = Unit
-
-            override fun checkServerTrusted(
-                chain: Array<X509Certificate>,
-                authType: String,
-            ) = Unit
-
-            override fun getAcceptedIssuers(): Array<X509Certificate> = emptyArray()
-        }
-    val sslContext =
-        SSLContext.getInstance("TLS").apply {
-            init(null, arrayOf(trustAllCertificates), SecureRandom())
-        }
-
-    return HttpClient(OkHttp) {
-        engine {
-            config {
-                sslSocketFactory(sslContext.socketFactory, trustAllCertificates)
-                hostnameVerifier { _, _ -> true }
-                socketFactory(protectingSocketFactory(protect))
-            }
-        }
-        install(HttpTimeout) {
-            requestTimeoutMillis = 8000
-        }
-    }
-}
-
-// A SocketFactory that hands out sockets pre-protected via `protect`, so the resulting connection
-// routes over the underlying network instead of being captured by the kill switch's network-lock
-// tunnel. OkHttp's connection setup calls the no-arg createSocket() and connects it itself; the
-// host/port overloads are implemented for interface completeness and aren't exercised in practice.
-private fun protectingSocketFactory(protect: (Socket) -> Boolean): SocketFactory =
-    object : SocketFactory() {
-        override fun createSocket(): Socket =
-            Socket().apply {
-                bind(java.net.InetSocketAddress(0))
-                protect(this)
-            }
-
-        override fun createSocket(
-            host: String,
-            port: Int,
-        ): Socket = createSocket().apply { connect(java.net.InetSocketAddress(host, port)) }
-
-        override fun createSocket(
-            host: String,
-            port: Int,
-            localHost: java.net.InetAddress,
-            localPort: Int,
-        ): Socket =
-            createSocket().apply {
-                bind(java.net.InetSocketAddress(localHost, localPort))
-                connect(java.net.InetSocketAddress(host, port))
-            }
-
-        override fun createSocket(
-            host: java.net.InetAddress,
-            port: Int,
-        ): Socket = createSocket().apply { connect(java.net.InetSocketAddress(host, port)) }
-
-        override fun createSocket(
-            address: java.net.InetAddress,
-            port: Int,
-            localAddress: java.net.InetAddress,
-            localPort: Int,
-        ): Socket =
-            createSocket().apply {
-                bind(java.net.InetSocketAddress(localAddress, localPort))
-                connect(java.net.InetSocketAddress(address, port))
-            }
-    }
 
 @Serializable
 internal data class AwgAddKeyResponse(

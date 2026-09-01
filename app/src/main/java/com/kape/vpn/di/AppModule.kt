@@ -282,7 +282,7 @@ class AppModule {
             .setCertificate(provider.certificate)
             .setUserAgent(configInfo.userAgent)
             .setMetadataRequestPath("/vpninfo/regions/v2")
-            .setVpnRegionsRequestPath("/vpninfo/servers/v6")
+            .setVpnRegionsRequestPath("/vpninfo/servers/v7")
             .setShadowsocksRegionsRequestPath("/shadow_socks")
             .setPlatformInstancesProvider(platformProvider)
             .build()

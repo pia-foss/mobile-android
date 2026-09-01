@@ -26,25 +26,12 @@ import com.kape.vpnconnect.utils.COUNTRY_LIST
 import com.kape.vpnconnect.utils.CountryDetector
 import kotlinx.coroutines.flow.first
 
-// PIA's WireGuard addKey control-plane port — fixed, independent of the user's configurable WG data port.
 private const val WG_AUTH_PORT = 1337
-
-// PIA's fixed internal resolvers, reachable through any server's tunnel — the tunnel gateway
-// itself does not run a DNS resolver, so these must be pushed explicitly rather than relying
-// on the SDK's gateway-address fallback.
+private const val AWG_PORT = 1338
 private const val PIA_DNS = "10.0.0.243"
 private const val MACE_DNS = "10.0.0.241"
 
-// Automatic's WireGuard leg always targets this single static AmneziaWG test box
-// (pia-gb-lhr-dp-001), not a real region server — there is no region/server selection for it yet.
-// Replace with real per-region AWG endpoints once AWG rolls out beyond this test box.
-private const val AWG_TEST_SERVER_IP = "138.199.31.184"
-private const val AWG_TEST_SERVER_CN = "pia-gb-lhr-dp-001"
-private const val AWG_PORT = 1338
-
-// This test box's live obfuscation settings, used only until the first successful add-awg-key
-// response seeds connectionPrefs.awgObfuscation with the server's actual (self-reported) values.
-private val AWG_TEST_SERVER_DEFAULT_OBFUSCATION =
+private val SERVER_DEFAULT_OBFUSCATION =
     AwgObfuscationSettings(
         junkPacketCount = 5,
         junkPacketMinSize = 25,
@@ -240,29 +227,35 @@ class ConfigurationGenerator(
     fun generateAwgVpnConfigurations(
         mtu: Int,
         obfuscation: AwgObfuscationSettings?,
+        server: VpnServer?,
+        dnsServers: List<String>,
     ): List<WireGuardVpnConfiguration> {
-        val amnezia = (obfuscation ?: AWG_TEST_SERVER_DEFAULT_OBFUSCATION).toAmnezia()
-        return listOf(
-            WireGuardVpnConfiguration(
-                endpointConfiguration =
-                    WireGuardEndpointConfiguration(
-                        ip = IpAddress.V4(AWG_TEST_SERVER_IP),
-                        port = AWG_PORT,
-                        authIp = IpAddress.V4(AWG_TEST_SERVER_IP),
-                        authPort = AWG_PORT,
-                        certDn = AWG_TEST_SERVER_CN,
-                        obfuscation = amnezia,
-                    ),
-                host = AWG_TEST_SERVER_IP,
-                port = AWG_PORT,
-                obfuscation = amnezia,
-                mtu = mtu,
-            ),
-        )
+        val amnezia = (obfuscation ?: SERVER_DEFAULT_OBFUSCATION).toAmnezia()
+        val result = mutableListOf<WireGuardVpnConfiguration>()
+        server?.endpoints[VpnServer.ServerGroup.AMNEZIA]?.forEach { details ->
+            val port = details.port ?: AWG_PORT
+            result.add(
+                WireGuardVpnConfiguration(
+                    endpointConfiguration =
+                        WireGuardEndpointConfiguration(
+                            ip = IpAddress.V4(details.ip),
+                            port = port,
+                            authIp = IpAddress.V4(details.ip),
+                            authPort = port,
+                            certDn = details.cn,
+                            obfuscation = amnezia,
+                        ),
+                    host = details.ip,
+                    port = port,
+                    obfuscation = amnezia,
+                    mtu = mtu,
+                    dnsServers = dnsServers,
+                ),
+            )
+        }
+        return result
     }
 
-    // Automatic's WireGuard leg targets the static AmneziaWG test box (see AWG_TEST_SERVER_IP)
-    // instead of the user's selected region — there's no per-region AWG endpoint yet.
     private suspend fun generateAutomaticConfigurations(
         server: VpnServer?,
         dnsServers: List<String> = emptyList(),
@@ -270,9 +263,22 @@ class ConfigurationGenerator(
         val result =
             mutableListOf<VpnConfiguration>().apply {
                 if (COUNTRY_LIST.contains(countryDetector.detectCountry())) {
-                    addAll(generateAwgVpnConfigurations(automaticWireGuardSettings().mtu, connectionPrefs.awgObfuscation.first()))
+                    addAll(
+                        generateAwgVpnConfigurations(
+                            automaticWireGuardSettings().mtu,
+                            connectionPrefs.awgObfuscation.first(),
+                            server,
+                            dnsServers,
+                        ),
+                    )
                 }
-                addAll(generateWireGuardVpnConfigurations(automaticWireGuardSettings(), server, dnsServers))
+                addAll(
+                    generateWireGuardVpnConfigurations(
+                        automaticWireGuardSettings(),
+                        server,
+                        dnsServers,
+                    ),
+                )
                 addAll(
                     generateOpenVpnConfigurations(
                         automaticOpenVpnUdpSettings(),
