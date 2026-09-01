@@ -30,7 +30,7 @@ fun Input(
     enabled: Boolean = true,
     label: String? = null,
     maskInput: Boolean,
-    singleLine: Boolean = false,
+    singleLine: Boolean = true,
     keyboard: KeyboardType,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     imeAction: ImeAction = ImeAction.Default,

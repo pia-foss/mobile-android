@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -83,6 +84,7 @@ fun EmailScreen(viewModel: SignupViewModel) =
                     label = stringResource(id = R.string.email_hint),
                     maskInput = false,
                     keyboard = KeyboardType.Email,
+                    imeAction = ImeAction.Done,
                     content = email,
                     errorMessage = emailErrorMessage,
                 )
