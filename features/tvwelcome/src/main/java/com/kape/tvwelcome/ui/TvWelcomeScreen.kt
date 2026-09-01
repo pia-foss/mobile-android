@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +24,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.tvwelcome.ui.vm.TvWelcomeViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -38,12 +40,18 @@ fun TvWelcomeScreen() =
         val initialFocusRequester = remember { FocusRequester() }
         val activity = LocalActivity.current
 
+        val shouldShowSubscribeButton by welcomeViewModel.shouldShowSubscribeButton.collectAsStateWithLifecycle()
+
         BackHandler {
             activity?.finish()
         }
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
+        }
+
+        LaunchedEffect(activity) {
+            activity?.let { welcomeViewModel.checkBillingAvailability(it) }
         }
 
         Row(
@@ -80,7 +88,7 @@ fun TvWelcomeScreen() =
                 ) {
                     welcomeViewModel.login()
                 }
-                if (welcomeViewModel.shouldShowSubscribeButton) {
+                if (shouldShowSubscribeButton) {
                     Spacer(modifier = Modifier.height(8.dp))
                     PrimaryButton(text = stringResource(id = R.string.subscribe_now)) {
                         welcomeViewModel.signup()

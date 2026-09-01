@@ -33,4 +33,6 @@ interface SignupBillingHandler {
         mainDispatcher: CoroutineDispatcher,
         activity: Activity,
     )
+
+    fun isBillingAvailable(): Boolean
 }

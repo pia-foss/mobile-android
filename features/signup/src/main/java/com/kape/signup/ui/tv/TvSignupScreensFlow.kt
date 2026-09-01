@@ -55,7 +55,11 @@ fun TvSignupScreensFlow() {
             TvLoadingScreen()
         }
         is SignupStep.Subscriptions -> {
-            TvSignUpScreen()
+            if (state.subscriptionData == null) {
+                TvNoPlansScreen()
+            } else {
+                TvSignUpScreen()
+            }
         }
     }
 }
