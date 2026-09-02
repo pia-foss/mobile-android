@@ -63,3 +63,10 @@ jobs:
           name: pia-playstore-release-${{ steps.version.outputs.version_name }}-${{ steps.version.outputs.version_code }}
           path: app-google-release-signed.aab
           if-no-files-found: error
+
+      - name: Upload Mapping File
+        uses: actions/upload-artifact@v6
+        with:
+          name: pia-playstore-release-mapping-${{ steps.version.outputs.version_name }}-${{ steps.version.outputs.version_code }}
+          path: app/build/outputs/mapping/googleRelease/mapping.txt
+          if-no-files-found: error
