@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  FlagMapper resolves flag_<iso> drawables via Resources.getIdentifier() at runtime, built from
+  region ISO codes fetched at runtime — the resource shrinker can't trace that reference, so it
+  strips every flag except the one statically referenced fallback (flag_world) unless kept here.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/flag_*" />

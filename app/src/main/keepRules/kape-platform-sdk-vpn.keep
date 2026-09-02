@@ -1,0 +1,7 @@
+# com.kape.platformsdk:kape-platform-sdk-vpn-pia ships zero consumer/proguard rules of its own.
+# Under R8 optimization it selects a broken WireGuard backend path (org.amnezia.awg's UAPI
+# control socket, hardcoded to org.amnezia.awg's own data dir) instead of the working plain
+# backend, breaking every VPN connection. Keep the whole SDK untouched until upstream ships
+# its own rules.
+-keep class com.kape.platformsdk.** { *; }
+-keep class org.amnezia.awg.** { *; }
