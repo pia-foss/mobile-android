@@ -27,7 +27,7 @@ class VpnRegionPrefs(
     context: Context,
 ) : Prefs(context, "vpn-regions") {
     val favoriteVpnServers: StateFlow<List<ServerData>> =
-        getFavoriteVpnServers().stateIn(
+        getFavorites(VPN_FAVORITES).stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             emptyList(),
@@ -37,35 +37,11 @@ class VpnRegionPrefs(
     val needsVpnReconnect: StateFlow<Boolean> =
         getNeedsVpnReconnect().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
 
-    suspend fun addToFavorites(serverData: ServerData) {
-        dataStore.edit { prefs ->
-            val favorites =
-                prefs[VPN_FAVORITES]
-                    ?.let { Json.decodeFromString<List<ServerData>>(it) }
-                    ?.toMutableList() ?: mutableListOf()
-            favorites.add(serverData)
-            prefs[VPN_FAVORITES] = Json.encodeToString(favorites)
-        }
-    }
+    suspend fun addToFavorites(serverData: ServerData) = addToFavorites(VPN_FAVORITES, serverData)
 
-    suspend fun removeFromFavorites(serverData: ServerData) {
-        dataStore.edit { prefs ->
-            val favorites =
-                prefs[VPN_FAVORITES]
-                    ?.let { Json.decodeFromString<List<ServerData>>(it) }
-                    ?.toMutableList() ?: mutableListOf()
-            favorites.remove(serverData)
-            prefs[VPN_FAVORITES] = Json.encodeToString(favorites)
-        }
-    }
+    suspend fun removeFromFavorites(serverData: ServerData) = removeFromFavorites(VPN_FAVORITES, serverData)
 
-    fun isFavorite(serverData: ServerData): Flow<Boolean> =
-        dataStore.data.map { prefs ->
-            val favorites =
-                prefs[VPN_FAVORITES]?.let { Json.decodeFromString<List<ServerData>>(it) }
-                    ?: emptyList()
-            favorites.contains(serverData)
-        }
+    fun isFavorite(serverData: ServerData): Flow<Boolean> = isFavorite(VPN_FAVORITES, serverData)
 
     fun isFavorite(
         serverName: String,
@@ -82,11 +58,6 @@ class VpnRegionPrefs(
     suspend fun setVpnReconnect(needsReconnect: Boolean) {
         dataStore.edit { it[VPN_RECONNECT] = needsReconnect }
     }
-
-    private fun getFavoriteVpnServers(): Flow<List<ServerData>> =
-        dataStore.data.map { prefs ->
-            prefs[VPN_FAVORITES]?.let { Json.decodeFromString(it) } ?: emptyList()
-        }
 
     @OptIn(ExperimentalSerializationApi::class)
     private fun getSelectedServer(): Flow<VpnServer?> =

@@ -9,7 +9,6 @@ import com.kape.regions.data.ServerData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -27,35 +26,14 @@ class ShadowsocksRegionPrefs(
     val shadowsocksServers: StateFlow<List<ShadowsocksServer>> =
         getShadowsocksServers().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
 
-    suspend fun addToFavorites(shadowsocksServerName: String) {
-        dataStore.edit { prefs ->
-            val favorites =
-                prefs[SHADOWSOCKS_VPN_FAVORITES]
-                    ?.let { Json.decodeFromString<List<ServerData>>(it) }
-                    ?.toMutableList() ?: mutableListOf()
-            favorites.add(ServerData(shadowsocksServerName, false))
-            prefs[SHADOWSOCKS_VPN_FAVORITES] = Json.encodeToString(favorites)
-        }
-    }
+    suspend fun addToFavorites(shadowsocksServerName: String) =
+        addToFavorites(SHADOWSOCKS_VPN_FAVORITES, ServerData(shadowsocksServerName, false))
 
-    suspend fun removeFromFavorites(shadowsocksServerName: String) {
-        dataStore.edit { prefs ->
-            val favorites =
-                prefs[SHADOWSOCKS_VPN_FAVORITES]
-                    ?.let { Json.decodeFromString<List<ServerData>>(it) }
-                    ?.toMutableList() ?: mutableListOf()
-            favorites.remove(ServerData(shadowsocksServerName, false))
-            prefs[SHADOWSOCKS_VPN_FAVORITES] = Json.encodeToString(favorites)
-        }
-    }
+    suspend fun removeFromFavorites(shadowsocksServerName: String) =
+        removeFromFavorites(SHADOWSOCKS_VPN_FAVORITES, ServerData(shadowsocksServerName, false))
 
     fun isFavorite(shadowsocksServerName: String): Flow<Boolean> =
-        dataStore.data.map { prefs ->
-            val favorites =
-                prefs[SHADOWSOCKS_VPN_FAVORITES]?.let { Json.decodeFromString<List<ServerData>>(it) }
-                    ?: emptyList()
-            favorites.contains(ServerData(shadowsocksServerName, false))
-        }
+        isFavorite(SHADOWSOCKS_VPN_FAVORITES, ServerData(shadowsocksServerName, false))
 
     suspend fun getSelectedShadowsocksServerNow(): ShadowsocksServer? = getSelectedShadowsocksServer().first()
 
