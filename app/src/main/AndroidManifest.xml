@@ -26,6 +26,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!--Keeps the OpenVPN subprocess from being frozen by Doze/App Standby while connected,
+        which was causing it to miss ping-restart windows and reconnect on a ~60s loop-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!--Android 13-->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!--Android 14-->
