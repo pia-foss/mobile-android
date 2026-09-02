@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.net.VpnService
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import com.kape.contracts.ConfigInfo
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.ConnectionManager
@@ -71,6 +73,13 @@ class PiaService :
     private val kpiDataSource: KpiDataSource by inject()
     private var sessionController: KapeSessionController? = null
     private var statusCollectionJob: Job? = null
+
+    // Held only while a session is connecting/connected so the OS doesn't freeze this process
+    // during Doze/App Standby and cause it to miss the OpenVPN ping-restart window.
+    private val wakeLock: PowerManager.WakeLock by lazy {
+        (getSystemService(Context.POWER_SERVICE) as PowerManager)
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "$packageName:vpnConnection")
+    }
 
     private val _connectionStatus = MutableStateFlow(KapeVPNConnectionStatus.Disconnected)
     val connectionStatus: StateFlow<KapeVPNConnectionStatus> = _connectionStatus.asStateFlow()
@@ -135,6 +144,8 @@ class PiaService :
         sessionController = null
         statusCollectionJob?.cancel()
         statusCollectionJob = null
+
+        if (!wakeLock.isHeld) wakeLock.acquire()
 
         notificationHandler.updateConnectionInfo(
             getString(
@@ -240,6 +251,7 @@ class PiaService :
         sessionController = null
         usageProvider.reset()
         _connectionStatus.update { KapeVPNConnectionStatus.Disconnected }
+        if (wakeLock.isHeld) wakeLock.release()
     }
 
     override fun onDestroy() {
