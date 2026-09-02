@@ -8,6 +8,7 @@ import com.kape.contracts.Router
 import com.kape.data.DI
 import com.kape.data.LoginWithCredentials
 import com.kape.data.Subscribe
+import com.kape.data.TvLoginUsername
 import com.kape.data.TvWelcome
 import com.kape.data.TvWelcomeBack
 import com.kape.data.WebDestination
@@ -87,6 +88,11 @@ class SignupViewModel(
 
     fun navigateToLogin() {
         router.updateDestination(LoginWithCredentials)
+        billingHandler.reset()
+    }
+
+    fun navigateToTvLogin() {
+        router.updateDestination(TvLoginUsername)
         billingHandler.reset()
     }
 

@@ -186,6 +186,8 @@ class GoogleSignupBillingHandler(
 
     override fun hasActiveSubscription(): Flow<Boolean> = vpnSubscriptionPaymentProvider.hasActiveSubscription()
 
+    override fun isBillingAvailable(): Boolean = vpnSubscriptionPaymentProvider.isClientRegistered()
+
     override suspend fun registerAndAwaitReady(
         mainDispatcher: CoroutineDispatcher,
         activity: Activity,

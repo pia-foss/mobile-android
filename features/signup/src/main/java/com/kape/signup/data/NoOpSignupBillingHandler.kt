@@ -49,6 +49,8 @@ class NoOpSignupBillingHandler(
 
     override fun hasActiveSubscription(): Flow<Boolean> = flowOf(false)
 
+    override fun isBillingAvailable(): Boolean = false
+
     override suspend fun registerAndAwaitReady(
         mainDispatcher: CoroutineDispatcher,
         activity: Activity,

@@ -8,6 +8,25 @@ plugins {
 
 android {
     namespace = "com.kape.tvwelcome"
+
+    flavorDimensions.add("provider")
+    productFlavors {
+        create("amazon") {
+            dimension = "provider"
+        }
+        create("google") {
+            dimension = "provider"
+        }
+        create("noinapp") {
+            dimension = "provider"
+        }
+        create("meta") {
+            dimension = "provider"
+        }
+        create("fdroid") {
+            dimension = "provider"
+        }
+    }
     buildFeatures {
         compose = true
     }
@@ -18,6 +37,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":capabilities:buildconfig"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":features:signup"))
 
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
