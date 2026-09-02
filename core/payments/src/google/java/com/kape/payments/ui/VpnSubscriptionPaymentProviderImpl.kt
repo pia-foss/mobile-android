@@ -50,7 +50,10 @@ class VpnSubscriptionPaymentProviderImpl(
             purchaseInProgress = false
             when (billingResult.responseCode) {
                 BillingClient.BillingResponseCode.OK -> {
-                    purchases?.first()?.let { purchase ->
+                    val purchase = purchases?.firstOrNull()
+                    if (purchase == null) {
+                        purchaseState.value = PurchaseState.PurchaseFailed("Billing succeeded with no purchase returned")
+                    } else {
                         purchase.products
                             .firstOrNull {
                                 it == selectedProduct?.productId
@@ -67,7 +70,9 @@ class VpnSubscriptionPaymentProviderImpl(
                                         purchaseState.value = PurchaseState.PurchaseSuccess
                                     }
                                 }
-                            }
+                            } ?: run {
+                            purchaseState.value = PurchaseState.PurchaseFailed("Purchase did not match selected product")
+                        }
                     }
                 }
 
