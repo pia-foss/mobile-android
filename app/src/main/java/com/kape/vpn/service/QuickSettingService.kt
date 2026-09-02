@@ -44,19 +44,19 @@ class QuickSettingService :
         super.onClick()
         if (isLocked) {
             unlockAndRun {
-                onClickAction()
+                launch { onClickAction() }
             }
         } else {
-            onClickAction()
+            launch { onClickAction() }
         }
     }
 
     override fun onStartListening() {
         super.onStartListening()
-        updateTile()
+        launch(Dispatchers.Main) { updateTile() }
     }
 
-    private fun onClickAction() {
+    private suspend fun onClickAction() {
         if (isUserLoggedIn.invoke()) {
             if (connectionInfoProvider.isConnected()) {
                 vpnLauncher.stopVpn()
@@ -71,7 +71,7 @@ class QuickSettingService :
         job.cancel()
     }
 
-    private fun updateTile() {
+    private suspend fun updateTile() {
         qsTile?.let {
             if (connectionInfoProvider.isConnected()) {
                 it.state = Tile.STATE_ACTIVE

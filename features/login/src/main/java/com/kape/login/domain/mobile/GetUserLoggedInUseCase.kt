@@ -8,5 +8,5 @@ import org.koin.core.annotation.Singleton
 class GetUserLoggedInUseCase(
     private val source: AuthenticationDataSource,
 ) : IsUserLoggedInUseCase {
-    override fun invoke() = source.isUserLoggedIn()
+    override suspend fun invoke(): Boolean = source.isUserLoggedIn()
 }

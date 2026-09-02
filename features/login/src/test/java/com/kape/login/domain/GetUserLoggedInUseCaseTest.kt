@@ -3,7 +3,7 @@ package com.kape.login.domain
 import com.kape.contracts.AuthenticationDataSource
 import com.kape.login.BaseTest
 import com.kape.login.domain.mobile.GetUserLoggedInUseCase
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -25,7 +25,16 @@ internal class GetUserLoggedInUseCaseTest : BaseTest() {
     @MethodSource("booleans")
     fun login(expected: Boolean) =
         runTest {
-            every { source.isUserLoggedIn() } returns expected
+            coEvery { source.isUserLoggedIn() } returns expected
+            val actual = useCase.invoke()
+            assertEquals(expected, actual)
+        }
+
+    @ParameterizedTest(name = "expected: {0}")
+    @MethodSource("booleans")
+    fun invokeWithRetry(expected: Boolean) =
+        runTest {
+            coEvery { source.isUserLoggedIn() } returns expected
             val actual = useCase.invoke()
             assertEquals(expected, actual)
         }

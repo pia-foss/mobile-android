@@ -22,6 +22,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,6 +63,10 @@ fun SideMenuContent(
     val logoutDialogVisible = remember { mutableStateOf(false) }
     val hasUpdateAvailable by viewModel.updateAvailable.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    LaunchedEffect(state.isOpen) {
+        if (state.isOpen) viewModel.refreshProfile()
+    }
 
     Column(
         modifier =

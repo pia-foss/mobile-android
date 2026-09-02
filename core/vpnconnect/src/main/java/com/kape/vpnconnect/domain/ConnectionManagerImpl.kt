@@ -30,7 +30,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,7 +39,6 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.time.Duration.Companion.milliseconds
 
 class ConnectionManagerImpl :
     ConnectionManager,
@@ -112,7 +110,7 @@ class ConnectionManagerImpl :
     }
 
     override suspend fun connectToLastKnownOrOptimalServer() {
-        if (!isUserLoggedInWithRetry()) return
+        if (!authenticationDataSource.isUserLoggedIn()) return
 
         if (settingsPrefs.isAutomationEnabledNow() && connectionPrefs.isDisconnectedByUser.value) {
             connectionPrefs.setDisconnectedByUser(false)
@@ -185,17 +183,6 @@ class ConnectionManagerImpl :
     }
 
     override fun isConnectionInProgress(): Boolean = connectionInProgress.get()
-
-    // Immediately after boot, the account SDK's encrypted token store can transiently fail to
-    // read (Keystore not yet warmed up), making isUserLoggedIn() falsely report false. Retry
-    // briefly before treating the user as logged out.
-    private suspend fun isUserLoggedInWithRetry(): Boolean {
-        repeat(LOGIN_CHECK_ATTEMPTS) {
-            if (authenticationDataSource.isUserLoggedIn()) return true
-            delay(LOGIN_CHECK_RETRY_DELAY_MS.milliseconds)
-        }
-        return false
-    }
 
     private suspend fun startShadowsocks(stopCallback: () -> Unit): Boolean {
         if (!settingsPrefs.isShadowsocksObfuscationEnabledNow()) return true
@@ -287,10 +274,5 @@ class ConnectionManagerImpl :
         }
 
         return deferred.await()
-    }
-
-    companion object {
-        private const val LOGIN_CHECK_ATTEMPTS = 5
-        private const val LOGIN_CHECK_RETRY_DELAY_MS = 300L
     }
 }

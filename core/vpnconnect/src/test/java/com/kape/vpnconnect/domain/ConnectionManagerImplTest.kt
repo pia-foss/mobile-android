@@ -127,7 +127,7 @@ class ConnectionManagerImplTest {
         coEvery { settingsPrefs.getSelectedDnsOptionNow() } returns DnsOptions.PIA
         coEvery { settingsPrefs.getVpnExcludedAppsNow() } returns emptyList()
         coEvery { settingsPrefs.isAutomationEnabledNow() } returns false
-        every { authenticationDataSource.isUserLoggedIn() } returns true
+        coEvery { authenticationDataSource.isUserLoggedIn() } returns true
         every { connectionPrefs.isDisconnectedByUser.value } returns false
         coEvery { connectionPrefs.getSelectedVpnServerNow() } returns null
 
@@ -287,7 +287,7 @@ class ConnectionManagerImplTest {
     @Test
     fun `connectToLastKnownOrOptimalServer - not logged in - does not connect`() =
         runTest {
-            every { authenticationDataSource.isUserLoggedIn() } returns false
+            coEvery { authenticationDataSource.isUserLoggedIn() } returns false
 
             connectionManager.connectToLastKnownOrOptimalServer()
 
