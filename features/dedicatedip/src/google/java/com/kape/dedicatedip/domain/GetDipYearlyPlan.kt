@@ -1,54 +1,27 @@
 package com.kape.dedicatedip.domain
 
-import com.kape.dedicatedip.data.DipSignupRepository
 import com.kape.dedicatedip.data.models.DedicatedIpYearlyPlan
-import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.utils.YEARLY_SUBSCRIPTION
 import com.kape.ui.utils.PriceFormatter
-import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
-import kotlin.coroutines.resume
 
 @Singleton
 class GetDipYearlyPlan(
-    private val dipSignupRepository: DipSignupRepository,
-    private val dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
+    private val getDipProductDetails: GetDipProductDetails,
     private val formatter: PriceFormatter,
 ) {
     suspend operator fun invoke(): DedicatedIpYearlyPlan? {
-        val subscriptions = dipSignupRepository.signupPlans() ?: return null
-
-        val yearlySubscription =
-            subscriptions.availableProducts.firstOrNull { product ->
-                product.plan.lowercase() == YEARLY_SUBSCRIPTION.lowercase()
-            } ?: return null
-
-        return suspendCancellableCoroutine { cont ->
-            dipSubscriptionPaymentProvider.productsDetails(
-                productIds = listOf(yearlySubscription.id),
-            ) { result ->
-                result.fold(
-                    onSuccess = { pairs ->
-                        val productDetails = pairs.first()
-                        cont.resume(
-                            DedicatedIpYearlyPlan(
-                                id = productDetails.first,
-                                yearlyPrice = productDetails.second,
-                                // 0L added to match formatYearlyPerMonth signature. To be fixed when dip goes live.
-                                monthlyPrice =
-                                    formatter.formatYearlyPerMonth(
-                                        priceInMicros = 0L,
-                                        currencyCode = "USD",
-                                        originalFormattedPrice = productDetails.second,
-                                    ),
-                            ),
-                        )
-                    },
-                    onFailure = {
-                        cont.resume(null)
-                    },
-                )
-            }
-        }
+        val (id, price) = getDipProductDetails(YEARLY_SUBSCRIPTION) ?: return null
+        return DedicatedIpYearlyPlan(
+            id = id,
+            yearlyPrice = price,
+            // 0L added to match formatYearlyPerMonth signature. To be fixed when dip goes live.
+            monthlyPrice =
+                formatter.formatYearlyPerMonth(
+                    priceInMicros = 0L,
+                    currencyCode = "USD",
+                    originalFormattedPrice = price,
+                ),
+        )
     }
 }

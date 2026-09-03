@@ -8,6 +8,7 @@ import com.kape.dedicatedip.domain.DipPurchaseHandler
 import com.kape.dedicatedip.domain.DipPurchaseHandlerImpl
 import com.kape.dedicatedip.domain.FetchSignupDipToken
 import com.kape.dedicatedip.domain.GetDipMonthlyPlan
+import com.kape.dedicatedip.domain.GetDipProductDetails
 import com.kape.dedicatedip.domain.GetDipSupportedCountries
 import com.kape.dedicatedip.domain.GetDipYearlyPlan
 import com.kape.dedicatedip.domain.RenewDipUseCase
@@ -71,17 +72,19 @@ class DipPurchaseModule {
         GetDipSupportedCountries(dipSignupRepository)
 
     @Singleton
-    fun provideGetDipMonthlyPlan(
+    fun provideGetDipProductDetails(
         dipSignupRepository: DipSignupRepository,
         dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
-    ): GetDipMonthlyPlan = GetDipMonthlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider)
+    ): GetDipProductDetails = GetDipProductDetails(dipSignupRepository, dipSubscriptionPaymentProvider)
+
+    @Singleton
+    fun provideGetDipMonthlyPlan(getDipProductDetails: GetDipProductDetails): GetDipMonthlyPlan = GetDipMonthlyPlan(getDipProductDetails)
 
     @Singleton
     fun provideGetDipYearlyPlan(
-        dipSignupRepository: DipSignupRepository,
-        dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
+        getDipProductDetails: GetDipProductDetails,
         formatter: PriceFormatter,
-    ): GetDipYearlyPlan = GetDipYearlyPlan(dipSignupRepository, dipSubscriptionPaymentProvider, formatter)
+    ): GetDipYearlyPlan = GetDipYearlyPlan(getDipProductDetails, formatter)
 
     @Singleton
     fun provideFetchSignupDipToken(dipDataSource: DipPurchaseDataSource): FetchSignupDipToken = FetchSignupDipToken(dipDataSource)
