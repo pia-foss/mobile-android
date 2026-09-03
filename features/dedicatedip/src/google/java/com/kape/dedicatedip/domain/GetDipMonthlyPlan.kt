@@ -1,45 +1,15 @@
 package com.kape.dedicatedip.domain
 
-import com.kape.dedicatedip.data.DipSignupRepository
 import com.kape.dedicatedip.data.models.DedicatedIpMonthlyPlan
-import com.kape.payments.ui.DipSubscriptionPaymentProvider
 import com.kape.payments.utils.MONTHLY_SUBSCRIPTION
-import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
-import kotlin.coroutines.resume
 
 @Singleton
 class GetDipMonthlyPlan(
-    private val dipSignupRepository: DipSignupRepository,
-    private val dipSubscriptionPaymentProvider: DipSubscriptionPaymentProvider,
+    private val getDipProductDetails: GetDipProductDetails,
 ) {
     suspend operator fun invoke(): DedicatedIpMonthlyPlan? {
-        val subscriptions = dipSignupRepository.signupPlans() ?: return null
-
-        val monthlySubscription =
-            subscriptions.availableProducts.firstOrNull { product ->
-                product.plan.lowercase() == MONTHLY_SUBSCRIPTION.lowercase()
-            } ?: return null
-
-        return suspendCancellableCoroutine { cont ->
-            dipSubscriptionPaymentProvider.productsDetails(
-                productIds = listOf(monthlySubscription.id),
-            ) { result ->
-                result.fold(
-                    onSuccess = { pairs ->
-                        val productDetails = pairs.first()
-                        cont.resume(
-                            DedicatedIpMonthlyPlan(
-                                id = productDetails.first,
-                                monthlyPrice = productDetails.second,
-                            ),
-                        )
-                    },
-                    onFailure = {
-                        cont.resume(null)
-                    },
-                )
-            }
-        }
+        val (id, price) = getDipProductDetails(MONTHLY_SUBSCRIPTION) ?: return null
+        return DedicatedIpMonthlyPlan(id = id, monthlyPrice = price)
     }
 }
