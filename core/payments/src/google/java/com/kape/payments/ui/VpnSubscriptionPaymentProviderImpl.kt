@@ -52,7 +52,8 @@ class VpnSubscriptionPaymentProviderImpl(
                 BillingClient.BillingResponseCode.OK -> {
                     val purchase = purchases?.firstOrNull()
                     if (purchase == null) {
-                        purchaseState.value = PurchaseState.PurchaseFailed("Billing succeeded with no purchase returned")
+                        purchaseState.value =
+                            PurchaseState.PurchaseFailed("Billing succeeded with no purchase returned")
                     } else {
                         purchase.products
                             .firstOrNull {
@@ -71,7 +72,8 @@ class VpnSubscriptionPaymentProviderImpl(
                                     }
                                 }
                             } ?: run {
-                            purchaseState.value = PurchaseState.PurchaseFailed("Purchase did not match selected product")
+                            purchaseState.value =
+                                PurchaseState.PurchaseFailed("Purchase did not match selected product")
                         }
                     }
                 }
@@ -218,7 +220,8 @@ class VpnSubscriptionPaymentProviderImpl(
                                 val freeTrial =
                                     details.pricingPhases.pricingPhaseList.firstOrNull { it.priceAmountMicros == 0L }
                                 val plan =
-                                    details.pricingPhases.pricingPhaseList.first { it.priceAmountMicros != 0L }
+                                    details.pricingPhases.pricingPhaseList.firstOrNull { it.priceAmountMicros != 0L }
+                                        ?: return@forEach
                                 val planPeriod =
                                     when (plan.billingPeriod) {
                                         MONTHLY -> MONTHLY_SUBSCRIPTION
