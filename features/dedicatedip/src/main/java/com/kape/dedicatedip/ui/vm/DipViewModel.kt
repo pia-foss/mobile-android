@@ -249,6 +249,7 @@ class DipViewModel(
                     fetchPurchasedDedicatedIpToken()
                 },
                 onFailure = {
+                    showSpinner.value = false
                     showPurchaseValidationError.value = true
                 },
             )
@@ -260,6 +261,7 @@ class DipViewModel(
             showTokenRetrievalError.value = false
             val countryDetails = getSelectedDipCountry().first()
             if (countryDetails == null) {
+                showSpinner.value = false
                 showTokenRetrievalError.value = true
                 return@launch
             }
@@ -277,6 +279,7 @@ class DipViewModel(
                     navigateToDedicatedIpPurchaseSuccess()
                 },
                 onFailure = {
+                    showSpinner.value = false
                     showTokenRetrievalError.value = true
                 },
             )
