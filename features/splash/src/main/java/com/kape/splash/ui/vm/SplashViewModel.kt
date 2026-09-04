@@ -24,7 +24,9 @@ import com.kape.signup.domain.SignupBillingHandler
 import com.kape.utils.PlatformUtils
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -51,6 +53,12 @@ class SplashViewModel(
     private var updateUrl: String = ""
     private var hasMadeConsentDecision: Boolean = false
     private val featureFlagsFetchJob: Job
+
+    // Splash checks login state multiple times (preload gating, exit routing); memoized so the
+    // underlying check only runs once per splash session instead of once per call site.
+    private val isLoggedInDeferred: Deferred<Boolean> by lazy {
+        viewModelScope.async(ioDispatcher) { isUserLoggedIn.invoke() }
+    }
 
     init {
         featureFlagsFetchJob =
@@ -101,14 +109,16 @@ class SplashViewModel(
 
     fun isConnected() = connectionInfoProvider.isConnected()
 
-    suspend fun shouldPreloadPrices(): Boolean = !isUserLoggedIn.invoke()
+    suspend fun shouldPreloadPrices(): Boolean = !isLoggedIn()
 
     fun loadPrices(activity: Activity) {
         billingHandler.loadPrices(mainDispatcher, activity)
     }
 
+    private suspend fun isLoggedIn(): Boolean = isLoggedInDeferred.await()
+
     private suspend fun handleSplashExit() {
-        if (isUserLoggedIn.invoke()) {
+        if (isLoggedIn()) {
             router.updateDestination(Connection)
         } else {
             if (platformUtils.isTv()) {

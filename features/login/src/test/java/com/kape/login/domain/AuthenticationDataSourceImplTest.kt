@@ -100,7 +100,7 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
             every { api.apiToken() } returns "apiToken"
             every { api.vpnToken() } returns "vpnToken"
 
-            assertEquals(true, source.isUserLoggedIn())
+            assertEquals(true, source.isUserLoggedIn(retryOnColdStart = true))
         }
 
     @Test
@@ -109,7 +109,7 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
             every { api.apiToken() } returnsMany listOf(null, "apiToken")
             every { api.vpnToken() } returns "vpnToken"
 
-            assertEquals(true, source.isUserLoggedIn())
+            assertEquals(true, source.isUserLoggedIn(retryOnColdStart = true))
         }
 
     @Test
@@ -117,6 +117,15 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
         runTest {
             every { api.apiToken() } returns null
             every { api.vpnToken() } returns null
+
+            assertEquals(false, source.isUserLoggedIn(retryOnColdStart = true))
+        }
+
+    @Test
+    fun `isUserLoggedIn - not logged in and retry not requested - returns false without retrying`() =
+        runTest {
+            every { api.apiToken() } returnsMany listOf(null, "apiToken")
+            every { api.vpnToken() } returns "vpnToken"
 
             assertEquals(false, source.isUserLoggedIn())
         }
