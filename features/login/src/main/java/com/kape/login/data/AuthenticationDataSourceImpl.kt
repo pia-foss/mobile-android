@@ -22,7 +22,8 @@ private fun List<AccountRequestError>.toApiError(): ApiResult.Error {
 class AuthenticationDataSourceImpl(
     private val api: AndroidAccountAPI,
 ) : AuthenticationDataSource {
-    override suspend fun isUserLoggedIn(): Boolean {
+    override suspend fun isUserLoggedIn(retryOnColdStart: Boolean): Boolean {
+        if (!retryOnColdStart) return hasTokens()
         repeat(LOGIN_CHECK_ATTEMPTS) {
             if (hasTokens()) return true
             delay(LOGIN_CHECK_RETRY_DELAY_MS.milliseconds)

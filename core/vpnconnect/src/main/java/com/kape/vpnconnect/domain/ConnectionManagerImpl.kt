@@ -110,7 +110,7 @@ class ConnectionManagerImpl :
     }
 
     override suspend fun connectToLastKnownOrOptimalServer() {
-        if (!authenticationDataSource.isUserLoggedIn()) return
+        if (!authenticationDataSource.isUserLoggedIn(retryOnColdStart = true)) return
 
         if (settingsPrefs.isAutomationEnabledNow() && connectionPrefs.isDisconnectedByUser.value) {
             connectionPrefs.setDisconnectedByUser(false)
