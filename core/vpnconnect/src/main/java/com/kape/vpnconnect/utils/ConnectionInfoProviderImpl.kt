@@ -83,6 +83,10 @@ class ConnectionInfoProviderImpl(
             ConnectionStatus.RECONNECTING,
         ).contains(currentConnectionStatus.value)
 
+    override fun shouldAllowDisconnect(): Boolean =
+        currentConnectionStatus.value != ConnectionStatus.DISCONNECTED &&
+            currentConnectionStatus.value != ConnectionStatus.DISCONNECTING
+
     override fun updateInfo(
         name: String,
         iso: String,
