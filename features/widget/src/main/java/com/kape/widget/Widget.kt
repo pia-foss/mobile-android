@@ -277,7 +277,7 @@ class Widget(
                             contentDescription = null,
                             modifier = GlanceModifier.size(40.dp).padding(start = 16.dp),
                         )
-                        GlanceModifier.width(16.dp)
+                        Spacer(modifier = GlanceModifier.width(16.dp))
                     }
                     Text(
                         text = name,
