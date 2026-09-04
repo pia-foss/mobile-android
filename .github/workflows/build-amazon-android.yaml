@@ -1,5 +1,19 @@
 name: Build Amazon Android
-on: [workflow_call]
+on:
+  workflow_call:
+    secrets:
+      USERNAME_GITHUB:
+        required: true
+      TOKEN_GITHUB:
+        required: true
+      SIGNING_WEB_KEYSTORE:
+        required: true
+      SIGNING_WEB_STORE_PASSWORD:
+        required: true
+      SIGNING_WEB_KEY_PASSWORD:
+        required: true
+      SIGNING_WEB_KEY_ALIAS:
+        required: true
 permissions:
   contents: read
 jobs:
