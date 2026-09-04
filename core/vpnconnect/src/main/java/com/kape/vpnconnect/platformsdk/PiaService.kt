@@ -75,7 +75,10 @@ class PiaService :
     private var statusCollectionJob: Job? = null
 
     // Held only while a session is connecting/connected so the OS doesn't freeze this process
-    // during Doze/App Standby and cause it to miss the OpenVPN ping-restart window.
+    // during Doze/App Standby and cause it to miss the OpenVPN ping-restart window. Acquired
+    // with a bounded timeout as a backstop against a missed release path (e.g. a library-reported
+    // failure that never routes through stopSessionController()), and renewed on every
+    // Connecting/Reconnecting transition so a live ping-restart cycle is never cut short.
     private val wakeLock: PowerManager.WakeLock by lazy {
         (getSystemService(Context.POWER_SERVICE) as PowerManager)
             .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "$packageName:vpnConnection")
@@ -145,7 +148,7 @@ class PiaService :
         statusCollectionJob?.cancel()
         statusCollectionJob = null
 
-        if (!wakeLock.isHeld) wakeLock.acquire()
+        wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS)
 
         notificationHandler.updateConnectionInfo(
             getString(
@@ -238,6 +241,18 @@ class PiaService :
             scope.launch {
                 controller.state.connectionStatus.collect { status ->
                     _connectionStatus.update { status }
+                    when (status) {
+                        // Renew on every (re)connect attempt so a ping-restart cycle can't
+                        // outlive the backstop timeout while it's still actively in progress.
+                        KapeVPNConnectionStatus.Connecting,
+                        KapeVPNConnectionStatus.Reconnecting,
+                        -> wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS)
+                        // Catches a library-reported failure that lands here without ever
+                        // going through stopSessionController(), so the lock can't be stranded.
+                        KapeVPNConnectionStatus.Disconnected ->
+                            if (wakeLock.isHeld) wakeLock.release()
+                        else -> Unit
+                    }
                 }
             }
 
@@ -281,5 +296,8 @@ class PiaService :
     companion object {
         private const val CHANNEL_ID = "kape_vpn"
         const val EXTRA_MANUAL_START = "manual_start"
+
+        // Well above a normal OpenVPN ping-restart cycle; a backstop, not the expected hold time.
+        private const val WAKE_LOCK_TIMEOUT_MS = 5 * 60 * 1000L
     }
 }
