@@ -30,15 +30,18 @@ jobs:
 
       - name: Generate unique build ID
         id: build_id
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          SHA: ${{ github.sha }}
         run: |
-          BRANCH_SLUG=$(echo "${{ github.ref_name }}" \
+          BRANCH_SLUG=$(echo "$REF_NAME" \
             | tr '[:upper:]' '[:lower:]' \
             | sed 's/[^a-z0-9]/-/g' \
             | sed 's/-\+/-/g' \
             | sed 's/^-\|-$//g' \
             | cut -c1-40)
 
-          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          SHORT_SHA=$(echo "$SHA" | cut -c1-7)
           BUILD_ID="${BRANCH_SLUG}-${SHORT_SHA}"
           echo "build_id=${BUILD_ID}" >> $GITHUB_OUTPUT
           echo "Build ID: ${BUILD_ID}"
@@ -74,16 +77,40 @@ jobs:
 
   build-playstore-version:
     uses: ./.github/workflows/build-playstore-android.yaml
-    secrets: inherit
+    secrets:
+      USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}
+      TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
+      SIGNING_PLAYSTORE_KEYSTORE: ${{ secrets.SIGNING_PLAYSTORE_KEYSTORE }}
+      SIGNING_PLAYSTORE_STORE_PASSWORD: ${{ secrets.SIGNING_PLAYSTORE_STORE_PASSWORD }}
+      SIGNING_PLAYSTORE_KEY_PASSWORD: ${{ secrets.SIGNING_PLAYSTORE_KEY_PASSWORD }}
+      SIGNING_PLAYSTORE_KEY_ALIAS: ${{ secrets.SIGNING_PLAYSTORE_KEY_ALIAS }}
 
   build-website-version:
     uses: ./.github/workflows/build-website-android.yaml
-    secrets: inherit
+    secrets:
+      USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}
+      TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
+      SIGNING_WEB_KEYSTORE: ${{ secrets.SIGNING_WEB_KEYSTORE }}
+      SIGNING_WEB_STORE_PASSWORD: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
+      SIGNING_WEB_KEY_PASSWORD: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
+      SIGNING_WEB_KEY_ALIAS: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
 
   build-amazon-version:
     uses: ./.github/workflows/build-amazon-android.yaml
-    secrets: inherit
+    secrets:
+      USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}
+      TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
+      SIGNING_WEB_KEYSTORE: ${{ secrets.SIGNING_WEB_KEYSTORE }}
+      SIGNING_WEB_STORE_PASSWORD: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
+      SIGNING_WEB_KEY_PASSWORD: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
+      SIGNING_WEB_KEY_ALIAS: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
 
   build-meta-version:
     uses: ./.github/workflows/build-meta-android.yaml
-    secrets: inherit
+    secrets:
+      USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}
+      TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
+      SIGNING_WEB_KEYSTORE: ${{ secrets.SIGNING_WEB_KEYSTORE }}
+      SIGNING_WEB_STORE_PASSWORD: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
+      SIGNING_WEB_KEY_PASSWORD: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
+      SIGNING_WEB_KEY_ALIAS: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
