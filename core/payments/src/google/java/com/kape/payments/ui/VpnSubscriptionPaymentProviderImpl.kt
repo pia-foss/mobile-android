@@ -79,7 +79,7 @@ class VpnSubscriptionPaymentProviderImpl(
                 }
 
                 BillingClient.BillingResponseCode.USER_CANCELED -> {
-                    purchaseState.value = PurchaseState.PurchaseFailed("Purchase cancelled by user")
+                    // ignore
                 }
 
                 else -> {
