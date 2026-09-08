@@ -82,6 +82,11 @@ class PiaService :
     private val wakeLock: PowerManager.WakeLock by lazy {
         (getSystemService(Context.POWER_SERVICE) as PowerManager)
             .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "$packageName:vpnConnection")
+            // Renewed on every Connecting/Reconnecting transition (not just once per session),
+            // so reference-counted acquire()/release() would require exactly one release() per
+            // renewal. A single release() on Disconnected must always fully release it regardless
+            // of how many renewals preceded it, so acquire()/release() need to re-enter, not stack.
+            .apply { setReferenceCounted(false) }
     }
 
     private val _connectionStatus = MutableStateFlow(KapeVPNConnectionStatus.Disconnected)
