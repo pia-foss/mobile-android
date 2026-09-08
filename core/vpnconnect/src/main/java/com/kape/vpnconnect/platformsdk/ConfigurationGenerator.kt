@@ -55,6 +55,7 @@ class ConfigurationGenerator(
                 generateWireGuardVpnConfigurations(
                     settingsPrefs.getWireGuardSettingsNow(),
                     connectionPrefs.getSelectedVpnServerNow(),
+                    getDnsServers(),
                 )
 
             VpnProtocols.Automatic ->
@@ -185,6 +186,7 @@ class ConfigurationGenerator(
     fun generateWireGuardVpnConfigurations(
         wireGuardSettings: WireGuardSettings,
         server: VpnServer?,
+        dnsServers: List<String>,
     ): List<WireGuardVpnConfiguration> {
         val result = mutableListOf<WireGuardVpnConfiguration>()
         server?.endpoints[VpnServer.ServerGroup.WIREGUARD]?.forEach {
@@ -204,6 +206,7 @@ class ConfigurationGenerator(
                     port = wireGuardSettings.port.toInt(),
                     obfuscation = WireGuardObfuscation.None,
                     mtu = wireGuardSettings.mtu,
+                    dnsServers = dnsServers,
                 ),
             )
         }
@@ -219,7 +222,7 @@ class ConfigurationGenerator(
                 if (COUNTRY_LIST.contains(countryDetector.detectCountry())) {
                     // TODO: Add amnezia
                 }
-                addAll(generateWireGuardVpnConfigurations(automaticWireGuardSettings(), server))
+                addAll(generateWireGuardVpnConfigurations(automaticWireGuardSettings(), server, dnsServers))
                 addAll(
                     generateOpenVpnConfigurations(
                         automaticOpenVpnUdpSettings(),
