@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
@@ -58,11 +57,13 @@ class ConnectionInfoProviderImpl(
             connectionStatusProvider.status
                 .collectLatest { latestConnectionStatus ->
                     currentConnectionStatus.update { latestConnectionStatus }
-                    vpnManagerConnectionStatus.first()?.let {
-                        submitKpiEventUseCase.submitConnectionEvent(
-                            getKpiConnectionStatus(it),
-                            isManual,
-                        )
+                    vpnManagerConnectionStatus.collectLatest { status ->
+                        status?.let {
+                            submitKpiEventUseCase.submitConnectionEvent(
+                                getKpiConnectionStatus(it),
+                                isManual,
+                            )
+                        }
                     }
                     if (latestConnectionStatus == ConnectionStatus.DISCONNECTED) {
                         clientStateDataSource.getPublicIp()
