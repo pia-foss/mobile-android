@@ -13,6 +13,7 @@ fun adaptVpnServers(vpnRegionsResponse: VpnRegionsResponse): Map<String, VpnServ
         val ovpnTcpEndpoints = region.servers[RegionsProtocol.OPENVPN_TCP.protocol]
         val ovpnUdpEndpoints = region.servers[RegionsProtocol.OPENVPN_UDP.protocol]
         val metaEndpoints = region.servers[RegionsProtocol.META.protocol]
+        val awgEndpoints = region.servers[RegionsProtocol.AMNEZIA.protocol]
 
         val regionEndpoints =
             mutableMapOf<VpnServer.ServerGroup, List<VpnServer.ServerEndpointDetails>>()
@@ -79,6 +80,20 @@ fun adaptVpnServers(vpnRegionsResponse: VpnRegionsResponse): Map<String, VpnServ
             regionEndpoints[VpnServer.ServerGroup.META] = mappedEndpoints
         }
 
+        awgEndpoints?.let {
+            val mappedEndpoints = mutableListOf<VpnServer.ServerEndpointDetails>()
+            for (awgEndpoint in it) {
+                mappedEndpoints.add(
+                    VpnServer.ServerEndpointDetails(
+                        awgEndpoint.ip,
+                        awgEndpoint.cn,
+                        awgEndpoint.port,
+                    ),
+                )
+            }
+            regionEndpoints[VpnServer.ServerGroup.AMNEZIA] = mappedEndpoints
+        }
+
         val server =
             VpnServer(
                 region.name,
@@ -143,7 +158,7 @@ fun getServerForDip(
                 }
             }
 
-            VpnServer.ServerGroup.WIREGUARD -> {
+            VpnServer.ServerGroup.WIREGUARD, VpnServer.ServerGroup.AMNEZIA -> {
                 val port: String =
                     serverEndpointDetails[0].ip.split(":")[1]
                 dip.cn?.let { cn ->

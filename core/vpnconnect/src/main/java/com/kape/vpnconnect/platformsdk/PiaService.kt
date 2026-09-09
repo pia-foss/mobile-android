@@ -172,9 +172,10 @@ class PiaService :
                 KapeKillSwitchMode.Advanced
             }
 
+        val selectedProtocol = settingsPrefs.getSelectedProtocolNow()
         val vpnServiceLogger =
             ServiceLogger(
-                when (settingsPrefs.getSelectedProtocolNow()) {
+                when (selectedProtocol) {
                     VpnProtocols.WireGuard -> ServiceLogger.VpnServiceLoggerTag.WireGuard
                     VpnProtocols.OpenVPN -> ServiceLogger.VpnServiceLoggerTag.OpenVpn
                     VpnProtocols.Automatic -> ServiceLogger.VpnServiceLoggerTag.Automatic
@@ -195,13 +196,26 @@ class PiaService :
                         )
                     },
             )
+        // Automatic mode can generate both AMNEZIA-endpoint and WIREGUARD-endpoint configurations
+        // for the same attempt (see ConfigurationGenerator), so the authenticator is picked per
+        // attempt from each endpoint's own obfuscation field rather than once from selectedProtocol.
         val authenticator =
-            PiaWgAuthenticator(
-                selectedDnsOptions,
-                configInfo.certificate,
-                connectionSource,
-                connectionPrefs,
-                protect = systemTunnel::protect,
+            CompositeWireGuardAuthenticator(
+                wgAuthenticator =
+                    PiaWgAuthenticator(
+                        selectedDnsOptions,
+                        configInfo.certificate,
+                        connectionSource,
+                        connectionPrefs,
+                        protect = systemTunnel::protect,
+                    ),
+                awgAuthenticator =
+                    PiaAwgAuthenticator(
+                        configInfo.certificate,
+                        connectionSource,
+                        connectionPrefs,
+                        protect = systemTunnel::protect,
+                    ),
             )
         val wireGuardController =
             KapeWireGuardConnectionController(

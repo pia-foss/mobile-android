@@ -26,6 +26,7 @@ data class VpnServer(
     data class ServerEndpointDetails(
         val ip: String,
         val cn: String,
+        val port: Int? = null,
     )
 
     @Serializable
@@ -41,6 +42,9 @@ data class VpnServer(
         },
         META {
             override fun toString(): String = "meta"
+        },
+        AMNEZIA {
+            override fun toString(): String = "awg"
         },
     }
 

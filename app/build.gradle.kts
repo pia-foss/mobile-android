@@ -222,7 +222,7 @@ tasks.register("updateRegionsInformation") {
             File(assetsDir, "metadata-regions.json"),
         )
         fetchFile(
-            "https://serverlist.piaservers.net/vpninfo/servers/v6",
+            "https://serverlist.piaservers.net/vpninfo/servers/v7",
             File(assetsDir, "vpn-regions.json"),
         )
         fetchFile(
