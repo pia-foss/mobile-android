@@ -18,7 +18,6 @@ import com.kape.obfuscator.domain.StartObfuscatorProcess
 import com.kape.obfuscator.domain.StopObfuscatorProcess
 import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
 import com.kape.portforwarding.domain.PortForwardingUseCase
-import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
@@ -124,7 +123,6 @@ class ConnectionManagerImplTest {
 
         every { settingsPrefs.selectedProtocol.value } returns VpnProtocols.WireGuard
         coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
-        coEvery { settingsPrefs.getSelectedDnsOptionNow() } returns DnsOptions.PIA
         coEvery { settingsPrefs.getVpnExcludedAppsNow() } returns emptyList()
         coEvery { settingsPrefs.isAutomationEnabledNow() } returns false
         coEvery { authenticationDataSource.isUserLoggedIn(any()) } returns true
@@ -183,7 +181,7 @@ class ConnectionManagerImplTest {
 
             connectionManager.connect(openvpnUdpServer, isManual = false, {}) {}
 
-            coVerify { piaService.startVpn(DnsOptions.PIA, emptyList()) }
+            coVerify { piaService.startVpn(emptyList()) }
         }
 
     @Test
@@ -202,7 +200,7 @@ class ConnectionManagerImplTest {
 
             connectionManager.connect(openvpnTcpServer, isManual = false, {}) {}
 
-            coVerify { piaService.startVpn(DnsOptions.PIA, emptyList()) }
+            coVerify { piaService.startVpn(emptyList()) }
         }
 
     @Test
@@ -216,15 +214,14 @@ class ConnectionManagerImplTest {
         }
 
     @Test
-    fun `connect - valid endpoints - binds PiaService and starts the VPN with resolved DNS and excluded apps`() =
+    fun `connect - valid endpoints - binds PiaService and starts the VPN with excluded apps`() =
         runTest {
-            coEvery { settingsPrefs.getSelectedDnsOptionNow() } returns DnsOptions.CUSTOM
             coEvery { settingsPrefs.getVpnExcludedAppsNow() } returns listOf("com.example.app")
 
             connectionManager.connect(server, isManual = false, {}) {}
 
             verify { ContextCompat.startForegroundService(context, any()) }
-            coVerify { piaService.startVpn(DnsOptions.CUSTOM, listOf("com.example.app")) }
+            coVerify { piaService.startVpn(listOf("com.example.app")) }
         }
 
     @Test
@@ -256,7 +253,7 @@ class ConnectionManagerImplTest {
 
             connectionManager.connect(server, isManual = false, {}) {}
 
-            coVerify { piaService.startVpn(any(), any()) }
+            coVerify { piaService.startVpn(any()) }
         }
 
     @Test
@@ -406,7 +403,7 @@ class ConnectionManagerImplTest {
             connectionManager.reconnect(server) {}
 
             coVerify { piaService.stopSessionController() }
-            coVerify(atLeast = 1) { piaService.startVpn(any(), any()) }
+            coVerify(atLeast = 1) { piaService.startVpn(any()) }
         }
 
     @Test
@@ -425,7 +422,7 @@ class ConnectionManagerImplTest {
                 }
 
             assertFalse(firstConnect.isCompleted)
-            coVerify(exactly = 0) { piaService.startVpn(any(), any()) }
+            coVerify(exactly = 0) { piaService.startVpn(any()) }
 
             // Restore normal bind behavior so the reconnect's own attempt can proceed.
             every {
@@ -439,7 +436,7 @@ class ConnectionManagerImplTest {
 
             assertTrue(firstConnect.isCompleted)
             coVerify { connectionPrefs.setSelectedVpnServer(server2) }
-            coVerify { piaService.startVpn(any(), any()) }
+            coVerify { piaService.startVpn(any()) }
         }
 
     @Test
