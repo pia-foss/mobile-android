@@ -1,5 +1,5 @@
 package com.kape.contracts
 
 interface IsUserLoggedInUseCase {
-    suspend fun invoke(): Boolean
+    suspend fun invoke(retryOnColdStart: Boolean = false): Boolean
 }

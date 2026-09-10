@@ -57,7 +57,7 @@ class SplashViewModel(
     // Splash checks login state multiple times (preload gating, exit routing); memoized so the
     // underlying check only runs once per splash session instead of once per call site.
     private val isLoggedInDeferred: Deferred<Boolean> by lazy {
-        viewModelScope.async(ioDispatcher) { isUserLoggedIn.invoke() }
+        viewModelScope.async(ioDispatcher) { isUserLoggedIn.invoke(retryOnColdStart = true) }
     }
 
     init {
