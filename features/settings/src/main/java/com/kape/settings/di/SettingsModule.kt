@@ -15,6 +15,7 @@ import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.domain.IsNumericIpAddressUseCaseImpl
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.utils.UpdateAvailableManager
+import com.kape.vpnconnect.domain.ClearDebugLogsUseCase
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
@@ -41,6 +42,7 @@ class SettingsModule {
         kpiDataSource: KpiDataSource,
         connectionDataSource: ConnectionDataSource,
         getDebugLogsUseCase: GetLogsUseCase,
+        clearDebugLogsUseCase: ClearDebugLogsUseCase,
         sendLogUseCase: SendLogUseCase,
         isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
         connectionManager: ConnectionManager,
@@ -59,6 +61,7 @@ class SettingsModule {
             kpiDataSource,
             connectionDataSource,
             getDebugLogsUseCase,
+            clearDebugLogsUseCase,
             sendLogUseCase,
             isNumericIpAddressUseCase,
             connectionManager,

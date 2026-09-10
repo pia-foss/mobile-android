@@ -8,4 +8,6 @@ interface ConnectionDataSource {
     fun stopPortForwarding()
 
     suspend fun getDebugLogs(): List<String>
+
+    suspend fun clearDebugLogs()
 }

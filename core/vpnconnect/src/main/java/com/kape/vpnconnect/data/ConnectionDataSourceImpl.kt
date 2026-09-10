@@ -1,5 +1,6 @@
 package com.kape.vpnconnect.data
 
+import android.content.Context
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit
 
 @Singleton(binds = [ConnectionDataSource::class])
 class ConnectionDataSourceImpl(
+    private val context: Context,
     private val accountApi: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
     private val workManager: WorkManager,
@@ -51,13 +53,17 @@ class ConnectionDataSourceImpl(
         }
     }
 
-    override suspend fun getDebugLogs(): List<String> {
+    override suspend fun getDebugLogs(): List<String> = serviceLogger().getLogs()
+
+    override suspend fun clearDebugLogs() = serviceLogger().clearLogs()
+
+    private suspend fun serviceLogger(): ServiceLogger {
         val tag =
             when (settingsPrefs.getSelectedProtocolNow()) {
                 VpnProtocols.WireGuard -> ServiceLogger.VpnServiceLoggerTag.WireGuard
                 VpnProtocols.OpenVPN -> ServiceLogger.VpnServiceLoggerTag.OpenVpn
                 VpnProtocols.Automatic -> ServiceLogger.VpnServiceLoggerTag.Automatic
             }
-        return ServiceLogger(tag).getLogs()
+        return ServiceLogger(context, tag)
     }
 }
