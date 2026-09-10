@@ -34,8 +34,8 @@ internal class GetUserLoggedInUseCaseTest : BaseTest() {
     @MethodSource("booleans")
     fun invokeWithRetry(expected: Boolean) =
         runTest {
-            coEvery { source.isUserLoggedIn() } returns expected
-            val actual = useCase.invoke()
+            coEvery { source.isUserLoggedIn(retryOnColdStart = true) } returns expected
+            val actual = useCase.invoke(retryOnColdStart = true)
             assertEquals(expected, actual)
         }
 }
