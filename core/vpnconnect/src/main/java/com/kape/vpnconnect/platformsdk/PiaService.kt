@@ -29,8 +29,8 @@ import com.kape.platformsdk.vpn.service.models.KapeKillSwitchMode
 import com.kape.platformsdk.vpn.service.models.KapeSplitTunnelAppMode
 import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
 import com.kape.platformsdk.vpn.wireguard.KapeWireGuardConnectionController
+import com.kape.platformsdk.vpn.wireguard.WireGuardAuthenticator
 import com.kape.portforwarding.domain.PortForwardingUseCase
-import com.kape.settings.data.DnsOptions
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.VpnNotificationManager
 import com.kape.vpnconnect.domain.ConnectionDataSource
@@ -89,6 +89,28 @@ class PiaService :
             .apply { setReferenceCounted(false) }
     }
 
+    // Built once and kept for this service's whole lifetime instead of per-startVpn() so the
+    // addKey/add-awg-key HTTPS call's TLS connection can be pooled across reconnects and
+    // protocol-fallback attempts, rather than paying a fresh handshake on every single one.
+    // configInfo.certificate is a static bundled asset and protect() always delegates to this same
+    // VpnService instance, so nothing an authenticator needs actually varies per connection attempt.
+    private val wgAuthenticator: WireGuardAuthenticator by lazy {
+        PiaWgAuthenticator(
+            configInfo.certificate,
+            connectionSource,
+            connectionPrefs,
+            protect = ::protect,
+        )
+    }
+    private val awgAuthenticator: WireGuardAuthenticator by lazy {
+        PiaAwgAuthenticator(
+            configInfo.certificate,
+            connectionSource,
+            connectionPrefs,
+            protect = ::protect,
+        )
+    }
+
     private val _connectionStatus = MutableStateFlow(KapeVPNConnectionStatus.Disconnected)
     val connectionStatus: StateFlow<KapeVPNConnectionStatus> = _connectionStatus.asStateFlow()
 
@@ -144,10 +166,7 @@ class PiaService :
         return START_STICKY
     }
 
-    suspend fun startVpn(
-        selectedDnsOptions: DnsOptions,
-        vpnExcluded: List<String>,
-    ) {
+    suspend fun startVpn(vpnExcluded: List<String>) {
         sessionController?.stop()
         sessionController = null
         statusCollectionJob?.cancel()
@@ -202,21 +221,8 @@ class PiaService :
         // attempt from each endpoint's own obfuscation field rather than once from selectedProtocol.
         val authenticator =
             CompositeWireGuardAuthenticator(
-                wgAuthenticator =
-                    PiaWgAuthenticator(
-                        selectedDnsOptions,
-                        configInfo.certificate,
-                        connectionSource,
-                        connectionPrefs,
-                        protect = systemTunnel::protect,
-                    ),
-                awgAuthenticator =
-                    PiaAwgAuthenticator(
-                        configInfo.certificate,
-                        connectionSource,
-                        connectionPrefs,
-                        protect = systemTunnel::protect,
-                    ),
+                wgAuthenticator = wgAuthenticator,
+                awgAuthenticator = awgAuthenticator,
             )
         val wireGuardController =
             KapeWireGuardConnectionController(

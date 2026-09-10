@@ -8,7 +8,6 @@ import com.kape.platformsdk.vpn.service.models.IpAddress
 import com.kape.platformsdk.vpn.wireguard.WireGuardAuthConfiguration
 import com.kape.platformsdk.vpn.wireguard.WireGuardAuthenticator
 import com.kape.platformsdk.vpn.wireguard.WireGuardEndpointConfiguration
-import com.kape.settings.data.DnsOptions
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -21,7 +20,6 @@ import org.amnezia.awg.crypto.KeyPair
 import java.net.Socket
 
 class PiaWgAuthenticator(
-    private val selectedDnsOptions: DnsOptions,
     caCertificate: String,
     private val connectionSource: ConnectionDataSource,
     private val connectionPrefs: ConnectionPrefs,

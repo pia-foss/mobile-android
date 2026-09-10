@@ -94,7 +94,6 @@ class ConnectionManagerImpl :
         connectionPrefs.setSelectedVpnServer(server)
         connectionPrefs.addToQuickConnect(server.key, server.isDedicatedIp)
 
-        val dns = settingsPrefs.getSelectedDnsOptionNow()
         if (!startShadowsocks(stopCallback)) {
             connectionInProgress.set(false)
             return
@@ -104,7 +103,7 @@ class ConnectionManagerImpl :
             scope.launch {
                 val service = startServiceIfNeeded()
                 val excluded = settingsPrefs.getVpnExcludedAppsNow()
-                service.startVpn(dns, excluded)
+                service.startVpn(excluded)
             }
         connectionJob?.join()
     }
