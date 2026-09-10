@@ -175,6 +175,7 @@ class PiaService :
         val selectedProtocol = settingsPrefs.getSelectedProtocolNow()
         val vpnServiceLogger =
             ServiceLogger(
+                this,
                 when (selectedProtocol) {
                     VpnProtocols.WireGuard -> ServiceLogger.VpnServiceLoggerTag.WireGuard
                     VpnProtocols.OpenVPN -> ServiceLogger.VpnServiceLoggerTag.OpenVpn

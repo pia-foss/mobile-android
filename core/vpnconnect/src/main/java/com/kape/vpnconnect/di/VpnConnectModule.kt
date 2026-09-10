@@ -16,6 +16,7 @@ import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.utils.VpnNotificationManager
 import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
+import com.kape.vpnconnect.domain.ClearDebugLogsUseCase
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionManagerImpl
@@ -108,6 +109,7 @@ class VpnConnectModule {
 
     @Singleton(binds = [ConnectionDataSource::class])
     fun provideConnectionDataSource(
+        context: Context,
         accountApi: AndroidAccountAPI,
         connectionPrefs: ConnectionPrefs,
         workManager: WorkManager,
@@ -115,6 +117,7 @@ class VpnConnectModule {
         @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
     ): ConnectionDataSource =
         ConnectionDataSourceImpl(
+            context,
             accountApi,
             connectionPrefs,
             workManager,
@@ -124,6 +127,10 @@ class VpnConnectModule {
 
     @Singleton
     fun provideGetLogsUseCase(connectionSource: ConnectionDataSource): GetLogsUseCase = GetLogsUseCase(connectionSource)
+
+    @Singleton
+    fun provideClearDebugLogsUseCase(connectionSource: ConnectionDataSource): ClearDebugLogsUseCase =
+        ClearDebugLogsUseCase(connectionSource)
 
     @Singleton([ConnectionManager::class])
     fun provideConnectionManager(): ConnectionManager = ConnectionManagerImpl()

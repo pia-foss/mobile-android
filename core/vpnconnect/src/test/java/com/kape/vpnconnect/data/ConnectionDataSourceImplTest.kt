@@ -1,5 +1,6 @@
 package com.kape.vpnconnect.data
 
+import android.content.Context
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
 import com.kape.data.WorkerTags
@@ -11,8 +12,10 @@ import com.privateinternetaccess.account.AndroidAccountAPI
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkConstructor
+import io.mockk.runs
 import io.mockk.unmockkConstructor
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +34,7 @@ import org.junit.jupiter.api.Test
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class ConnectionDataSourceImplTest {
+    private val context = mockk<Context>(relaxed = true)
     private val accountApi = mockk<AndroidAccountAPI>()
     private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)
     private val workManager = mockk<WorkManager>(relaxed = true)
@@ -38,6 +42,7 @@ class ConnectionDataSourceImplTest {
 
     private fun newDataSource(scope: CoroutineScope) =
         ConnectionDataSourceImpl(
+            context = context,
             accountApi = accountApi,
             connectionPrefs = connectionPrefs,
             workManager = workManager,
@@ -119,6 +124,28 @@ class ConnectionDataSourceImplTest {
                 val result = dataSource.getDebugLogs()
 
                 assertEquals(listOf("log1", "log2"), result)
+            } finally {
+                unmockkConstructor(ServiceLogger::class)
+            }
+        }
+
+    // endregion
+
+    // region clearDebugLogs
+
+    @Test
+    fun `clearDebugLogs - delegates to a ServiceLogger tagged for the selected protocol`() =
+        runTest {
+            mockkConstructor(ServiceLogger::class)
+            try {
+                coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.OpenVPN
+                coEvery { anyConstructed<ServiceLogger>().clearLogs() } just runs
+
+                val dataSource = newDataSource(this)
+
+                dataSource.clearDebugLogs()
+
+                coVerify { anyConstructed<ServiceLogger>().clearLogs() }
             } finally {
                 unmockkConstructor(ServiceLogger::class)
             }

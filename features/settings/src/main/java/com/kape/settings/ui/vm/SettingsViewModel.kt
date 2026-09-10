@@ -39,6 +39,7 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.utils.PerAppSettingsUtils
 import com.kape.utils.UpdateAvailableManager
+import com.kape.vpnconnect.domain.ClearDebugLogsUseCase
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
@@ -63,6 +64,7 @@ class SettingsViewModel(
     private val kpiDataSource: KpiDataSource,
     private val connectionDataSource: ConnectionDataSource,
     private val getDebugLogsUseCase: GetLogsUseCase,
+    private val clearDebugLogsUseCase: ClearDebugLogsUseCase,
     private val sendLogUseCase: SendLogUseCase,
     private val isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
     private val connectionManager: ConnectionManager,
@@ -437,6 +439,10 @@ class SettingsViewModel(
             val result = sendLogUseCase.sendLog()
             requestId.value = result
             csiPrefs.clearProtocolDebugLogs()
+            if (result.isNotEmpty()) {
+                clearDebugLogsUseCase.clearDebugLogs()
+                debugLogs.value = emptyList()
+            }
         }
 
     fun resetRequestId() {
