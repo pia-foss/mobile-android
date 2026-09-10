@@ -38,7 +38,7 @@ class SubmitKpiEventUseCase(
             }
 
             KpiConnectionStatus.Reconnecting -> {
-                // no-op
+                api.submitConnectionEvent(KpiConnectionEvent.ConnectionAttempt, connectionSource)
             }
 
             KpiConnectionStatus.Paused -> {
