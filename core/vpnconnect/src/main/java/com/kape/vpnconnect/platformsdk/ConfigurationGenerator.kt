@@ -28,6 +28,14 @@ import kotlinx.coroutines.flow.first
 
 private const val WG_AUTH_PORT = 1337
 private const val AWG_PORT = 1338
+private const val C_MAX_WG = 2
+private const val C_MAX_UDP = 2
+private const val C_MAX_TCP = 3
+private const val C_MAX_AWG = 3
+private const val NC_MAX_WG = 3
+private const val NC_MAX_UDP = 2
+private const val NC_MAX_TCP = 3
+private const val NC_MAX_AWG = 2
 private const val PIA_DNS = "10.0.0.243"
 private const val MACE_DNS = "10.0.0.241"
 
@@ -60,6 +68,7 @@ class ConfigurationGenerator(
                     settingsPrefs.getOpenVpnSettingsNow(),
                     connectionPrefs.getSelectedVpnServerNow(),
                     getDnsServers(),
+                    false,
                 )
 
             VpnProtocols.WireGuard ->
@@ -67,6 +76,7 @@ class ConfigurationGenerator(
                     settingsPrefs.getWireGuardSettingsNow(),
                     connectionPrefs.getSelectedVpnServerNow(),
                     getDnsServers(),
+                    false,
                 )
 
             VpnProtocols.Automatic ->
@@ -97,6 +107,7 @@ class ConfigurationGenerator(
         openVpnSettings: OpenVpnSettings,
         server: VpnServer?,
         dnsServers: List<String> = emptyList(),
+        isCensorship: Boolean,
     ): List<OpenVpnConfiguration> {
         val result = mutableListOf<OpenVpnConfiguration>()
         val transport =
@@ -113,7 +124,11 @@ class ConfigurationGenerator(
             when (transport) {
                 OpenVpnTransport.UDP -> VpnServer.ServerGroup.OPENVPN_UDP
                 OpenVpnTransport.TCP -> VpnServer.ServerGroup.OPENVPN_TCP
-                null -> null
+            }
+        val maxEndpoints =
+            when (transport) {
+                OpenVpnTransport.UDP -> if (isCensorship) C_MAX_UDP else NC_MAX_UDP
+                OpenVpnTransport.TCP -> if (isCensorship) C_MAX_TCP else NC_MAX_TCP
             }
 
         fun params(
@@ -141,7 +156,7 @@ class ConfigurationGenerator(
                     "dev tun",
                     "auth-user-pass",
                     "client",
-                    "proto ${transport?.name?.lowercase()}",
+                    "proto ${transport.name.lowercase()}",
                     "connect-retry 2 300",
                     "allow-recursive-routing",
                     "resolv-retry infinite",
@@ -170,7 +185,7 @@ class ConfigurationGenerator(
             }
             return builder.toString()
         }
-        server?.endpoints[serverGroup]?.forEach { details ->
+        server?.endpoints[serverGroup]?.take(maxEndpoints)?.forEach { details ->
             result.add(
                 OpenVpnConfiguration(
                     host = details.ip,
@@ -198,29 +213,33 @@ class ConfigurationGenerator(
         wireGuardSettings: WireGuardSettings,
         server: VpnServer?,
         dnsServers: List<String>,
+        isCensorship: Boolean,
     ): List<WireGuardVpnConfiguration> {
         val result = mutableListOf<WireGuardVpnConfiguration>()
-        server?.endpoints[VpnServer.ServerGroup.WIREGUARD]?.forEach {
-            val wgIp = it.ip.substring(0, it.ip.indexOf(":"))
-            result.add(
-                WireGuardVpnConfiguration(
-                    endpointConfiguration =
-                        WireGuardEndpointConfiguration(
-                            ip = IpAddress.V4(wgIp),
-                            port = wireGuardSettings.port.toInt(),
-                            authIp = IpAddress.V4(wgIp),
-                            authPort = WG_AUTH_PORT,
-                            certDn = it.cn,
-                            obfuscation = WireGuardObfuscation.None,
-                        ),
-                    host = wgIp,
-                    port = wireGuardSettings.port.toInt(),
-                    obfuscation = WireGuardObfuscation.None,
-                    mtu = wireGuardSettings.mtu,
-                    dnsServers = dnsServers,
-                ),
-            )
-        }
+        server
+            ?.endpoints[VpnServer.ServerGroup.WIREGUARD]
+            ?.take(if (isCensorship) C_MAX_WG else NC_MAX_WG)
+            ?.forEach {
+                val wgIp = it.ip.substring(0, it.ip.indexOf(":"))
+                result.add(
+                    WireGuardVpnConfiguration(
+                        endpointConfiguration =
+                            WireGuardEndpointConfiguration(
+                                ip = IpAddress.V4(wgIp),
+                                port = wireGuardSettings.port.toInt(),
+                                authIp = IpAddress.V4(wgIp),
+                                authPort = WG_AUTH_PORT,
+                                certDn = it.cn,
+                                obfuscation = WireGuardObfuscation.None,
+                            ),
+                        host = wgIp,
+                        port = wireGuardSettings.port.toInt(),
+                        obfuscation = WireGuardObfuscation.None,
+                        mtu = wireGuardSettings.mtu,
+                        dnsServers = dnsServers,
+                    ),
+                )
+            }
         return result
     }
 
@@ -229,30 +248,34 @@ class ConfigurationGenerator(
         obfuscation: AwgObfuscationSettings?,
         server: VpnServer?,
         dnsServers: List<String>,
+        isCensorship: Boolean,
     ): List<WireGuardVpnConfiguration> {
         val amnezia = (obfuscation ?: SERVER_DEFAULT_OBFUSCATION).toAmnezia()
         val result = mutableListOf<WireGuardVpnConfiguration>()
-        server?.endpoints[VpnServer.ServerGroup.AMNEZIA]?.forEach { details ->
-            val port = details.port ?: AWG_PORT
-            result.add(
-                WireGuardVpnConfiguration(
-                    endpointConfiguration =
-                        WireGuardEndpointConfiguration(
-                            ip = IpAddress.V4(details.ip),
-                            port = port,
-                            authIp = IpAddress.V4(details.ip),
-                            authPort = port,
-                            certDn = details.cn,
-                            obfuscation = amnezia,
-                        ),
-                    host = details.ip,
-                    port = port,
-                    obfuscation = amnezia,
-                    mtu = mtu,
-                    dnsServers = dnsServers,
-                ),
-            )
-        }
+        server
+            ?.endpoints[VpnServer.ServerGroup.AMNEZIA]
+            ?.take(if (isCensorship) C_MAX_AWG else NC_MAX_AWG)
+            ?.forEach { details ->
+                val port = details.port ?: AWG_PORT
+                result.add(
+                    WireGuardVpnConfiguration(
+                        endpointConfiguration =
+                            WireGuardEndpointConfiguration(
+                                ip = IpAddress.V4(details.ip),
+                                port = port,
+                                authIp = IpAddress.V4(details.ip),
+                                authPort = port,
+                                certDn = details.cn,
+                                obfuscation = amnezia,
+                            ),
+                        host = details.ip,
+                        port = port,
+                        obfuscation = amnezia,
+                        mtu = mtu,
+                        dnsServers = dnsServers,
+                    ),
+                )
+            }
         return result
     }
 
@@ -260,42 +283,22 @@ class ConfigurationGenerator(
         server: VpnServer?,
         dnsServers: List<String> = emptyList(),
     ): List<VpnConfiguration> {
-        val result =
-            mutableListOf<VpnConfiguration>().apply {
-                if (COUNTRY_LIST.contains(countryDetector.detectCountry())) {
-                    addAll(
-                        generateAwgVpnConfigurations(
-                            automaticWireGuardSettings().mtu,
-                            connectionPrefs.awgObfuscation.first(),
-                            server,
-                            dnsServers,
-                        ),
-                    )
-                }
-                addAll(
-                    generateWireGuardVpnConfigurations(
-                        automaticWireGuardSettings(),
-                        server,
-                        dnsServers,
-                    ),
-                )
-                addAll(
-                    generateOpenVpnConfigurations(
-                        automaticOpenVpnUdpSettings(),
-                        server,
-                        dnsServers,
-                    ),
-                )
-                addAll(
-                    generateOpenVpnConfigurations(
-                        automaticOpenVpnTcpSettings(),
-                        server,
-                        dnsServers,
-                    ),
-                )
-            }
+        val isCensorship = COUNTRY_LIST.contains(countryDetector.detectCountry())
+        val wireGuardSettings = automaticWireGuardSettings()
+        val udpSettings = automaticOpenVpnUdpSettings()
+        val tcpSettings = automaticOpenVpnTcpSettings()
+        val awgObfuscation = connectionPrefs.awgObfuscation.first()
 
-        return result
+        val awg = { generateAwgVpnConfigurations(wireGuardSettings.mtu, awgObfuscation, server, dnsServers, isCensorship) }
+        val wg = { generateWireGuardVpnConfigurations(wireGuardSettings, server, dnsServers, isCensorship) }
+        val udp = { generateOpenVpnConfigurations(udpSettings, server, dnsServers, isCensorship) }
+        val tcp = { generateOpenVpnConfigurations(tcpSettings, server, dnsServers, isCensorship) }
+
+        // Pecking order: which protocol to try first, and how many endpoints of each (see the
+        // C_MAX_*/NC_MAX_* constants) differs between censored and uncensored regions.
+        val order = if (isCensorship) listOf(awg, tcp, wg, udp) else listOf(wg, udp, tcp, awg)
+
+        return order.flatMap { it() }
     }
 
     private fun getUsernameAndPassword(): Pair<String, String> {
