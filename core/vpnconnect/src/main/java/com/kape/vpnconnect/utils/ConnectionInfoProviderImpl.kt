@@ -57,14 +57,6 @@ class ConnectionInfoProviderImpl(
             connectionStatusProvider.status
                 .collectLatest { latestConnectionStatus ->
                     currentConnectionStatus.update { latestConnectionStatus }
-                    vpnManagerConnectionStatus.collectLatest { status ->
-                        status?.let {
-                            submitKpiEventUseCase.submitConnectionEvent(
-                                getKpiConnectionStatus(it),
-                                isManual,
-                            )
-                        }
-                    }
                     if (latestConnectionStatus == ConnectionStatus.DISCONNECTED) {
                         clientStateDataSource.getPublicIp()
                     }
@@ -72,6 +64,16 @@ class ConnectionInfoProviderImpl(
                         clientStateDataSource.getVpnIp()
                     }
                 }
+        }
+        ioScope.launch {
+            vpnManagerConnectionStatus.collectLatest { status ->
+                status?.let {
+                    submitKpiEventUseCase.submitConnectionEvent(
+                        getKpiConnectionStatus(it),
+                        isManual,
+                    )
+                }
+            }
         }
     }
 
