@@ -6,6 +6,8 @@ import com.privateinternetaccess.account.model.response.DedicatedIPInformationRe
 import com.privateinternetaccess.regions.RegionsProtocol
 import com.privateinternetaccess.regions.model.VpnRegionsResponse
 
+private const val DEFAULT_AMNEZIA_PORT = 1338
+
 fun adaptVpnServers(vpnRegionsResponse: VpnRegionsResponse): Map<String, VpnServer> {
     val servers = mutableMapOf<String, VpnServer>()
     for (region in vpnRegionsResponse.regions) {
@@ -158,7 +160,7 @@ fun getServerForDip(
                 }
             }
 
-            VpnServer.ServerGroup.WIREGUARD, VpnServer.ServerGroup.AMNEZIA -> {
+            VpnServer.ServerGroup.WIREGUARD -> {
                 val port: String =
                     serverEndpointDetails[0].ip.split(":")[1]
                 dip.cn?.let { cn ->
@@ -168,6 +170,21 @@ fun getServerForDip(
                             cn,
                         ),
                     )
+                }
+            }
+
+            VpnServer.ServerGroup.AMNEZIA -> {
+                val port = serverEndpointDetails[0].port ?: DEFAULT_AMNEZIA_PORT
+                dip.ip?.let { ip ->
+                    dip.cn?.let { cn ->
+                        updatedEndpointDetails.add(
+                            VpnServer.ServerEndpointDetails(
+                                ip,
+                                cn,
+                                port,
+                            ),
+                        )
+                    }
                 }
             }
         }
