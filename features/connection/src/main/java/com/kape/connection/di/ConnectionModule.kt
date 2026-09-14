@@ -20,6 +20,7 @@ import com.kape.rating.utils.RatingTool
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.UpdateAvailableManager
+import com.kape.vpnconnect.domain.ConnectionProblemDetector
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
 import kotlinx.coroutines.CoroutineDispatcher
@@ -50,6 +51,7 @@ class ConnectionModule {
         updateAvailableManager: UpdateAvailableManager,
         screenElementProvider: ScreenElementProvider,
         paymentIssueHandler: PaymentIssueHandler,
+        connectionProblemDetector: ConnectionProblemDetector,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         networkConnectionListener: NetworkConnectionListener,
     ): ConnectionViewModel =
@@ -72,6 +74,7 @@ class ConnectionModule {
             updateAvailableManager,
             screenElementProvider,
             paymentIssueHandler,
+            connectionProblemDetector,
             ioDispatcher,
             connectionInfoProvider,
             networkConnectionListener,

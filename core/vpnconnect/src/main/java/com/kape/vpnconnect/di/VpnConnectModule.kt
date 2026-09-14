@@ -9,10 +9,12 @@ import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.UsageProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
+import com.kape.localprefs.prefs.AutoProtocolNudgePrefs
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
+import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.VpnNotificationManager
 import com.kape.vpnconnect.data.ClientStateDataSourceImpl
 import com.kape.vpnconnect.data.ConnectionDataSourceImpl
@@ -20,6 +22,7 @@ import com.kape.vpnconnect.domain.ClearDebugLogsUseCase
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.ConnectionManagerImpl
+import com.kape.vpnconnect.domain.ConnectionProblemDetector
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCaseImpl
 import com.kape.vpnconnect.domain.GetLogsUseCase
@@ -134,6 +137,24 @@ class VpnConnectModule {
 
     @Singleton([ConnectionManager::class])
     fun provideConnectionManager(): ConnectionManager = ConnectionManagerImpl()
+
+    @Singleton
+    fun provideConnectionProblemDetector(
+        connectionStatusProvider: ConnectionStatusProvider,
+        settingsPrefs: SettingsPrefs,
+        clientStateDataSource: ClientStateDataSource,
+        networkConnectionListener: NetworkConnectionListener,
+        nudgePrefs: AutoProtocolNudgePrefs,
+        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
+    ): ConnectionProblemDetector =
+        ConnectionProblemDetector(
+            connectionStatusProvider,
+            settingsPrefs,
+            clientStateDataSource,
+            networkConnectionListener,
+            nudgePrefs,
+            ioScope,
+        )
 
     @Singleton
     fun provideCountryDetector(
