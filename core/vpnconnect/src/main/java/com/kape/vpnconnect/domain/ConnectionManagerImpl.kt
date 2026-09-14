@@ -54,6 +54,7 @@ class ConnectionManagerImpl :
     private val connectionStatusProvider: ConnectionStatusProvider by inject()
     private val regionListProvider: RegionListProvider by inject()
     private val authenticationDataSource: AuthenticationDataSource by inject()
+    private val connectionProblemDetector: ConnectionProblemDetector by inject()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val context: Context by inject()
 
@@ -138,6 +139,7 @@ class ConnectionManagerImpl :
     }
 
     override suspend fun disconnect() {
+        connectionProblemDetector.onUserInitiatedDisconnect()
         connectionJob?.cancelAndJoin()
         connectionJob = null
 
@@ -236,9 +238,16 @@ class ConnectionManagerImpl :
                 serviceDeferred = null
                 statusCollectionJob =
                     scope.launch {
-                        service.connectionStatus.collect { status ->
-                            _connectionStatus.update { status }
-                            connectionStatusProvider.handleConnectionStatusChange(status)
+                        launch {
+                            service.connectionStatus.collect { status ->
+                                _connectionStatus.update { status }
+                                connectionStatusProvider.handleConnectionStatusChange(status)
+                            }
+                        }
+                        launch {
+                            service.lastTunnelError.collect { error ->
+                                connectionStatusProvider.handleTunnelError(error)
+                            }
                         }
                     }
             }

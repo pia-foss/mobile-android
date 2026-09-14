@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.kape.contracts.AppInfo
 import com.kape.localprefs.Prefs
 import com.kape.localprefs.data.settings.AutomaticSettings
 import com.kape.settings.data.CustomDns
@@ -14,12 +15,15 @@ import com.kape.settings.data.ObfuscationOptions
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Singleton
 
@@ -28,6 +32,7 @@ private val CONNECT_ON_LAUNCH = booleanPreferencesKey("connect-on-launch")
 private val CONNECT_ON_APP_UPDATE = booleanPreferencesKey("connect-on-app-update")
 private val SHOW_GEO_SERVERS = booleanPreferencesKey("show-geo-located-servers")
 private val SELECTED_PROTOCOL = stringPreferencesKey("selected-protocol")
+private val PROTOCOL_DEFAULT_PINNED = booleanPreferencesKey("protocol-default-pinned")
 private val WIRE_GUARD_SETTINGS = stringPreferencesKey("wireguard-settings")
 private val OPEN_VPN_SETTINGS = stringPreferencesKey("openvpn-settings")
 private val AUTO_SETTINGS = stringPreferencesKey("auto-settings")
@@ -48,10 +53,42 @@ private val ALLOW_LOCAL_TRAFFIC = booleanPreferencesKey("allow-local-traffic")
 private val AUTOMATION = booleanPreferencesKey("setting-automation")
 private val MACE = booleanPreferencesKey("setting-mace")
 
+/**
+ * The protocol default is flipping from WireGuard to Automatic, but only for installs that have
+ * never resolved a default before — an existing install must keep behaving as WireGuard even
+ * though it may never have written [SELECTED_PROTOCOL] explicitly (that key is only ever written
+ * by an explicit user choice in Settings). Returns the protocol to backfill into [SELECTED_PROTOCOL]
+ * so a later read of an unset key falls through to the new Automatic default, or null if there's
+ * nothing to backfill (already pinned before, a fresh install, or the user already has a choice).
+ */
+internal fun resolveLegacyProtocolBackfill(
+    isFreshInstall: Boolean,
+    alreadyPinned: Boolean,
+    hasExplicitSelection: Boolean,
+): VpnProtocols? =
+    if (!alreadyPinned && !isFreshInstall && !hasExplicitSelection) {
+        VpnProtocols.WireGuard
+    } else {
+        null
+    }
+
 @Singleton
 class SettingsPrefs(
     context: Context,
+    private val appInfo: AppInfo,
 ) : Prefs(context, "settings") {
+    // Existing installs must keep resolving WireGuard even after the fallback below changes to
+    // Automatic; only a device that has never been upgraded gets the new default. Every read of
+    // the selected protocol waits on this so there's no race with the one-time backfill.
+    private val protocolDefaultPinned = CompletableDeferred<Unit>()
+
+    init {
+        scope.launch {
+            pinLegacyProtocolDefaultIfNeeded()
+            protocolDefaultPinned.complete(Unit)
+        }
+    }
+
     val isLaunchOnStartupEnabled: StateFlow<Boolean> =
         getLaunchOnStartupEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
     val isConnectOnLaunchEnabled: StateFlow<Boolean> =
@@ -72,7 +109,7 @@ class SettingsPrefs(
         getSelectedProtocol().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
-            VpnProtocols.WireGuard,
+            VpnProtocols.Automatic,
         )
     val wireGuardSettings: StateFlow<WireGuardSettings> =
         getWireGuardSettings().stateIn(
@@ -263,10 +300,25 @@ class SettingsPrefs(
 
     private fun getShowGeoLocatedServersEnabled(): Flow<Boolean> = dataStore.data.map { it[SHOW_GEO_SERVERS] ?: true }
 
-    private fun getSelectedProtocol(): Flow<VpnProtocols> =
-        dataStore.data.map { prefs ->
-            prefs[SELECTED_PROTOCOL]?.let { Json.decodeFromString(it) } ?: VpnProtocols.WireGuard
+    private suspend fun pinLegacyProtocolDefaultIfNeeded() {
+        dataStore.edit { prefs ->
+            val protocolToBackfill =
+                resolveLegacyProtocolBackfill(
+                    isFreshInstall = appInfo.isFreshInstall,
+                    alreadyPinned = prefs[PROTOCOL_DEFAULT_PINNED] == true,
+                    hasExplicitSelection = prefs[SELECTED_PROTOCOL] != null,
+                )
+            protocolToBackfill?.let { prefs[SELECTED_PROTOCOL] = Json.encodeToString(it) }
+            prefs[PROTOCOL_DEFAULT_PINNED] = true
         }
+    }
+
+    private fun getSelectedProtocol(): Flow<VpnProtocols> =
+        dataStore.data
+            .onStart { protocolDefaultPinned.await() }
+            .map { prefs ->
+                prefs[SELECTED_PROTOCOL]?.let { Json.decodeFromString(it) } ?: VpnProtocols.Automatic
+            }
 
     private fun getWireGuardSettings(): Flow<WireGuardSettings> =
         dataStore.data.map { prefs ->

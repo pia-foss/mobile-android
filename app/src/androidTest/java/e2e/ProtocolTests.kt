@@ -23,10 +23,12 @@ class ProtocolTests {
             device.pressBack()
             device.waitForIdle()
             onElement { viewIdResourceName == Main.CONNECT_BUTTON }.click()
+            dismissAutoProtocolNudgeIfShown()
             assertConnected()
 
             // disconnect
             onElement { viewIdResourceName == Main.CONNECT_BUTTON }.click()
+            dismissAutoProtocolNudgeIfShown()
             onElement { viewIdResourceName == Main.SIDE_MENU }.click()
             device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
             onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
@@ -40,11 +42,13 @@ class ProtocolTests {
             device.pressBack()
             device.waitForIdle()
             onElement { viewIdResourceName == Main.CONNECT_BUTTON }.click()
+            dismissAutoProtocolNudgeIfShown()
             assertConnected()
 
             // Wireguard
             // disconnect
             onElement { viewIdResourceName == Main.CONNECT_BUTTON }.click()
+            dismissAutoProtocolNudgeIfShown()
             onElement { viewIdResourceName == Main.SIDE_MENU }.click()
             device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
             onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
@@ -57,10 +61,12 @@ class ProtocolTests {
             device.pressBack()
             device.waitForIdle()
             onElement { viewIdResourceName == Main.CONNECT_BUTTON }.click()
+            dismissAutoProtocolNudgeIfShown()
             assertConnected()
 
             // disconnect
             onElement { viewIdResourceName == Main.CONNECT_BUTTON }.click()
+            dismissAutoProtocolNudgeIfShown()
             onElement { viewIdResourceName == Main.SIDE_MENU }.click()
             device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("P")), TIMEOUT)
             onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
@@ -74,6 +80,7 @@ class ProtocolTests {
             device.pressBack()
             device.waitForIdle()
             onElement { viewIdResourceName == Main.CONNECT_BUTTON }.click()
+            dismissAutoProtocolNudgeIfShown()
             assertConnected()
         }
 }

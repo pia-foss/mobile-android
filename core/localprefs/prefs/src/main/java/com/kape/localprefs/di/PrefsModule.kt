@@ -1,6 +1,8 @@
 package com.kape.localprefs.di
 
 import android.content.Context
+import com.kape.contracts.AppInfo
+import com.kape.localprefs.prefs.AutoProtocolNudgePrefs
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
@@ -20,7 +22,10 @@ import org.koin.core.annotation.Singleton
 @Module
 class PrefsModule {
     @Singleton
-    fun provideSettingsPrefs(context: Context): SettingsPrefs = SettingsPrefs(context)
+    fun provideSettingsPrefs(
+        context: Context,
+        appInfo: AppInfo,
+    ): SettingsPrefs = SettingsPrefs(context, appInfo)
 
     @Singleton
     fun provideConnectionPrefs(context: Context): ConnectionPrefs = ConnectionPrefs(context)
@@ -57,4 +62,7 @@ class PrefsModule {
 
     @Singleton
     fun provideFeaturePrefs(context: Context): FeaturePrefs = FeaturePrefs(context)
+
+    @Singleton
+    fun provideAutoProtocolNudgePrefs(context: Context): AutoProtocolNudgePrefs = AutoProtocolNudgePrefs(context)
 }

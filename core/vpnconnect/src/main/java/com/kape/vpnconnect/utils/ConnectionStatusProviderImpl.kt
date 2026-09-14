@@ -4,6 +4,7 @@ import com.kape.contracts.ConnectionStatusProvider
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
 import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
+import com.kape.platformsdk.vpn.service.models.KapeVpnTunnelError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -34,6 +35,8 @@ class ConnectionStatusProviderImpl(
     private val _vpnManagerConnectionStatus = MutableStateFlow<KapeVPNConnectionStatus?>(null)
     override val vpnManagerConnectionStatus: StateFlow<KapeVPNConnectionStatus?> =
         _vpnManagerConnectionStatus.asStateFlow()
+    private val _lastTunnelError = MutableStateFlow<KapeVpnTunnelError?>(null)
+    override val lastTunnelError: StateFlow<KapeVpnTunnelError?> = _lastTunnelError.asStateFlow()
 
     override fun handleConnectionStatusChange(status: KapeVPNConnectionStatus) {
         val currentStatus =
@@ -63,6 +66,10 @@ class ConnectionStatusProviderImpl(
         _status.update { currentStatus }
         _vpnManagerConnectionStatus.update { status }
         setConnectionValuesTitle(timer)
+    }
+
+    override fun handleTunnelError(error: KapeVpnTunnelError?) {
+        _lastTunnelError.update { error }
     }
 
     private fun cancelTimerJob() {
