@@ -14,6 +14,13 @@ on:
         required: true
       SIGNING_PLAYSTORE_KEY_ALIAS:
         required: true
+    outputs:
+      full_version:
+        description: "<versionName>.<playStoreVersionCode>, the version the Kape Artifact Store records for this bundle"
+        value: ${{ jobs.build.outputs.full_version }}
+      artifact_name:
+        description: "GitHub artifact holding the signed bundle"
+        value: ${{ jobs.build.outputs.artifact_name }}
 permissions:
   contents: read
 jobs:
@@ -23,6 +30,9 @@ jobs:
       GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
       GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     runs-on: ubuntu-latest
+    outputs:
+      full_version: ${{ steps.version.outputs.full_version }}
+      artifact_name: ${{ steps.version.outputs.artifact_name }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
@@ -48,6 +58,10 @@ jobs:
           VERSION_CODE=$(./gradlew -q printPlayStoreVersionCode | tail -1)
           echo "version_name=${VERSION_NAME}" >> $GITHUB_OUTPUT
           echo "version_code=${VERSION_CODE}" >> $GITHUB_OUTPUT
+          echo "full_version=${VERSION_NAME}.${VERSION_CODE}" >> $GITHUB_OUTPUT
+          echo "artifact_name=pia-playstore-release-${VERSION_NAME}-${VERSION_CODE}" >> $GITHUB_OUTPUT
+          # Kape Artifact Store matches release builds by file name: <app>_<platform>_<version>_<channel>_<target>.<ext>
+          echo "signed_file=privateinternetaccess_android_${VERSION_NAME}.${VERSION_CODE}_release_playstore.aab" >> $GITHUB_OUTPUT
 
       - name: Decode keystore
         run: echo "${{ secrets.SIGNING_PLAYSTORE_KEYSTORE }}" | base64 -d > keystore.jks
@@ -64,7 +78,7 @@ jobs:
             -keystore keystore.jks \
             -storepass:env SIGNING_PLAYSTORE_STORE_PASSWORD \
             -keypass:env SIGNING_PLAYSTORE_KEY_PASSWORD \
-            -signedjar app-google-release-signed.aab \
+            -signedjar "${{ steps.version.outputs.signed_file }}" \
             app/build/outputs/bundle/googleRelease/app-google-release.aab \
             "${{ secrets.SIGNING_PLAYSTORE_KEY_ALIAS }}"
 
@@ -77,8 +91,8 @@ jobs:
       - name: Upload App Bundle
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: pia-playstore-release-${{ steps.version.outputs.version_name }}-${{ steps.version.outputs.version_code }}
-          path: app-google-release-signed.aab
+          name: ${{ steps.version.outputs.artifact_name }}
+          path: ${{ steps.version.outputs.signed_file }}
           if-no-files-found: error
 
       - name: Upload Mapping File

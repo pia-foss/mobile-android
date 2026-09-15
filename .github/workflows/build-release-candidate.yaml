@@ -3,7 +3,7 @@ name: Build Release Candidate for testing
 on:
   push:
     branches:
-      - 'rc*'
+      - 'release/*'
 
 permissions:
   contents: read
@@ -114,3 +114,42 @@ jobs:
       SIGNING_WEB_STORE_PASSWORD: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
       SIGNING_WEB_KEY_PASSWORD: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
       SIGNING_WEB_KEY_ALIAS: ${{ secrets.SIGNING_WEB_KEY_ALIAS }}
+
+  publish-artifact-store:
+    name: Publish store builds to Kape Artifact Store
+    needs: [build-playstore-version, build-amazon-version]
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - name: Checkout upload action
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: xvpn/kp_reusable_workflows
+          ref: workflows/7.11.1
+          token: ${{ secrets.KAPE_REUSABLE_WORKFLOWS_READ }}
+          path: .github/actions/kape
+          persist-credentials: false
+
+      - name: Publish Play Store bundle
+        uses: ./.github/actions/kape/.github/actions/artifact_store_upload
+        with:
+          artifacts: |
+            - path: ${{ needs.build-playstore-version.outputs.artifact_name }}
+              pre_signed: true
+          version: ${{ needs.build-playstore-version.outputs.full_version }}
+          brand: pia
+          platform: android
+          environment: ${{ vars.ARTIFACT_STORE_ENVIRONMENT || 'prod' }}
+          api-key: ${{ vars.ARTIFACT_STORE_ENVIRONMENT == 'dev' && secrets.ARTIFACT_STORE_PUBLISH_KEY_DEV || secrets.ARTIFACT_STORE_PUBLISH_KEY }}
+
+      - name: Publish Amazon APK
+        uses: ./.github/actions/kape/.github/actions/artifact_store_upload
+        with:
+          artifacts: |
+            - path: ${{ needs.build-amazon-version.outputs.artifact_name }}
+              pre_signed: true
+          version: ${{ needs.build-amazon-version.outputs.full_version }}
+          brand: pia
+          platform: android
+          environment: ${{ vars.ARTIFACT_STORE_ENVIRONMENT || 'prod' }}
+          api-key: ${{ vars.ARTIFACT_STORE_ENVIRONMENT == 'dev' && secrets.ARTIFACT_STORE_PUBLISH_KEY_DEV || secrets.ARTIFACT_STORE_PUBLISH_KEY }}
