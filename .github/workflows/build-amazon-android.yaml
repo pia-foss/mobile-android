@@ -14,6 +14,13 @@ on:
         required: true
       SIGNING_WEB_KEY_ALIAS:
         required: true
+    outputs:
+      full_version:
+        description: "<versionName>.<nonPlayStoreVersionCode>, the version the Kape Artifact Store records for this APK"
+        value: ${{ jobs.build.outputs.full_version }}
+      artifact_name:
+        description: "GitHub artifact holding the signed APK"
+        value: ${{ jobs.build.outputs.artifact_name }}
 permissions:
   contents: read
 jobs:
@@ -23,6 +30,9 @@ jobs:
       GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
       GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     runs-on: ubuntu-latest
+    outputs:
+      full_version: ${{ steps.version.outputs.full_version }}
+      artifact_name: ${{ steps.version.outputs.artifact_name }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
@@ -48,6 +58,10 @@ jobs:
           VERSION_CODE=$(./gradlew -q printNonPlayStoreVersionCode | tail -1)
           echo "version_name=${VERSION_NAME}" >> $GITHUB_OUTPUT
           echo "version_code=${VERSION_CODE}" >> $GITHUB_OUTPUT
+          echo "full_version=${VERSION_NAME}.${VERSION_CODE}" >> $GITHUB_OUTPUT
+          echo "artifact_name=pia-amazon-release-${VERSION_NAME}-${VERSION_CODE}" >> $GITHUB_OUTPUT
+          # Kape Artifact Store matches release builds by file name: <app>_<platform>_<version>_<channel>_<target>.<ext>
+          echo "signed_file=privateinternetaccess_android_${VERSION_NAME}.${VERSION_CODE}_release_amazon.apk" >> $GITHUB_OUTPUT
 
       - name: Decode keystore
         run: echo "${{ secrets.SIGNING_WEB_KEYSTORE }}" | base64 -d > keystore.jks
@@ -65,7 +79,7 @@ jobs:
             --ks-key-alias "${{ secrets.SIGNING_WEB_KEY_ALIAS }}" \
             --v1-signing-enabled true \
             --v2-signing-enabled true \
-            --out app-amazon-release-signed.apk \
+            --out "${{ steps.version.outputs.signed_file }}" \
             app/build/outputs/apk/amazon/release/app-amazon-release-unsigned.apk
 
       - name: Cleanup keystore
@@ -77,6 +91,6 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: pia-amazon-release-${{ steps.version.outputs.version_name }}-${{ steps.version.outputs.version_code }}
-          path: app-amazon-release-signed.apk
+          name: ${{ steps.version.outputs.artifact_name }}
+          path: ${{ steps.version.outputs.signed_file }}
           if-no-files-found: error
