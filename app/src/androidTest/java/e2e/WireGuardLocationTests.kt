@@ -15,6 +15,7 @@ class WireGuardLocationTests {
 
             (TRUSTED_LOCATIONS + LEGACY_LOCATIONS).forEach { location ->
                 connectToLocation(location)
+                dismissAutoProtocolNudgeIfShown()
                 assertConnected()
                 disconnect()
             }

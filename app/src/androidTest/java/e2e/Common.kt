@@ -165,6 +165,12 @@ object Automation {
     const val MOBILE_DATA_RULE_CARD = ":AutomationScreen:networkCard_MobileData"
 }
 
+object AutoProtocolNudge {
+    // Reuses the generic Dialog composable's tags (see Dialog.kt) - same values as
+    // SideMenu.LOGOUT_DIALOG_DISMISS_BUTTON.
+    const val DISMISS_BUTTON = ":SideMenu:DismissButton"
+}
+
 object BehaviorDialog {
     const val CONNECT_OPTION = ":BehaviorDialog:option_0"
     const val DISCONNECT_OPTION = ":BehaviorDialog:option_1"
@@ -326,6 +332,14 @@ fun connectToLocation(location: String) =
 fun pullToRefreshRegionList() =
     uiAutomator {
         onElement { viewIdResourceName == RegionSelection.LIST }.swipe(Direction.DOWN, 1f)
+    }
+
+// The "Trouble Connecting?" nudge (see ConnectionProblemDetector) is frequency-capped and
+// only surfaces after repeated connection failures, so it's not guaranteed to appear - dismiss
+// it ("Not Now") only if it does, rather than asserting on it.
+fun dismissAutoProtocolNudgeIfShown() =
+    uiAutomator {
+        onElementOrNull(TIMEOUT) { viewIdResourceName == AutoProtocolNudge.DISMISS_BUTTON }?.click()
     }
 
 fun disconnect() =

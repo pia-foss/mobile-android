@@ -40,6 +40,7 @@ import com.kape.settings.data.VpnProtocols
 import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
 import com.kape.utils.UpdateAvailableManager
+import com.kape.vpnconnect.domain.ConnectionProblemDetector
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregions.utils.ShadowsocksListProvider
 import kotlinx.coroutines.CoroutineDispatcher
@@ -79,6 +80,7 @@ class ConnectionViewModel(
     private val updateAvailableManager: UpdateAvailableManager,
     private val screenElementProvider: ScreenElementProvider,
     private val paymentIssueHandler: PaymentIssueHandler,
+    private val connectionProblemDetector: ConnectionProblemDetector,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     val connectionInfoProvider: ConnectionInfoProvider,
     networkConnectionListener: NetworkConnectionListener,
@@ -101,6 +103,7 @@ class ConnectionViewModel(
     val showDedicatedIpHomeBanner = mutableStateOf(false)
     var showProtocolNotAvailableDialog = mutableStateOf(false)
         private set
+    val showAutoProtocolNudgeDialog = connectionProblemDetector.showNudge
     val quickConnectServers = MutableStateFlow<List<VpnServer>>(emptyList())
     val hasUpdateAvailable = updateAvailableManager.hasUpdateAvailable
 
@@ -167,6 +170,7 @@ class ConnectionViewModel(
         }
 
         ratingTool.start()
+        connectionProblemDetector.start()
         renewDedicatedIps()
 
         viewModelScope.launch(ioDispatcher) {
@@ -426,10 +430,25 @@ class ConnectionViewModel(
 
     fun showProtocolNotAvailable() {
         showProtocolNotAvailableDialog.value = true
+        connectionProblemDetector.onProtocolNotAvailable()
     }
 
     fun resetProtocolNotAvailable() {
         showProtocolNotAvailableDialog.value = false
+    }
+
+    fun switchToAutomaticProtocol() {
+        viewModelScope.launch(ioDispatcher) {
+            connectionProblemDetector.onSwitchToAutomaticAccepted()
+            settingsPrefs.setSelectedProtocol(VpnProtocols.Automatic)
+            state.value.server?.let { connectionManager.reconnect(it, ::callback) }
+        }
+    }
+
+    fun dismissAutoProtocolNudge() {
+        viewModelScope.launch(ioDispatcher) {
+            connectionProblemDetector.onNudgeDismissed()
+        }
     }
 
     fun refreshState() =

@@ -113,6 +113,7 @@ fun ConnectionScreen() =
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
         val shouldShowProtocolNotAvailable by viewModel.showProtocolNotAvailableDialog
+        val shouldShowAutoProtocolNudge by viewModel.showAutoProtocolNudgeDialog.collectAsStateWithLifecycle()
         val screenElements by viewModel
             .getOrderedElements()
             .collectAsStateWithLifecycle(emptyList())
@@ -303,6 +304,17 @@ fun ConnectionScreen() =
                         stringResource(R.string.protocol_unavailable_message),
                         stringResource(R.string.protocol_unavailable_action),
                         onConfirm = { viewModel.resetProtocolNotAvailable() },
+                    )
+                }
+
+                if (shouldShowAutoProtocolNudge) {
+                    Dialog(
+                        stringResource(R.string.auto_protocol_nudge_title),
+                        stringResource(R.string.auto_protocol_nudge_message),
+                        stringResource(R.string.auto_protocol_nudge_confirm),
+                        stringResource(R.string.auto_protocol_nudge_dismiss),
+                        onConfirm = { viewModel.switchToAutomaticProtocol() },
+                        onDismiss = { viewModel.dismissAutoProtocolNudge() },
                     )
                 }
 
