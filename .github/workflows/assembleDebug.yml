@@ -65,7 +65,12 @@ jobs:
             exit 0
           fi
 
-          CHANGED_FILES=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+          # Diff from the merge-base, not BASE_SHA directly - for pull_request events, base.sha is
+          # the base branch's current tip, which moves as unrelated commits land on it. Diffing
+          # against it directly would flag files that only differ because the base branch moved
+          # (e.g. a version bump on main), not because this PR touched them.
+          MERGE_BASE=$(git merge-base "$BASE_SHA" "$HEAD_SHA")
+          CHANGED_FILES=$(git diff --name-only "$MERGE_BASE" "$HEAD_SHA")
           echo "Changed files:"
           echo "$CHANGED_FILES"
 
