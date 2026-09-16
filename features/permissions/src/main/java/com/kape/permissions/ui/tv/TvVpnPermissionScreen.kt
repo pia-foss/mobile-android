@@ -66,7 +66,11 @@ fun TvVpnPermissionScreen() =
                     initialFocusRequester = initialFocusRequester,
                 )
                 val intent = VpnService.prepare(LocalContext.current)
-                startForResult.launch(intent)
+                if (intent != null) {
+                    startForResult.launch(intent)
+                } else {
+                    viewModel.onVpnProfileStateChange()
+                }
             }
             GRANTED -> {
                 // Do nothing. The viewmodel is handling the navigation on success.

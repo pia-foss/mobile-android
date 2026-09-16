@@ -62,7 +62,11 @@ fun VpnPermissionScreen() =
             IDLE -> {}
             REQUEST -> {
                 val intent = VpnService.prepare(LocalContext.current)
-                startForResult.launch(intent)
+                if (intent != null) {
+                    startForResult.launch(intent)
+                } else {
+                    viewModel.onVpnProfileStateChange()
+                }
             }
 
             GRANTED -> {}
