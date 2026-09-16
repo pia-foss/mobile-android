@@ -24,7 +24,7 @@ class MetaEndpointsProvider(
 
         // Get the list of known regions sorted by latency.
         val sortedLatencyRegions =
-            regionsListProvider.servers.value.sortedBy { it.latency?.toInt() }
+            regionsListProvider.servers.value.sortedBy { it.latency?.toIntOrNull() }
 
         // Filter out invalid latencies. e.g. nil, zero, etc.
         val regionsWithValidLatency =
