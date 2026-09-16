@@ -43,6 +43,13 @@ class ClientStateDataSourceImpl(
         return NO_IP
     }
 
+    override suspend fun isVpnTunnelReachable(): Boolean =
+        suspendCancellableCoroutine { continuation ->
+            accountAPI.clientStatus { clientStatusInfo, _ ->
+                continuation.resume(clientStatusInfo?.connected == true)
+            }
+        }
+
     private suspend fun getVpnIpOnce(): String =
         suspendCancellableCoroutine { continuation ->
             accountAPI.clientStatus { clientStatusInfo, errors ->

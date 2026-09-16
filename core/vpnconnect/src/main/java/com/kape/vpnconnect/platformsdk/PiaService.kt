@@ -28,6 +28,7 @@ import com.kape.platformsdk.vpn.service.models.IpAddress
 import com.kape.platformsdk.vpn.service.models.KapeKillSwitchMode
 import com.kape.platformsdk.vpn.service.models.KapeSplitTunnelAppMode
 import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
+import com.kape.platformsdk.vpn.service.models.KapeVpnTunnelError
 import com.kape.platformsdk.vpn.wireguard.KapeWireGuardConnectionController
 import com.kape.platformsdk.vpn.wireguard.WireGuardAuthenticator
 import com.kape.portforwarding.domain.PortForwardingUseCase
@@ -114,6 +115,9 @@ class PiaService :
     private val _connectionStatus = MutableStateFlow(KapeVPNConnectionStatus.Disconnected)
     val connectionStatus: StateFlow<KapeVPNConnectionStatus> = _connectionStatus.asStateFlow()
 
+    private val _lastTunnelError = MutableStateFlow<KapeVpnTunnelError?>(null)
+    val lastTunnelError: StateFlow<KapeVpnTunnelError?> = _lastTunnelError.asStateFlow()
+
     private val job = SupervisorJob()
     val scope = CoroutineScope(Dispatchers.IO + job)
 
@@ -171,6 +175,7 @@ class PiaService :
         sessionController = null
         statusCollectionJob?.cancel()
         statusCollectionJob = null
+        _lastTunnelError.update { null }
 
         wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS)
 
@@ -265,20 +270,25 @@ class PiaService :
 
         statusCollectionJob =
             scope.launch {
-                controller.state.connectionStatus.collect { status ->
-                    _connectionStatus.update { status }
-                    when (status) {
-                        // Renew on every (re)connect attempt so a ping-restart cycle can't
-                        // outlive the backstop timeout while it's still actively in progress.
-                        KapeVPNConnectionStatus.Connecting,
-                        KapeVPNConnectionStatus.Reconnecting,
-                        -> wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS)
-                        // Catches a library-reported failure that lands here without ever
-                        // going through stopSessionController(), so the lock can't be stranded.
-                        KapeVPNConnectionStatus.Disconnected ->
-                            if (wakeLock.isHeld) wakeLock.release()
-                        else -> Unit
+                launch {
+                    controller.state.connectionStatus.collect { status ->
+                        _connectionStatus.update { status }
+                        when (status) {
+                            // Renew on every (re)connect attempt so a ping-restart cycle can't
+                            // outlive the backstop timeout while it's still actively in progress.
+                            KapeVPNConnectionStatus.Connecting,
+                            KapeVPNConnectionStatus.Reconnecting,
+                            -> wakeLock.acquire(WAKE_LOCK_TIMEOUT_MS)
+                            // Catches a library-reported failure that lands here without ever
+                            // going through stopSessionController(), so the lock can't be stranded.
+                            KapeVPNConnectionStatus.Disconnected ->
+                                if (wakeLock.isHeld) wakeLock.release()
+                            else -> Unit
+                        }
                     }
+                }
+                launch {
+                    controller.state.lastTunnelError.collect { error -> _lastTunnelError.update { error } }
                 }
             }
 
@@ -292,6 +302,7 @@ class PiaService :
         sessionController = null
         usageProvider.reset()
         _connectionStatus.update { KapeVPNConnectionStatus.Disconnected }
+        _lastTunnelError.update { null }
         if (wakeLock.isHeld) wakeLock.release()
     }
 

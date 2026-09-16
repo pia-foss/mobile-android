@@ -146,12 +146,16 @@ import java.io.BufferedReader
 @ComponentScan("com.kape.vpn", "com.kape.obfuscator")
 class AppModule {
     @Singleton(binds = [AppInfo::class])
-    fun provideAppInfo(): AppInfo =
+    fun provideAppInfo(context: Context): AppInfo =
         object : AppInfo {
             override val buildFlavor: String = BuildConfig.FLAVOR
             override val buildType: String = BuildConfig.BUILD_TYPE
             override val versionName: String = BuildConfig.VERSION_NAME
             override val versionCode: Int = BuildConfig.VERSION_CODE
+            override val isFreshInstall: Boolean =
+                context.packageManager.getPackageInfo(context.packageName, 0).let {
+                    it.firstInstallTime == it.lastUpdateTime
+                }
         }
 
     @Singleton(binds = [DeviceInfo::class])

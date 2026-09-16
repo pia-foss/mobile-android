@@ -68,6 +68,7 @@ class ConnectionManagerImplTest {
     private val connectionStatusProvider = mockk<ConnectionStatusProvider>(relaxed = true)
     private val regionListProvider = mockk<RegionListProvider>(relaxed = true)
     private val authenticationDataSource = mockk<AuthenticationDataSource>(relaxed = true)
+    private val connectionProblemDetector = mockk<ConnectionProblemDetector>(relaxed = true)
     private val context = mockk<Context>(relaxed = true)
 
     private val piaService = mockk<PiaService>(relaxed = true)
@@ -86,6 +87,7 @@ class ConnectionManagerImplTest {
             single { connectionStatusProvider }
             single { regionListProvider }
             single { authenticationDataSource }
+            single { connectionProblemDetector }
             single { context }
             single<CoroutineScope>(named(DI.IO_SCOPE)) { CoroutineScope(Dispatchers.Unconfined) }
         }
@@ -131,6 +133,7 @@ class ConnectionManagerImplTest {
 
         every { localBinder.getService() } returns piaService
         every { piaService.connectionStatus } returns MutableStateFlow(KapeVPNConnectionStatus.Disconnected)
+        every { piaService.lastTunnelError } returns MutableStateFlow(null)
         every {
             context.bindService(any<Intent>(), any<ServiceConnection>(), any<Int>())
         } answers {
@@ -374,6 +377,14 @@ class ConnectionManagerImplTest {
             verify { connectionSource.stopPortForwarding() }
         }
 
+    @Test
+    fun `disconnect - notifies the problem detector this teardown is user-initiated`() =
+        runTest {
+            connectionManager.disconnect()
+
+            verify { connectionProblemDetector.onUserInitiatedDisconnect() }
+        }
+
     // endregion
 
     // region isConnectionInProgress
@@ -404,6 +415,7 @@ class ConnectionManagerImplTest {
 
             coVerify { piaService.stopSessionController() }
             coVerify(atLeast = 1) { piaService.startVpn(any()) }
+            verify { connectionProblemDetector.onUserInitiatedDisconnect() }
         }
 
     @Test
