@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">โปรโตคอลใช้งานไม่ได้ชั่วคราว</string>
   <string name="protocol_unavailable_message">ภูมิภาคนี้ไม่สามารถใช้งานกับโปรโตคอลปัจจุบันได้ ลองใช้ภูมิภาคหรือโปรโตคอลอื่น</string>
   <string name="protocol_unavailable_action">ตกลง</string>
+  <string name="auto_protocol_nudge_title">มีปัญหาด้านการเชื่อมต่อ?</string>
+  <string name="auto_protocol_nudge_message">การเปลี่ยนไปใช้ตัวเลือกอัตโนมัติจะทำให้แอปเลือกโปรโตคอลที่ดีที่สุดสำหรับเครือข่ายของคุณซึ่งก็สามารถช่วยแก้ไขปัญหาการเชื่อมต่อแบบนี้ได้</string>
+  <string name="auto_protocol_nudge_confirm">เปลี่ยนเป็นอัตโนมัติ</string>
+  <string name="auto_protocol_nudge_dismiss">ไม่ใช่ตอนนี้</string>
   <string name="dialog_change_location_title">เปลี่ยนตำแหน่ง?</string>
   <string name="dialog_change_location_message">VPN ของคุณจะตัดการเชื่อมต่อชั่วคราวในขณะที่เชื่อมต่อไปยังตำแหน่งใหม่</string>
   <string name="dialog_change_location_action">เชื่อมต่อ</string>

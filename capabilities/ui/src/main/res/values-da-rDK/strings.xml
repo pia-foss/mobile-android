@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">Protokol midlertidigt utilgængelig</string>
   <string name="protocol_unavailable_message">Denne region er ikke tilgængelig med den aktuelle protokol. Prøv en anden region eller protokol.</string>
   <string name="protocol_unavailable_action">OK</string>
+  <string name="auto_protocol_nudge_title">Har du problemer med at oprette forbindelse?</string>
+  <string name="auto_protocol_nudge_message">Hvis du skifter til Automatisk, kan appen vælge den bedst fungerende protokol til dit netværk, hvilket kan hjælpe med forbindelsesproblemer som dette.</string>
+  <string name="auto_protocol_nudge_confirm">Skift til Automatisk</string>
+  <string name="auto_protocol_nudge_dismiss">Ikke nu</string>
   <string name="dialog_change_location_title">Vil du skifte placering?</string>
   <string name="dialog_change_location_message">Din VPN vil kortvarigt afbryde forbindelsen, mens den opretter forbindelse til den nye placering.</string>
   <string name="dialog_change_location_action">OPRETTER FORBINDELSE</string>

@@ -439,6 +439,10 @@ Alle Ereignisse enthalten eine eindeutige ID, die zufällig generiert wird. Dies
   <string name="protocol_unavailable_title">Protokoll vorübergehend nicht verfügbar</string>
   <string name="protocol_unavailable_message">Diese Region ist mit dem aktuellen Protokoll nicht verfügbar. Versuche es mit einer anderen Region oder einem anderen Protokoll.</string>
   <string name="protocol_unavailable_action">OK</string>
+  <string name="auto_protocol_nudge_title">Probleme bei der Verbindung?</string>
+  <string name="auto_protocol_nudge_message">Wenn du das Protokoll auf „Automatisch“ umschaltest, wählt die App das für dein Netzwerk leistungsstärkste Protokoll aus, was bei Verbindungsproblemen helfen kann.</string>
+  <string name="auto_protocol_nudge_confirm">Auf „Automatisch“ umschalten</string>
+  <string name="auto_protocol_nudge_dismiss">Jetzt nicht</string>
   <string name="dialog_change_location_title">Standort wechseln?</string>
   <string name="dialog_change_location_message">Deine VPN-Verbindung wird kurz unterbrochen, während die Verbindung zum neuen Standort hergestellt wird.</string>
   <string name="dialog_change_location_action">VERBINDEN</string>

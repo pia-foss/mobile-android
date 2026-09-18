@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">البروتوكول غير متاح مؤقتًا</string>
   <string name="protocol_unavailable_message">هذه المنطقة غير متاحة مع البروتوكول الحالي. جرب منطقة أخرى أو بروتوكول آخر.</string>
   <string name="protocol_unavailable_action">موافق</string>
+  <string name="auto_protocol_nudge_title">هل توجد مشكلة بالاتصال؟</string>
+  <string name="auto_protocol_nudge_message">التبديل إلى الوضع التلقائي يتيح للتطبيق اختيار البروتوكول الأفضل أداء لشبكتك، ما قد يساعد في مشكلات الاتصال المماثلة.</string>
+  <string name="auto_protocol_nudge_confirm">التبديل إلى الوضع التلقائي</string>
+  <string name="auto_protocol_nudge_dismiss">ليس الآن</string>
   <string name="dialog_change_location_title">تغيير الموقع؟</string>
   <string name="dialog_change_location_message">سيتم فصل خدمة VPN مؤقتًا عند الاتصال بموقع جديد.</string>
   <string name="dialog_change_location_action">الاتصال</string>
