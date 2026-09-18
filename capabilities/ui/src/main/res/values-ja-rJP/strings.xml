@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">プロトコルが一時的に利用できません</string>
   <string name="protocol_unavailable_message">現在のプロトコルでは、この地域は利用できません。別の地域またはプロトコルをお試しください。</string>
   <string name="protocol_unavailable_action">OK</string>
+  <string name="auto_protocol_nudge_title">接続に問題がありますか？</string>
+  <string name="auto_protocol_nudge_message">自動モードに切り替えると、お使いのネットワークに最適なプロトコルをアプリが自動で選択するため、このような接続トラブルの解決に役立ちます。</string>
+  <string name="auto_protocol_nudge_confirm">自動に切り替える</string>
+  <string name="auto_protocol_nudge_dismiss">あとで</string>
   <string name="dialog_change_location_title">ロケーションを変更しますか？</string>
   <string name="dialog_change_location_message">新しいロケーションで接続を確立する間、VPN接続が一時的に切断されます。</string>
   <string name="dialog_change_location_action">接続</string>

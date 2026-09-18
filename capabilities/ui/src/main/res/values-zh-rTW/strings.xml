@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">協議暫時無法使用</string>
   <string name="protocol_unavailable_message">目前的協議不支援此地區。請切換地區或協議。</string>
   <string name="protocol_unavailable_action">確定</string>
+  <string name="auto_protocol_nudge_title">連線遇到問題？</string>
+  <string name="auto_protocol_nudge_message">切換至「自動」後，應用程式會為您的網絡選擇效能最佳的協議，有助解決這類連線問題。</string>
+  <string name="auto_protocol_nudge_confirm">切換至「自動」</string>
+  <string name="auto_protocol_nudge_dismiss">稍後再說</string>
   <string name="dialog_change_location_title">要更改位置？</string>
   <string name="dialog_change_location_message">連接新位置時，VPN 連線將短暫中斷。</string>
   <string name="dialog_change_location_action">連線</string>
