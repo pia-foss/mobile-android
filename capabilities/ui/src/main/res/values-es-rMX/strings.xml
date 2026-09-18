@@ -436,6 +436,10 @@
   <string name="protocol_unavailable_title">Protocolo no disponible temporalmente</string>
   <string name="protocol_unavailable_message">Esta región no está disponible con el protocolo actual. Pruebe otra región o protocolo.</string>
   <string name="protocol_unavailable_action">Aceptar</string>
+  <string name="auto_protocol_nudge_title">¿Falla la conexión?</string>
+  <string name="auto_protocol_nudge_message">Cambiar a Automático permite a la aplicación elegir el mejor protocolo para su red, lo que podría resolver este tipo de problemas de conexión.</string>
+  <string name="auto_protocol_nudge_confirm">Cambiar a Automático</string>
+  <string name="auto_protocol_nudge_dismiss">Ahora no</string>
   <string name="dialog_change_location_title">¿Va a cambiar de ubicación?</string>
   <string name="dialog_change_location_message">La VPN se desconectará brevemente al cambiar de ubicación.</string>
   <string name="dialog_change_location_action">CONECTAR</string>

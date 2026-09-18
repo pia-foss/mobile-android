@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">Protocol tijdelijk niet beschikbaar</string>
   <string name="protocol_unavailable_message">Deze regio is niet beschikbaar met het huidige protocol. Probeer een andere regio of een ander protocol.</string>
   <string name="protocol_unavailable_action">OK</string>
+  <string name="auto_protocol_nudge_title">Lukt het niet om verbinding te maken?</string>
+  <string name="auto_protocol_nudge_message">Door over te schakelen naar Automatisch kan de app het best presterende protocol voor je netwerk kiezen. Dit kan helpen bij verbindingsproblemen zoals deze.</string>
+  <string name="auto_protocol_nudge_confirm">Overschakelen naar Automatisch</string>
+  <string name="auto_protocol_nudge_dismiss">Niet nu</string>
   <string name="dialog_change_location_title">Locatie wijzigen?</string>
   <string name="dialog_change_location_message">Je VPN-verbinding wordt kort verbroken terwijl je verbinding maakt met de nieuwe locatie.</string>
   <string name="dialog_change_location_action">VERBINDING MAKEN</string>

@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">协议暂不可用</string>
   <string name="protocol_unavailable_message">当前协议不支持此地区。请切换地区或协议。</string>
   <string name="protocol_unavailable_action">确定</string>
+  <string name="auto_protocol_nudge_title">连接遇到问题？</string>
+  <string name="auto_protocol_nudge_message">切换到“自动”后，应用程序会为您的网络挑选性能最优的协议，有助于解决此类连接问题。</string>
+  <string name="auto_protocol_nudge_confirm">切换到“自动”</string>
+  <string name="auto_protocol_nudge_dismiss">以后再说</string>
   <string name="dialog_change_location_title">要更改位置吗？</string>
   <string name="dialog_change_location_message">连接到新位置过程中，连接将短暂中断。</string>
   <string name="dialog_change_location_action">连接</string>

@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">Протокол временно недоступен</string>
   <string name="protocol_unavailable_message">Данный регион недоступен при выборе текущего протокола. Смените регион или протокол.</string>
   <string name="protocol_unavailable_action">ОК</string>
+  <string name="auto_protocol_nudge_title">Проблемы с подключением?</string>
+  <string name="auto_protocol_nudge_message">Воспользуйтесь автовыбором, чтобы приложение само нашло лучший протокол для вашей сети. Это может помочь устранить подобные проблемы с подключением.</string>
+  <string name="auto_protocol_nudge_confirm">Перейти на автовыбор</string>
+  <string name="auto_protocol_nudge_dismiss">Не сейчас</string>
   <string name="dialog_change_location_title">Меняете локацию?</string>
   <string name="dialog_change_location_message">При подключении к новой локации соединение с VPN ненадолго оборвется.</string>
   <string name="dialog_change_location_action">ПОДКЛЮЧИТЬ</string>

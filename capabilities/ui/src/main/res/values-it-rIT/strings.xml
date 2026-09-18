@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">Protocollo momentaneamente non disponibile</string>
   <string name="protocol_unavailable_message">Questa zona non è disponibile con il protocollo attuale. Prova un\'altra località o un altro protocollo.</string>
   <string name="protocol_unavailable_action">OK</string>
+  <string name="auto_protocol_nudge_title">Hai problemi a connetterti?</string>
+  <string name="auto_protocol_nudge_message">Passando ad Automatico, l\'app sceglierà il protocollo che offre le migliori prestazioni per la tua rete. Questo può aiutare a risolvere problemi di connessione come questo.</string>
+  <string name="auto_protocol_nudge_confirm">Passa ad Automatico</string>
+  <string name="auto_protocol_nudge_dismiss">Non ora</string>
   <string name="dialog_change_location_title">Vuoi cambiare località?</string>
   <string name="dialog_change_location_message">La tua VPN si disconnetterà momentaneamente mentre si connette alla nuova posizione.</string>
   <string name="dialog_change_location_action">CONNETTITI</string>

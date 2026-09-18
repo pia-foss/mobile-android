@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">일시적으로 프로토콜 사용 불가능</string>
   <string name="protocol_unavailable_message">이 지역에서는 현재 프로토콜을 사용할 수 없습니다. 다른 지역 또는 프로토콜을 선택해 주세요.</string>
   <string name="protocol_unavailable_action">확인</string>
+  <string name="auto_protocol_nudge_title">연결 문제가 발생했나요?</string>
+  <string name="auto_protocol_nudge_message">자동으로 변경하면, 고객님의 네트워크에 가장 잘 작동하는 프로토콜이 자동으로 선택되어 현재 연결 문제를 해결해 줄 수 있습니다.</string>
+  <string name="auto_protocol_nudge_confirm">자동으로 변경</string>
+  <string name="auto_protocol_nudge_dismiss">취소</string>
   <string name="dialog_change_location_title">위치를 변경하시겠습니까?</string>
   <string name="dialog_change_location_message">새 위치에 연결하는 동안 VPN 연결이 잠시 해제됩니다.</string>
   <string name="dialog_change_location_action">연결</string>

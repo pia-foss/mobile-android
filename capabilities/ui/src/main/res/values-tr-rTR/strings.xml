@@ -437,6 +437,10 @@
   <string name="protocol_unavailable_title">Protokol Geçici Olarak Devre Dışı</string>
   <string name="protocol_unavailable_message">Mevcut protokol bu bölgede kullanılamıyor. Başka bir bölge ya da protokol deneyin.</string>
   <string name="protocol_unavailable_action">Tamam</string>
+  <string name="auto_protocol_nudge_title">Bağlanma Sorunu mu Yaşıyorsunuz?</string>
+  <string name="auto_protocol_nudge_message">Otomatik bağlanma özelliğine geçmek; uygulamanın, ağınız için en iyi performans gösteren protokolünü seçmesine izin verir ve buna benzer bağlantı sorunlarına çözüm olabilir.</string>
+  <string name="auto_protocol_nudge_confirm">Otomatiğe Geç</string>
+  <string name="auto_protocol_nudge_dismiss">Şimdi Değil</string>
   <string name="dialog_change_location_title">Konum mu Değiştirilecek?</string>
   <string name="dialog_change_location_message">Yeni konuma bağlanırken VPN\'inizin bağlantısı kısa süreliğine kesilecek.</string>
   <string name="dialog_change_location_action">BAĞLAN</string>
