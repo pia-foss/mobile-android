@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,8 +32,9 @@ fun AccountDeletedScreen() {
     Column(
         modifier =
             Modifier
-                .widthIn(max = 520.dp)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .systemBarsPadding()
+                .widthIn(max = 520.dp),
     ) {
         Image(
             painter = painterResource(id = R.drawable.pia_medium),
