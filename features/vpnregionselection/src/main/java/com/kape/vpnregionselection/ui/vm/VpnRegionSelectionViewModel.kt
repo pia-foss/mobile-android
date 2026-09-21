@@ -26,6 +26,7 @@ import com.kape.utils.arrangeServers
 import com.kape.utils.filterServersByName
 import com.kape.vpnregions.utils.RegionListProvider
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -56,6 +57,11 @@ class VpnRegionSelectionViewModel(
 
     val isPortForwardingEnabled = settingsPrefs.isPortForwardingEnabled
     val hasUpdateAvailable = updateAvailableManager.hasUpdateAvailable
+
+    // Own view over Dispatchers.IO's shared elastic pool, so the search filter stays responsive
+    // even when loadVpnRegions's server-latency ping fan-out (com.privateinternetaccess.regions,
+    // pinging every region on the plain Dispatchers.IO) saturates its 64-thread parallelism cap.
+    private val searchDispatcher = Dispatchers.IO.limitedParallelism(4)
 
     fun loadVpnRegions(
         locale: String,
@@ -122,7 +128,7 @@ class VpnRegionSelectionViewModel(
     fun filterByName(
         value: String,
         isSearchEnabled: MutableState<Boolean>? = null,
-    ) = viewModelScope.launch(ioDispatcher) {
+    ) = viewModelScope.launch(searchDispatcher) {
         isSearchEnabled?.value = value.isNotEmpty()
         sorted.value =
             filterServersByName(servers.value, value) { item ->
