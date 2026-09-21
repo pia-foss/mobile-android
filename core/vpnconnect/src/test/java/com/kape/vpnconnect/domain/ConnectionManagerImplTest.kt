@@ -128,7 +128,7 @@ class ConnectionManagerImplTest {
         coEvery { settingsPrefs.getVpnExcludedAppsNow() } returns emptyList()
         coEvery { settingsPrefs.isAutomationEnabledNow() } returns false
         coEvery { authenticationDataSource.isUserLoggedIn(any()) } returns true
-        every { connectionPrefs.isDisconnectedByUser.value } returns false
+        coEvery { connectionPrefs.isDisconnectedByUserNow() } returns false
         coEvery { connectionPrefs.getSelectedVpnServerNow() } returns null
 
         every { localBinder.getService() } returns piaService
@@ -299,7 +299,7 @@ class ConnectionManagerImplTest {
     fun `connectToLastKnownOrOptimalServer - automation enabled and user disconnected - resets flag without connecting`() =
         runTest {
             coEvery { settingsPrefs.isAutomationEnabledNow() } returns true
-            every { connectionPrefs.isDisconnectedByUser.value } returns true
+            coEvery { connectionPrefs.isDisconnectedByUserNow() } returns true
 
             connectionManager.connectToLastKnownOrOptimalServer()
 

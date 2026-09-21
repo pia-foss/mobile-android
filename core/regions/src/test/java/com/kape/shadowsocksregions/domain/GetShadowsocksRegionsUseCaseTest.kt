@@ -7,7 +7,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -51,7 +50,7 @@ internal class GetShadowsocksRegionsUseCaseTest {
     fun `get selected shadowsocks region set and return a default when none has been selected by the user`(
         expected: List<ShadowsocksServer>,
     ) = runTest {
-        every { shadowsocksRegionPrefs.shadowsocksServers } returns MutableStateFlow(expected)
+        coEvery { shadowsocksRegionPrefs.getShadowsocksServersNow() } returns expected
         every { shadowsocksRegionPrefs.getSelectedShadowsocksServer() } returns flowOf(null)
 
         val actual = getShadowsocksRegionsUseCase.getSelectedShadowsocksServer().first()

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -71,6 +72,10 @@ class DipPrefs(
     suspend fun removePurchasedSignupDipToken() {
         dataStore.edit { it.remove(DIP_SIGNUP_PURCHASED_TOKEN) }
     }
+
+    suspend fun getDedicatedIpSignupPlansNow(): DedicatedIpSignupPlans? = getDedicatedIpSignupPlans().first()
+
+    suspend fun getDedicatedIpSupportedCountriesNow(): DedicatedIpSupportedCountries? = getDedicatedIpSupportedCountries().first()
 
     fun isDipSignupEnabled(isGoogleFlavor: Boolean): Flow<Boolean> =
         if (isGoogleFlavor) {

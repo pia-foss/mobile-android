@@ -30,26 +30,26 @@ class NetworkManagerImpl(
         ssid: String,
         isWifi: Boolean,
     ) {
-        if (settingsPrefs.isAutomationEnabled.value) {
-            ioScope.launch {
-                networkPrefs.getRuleForNetwork(ssid).first()?.let {
-                    applyNetworkRule(it)
-                } ?: run {
-                    if (isWifi) {
-                        networkPrefs
-                            .getRuleForNetwork(context.getString(R.string.nmt_open_wifi))
-                            .first()
-                            ?.let {
-                                applyNetworkRule(it)
-                            }
-                    } else {
-                        networkPrefs
-                            .getRuleForNetwork(context.getString(R.string.nmt_mobile_data))
-                            .first()
-                            ?.let {
-                                applyNetworkRule(it)
-                            }
-                    }
+        ioScope.launch {
+            if (!settingsPrefs.isAutomationEnabledNow()) return@launch
+
+            networkPrefs.getRuleForNetwork(ssid).first()?.let {
+                applyNetworkRule(it)
+            } ?: run {
+                if (isWifi) {
+                    networkPrefs
+                        .getRuleForNetwork(context.getString(R.string.nmt_open_wifi))
+                        .first()
+                        ?.let {
+                            applyNetworkRule(it)
+                        }
+                } else {
+                    networkPrefs
+                        .getRuleForNetwork(context.getString(R.string.nmt_mobile_data))
+                        .first()
+                        ?.let {
+                            applyNetworkRule(it)
+                        }
                 }
             }
         }

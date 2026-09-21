@@ -37,6 +37,8 @@ class ShadowsocksRegionPrefs(
 
     suspend fun getSelectedShadowsocksServerNow(): ShadowsocksServer? = getSelectedShadowsocksServer().first()
 
+    suspend fun getShadowsocksServersNow(): List<ShadowsocksServer> = getShadowsocksServers().first()
+
     suspend fun setSelectShadowsocksServer(shadowsocksServer: ShadowsocksServer) {
         dataStore.edit { it[SHADOWSOCKS_SELECTED_SERVER] = Json.encodeToString(shadowsocksServer) }
     }

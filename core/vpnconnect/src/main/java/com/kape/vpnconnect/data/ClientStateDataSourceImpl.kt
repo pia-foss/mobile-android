@@ -35,7 +35,7 @@ class ClientStateDataSourceImpl(
     override suspend fun getVpnIp(): String {
         repeat(5) { _ ->
             val vpnIp = getVpnIpOnce()
-            if (vpnIp != NO_IP && vpnIp != connectionPrefs.clientIp.value) {
+            if (vpnIp != NO_IP && vpnIp != connectionPrefs.getClientIpNow()) {
                 return vpnIp
             }
             delay(DELAY_BETWEEN_RETRY.milliseconds)

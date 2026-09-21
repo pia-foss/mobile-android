@@ -17,14 +17,14 @@ class ShadowsocksListProvider(
     @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) {
     private val locale = Locale.getDefault().language
-    private val _servers: MutableStateFlow<List<ShadowsocksServer>> =
-        MutableStateFlow(getShadowsocksRegionsUseCase.getShadowsocksServers())
+    private val _servers: MutableStateFlow<List<ShadowsocksServer>> = MutableStateFlow(emptyList())
     val servers = _servers.asStateFlow()
     private val _selectedServer = MutableStateFlow<ShadowsocksServer?>(null)
     val selectedServer = _selectedServer.asStateFlow()
 
     init {
         ioScope.launch {
+            _servers.update { getShadowsocksRegionsUseCase.getShadowsocksServers() }
             val servers = getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale)
             _servers.update { servers }
         }
