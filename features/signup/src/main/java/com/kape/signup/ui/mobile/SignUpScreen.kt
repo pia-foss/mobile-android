@@ -44,11 +44,10 @@ import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
-import com.kape.ui.mobile.elements.MonthlySubscriptionCard
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
-import com.kape.ui.mobile.elements.YearlySubscriptionCard
+import com.kape.ui.mobile.elements.SubscriptionCard
 import com.kape.ui.mobile.text.OnboardingDescriptionPaymentText
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
@@ -149,7 +148,7 @@ fun OldSignUpScreen() {
                 Spacer(modifier = Modifier.height(16.dp))
                 Column(modifier = Modifier.alpha(determineProductsAlpha(screenState))) {
                     val subscriptionOptions = stringResource(id = R.string.subscription_option)
-                    YearlySubscriptionCard(
+                    SubscriptionCard(
                         selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
                         price =
                             stringResource(
@@ -163,13 +162,16 @@ fun OldSignUpScreen() {
                                 .padding(horizontal = 16.dp)
                                 .semantics { contentDescription = subscriptionOptions },
                         freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.yearly?.freeTrialDuration),
+                        isYearlyPlan = true,
+                        showFreeTrialRow = false,
+                        saving = subscriptionData?.yearly?.saving,
                     ) {
                         subscriptionData?.let {
                             subscriptionData.selected.value = subscriptionData.yearly
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    MonthlySubscriptionCard(
+                    SubscriptionCard(
                         selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
                         price =
                             stringResource(
@@ -182,6 +184,9 @@ fun OldSignUpScreen() {
                                 .padding(horizontal = 16.dp)
                                 .semantics { contentDescription = subscriptionOptions },
                         freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.monthly?.freeTrialDuration),
+                        isYearlyPlan = false,
+                        additionalText = "",
+                        showFreeTrialRow = false,
                     ) {
                         subscriptionData?.let {
                             subscriptionData.selected.value = subscriptionData.monthly

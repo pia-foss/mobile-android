@@ -31,37 +31,38 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
-import com.kape.ui.mobile.text.BestValueBannerText
 import com.kape.ui.mobile.text.ErrorText
 import com.kape.ui.mobile.text.InfoText
+import com.kape.ui.mobile.text.NoFreeTrialOptions
+import com.kape.ui.mobile.text.Save
 import com.kape.ui.mobile.text.SettingsL1Text
 import com.kape.ui.mobile.text.SettingsL2TextDescription
 import com.kape.ui.mobile.text.SignUpDurationText
-import com.kape.ui.mobile.text.SignUpPricePerMonthText
 import com.kape.ui.mobile.text.SignUpPriceText
+import com.kape.ui.mobile.text.TryForFree
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.errorBackground
 import com.kape.ui.theme.errorOutline
 import com.kape.ui.theme.infoBackground
 import com.kape.ui.theme.infoOutline
-import com.kape.ui.theme.onSuccessContainer
 import com.kape.ui.theme.successBackground
 import com.kape.ui.theme.successOutline
-import com.kape.ui.theme.warning30
 import com.kape.ui.theme.warningBackground
 import com.kape.ui.theme.warningOutline
 import com.kape.ui.utils.LocalColors
 
 @Composable
-fun YearlySubscriptionCard(
+fun SubscriptionCard(
     selected: Boolean,
     price: String,
     additionalText: String,
     modifier: Modifier,
     selectedCardColor: Color = LocalColors.current.surface,
     unselectedCardColor: Color = Color.Transparent,
-    bestValueBannerText: String = stringResource(id = R.string.best_value),
     freeTrialDays: Int?,
+    isYearlyPlan: Boolean,
+    showFreeTrialRow: Boolean,
+    saving: Int? = null,
     onClick: () -> Unit,
 ) {
     Card(
@@ -78,137 +79,52 @@ fun YearlySubscriptionCard(
             if (selected) {
                 BorderStroke(2.dp, LocalColors.current.primary)
             } else {
-                BorderStroke(1.dp, LocalColors.current.onSurface)
+                BorderStroke(1.dp, LocalColors.current.outlineVariant)
             },
     ) {
-        Row {
-            OptionButton(
-                selected = selected,
-                modifier =
-                    Modifier
-                        .align(CenterVertically)
-                        .padding(16.dp),
-            )
-            Column {
-                SignUpDurationText(
-                    content = stringResource(id = R.string.yearly),
-                    modifier = Modifier.padding(vertical = 16.dp),
+        Column {
+            Row(verticalAlignment = CenterVertically) {
+                OptionButton(
+                    selected = selected,
+                    modifier = Modifier.padding(16.dp),
                 )
-                Row {
-                    SignUpPriceText(
-                        content = price,
-                        modifier = Modifier.align(CenterVertically),
+                Column {
+                    Spacer(Modifier.height(16.dp))
+                    SignUpDurationText(
+                        content = stringResource(id = R.string.yearly),
+                        modifier = Modifier,
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    SignUpPricePerMonthText(
-                        content = additionalText,
-                        modifier = Modifier.align(CenterVertically),
-                    )
-                }
-                Row(modifier = Modifier.padding(vertical = 16.dp)) {
-                    BestValueBannerText(
-                        content = bestValueBannerText,
-                        modifier =
-                            Modifier
-                                .background(
-                                    LocalColors.current.warning30(),
-                                    shape = RoundedCornerShape(4.dp),
-                                ).padding(horizontal = 8.dp, vertical = 4.dp),
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    freeTrialDays?.let {
+                    Row {
+                        SignUpPriceText(
+                            content = price,
+                            modifier = Modifier.align(CenterVertically),
+                        )
+                        if (isYearlyPlan && saving != null) {
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Save(stringResource(R.string.save_percentage, saving))
+                        }
+                    }
+                    if (additionalText.isNotEmpty()) {
+                        Spacer(Modifier.height(8.dp))
                         Text(
-                            text = stringResource(R.string.free_trial_to_format, it),
-                            style = PiaTypography.caption1,
-                            color = LocalColors.current.onSuccessContainer(),
-                            modifier =
-                                Modifier
-                                    .background(
-                                        LocalColors.current.successBackground(),
-                                        RoundedCornerShape(4.dp),
-                                    ).padding(horizontal = 8.dp, vertical = 4.dp),
+                            text = additionalText,
+                            style = PiaTypography.body3,
                         )
                     }
+                    Spacer(Modifier.height(16.dp))
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun MonthlySubscriptionCard(
-    selected: Boolean,
-    price: String,
-    modifier: Modifier,
-    additionalText: String = "",
-    selectedCardColor: Color = LocalColors.current.surface,
-    unselectedCardColor: Color = Color.Transparent,
-    freeTrialDays: Int?,
-    onClick: () -> Unit,
-) {
-    Card(
-        modifier =
-            modifier
-                .semantics(mergeDescendants = true) { }
-                .selectable(
-                    selected = selected,
-                    enabled = true,
-                    role = Role.RadioButton,
-                    onClick = onClick,
-                ),
-        shape = RoundedCornerShape(12.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = if (selected) selectedCardColor else unselectedCardColor,
-            ),
-        border =
-            if (selected) {
-                BorderStroke(2.dp, LocalColors.current.primary)
-            } else {
-                BorderStroke(1.dp, LocalColors.current.onSurface)
-            },
-    ) {
-        Row {
-            OptionButton(
-                selected = selected,
-                modifier =
-                    Modifier
-                        .padding(16.dp)
-                        .align(CenterVertically),
-            )
-            Column {
-                SignUpDurationText(
-                    content = stringResource(id = R.string.monthly),
-                    modifier = Modifier.padding(vertical = 16.dp),
-                )
-                Row {
-                    SignUpPriceText(
-                        content = price,
-                        modifier = Modifier.wrapContentWidth(),
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    SignUpPricePerMonthText(
-                        content = additionalText,
-                        modifier = Modifier.align(CenterVertically),
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row {
+            if (showFreeTrialRow) {
+                Separator()
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                ) {
                     freeTrialDays?.let {
-                        Text(
-                            text = stringResource(R.string.free_trial_to_format, it),
-                            style = PiaTypography.caption1,
-                            color = LocalColors.current.onSuccessContainer(),
-                            modifier =
-                                Modifier
-                                    .background(
-                                        LocalColors.current.successBackground(),
-                                        RoundedCornerShape(4.dp),
-                                    ).padding(horizontal = 8.dp, vertical = 4.dp),
-                        )
+                        TryForFree(stringResource(R.string.free_trial_available, it))
+                    } ?: run {
+                        NoFreeTrialOptions(stringResource(R.string.free_trial_unavailable))
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

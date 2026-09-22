@@ -20,7 +20,7 @@ class PriceFormatter(
     ): String {
         val costPerMonth = priceInMicros / MICROS_PER_UNIT / 12
         return context
-            .getString(com.kape.ui.R.string.yearly_month_ending)
+            .getString(com.kape.ui.R.string.monthly_ending)
             .format(formatPrice(costPerMonth, currencyCode, originalFormattedPrice))
     }
 
