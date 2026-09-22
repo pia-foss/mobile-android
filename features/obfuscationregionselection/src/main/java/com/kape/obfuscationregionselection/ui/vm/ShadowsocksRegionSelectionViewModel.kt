@@ -30,7 +30,10 @@ class ShadowsocksRegionSelectionViewModel(
     val servers = mutableStateOf(emptyList<RegionServerItem<ShadowsocksServer>>())
     val sorted = mutableStateOf(emptyList<RegionServerItem<ShadowsocksServer>>())
 
-    fun getShadowsocksRegions() = arrangeShadowsocksServers(getShadowsocksRegionsUseCase.getShadowsocksServers())
+    fun getShadowsocksRegions() =
+        viewModelScope.launch(ioDispatcher) {
+            arrangeShadowsocksServers(getShadowsocksRegionsUseCase.getShadowsocksServers())
+        }
 
     fun fetchShadowsocksRegions(
         locale: String,

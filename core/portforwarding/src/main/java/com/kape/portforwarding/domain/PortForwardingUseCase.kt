@@ -116,7 +116,7 @@ class PortForwardingUseCase(
         when (settingsPrefs.selectedProtocol.first()) {
             VpnProtocols.WireGuard -> VpnServer.ServerGroup.WIREGUARD
             VpnProtocols.OpenVPN -> {
-                if (settingsPrefs.openVpnSettings.value.transport == Transport.UDP) {
+                if (settingsPrefs.getOpenVpnSettingsNow().transport == Transport.UDP) {
                     VpnServer.ServerGroup.OPENVPN_UDP
                 } else {
                     VpnServer.ServerGroup.OPENVPN_TCP

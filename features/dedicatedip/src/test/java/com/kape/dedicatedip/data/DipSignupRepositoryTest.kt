@@ -5,7 +5,6 @@ import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.localprefs.prefs.DipPrefs
 import com.privateinternetaccess.account.model.response.AndroidAddonsSubscriptionsInformation
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions
@@ -36,7 +35,7 @@ class DipSignupRepositoryTest {
                     availableProducts = emptyList(),
                     status = "fetched",
                 )
-            every { dipPrefs.dedicatedIpSignupPlans.value } returns null
+            coEvery { dipPrefs.getDedicatedIpSignupPlansNow() } returns null
             coEvery { dipDataSource.signupPlans() } returns fetchedDedicatedIpSignupPlansMock
 
             // when
@@ -60,7 +59,7 @@ class DipSignupRepositoryTest {
                     persistedTimestamp = System.currentTimeMillis() - (1L * 12 * 60 * 60 * 1000),
                     signupPlans = fetchedDedicatedIpSignupPlansMock,
                 )
-            every { dipPrefs.dedicatedIpSignupPlans.value } returns dedicatedIpSignupPlans
+            coEvery { dipPrefs.getDedicatedIpSignupPlansNow() } returns dedicatedIpSignupPlans
 
             // when
             val actual = dipSignupRepository.signupPlans()
@@ -88,7 +87,7 @@ class DipSignupRepositoryTest {
                     persistedTimestamp = System.currentTimeMillis() - (2L * 24 * 60 * 60 * 1000),
                     signupPlans = outdatedFetchedDedicatedIpSignupPlansMock,
                 )
-            every { dipPrefs.dedicatedIpSignupPlans.value } returns dedicatedIpSignupPlans
+            coEvery { dipPrefs.getDedicatedIpSignupPlansNow() } returns dedicatedIpSignupPlans
             coEvery { dipDataSource.signupPlans() } returns updatedFetchedDedicatedIpSignupPlansMock
 
             // when

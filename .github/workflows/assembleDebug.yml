@@ -288,9 +288,18 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      # Shared across all matrix legs (same api-level/arch/profile) so a snapshot built here
-      # is reused by every job in this and later runs, instead of every leg cold-booting the
-      # emulator from scratch.
+      # Shared across all matrix legs (same api-level/arch/profile) so the created AVD (system
+      # image, userdata partitions, config) is reused by every job in this and later runs,
+      # instead of every leg re-extracting/creating it from scratch.
+      #
+      # Deliberately does NOT cache/restore a GPU quick-boot snapshot (-no-snapshot-save here,
+      # -no-snapshot-load in e2e-testing below): "Failed to find ColorBuffer: N" is the software
+      # GL renderer (swiftshader_indirect) choking on a quick-boot snapshot whose guest-side
+      # buffer IDs don't match a freshly started host renderer process. Bumping this cache key's
+      # version suffix (v2, v3) was tried as a fix and didn't hold - the mismatch can recur on
+      # any snapshot, not just a stale one, so every leg now does a real (cold) boot instead of
+      # quick-booting from a saved GPU snapshot. Costs each leg some extra boot time, but removes
+      # this failure class entirely rather than papering over it.
       - name: AVD cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         id: avd-cache
@@ -298,9 +307,9 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-33-x86_64-pixel_4
+          key: avd-33-x86_64-pixel_4-v3
 
-      - name: Create AVD and generate snapshot for caching
+      - name: Create AVD for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
         with:
@@ -312,9 +321,9 @@ jobs:
           ram-size: 4096M
           emulator-boot-timeout: 480
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save
           disable-animations: false
-          script: echo "Generated AVD snapshot for caching."
+          script: echo "Generated AVD for caching."
 
   e2e-testing:
     name: Run end to end instrumentation tests (${{ matrix.test-class }})
@@ -364,7 +373,7 @@ jobs:
 
       # Populated by the warm-avd-cache job above, so this should always be a cache hit; kept
       # here (rather than in warm-avd-cache) because the cache must be restored into each
-      # matrix leg's own runner filesystem.
+      # matrix leg's own runner filesystem. Must match the key there exactly.
       - name: AVD cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         id: avd-cache
@@ -372,7 +381,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-33-x86_64-pixel_4
+          key: avd-33-x86_64-pixel_4-v3
 
       # PIA_VALID_* are passed inline to the one command that needs them rather than in this
       # step's env:, so they aren't exposed to the reactivecircus/android-emulator-runner action
@@ -392,7 +401,7 @@ jobs:
           ram-size: 4096M
           emulator-boot-timeout: 480
           force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-load
           disable-animations: true
           disable-spellchecker: true
           script: |

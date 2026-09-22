@@ -121,6 +121,11 @@ class PiaService :
     private val job = SupervisorJob()
     val scope = CoroutineScope(Dispatchers.IO + job)
 
+    // Own view over Dispatchers.IO's shared elastic pool, so traffic-stat collection keeps
+    // getting scheduled even when the region-ping fan-out (com.privateinternetaccess.regions,
+    // pinging ~190 servers on the plain Dispatchers.IO) saturates its 64-thread parallelism cap.
+    private val trafficStatsDispatcher = Dispatchers.IO.limitedParallelism(2)
+
     inner class LocalBinder : Binder() {
         fun getService(): PiaService = this@PiaService
     }
@@ -262,7 +267,7 @@ class PiaService :
 
         sessionController = controller
 
-        scope.launch {
+        scope.launch(trafficStatsDispatcher) {
             sessionController?.state?.trafficStats?.collectLatest {
                 usageProvider.byteCount(it.bytesSent, it.bytesReceived)
             }

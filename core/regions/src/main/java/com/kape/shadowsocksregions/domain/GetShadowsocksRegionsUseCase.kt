@@ -22,15 +22,16 @@ class GetShadowsocksRegionsUseCase(
         shadowsocksRegionPrefs
             .getSelectedShadowsocksServer()
             .map { selectedServer ->
+                val servers = getShadowsocksServers()
                 val matchedServer =
-                    getShadowsocksServers().firstOrNull {
+                    servers.firstOrNull {
                         it.host == selectedServer?.host
                     }
 
                 if (matchedServer != null) {
                     matchedServer to false
                 } else {
-                    getShadowsocksServers().first() to true
+                    servers.first() to true
                 }
             }.onEach { (server, shouldPersist) ->
                 if (shouldPersist) {
@@ -38,10 +39,10 @@ class GetShadowsocksRegionsUseCase(
                 }
             }.map { it.first }
 
-    fun getShadowsocksServers(): List<ShadowsocksServer> =
+    suspend fun getShadowsocksServers(): List<ShadowsocksServer> =
         // If there are no servers persisted. Let's use the initial set of servers we are
         // shipping the application with while we perform a request for an updated version.
-        shadowsocksRegionPrefs.shadowsocksServers.value.ifEmpty {
+        shadowsocksRegionPrefs.getShadowsocksServersNow().ifEmpty {
             readShadowsocksRegionsDetailsUseCase.readShadowsocksRegionsDetailsFromAssetsFolder()
         }
 }
