@@ -378,6 +378,7 @@ private fun ColumnScope.PlansPresentContent(
                     freeTrialDays = convertToDays(subscriptionData.yearly.freeTrialDuration),
                     isYearlyPlan = true,
                     showFreeTrialRow = true,
+                    saving = subscriptionData.yearly.saving,
                 ) {
                     subscriptionData.selected.value = subscriptionData.yearly
                 }

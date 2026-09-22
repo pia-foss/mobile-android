@@ -85,4 +85,5 @@ data class Plan(
     val mainPrice: String,
     val secondaryPrice: String? = null,
     val freeTrialDuration: String?,
+    val saving: Int? = null,
 )

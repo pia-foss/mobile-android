@@ -385,7 +385,7 @@
     <string name="yearly_ending">%s per year</string>
     <string name="year_ending">%s/year</string>
     <string name="billed_once_a_year">%s billed once a year</string>
-    <string name="save_percentage">Save %d%</string>
+    <string name="save_percentage">Save %d%%</string>
     <string name="free_trial_available">Try FREE for %d Days</string>
     <string name="free_trial_unavailable">No free trial on this plan</string>
 

@@ -62,6 +62,7 @@ fun SubscriptionCard(
     freeTrialDays: Int?,
     isYearlyPlan: Boolean,
     showFreeTrialRow: Boolean,
+    saving: Int? = null,
     onClick: () -> Unit,
 ) {
     Card(
@@ -98,9 +99,9 @@ fun SubscriptionCard(
                             content = price,
                             modifier = Modifier.align(CenterVertically),
                         )
-                        if (isYearlyPlan) {
+                        if (isYearlyPlan && saving != null) {
                             Spacer(modifier = Modifier.width(16.dp))
-                            Save("Save 67%")
+                            Save(stringResource(R.string.save_percentage, saving))
                         }
                     }
                     if (additionalText.isNotEmpty()) {

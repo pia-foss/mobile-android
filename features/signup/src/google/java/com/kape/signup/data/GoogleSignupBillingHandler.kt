@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.Locale
+import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val BILLING_READY_TIMEOUT_MS = 5_000L
@@ -99,6 +100,11 @@ class GoogleSignupBillingHandler(
                                                     yearlyPlan.formattedPrice,
                                                 ),
                                             freeTrialDuration = yearlyPlan.freeTrialDuration,
+                                            saving =
+                                                calculateSavingsPercentage(
+                                                    monthlyPlan.priceInMicros,
+                                                    yearlyPlan.priceInMicros,
+                                                ),
                                         )
                                     val monthly =
                                         Plan(
@@ -200,5 +206,15 @@ class GoogleSignupBillingHandler(
                 it == PurchaseState.InitSuccess || it == PurchaseState.InitFailed || it == PurchaseState.Disconnected
             }
         }
+    }
+
+    private fun calculateSavingsPercentage(
+        monthlyPriceMicros: Long,
+        yearlyPriceMicros: Long,
+    ): Int? {
+        if (monthlyPriceMicros <= 0) return null
+        val yearlyEquivalentMicros = monthlyPriceMicros * 12
+        val savings = (1 - (yearlyPriceMicros.toDouble() / yearlyEquivalentMicros.toDouble())) * 100
+        return savings.roundToInt()
     }
 }

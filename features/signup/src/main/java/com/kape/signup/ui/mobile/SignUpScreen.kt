@@ -164,6 +164,7 @@ fun OldSignUpScreen() {
                         freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.yearly?.freeTrialDuration),
                         isYearlyPlan = true,
                         showFreeTrialRow = false,
+                        saving = subscriptionData?.yearly?.saving,
                     ) {
                         subscriptionData?.let {
                             subscriptionData.selected.value = subscriptionData.yearly
