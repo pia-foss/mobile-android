@@ -5,6 +5,10 @@ on:
     tags:
       # Only real version tags (e.g. 4.0.1), not arbitrary pushed tags.
       - '+([0-9]).+([0-9]).+([0-9])'
+  workflow_dispatch:
+    # Allows manually re-running this for an existing tag (Actions tab ->
+    # "Run workflow" -> pick the tag from the "Use workflow from" dropdown)
+    # in case the tag push itself didn't trigger the `push` event above.
 
 permissions:
   contents: write
