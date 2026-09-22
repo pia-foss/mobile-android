@@ -1,22 +1,31 @@
 package com.kape.ui.mobile.text
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.kape.ui.R
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.infoBlue
+import com.kape.ui.theme.onSuccessContainer
+import com.kape.ui.theme.successBackground
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -153,6 +162,7 @@ fun SignUpPriceText(
         text = content,
         color = LocalColors.current.onSurface,
         style = PiaTypography.subtitle1,
+        modifier = modifier,
     )
 }
 
@@ -180,6 +190,38 @@ fun BestValueBannerText(
         style = PiaTypography.caption1,
         modifier = modifier,
     )
+}
+
+@Composable
+fun Save(content: String) {
+    Text(
+        text = content,
+        color = LocalColors.current.onSuccessContainer(),
+        style = PiaTypography.caption1.copy(fontWeight = FontWeight.Bold),
+        modifier =
+            Modifier
+                .background(
+                    color = LocalColors.current.successBackground(),
+                    shape = RoundedCornerShape(16.dp),
+                ).padding(horizontal = 8.dp, vertical = 4.dp),
+    )
+}
+
+@Composable
+fun TryForFree(content: String) {
+    Row(verticalAlignment = CenterVertically) {
+        Icon(
+            painter = painterResource(R.drawable.ic_gift),
+            tint = LocalColors.current.primary,
+            contentDescription = null,
+        )
+        Text(text = content, style = PiaTypography.subtitle3, color = LocalColors.current.primary)
+    }
+}
+
+@Composable
+fun NoFreeTrialOptions(content: String) {
+    Text(text = content, style = PiaTypography.body3)
 }
 
 @Composable

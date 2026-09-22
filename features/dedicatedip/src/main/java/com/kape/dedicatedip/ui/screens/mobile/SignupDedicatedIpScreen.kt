@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,11 +35,10 @@ import androidx.compose.ui.unit.sp
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
-import com.kape.ui.mobile.elements.MonthlySubscriptionCard
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
-import com.kape.ui.mobile.elements.YearlySubscriptionCard
+import com.kape.ui.mobile.elements.SubscriptionCard
 import com.kape.ui.mobile.text.DedicatedIpSignupDescriptionText
 import com.kape.ui.mobile.text.DedicatedIpSignupTitleText
 import com.kape.ui.mobile.text.SupportedDipRegions
@@ -110,8 +110,8 @@ fun SignupDedicatedIpScreen() =
                     )
                 }
                 Spacer(modifier = Modifier.height(32.dp))
-                YearlySubscriptionCard(
-                    selected = viewModel.selectedPlanProductId.value == viewModel.dipYearlyPlan.value?.id,
+                SubscriptionCard(
+                    selected = viewModel.selectedPlanProductId.collectAsState().value == viewModel.dipYearlyPlan.value?.id,
                     price =
                         viewModel.dipYearlyPlan.value
                             ?.yearlyPrice
@@ -125,14 +125,16 @@ fun SignupDedicatedIpScreen() =
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                     freeTrialDays = null,
+                    isYearlyPlan = true,
+                    showFreeTrialRow = false,
                 ) {
                     viewModel.dipYearlyPlan.value?.let {
                         viewModel.selectPlanProductId(it.id)
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                MonthlySubscriptionCard(
-                    selected = viewModel.selectedPlanProductId.value == viewModel.dipMonthlyPlan.value?.id,
+                SubscriptionCard(
+                    selected = viewModel.selectedPlanProductId.collectAsState().value == viewModel.dipMonthlyPlan.value?.id,
                     price =
                         viewModel.dipMonthlyPlan.value
                             ?.monthlyPrice
@@ -142,6 +144,9 @@ fun SignupDedicatedIpScreen() =
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                     freeTrialDays = null,
+                    isYearlyPlan = false,
+                    additionalText = "",
+                    showFreeTrialRow = false,
                 ) {
                     viewModel.dipMonthlyPlan.value?.let {
                         viewModel.selectPlanProductId(it.id)

@@ -380,10 +380,14 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="and">and</string>
     <string name="terms_of_service">Terms of Service</string>
-    <string name="monthly_ending">%s/mo</string>
+    <string name="monthly_ending">%s/month</string>
     <string name="yearly_month_ending">%s/mo</string>
     <string name="yearly_ending">%s per year</string>
     <string name="year_ending">%s/year</string>
+    <string name="billed_once_a_year">%s billed once a year</string>
+    <string name="save_percentage">Save %d%</string>
+    <string name="free_trial_available">Try FREE for %d Days</string>
+    <string name="free_trial_unavailable">No free trial on this plan</string>
 
     <string name="subscribe_screen_unrestricted_access">Unrestricted access to worldwide servers</string>
     <string name="subscribe_screen_connection_speeds">10-Gbps connection speeds</string>

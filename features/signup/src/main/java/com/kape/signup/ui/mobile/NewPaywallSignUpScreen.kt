@@ -59,10 +59,9 @@ import com.kape.signup.utils.SignupScreenState
 import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
-import com.kape.ui.mobile.elements.MonthlySubscriptionCard
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.SecondaryButton
-import com.kape.ui.mobile.elements.YearlySubscriptionCard
+import com.kape.ui.mobile.elements.SubscriptionCard
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.naturalSpace
 import com.kape.ui.utils.LocalColors
@@ -363,22 +362,27 @@ private fun ColumnScope.PlansPresentContent(
                 Spacer(modifier = Modifier.height(16.dp))
                 val subscriptionOptions =
                     stringResource(id = R.string.subscription_option)
-                YearlySubscriptionCard(
+                SubscriptionCard(
                     selected = selectedPlan == subscriptionData.yearly,
-                    price = stringResource(R.string.year_ending, subscriptionData.yearly.mainPrice),
-                    additionalText = stringResource(R.string.subscribe_screen_billed_annually),
+                    price = subscriptionData.yearly.secondaryPrice ?: "",
+                    additionalText =
+                        stringResource(
+                            R.string.billed_once_a_year,
+                            subscriptionData.yearly.mainPrice,
+                        ),
                     selectedCardColor = Color.Transparent,
-                    bestValueBannerText = stringResource(R.string.best_value),
                     modifier =
                         Modifier
                             .fillMaxWidth()
                             .semantics { contentDescription = subscriptionOptions },
                     freeTrialDays = convertToDays(subscriptionData.yearly.freeTrialDuration),
+                    isYearlyPlan = true,
+                    showFreeTrialRow = true,
                 ) {
                     subscriptionData.selected.value = subscriptionData.yearly
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                MonthlySubscriptionCard(
+                SubscriptionCard(
                     selected = selectedPlan == subscriptionData.monthly,
                     price =
                         stringResource(
@@ -392,6 +396,8 @@ private fun ColumnScope.PlansPresentContent(
                             .fillMaxWidth()
                             .semantics { contentDescription = subscriptionOptions },
                     freeTrialDays = convertToDays(subscriptionData.monthly.freeTrialDuration),
+                    isYearlyPlan = false,
+                    showFreeTrialRow = true,
                 ) {
                     subscriptionData.selected.value = subscriptionData.monthly
                 }
