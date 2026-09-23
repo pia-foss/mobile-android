@@ -213,6 +213,7 @@ class GoogleSignupBillingHandler(
         yearlyPriceMicros: Long,
     ): Int? {
         if (monthlyPriceMicros <= 0) return null
+        if (yearlyPriceMicros <= 0) return null
         val yearlyEquivalentMicros = monthlyPriceMicros * 12
         val savings = (1 - (yearlyPriceMicros.toDouble() / yearlyEquivalentMicros.toDouble())) * 100
         return savings.roundToInt()
