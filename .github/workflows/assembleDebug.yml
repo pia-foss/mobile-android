@@ -190,16 +190,22 @@ jobs:
 
       - name: Generate unique build ID
         id: build_id
+        # On pull_request, github.ref_name is "<number>/merge" and github.sha is the temporary
+        # merge commit, so use the PR's own head branch and commit instead.
+        env:
+          REF_NAME: ${{ github.head_ref }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          # Slugify the branch name: lowercase, replace non-alphanumeric with hyphens, trim trailing hyphens
-          BRANCH_SLUG=$(echo "${{ github.head_ref }}" \
+          BRANCH_SLUG=$(echo "$REF_NAME" \
             | tr '[:upper:]' '[:lower:]' \
             | sed 's/[^a-z0-9]/-/g' \
             | sed 's/-\+/-/g' \
             | sed 's/^-\|-$//g' \
             | cut -c1-40)
 
-          BUILD_ID="pr-${{ github.event.pull_request.number }}-${BRANCH_SLUG}"
+          SHORT_SHA=$(echo "$SHA" | cut -c1-7)
+          BUILD_ID="pr-${PR_NUMBER}-${BRANCH_SLUG}-${SHORT_SHA}"
           echo "build_id=${BUILD_ID}" >> "$GITHUB_OUTPUT"
           echo "Build ID: ${BUILD_ID}"
 
