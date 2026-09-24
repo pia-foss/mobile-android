@@ -254,10 +254,10 @@ jobs:
         with:
           cache-read-only: false   # write so the e2e-testing matrix jobs can read a warm build cache
 
-      # All 12 e2e-testing matrix legs build this exact same noinapp debug + androidTest
+      # All e2e-testing matrix legs build this exact same noinapp debug + androidTest
       # variant (they only differ by which test class they filter to). Building it once here
       # with the Gradle build cache enabled means the matrix jobs hit cache on compile/dex/
-      # resource tasks instead of redundantly rebuilding the app from scratch 12 times in parallel.
+      # resource tasks instead of redundantly rebuilding the app from scratch in every leg.
       # Scoped to :app: (matching what :app:connectedNoinappDebugAndroidTest itself builds) so we
       # don't also build every library module's own standalone androidTest variant, which nothing
       # in this workflow otherwise exercises.
@@ -270,7 +270,7 @@ jobs:
   # Populates the AVD snapshot cache with no secrets in the job environment at all (no
   # GITHUB_TOKEN, no PIA_VALID_*), so a compromised reactivecircus/android-emulator-runner
   # invocation while creating the snapshot has nothing to exfiltrate. Runs once, ahead of the
-  # 12-leg matrix below, instead of racing a cache-miss snapshot build inside every credentialed
+  # matrix below, instead of racing a cache-miss snapshot build inside every credentialed
   # matrix job.
   warm-avd-cache:
     name: Warm AVD snapshot cache
@@ -339,18 +339,12 @@ jobs:
       fail-fast: false
       matrix:
         test-class:
+          # Essential subset only; the full suite runs manually via smoke-tests.yml.
           - DedicatedIpTests
           - E2ETests
-          - HelpSettingsTests
           - LoginTests
           - LogoutTests
           - ProtocolTests
-          - QuickConnectTests
-          - QuickSettingsTests
-          - RegionLatencyRefreshTests
-          - SideMenuTests
-          - WireGuardLocationTests
-          - OpenVpnEncryptionTests
     steps:
       - name: Checkout the code
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
