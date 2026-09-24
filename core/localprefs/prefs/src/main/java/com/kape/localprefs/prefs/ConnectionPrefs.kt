@@ -109,6 +109,8 @@ class ConnectionPrefs(
 
     suspend fun isDisconnectedByUserNow(): Boolean = getDisconnectedByUser().first()
 
+    suspend fun getLastSnoozeEndTimeNow(): Long = getLastSnoozeEndTime().first()
+
     suspend fun setSelectedVpnServer(server: VpnServer?) {
         dataStore.edit { it[PRE_SELECTED_VPN_SERVER] = Json.encodeToString(server) }
     }

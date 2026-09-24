@@ -56,11 +56,32 @@ fun AppBar(
     val isConnected by viewModel.isConnected.collectAsState()
     val connectionStatus by viewModel.connectionStatus.collectAsStateWithLifecycle()
     val title by viewModel.currentTitle.collectAsStateWithLifecycle()
+    val snoozeCountdown by viewModel.snoozeCountdown.collectAsStateWithLifecycle()
+
+    val showSnoozeCountdown =
+        snoozeCountdown != null &&
+            type in listOf(AppBarType.Connection, AppBarType.Customization) &&
+            connectionStatus in
+            listOf(
+                ConnectionStatus.DISCONNECTED,
+                ConnectionStatus.DISCONNECTING,
+                ConnectionStatus.PAUSED,
+            )
 
     AppBarContent(
         type = type,
         status = if (isConnected) connectionStatus else ConnectionStatus.ERROR,
-        title = if (isConnected) title else stringResource(id = R.string.no_internet_connection),
+        title =
+            when {
+                !isConnected -> stringResource(id = R.string.no_internet_connection)
+                showSnoozeCountdown ->
+                    stringResource(
+                        id = R.string.snoozed_to_format,
+                        snoozeCountdown.orEmpty(),
+                    )
+
+                else -> title
+            },
         onLeftIconClick,
         onRightIconClick,
     )

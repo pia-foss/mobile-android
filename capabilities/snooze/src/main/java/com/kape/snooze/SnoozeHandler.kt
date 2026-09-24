@@ -12,6 +12,9 @@ import com.kape.vpnlauncher.VpnLauncher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
 import java.util.Calendar
@@ -27,13 +30,22 @@ class SnoozeHandler(
 ) {
     val isSnoozeActive = mutableStateOf(false)
     val timeUntilResume = mutableIntStateOf(0)
+    private val _snoozeEndTime = MutableStateFlow(0L)
+
+    // Epoch millis at which the active snooze ends, or 0 when no snooze is active.
+    val snoozeEndTime: StateFlow<Long> = _snoozeEndTime.asStateFlow()
     private var countDownJob: Job? = null
+
+    init {
+        restoreSnooze()
+    }
 
     fun setSnooze(interval: Int) {
         ioScope.launch {
             isSnoozeActive.value = true
             val nowInMillis = Calendar.getInstance().timeInMillis
             val end = nowInMillis + interval
+            _snoozeEndTime.value = end
             setCountdownTimer(end)
             val workRequest =
                 OneTimeWorkRequestBuilder<SnoozeWorker>()
@@ -52,10 +64,24 @@ class SnoozeHandler(
     fun cancelSnooze() {
         ioScope.launch {
             isSnoozeActive.value = false
+            _snoozeEndTime.value = 0L
             workManager.cancelUniqueWork(WorkerTags.SNOOZE_WORKER)
             connectionPrefs.setLastSnoozeEndTime(0)
             countDownJob?.cancel()
             countDownJob = null
+        }
+    }
+
+    // The in-memory state is lost when the process dies, but the SnoozeWorker stays scheduled and the
+    // end time is persisted, so pick an ongoing snooze back up from prefs.
+    private fun restoreSnooze() {
+        ioScope.launch {
+            val end = connectionPrefs.getLastSnoozeEndTimeNow()
+            if (end > Calendar.getInstance().timeInMillis && _snoozeEndTime.value == 0L) {
+                isSnoozeActive.value = true
+                _snoozeEndTime.value = end
+                setCountdownTimer(end)
+            }
         }
     }
 
