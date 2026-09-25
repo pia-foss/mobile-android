@@ -405,7 +405,7 @@ class ConnectionViewModel(
 
     private fun disconnect() {
         viewModelScope.launch(ioDispatcher) {
-            if (settingsPrefs.isAutomationEnabled.value) {
+            if (settingsPrefs.isAutomationEnabledNow()) {
                 prefs.setDisconnectedByUser(true)
             }
             connectionManager.disconnect()
