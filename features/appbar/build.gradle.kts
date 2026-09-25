@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:contracts"))
     implementation(project(":core:data"))
+    implementation(project(":capabilities:snooze"))
     implementation(libs.bundles.compose)
     androidTestImplementation(libs.bundles.composeandroidtest)
     implementation(libs.viewmodel)

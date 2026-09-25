@@ -4,6 +4,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.Router
 import com.kape.data.DI
+import com.kape.snooze.SnoozeHandler
 import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
@@ -17,6 +18,7 @@ class AppBarModule {
         router: Router,
         connectionStatusProvider: ConnectionStatusProvider,
         networkConnectionListener: NetworkConnectionListener,
+        snoozeHandler: SnoozeHandler,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): AppBarViewModel =
@@ -26,5 +28,6 @@ class AppBarModule {
             ioDispatcher,
             mainDispatcher,
             networkConnectionListener,
+            snoozeHandler,
         )
 }
