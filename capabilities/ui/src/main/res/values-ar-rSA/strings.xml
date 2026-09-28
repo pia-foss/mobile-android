@@ -348,6 +348,10 @@
   <string name="yearly_month_ending">%s/شهريًا</string>
   <string name="yearly_ending">%s كل عام</string>
   <string name="year_ending">%s/سنويًا</string>
+  <string name="billed_once_a_year">%s تُدفع مرة سنويًا</string>
+  <string name="save_percentage">وفر %d%%</string>
+  <string name="free_trial_available">جرب مجانًا لمدة %d يومًا</string>
+  <string name="free_trial_unavailable">لا يوجد إصدار تجريبي مجاني لهذه الباقة</string>
   <string name="subscribe_screen_unrestricted_access">وصول غير مقيد للخوادم حول العالم</string>
   <string name="subscribe_screen_connection_speeds">سرعات اتصال 10 جيجابايت بالثانية</string>
   <string name="subscribe_screen_unlimited_devices">الحماية على أجهزة غير محدودة</string>

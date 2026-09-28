@@ -348,6 +348,10 @@
   <string name="yearly_month_ending">%s/월</string>
   <string name="yearly_ending">연 %s</string>
   <string name="year_ending">%s/년</string>
+  <string name="billed_once_a_year">매년 %s 청구</string>
+  <string name="save_percentage">%d%% 할인</string>
+  <string name="free_trial_available">%d일 동안 무료로 체험해 보세요</string>
+  <string name="free_trial_unavailable">해당 요금제에는 무료 체험이 제공되지 않습니다</string>
   <string name="subscribe_screen_unrestricted_access">제한 없는 전 세계 서버 액세스</string>
   <string name="subscribe_screen_connection_speeds">10Gbps 연결 속도</string>
   <string name="subscribe_screen_unlimited_devices">무제한 기기 보호</string>

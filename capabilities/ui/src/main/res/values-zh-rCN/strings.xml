@@ -348,6 +348,10 @@
   <string name="yearly_month_ending">%s/月</string>
   <string name="yearly_ending">%s/年</string>
   <string name="year_ending">%s/年</string>
+  <string name="billed_once_a_year">每年一次性收取 %s</string>
+  <string name="save_percentage">立省 %d%%</string>
+  <string name="free_trial_available">免费试用 %d 天</string>
+  <string name="free_trial_unavailable">此套餐无免费试用</string>
   <string name="subscribe_screen_unrestricted_access">随心访问全球服务器，无任何限制</string>
   <string name="subscribe_screen_connection_speeds">10 Gbps 连接速度</string>
   <string name="subscribe_screen_unlimited_devices">保护无限台设备</string>

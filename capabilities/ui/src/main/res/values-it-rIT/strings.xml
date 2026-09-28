@@ -344,10 +344,14 @@
   <string name="privacy_policy">Informativa sulla Privacy</string>
   <string name="and">e</string>
   <string name="terms_of_service">Termini di servizio</string>
-  <string name="monthly_ending">%s al mese</string>
+  <string name="monthly_ending">%s/mese</string>
   <string name="yearly_month_ending">%s al mese</string>
   <string name="yearly_ending">%s all\'anno</string>
   <string name="year_ending">%s all’anno</string>
+  <string name="billed_once_a_year">Pagamento annuale di %s</string>
+  <string name="save_percentage">%d%% di risparmio</string>
+  <string name="free_trial_available">Provala GRATIS %d giorni</string>
+  <string name="free_trial_unavailable">Nessuna prova gratuita con questo piano</string>
   <string name="subscribe_screen_unrestricted_access">Accesso illimitato ai server di tutto il mondo</string>
   <string name="subscribe_screen_connection_speeds">Velocità di connessione a 10 Gbps</string>
   <string name="subscribe_screen_unlimited_devices">Protezione su dispositivi illimitati</string>

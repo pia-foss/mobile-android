@@ -348,6 +348,10 @@
   <string name="yearly_month_ending">%s/mes</string>
   <string name="yearly_ending">%s al año</string>
   <string name="year_ending">%s/año</string>
+  <string name="billed_once_a_year">%s facturado una vez al año</string>
+  <string name="save_percentage">Ahorre %d %%</string>
+  <string name="free_trial_available">Pruebe GRATIS durante %d días</string>
+  <string name="free_trial_unavailable">Plan sin prueba gratis</string>
   <string name="subscribe_screen_unrestricted_access">Acceso ilimitado a servidores internacionales</string>
   <string name="subscribe_screen_connection_speeds">Velocidad de conexión de 10 Gbps</string>
   <string name="subscribe_screen_unlimited_devices">Protección sin límite de dispositivos</string>

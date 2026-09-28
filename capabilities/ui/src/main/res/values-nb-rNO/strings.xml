@@ -348,6 +348,10 @@
   <string name="yearly_month_ending">%s/md.</string>
   <string name="yearly_ending">%s per år</string>
   <string name="year_ending">%s/år</string>
+  <string name="billed_once_a_year">%s faktureres årlig</string>
+  <string name="save_percentage">Spar %d% %</string>
+  <string name="free_trial_available">Prøv gratis i %d dager</string>
+  <string name="free_trial_unavailable">Ingen gratisperiode med dette abonnementet</string>
   <string name="subscribe_screen_unrestricted_access">Ubegrenset tilgang til globale servere</string>
   <string name="subscribe_screen_connection_speeds">Tilkoblingshastigheter på opptil 10 Gbps</string>
   <string name="subscribe_screen_unlimited_devices">Beskyttelse på et ubegrenset antall enheter</string>

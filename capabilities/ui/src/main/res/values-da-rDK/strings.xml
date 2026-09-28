@@ -344,10 +344,14 @@
   <string name="privacy_policy">Databeskyttelsespolitik</string>
   <string name="and">og</string>
   <string name="terms_of_service">Vilkår for brug</string>
-  <string name="monthly_ending">%s/md.</string>
+  <string name="monthly_ending">%s/måned</string>
   <string name="yearly_month_ending">%s/md.</string>
   <string name="yearly_ending">%s pr. år</string>
   <string name="year_ending">%s/år</string>
+  <string name="billed_once_a_year">%s faktureret én gang årligt</string>
+  <string name="save_percentage">Spar %d% %</string>
+  <string name="free_trial_available">Prøv gratis i %d dage</string>
+  <string name="free_trial_unavailable">Ingen gratis prøveperiode på dette abonnement</string>
   <string name="subscribe_screen_unrestricted_access">Ubegrænset adgang til servere over hele verden</string>
   <string name="subscribe_screen_connection_speeds">Forbindelseshastigheder på 10 Gbps</string>
   <string name="subscribe_screen_unlimited_devices">Beskyttelse på et ubegrænset antal enheder</string>
