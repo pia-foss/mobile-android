@@ -7,6 +7,7 @@ import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.VpnRegionPrefs
+import com.kape.snooze.SnoozeHandler
 import com.kape.utils.UpdateAvailableManager
 import com.kape.vpnregions.utils.RegionListProvider
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
@@ -27,6 +28,7 @@ class VpnRegionModule {
         connectionInfoProvider: ConnectionInfoProvider,
         connectionManager: ConnectionManager,
         updateAvailableManager: UpdateAvailableManager,
+        snoozeHandler: SnoozeHandler,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): VpnRegionSelectionViewModel =
         VpnRegionSelectionViewModel(
@@ -38,6 +40,7 @@ class VpnRegionModule {
             connectionInfoProvider,
             connectionManager,
             updateAvailableManager,
+            snoozeHandler,
             ioDispatcher,
         )
 }

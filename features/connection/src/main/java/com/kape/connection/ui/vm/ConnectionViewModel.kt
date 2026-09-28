@@ -374,6 +374,7 @@ class ConnectionViewModel(
         }
         viewModelScope.launch(ioDispatcher) {
             vpnRegionPrefs.selectVpnServer(server)
+            snoozeHandler.cancelSnooze()
             connectionManager.reconnect(server, ::callback)
         }
     }

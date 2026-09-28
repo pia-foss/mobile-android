@@ -27,6 +27,7 @@ dependencies {
     implementation(project(":core:localprefs:prefs"))
     implementation(project(":core:localprefs:data"))
     implementation(project(":capabilities:ui"))
+    implementation(project(":capabilities:snooze"))
     implementation(project(":features:appbar"))
 
     implementation(libs.bundles.compose)
