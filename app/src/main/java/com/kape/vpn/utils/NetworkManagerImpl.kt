@@ -5,6 +5,7 @@ import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.NetworkManager
 import com.kape.data.ConnectionStatus
 import com.kape.data.DI
+import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.networkmanagement.data.NetworkBehavior
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
+import java.util.Calendar
 
 @Singleton([NetworkManager::class])
 class NetworkManagerImpl(
@@ -23,6 +25,7 @@ class NetworkManagerImpl(
     private val networkPrefs: NetworkManagementPrefs,
     private val vpnLauncher: VpnLauncher,
     private val settingsPrefs: SettingsPrefs,
+    private val connectionPrefs: ConnectionPrefs,
     private val connectionStatusProvider: ConnectionStatusProvider,
     @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : NetworkManager {
@@ -32,6 +35,10 @@ class NetworkManagerImpl(
     ) {
         ioScope.launch {
             if (!settingsPrefs.isAutomationEnabledNow()) return@launch
+            // An active snooze is an explicit user choice to stay disconnected for a while, so
+            // automation rules must not override it. Read the persisted end time rather than the
+            // in-memory snooze state, which may not be restored yet after process death.
+            if (connectionPrefs.getLastSnoozeEndTimeNow() > Calendar.getInstance().timeInMillis) return@launch
 
             networkPrefs.getRuleForNetwork(ssid).first()?.let {
                 applyNetworkRule(it)
