@@ -344,10 +344,14 @@
   <string name="privacy_policy">Политика конфиденциальности</string>
   <string name="and">и</string>
   <string name="terms_of_service">Условия использования</string>
-  <string name="monthly_ending">%s/мес.</string>
+  <string name="monthly_ending">%s/месяц</string>
   <string name="yearly_month_ending">%s/мес.</string>
   <string name="yearly_ending">%s в год</string>
   <string name="year_ending">%s в год</string>
+  <string name="billed_once_a_year">%s к оплате раз в год</string>
+  <string name="save_percentage">Скидка %d%%</string>
+  <string name="free_trial_available">БЕСПЛАТНО в течение %d дн.</string>
+  <string name="free_trial_unavailable">Для этого тарифа нет бесплатного пробного периода</string>
   <string name="subscribe_screen_unrestricted_access">Неограниченный доступ к серверам по всему миру</string>
   <string name="subscribe_screen_connection_speeds">Подключения 10 Гбит/с</string>
   <string name="subscribe_screen_unlimited_devices">Защита любого количества устройств</string>

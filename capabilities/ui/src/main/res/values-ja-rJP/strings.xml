@@ -348,6 +348,10 @@
   <string name="yearly_month_ending">%s/月</string>
   <string name="yearly_ending">%s/年</string>
   <string name="year_ending">%s/年</string>
+  <string name="billed_once_a_year">%sが年に一度請求されます</string>
+  <string name="save_percentage">%d%%オフ</string>
+  <string name="free_trial_available">%d日間無料でお試しください</string>
+  <string name="free_trial_unavailable">本プランは無料トライアル対象外です</string>
   <string name="subscribe_screen_unrestricted_access">世界中のサーバーへの無制限アクセス</string>
   <string name="subscribe_screen_connection_speeds">10 Gbpsの通信速度</string>
   <string name="subscribe_screen_unlimited_devices">保護できる端末台数が無制限</string>

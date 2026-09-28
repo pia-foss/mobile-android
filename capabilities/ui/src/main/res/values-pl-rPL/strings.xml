@@ -348,6 +348,10 @@
   <string name="yearly_month_ending">%s/mies.</string>
   <string name="yearly_ending">%s rocznie</string>
   <string name="year_ending">%s/rok</string>
+  <string name="billed_once_a_year">%s naliczane raz do roku</string>
+  <string name="save_percentage">Oszczędź %d%%</string>
+  <string name="free_trial_available">Wypróbuj ZA DARMO przez %d dni</string>
+  <string name="free_trial_unavailable">Nie ma darmowej wersji próbnej tego planu</string>
   <string name="subscribe_screen_unrestricted_access">Nieograniczony dostęp do serwerów na całym świecie</string>
   <string name="subscribe_screen_connection_speeds">Prędkość połączenia na poziomie 10 Gb/s</string>
   <string name="subscribe_screen_unlimited_devices">Ochrona nieograniczonej liczby urządzeń</string>

@@ -344,10 +344,14 @@
   <string name="privacy_policy">Privacybeleid</string>
   <string name="and">en</string>
   <string name="terms_of_service">Servicevoorwaarden</string>
-  <string name="monthly_ending">%s/mnd</string>
+  <string name="monthly_ending">%s/maand</string>
   <string name="yearly_month_ending">%s/mnd</string>
   <string name="yearly_ending">%s per jaar</string>
   <string name="year_ending">%s/jaar</string>
+  <string name="billed_once_a_year">Je betaalt %s per jaar</string>
+  <string name="save_percentage">Bespaar %d%%</string>
+  <string name="free_trial_available">%d dagen GRATIS proberen</string>
+  <string name="free_trial_unavailable">Geen gratis proefperiode voor dit abonnement</string>
   <string name="subscribe_screen_unrestricted_access">Onbeperkte toegang tot wereldwijde servers</string>
   <string name="subscribe_screen_connection_speeds">Verbindingssnelheden tot 10 Gbps</string>
   <string name="subscribe_screen_unlimited_devices">Bescherming op onbeperkte apparaten</string>

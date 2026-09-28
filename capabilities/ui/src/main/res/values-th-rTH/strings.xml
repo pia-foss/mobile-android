@@ -348,6 +348,10 @@
   <string name="yearly_month_ending">%s/เดือน</string>
   <string name="yearly_ending">%s ต่อปี</string>
   <string name="year_ending">%s/ปี</string>
+  <string name="billed_once_a_year">เรียกเก็บเงิน %s ต่อปี</string>
+  <string name="save_percentage">ประหยัด %d%%</string>
+  <string name="free_trial_available">ลองใช้ฟรีเป็นเวลา %d วัน</string>
+  <string name="free_trial_unavailable">แผนนี้ไม่มีการทดลองใช้ฟรี</string>
   <string name="subscribe_screen_unrestricted_access">การเข้าถึงเซิร์ฟเวอร์ทั่วโลกอย่างไม่มีจำกัด</string>
   <string name="subscribe_screen_connection_speeds">ความเร็วการเชื่อมต่อ 10 Gbps</string>
   <string name="subscribe_screen_unlimited_devices">การป้องกันบนอุปกรณ์ต่าง ๆ ไม่จำกัดจำนวน</string>

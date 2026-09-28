@@ -344,10 +344,14 @@
   <string name="privacy_policy">Datenschutzrichtlinie</string>
   <string name="and">und</string>
   <string name="terms_of_service">Nutzungsbedingungen</string>
-  <string name="monthly_ending">%s/Monat</string>
+  <string name="monthly_ending">%s pro Monat</string>
   <string name="yearly_month_ending">%s/Monat</string>
   <string name="yearly_ending">%s pro Jahr</string>
   <string name="year_ending">%s/Jahr</string>
+  <string name="billed_once_a_year">%s jährlich abgerechnet</string>
+  <string name="save_percentage">Spare %d%%</string>
+  <string name="free_trial_available">%d Tage lang KOSTENLOS testen</string>
+  <string name="free_trial_unavailable">Für diesen Tarif gibt es keine kostenlose Testversion</string>
   <string name="subscribe_screen_unrestricted_access">Uneingeschränkter Zugang zu Server weltweit</string>
   <string name="subscribe_screen_connection_speeds">Verbindungsgeschwindigkeit von 10-Gbit/s</string>
   <string name="subscribe_screen_unlimited_devices">Schutz auf unbegrenzt vielen Geräten</string>

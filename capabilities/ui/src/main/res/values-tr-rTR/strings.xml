@@ -348,6 +348,10 @@
   <string name="yearly_month_ending">%s/ay</string>
   <string name="yearly_ending">her yıl %s</string>
   <string name="year_ending">%s/yıl</string>
+  <string name="billed_once_a_year">%s yılda bir kez faturalandırılır</string>
+  <string name="save_percentage">%%%d Az Öde</string>
+  <string name="free_trial_available">%d Gün ÜCRETSİZ Dene</string>
+  <string name="free_trial_unavailable">Bu planda ücretsiz deneme yok</string>
   <string name="subscribe_screen_unrestricted_access">Dünya çapındaki sunuculara kısıtsız erişim</string>
   <string name="subscribe_screen_connection_speeds">10 Gbps bağlantı hızı</string>
   <string name="subscribe_screen_unlimited_devices">Sınırsız sayıda cihaz için koruma</string>

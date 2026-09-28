@@ -348,6 +348,10 @@
   <string name="yearly_month_ending">%s/mois</string>
   <string name="yearly_ending">%s par an</string>
   <string name="year_ending">%s/an</string>
+  <string name="billed_once_a_year">%s facturés une fois par an</string>
+  <string name="save_percentage">Économisez %d%%</string>
+  <string name="free_trial_available">Essai GRATUIT de %d jours</string>
+  <string name="free_trial_unavailable">Aucun essai gratuit avec cet abonnement</string>
   <string name="subscribe_screen_unrestricted_access">Accès illimité à des serveurs répartis dans le monde entier</string>
   <string name="subscribe_screen_connection_speeds">Débits de connexion de 10 Gb/s</string>
   <string name="subscribe_screen_unlimited_devices">Protection sur un nombre illimité d\'appareils</string>
