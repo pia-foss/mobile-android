@@ -122,6 +122,7 @@
     <string name="manage_automation_title">Manage Automation</string>
     <string name="manage_automation_description">Configure how PIA behaves on connection to WiFi or cellular networks. This excludes disconnecting manually. \n\nThis feature is experimental.</string>
     <string name="manage_automation_add">Add new rule</string>
+    <string name="manage_automation_snooze_notice">Automation rules are paused while VPN Snooze is active.</string>
     <string name="nmt_secure_wifi">Secure Wi-Fi</string>
     <string name="nmt_open_wifi">Wi-Fi</string>
     <string name="nmt_mobile_data">Mobile data</string>

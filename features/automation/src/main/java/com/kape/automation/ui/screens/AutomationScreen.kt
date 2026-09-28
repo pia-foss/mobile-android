@@ -125,6 +125,11 @@ fun AutomationScreenContent(
                     modifier = Modifier.padding(16.dp),
                 )
 
+                OnboardingDescriptionText(
+                    content = stringResource(id = R.string.manage_automation_snooze_notice),
+                    modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 16.dp),
+                )
+
                 LazyVerticalGrid(columns = GridCells.Fixed(2)) {
                     items(rules) { networkItem ->
                         val icon: Int

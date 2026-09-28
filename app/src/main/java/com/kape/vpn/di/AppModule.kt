@@ -337,6 +337,7 @@ class AppModule {
         networkPrefs: NetworkManagementPrefs,
         vpnLauncher: VpnLauncher,
         settingsPrefs: SettingsPrefs,
+        connectionPrefs: ConnectionPrefs,
         connectionStatusProvider: ConnectionStatusProvider,
         @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
     ): NetworkManager =
@@ -345,6 +346,7 @@ class AppModule {
             networkPrefs,
             vpnLauncher,
             settingsPrefs,
+            connectionPrefs,
             connectionStatusProvider,
             ioScope,
         )
