@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.junit5)
 }
 
 android {
@@ -21,4 +22,8 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.tink.android)
     implementation(libs.coroutines)
+
+    testImplementation(libs.bundles.kointest)
+    testImplementation(libs.bundles.test)
+    testRuntimeOnly(libs.launcher)
 }
