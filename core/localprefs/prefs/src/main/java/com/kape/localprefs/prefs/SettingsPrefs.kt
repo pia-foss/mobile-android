@@ -54,6 +54,12 @@ private val AUTOMATION = booleanPreferencesKey("setting-automation")
 private val MACE = booleanPreferencesKey("setting-mace")
 
 /**
+ * Protocol settings used to persist an explicit `mtu` field. It is now derived from
+ * `useSmallPackets`, so previously stored JSON still carries a stale `mtu` key that must be ignored.
+ */
+internal val protocolSettingsJson = Json { ignoreUnknownKeys = true }
+
+/**
  * The protocol default is flipping from WireGuard to Automatic, but only for installs that have
  * never resolved a default before — an existing install must keep behaving as WireGuard even
  * though it may never have written [SELECTED_PROTOCOL] explicitly (that key is only ever written
@@ -199,15 +205,15 @@ class SettingsPrefs(
     }
 
     suspend fun setWireGuardSettings(settings: WireGuardSettings) {
-        dataStore.edit { it[WIRE_GUARD_SETTINGS] = Json.encodeToString(settings) }
+        dataStore.edit { it[WIRE_GUARD_SETTINGS] = protocolSettingsJson.encodeToString(settings) }
     }
 
     suspend fun setOpenVpnSettings(settings: OpenVpnSettings) {
-        dataStore.edit { it[OPEN_VPN_SETTINGS] = Json.encodeToString(settings) }
+        dataStore.edit { it[OPEN_VPN_SETTINGS] = protocolSettingsJson.encodeToString(settings) }
     }
 
     suspend fun setAutoSettings(settings: AutomaticSettings) {
-        dataStore.edit { it[AUTO_SETTINGS] = Json.encodeToString(settings) }
+        dataStore.edit { it[AUTO_SETTINGS] = protocolSettingsJson.encodeToString(settings) }
     }
 
     suspend fun setSelectedDnsOption(dnsOptions: DnsOptions) {
@@ -223,6 +229,8 @@ class SettingsPrefs(
     suspend fun getOpenVpnSettingsNow(): OpenVpnSettings = getOpenVpnSettings().first()
 
     suspend fun getWireGuardSettingsNow(): WireGuardSettings = getWireGuardSettings().first()
+
+    suspend fun getAutoSettingsNow(): AutomaticSettings = getAutoSettings().first()
 
     suspend fun isMaceEnabledNow(): Boolean = getMaceEnabled().first()
 
@@ -322,17 +330,17 @@ class SettingsPrefs(
 
     private fun getWireGuardSettings(): Flow<WireGuardSettings> =
         dataStore.data.map { prefs ->
-            prefs[WIRE_GUARD_SETTINGS]?.let { Json.decodeFromString(it) } ?: WireGuardSettings()
+            prefs[WIRE_GUARD_SETTINGS]?.let { protocolSettingsJson.decodeFromString(it) } ?: WireGuardSettings()
         }
 
     private fun getOpenVpnSettings(): Flow<OpenVpnSettings> =
         dataStore.data.map { prefs ->
-            prefs[OPEN_VPN_SETTINGS]?.let { Json.decodeFromString(it) } ?: OpenVpnSettings()
+            prefs[OPEN_VPN_SETTINGS]?.let { protocolSettingsJson.decodeFromString(it) } ?: OpenVpnSettings()
         }
 
     private fun getAutoSettings(): Flow<AutomaticSettings> =
         dataStore.data.map { prefs ->
-            prefs[AUTO_SETTINGS]?.let { Json.decodeFromString(it) } ?: AutomaticSettings()
+            prefs[AUTO_SETTINGS]?.let { protocolSettingsJson.decodeFromString(it) } ?: AutomaticSettings()
         }
 
     private fun getSelectedDnsOption(): Flow<DnsOptions> =

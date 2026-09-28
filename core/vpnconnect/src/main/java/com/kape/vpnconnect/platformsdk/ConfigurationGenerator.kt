@@ -284,9 +284,10 @@ class ConfigurationGenerator(
         dnsServers: List<String> = emptyList(),
     ): List<VpnConfiguration> {
         val isCensorship = COUNTRY_LIST.contains(countryDetector.detectCountry())
-        val wireGuardSettings = automaticWireGuardSettings()
-        val udpSettings = automaticOpenVpnUdpSettings()
-        val tcpSettings = automaticOpenVpnTcpSettings()
+        val useSmallPackets = settingsPrefs.getAutoSettingsNow().useSmallPackets
+        val wireGuardSettings = automaticWireGuardSettings(useSmallPackets)
+        val udpSettings = automaticOpenVpnUdpSettings(useSmallPackets)
+        val tcpSettings = automaticOpenVpnTcpSettings(useSmallPackets)
         val awgObfuscation = connectionPrefs.awgObfuscation.first()
 
         val awg = { generateAwgVpnConfigurations(wireGuardSettings.mtu, awgObfuscation, server, dnsServers, isCensorship) }
@@ -314,11 +315,12 @@ class ConfigurationGenerator(
         return Pair(username, password)
     }
 
-    private fun automaticWireGuardSettings() = WireGuardSettings()
+    private fun automaticWireGuardSettings(useSmallPackets: Boolean) = WireGuardSettings(useSmallPackets = useSmallPackets)
 
-    private fun automaticOpenVpnUdpSettings() = OpenVpnSettings()
+    private fun automaticOpenVpnUdpSettings(useSmallPackets: Boolean) = OpenVpnSettings(useSmallPackets = useSmallPackets)
 
-    private fun automaticOpenVpnTcpSettings() = OpenVpnSettings(transport = Transport.TCP, port = "80")
+    private fun automaticOpenVpnTcpSettings(useSmallPackets: Boolean) =
+        OpenVpnSettings(transport = Transport.TCP, port = "80", useSmallPackets = useSmallPackets)
 }
 
 fun AwgObfuscationSettings.toAmnezia(): WireGuardObfuscation.Amnezia =

@@ -3,7 +3,9 @@ package com.kape.vpn.provider
 import android.os.Build
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
+import com.kape.settings.data.WireGuardSettings
 import com.privateinternetaccess.csi.ICSIProvider
 import com.privateinternetaccess.csi.ProviderType
 import com.privateinternetaccess.csi.ReportType
@@ -141,6 +143,16 @@ class CsiDataProvider(
             }\n",
         )
         sb.append("Protocol: ${activeProtocol.name}\n")
+        val mtu =
+            when (activeProtocol) {
+                VpnProtocols.Automatic -> {
+                    val wgMtu = WireGuardSettings(useSmallPackets = settings.useSmallPackets).mtu
+                    val ovpnMtu = OpenVpnSettings(useSmallPackets = settings.useSmallPackets).mtu
+                    "WireGuard $wgMtu, OpenVPN $ovpnMtu"
+                }
+                else -> settings.mtu.toString()
+            }
+        sb.append("MTU: $mtu\n")
         // TODO: implement as part of https://polymoon.atlassian.net/browse/PIA-606,
         sb.append("\n~~ Blocking Settings ~~\n\n")
         sb.append("MACE: ${settingsPrefs.isMaceEnabled.value}\n")
