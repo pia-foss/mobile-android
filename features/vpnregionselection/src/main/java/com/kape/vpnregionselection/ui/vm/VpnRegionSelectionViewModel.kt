@@ -21,6 +21,7 @@ import com.kape.localprefs.prefs.VpnRegionPrefs
 import com.kape.regions.data.ServerData
 import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
+import com.kape.snooze.SnoozeHandler
 import com.kape.utils.UpdateAvailableManager
 import com.kape.utils.arrangeServers
 import com.kape.utils.filterServersByName
@@ -45,6 +46,7 @@ class VpnRegionSelectionViewModel(
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val connectionManager: ConnectionManager,
     private val updateAvailableManager: UpdateAvailableManager,
+    private val snoozeHandler: SnoozeHandler,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     val servers = mutableStateOf(emptyList<RegionServerItem<VpnServer>>())
@@ -98,6 +100,7 @@ class VpnRegionSelectionViewModel(
             if (connectionManager.isConnectionInProgress()) {
                 connectionManager.disconnect()
             }
+            snoozeHandler.cancelSnooze()
             connectionManager.connect(
                 connectTo,
                 true,
