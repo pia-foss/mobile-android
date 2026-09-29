@@ -5,11 +5,9 @@ import com.kape.data.auth.ApiResult
 import com.kape.data.auth.getApiError
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import kotlin.coroutines.resume
-import kotlin.time.Duration.Companion.milliseconds
 
 private const val STORE = "google_play"
 
@@ -22,13 +20,11 @@ private fun List<AccountRequestError>.toApiError(): ApiResult.Error {
 class AuthenticationDataSourceImpl(
     private val api: AndroidAccountAPI,
 ) : AuthenticationDataSource {
-    override suspend fun isUserLoggedIn(retryOnColdStart: Boolean): Boolean {
-        if (!retryOnColdStart) return hasTokens()
-        repeat(LOGIN_CHECK_ATTEMPTS) {
-            if (hasTokens()) return true
-            delay(LOGIN_CHECK_RETRY_DELAY_MS.milliseconds)
-        }
-        return false
+    // apiToken()/vpnToken() only read an in-memory cache that the account library fills lazily,
+    // so on a cold start (e.g. after a device reboot) they are null until the stored tokens load.
+    override suspend fun isUserLoggedIn(): Boolean {
+        if (!hasTokens()) loadPersistedTokens()
+        return hasTokens()
     }
 
     override suspend fun login(
@@ -93,10 +89,10 @@ class AuthenticationDataSourceImpl(
             }
         }
 
-    private fun hasTokens(): Boolean = !api.apiToken().isNullOrEmpty() && !api.vpnToken().isNullOrEmpty()
+    private suspend fun loadPersistedTokens() =
+        suspendCancellableCoroutine { cont ->
+            api.loadPersistedTokens { cont.resume(Unit) }
+        }
 
-    private companion object {
-        const val LOGIN_CHECK_ATTEMPTS = 5
-        const val LOGIN_CHECK_RETRY_DELAY_MS = 300L
-    }
+    private fun hasTokens(): Boolean = !api.apiToken().isNullOrEmpty() && !api.vpnToken().isNullOrEmpty()
 }
