@@ -263,6 +263,7 @@ class PiaService :
                 configurationGenerator = configurationGenerator,
                 connectionControllers = listOf(openVpnController, wireGuardController),
                 systemTunnel = systemTunnel,
+                logger = vpnServiceLogger,
             )
 
         sessionController = controller
@@ -288,6 +289,7 @@ class PiaService :
                             // going through stopSessionController(), so the lock can't be stranded.
                             KapeVPNConnectionStatus.Disconnected ->
                                 if (wakeLock.isHeld) wakeLock.release()
+
                             else -> Unit
                         }
                     }
