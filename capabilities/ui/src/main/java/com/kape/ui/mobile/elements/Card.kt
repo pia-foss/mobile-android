@@ -91,7 +91,7 @@ fun SubscriptionCard(
                 Column {
                     Spacer(Modifier.height(16.dp))
                     SignUpDurationText(
-                        content = stringResource(id = R.string.yearly),
+                        content = stringResource(id = if (isYearlyPlan) R.string.yearly else R.string.monthly),
                         modifier = Modifier,
                     )
                     Row {
