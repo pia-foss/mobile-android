@@ -74,6 +74,7 @@
   <string name="connecting">Verbinden&#8230;</string>
   <string name="reconnecting">Opnieuw verbinden&#8230;</string>
   <string name="not_connected">Niet verbonden</string>
+  <string name="snoozed_to_format">Gepauzeerd voor %s</string>
   <string name="connection_error">Verbindingsfout</string>
   <string name="vpn_protected">Beschermd</string>
   <string name="vpn_protected_to_format">Beschermd | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">Automatisering beheren</string>
   <string name="manage_automation_description">Configureer hoe PIA zich gedraagt bij verbinding via wifi of mobiele netwerken. Dit geldt niet wanneer de verbinding handmatig wordt verbroken.\n\nDeze functie is experimenteel.</string>
   <string name="manage_automation_add">Nieuwe regel toevoegen</string>
+  <string name="manage_automation_snooze_notice">Automatiseringsregels zijn gepauzeerd zolang VPN Snooze actief is.</string>
   <string name="nmt_secure_wifi">Beveiligd wifinetwerk</string>
   <string name="nmt_open_wifi">Wifi</string>
   <string name="nmt_mobile_data">Mobiele gegevens</string>

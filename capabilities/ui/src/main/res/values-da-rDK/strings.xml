@@ -74,6 +74,7 @@
   <string name="connecting">Forbinder&#8230;</string>
   <string name="reconnecting">Genopretter forbindelse&#8230;</string>
   <string name="not_connected">Ikke forbundet</string>
+  <string name="snoozed_to_format">Udsat i %s</string>
   <string name="connection_error">Forbindelsesfejl</string>
   <string name="vpn_protected">Beskyttet</string>
   <string name="vpn_protected_to_format">Beskyttet | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">Administrer automatisering</string>
   <string name="manage_automation_description">Konfigurer, hvordan PIA skal opføre sig ved forbindelse til wi-fi- eller mobilnetværk. Dette ekskluderer manuel afbrydelse.\n\nDenne funktion er eksperimentel.</string>
   <string name="manage_automation_add">Tilføj ny regel</string>
+  <string name="manage_automation_snooze_notice">Automatiseringsreglerne er sat på pause, mens VPN-udsættelsen er aktiv.</string>
   <string name="nmt_secure_wifi">Sikker wi-fi</string>
   <string name="nmt_open_wifi">Wi-fi</string>
   <string name="nmt_mobile_data">Mobildata</string>

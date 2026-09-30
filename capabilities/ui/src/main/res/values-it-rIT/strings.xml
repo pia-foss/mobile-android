@@ -74,6 +74,7 @@
   <string name="connecting">Connessione&#8230;</string>
   <string name="reconnecting">Riconnessione&#8230;</string>
   <string name="not_connected">Non Connesso</string>
+  <string name="snoozed_to_format">Posposta per %s</string>
   <string name="connection_error">Errore Connessione</string>
   <string name="vpn_protected">Protetto</string>
   <string name="vpn_protected_to_format">Protetto | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">Gestisci automazione</string>
   <string name="manage_automation_description">Configura il comportamento di PIA in caso di connessione a reti WiFi o di telefonia mobile. Ciò esclude la disconnessione manuale.\n\nQuesta funzionalità è sperimentale.</string>
   <string name="manage_automation_add">Aggiungi nuova regola</string>
+  <string name="manage_automation_snooze_notice">Le regole di automazione sono sospese mentre la funzione \"Posponi VPN\" è attiva.</string>
   <string name="nmt_secure_wifi">Wi-Fi sicuro</string>
   <string name="nmt_open_wifi">Wi-Fi</string>
   <string name="nmt_mobile_data">Dati mobili</string>

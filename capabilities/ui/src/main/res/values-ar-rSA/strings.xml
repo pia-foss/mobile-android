@@ -74,6 +74,7 @@
   <string name="connecting">جار الاتصال&#8230;</string>
   <string name="reconnecting">إعادة الاتصال&#8230;</string>
   <string name="not_connected">غير متصل</string>
+  <string name="snoozed_to_format">غفوة حتى %s</string>
   <string name="connection_error">خطأ في الاتصال</string>
   <string name="vpn_protected">محمي</string>
   <string name="vpn_protected_to_format">محمي | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">إدارة الأتمتة</string>
   <string name="manage_automation_description">تتيح لك هذه الميزة إدارة اتصال PIA بشبكات Wi-Fi أو الشبكات الخلوية باستثناء قطع الاتصال يدويا.\n\nهذه ميزة تجريبية.</string>
   <string name="manage_automation_add">إضافة قاعدة جديدة</string>
+  <string name="manage_automation_snooze_notice">إيقاف القواعد التلقائية مؤقتًا عندما تكون غفوة VPN نشطة.</string>
   <string name="nmt_secure_wifi">Wi-Fi آمن</string>
   <string name="nmt_open_wifi">Wi-Fi</string>
   <string name="nmt_mobile_data">بيانات الموبايل</string>

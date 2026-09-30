@@ -74,6 +74,7 @@
   <string name="connecting">&#8230;に接続中</string>
   <string name="reconnecting">&#8230;に再接続中</string>
   <string name="not_connected">未接続</string>
+  <string name="snoozed_to_format">%s 間スヌーズ</string>
   <string name="connection_error">接続エラー</string>
   <string name="vpn_protected">保護済み</string>
   <string name="vpn_protected_to_format">保護済み | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">自動化を管理</string>
   <string name="manage_automation_description">Wi-Fiまたはセルラーネットワークに接続する際のPIAの動作を構成します。構成する動作には手動での切断は含まれません。\n\nこの機能は実験的な機能です。</string>
   <string name="manage_automation_add">新しいルールを追加</string>
+  <string name="manage_automation_snooze_notice">VPNのスヌーズが有効な間は、自動化ルールが一時停止されます。</string>
   <string name="nmt_secure_wifi">セキュアWi-Fi</string>
   <string name="nmt_open_wifi">Wi-Fi</string>
   <string name="nmt_mobile_data">モバイルデータ</string>

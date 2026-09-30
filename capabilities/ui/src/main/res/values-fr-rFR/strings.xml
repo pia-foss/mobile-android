@@ -74,6 +74,7 @@
   <string name="connecting">Connexion&#8230;</string>
   <string name="reconnecting">Reconnexion&#8230;</string>
   <string name="not_connected">Non connecté</string>
+  <string name="snoozed_to_format">Connexion suspendue pendant %s</string>
   <string name="connection_error">Erreur de connexion</string>
   <string name="vpn_protected">Protégé</string>
   <string name="vpn_protected_to_format">Protégé | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">Gérer l\'automatisation</string>
   <string name="manage_automation_description">Configurez PIA lors d\'une connexion à un réseau Wi-Fi ou cellulaire, hors déconnexion manuelle.\n\nCette fonctionnalité est expérimentale.</string>
   <string name="manage_automation_add">Ajouter une nouvelle règle</string>
+  <string name="manage_automation_snooze_notice">Les règles d\'automatisation sont suspendues lorsque la fonction de mise en veille du VPN est active.</string>
   <string name="nmt_secure_wifi">Wi-Fi sécurisé</string>
   <string name="nmt_open_wifi">Wi-Fi</string>
   <string name="nmt_mobile_data">Données mobiles</string>
