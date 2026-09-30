@@ -74,6 +74,7 @@
   <string name="connecting">正在连接&#8230;</string>
   <string name="reconnecting">重新连接&#8230;</string>
   <string name="not_connected">未连接</string>
+  <string name="snoozed_to_format">已暂停，将在 %s 后恢复</string>
   <string name="connection_error">连接错误</string>
   <string name="vpn_protected">已受保护</string>
   <string name="vpn_protected_to_format">已受保护 | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">管理自动化</string>
   <string name="manage_automation_description">配置 PIA 在连接至 WiFi 或蜂窝网络时的行为。不包括手动断开连接。\n\n此功能仍处于测试期。</string>
   <string name="manage_automation_add">添加新规则</string>
+  <string name="manage_automation_snooze_notice">启用 VPN 暂停 (VPN Snooze) 功能期间，自动化规则也会同步暂停。</string>
   <string name="nmt_secure_wifi">安全 Wi-Fi</string>
   <string name="nmt_open_wifi">Wi-Fi</string>
   <string name="nmt_mobile_data">移动数据</string>

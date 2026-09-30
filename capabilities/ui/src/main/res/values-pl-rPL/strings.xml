@@ -74,6 +74,7 @@
   <string name="connecting">Łączenie&#8230;</string>
   <string name="reconnecting">Ponowne łączenie&#8230;</string>
   <string name="not_connected">Brak połączenia</string>
+  <string name="snoozed_to_format">Drzemka przez %s</string>
   <string name="connection_error">Błąd połączenia</string>
   <string name="vpn_protected">Ochrona</string>
   <string name="vpn_protected_to_format">Ochrona | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">Zarządzaj automatyzacją</string>
   <string name="manage_automation_description">Skonfiguruj zachowanie PIA podczas połączenia z siecią Wi-Fi lub komórkową. Wyklucza to odłączanie ręczne.\n\nTa funkcja jest w wersji eksperymentalnej.</string>
   <string name="manage_automation_add">Dodaj nową regułę</string>
+  <string name="manage_automation_snooze_notice">Na czas aktywacji drzemki VPN zasady automatyzacji są wstrzymane.</string>
   <string name="nmt_secure_wifi">Bezpieczne Wi-Fi</string>
   <string name="nmt_open_wifi">Wi-Fi</string>
   <string name="nmt_mobile_data">Dane mobilne</string>

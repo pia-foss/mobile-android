@@ -74,6 +74,7 @@
   <string name="connecting">Verbinden&#8230;</string>
   <string name="reconnecting">Verbinden&#8230;</string>
   <string name="not_connected">Nicht verbunden</string>
+  <string name="snoozed_to_format">Um %s stummgeschaltet</string>
   <string name="connection_error">Verbindungsfehler</string>
   <string name="vpn_protected">Geschützt</string>
   <string name="vpn_protected_to_format">Geschützt | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">Automatisierung verwalten</string>
   <string name="manage_automation_description">Legen Sie fest, wie sich PIA beim Verbindungsaufbau zu WLAN oder Mobilfunknetzen verhalten soll. Manuelles Trennen von Verbindungen ist hier ausgenommen.\n\nDiese Funktion ist experimentell.</string>
   <string name="manage_automation_add">Neue Regel hinzufügen</string>
+  <string name="manage_automation_snooze_notice">Die Automatisierungsregeln werden pausiert, solange VPN Snooze aktiv ist.</string>
   <string name="nmt_secure_wifi">Sicheres WLAN</string>
   <string name="nmt_open_wifi">WLAN</string>
   <string name="nmt_mobile_data">Mobile Daten</string>

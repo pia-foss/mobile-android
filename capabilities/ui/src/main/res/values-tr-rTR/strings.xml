@@ -74,6 +74,7 @@
   <string name="connecting">Bağlanıyor&#8230;</string>
   <string name="reconnecting">Yeniden bağlanıyor&#8230;</string>
   <string name="not_connected">Bağlı Değil</string>
+  <string name="snoozed_to_format">%s boyunca duraklatıldı</string>
   <string name="connection_error">Bağlantı Hatası</string>
   <string name="vpn_protected">Korunuyor</string>
   <string name="vpn_protected_to_format">Korunuyor | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">Otomasyonu Yönet</string>
   <string name="manage_automation_description">PIA\'nın, Wi-Fi veya hücresel ağlara bağlanırken nasıl davranacağını yapılandırın. Bağlantının manuel kesilmesi buna dahil değildir.\n\nBu özellik deneyseldir.</string>
   <string name="manage_automation_add">Yeni kural ekle</string>
+  <string name="manage_automation_snooze_notice">Otomasyon kuralları VPN Snooze aktif olduğunda duraklatılır.</string>
   <string name="nmt_secure_wifi">Güvenli Wi-Fi</string>
   <string name="nmt_open_wifi">Wi-Fi</string>
   <string name="nmt_mobile_data">Mobil veri</string>

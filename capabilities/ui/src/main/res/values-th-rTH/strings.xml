@@ -74,6 +74,7 @@
   <string name="connecting">กำลังเชื่อมต่อ&#8230;</string>
   <string name="reconnecting">กำลังเชื่อมต่อ&#8230;อีกครั้ง</string>
   <string name="not_connected">ไม่ได้เชื่อมต่อ</string>
+  <string name="snoozed_to_format">Snooze เป็นเวลา %s</string>
   <string name="connection_error">การเชื่อมต่อล้มเหลว</string>
   <string name="vpn_protected">ป้องกันแล้ว</string>
   <string name="vpn_protected_to_format">ป้องกันแล้ว | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">จัดการระบบอัตโนมัติ</string>
   <string name="manage_automation_description">กำหนดค่าวิธีการทำงานของ PIA ในการเชื่อมต่อกับ WiFi หรือเครือข่ายเซลลูลาร์ ซึ่งไม่ได้รวมถึงการยกเลิกการเชื่อมต่อด้วยตนเอง\n\nคุณลักษณะนี้อยู่ระหว่างการทดลอง</string>
   <string name="manage_automation_add">เพิ่มกฎใหม่</string>
+  <string name="manage_automation_snooze_notice">กฎการทำงานอัตโนมัติจะถูกหยุดชั่วคราวเมื่อโหมด VPN Snooze ถูกใช้งาน</string>
   <string name="nmt_secure_wifi">Wi-Fi ปลอดภัย</string>
   <string name="nmt_open_wifi">Wi-Fi</string>
   <string name="nmt_mobile_data">ข้อมูลเซลลูลาร์</string>

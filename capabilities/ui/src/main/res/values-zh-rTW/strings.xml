@@ -74,6 +74,7 @@
   <string name="connecting">正在連線&#8230;</string>
   <string name="reconnecting">重新連線&#8230;</string>
   <string name="not_connected">未連線</string>
+  <string name="snoozed_to_format">已暫停，將在 %s 後恢復</string>
   <string name="connection_error">連線錯誤</string>
   <string name="vpn_protected">已受保護</string>
   <string name="vpn_protected_to_format">已受保護 | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">管理自動功能</string>
   <string name="manage_automation_description">設定 PIA 在 WiFi 或行動數據網路連線時所執行的操作，不含手動解除連線。\n\n此功能仍為測試版。</string>
   <string name="manage_automation_add">添加新規則</string>
+  <string name="manage_automation_snooze_notice">啟用 VPN 暫停 (VPN Snooze) 功能期間，自動化規則亦會同步暫停。</string>
   <string name="nmt_secure_wifi">安全 Wi-Fi</string>
   <string name="nmt_open_wifi">Wi-Fi</string>
   <string name="nmt_mobile_data">行動數據</string>

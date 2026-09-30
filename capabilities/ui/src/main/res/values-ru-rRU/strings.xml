@@ -74,6 +74,7 @@
   <string name="connecting">Идет подключение&#8230;</string>
   <string name="reconnecting">Повторное подключение&#8230;</string>
   <string name="not_connected">Не подключено</string>
+  <string name="snoozed_to_format">Повторное подключение через %s</string>
   <string name="connection_error">Ошибка подключения</string>
   <string name="vpn_protected">Защищено</string>
   <string name="vpn_protected_to_format">Защищено | %s</string>
@@ -100,6 +101,7 @@
   <string name="manage_automation_title">Настроить автоматизацию</string>
   <string name="manage_automation_description">Настройте поведение PIA при подключении к Wi-Fi или мобильным сетям. Это исключает возможность отключения вручную.\n\nДанная функция является экспериментальной.</string>
   <string name="manage_automation_add">Добавить правило</string>
+  <string name="manage_automation_snooze_notice">Правила автоматизации не применяются, пока VPN в режиме ожидания.</string>
   <string name="nmt_secure_wifi">Безопасный Wi-Fi</string>
   <string name="nmt_open_wifi">Wi-Fi</string>
   <string name="nmt_mobile_data">Мобильная сеть</string>
