@@ -74,7 +74,12 @@ jobs:
           echo "Changed files:"
           echo "$CHANGED_FILES"
 
-          if echo "$CHANGED_FILES" | grep -E -q '(^|/)(build\.gradle(\.kts)?|settings\.gradle(\.kts)?|gradle\.properties|libs\.versions\.toml)$|^gradle/verification-metadata\.xml$|^gradle/wrapper/gradle-wrapper\.properties$'; then
+          if echo "$CHANGED_FILES" | grep -E -q '^gradle/libs\.versions\.toml$|^settings\.gradle\.kts$|^configuration/.*\.gradle\.kts$|^gradle/verification-metadata\.xml$|^gradle/wrapper/gradle-wrapper\.properties$'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          # Module build files only matter when they add a catalog reference (libs.*) - a first-time
+          # use of an existing alias can pull in artifacts that aren't in the metadata yet.
+          elif git diff "$MERGE_BASE" "$HEAD_SHA" -- '*.gradle.kts' | grep -E -v '^\+\+\+' | grep -E -q '^\+.*\blibs\.'; then
+            echo "Build file adds a version catalog reference."
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"
