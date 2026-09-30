@@ -127,7 +127,7 @@ class ConnectionManagerImplTest {
         coEvery { settingsPrefs.isShadowsocksObfuscationEnabledNow() } returns false
         coEvery { settingsPrefs.getVpnExcludedAppsNow() } returns emptyList()
         coEvery { settingsPrefs.isAutomationEnabledNow() } returns false
-        coEvery { authenticationDataSource.isUserLoggedIn(any()) } returns true
+        coEvery { authenticationDataSource.isUserLoggedIn() } returns true
         coEvery { connectionPrefs.isDisconnectedByUserNow() } returns false
         coEvery { connectionPrefs.getSelectedVpnServerNow() } returns null
 
@@ -287,7 +287,7 @@ class ConnectionManagerImplTest {
     @Test
     fun `connectToLastKnownOrOptimalServer - not logged in - does not connect`() =
         runTest {
-            coEvery { authenticationDataSource.isUserLoggedIn(any()) } returns false
+            coEvery { authenticationDataSource.isUserLoggedIn() } returns false
 
             connectionManager.connectToLastKnownOrOptimalServer()
 

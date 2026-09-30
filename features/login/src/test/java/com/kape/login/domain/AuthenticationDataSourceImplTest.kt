@@ -9,6 +9,7 @@ import com.privateinternetaccess.account.AndroidAccountAPI
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -27,6 +28,7 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
     internal fun setUp() {
         stopKoin()
         startKoin {}
+        every { api.loadPersistedTokens(any()) } answers { firstArg<() -> Unit>().invoke() }
         source = AuthenticationDataSourceImpl(api)
     }
 
@@ -95,39 +97,37 @@ internal class AuthenticationDataSourceImplTest : BaseTest() {
     }
 
     @Test
-    fun `isUserLoggedIn - logged in on first attempt - returns true without retrying`() =
+    fun `isUserLoggedIn - tokens already in memory - does not load persisted tokens`() =
         runTest {
             every { api.apiToken() } returns "apiToken"
             every { api.vpnToken() } returns "vpnToken"
 
-            assertEquals(true, source.isUserLoggedIn(retryOnColdStart = true))
+            assertEquals(true, source.isUserLoggedIn())
+            verify(exactly = 0) { api.loadPersistedTokens(any()) }
         }
 
     @Test
-    fun `isUserLoggedIn - logged in only after a transient failure - retries and returns true`() =
+    fun `isUserLoggedIn - tokens only persisted - loads them and returns true`() =
         runTest {
-            every { api.apiToken() } returnsMany listOf(null, "apiToken")
-            every { api.vpnToken() } returns "vpnToken"
+            var loaded = false
+            every { api.loadPersistedTokens(any()) } answers {
+                loaded = true
+                firstArg<() -> Unit>().invoke()
+            }
+            every { api.apiToken() } answers { if (loaded) "apiToken" else null }
+            every { api.vpnToken() } answers { if (loaded) "vpnToken" else null }
 
-            assertEquals(true, source.isUserLoggedIn(retryOnColdStart = true))
+            assertEquals(true, source.isUserLoggedIn())
         }
 
     @Test
-    fun `isUserLoggedIn - never logged in - retries then returns false`() =
+    fun `isUserLoggedIn - no persisted tokens - returns false`() =
         runTest {
             every { api.apiToken() } returns null
             every { api.vpnToken() } returns null
 
-            assertEquals(false, source.isUserLoggedIn(retryOnColdStart = true))
-        }
-
-    @Test
-    fun `isUserLoggedIn - not logged in and retry not requested - returns false without retrying`() =
-        runTest {
-            every { api.apiToken() } returnsMany listOf(null, "apiToken")
-            every { api.vpnToken() } returns "vpnToken"
-
             assertEquals(false, source.isUserLoggedIn())
+            verify(exactly = 1) { api.loadPersistedTokens(any()) }
         }
 
     @ParameterizedTest(name = "api: {0}, expected: {1}")
