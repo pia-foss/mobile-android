@@ -10,9 +10,9 @@ plugins {
 }
 
 // Please update both and keep them static, otherwise Fdroid fails to pull
-val googleAppVersionCode = 715
-val noInAppVersionCode = 10715
-val appVersionName = "4.1.2"
+val googleAppVersionCode = 716
+val noInAppVersionCode = 10716
+val appVersionName = "4.1.3"
 
 configure<ApplicationExtension> {
     namespace = "com.kape.vpn"
