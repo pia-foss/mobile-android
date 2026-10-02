@@ -1,0 +1,7 @@
+# Google Play's "Edge-to-edge may not display for all users" check statically looks for a call to
+# androidx.activity.EdgeToEdge.enable(). Under R8 optimization the call from MainActivity is inlined
+# and the class renamed, so Play can't find it and keeps flagging the app even though edge-to-edge
+# is enabled at runtime. Keeping the entry points intact preserves the call site in the DEX.
+-keep class androidx.activity.EdgeToEdge {
+    public static void enable(...);
+}
