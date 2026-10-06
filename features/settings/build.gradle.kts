@@ -54,6 +54,7 @@ dependencies {
     runtimeOnly(libs.launcher)
     implementation(libs.bundles.serialization)
     implementation(libs.drawablepainter)
+    implementation(libs.mobile.shared.account)
     implementation(libs.constraintlayout)
 }
 

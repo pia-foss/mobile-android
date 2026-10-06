@@ -25,9 +25,11 @@ import com.kape.data.ObfuscationSettings
 import com.kape.data.PrivacySettings
 import com.kape.data.ProtocolSettings
 import com.kape.data.WebDestination
+import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.CustomObfuscation
@@ -43,10 +45,15 @@ import com.kape.vpnconnect.domain.ClearDebugLogsUseCase
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetLogsUseCase
 import com.kape.vpnregions.data.VpnRegionRepository
+import com.kape.vpnregions.utils.getDipOpenVpnPorts
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.KoinViewModel
@@ -60,6 +67,7 @@ class SettingsViewModel(
     private val consentPrefs: ConsentPrefs,
     private val connectionPrefs: ConnectionPrefs,
     private val csiPrefs: CsiPrefs,
+    private val dipPrefs: DipPrefs,
     private val regionsRepository: VpnRegionRepository,
     private val kpiDataSource: KpiDataSource,
     private val connectionDataSource: ConnectionDataSource,
@@ -98,6 +106,16 @@ class SettingsViewModel(
     val wireGuardSettings = prefs.wireGuardSettings
     val openVpnSettings = prefs.openVpnSettings
     val autoSettings = prefs.autoSettings
+    val dipPorts: StateFlow<List<Int>> =
+        combine(dipPrefs.dedicatedIps, openVpnSettings) { dips, settings ->
+            val serverGroup =
+                when (settings.transport) {
+                    Transport.UDP -> VpnServer.ServerGroup.OPENVPN_UDP
+                    Transport.TCP -> VpnServer.ServerGroup.OPENVPN_TCP
+                    Transport.AUTO -> return@combine emptyList()
+                }
+            dips.flatMap { getDipOpenVpnPorts(it, serverGroup) }.distinct()
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     val hasUpdateAvailable = updateAvailableManager.hasUpdateAvailable
 
     private val isDnsNumeric = mutableStateOf(true)

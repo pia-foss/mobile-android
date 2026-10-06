@@ -265,6 +265,7 @@ private fun TvOpenVpnProtocolSettingsScreen(
     portDialogVisible: MutableState<Boolean>,
     openVpnSettings: OpenVpnSettings,
 ) {
+    val dipPorts by viewModel.dipPorts.collectAsStateWithLifecycle()
     TvSettingsItem(
         modifier = Modifier.focusRequester(initialFocusRequester),
         titleId = R.string.protocol_selection_title,
@@ -289,6 +290,12 @@ private fun TvOpenVpnProtocolSettingsScreen(
         subtitle = openVpnSettings.port,
     ) {
         portDialogVisible.value = !portDialogVisible.value
+    }
+    if (dipPorts.isNotEmpty()) {
+        TvSettingsItem(
+            titleId = R.string.protocol_dip_port_title,
+            subtitle = dipPorts.joinToString(", "),
+        ) { }
     }
     TvSettingsToggle(
         titleId = R.string.protocol_use_small_packets_title,

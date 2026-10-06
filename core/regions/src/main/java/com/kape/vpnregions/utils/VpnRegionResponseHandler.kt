@@ -144,9 +144,21 @@ fun getServerForDip(
         val updatedEndpointDetails =
             mutableListOf<VpnServer.ServerEndpointDetails>()
         when (serverGroup) {
+            VpnServer.ServerGroup.META -> {
+                dip.ip?.let { ip ->
+                    dip.cn?.let { cn ->
+                        updatedEndpointDetails.add(
+                            VpnServer.ServerEndpointDetails(
+                                ip,
+                                cn,
+                            ),
+                        )
+                    }
+                }
+            }
+
             VpnServer.ServerGroup.OPENVPN_TCP,
             VpnServer.ServerGroup.OPENVPN_UDP,
-            VpnServer.ServerGroup.META,
             -> {
                 dip.ip?.let { ip ->
                     dip.cn?.let { cn ->
@@ -154,6 +166,7 @@ fun getServerForDip(
                             VpnServer.ServerEndpointDetails(
                                 ip,
                                 cn,
+                                getDipOpenVpnPorts(dip, serverGroup).firstOrNull(),
                             ),
                         )
                     }
@@ -207,4 +220,17 @@ fun getServerForDip(
         dip.dipToken,
         dip.ip,
     )
+}
+
+fun getDipOpenVpnPorts(
+    dip: DedicatedIPInformationResponse.DedicatedIPInformation,
+    serverGroup: VpnServer.ServerGroup,
+): List<Int> {
+    val portsKey =
+        when (serverGroup) {
+            VpnServer.ServerGroup.OPENVPN_UDP -> RegionsProtocol.OPENVPN_UDP.protocol
+            VpnServer.ServerGroup.OPENVPN_TCP -> RegionsProtocol.OPENVPN_TCP.protocol
+            else -> return emptyList()
+        }
+    return dip.ports[portsKey].orEmpty()
 }
