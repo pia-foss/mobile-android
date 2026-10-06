@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.configuration)
     alias(libs.plugins.koin.compiler)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.junit5)
 }
 
 // Please update both and keep them static, otherwise Fdroid fails to pull
@@ -33,6 +34,7 @@ configure<ApplicationExtension> {
     }
 
     testOptions.execution = "ANDROIDX_TEST_ORCHESTRATOR"
+    testOptions.unitTests.isReturnDefaultValues = true
 
     buildTypes {
         release {
@@ -190,6 +192,8 @@ dependencies {
     "noinappImplementation"(libs.shortcuts)
 
     testImplementation(libs.coroutines.test)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
     "googleImplementation"(libs.billing.google)
     androidTestImplementation(libs.bundles.androidtest)
     "androidTestUtil"(libs.orchestrator)

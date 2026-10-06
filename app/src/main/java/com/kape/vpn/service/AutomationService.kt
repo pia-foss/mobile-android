@@ -10,6 +10,7 @@ import com.kape.utils.AutomationManager
 import com.kape.utils.NetworkConnectionListener
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koin.core.qualifier.named
 
@@ -18,7 +19,12 @@ class AutomationService :
     Service(),
     KoinComponent {
     private val automationManager: AutomationManager by inject()
-    private val networkConnectionListener: NetworkConnectionListener by inject()
+
+    // Resolved eagerly so the listener registers its network callback as soon as the service is
+    // (re)created. Rules are re-applied for the current network by OnRulesChangedReceiver, not
+    // here, so restarting the service (e.g. on app launch) doesn't override a manual disconnect.
+    @Suppress("unused")
+    private val networkConnectionListener: NetworkConnectionListener = get()
     private val automationPendingIntent: PendingIntent by inject(named("automation-pending-intent"))
 
     override fun onStartCommand(
@@ -36,7 +42,6 @@ class AutomationService :
         } else {
             startForeground(123, notification)
         }
-        networkConnectionListener.triggerUpdate()
         return START_STICKY
     }
 

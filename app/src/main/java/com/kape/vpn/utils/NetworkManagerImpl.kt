@@ -32,6 +32,7 @@ class NetworkManagerImpl(
     override fun handleCurrentNetwork(
         ssid: String,
         isWifi: Boolean,
+        isNetworkChange: Boolean,
     ) {
         ioScope.launch {
             if (!settingsPrefs.isAutomationEnabledNow()) return@launch
@@ -39,6 +40,12 @@ class NetworkManagerImpl(
             // automation rules must not override it. Read the persisted end time rather than the
             // in-memory snooze state, which may not be restored yet after process death.
             if (connectionPrefs.getLastSnoozeEndTimeNow() > Calendar.getInstance().timeInMillis) return@launch
+            // A manual disconnect only holds until the network changes. Clear the flag so it doesn't
+            // swallow the connect triggered by the new network's rule. A redelivery of the same network
+            // (e.g. after the process was restarted) must keep it, so the manual disconnect is respected.
+            if (isNetworkChange) {
+                connectionPrefs.setDisconnectedByUser(false)
+            }
 
             networkPrefs.getRuleForNetwork(ssid).first()?.let {
                 applyNetworkRule(it)

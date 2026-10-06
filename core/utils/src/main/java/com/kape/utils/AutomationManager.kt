@@ -10,10 +10,16 @@ class AutomationManager(
     val vpnNotificationManager: VpnNotificationManager,
 ) {
     fun startAutomationService() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.applicationContext.startForegroundService(automationServiceIntent)
-        } else {
-            context.applicationContext.startService(automationServiceIntent)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.applicationContext.startForegroundService(automationServiceIntent)
+            } else {
+                context.applicationContext.startService(automationServiceIntent)
+            }
+        } catch (e: IllegalStateException) {
+            // Starting a foreground service from the background is not allowed on Android 12+.
+            // The service is started again on the next app launch, boot or app update.
+            e.printStackTrace()
         }
     }
 

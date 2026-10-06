@@ -79,13 +79,12 @@ fun AutomationScreen() =
                     showDialog,
                 ) {
                     if (it == removeRule) {
-                        viewModel.removeRule(rule)
+                        viewModel.removeRule(context, rule)
                     } else {
                         rule.let { item ->
-                            viewModel.updateRule(item, getRuleForStatus(context, status = it))
+                            viewModel.updateRule(context, item, getRuleForStatus(context, status = it))
                         }
                     }
-                    viewModel.sendBroadcast(context)
                 }
             }
         }

@@ -84,7 +84,7 @@ fun AddNewRuleScreen() =
                     showDialog,
                 ) {
                     currentItem?.let { item ->
-                        viewModel.addRule(item, getRuleForStatus(context, it))
+                        viewModel.addRule(context, item, getRuleForStatus(context, it))
                     }
                 }
             }

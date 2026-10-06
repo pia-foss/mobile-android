@@ -4,12 +4,18 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.configuration)
     alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.junit5)
 }
 
 android {
     namespace = "com.kape.utils"
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
+    }
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
     }
 }
 
@@ -23,6 +29,10 @@ dependencies {
     implementation(libs.coroutines)
     implementation(libs.bundles.serialization)
     implementation(libs.bundles.koin)
+    testImplementation(libs.bundles.kointest)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.bundles.test)
+    runtimeOnly(libs.launcher)
 }
 
 koinCompiler {
