@@ -59,6 +59,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
+import java.util.Calendar
 
 @KoinViewModel
 class ConnectionViewModel(
@@ -221,8 +222,14 @@ class ConnectionViewModel(
                 shortcutPrefs.isShortcutConnectToVpn,
                 shortcutPrefs.isShortcutDisconnectVpn,
             ) { connectOnLaunchEnabled, shortcutConnect, shortcutDisconnect ->
-                if (connectOnLaunchEnabled || shortcutConnect) {
+                // An active snooze is an explicit user choice to stay disconnected for a while, so
+                // connect-on-launch must not override it. Read the persisted end time rather than the
+                // in-memory snooze state, which may not be restored yet after process death. A
+                // shortcut connect is an explicit user action, so it ends the snooze like a manual connect.
+                val isSnoozed = prefs.getLastSnoozeEndTimeNow() > Calendar.getInstance().timeInMillis
+                if ((connectOnLaunchEnabled && !isSnoozed) || shortcutConnect) {
                     shortcutPrefs.setShortcutConnectToVpn(false)
+                    if (shortcutConnect && isSnoozed) snoozeHandler.cancelSnooze()
                     if (!connectionInfoProvider.isConnected()) {
                         val server =
                             prefs.getSelectedVpnServerNow() ?: regionListProvider.getOptimalServer()
