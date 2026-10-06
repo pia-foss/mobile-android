@@ -174,10 +174,6 @@ class ConfigurationGenerator(
                     "block-ipv6",
                     "mssfix $mtu",
                 )
-            if (server?.isDedicatedIp == true) {
-                commandLineParams.add("ncp-disable")
-                commandLineParams.add("pia-signal-settings")
-            }
             val builder = StringBuilder()
             commandLineParams.forEach {
                 builder.append(it)
@@ -186,12 +182,13 @@ class ConfigurationGenerator(
             return builder.toString()
         }
         server?.endpoints[serverGroup]?.take(maxEndpoints)?.forEach { details ->
+            val endpointPort = details.port ?: port
             result.add(
                 OpenVpnConfiguration(
                     host = details.ip,
-                    port = port,
+                    port = endpointPort,
                     transport = transport,
-                    ovpnConfiguration = params(details.ip, details.cn, port),
+                    ovpnConfiguration = params(details.ip, details.cn, endpointPort),
                     xorValue = null,
                     mtu = mtu,
                     certDn = details.cn,

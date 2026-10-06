@@ -103,4 +103,56 @@ class VpnRegionResponseHandlerTest {
         assertEquals("9.9.9.9", amneziaEndpoint?.ip)
         assertEquals(1338, amneziaEndpoint?.port)
     }
+
+    @Test
+    fun `getDipOpenVpnPorts returns udp ports for openvpn udp`() {
+        val dip = dipWithPorts(mapOf("ovpnudp" to listOf(1197, 8080), "ovpntcp" to listOf(501)))
+
+        assertEquals(listOf(1197, 8080), getDipOpenVpnPorts(dip, VpnServer.ServerGroup.OPENVPN_UDP))
+    }
+
+    @Test
+    fun `getDipOpenVpnPorts returns tcp ports for openvpn tcp`() {
+        val dip = dipWithPorts(mapOf("ovpnudp" to listOf(1197), "ovpntcp" to listOf(501)))
+
+        assertEquals(listOf(501), getDipOpenVpnPorts(dip, VpnServer.ServerGroup.OPENVPN_TCP))
+    }
+
+    @Test
+    fun `getDipOpenVpnPorts returns empty list when dip has no ports`() {
+        val dip = dipWithPorts(emptyMap())
+
+        assertEquals(emptyList<Int>(), getDipOpenVpnPorts(dip, VpnServer.ServerGroup.OPENVPN_UDP))
+        assertEquals(emptyList<Int>(), getDipOpenVpnPorts(dip, VpnServer.ServerGroup.OPENVPN_TCP))
+    }
+
+    @Test
+    fun `getDipOpenVpnPorts returns empty list for non openvpn groups`() {
+        val dip =
+            dipWithPorts(
+                mapOf(
+                    "ovpnudp" to listOf(1197),
+                    "ovpntcp" to listOf(501),
+                    "wg" to listOf(1337),
+                    "meta" to listOf(443),
+                    "awg" to listOf(1338),
+                ),
+            )
+
+        assertEquals(emptyList<Int>(), getDipOpenVpnPorts(dip, VpnServer.ServerGroup.WIREGUARD))
+        assertEquals(emptyList<Int>(), getDipOpenVpnPorts(dip, VpnServer.ServerGroup.META))
+        assertEquals(emptyList<Int>(), getDipOpenVpnPorts(dip, VpnServer.ServerGroup.AMNEZIA))
+    }
+
+    private fun dipWithPorts(ports: Map<String, List<Int>>) =
+        DedicatedIPInformationResponse.DedicatedIPInformation(
+            id = "id",
+            ip = "9.9.9.9",
+            cn = "dip.privateinternetaccess.com",
+            groups = null,
+            dip_expire = null,
+            dipToken = "token",
+            status = DedicatedIPInformationResponse.Status.active,
+            ports = ports,
+        )
 }

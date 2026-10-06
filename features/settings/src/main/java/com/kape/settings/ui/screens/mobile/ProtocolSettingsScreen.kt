@@ -140,6 +140,7 @@ fun OpenVpnProtocolSettingsScreen(
     protocolDialogVisible: MutableState<Boolean>,
 ) {
     val openVpnSettings by viewModel.openVpnSettings.collectAsStateWithLifecycle()
+    val dipPorts by viewModel.dipPorts.collectAsStateWithLifecycle()
     val transportDialogVisible = remember { mutableStateOf(false) }
     val encryptionDialogVisible = remember { mutableStateOf(false) }
     val portDialogVisible = remember { mutableStateOf(false) }
@@ -167,6 +168,13 @@ fun OpenVpnProtocolSettingsScreen(
         subtitle = openVpnSettings.port,
     ) {
         portDialogVisible.value = !portDialogVisible.value
+    }
+    if (dipPorts.isNotEmpty()) {
+        SettingsItem(
+            titleId = R.string.protocol_dip_port_title,
+            subtitle = dipPorts.joinToString(", "),
+            testTag = ":ProtocolSettingsScreen:dip_port",
+        )
     }
     UseSmallPacketsLine(
         enabled = openVpnSettings.useSmallPackets,

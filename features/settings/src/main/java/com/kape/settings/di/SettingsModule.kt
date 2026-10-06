@@ -10,6 +10,7 @@ import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.domain.IsNumericIpAddressUseCaseImpl
@@ -38,6 +39,7 @@ class SettingsModule {
         consentPrefs: ConsentPrefs,
         connectionPrefs: ConnectionPrefs,
         csiPrefs: CsiPrefs,
+        dipPrefs: DipPrefs,
         regionsRepository: VpnRegionRepository,
         kpiDataSource: KpiDataSource,
         connectionDataSource: ConnectionDataSource,
@@ -57,6 +59,7 @@ class SettingsModule {
             consentPrefs,
             connectionPrefs,
             csiPrefs,
+            dipPrefs,
             regionsRepository,
             kpiDataSource,
             connectionDataSource,

@@ -270,6 +270,7 @@
     <string name="protocol_transport_title">Transport</string>
     <string name="protocol_data_encryption_title">Data Encryption</string>
     <string name="protocol_port_title">Port</string>
+    <string name="protocol_dip_port_title">Dedicated IP Port</string>
     <string name="protocol_use_small_packets_title">Use Small Packets</string>
     <string name="protocol_use_small_packets_description">Will slightly lower the IP packet size to improve compatibility with some routers and mobile networks.</string>
     <string name="protocol_handshake_title">Handshake</string>
