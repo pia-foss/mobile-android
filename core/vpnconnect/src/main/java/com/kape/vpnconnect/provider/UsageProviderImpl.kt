@@ -2,6 +2,7 @@ package com.kape.vpnconnect.provider
 
 import android.content.Context
 import androidx.compose.runtime.snapshots.Snapshot
+import com.kape.contracts.TunnelTraffic
 import com.kape.contracts.UsageProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.koin.core.annotation.Singleton
@@ -19,11 +20,13 @@ class UsageProviderImpl(
     override val widgetDownload = MutableStateFlow(humanReadableByteCount(0, false, context))
     override val widgetUploadSpeed = MutableStateFlow(humanReadableByteCount(0, true, context))
     override val widgetUpload = MutableStateFlow(humanReadableByteCount(0, false, context))
+    override val tunnelTraffic = MutableStateFlow(TunnelTraffic.ZERO)
 
     override fun byteCount(
         tx: Long,
         rx: Long,
     ) {
+        tunnelTraffic.value = TunnelTraffic(sent = tx, received = rx)
         Snapshot.withMutableSnapshot {
             download.value = humanReadableByteCountSI(rx)
             upload.value = humanReadableByteCountSI(tx)
@@ -35,6 +38,7 @@ class UsageProviderImpl(
     }
 
     override fun reset() {
+        tunnelTraffic.value = TunnelTraffic.ZERO
         Snapshot.withMutableSnapshot {
             download.value = humanReadableByteCountSI(0)
             upload.value = humanReadableByteCountSI(0)

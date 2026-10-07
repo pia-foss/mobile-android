@@ -87,6 +87,7 @@ class VpnConnectModule {
         connectionPrefs: ConnectionPrefs,
         submitKpiEventUseCase: SubmitKpiEventUseCase,
         portForwardingUseCase: PortForwardingUseCase,
+        networkConnectionListener: NetworkConnectionListener,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
         @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): ConnectionInfoProvider =
@@ -96,6 +97,7 @@ class VpnConnectModule {
             connectionPrefs,
             submitKpiEventUseCase,
             portForwardingUseCase,
+            networkConnectionListener,
             ioDispatcher,
             mainDispatcher,
         )
@@ -107,8 +109,9 @@ class VpnConnectModule {
     fun provideClientStateDataSource(
         accountApi: AndroidAccountAPI,
         connectionPrefs: ConnectionPrefs,
+        networkConnectionListener: NetworkConnectionListener,
         @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
-    ): ClientStateDataSource = ClientStateDataSourceImpl(accountApi, connectionPrefs, ioScope)
+    ): ClientStateDataSource = ClientStateDataSourceImpl(accountApi, connectionPrefs, networkConnectionListener, ioScope)
 
     @Singleton(binds = [ConnectionDataSource::class])
     fun provideConnectionDataSource(
@@ -142,7 +145,7 @@ class VpnConnectModule {
     fun provideConnectionProblemDetector(
         connectionStatusProvider: ConnectionStatusProvider,
         settingsPrefs: SettingsPrefs,
-        clientStateDataSource: ClientStateDataSource,
+        usageProvider: UsageProvider,
         networkConnectionListener: NetworkConnectionListener,
         nudgePrefs: AutoProtocolNudgePrefs,
         @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
@@ -150,7 +153,7 @@ class VpnConnectModule {
         ConnectionProblemDetector(
             connectionStatusProvider,
             settingsPrefs,
-            clientStateDataSource,
+            usageProvider,
             networkConnectionListener,
             nudgePrefs,
             ioScope,

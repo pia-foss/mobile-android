@@ -1,6 +1,7 @@
 package com.kape.vpnconnect.domain
 
 import com.kape.contracts.ConnectionStatusProvider
+import com.kape.contracts.UsageProvider
 import com.kape.data.ConnectionStatus
 import com.kape.localprefs.prefs.AutoProtocolNudgePrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -22,7 +23,10 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 private val CONNECT_TIMEOUT = 30.seconds
-private val DEAD_TUNNEL_CHECK_INTERVAL = 15.seconds
+
+// Samples the local tunnel byte counters (no network traffic), so this can be fine-grained.
+private val DEAD_TUNNEL_CHECK_INTERVAL = 5.seconds
+
 private val DEAD_TUNNEL_THRESHOLD = 60.seconds
 private val IMMEDIATE_DROP_THRESHOLD = 15.seconds
 private val SHORT_FAILURE_WINDOW = 10.minutes
@@ -44,7 +48,7 @@ private const val DISMISS_PERMANENT_STOP_COUNT = 2
 class ConnectionProblemDetector(
     private val connectionStatusProvider: ConnectionStatusProvider,
     private val settingsPrefs: SettingsPrefs,
-    private val clientStateDataSource: ClientStateDataSource,
+    private val usageProvider: UsageProvider,
     private val networkConnectionListener: NetworkConnectionListener,
     private val nudgePrefs: AutoProtocolNudgePrefs,
     private val scope: CoroutineScope,
@@ -137,18 +141,25 @@ class ConnectionProblemDetector(
         deadTunnelJob?.cancel()
         deadTunnelJob =
             scope.launch {
-                var unreachableSinceMillis: Long? = null
+                // A dead tunnel shows up as outbound bytes with nothing coming back. An idle tunnel
+                // (neither counter moving) is inconclusive and never counts as a failure.
+                var last = usageProvider.tunnelTraffic.value
+                var stalledSinceMillis: Long? = null
                 while (isActive) {
                     delay(DEAD_TUNNEL_CHECK_INTERVAL)
                     if (connectionStatusProvider.status.value != ConnectionStatus.CONNECTED) return@launch
-                    val reachable = runCatching { clientStateDataSource.isVpnTunnelReachable() }.getOrDefault(true)
-                    if (reachable) {
-                        unreachableSinceMillis = null
+                    val current = usageProvider.tunnelTraffic.value
+                    val received = current.received != last.received
+                    val sent = current.sent != last.sent
+                    last = current
+                    if (received) {
+                        stalledSinceMillis = null
                         continue
                     }
-                    val since = unreachableSinceMillis ?: nowMillis().also { unreachableSinceMillis = it }
+                    if (sent && stalledSinceMillis == null) stalledSinceMillis = nowMillis()
+                    val since = stalledSinceMillis ?: continue
                     if ((nowMillis() - since).milliseconds >= DEAD_TUNNEL_THRESHOLD) {
-                        unreachableSinceMillis = null
+                        stalledSinceMillis = null
                         recordQualifyingFailureIfEligible()
                     }
                 }

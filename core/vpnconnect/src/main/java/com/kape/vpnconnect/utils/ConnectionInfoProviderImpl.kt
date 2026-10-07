@@ -16,13 +16,17 @@ import com.kape.ui.theme.statusBarConnected
 import com.kape.ui.theme.statusBarConnecting
 import com.kape.ui.theme.statusBarDefault
 import com.kape.ui.theme.statusBarError
+import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
@@ -33,6 +37,7 @@ class ConnectionInfoProviderImpl(
     private val connectionPrefs: ConnectionPrefs,
     private val submitKpiEventUseCase: SubmitKpiEventUseCase,
     private val portForwardingUseCase: PortForwardingUseCase,
+    private val networkConnectionListener: NetworkConnectionListener,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
     @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
 ) : ConnectionInfoProvider {
@@ -52,17 +57,33 @@ class ConnectionInfoProviderImpl(
         portForwardingUseCase.portForwardingStatus.asStateFlow()
     override val port: StateFlow<String> = portForwardingUseCase.port
 
+    // Shared by the DISCONNECTED transition and requestClientIp() so they don't issue duplicate
+    // clientStatus lookups when both fire together (e.g. first connection screen at startup).
+    private var publicIpJob: Job? = null
+
     init {
         ioScope.launch {
             connectionStatusProvider.status
                 .collectLatest { latestConnectionStatus ->
                     currentConnectionStatus.update { latestConnectionStatus }
                     if (latestConnectionStatus == ConnectionStatus.DISCONNECTED) {
-                        clientStateDataSource.getPublicIp()
+                        refreshPublicIp()
+                    } else {
+                        cancelPublicIpRefresh()
                     }
                     if (latestConnectionStatus == ConnectionStatus.CONNECTED) {
                         clientStateDataSource.getVpnIp()
                     }
+                }
+        }
+        ioScope.launch {
+            // Lookups give up once offline, so catch up when the network returns. drop(1) skips the
+            // current value; since isConnected is a StateFlow, every later `true` follows a `false`.
+            networkConnectionListener.isConnected
+                .drop(1)
+                .filter { it }
+                .collect {
+                    if (currentConnectionStatus.value == ConnectionStatus.DISCONNECTED) refreshPublicIp()
                 }
         }
         ioScope.launch {
@@ -120,9 +141,19 @@ class ConnectionInfoProviderImpl(
         }
 
     override fun requestClientIp() {
-        ioScope.launch {
-            clientStateDataSource.getPublicIp()
-        }
+        refreshPublicIp()
+    }
+
+    @Synchronized
+    private fun refreshPublicIp() {
+        if (publicIpJob?.isActive == true) return
+        publicIpJob = ioScope.launch { clientStateDataSource.getPublicIp() }
+    }
+
+    @Synchronized
+    private fun cancelPublicIpRefresh() {
+        publicIpJob?.cancel()
+        publicIpJob = null
     }
 
     private fun getKpiConnectionStatus(status: KapeVPNConnectionStatus): KpiConnectionStatus =

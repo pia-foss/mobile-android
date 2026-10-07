@@ -3,6 +3,7 @@ package com.kape.vpnconnect.data
 import com.kape.data.DI
 import com.kape.data.NO_IP
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.utils.DELAY_BETWEEN_RETRY
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -19,6 +20,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class ClientStateDataSourceImpl(
     private val accountAPI: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
+    private val networkConnectionListener: NetworkConnectionListener,
     @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
 ) : ClientStateDataSource {
     override suspend fun getPublicIp(): String {
@@ -27,6 +29,7 @@ class ClientStateDataSourceImpl(
             if (ip != NO_IP) {
                 return ip
             }
+            if (isOffline()) return NO_IP
             delay(DELAY_BETWEEN_RETRY.milliseconds)
         }
         return NO_IP
@@ -38,17 +41,14 @@ class ClientStateDataSourceImpl(
             if (vpnIp != NO_IP && vpnIp != connectionPrefs.getClientIpNow()) {
                 return vpnIp
             }
+            if (isOffline()) return NO_IP
             delay(DELAY_BETWEEN_RETRY.milliseconds)
         }
         return NO_IP
     }
 
-    override suspend fun isVpnTunnelReachable(): Boolean =
-        suspendCancellableCoroutine { continuation ->
-            accountAPI.clientStatus { clientStatusInfo, _ ->
-                continuation.resume(clientStatusInfo?.connected == true)
-            }
-        }
+    // A retry can't succeed without a network, so give up instead of burning the remaining attempts.
+    private fun isOffline(): Boolean = !networkConnectionListener.isConnected.value
 
     private suspend fun getVpnIpOnce(): String =
         suspendCancellableCoroutine { continuation ->
