@@ -1,6 +1,8 @@
 package com.kape.vpnconnect.domain
 
 import com.kape.contracts.ConnectionStatusProvider
+import com.kape.contracts.TunnelTraffic
+import com.kape.contracts.UsageProvider
 import com.kape.data.ConnectionStatus
 import com.kape.localprefs.prefs.AutoProtocolNudgePrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -14,6 +16,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.currentTime
@@ -30,7 +33,7 @@ import kotlin.time.Duration.Companion.days
 class ConnectionProblemDetectorTest {
     private val connectionStatusProvider = mockk<ConnectionStatusProvider>(relaxed = true)
     private val settingsPrefs = mockk<SettingsPrefs>(relaxed = true)
-    private val clientStateDataSource = mockk<ClientStateDataSource>(relaxed = true)
+    private val usageProvider = mockk<UsageProvider>(relaxed = true)
     private val networkConnectionListener = mockk<NetworkConnectionListener>(relaxed = true)
     private val nudgePrefs = mockk<AutoProtocolNudgePrefs>(relaxed = true)
 
@@ -38,6 +41,7 @@ class ConnectionProblemDetectorTest {
     private val tunnelErrorFlow = MutableStateFlow<KapeVpnTunnelError?>(null)
     private val isConnectedFlow = MutableStateFlow(true)
     private val nudgeStateFlow = MutableStateFlow(AutoProtocolNudgeState())
+    private val trafficFlow = MutableStateFlow(TunnelTraffic.ZERO)
 
     // Anchors the detector's virtual "now" to a real epoch so it stays comparable to the
     // real-wall-clock timestamps other tests bake into nudgeStateFlow (e.g. "8 days ago"),
@@ -53,7 +57,7 @@ class ConnectionProblemDetectorTest {
         coEvery { nudgePrefs.getStateNow() } answers { nudgeStateFlow.value }
         coEvery { nudgePrefs.setState(any()) } answers { nudgeStateFlow.value = firstArg() }
         coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.WireGuard
-        coEvery { clientStateDataSource.isVpnTunnelReachable() } returns true
+        every { usageProvider.tunnelTraffic } returns trafficFlow
     }
 
     private fun createDetector(
@@ -62,7 +66,7 @@ class ConnectionProblemDetectorTest {
     ) = ConnectionProblemDetector(
         connectionStatusProvider,
         settingsPrefs,
-        clientStateDataSource,
+        usageProvider,
         networkConnectionListener,
         nudgePrefs,
         scope,
@@ -116,35 +120,65 @@ class ConnectionProblemDetectorTest {
         }
 
     @Test
-    fun `dead tunnel - reachability check fails continuously past 60s while connected - counts as a failure`() =
+    fun `dead tunnel - sending with nothing received for 60s while connected - counts as a failure`() =
         runTest(UnconfinedTestDispatcher()) {
-            coEvery { clientStateDataSource.isVpnTunnelReachable() } returns false
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
             detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
-            advanceTimeBy(76_000)
+            sendOnly(seconds = 70)
 
             assertEquals(1, nudgeStateFlow.value.failureTimestamps.size)
         }
 
     @Test
-    fun `dead tunnel - reachability recovers before 60s - does not count as a failure`() =
+    fun `dead tunnel - bytes received again before 60s - does not count as a failure`() =
         runTest(UnconfinedTestDispatcher()) {
-            var reachable = true
-            coEvery { clientStateDataSource.isVpnTunnelReachable() } answers { reachable }
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
             detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
-            advanceTimeBy(15_000)
-            reachable = false
-            advanceTimeBy(30_000)
-            reachable = true
-            advanceTimeBy(76_000)
+            sendOnly(seconds = 40)
+            trafficFlow.value = trafficFlow.value.copy(received = trafficFlow.value.received + 100)
+            advanceTimeBy(5_000)
+            sendOnly(seconds = 40)
 
             assertTrue(nudgeStateFlow.value.failureTimestamps.isEmpty())
         }
+
+    @Test
+    fun `dead tunnel - idle tunnel with no traffic either way - does not count as a failure`() =
+        runTest(UnconfinedTestDispatcher()) {
+            val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
+            detector.start()
+
+            statusFlow.value = ConnectionStatus.CONNECTED
+            advanceTimeBy(300_000)
+
+            assertTrue(nudgeStateFlow.value.failureTimestamps.isEmpty())
+        }
+
+    @Test
+    fun `dead tunnel - steady two-way traffic - does not count as a failure`() =
+        runTest(UnconfinedTestDispatcher()) {
+            val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
+            detector.start()
+
+            statusFlow.value = ConnectionStatus.CONNECTED
+            repeat(60) {
+                trafficFlow.value = TunnelTraffic(trafficFlow.value.sent + 100, trafficFlow.value.received + 100)
+                advanceTimeBy(5_000)
+            }
+
+            assertTrue(nudgeStateFlow.value.failureTimestamps.isEmpty())
+        }
+
+    private fun TestScope.sendOnly(seconds: Int) {
+        repeat(seconds) {
+            trafficFlow.value = trafficFlow.value.copy(sent = trafficFlow.value.sent + 100)
+            advanceTimeBy(1_000)
+        }
+    }
 
     @Test
     fun `protocol not available pre-check - counts as a qualifying failure`() =

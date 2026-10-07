@@ -2,6 +2,7 @@ package com.kape.vpnconnect.data
 
 import com.kape.data.NO_IP
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.utils.NetworkConnectionListener
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.ClientStatusInformation
@@ -9,6 +10,8 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
+import io.mockk.verify
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -16,6 +19,9 @@ import org.junit.jupiter.api.Test
 class ClientStateDataSourceImplTest {
     private val accountAPI = mockk<AndroidAccountAPI>()
     private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)
+    private val isNetworkConnected = MutableStateFlow(true)
+    private val networkConnectionListener =
+        mockk<NetworkConnectionListener> { every { isConnected } returns isNetworkConnected }
 
     private lateinit var dataSource: ClientStateDataSourceImpl
 
@@ -28,6 +34,7 @@ class ClientStateDataSourceImplTest {
                 ClientStateDataSourceImpl(
                     accountAPI = accountAPI,
                     connectionPrefs = connectionPrefs,
+                    networkConnectionListener = networkConnectionListener,
                     ioScope = this,
                 )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
@@ -49,6 +56,7 @@ class ClientStateDataSourceImplTest {
                 ClientStateDataSourceImpl(
                     accountAPI = accountAPI,
                     connectionPrefs = connectionPrefs,
+                    networkConnectionListener = networkConnectionListener,
                     ioScope = this,
                 )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
@@ -69,6 +77,7 @@ class ClientStateDataSourceImplTest {
                 ClientStateDataSourceImpl(
                     accountAPI = accountAPI,
                     connectionPrefs = connectionPrefs,
+                    networkConnectionListener = networkConnectionListener,
                     ioScope = this,
                 )
 
@@ -82,6 +91,48 @@ class ClientStateDataSourceImplTest {
             assertEquals(NO_IP, result)
         }
 
+    @Test
+    fun `getPublicIp - fails while offline - does not retry`() =
+        runTest {
+            dataSource =
+                ClientStateDataSourceImpl(
+                    accountAPI = accountAPI,
+                    connectionPrefs = connectionPrefs,
+                    networkConnectionListener = networkConnectionListener,
+                    ioScope = this,
+                )
+            isNetworkConnected.value = false
+            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
+            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
+                slot.captured.invoke(null, emptyList())
+            }
+
+            val result = dataSource.getPublicIp()
+
+            assertEquals(NO_IP, result)
+            verify(exactly = 1) { accountAPI.clientStatus(any(), any()) }
+        }
+
+    @Test
+    fun `getPublicIp - fails while online - retries`() =
+        runTest {
+            dataSource =
+                ClientStateDataSourceImpl(
+                    accountAPI = accountAPI,
+                    connectionPrefs = connectionPrefs,
+                    networkConnectionListener = networkConnectionListener,
+                    ioScope = this,
+                )
+            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
+            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
+                slot.captured.invoke(null, emptyList())
+            }
+
+            dataSource.getPublicIp()
+
+            verify(exactly = 3) { accountAPI.clientStatus(any(), any()) }
+        }
+
     // endregion
 
     // region getVpnIp
@@ -93,6 +144,7 @@ class ClientStateDataSourceImplTest {
                 ClientStateDataSourceImpl(
                     accountAPI = accountAPI,
                     connectionPrefs = connectionPrefs,
+                    networkConnectionListener = networkConnectionListener,
                     ioScope = this,
                 )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
@@ -113,6 +165,7 @@ class ClientStateDataSourceImplTest {
                 ClientStateDataSourceImpl(
                     accountAPI = accountAPI,
                     connectionPrefs = connectionPrefs,
+                    networkConnectionListener = networkConnectionListener,
                     ioScope = this,
                 )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
@@ -132,6 +185,7 @@ class ClientStateDataSourceImplTest {
                 ClientStateDataSourceImpl(
                     accountAPI = accountAPI,
                     connectionPrefs = connectionPrefs,
+                    networkConnectionListener = networkConnectionListener,
                     ioScope = this,
                 )
             val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
@@ -142,6 +196,28 @@ class ClientStateDataSourceImplTest {
             val result = dataSource.getVpnIp()
 
             assertEquals(NO_IP, result)
+        }
+
+    @Test
+    fun `getVpnIp - fails while offline - does not retry`() =
+        runTest {
+            dataSource =
+                ClientStateDataSourceImpl(
+                    accountAPI = accountAPI,
+                    connectionPrefs = connectionPrefs,
+                    networkConnectionListener = networkConnectionListener,
+                    ioScope = this,
+                )
+            isNetworkConnected.value = false
+            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
+            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
+                slot.captured.invoke(null, emptyList())
+            }
+
+            val result = dataSource.getVpnIp()
+
+            assertEquals(NO_IP, result)
+            verify(exactly = 1) { accountAPI.clientStatus(any(), any()) }
         }
 
     // endregion
