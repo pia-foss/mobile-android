@@ -2,7 +2,6 @@ package com.kape.vpn.di
 
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -355,8 +354,7 @@ class AppModule {
     fun provideNetworkConnectionListener(
         context: Context,
         networkManager: NetworkManager,
-        @Named(DI.RULES_UPDATED_BROADCAST) receiver: BroadcastReceiver,
-    ): NetworkConnectionListener = NetworkConnectionListener(context, networkManager, receiver)
+    ): NetworkConnectionListener = NetworkConnectionListener(context, networkManager)
 
     @Singleton
     fun provideRatingTool(

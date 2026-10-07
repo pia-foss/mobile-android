@@ -81,6 +81,7 @@ import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenActivateScre
 import com.kape.dedicatedip.ui.screens.mobile.SignupDedicatedIpTokenDetailsScreen
 import com.kape.dedicatedip.ui.screens.tv.TvDedicatedIpScreen
 import com.kape.inappbrowser.ui.InAppBrowser
+import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.localprefs.prefs.ShortcutPrefs
 import com.kape.login.ui.mobile.LoginScreen
 import com.kape.login.ui.mobile.LoginWithEmailScreen
@@ -132,6 +133,7 @@ import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_CONNECT
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_DISCONNECT
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
+import com.kape.utils.AutomationManager
 import com.kape.utils.PlatformUtils
 import com.kape.vpn.utils.ShortcutManager
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
@@ -145,6 +147,8 @@ class MainActivity : AppCompatActivity() {
     private val router: Router by inject()
     private val tokenAuthenticationUtil: TokenAuthenticationUtil by inject()
     private val shortcutPrefs: ShortcutPrefs by inject()
+    private val settingsPrefs: SettingsPrefs by inject()
+    private val automationManager: AutomationManager by inject()
     private val platformUtils: PlatformUtils by inject()
     private val shortcutManager: ShortcutManager by inject()
     private val ioScope: CoroutineScope by inject(named(DI.IO_SCOPE))
@@ -185,6 +189,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
         ioScope.launch { shortcutManager.createDynamicShortcuts() }
+        ioScope.launch {
+            if (settingsPrefs.isAutomationEnabledNow()) {
+                automationManager.startAutomationService()
+            }
+        }
     }
 
     override fun onNewIntent(intent: Intent) {

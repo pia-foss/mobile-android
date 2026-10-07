@@ -91,7 +91,7 @@ class AutomationViewModel(
         }
     }
 
-    fun sendBroadcast(context: Context) = context.sendBroadcast(broadcastIntent)
+    private fun sendBroadcast(context: Context) = context.sendBroadcast(broadcastIntent)
 
     private fun disableAutomation() =
         viewModelScope.launch(ioDispatcher) {
@@ -105,24 +105,32 @@ class AutomationViewModel(
 
     fun scanNetworks() = networkConnectionListener.triggerUpdate()
 
+    // Each rule change broadcasts only once it is saved, so the current network is re-evaluated against the new rules.
     fun updateRule(
+        context: Context,
         rule: NetworkItem,
         behavior: NetworkBehavior,
     ) = viewModelScope.launch(ioDispatcher) {
         networkRulesManager.updateRule(rule, behavior)
+        sendBroadcast(context)
     }
 
     fun addRule(
+        context: Context,
         ssid: String,
         behavior: NetworkBehavior,
     ) = viewModelScope.launch(ioDispatcher) {
         networkRulesManager.addRule(ssid, behavior)
+        sendBroadcast(context)
     }
 
-    fun removeRule(rule: NetworkItem) =
-        viewModelScope.launch(ioDispatcher) {
-            networkRulesManager.removeRule(rule)
-        }
+    fun removeRule(
+        context: Context,
+        rule: NetworkItem,
+    ) = viewModelScope.launch(ioDispatcher) {
+        networkRulesManager.removeRule(rule)
+        sendBroadcast(context)
+    }
 
     private fun navigateToAutomationBackgroundLocation() =
         router.updateDestination(

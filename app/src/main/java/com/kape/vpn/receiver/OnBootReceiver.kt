@@ -6,6 +6,7 @@ import android.content.Intent
 import com.kape.data.DI
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.utils.AutomationManager
 import com.kape.vpnlauncher.VpnLauncher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -23,6 +24,7 @@ class OnBootReceiver :
     private val settingsPrefs: SettingsPrefs by inject()
     private val connectionPrefs: ConnectionPrefs by inject()
     private val vpnLauncher: VpnLauncher by inject()
+    private val automationManager: AutomationManager by inject()
     private val ioDispatcher: CoroutineDispatcher by inject(named(DI.IO_DISPATCHER))
 
     override fun onReceive(
@@ -32,6 +34,9 @@ class OnBootReceiver :
         val pendingResult = goAsync()
         CoroutineScope(ioDispatcher).launch {
             try {
+                if (settingsPrefs.isAutomationEnabledNow()) {
+                    automationManager.startAutomationService()
+                }
                 // An active snooze survives a reboot (the SnoozeWorker stays scheduled and resumes the
                 // VPN when it ends), so launch-on-boot must not cut it short.
                 val isSnoozed = connectionPrefs.getLastSnoozeEndTimeNow() > Calendar.getInstance().timeInMillis
