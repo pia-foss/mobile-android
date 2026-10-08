@@ -52,6 +52,8 @@ fun AppBar(
     type: AppBarType = AppBarType.Navigation,
     onLeftIconClick: () -> Unit = viewModel::navigateBack,
     onRightIconClick: () -> Unit = {},
+    rightIconId: Int? = null,
+    rightIconContentDescription: String? = null,
 ) {
     val isConnected by viewModel.isConnected.collectAsState()
     val connectionStatus by viewModel.connectionStatus.collectAsStateWithLifecycle()
@@ -84,6 +86,8 @@ fun AppBar(
             },
         onLeftIconClick,
         onRightIconClick,
+        rightIconId,
+        rightIconContentDescription,
     )
 }
 
@@ -95,6 +99,8 @@ private fun AppBarContent(
     title: String? = null,
     onLeftIconClick: () -> Unit,
     onRightIconClick: () -> Unit,
+    rightIconId: Int? = null,
+    rightIconContentDescription: String? = null,
 ) {
     Column(
         modifier =
@@ -181,10 +187,29 @@ private fun AppBarContent(
                         isError = status == ConnectionStatus.ERROR,
                         modifier =
                             Modifier
-                                .padding(start = 56.dp)
+                                .padding(start = 56.dp, end = if (rightIconId != null) 56.dp else 0.dp)
                                 .align(Center)
                                 .fillMaxWidth(),
                     )
+                    rightIconId?.let {
+                        IconButton(
+                            onClick = { onRightIconClick() },
+                            modifier =
+                                Modifier
+                                    .align(CenterEnd)
+                                    .testTag(":AppBar:right_icon")
+                                    .semantics {
+                                        contentDescription = rightIconContentDescription.orEmpty()
+                                    },
+                        ) {
+                            Icon(
+                                painter = painterResource(id = it),
+                                contentDescription = null,
+                                tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
+                    }
                 }
             }
         }

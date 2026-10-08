@@ -450,6 +450,12 @@ class SettingsViewModel(
             debugLogs.value = getDebugLogsUseCase.getDebugLogs()
         }
 
+    fun clearDebugLogs() =
+        viewModelScope.launch(ioDispatcher) {
+            clearDebugLogsUseCase.clearDebugLogs()
+            debugLogs.value = emptyList()
+        }
+
     fun sendLogs() =
         viewModelScope.launch(ioDispatcher) {
             val logs = getDebugLogsUseCase.getDebugLogs()
