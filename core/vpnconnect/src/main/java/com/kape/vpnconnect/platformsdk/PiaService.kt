@@ -49,6 +49,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.Singleton
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -74,6 +76,12 @@ class PiaService :
     private val kpiDataSource: KpiDataSource by inject()
     private var sessionController: KapeSessionController? = null
     private var statusCollectionJob: Job? = null
+
+    // Serializes startVpn()/stopSessionController(). Both stop the current sessionController and
+    // replace it across suspension points, so overlapping calls each saw no live controller, each
+    // started their own, and all but the last were orphaned — still running, never stopped, and
+    // each establish() tearing down the tun the others were using.
+    private val sessionMutex = Mutex()
 
     // Held only while a session is connecting/connected so the OS doesn't freeze this process
     // during Doze/App Standby and cause it to miss the OpenVPN ping-restart window. Acquired
@@ -175,7 +183,9 @@ class PiaService :
         return START_STICKY
     }
 
-    suspend fun startVpn(vpnExcluded: List<String>) {
+    suspend fun startVpn(vpnExcluded: List<String>) = sessionMutex.withLock { startVpnLocked(vpnExcluded) }
+
+    private suspend fun startVpnLocked(vpnExcluded: List<String>) {
         sessionController?.stop()
         sessionController = null
         statusCollectionJob?.cancel()
@@ -265,6 +275,12 @@ class PiaService :
                 systemTunnel = systemTunnel,
                 logger = vpnServiceLogger,
             )
+        // The connection controllers report each attempt's outcome through attemptReporter, which
+        // defaults to null and isn't set by KapeSessionController itself. Without it the session's
+        // analytics reporter never learns an attempt reached Connected, so every ConnectionEndEvent
+        // and SessionEndEvent went out with wasConnected=false and effectiveProtocol=null.
+        openVpnController.attemptReporter = controller
+        wireGuardController.attemptReporter = controller
 
         sessionController = controller
 
@@ -302,7 +318,12 @@ class PiaService :
         scope.launch { controller.start() }
     }
 
-    suspend fun stopSessionController(reason: DisconnectReason = DisconnectReason.UserInitiated) {
+    suspend fun stopSessionController(reason: DisconnectReason = DisconnectReason.UserInitiated) =
+        sessionMutex.withLock {
+            stopSessionControllerLocked(reason)
+        }
+
+    private suspend fun stopSessionControllerLocked(reason: DisconnectReason) {
         statusCollectionJob?.cancel()
         statusCollectionJob = null
         sessionController?.stop(reason)

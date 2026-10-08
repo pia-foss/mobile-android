@@ -30,6 +30,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.slot
 import io.mockk.unmockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
@@ -449,6 +450,27 @@ class ConnectionManagerImplTest {
             assertTrue(firstConnect.isCompleted)
             coVerify { connectionPrefs.setSelectedVpnServer(server2) }
             coVerify { piaService.startVpn(any()) }
+        }
+
+    @Test
+    fun `connect - overlapping calls while service bind is pending - only the latest starts a session`() =
+        runTest {
+            val connection = slot<ServiceConnection>()
+            every {
+                context.bindService(any<Intent>(), capture(connection), any<Int>())
+            } returns true
+
+            val connects =
+                List(3) {
+                    launch(Dispatchers.Unconfined) {
+                        connectionManager.connect(server, isManual = true, {}) {}
+                    }
+                }
+
+            connection.captured.onServiceConnected(mockk<ComponentName>(), localBinder)
+
+            connects.forEach { assertTrue(it.isCompleted) }
+            coVerify(exactly = 1) { piaService.startVpn(any()) }
         }
 
     @Test

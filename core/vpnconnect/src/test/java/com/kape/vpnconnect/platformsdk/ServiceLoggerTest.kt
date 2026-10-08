@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -95,4 +96,31 @@ class ServiceLoggerTest {
             assertTrue(File(logDir, "vpn_debug.log").exists().not())
             assertTrue(File(logDir, "vpn_debug.log.old").exists().not())
         }
+
+    @Test
+    fun `getLogs - OpenVPN management echoes the username command - token is masked`() =
+        runTest {
+            val logger = ServiceLogger(context, ServiceLogger.VpnServiceLoggerTag.OpenVpn)
+
+            logger.debug("1791382049.694502 46000083 MANAGEMENT: CMD 'username 'Auth' vpn_token_FSvgDUy7Xl7haaLnSVzj8GsmdZotMmXC'")
+
+            val line = logger.getLogs().single()
+
+            assertFalse(line.contains("FSvgDUy7Xl7haaLnSVzj8GsmdZotMmXC"))
+            assertTrue(line.contains("MANAGEMENT: CMD 'username 'Auth' [...]"))
+        }
+
+    @Test
+    fun `maskCredentials - token outside the username command - is masked`() {
+        val masked = ServiceLogger.maskCredentials("token=vpn_token_abc123XYZ:secret")
+
+        assertEquals("token=vpn_token_[...]:secret", masked)
+    }
+
+    @Test
+    fun `maskCredentials - line without credentials - is unchanged`() {
+        val line = "SUCCESS: 'Auth' username entered, but not yet verified"
+
+        assertEquals(line, ServiceLogger.maskCredentials(line))
+    }
 }
