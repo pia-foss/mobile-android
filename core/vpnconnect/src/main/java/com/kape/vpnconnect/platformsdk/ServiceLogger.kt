@@ -28,8 +28,9 @@ class ServiceLogger(
         level: String,
         message: String,
     ) {
-        Log.v(tag.prefix, message)
-        ServiceLogFileStore.append(context, level, tag.prefix, message)
+        val masked = maskCredentials(message)
+        Log.v(tag.prefix, masked)
+        ServiceLogFileStore.append(context, level, tag.prefix, masked)
     }
 
     suspend fun getLogs(): List<String> =
@@ -41,6 +42,20 @@ class ServiceLogger(
         withContext(Dispatchers.IO) {
             ServiceLogFileStore.clear(context)
         }
+
+    companion object {
+        // The OpenVPN username is the account's VPN token, and the management interface echoes it
+        // back in full (CMD 'username 'Auth' vpn_token_…') — OpenVPN only masks the password.
+        // These lines reach logcat and the on-disk log attached to support reports, so the token
+        // is masked here, at the single path every service log line goes through.
+        private val managementUsernameRegex = Regex("""(username '[^']*' )\S+""")
+        private val vpnTokenRegex = Regex("""vpn_token_[^\s'":]+""")
+
+        internal fun maskCredentials(message: String): String =
+            message
+                .replace(managementUsernameRegex, "$1[...]")
+                .replace(vpnTokenRegex, "vpn_token_[...]")
+    }
 
     sealed class VpnServiceLoggerTag(
         val prefix: String,

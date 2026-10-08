@@ -36,6 +36,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.atomic.AtomicBoolean
@@ -74,6 +76,11 @@ class ConnectionManagerImpl :
     // request always supersedes one that hasn't reached Connected yet.
     private var connectionJob: Job? = null
 
+    // Guards connectionJob's cancel-then-replace. Without it, overlapping connect() calls each
+    // launched their own job, all of them reached PiaService.startVpn() once the bind completed,
+    // and every one started its own session that then fought the others over the single tun.
+    private val connectionJobMutex = Mutex()
+
     private val connectionInProgress = AtomicBoolean(false)
 
     override suspend fun connect(
@@ -100,13 +107,17 @@ class ConnectionManagerImpl :
             return
         }
 
-        connectionJob =
-            scope.launch {
-                val service = startServiceIfNeeded()
-                val excluded = settingsPrefs.getVpnExcludedAppsNow()
-                service.startVpn(excluded)
+        val job =
+            connectionJobMutex.withLock {
+                connectionJob?.cancelAndJoin()
+                scope
+                    .launch {
+                        val service = startServiceIfNeeded()
+                        val excluded = settingsPrefs.getVpnExcludedAppsNow()
+                        service.startVpn(excluded)
+                    }.also { connectionJob = it }
             }
-        connectionJob?.join()
+        job.join()
     }
 
     override suspend fun connectToLastKnownOrOptimalServer() {
@@ -140,8 +151,10 @@ class ConnectionManagerImpl :
 
     override suspend fun disconnect() {
         connectionProblemDetector.onUserInitiatedDisconnect()
-        connectionJob?.cancelAndJoin()
-        connectionJob = null
+        connectionJobMutex.withLock {
+            connectionJob?.cancelAndJoin()
+            connectionJob = null
+        }
 
         scope
             .launch {
