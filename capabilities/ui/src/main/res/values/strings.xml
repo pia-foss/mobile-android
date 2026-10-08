@@ -329,6 +329,10 @@
     <string name="connection_stats_no_events">There are no recent events</string>
     <string name="app_url">market://details?id=com.privateinternetaccess.android</string>
     <string name="debug_logs_title">VPN Debug Logs</string>
+    <string name="delete_debug_logs">Delete debug logs</string>
+    <string name="delete_debug_logs_dialog_title">Delete debug logs?</string>
+    <string name="delete_debug_logs_dialog_message">All collected VPN debug logs will be permanently removed from this device.</string>
+    <string name="delete">Delete</string>
     <string name="failure_sending_log">Failed to send debug logs: %s</string>
     <string name="log_send_done_title">Debug information submitted.</string>
     <string name="log_send_done_msg">Debug information successfully submitted. \nID: %s\nPlease note this ID, as our support team will require this to locate your submission.</string>
