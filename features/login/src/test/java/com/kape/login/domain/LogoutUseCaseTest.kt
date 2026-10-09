@@ -8,12 +8,16 @@ import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.login.BaseTest
 import com.kape.login.domain.mobile.LogoutUseCaseImpl
+import com.kape.vpnconnect.domain.ClearDebugLogsUseCase
 import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.coVerifyOrder
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -25,6 +29,7 @@ internal class LogoutUseCaseTest : BaseTest() {
     private val connectionPrefs = mockk<ConnectionPrefs>()
     private val settingsPrefs = mockk<SettingsPrefs>()
     private val logoutHandler = mockk<LogoutHandler>()
+    private val clearDebugLogsUseCase = mockk<ClearDebugLogsUseCase>()
 
     private lateinit var useCase: LogoutUseCaseImpl
 
@@ -37,6 +42,7 @@ internal class LogoutUseCaseTest : BaseTest() {
                 settingsPrefs,
                 connectionManager,
                 logoutHandler,
+                clearDebugLogsUseCase,
             )
     }
 
@@ -54,10 +60,31 @@ internal class LogoutUseCaseTest : BaseTest() {
         coEvery { connectionPrefs.clear() } returns Unit
         coEvery { settingsPrefs.clear() } returns Unit
         coEvery { logoutHandler.clearLocalStorage() } returns Unit
+        coEvery { clearDebugLogsUseCase.clearDebugLogs() } returns Unit
+        every { clearDebugLogsUseCase.scheduleClearOnSessionEnd() } returns Unit
 
         val actual = useCase.logout()
         assertEquals(expected, actual)
+        coVerify(exactly = 1) { clearDebugLogsUseCase.clearDebugLogs() }
     }
+
+    @Test
+    fun `logout - schedules a debug log clear before disconnecting an active connection`() =
+        runTest {
+            coEvery { source.logout() } returns ApiResult.Success
+            every { connectionManager.isConnectionInProgress() } returns true
+            every { settingsPrefs.isAutomationEnabled.value } returns false
+            coEvery { logoutHandler.clearLocalStorage() } returns Unit
+            coEvery { clearDebugLogsUseCase.clearDebugLogs() } returns Unit
+            every { clearDebugLogsUseCase.scheduleClearOnSessionEnd() } returns Unit
+
+            useCase.logout()
+
+            coVerifyOrder {
+                clearDebugLogsUseCase.scheduleClearOnSessionEnd()
+                connectionManager.disconnect()
+            }
+        }
 
     companion object {
         @JvmStatic

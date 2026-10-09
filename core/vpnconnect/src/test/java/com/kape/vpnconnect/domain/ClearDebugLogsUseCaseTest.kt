@@ -27,4 +27,23 @@ class ClearDebugLogsUseCaseTest {
 
             coVerify { connectionSource.clearDebugLogs() }
         }
+
+    @Test
+    fun `clearIfScheduled - does nothing when no clear was scheduled`() =
+        runTest {
+            useCase.clearIfScheduled()
+
+            coVerify(exactly = 0) { connectionSource.clearDebugLogs() }
+        }
+
+    @Test
+    fun `clearIfScheduled - clears once after a clear was scheduled`() =
+        runTest {
+            useCase.scheduleClearOnSessionEnd()
+
+            useCase.clearIfScheduled()
+            useCase.clearIfScheduled()
+
+            coVerify(exactly = 1) { connectionSource.clearDebugLogs() }
+        }
 }

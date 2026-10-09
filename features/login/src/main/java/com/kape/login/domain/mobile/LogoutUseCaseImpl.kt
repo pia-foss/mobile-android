@@ -7,6 +7,7 @@ import com.kape.data.auth.ApiResult
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.login.domain.LogoutHandler
+import com.kape.vpnconnect.domain.ClearDebugLogsUseCase
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -16,12 +17,14 @@ class LogoutUseCaseImpl(
     private val settingsPrefs: SettingsPrefs,
     private val connectionManager: ConnectionManager,
     private val logoutHandler: LogoutHandler,
+    private val clearDebugLogsUseCase: ClearDebugLogsUseCase,
 ) : LogoutUseCase {
     override suspend fun logout(): Boolean {
         if (settingsPrefs.isAutomationEnabled.value) {
             connectionPrefs.setDisconnectedByUser(true)
         }
         if (connectionManager.isConnectionInProgress()) {
+            clearDebugLogsUseCase.scheduleClearOnSessionEnd()
             connectionManager.disconnect()
         }
         return performLogout()
@@ -37,5 +40,6 @@ class LogoutUseCaseImpl(
 
     private suspend fun clearPrefs() {
         logoutHandler.clearLocalStorage()
+        clearDebugLogsUseCase.clearDebugLogs()
     }
 }

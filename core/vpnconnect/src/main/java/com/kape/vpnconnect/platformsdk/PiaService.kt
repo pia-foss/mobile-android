@@ -34,6 +34,7 @@ import com.kape.platformsdk.vpn.wireguard.WireGuardAuthenticator
 import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.settings.data.VpnProtocols
 import com.kape.utils.VpnNotificationManager
+import com.kape.vpnconnect.domain.ClearDebugLogsUseCase
 import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.utils.CountryDetector
@@ -74,6 +75,7 @@ class PiaService :
     private val notificationHandler: NotificationHandler by inject()
     private val countryDetector: CountryDetector by inject()
     private val kpiDataSource: KpiDataSource by inject()
+    private val clearDebugLogsUseCase: ClearDebugLogsUseCase by inject()
     private var sessionController: KapeSessionController? = null
     private var statusCollectionJob: Job? = null
 
@@ -186,6 +188,7 @@ class PiaService :
     suspend fun startVpn(vpnExcluded: List<String>) = sessionMutex.withLock { startVpnLocked(vpnExcluded) }
 
     private suspend fun startVpnLocked(vpnExcluded: List<String>) {
+        clearDebugLogsUseCase.clearIfScheduled()
         sessionController?.stop()
         sessionController = null
         statusCollectionJob?.cancel()
@@ -336,7 +339,11 @@ class PiaService :
 
     override fun onDestroy() {
         super.onDestroy()
-        scope.launch { stopSessionController() }.invokeOnCompletion { job.cancel() }
+        scope
+            .launch {
+                stopSessionController()
+                clearDebugLogsUseCase.clearIfScheduled()
+            }.invokeOnCompletion { job.cancel() }
     }
 
     override fun onRevoke() {
