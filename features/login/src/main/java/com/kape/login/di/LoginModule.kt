@@ -29,6 +29,7 @@ import com.kape.permissions.utils.PermissionUtil
 import com.kape.shareevents.data.KpiEventGenerator
 import com.kape.shareevents.domain.SubmitKpiEventUseCase
 import com.kape.utils.NetworkConnectionListener
+import com.kape.vpnconnect.domain.ClearDebugLogsUseCase
 import com.privateinternetaccess.account.AndroidAccountAPI
 import kotlinx.coroutines.CoroutineDispatcher
 import org.koin.core.annotation.KoinViewModel
@@ -51,6 +52,7 @@ class LoginModule {
         settingsPrefs: SettingsPrefs,
         connectionManager: ConnectionManager,
         logoutHandler: LogoutHandler,
+        clearDebugLogsUseCase: ClearDebugLogsUseCase,
     ): LogoutUseCase =
         LogoutUseCaseImpl(
             source,
@@ -58,6 +60,7 @@ class LoginModule {
             settingsPrefs,
             connectionManager,
             logoutHandler,
+            clearDebugLogsUseCase,
         )
 
     @Singleton
