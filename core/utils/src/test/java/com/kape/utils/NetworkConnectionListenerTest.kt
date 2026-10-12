@@ -19,6 +19,7 @@ import io.mockk.verifyOrder
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotSame
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -36,6 +37,8 @@ class NetworkConnectionListenerTest {
 
     private val callbackSlot = slot<ConnectivityManager.NetworkCallback>()
     private val callback get() = callbackSlot.captured
+    private val defaultCallbackSlot = slot<ConnectivityManager.NetworkCallback>()
+    private val defaultCallback get() = defaultCallbackSlot.captured
 
     @BeforeEach
     fun setUp() {
@@ -45,6 +48,7 @@ class NetworkConnectionListenerTest {
         every { anyConstructed<NetworkRequest.Builder>().addTransportType(any()) } answers { self as NetworkRequest.Builder }
         every { anyConstructed<NetworkRequest.Builder>().build() } returns networkRequest
         every { connectivityManager.requestNetwork(networkRequest, capture(callbackSlot)) } returns Unit
+        every { connectivityManager.registerDefaultNetworkCallback(capture(defaultCallbackSlot)) } returns Unit
     }
 
     @AfterEach
@@ -53,11 +57,12 @@ class NetworkConnectionListenerTest {
     }
 
     @Test
-    fun `init - requests the underlying non-VPN network instead of following the default network`() {
+    fun `init - rules follow the underlying non-VPN network, connectivity follows the default network`() {
         createListener()
 
         verify { connectivityManager.requestNetwork(networkRequest, any<ConnectivityManager.NetworkCallback>()) }
-        verify(exactly = 0) { connectivityManager.registerDefaultNetworkCallback(any()) }
+        verify(exactly = 1) { connectivityManager.registerDefaultNetworkCallback(any()) }
+        assertNotSame(callback, defaultCallback)
         verify { anyConstructed<NetworkRequest.Builder>().addCapability(NetworkCapabilities.NET_CAPABILITY_NOT_VPN) }
         verify { anyConstructed<NetworkRequest.Builder>().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) }
         verify { anyConstructed<NetworkRequest.Builder>().addTransportType(NetworkCapabilities.TRANSPORT_WIFI) }
@@ -163,35 +168,58 @@ class NetworkConnectionListenerTest {
     }
 
     @Test
-    fun `onLost without another network - reports disconnected`() {
+    fun `default network lost with no replacement - reports disconnected`() {
         val listener = createListener()
-        every { connectivityManager.activeNetwork } returns null
+        val network = mockk<Network>()
+        defaultCallback.onAvailable(network)
 
-        callback.onLost(mockk())
+        defaultCallback.onLost(network)
 
         assertFalse(listener.isConnected.value)
     }
 
     @Test
-    fun `onLost with another network that has internet - stays connected`() {
+    fun `Wi-Fi lost after the default switched to Ethernet - stays connected`() {
         val listener = createListener()
-        val active = mockk<Network>()
-        every { connectivityManager.activeNetwork } returns active
-        every { connectivityManager.getNetworkCapabilities(active) } returns
-            mockk { every { hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) } returns true }
+        val wifi = mockk<Network>()
+        val ethernet = mockk<Network>()
+        defaultCallback.onAvailable(wifi)
+        defaultCallback.onAvailable(ethernet)
 
-        callback.onLost(mockk())
+        defaultCallback.onLost(wifi)
 
         assertTrue(listener.isConnected.value)
     }
 
     @Test
-    fun `onAvailable after loss - reports connected`() {
+    fun `Ethernet becomes the default after going offline - reports connected`() {
         val listener = createListener()
-        every { connectivityManager.activeNetwork } returns null
-        callback.onLost(mockk())
+        val wifi = mockk<Network>()
+        defaultCallback.onAvailable(wifi)
+        defaultCallback.onLost(wifi)
 
-        callback.onAvailable(mockk())
+        defaultCallback.onAvailable(mockk())
+
+        assertTrue(listener.isConnected.value)
+    }
+
+    @Test
+    fun `Ethernet-only device unplugged - reports disconnected`() {
+        val listener = createListener()
+        val ethernet = mockk<Network>()
+        defaultCallback.onAvailable(ethernet)
+
+        defaultCallback.onLost(ethernet)
+
+        assertFalse(listener.isConnected.value)
+    }
+
+    @Test
+    fun `automation network lost - does not affect connectivity`() {
+        val listener = createListener()
+        defaultCallback.onAvailable(mockk())
+
+        callback.onLost(mockk())
 
         assertTrue(listener.isConnected.value)
     }

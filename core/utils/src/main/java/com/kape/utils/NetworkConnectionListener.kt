@@ -24,12 +24,6 @@ class NetworkConnectionListener(
     private val networkCallback =
         if (sdkInt >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             object : ConnectivityManager.NetworkCallback(FLAG_INCLUDE_LOCATION_INFO) {
-                override fun onAvailable(network: Network) {
-                    _isConnected.value = true
-                }
-
-                override fun onLost(network: Network) = onNetworkLost()
-
                 override fun onCapabilitiesChanged(
                     network: Network,
                     networkCapabilities: NetworkCapabilities,
@@ -47,12 +41,6 @@ class NetworkConnectionListener(
             }
         } else {
             object : ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    _isConnected.value = true
-                }
-
-                override fun onLost(network: Network) = onNetworkLost()
-
                 override fun onCapabilitiesChanged(
                     network: Network,
                     networkCapabilities: NetworkCapabilities,
@@ -80,6 +68,27 @@ class NetworkConnectionListener(
             .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
             .build()
 
+    // Drives isConnected for any transport (Ethernet included), unlike networkRequest which only
+    // covers what the automation rules care about. The default network is our own VPN while it is
+    // up, which is fine here since that still means the device is online.
+    private val defaultNetworkCallback =
+        object : ConnectivityManager.NetworkCallback() {
+            @Volatile
+            private var currentDefault: Network? = null
+
+            override fun onAvailable(network: Network) {
+                currentDefault = network
+                _isConnected.value = true
+            }
+
+            override fun onLost(network: Network) {
+                // A lost network that is no longer the default must not override the current one.
+                if (network != currentDefault) return
+                currentDefault = null
+                _isConnected.value = false
+            }
+        }
+
     private val _isConnected = MutableStateFlow(true)
 
     val isConnected = _isConnected.asStateFlow()
@@ -94,6 +103,7 @@ class NetworkConnectionListener(
 
     init {
         connectivityManager.requestNetwork(networkRequest, networkCallback)
+        connectivityManager.registerDefaultNetworkCallback(defaultNetworkCallback)
     }
 
     /**
@@ -120,13 +130,6 @@ class NetworkConnectionListener(
             isWifi = isWifi,
             isNetworkChange = previous != null && previous.network != network,
         )
-    }
-
-    private fun onNetworkLost() {
-        _isConnected.value =
-            connectivityManager
-                .getNetworkCapabilities(connectivityManager.activeNetwork)
-                ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
     }
 
     private fun getSSID(networkCapabilities: NetworkCapabilities): String =
