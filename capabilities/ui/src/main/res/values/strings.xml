@@ -273,6 +273,8 @@
     <string name="protocol_dip_port_title">Dedicated IP Port</string>
     <string name="protocol_use_small_packets_title">Use Small Packets</string>
     <string name="protocol_use_small_packets_description">Will slightly lower the IP packet size to improve compatibility with some routers and mobile networks.</string>
+    <string name="protocol_use_amnezia_title">Use Amnezia</string>
+    <string name="protocol_use_amnezia_description">Will disguise WireGuard traffic as random noise to help with connection issues on restrictive networks.</string>
     <string name="protocol_handshake_title">Handshake</string>
     <string name="protocol_handshake_description">RSA4096</string>
     <!--    Networks Settings    -->

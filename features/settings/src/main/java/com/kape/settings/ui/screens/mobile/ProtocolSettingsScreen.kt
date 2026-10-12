@@ -225,6 +225,12 @@ fun WireGuardProtocolSettingsScreen(
             viewModel.setWireGuardEnableSmallPackets(it)
         },
     )
+    UseAmneziaLine(
+        enabled = protocolSettings.useAmnezia,
+        onClick = {
+            viewModel.setWireGuardEnableAmnezia(it)
+        },
+    )
     HandshakeLine(handshake = protocolSettings.handshake)
 }
 
@@ -253,6 +259,20 @@ fun UseSmallPacketsLine(
         enabled = enabled,
         toggle = onClick,
         testTag = ":ProtocolSettingsScreen:use_small_packets",
+    )
+}
+
+@Composable
+fun UseAmneziaLine(
+    enabled: Boolean,
+    onClick: (enabled: Boolean) -> Unit,
+) {
+    SettingsToggle(
+        titleId = R.string.protocol_use_amnezia_title,
+        subtitleId = R.string.protocol_use_amnezia_description,
+        enabled = enabled,
+        toggle = onClick,
+        testTag = ":ProtocolSettingsScreen:use_amnezia",
     )
 }
 

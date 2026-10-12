@@ -353,6 +353,18 @@ class SettingsViewModel(
         }
     }
 
+    fun setWireGuardEnableAmnezia(enabled: Boolean) {
+        viewModelScope.launch(ioDispatcher) {
+            val currentSettings = wireGuardSettings.first()
+            val hasSettingChanged = currentSettings.useAmnezia != enabled
+            prefs.setWireGuardSettings(currentSettings.copy(useAmnezia = enabled))
+
+            if (hasSettingChanged) {
+                showReconnectDialogIfVpnConnected()
+            }
+        }
+    }
+
     fun setAutoEnableSmallPackets(enabled: Boolean) {
         viewModelScope.launch(ioDispatcher) {
             val currentSettings = autoSettings.first()

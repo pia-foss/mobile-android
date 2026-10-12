@@ -9,6 +9,7 @@ import com.kape.settings.data.WireGuardSettings
 import com.privateinternetaccess.csi.ICSIProvider
 import com.privateinternetaccess.csi.ProviderType
 import com.privateinternetaccess.csi.ReportType
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
 private const val CSI_APPLICATION_INFORMATION_FILENAME = "application_information"
@@ -123,18 +124,24 @@ class CsiDataProvider(
         }
 
     // region private
-    private fun getProtocolInformation(): String {
-        val activeProtocol = settingsPrefs.selectedProtocol.value
+    // ICSIProvider.value is a plain getter called from the CSI library's own thread while a report
+    // is being sent. The settings StateFlows only hold fresh values while something collects them,
+    // so read straight from storage instead of reporting stale defaults.
+    private fun getProtocolInformation(): String = runBlocking { buildProtocolInformation() }
+
+    private suspend fun buildProtocolInformation(): String {
+        val activeProtocol = settingsPrefs.getSelectedProtocolNow()
+        val wireGuardSettings = settingsPrefs.getWireGuardSettingsNow()
         val settings =
             when (activeProtocol) {
-                VpnProtocols.WireGuard -> settingsPrefs.wireGuardSettings.value
-                VpnProtocols.OpenVPN -> settingsPrefs.openVpnSettings.value
-                VpnProtocols.Automatic -> settingsPrefs.autoSettings.value
+                VpnProtocols.WireGuard -> wireGuardSettings
+                VpnProtocols.OpenVPN -> settingsPrefs.getOpenVpnSettingsNow()
+                VpnProtocols.Automatic -> settingsPrefs.getAutoSettingsNow()
             }
         val sb = StringBuilder()
         sb.append("~~ Connection Settings ~~\n")
         sb.append("Connection Type: ${settings.transport}\n")
-        sb.append("Port Forwarding: ${settingsPrefs.isPortForwardingEnabled.value}\n")
+        sb.append("Port Forwarding: ${settingsPrefs.isPortForwardingEnabledNow()}\n")
         sb.append("Remote Port: ${settings.port}\n")
         sb.append("OVPN Use Small Packets: ${settings.useSmallPackets}\n")
         sb.append(
@@ -142,6 +149,7 @@ class CsiDataProvider(
                 settings.useSmallPackets
             }\n",
         )
+        sb.append("Wireguard Use Amnezia: ${wireGuardSettings.useAmnezia}\n")
         sb.append("Protocol: ${activeProtocol.name}\n")
         val mtu =
             when (activeProtocol) {
@@ -155,8 +163,8 @@ class CsiDataProvider(
         sb.append("MTU: $mtu\n")
         // TODO: implement as part of https://polymoon.atlassian.net/browse/PIA-606,
         sb.append("\n~~ Blocking Settings ~~\n\n")
-        sb.append("MACE: ${settingsPrefs.isMaceEnabled.value}\n")
-        sb.append("Allow Local Network: ${settingsPrefs.isAllowLocalTrafficEnabled.value}\n")
+        sb.append("MACE: ${settingsPrefs.isMaceEnabledNow()}\n")
+        sb.append("Allow Local Network: ${settingsPrefs.isAllowLocalTrafficEnabledNow()}\n")
         sb.append("\n~~ Encryption Settings ~~\n\n")
 
         sb.append("Data Encryption: ${settings.dataEncryption.value}\n")
@@ -177,9 +185,9 @@ class CsiDataProvider(
         sb.append("OpenVPN Handshake: ${settings.handshake}\n")
         sb.append("Wireguard Handshake: ${settings.handshake}\n")
         sb.append("\n~~ App Settings ~~\n\n")
-        sb.append("1 click connect: ${settingsPrefs.isConnectOnLaunchEnabled.value}\n")
-        sb.append("Connect on Boot: ${settingsPrefs.isLaunchOnStartupEnabled.value}\n")
-        sb.append("Connect on App Updated: ${settingsPrefs.isConnectOnAppUpdateEnabled.value}\n")
+        sb.append("1 click connect: ${settingsPrefs.isConnectOnLaunchEnabledNow()}\n")
+        sb.append("Connect on Boot: ${settingsPrefs.isLaunchOnBootEnabledNow()}\n")
+        sb.append("Connect on App Updated: ${settingsPrefs.isConnectOnAppUpdateEnabledNow()}\n")
         sb.append("\n~~~~~ End User Settings ~~~~~\n")
         return redactIPsFromString(sb.toString())
     }

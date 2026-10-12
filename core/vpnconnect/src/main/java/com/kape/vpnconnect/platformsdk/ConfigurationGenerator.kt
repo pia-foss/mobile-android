@@ -24,7 +24,6 @@ import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.utils.COUNTRY_LIST
 import com.kape.vpnconnect.utils.CountryDetector
-import kotlinx.coroutines.flow.first
 
 private const val WG_AUTH_PORT = 1337
 private const val AWG_PORT = 1338
@@ -71,13 +70,28 @@ class ConfigurationGenerator(
                     false,
                 )
 
-            VpnProtocols.WireGuard ->
-                generateWireGuardVpnConfigurations(
-                    settingsPrefs.getWireGuardSettingsNow(),
-                    connectionPrefs.getSelectedVpnServerNow(),
-                    getDnsServers(),
-                    false,
-                )
+            VpnProtocols.WireGuard -> {
+                val wireGuardSettings = settingsPrefs.getWireGuardSettingsNow()
+                val server = connectionPrefs.getSelectedVpnServerNow()
+                val dnsServers = getDnsServers()
+                val awgConfigurations =
+                    if (wireGuardSettings.useAmnezia) {
+                        generateAwgVpnConfigurations(
+                            wireGuardSettings.mtu,
+                            connectionPrefs.getAwgObfuscationNow(),
+                            server,
+                            dnsServers,
+                            false,
+                        )
+                    } else {
+                        emptyList()
+                    }
+                // Not every region offers AmneziaWG endpoints; fall back to plain WireGuard so the
+                // toggle never leaves the user unable to connect.
+                awgConfigurations.ifEmpty {
+                    generateWireGuardVpnConfigurations(wireGuardSettings, server, dnsServers, false)
+                }
+            }
 
             VpnProtocols.Automatic ->
                 generateAutomaticConfigurations(
@@ -285,7 +299,7 @@ class ConfigurationGenerator(
         val wireGuardSettings = automaticWireGuardSettings(useSmallPackets)
         val udpSettings = automaticOpenVpnUdpSettings(useSmallPackets)
         val tcpSettings = automaticOpenVpnTcpSettings(useSmallPackets)
-        val awgObfuscation = connectionPrefs.awgObfuscation.first()
+        val awgObfuscation = connectionPrefs.getAwgObfuscationNow()
 
         val awg = { generateAwgVpnConfigurations(wireGuardSettings.mtu, awgObfuscation, server, dnsServers, isCensorship) }
         val wg = { generateWireGuardVpnConfigurations(wireGuardSettings, server, dnsServers, isCensorship) }

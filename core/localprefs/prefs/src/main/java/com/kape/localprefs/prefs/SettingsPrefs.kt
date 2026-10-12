@@ -254,6 +254,8 @@ class SettingsPrefs(
 
     suspend fun isLaunchOnBootEnabledNow(): Boolean = getLaunchOnStartupEnabled().first()
 
+    suspend fun isConnectOnLaunchEnabledNow(): Boolean = getConnectOnLaunchEnabled().first()
+
     suspend fun setShadowsocksObfuscationEnabled(enabled: Boolean) {
         dataStore.edit { it[SHADOWSOCKS_OBFUSCATION_ENABLED] = enabled }
     }
