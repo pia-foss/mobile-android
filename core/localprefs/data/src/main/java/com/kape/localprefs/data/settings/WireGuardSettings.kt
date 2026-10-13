@@ -11,6 +11,7 @@ data class WireGuardSettings(
     override var port: String = "1337",
     override var useSmallPackets: Boolean = false,
     override var handshake: String = "NOISE_IK",
+    var useAmnezia: Boolean = false,
 ) : ProtocolSettings {
     // Derived rather than stored so toggling useSmallPackets (via copy()) always takes effect.
     override val mtu: Int

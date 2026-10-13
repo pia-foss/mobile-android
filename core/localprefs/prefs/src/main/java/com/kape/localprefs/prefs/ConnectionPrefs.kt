@@ -111,6 +111,8 @@ class ConnectionPrefs(
 
     suspend fun getLastSnoozeEndTimeNow(): Long = getLastSnoozeEndTime().first()
 
+    suspend fun getAwgObfuscationNow(): AwgObfuscationSettings? = getAwgObfuscation().first()
+
     suspend fun setSelectedVpnServer(server: VpnServer?) {
         dataStore.edit { it[PRE_SELECTED_VPN_SERVER] = Json.encodeToString(server) }
     }

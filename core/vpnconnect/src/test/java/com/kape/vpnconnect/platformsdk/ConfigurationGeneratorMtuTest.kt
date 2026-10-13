@@ -17,9 +17,7 @@ import com.kape.vpnconnect.domain.ConnectionDataSource
 import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import com.kape.vpnconnect.utils.CountryDetector
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -64,7 +62,7 @@ class ConfigurationGeneratorMtuTest {
     @BeforeEach
     fun setUp() {
         coEvery { connectionPrefs.getSelectedVpnServerNow() } returns server
-        every { connectionPrefs.awgObfuscation } returns MutableStateFlow(null)
+        coEvery { connectionPrefs.getAwgObfuscationNow() } returns null
         coEvery { settingsPrefs.isMaceEnabledNow() } returns false
         coEvery { settingsPrefs.getSelectedDnsOptionNow() } returns DnsOptions.PIA
         coEvery { countryDetector.detectCountry() } returns "NL"

@@ -333,6 +333,14 @@ private fun TvWireguardProtocolSettingsScreen(
             viewModel.setWireGuardEnableSmallPackets(it)
         },
     )
+    TvSettingsToggle(
+        titleId = R.string.protocol_use_amnezia_title,
+        subtitleId = R.string.protocol_use_amnezia_description,
+        enabled = wireGuardSettings.useAmnezia,
+        toggle = {
+            viewModel.setWireGuardEnableAmnezia(it)
+        },
+    )
     TvSettingsItem(
         titleId = R.string.protocol_handshake_title,
         subtitle = wireGuardSettings.handshake,
