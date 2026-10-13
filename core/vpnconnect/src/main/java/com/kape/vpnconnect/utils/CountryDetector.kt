@@ -7,7 +7,28 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import org.koin.core.annotation.Singleton
 import kotlin.coroutines.resume
 
-val COUNTRY_LIST = listOf("CN", "IR", "RU")
+val COUNTRY_LIST =
+    listOf(
+        "CN",
+        "IR",
+        "RU",
+        "AE",
+        "AZ",
+        "EG",
+        "JO",
+        "KZ",
+        "MG",
+        "MM",
+        "NP",
+        "OM",
+        "PK",
+        "QA",
+        "SA",
+        "TM",
+        "TR",
+        "UZ",
+        "YE",
+    )
 
 @Singleton
 class CountryDetector(
