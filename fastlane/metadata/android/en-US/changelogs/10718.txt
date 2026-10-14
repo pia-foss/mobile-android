@@ -1,0 +1,4 @@
+ - Improved connectivity
+ - DIP over OpenVPN
+ - Improved stability
+ - Fixed automation glitch
