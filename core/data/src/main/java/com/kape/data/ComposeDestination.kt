@@ -1,9 +1,10 @@
 package com.kape.data
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
-interface ComposeDestination {
+interface ComposeDestination : NavKey {
     val navOptions: DestinationNavOptions get() = DestinationNavOptions.None
 }
 

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.configuration)
     alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.junit5)
 }
 
 android {
@@ -16,6 +17,9 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.bundles.koin)
     testImplementation(libs.coroutines.test)
+    testImplementation(libs.bundles.test)
+    testImplementation(libs.bundles.kointest)
+    runtimeOnly(libs.launcher)
     androidTestImplementation(libs.bundles.coroutines.androidtest)
 }
 

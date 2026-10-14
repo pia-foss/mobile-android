@@ -11,7 +11,7 @@ plugin-kotlin = "2.4.20"
 plugin-ktlint = "14.2.0"
 compose-bom = "2026.09.00"
 compose-tv-material = "1.1.0"
-compose-navigation = "2.10.2"
+navigation3 = "1.2.0"
 compose-jetpack = "2.11.0"
 koin = "4.2.2"
 koin-plugin = "1.2.1"
@@ -59,8 +59,9 @@ debug-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 debug-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-material3" }
 compose-tv-material = { module = "androidx.tv:tv-material", version.ref = "compose-tv-material" }
-compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
-compose-navigation-test = { module = "androidx.navigation:navigation-testing", version.ref = "compose-navigation" }
+navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
+navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
+lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "compose-jetpack" }
 mobile-android-obfuscation-proxy = { module = "com.github.pia-foss:mobile-android-obfuscation-proxy", version.ref = "mobile-android-obfuscation-proxy" }
 mobile-android-openvpn= { module = "com.github.pia-foss.mobile-android-vpn-manager:openvpn", version.ref = "mobile-android-openvpn" }
 mobile-shared-account = { module = "com.github.pia-foss:mobile-shared-account", version.ref = "mobile-shared-account" }
@@ -79,7 +80,6 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
-koin-navigation = { module = "io.insert-koin:koin-androidx-navigation", version.ref = "koin" }
 koin-testjunit5 = { module = "io.insert-koin:koin-test-junit5", version.ref = "koin" }
 koin-testandroid = { module = "io.insert-koin:koin-android-test", version.ref = "koin" }
 koin-andoridtest = { module = "io.insert-koin:koin-test", version.ref = "koin" }
@@ -123,11 +123,11 @@ configuration = { id = "configuration", version = "1.0" }
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 
 [bundles]
-compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-foundation", "compose-runtime", "compose-navigation", "compose-tv-material", "material3"]
-composeandroidtest = ["compose-android-test", "compose-navigation-test"]
+compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-foundation", "compose-runtime", "navigation3-runtime", "navigation3-ui", "lifecycle-viewmodel-navigation3", "compose-tv-material", "material3"]
+composeandroidtest = ["compose-android-test"]
 debugtest = ["debug-manifest", "debug-tooling"]
 android = ["viewmodel", "androidx-core", "lifecycle", "lifecyclecompose", "lifecycleprocess", "activity", "appcompat"]
-koin = ["koin-core", "koin-android", "koin-compose", "koin-navigation", "koin-annotations", "koin-workmanager"]
+koin = ["koin-core", "koin-android", "koin-compose", "koin-annotations", "koin-workmanager"]
 kointest = ["koin-testjunit5", "koin-testandroid"]
 koinandroidtest = ["koin-testandroid", "koin-andoridtest"]
 serialization = ["serialization-core", "serialization-json", "datetime"]

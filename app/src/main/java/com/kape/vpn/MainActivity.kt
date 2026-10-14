@@ -7,14 +7,21 @@ import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import com.kape.about.screens.mobile.AboutScreen
 import com.kape.about.screens.tv.TvAboutScreen
 import com.kape.automation.ui.screens.AddNewRuleScreen
@@ -96,6 +103,7 @@ import com.kape.permissions.ui.tv.TvVpnPermissionScreen
 import com.kape.profile.ui.screens.mobile.AccountDeletedScreen
 import com.kape.profile.ui.screens.mobile.ProfileScreen
 import com.kape.profile.ui.screens.tv.TvProfileScreen
+import com.kape.router.navigateBack
 import com.kape.settings.ui.screens.mobile.AutomationSettingsScreen
 import com.kape.settings.ui.screens.mobile.ConnectionStatsScreen
 import com.kape.settings.ui.screens.mobile.ExternalProxyAppList
@@ -176,14 +184,29 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             PIATheme(platformUtils.isTv()) {
-                PiaScreen(router = router, isTv = platformUtils.isTv()) { navController ->
+                PiaScreen(
+                    router = router,
+                    isTv = platformUtils.isTv(),
+                    startDestination = Splash,
+                ) { backStack ->
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
                     ) {
-                        NavHost(navController = navController, startDestination = Splash) {
-                            defineNavigationGraph()
-                        }
+                        NavDisplay(
+                            backStack = backStack,
+                            onBack = { backStack.navigateBack() },
+                            entryDecorators =
+                                listOf(
+                                    rememberSaveableStateHolderNavEntryDecorator(),
+                                    rememberViewModelStoreNavEntryDecorator(),
+                                ),
+                            // Keep Navigation 2's default cross-fade
+                            transitionSpec = { crossFade() },
+                            popTransitionSpec = { crossFade() },
+                            predictivePopTransitionSpec = { crossFade() },
+                            entryProvider = entryProvider { defineNavigationGraph() },
+                        )
                     }
                 }
             }
@@ -212,6 +235,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun crossFade(): ContentTransform {
+        val animationSpec = tween<Float>(CROSS_FADE_DURATION_MS)
+        return fadeIn(animationSpec) togetherWith fadeOut(animationSpec)
+    }
+
     private fun deepLinkLogin(intent: Intent?) {
         intent?.data?.let { uri ->
             val isAppLink =
@@ -227,106 +255,100 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun NavGraphBuilder.defineNavigationGraph() {
+    private fun EntryProviderScope<NavKey>.defineNavigationGraph() {
         if (platformUtils.isTv()) {
-            composable<Splash> { SplashScreen() }
-            composable<TvConsent> { backStackEntry ->
-                val route = backStackEntry.toRoute<TvConsent>()
-                TvConsentScreen(route.isFirstScreen)
-            }
-            composable<TvWelcome> { TvWelcomeScreen() }
-            composable<TvWelcomeBack> { TvWelcomeBackScreen() }
-            composable<TvSubscribe> { TvSignupScreensFlow() }
-            composable<TvLoginUsername> { LoginUsernameScreen() }
-            composable<TvLoginPassword> { LoginPasswordScreen() }
-            composable<VpnPermission> { TvVpnPermissionScreen() }
-            composable<NotificationPermission> { TvNotificationPermissionScreen() }
-            composable<Connection> { TvConnectionScreen() }
-            composable<VpnRegionSelection> { TvVpnRegionSelectionScreen() }
-            composable<WebDestination.Terms> {
+            entry<Splash> { SplashScreen() }
+            entry<TvConsent> { route -> TvConsentScreen(route.isFirstScreen) }
+            entry<TvWelcome> { TvWelcomeScreen() }
+            entry<TvWelcomeBack> { TvWelcomeBackScreen() }
+            entry<TvSubscribe> { TvSignupScreensFlow() }
+            entry<TvLoginUsername> { LoginUsernameScreen() }
+            entry<TvLoginPassword> { LoginPasswordScreen() }
+            entry<VpnPermission> { TvVpnPermissionScreen() }
+            entry<NotificationPermission> { TvNotificationPermissionScreen() }
+            entry<Connection> { TvConnectionScreen() }
+            entry<VpnRegionSelection> { TvVpnRegionSelectionScreen() }
+            entry<WebDestination.Terms> {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_terms_of_service))
             }
-            composable<WebDestination.Privacy> {
+            entry<WebDestination.Privacy> {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_privacy_policy))
             }
-            composable<Settings> { TvSettingsScreen() }
-            composable<TvSideMenu> { TvSideMenuScreen() }
-            composable<Profile> { TvProfileScreen() }
-            composable<DedicatedIpActivateToken> { TvDedicatedIpScreen() }
-            composable<PerAppSettings> { TvPerAppSettingsScreen() }
-            composable<HelpSettings> { TvHelpScreen() }
-            composable<About> { TvAboutScreen() }
-            composable<GeneralSettings> { TvGeneralSettingsScreen() }
-            composable<ProtocolSettings> { TvProtocolSettingsScreen() }
-            composable<NetworkSettings> { TvNetworkSettingsScreen() }
-            composable<PrivacySettings> { TvPrivacySettingsScreen() }
-            composable<ConnectionStats> { TvConnectionStatsScreen() }
+            entry<Settings> { TvSettingsScreen() }
+            entry<TvSideMenu> { TvSideMenuScreen() }
+            entry<Profile> { TvProfileScreen() }
+            entry<DedicatedIpActivateToken> { TvDedicatedIpScreen() }
+            entry<PerAppSettings> { TvPerAppSettingsScreen() }
+            entry<HelpSettings> { TvHelpScreen() }
+            entry<About> { TvAboutScreen() }
+            entry<GeneralSettings> { TvGeneralSettingsScreen() }
+            entry<ProtocolSettings> { TvProtocolSettingsScreen() }
+            entry<NetworkSettings> { TvNetworkSettingsScreen() }
+            entry<PrivacySettings> { TvPrivacySettingsScreen() }
+            entry<ConnectionStats> { TvConnectionStatsScreen() }
         } else {
-            composable<Consent> { backStackEntry ->
-                val route = backStackEntry.toRoute<Consent>()
-                ConsentScreen(route.isFirstScreen)
-            }
-            composable<LoginWithCredentials> { LoginScreen() }
-            composable<LoginWithEmail> { LoginWithEmailScreen() }
-            composable<Settings> { SettingsScreen() }
-            composable<VpnPermission> { VpnPermissionScreen() }
-            composable<NotificationPermission> { NotificationPermissionScreen() }
-            composable<AutomationSettings> { AutomationSettingsScreen() }
-            composable<AutomationMain> { AutomationScreen() }
-            composable<AutomationAddRule> { AddNewRuleScreen() }
-            composable<AutomationLocation> { LocationPermissionScreen() }
-            composable<AutomationBackgroundLocation> { BackgroundLocationPermissionScreen() }
-            composable<Splash> { SplashScreen() }
-            composable<Connection> { ConnectionScreen() }
-            composable<Profile> { ProfileScreen() }
-            composable<Subscribe> { SignupScreensFlow() }
-            composable<WelcomeBack> { WelcomeBackScreen() }
-            composable<VpnRegionSelection> { VpnRegionSelectionScreen() }
-            composable<ShadowsocksRegionSelection> {
+            entry<Consent> { route -> ConsentScreen(route.isFirstScreen) }
+            entry<LoginWithCredentials> { LoginScreen() }
+            entry<LoginWithEmail> { LoginWithEmailScreen() }
+            entry<Settings> { SettingsScreen() }
+            entry<VpnPermission> { VpnPermissionScreen() }
+            entry<NotificationPermission> { NotificationPermissionScreen() }
+            entry<AutomationSettings> { AutomationSettingsScreen() }
+            entry<AutomationMain> { AutomationScreen() }
+            entry<AutomationAddRule> { AddNewRuleScreen() }
+            entry<AutomationLocation> { LocationPermissionScreen() }
+            entry<AutomationBackgroundLocation> { BackgroundLocationPermissionScreen() }
+            entry<Splash> { SplashScreen() }
+            entry<Connection> { ConnectionScreen() }
+            entry<Profile> { ProfileScreen() }
+            entry<Subscribe> { SignupScreensFlow() }
+            entry<WelcomeBack> { WelcomeBackScreen() }
+            entry<VpnRegionSelection> { VpnRegionSelectionScreen() }
+            entry<ShadowsocksRegionSelection> {
                 ShadowsocksRegionSelectionScreen()
             }
-            composable<WebDestination.Terms> {
+            entry<WebDestination.Terms> {
                 InAppBrowser(
                     url = getString(com.kape.ui.R.string.url_terms_of_service),
                 )
             }
-            composable<WebDestination.Privacy> {
+            entry<WebDestination.Privacy> {
                 InAppBrowser(
                     url = getString(com.kape.ui.R.string.url_privacy_policy),
                 )
             }
-            composable<WebDestination.Support> {
+            entry<WebDestination.Support> {
                 InAppBrowser(
                     url = getString(com.kape.ui.R.string.url_support),
                 )
             }
-            composable<WebDestination.NoInAppRegistration> {
+            entry<WebDestination.NoInAppRegistration> {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_registration))
             }
-            composable<WebDestination.DeleteAccount> {
+            entry<WebDestination.DeleteAccount> {
                 InAppBrowser(url = getString(com.kape.ui.R.string.url_delete_account))
             }
-            composable<PerAppSettings> { PerAppSettingsScreen() }
-            composable<DedicatedIpActivateToken> { DedicatedIpScreen() }
-            composable<DedicatedIpSignupPlans> { SignupDedicatedIpScreen() }
-            composable<DedicatedIpSignupTokenDetails> { SignupDedicatedIpTokenDetailsScreen() }
-            composable<DedicatedIpLocationSelection> { SignupDedicatedIpCountryScreen() }
-            composable<DedicatedIpSignupTokenActivate> { SignupDedicatedIpTokenActivateScreen() }
-            composable<DedicatedIpPurchaseSuccess> { SignupDedicatedIpPurchaseSuccessScreen() }
-            composable<KillSwitchSettings> { KillSwitchSettingScreen() }
-            composable<About> { AboutScreen() }
-            composable<Customization> { CustomizationScreen() }
-            composable<AccountDeleted> { AccountDeletedScreen() }
-            composable<Update> { UpdateScreen() }
-            composable<GeneralSettings> { GeneralSettingsScreen() }
-            composable<ProtocolSettings> { ProtocolSettingsScreen() }
-            composable<NetworkSettings> { NetworkSettingsScreen() }
-            composable<PrivacySettings> { PrivacySettingsScreen() }
-            composable<HelpSettings> { HelpScreen() }
-            composable<ObfuscationSettings> { ObfuscationSettingsScreen() }
-            composable<DebugLogs> { VpnLogScreen() }
-            composable<ConnectionStats> { ConnectionStatsScreen() }
-            composable<ExternalAppList> { ExternalProxyAppList() }
+            entry<PerAppSettings> { PerAppSettingsScreen() }
+            entry<DedicatedIpActivateToken> { DedicatedIpScreen() }
+            entry<DedicatedIpSignupPlans> { SignupDedicatedIpScreen() }
+            entry<DedicatedIpSignupTokenDetails> { SignupDedicatedIpTokenDetailsScreen() }
+            entry<DedicatedIpLocationSelection> { SignupDedicatedIpCountryScreen() }
+            entry<DedicatedIpSignupTokenActivate> { SignupDedicatedIpTokenActivateScreen() }
+            entry<DedicatedIpPurchaseSuccess> { SignupDedicatedIpPurchaseSuccessScreen() }
+            entry<KillSwitchSettings> { KillSwitchSettingScreen() }
+            entry<About> { AboutScreen() }
+            entry<Customization> { CustomizationScreen() }
+            entry<AccountDeleted> { AccountDeletedScreen() }
+            entry<Update> { UpdateScreen() }
+            entry<GeneralSettings> { GeneralSettingsScreen() }
+            entry<ProtocolSettings> { ProtocolSettingsScreen() }
+            entry<NetworkSettings> { NetworkSettingsScreen() }
+            entry<PrivacySettings> { PrivacySettingsScreen() }
+            entry<HelpSettings> { HelpScreen() }
+            entry<ObfuscationSettings> { ObfuscationSettingsScreen() }
+            entry<DebugLogs> { VpnLogScreen() }
+            entry<ConnectionStats> { ConnectionStatsScreen() }
+            entry<ExternalAppList> { ExternalProxyAppList() }
         }
     }
     // endregion
@@ -336,5 +358,6 @@ class MainActivity : AppCompatActivity() {
         private const val LEGACY_SCHEME = "piavpn"
         private const val LOGIN_HOST = "www.privateinternetaccess.com"
         private const val LOGIN_PATH = "/login"
+        private const val CROSS_FADE_DURATION_MS = 700
     }
 }

@@ -10,17 +10,19 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.ProvidedValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
 import com.kape.contracts.Router
-import com.kape.data.DestinationNavOptions
+import com.kape.data.ComposeDestination
 import com.kape.router.LocalNavigator
 import com.kape.router.Navigator
+import com.kape.router.navigateBack
+import com.kape.router.navigateTo
 import com.kape.ui.utils.LocalColors
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 @Composable
@@ -53,10 +55,11 @@ fun PiaScreen(
     isTv: Boolean,
     darkTheme: Boolean = isDarkTheme(isTv),
     router: Router,
+    startDestination: ComposeDestination,
     vararg compositionLocalValues: ProvidedValue<*>,
-    content: @Composable (navController: NavHostController) -> Unit,
+    content: @Composable (backStack: NavBackStack<NavKey>) -> Unit,
 ) {
-    val navController = rememberNavController()
+    val backStack = rememberNavBackStack(startDestination)
 
     val materialColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     val piaColorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
@@ -80,44 +83,15 @@ fun PiaScreen(
             typography = AppTypography,
             colorScheme = materialColorScheme,
         ) {
-            content(navController)
+            content(backStack)
 
-            LaunchedEffect(navController) {
-                // Suspend until NavHost has set the graph
-                snapshotFlow {
-                    try {
-                        navController.graph
-                        true
-                    } catch (e: IllegalStateException) {
-                        false
-                    }
-                }.first { it }
-
+            LaunchedEffect(backStack) {
                 launch {
                     router
                         .getNavigationState()
-                        .filter { it != null }
+                        .filterNotNull()
                         .collect { destination ->
-                            val options = destination!!.navOptions
-                            navController.navigate(destination) {
-                                when (options) {
-                                    is DestinationNavOptions.None -> { // no-op
-                                    }
-
-                                    is DestinationNavOptions.PopUpTo -> {
-                                        popUpTo(options.destination) {
-                                            inclusive = options.inclusive
-                                        }
-                                    }
-
-                                    DestinationNavOptions.ClearAll -> {
-                                        popUpTo(navController.graph.id) {
-                                            inclusive = true
-                                        }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            }
+                            backStack.navigateTo(destination)
                             router.resetNavigation()
                         }
                 }
@@ -127,7 +101,7 @@ fun PiaScreen(
                         .getBackState()
                         .filter { it }
                         .collect {
-                            navController.previousBackStackEntry != null && navController.popBackStack()
+                            backStack.navigateBack()
                             router.resetBack()
                         }
                 }

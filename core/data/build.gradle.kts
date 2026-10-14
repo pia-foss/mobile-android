@@ -12,4 +12,5 @@ android {
 dependencies {
     implementation(libs.coroutines)
     implementation(libs.bundles.serialization)
+    api(libs.navigation3.runtime)
 }
