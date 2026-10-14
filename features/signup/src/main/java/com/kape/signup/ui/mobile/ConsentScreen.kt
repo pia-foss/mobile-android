@@ -20,7 +20,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +44,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ConsentScreen(isFirstScreen: Boolean) =
     Screen {
         val viewModel: SignupViewModel = koinViewModel()
-        var showMoreInfo by remember { mutableStateOf(false) }
+        var showMoreInfo by rememberSaveable { mutableStateOf(false) }
 
         Column(
             modifier =

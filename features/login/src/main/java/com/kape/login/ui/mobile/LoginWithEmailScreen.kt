@@ -18,6 +18,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,7 +44,7 @@ fun LoginWithEmailScreen() =
         val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
         val currentContext = LocalContext.current
         val noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet)
-        val email = remember { mutableStateOf("") }
+        val email = rememberSaveable { mutableStateOf("") }
 
         Column(
             modifier =

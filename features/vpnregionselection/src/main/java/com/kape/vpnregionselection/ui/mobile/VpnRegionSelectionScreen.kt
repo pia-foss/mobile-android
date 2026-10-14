@@ -22,6 +22,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -65,9 +66,9 @@ fun VpnRegionSelectionScreen() =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.location_selection_title))
             }
-        val isSearchEnabled = remember { mutableStateOf(false) }
+        val isSearchEnabled = rememberSaveable { mutableStateOf(false) }
         val showToast = remember { mutableStateOf(false) }
-        val showChangeLocationDialog = remember { mutableStateOf(false) }
+        val showChangeLocationDialog = rememberSaveable { mutableStateOf(false) }
 
         Column(
             modifier =

@@ -13,6 +13,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -32,10 +33,11 @@ fun CustomObfuscationInputFieldDialog(
     isNumericIpAddress: (ipAddress: String) -> Boolean,
     isPortValid: (port: String) -> Boolean,
 ) {
-    val host = remember { mutableStateOf(current?.host ?: "") }
-    val port = remember { mutableStateOf(current?.port ?: "") }
+    val host = rememberSaveable { mutableStateOf(current?.host ?: "") }
+    val port = rememberSaveable { mutableStateOf(current?.port ?: "") }
+    // Not saveable: saved instance state may be persisted to disk
     val key = remember { mutableStateOf(current?.key ?: "") }
-    val cipher = remember { mutableStateOf(current?.cipher ?: "") }
+    val cipher = rememberSaveable { mutableStateOf(current?.cipher ?: "") }
 
     val hostErrorMessage = stringResource(id = R.string.obfuscation_shadowsocks_invalid_host)
     val portErrorMessage = stringResource(id = R.string.obfuscation_shadowsocks_invalid_port)
