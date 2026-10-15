@@ -1,5 +1,6 @@
 package com.kape.customization
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -62,8 +63,14 @@ fun CustomizationScreen() =
         val connectionViewModel: ConnectionViewModel = koinViewModel()
         val appBarViewModel: AppBarViewModel = koinViewModel()
 
+        val activity = LocalActivity.current
         DisposableEffect(viewModel) {
-            onDispose { viewModel.discardChanges() }
+            onDispose {
+                // Keep unsaved edits across rotation; only discard when the screen is left.
+                if (activity?.isChangingConfigurations != true) {
+                    viewModel.discardChanges()
+                }
+            }
         }
 
         var lazyListState by remember { mutableStateOf(LazyListState()) }

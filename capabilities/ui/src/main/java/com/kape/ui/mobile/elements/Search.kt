@@ -7,7 +7,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -22,7 +22,7 @@ fun Search(
     modifier: Modifier,
     onTextChanged: (text: String) -> Unit,
 ) {
-    val query = remember { mutableStateOf("") }
+    val query = rememberSaveable { mutableStateOf("") }
 
     OutlinedTextField(
         modifier = modifier,

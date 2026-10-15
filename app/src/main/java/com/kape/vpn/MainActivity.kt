@@ -226,10 +226,9 @@ class MainActivity : AppCompatActivity() {
 
     // region private
     private fun defineScreenOrientation() {
+        // TODO: Remove else clause once layouts are ready to handle landscape
         if (platformUtils.isTv()) {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE // tv
-        } else if (platformUtils.isTablet()) {
-            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED // allow rotation
         } else {
             this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT // phone
         }

@@ -15,7 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -39,7 +39,7 @@ fun <T> OptionsDialog(
     onNeutral: () -> Unit = {},
     selection: T,
 ) {
-    val selected = remember { mutableStateOf(selection) }
+    val selected = rememberSaveable { mutableStateOf(selection) }
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {

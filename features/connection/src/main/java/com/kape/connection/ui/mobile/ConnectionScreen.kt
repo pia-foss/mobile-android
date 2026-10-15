@@ -41,6 +41,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -107,9 +108,9 @@ fun ConnectionScreen() =
         val scope: CoroutineScope = rememberCoroutineScope()
         val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
         val state by viewModel.state.collectAsStateWithLifecycle()
-        val showRatingGeneralDialog = remember { mutableStateOf(false) }
-        val showRatingReviewDialog = remember { mutableStateOf(false) }
-        val showRatingFeedbackDialog = remember { mutableStateOf(false) }
+        val showRatingGeneralDialog = rememberSaveable { mutableStateOf(false) }
+        val showRatingReviewDialog = rememberSaveable { mutableStateOf(false) }
+        val showRatingFeedbackDialog = rememberSaveable { mutableStateOf(false) }
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
         val shouldShowProtocolNotAvailable by viewModel.showProtocolNotAvailableDialog

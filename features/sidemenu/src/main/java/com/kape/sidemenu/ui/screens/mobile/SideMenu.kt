@@ -25,7 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -60,7 +60,7 @@ fun SideMenuContent(
     state: DrawerState,
 ) {
     val viewModel: SideMenuViewModel = koinViewModel()
-    val logoutDialogVisible = remember { mutableStateOf(false) }
+    val logoutDialogVisible = rememberSaveable { mutableStateOf(false) }
     val hasUpdateAvailable by viewModel.updateAvailable.collectAsStateWithLifecycle()
     val context = LocalContext.current
 

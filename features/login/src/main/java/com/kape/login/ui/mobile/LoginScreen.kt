@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -66,7 +67,8 @@ fun LoginScreen() =
         val currentContext = LocalContext.current
         val noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet)
 
-        val username = remember { mutableStateOf("") }
+        val username = rememberSaveable { mutableStateOf("") }
+        // Not saveable: saved instance state may be persisted to disk
         val password = remember { mutableStateOf("") }
 
         Column(

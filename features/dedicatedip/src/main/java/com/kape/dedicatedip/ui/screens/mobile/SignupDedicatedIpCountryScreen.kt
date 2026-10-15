@@ -33,7 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,7 +79,7 @@ fun SignupDedicatedIpCountryScreen() =
             viewModel.resumePossibleUnacknowledgedDipPurchases()
         }
 
-        val showAllLocations = remember { mutableStateOf(false) }
+        val showAllLocations = rememberSaveable { mutableStateOf(false) }
 
         if (viewModel.showSpinner.value) {
             Column(

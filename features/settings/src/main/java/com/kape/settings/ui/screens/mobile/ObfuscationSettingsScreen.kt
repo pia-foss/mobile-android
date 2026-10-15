@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -50,12 +50,12 @@ fun ObfuscationSettingsScreen() =
                 "${stringResource(id = R.string.network_dns_selection_custom)} ${it.host}:${it.port}"
         }
 
-        val customObfuscationDialogVisible = remember { mutableStateOf(false) }
-        val obfuscationDialogVisible = remember { mutableStateOf(false) }
-        val allowLocalTrafficDialogVisible = remember { mutableStateOf(false) }
-        val tcpTransportDialogVisible = remember { mutableStateOf(false) }
-        val externalProxyAppDialogVisible = remember { mutableStateOf(false) }
-        val externalProxyPortDialogVisible = remember { mutableStateOf(false) }
+        val customObfuscationDialogVisible = rememberSaveable { mutableStateOf(false) }
+        val obfuscationDialogVisible = rememberSaveable { mutableStateOf(false) }
+        val allowLocalTrafficDialogVisible = rememberSaveable { mutableStateOf(false) }
+        val tcpTransportDialogVisible = rememberSaveable { mutableStateOf(false) }
+        val externalProxyAppDialogVisible = rememberSaveable { mutableStateOf(false) }
+        val externalProxyPortDialogVisible = rememberSaveable { mutableStateOf(false) }
         val externalProxyEnabled by viewModel.externalProxyAppEnabled.collectAsStateWithLifecycle()
         val externalProxyAppPackageName by viewModel.externalProxyAppPackageName.collectAsStateWithLifecycle()
         val externalProxyPort by viewModel.externalProxyAppPort.collectAsStateWithLifecycle()

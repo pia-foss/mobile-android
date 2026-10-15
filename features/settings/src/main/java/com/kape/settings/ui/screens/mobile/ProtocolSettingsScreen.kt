@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -44,7 +44,7 @@ fun ProtocolSettingsScreen() =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.protocols))
             }
-        val protocolDialogVisible = remember { mutableStateOf(false) }
+        val protocolDialogVisible = rememberSaveable { mutableStateOf(false) }
         val protocolSelection by viewModel.selectedProtocol.collectAsStateWithLifecycle()
         val wireGuardSettings by viewModel.wireGuardSettings.collectAsStateWithLifecycle()
         val autoSettings by viewModel.autoSettings.collectAsStateWithLifecycle()
@@ -141,10 +141,10 @@ fun OpenVpnProtocolSettingsScreen(
 ) {
     val openVpnSettings by viewModel.openVpnSettings.collectAsStateWithLifecycle()
     val dipPorts by viewModel.dipPorts.collectAsStateWithLifecycle()
-    val transportDialogVisible = remember { mutableStateOf(false) }
-    val encryptionDialogVisible = remember { mutableStateOf(false) }
-    val portDialogVisible = remember { mutableStateOf(false) }
-    val portSelection = remember { mutableStateOf(openVpnSettings.port) }
+    val transportDialogVisible = rememberSaveable { mutableStateOf(false) }
+    val encryptionDialogVisible = rememberSaveable { mutableStateOf(false) }
+    val portDialogVisible = rememberSaveable { mutableStateOf(false) }
+    val portSelection = rememberSaveable { mutableStateOf(openVpnSettings.port) }
     ProtocolSelectionLine(
         name = openVpnSettings.name,
         protocolDialogVisible,

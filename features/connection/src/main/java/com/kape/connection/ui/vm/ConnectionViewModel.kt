@@ -88,6 +88,7 @@ class ConnectionViewModel(
 ) : ViewModel() {
     private var isAutoMode: Boolean = false
     private var selectedLocation: VpnServer? = null
+    private var isAutoConnectObserved = false
     private val _state: MutableStateFlow<ConnectionScreenState> =
         MutableStateFlow(
             ConnectionScreenState(
@@ -216,6 +217,10 @@ class ConnectionViewModel(
     fun getDownloadLink(): String = updateAvailableManager.getDownloadUrl()
 
     fun autoConnect() {
+        // Called from the screen's first composition, which runs again on every configuration
+        // change; start the observer only once per ViewModel so a rotation can't reconnect.
+        if (isAutoConnectObserved) return
+        isAutoConnectObserved = true
         viewModelScope.launch(ioDispatcher) {
             combine(
                 settingsPrefs.isConnectOnLaunchEnabled,
