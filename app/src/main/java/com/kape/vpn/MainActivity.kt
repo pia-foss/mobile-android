@@ -12,10 +12,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -143,6 +139,7 @@ import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.utils.AutomationManager
 import com.kape.utils.PlatformUtils
+import com.kape.vpn.navigation.AppNavigationSuite
 import com.kape.vpn.utils.ShortcutManager
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
@@ -189,10 +186,7 @@ class MainActivity : AppCompatActivity() {
                     isTv = platformUtils.isTv(),
                     startDestination = Splash,
                 ) { backStack ->
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background,
-                    ) {
+                    AppNavigationSuite(backStack = backStack, isTv = platformUtils.isTv()) {
                         NavDisplay(
                             backStack = backStack,
                             onBack = { backStack.navigateBack() },

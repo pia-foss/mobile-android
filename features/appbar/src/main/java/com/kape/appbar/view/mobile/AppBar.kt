@@ -54,6 +54,7 @@ fun AppBar(
     onRightIconClick: () -> Unit = {},
     rightIconId: Int? = null,
     rightIconContentDescription: String? = null,
+    showLeftIcon: Boolean = true,
 ) {
     val isConnected by viewModel.isConnected.collectAsState()
     val connectionStatus by viewModel.connectionStatus.collectAsStateWithLifecycle()
@@ -88,7 +89,32 @@ fun AppBar(
         onRightIconClick,
         rightIconId,
         rightIconContentDescription,
+        showLeftIcon,
     )
+}
+
+/**
+ * The app bar's status-dependent background at the app bar's height, without any content.
+ * Used to continue the app bar beside the screen, e.g. above the navigation rail.
+ */
+@Composable
+fun AppBarBackground(
+    viewModel: AppBarViewModel,
+    modifier: Modifier = Modifier,
+) {
+    val isConnected by viewModel.isConnected.collectAsState()
+    val connectionStatus by viewModel.connectionStatus.collectAsStateWithLifecycle()
+    val status = if (isConnected) connectionStatus else ConnectionStatus.ERROR
+
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .background(getAppBarBackgroundColor(status, LocalColors.current)),
+    ) {
+        Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
+        Spacer(Modifier.height(AppBarHeight))
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -101,6 +127,7 @@ private fun AppBarContent(
     onRightIconClick: () -> Unit,
     rightIconId: Int? = null,
     rightIconContentDescription: String? = null,
+    showLeftIcon: Boolean = true,
 ) {
     Column(
         modifier =
@@ -117,35 +144,37 @@ private fun AppBarContent(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(48.dp)
+                    .height(AppBarHeight)
                     .semantics {
                         testTagsAsResourceId = true
                     },
         ) {
             val menuContentDescription = stringResource(id = R.string.menu)
             val backContentDescription = stringResource(id = R.string.back)
-            IconButton(
-                onClick = { onLeftIconClick() },
-                modifier =
-                    Modifier
-                        .align(CenterStart)
-                        .testTag(if (type == AppBarType.Connection) ":AppBar:side_menu" else ":AppBar:back")
-                        .semantics {
-                            contentDescription =
-                                when (type) {
-                                    AppBarType.Connection -> menuContentDescription
-                                    AppBarType.Customization,
-                                    AppBarType.InAppBrowser,
-                                    AppBarType.Navigation,
-                                    -> backContentDescription
-                                }
-                        },
-            ) {
-                Icon(
-                    painter = painterResource(id = getAppBarLeftIcon(type)),
-                    contentDescription = null,
-                    tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
-                )
+            if (showLeftIcon) {
+                IconButton(
+                    onClick = { onLeftIconClick() },
+                    modifier =
+                        Modifier
+                            .align(CenterStart)
+                            .testTag(if (type == AppBarType.Connection) ":AppBar:side_menu" else ":AppBar:back")
+                            .semantics {
+                                contentDescription =
+                                    when (type) {
+                                        AppBarType.Connection -> menuContentDescription
+                                        AppBarType.Customization,
+                                        AppBarType.InAppBrowser,
+                                        AppBarType.Navigation,
+                                        -> backContentDescription
+                                    }
+                            },
+                ) {
+                    Icon(
+                        painter = painterResource(id = getAppBarLeftIcon(type)),
+                        contentDescription = null,
+                        tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
+                    )
+                }
             }
 
             when (type) {
@@ -292,6 +321,9 @@ private fun AppBarConnectionStatus(
         }
     }
 }
+
+/** Height of the app bar below the status bar. */
+val AppBarHeight = 48.dp
 
 sealed class AppBarType {
     data object Connection : AppBarType()

@@ -8,6 +8,7 @@ import com.kape.data.Connection
 import com.kape.data.Consent
 import com.kape.data.LoginWithCredentials
 import com.kape.data.NotificationPermission
+import com.kape.data.Profile
 import com.kape.data.Settings
 import com.kape.data.Splash
 import com.kape.data.VpnPermission
@@ -109,5 +110,41 @@ class BackStackNavigationTest {
 
         assertFalse(handled)
         assertEquals(listOf(Connection), backStack)
+    }
+
+    @Test
+    fun `navigateToTopLevel - from nested screen - resets to root and pushes destination`() {
+        val backStack = mutableListOf<NavKey>(Connection, Settings, AutomationSettings)
+
+        backStack.navigateToTopLevel(Profile, root = Connection)
+
+        assertEquals(listOf(Connection, Profile), backStack)
+    }
+
+    @Test
+    fun `navigateToTopLevel - to root - leaves only the root`() {
+        val backStack = mutableListOf<NavKey>(Connection, Settings, AutomationSettings)
+
+        backStack.navigateToTopLevel(Connection, root = Connection)
+
+        assertEquals(listOf(Connection), backStack)
+    }
+
+    @Test
+    fun `navigateToTopLevel - reselecting current destination - keeps a single entry`() {
+        val backStack = mutableListOf<NavKey>(Connection, Settings)
+
+        backStack.navigateToTopLevel(Settings, root = Connection)
+
+        assertEquals(listOf(Connection, Settings), backStack)
+    }
+
+    @Test
+    fun `navigateToTopLevel - root not on stack - behaves like navigateTo`() {
+        val backStack = mutableListOf<NavKey>(VpnRegionSelection)
+
+        backStack.navigateToTopLevel(Settings, root = Connection)
+
+        assertEquals(listOf(VpnRegionSelection, Settings), backStack)
     }
 }

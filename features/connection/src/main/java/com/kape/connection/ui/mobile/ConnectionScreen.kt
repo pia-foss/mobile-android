@@ -94,6 +94,7 @@ import com.kape.ui.mobile.text.DedicatedIpHomeBannerText
 import com.kape.ui.theme.PiaTypography.subtitle3
 import com.kape.ui.tiles.Dialog
 import com.kape.ui.utils.LocalColors
+import com.kape.ui.utils.LocalNavigationSuiteVisible
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -107,6 +108,11 @@ fun ConnectionScreen() =
         val appBarViewModel: AppBarViewModel = koinViewModel()
         val scope: CoroutineScope = rememberCoroutineScope()
         val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
+        val navigationSuiteVisible = LocalNavigationSuiteVisible.current
+
+        LaunchedEffect(navigationSuiteVisible) {
+            if (navigationSuiteVisible) drawerState.close()
+        }
         val state by viewModel.state.collectAsStateWithLifecycle()
         val showRatingGeneralDialog = rememberSaveable { mutableStateOf(false) }
         val showRatingReviewDialog = rememberSaveable { mutableStateOf(false) }
@@ -143,6 +149,8 @@ fun ConnectionScreen() =
 
         ModalNavigationDrawer(
             drawerState = drawerState,
+            // The app-level rail replaces the drawer on wider windows
+            gesturesEnabled = !navigationSuiteVisible,
             drawerContent = {
                 ModalDrawerSheet {
                     SideMenuContent(scope = scope, state = drawerState)
@@ -160,6 +168,7 @@ fun ConnectionScreen() =
                             }
                         },
                         onRightIconClick = { viewModel.navigateToCustomization() },
+                        showLeftIcon = !navigationSuiteVisible,
                     )
                 },
                 snackbarHost = {
