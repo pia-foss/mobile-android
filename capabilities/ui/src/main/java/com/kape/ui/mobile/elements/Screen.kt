@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
@@ -111,7 +112,7 @@ fun AdaptiveContent(
 fun AppColumn(
     modifier: Modifier = Modifier,
     centerVertically: Boolean = false,
-    content: @Composable () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier =
@@ -120,7 +121,6 @@ fun AppColumn(
                 .widthIn(max = 460.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = if (centerVertically) Arrangement.Center else Arrangement.Top,
-    ) {
-        content()
-    }
+        content = content,
+    )
 }
