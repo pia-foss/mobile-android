@@ -6,15 +6,17 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -22,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -34,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.DedicatedIpSignupActivateTokenDescriptionText
@@ -52,89 +54,78 @@ fun SignupDedicatedIpTokenActivateScreen() =
         val showSpinner = remember { mutableStateOf(false) }
         val dipToken by viewModel.getSignupDipToken().collectAsStateWithLifecycle()
 
-        Column(
+        AdaptiveSplitContent(
             modifier =
                 Modifier
-                    .systemBarsPadding()
-                    .padding(8.dp)
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_dip),
-                tint = LocalColors.current.primary,
-                contentDescription = null,
-                modifier =
-                    Modifier
-                        .padding(16.dp)
-                        .height(40.dp)
-                        .fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Column(
-                modifier = Modifier.padding(16.dp),
-            ) {
-                DedicatedIpSignupActivateTokenDescriptionText(
-                    content = stringResource(id = R.string.dip_signup_activate_token_description),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Input(
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = false,
-                    maskInput = false,
-                    keyboard = KeyboardType.Text,
-                    content = mutableStateOf(dipToken),
-                    singleLine = true,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = LocalColors.current.warningBackground(),
-                        ),
-                    border = BorderStroke(1.dp, color = LocalColors.current.warningOutline()),
-                    shape = RoundedCornerShape(8.dp),
-                    onClick = { },
+                    .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout))
+                    .padding(8.dp),
+            header = { DipSignupIcon() },
+            body = {
+                Column(
+                    modifier = Modifier.padding(16.dp),
                 ) {
-                    Row(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp),
+                    DedicatedIpSignupActivateTokenDescriptionText(
+                        content = stringResource(id = R.string.dip_signup_activate_token_description),
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Input(
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = false,
+                        maskInput = false,
+                        keyboard = KeyboardType.Text,
+                        content = mutableStateOf(dipToken),
+                        singleLine = true,
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = LocalColors.current.warningBackground(),
+                            ),
+                        border = BorderStroke(1.dp, color = LocalColors.current.warningOutline()),
+                        shape = RoundedCornerShape(8.dp),
+                        onClick = { },
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_error),
-                            contentDescription = null,
-                            tint = LocalColors.current.warningOrange(),
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        DedicatedIpSignupActivateTokenDescriptionText(
-                            modifier = Modifier.fillMaxWidth(),
-                            content = stringResource(id = R.string.dip_signup_activate_token_description_warning),
-                            color = LocalColors.current.warningOrange(),
-                        )
+                        Row(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_error),
+                                contentDescription = null,
+                                tint = LocalColors.current.warningOrange(),
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            DedicatedIpSignupActivateTokenDescriptionText(
+                                modifier = Modifier.fillMaxWidth(),
+                                content = stringResource(id = R.string.dip_signup_activate_token_description_warning),
+                                color = LocalColors.current.warningOrange(),
+                            )
+                        }
                     }
                 }
-            }
-            Spacer(modifier = Modifier.weight(1.0f))
-            PrimaryButton(
-                enabled = viewModel.activateTokenButtonState.value,
-                isLoading = showSpinner.value,
-                text = stringResource(id = R.string.activate),
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-            ) {
-                showSpinner.value = true
-                viewModel.activateDedicatedIp(
-                    mutableStateOf(TextFieldValue(dipToken)),
-                )
-            }
-            Spacer(modifier = Modifier.height(64.dp))
-        }
+                Spacer(modifier = Modifier.weight(1.0f))
+                PrimaryButton(
+                    enabled = viewModel.activateTokenButtonState.value,
+                    isLoading = showSpinner.value,
+                    text = stringResource(id = R.string.activate),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                ) {
+                    showSpinner.value = true
+                    viewModel.activateDedicatedIp(
+                        mutableStateOf(TextFieldValue(dipToken)),
+                    )
+                }
+                Spacer(modifier = Modifier.height(64.dp))
+            },
+        )
 
         when (viewModel.activationState.value) {
             DipApiResult.Active -> {

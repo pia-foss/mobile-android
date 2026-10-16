@@ -6,11 +6,15 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
@@ -24,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import com.kape.contracts.Router
@@ -94,14 +99,100 @@ fun AdaptiveContent(
     compact: @Composable BoxWithConstraintsScope.(modifier: Modifier) -> Unit,
     wide: @Composable BoxWithConstraintsScope.(modifier: Modifier) -> Unit = compact,
 ) {
+    // Screens shrink above the keyboard; deciding without it keeps the layout, and the focused
+    // field in it, from switching while typing (a portrait phone with the keyboard open is wider
+    // than it is tall)
+    val keyboardHeight = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
     BoxWithConstraints(modifier = modifier) {
-        val isWide = maxWidth.value >= WIDTH_DP_MEDIUM_LOWER_BOUND || maxWidth > maxHeight
+        val heightWithoutKeyboard = maxHeight + keyboardHeight
+        val isWide = maxWidth.value >= WIDTH_DP_MEDIUM_LOWER_BOUND || maxWidth > heightWithoutKeyboard
         if (isWide) {
             wide(Modifier.fillMaxSize())
         } else {
             compact(Modifier.fillMaxSize())
         }
     }
+}
+
+/**
+ * A [header] (logo, illustration) and a [body] (text, form, actions): stacked when compact,
+ * side by side when wide, the header centred vertically on the left.
+ *
+ * Every column scrolls when its content is taller than the space and is at least as tall as
+ * the space otherwise, so a weighted Spacer in [body] pins what follows it to the bottom.
+ * Both are told whether the layout is compact, e.g. to shrink illustrations beside the body.
+ * Without [hasBody] (e.g. nothing to list yet) the header takes the whole width when wide.
+ */
+@Composable
+fun AdaptiveSplitContent(
+    modifier: Modifier = Modifier,
+    horizontalPadding: Dp = 0.dp,
+    centerBodyVertically: Boolean = false,
+    hasBody: Boolean = true,
+    header: @Composable ColumnScope.(isCompact: Boolean) -> Unit,
+    body: @Composable ColumnScope.(isCompact: Boolean) -> Unit,
+) {
+    AdaptiveContent(
+        modifier = modifier,
+        compact = { contentModifier ->
+            val visibleHeight = maxHeight
+            SplitColumn(modifier = contentModifier) {
+                AppColumn(
+                    modifier =
+                        Modifier
+                            .heightIn(min = visibleHeight)
+                            .padding(horizontal = horizontalPadding),
+                ) {
+                    header(true)
+                    body(true)
+                }
+            }
+        },
+        wide = { contentModifier ->
+            val visibleHeight = maxHeight
+            Row(modifier = contentModifier) {
+                SplitColumn(modifier = Modifier.weight(1f)) {
+                    AppColumn(
+                        modifier =
+                            Modifier
+                                .heightIn(min = visibleHeight)
+                                .padding(horizontal = horizontalPadding),
+                        centerVertically = true,
+                    ) {
+                        header(false)
+                    }
+                }
+                if (hasBody) {
+                    SplitColumn(modifier = Modifier.weight(1f)) {
+                        AppColumn(
+                            modifier =
+                                Modifier
+                                    .heightIn(min = visibleHeight)
+                                    .padding(horizontal = horizontalPadding),
+                            centerVertically = centerBodyVertically,
+                        ) {
+                            body(false)
+                        }
+                    }
+                }
+            }
+        },
+    )
+}
+
+@Composable
+private fun SplitColumn(
+    modifier: Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    Column(
+        modifier =
+            modifier
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        content = content,
+    )
 }
 
 /**
@@ -112,14 +203,16 @@ fun AdaptiveContent(
 fun AppColumn(
     modifier: Modifier = Modifier,
     centerVertically: Boolean = false,
+    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier =
             modifier
-                .fillMaxWidth()
-                .widthIn(max = 460.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+                // Cap first: after fillMaxWidth the width is fixed and widthIn can't narrow it
+                .widthIn(max = 460.dp)
+                .fillMaxWidth(),
+        horizontalAlignment = horizontalAlignment,
         verticalArrangement = if (centerVertically) Arrangement.Center else Arrangement.Top,
         content = content,
     )

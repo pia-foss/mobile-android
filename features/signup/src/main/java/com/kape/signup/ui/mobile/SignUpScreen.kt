@@ -7,20 +7,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -43,12 +41,12 @@ import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
 import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
 import com.kape.signup.utils.SignupScreenState
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.SubscriptionCard
-import com.kape.ui.mobile.text.OnboardingDescriptionPaymentText
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
 import org.koin.androidx.compose.koinViewModel
@@ -83,25 +81,18 @@ fun OldSignUpScreen() {
         viewModel.registerClientIfNeeded(context as Activity)
     }
 
-    Column(
+    AdaptiveSplitContent(
         modifier =
             Modifier
                 .fillMaxSize()
                 .paint(
                     painter = painterResource(com.kape.signup.R.drawable.map),
                     contentScale = ContentScale.FillBounds,
-                ).semantics {
+                ).windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout))
+                .semantics {
                     testTagsAsResourceId = true
                 },
-    ) {
-        Column(
-            modifier =
-                Modifier
-                    .padding(WindowInsets.systemBars.asPaddingValues())
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        header = { isCompact ->
             Image(
                 painter = painterResource(id = R.drawable.pia_medium),
                 contentDescription = stringResource(id = R.string.pia_signup),
@@ -116,133 +107,109 @@ fun OldSignUpScreen() {
                 contentDescription = null,
                 modifier =
                     Modifier
-                        .padding(20.dp)
+                        .padding(if (isCompact) 20.dp else 8.dp)
                         .fillMaxWidth()
-                        .size(150.dp),
+                        .size(if (isCompact) 150.dp else 120.dp),
             )
-            Column(
-                modifier = Modifier.widthIn(max = 520.dp),
-            ) {
-                OnboardingTitleText(
-                    content = stringResource(id = R.string.subscribe_screen_title),
-                    modifier =
-                        Modifier
-                            .align(CenterHorizontally),
-                )
-                OnboardingDescriptionText(
-                    content =
-                        if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
-                            stringResource(id = R.string.subscribe_screen_description_no_in_app)
-                        } else {
-                            "${
-                                stringResource(id = R.string.subscribe_screen_description).format(
-                                    "${subscriptionData?.yearly?.mainPrice} ${stringResource(R.string.subscribe_screen_per_year_ending)}",
-                                )
-                            } ${stringResource(id = R.string.subscribe_screen_description_cancel_anytime)}"
-                        },
-                    modifier =
-                        Modifier
-                            .align(CenterHorizontally)
-                            .padding(horizontal = 20.dp, vertical = 8.dp),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                Column(modifier = Modifier.alpha(determineProductsAlpha(screenState))) {
-                    val subscriptionOptions = stringResource(id = R.string.subscription_option)
-                    SubscriptionCard(
-                        selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
-                        price =
-                            stringResource(
-                                R.string.yearly_ending,
-                                subscriptionData?.yearly?.mainPrice ?: "",
-                            ),
-                        additionalText = subscriptionData?.yearly?.secondaryPrice ?: "",
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .semantics { contentDescription = subscriptionOptions },
-                        freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.yearly?.freeTrialDuration),
-                        isYearlyPlan = true,
-                        showFreeTrialRow = false,
-                        saving = subscriptionData?.yearly?.saving,
-                    ) {
-                        subscriptionData?.let {
-                            subscriptionData.selected.value = subscriptionData.yearly
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    SubscriptionCard(
-                        selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
-                        price =
-                            stringResource(
-                                R.string.monthly_ending,
-                                subscriptionData?.monthly?.mainPrice ?: "",
-                            ),
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .semantics { contentDescription = subscriptionOptions },
-                        freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.monthly?.freeTrialDuration),
-                        isYearlyPlan = false,
-                        additionalText = "",
-                        showFreeTrialRow = false,
-                    ) {
-                        subscriptionData?.let {
-                            subscriptionData.selected.value = subscriptionData.monthly
-                        }
-                    }
-                }
-                if (screenState == NO_IN_APP_SUBSCRIPTIONS || screenState == SUBSCRIPTIONS_FAILED_TO_LOAD) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                } else {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    OnboardingDescriptionPaymentText(
-                        modifier =
-                            Modifier
-                                .align(CenterHorizontally)
-                                .padding(horizontal = 20.dp),
-                        content = stringResource(id = R.string.subscribe_screen_description_payment),
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-                PrimaryButton(
-                    text = stringResource(id = R.string.subscribe_now),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .alpha(determineSubscribeButtonAlpha(screenState)),
-                ) {
-                    subscriptionData?.let {
-                        viewModel.purchase(subscriptionData.selected.value.id, context as Activity)
-                    } ?: run {
-                        viewModel.navigateToWebsite()
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                SecondaryButton(
-                    text = stringResource(id = R.string.login),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .testTag(":SignUpScreen:Login"),
-                ) {
-                    viewModel.navigateToLogin()
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-            Footer(
+            OnboardingTitleText(
+                content = stringResource(id = R.string.subscribe_screen_title),
                 modifier =
                     Modifier
-                        .padding(8.dp)
                         .align(CenterHorizontally),
             )
+            OnboardingDescriptionText(
+                content =
+                    stringResource(id = R.string.subscribe_screen_description_no_in_app),
+                modifier =
+                    Modifier
+                        .align(CenterHorizontally)
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+            )
             Spacer(modifier = Modifier.height(16.dp))
-        }
-    }
+        },
+        body = {
+            Column(modifier = Modifier.alpha(determineProductsAlpha(screenState))) {
+                val subscriptionOptions = stringResource(id = R.string.subscription_option)
+                SubscriptionCard(
+                    selected = subscriptionData?.selected?.value == subscriptionData?.yearly,
+                    price =
+                        stringResource(
+                            R.string.yearly_ending,
+                            subscriptionData?.yearly?.mainPrice ?: "",
+                        ),
+                    additionalText = subscriptionData?.yearly?.secondaryPrice ?: "",
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .semantics { contentDescription = subscriptionOptions },
+                    freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.yearly?.freeTrialDuration),
+                    isYearlyPlan = true,
+                    showFreeTrialRow = false,
+                    saving = subscriptionData?.yearly?.saving,
+                ) {
+                    subscriptionData?.let {
+                        subscriptionData.selected.value = subscriptionData.yearly
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                SubscriptionCard(
+                    selected = subscriptionData?.selected?.value == subscriptionData?.monthly,
+                    price =
+                        stringResource(
+                            R.string.monthly_ending,
+                            subscriptionData?.monthly?.mainPrice ?: "",
+                        ),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .semantics { contentDescription = subscriptionOptions },
+                    freeTrialDays = viewModel.isoDurationToDays(subscriptionData?.monthly?.freeTrialDuration),
+                    isYearlyPlan = false,
+                    additionalText = "",
+                    showFreeTrialRow = false,
+                ) {
+                    subscriptionData?.let {
+                        subscriptionData.selected.value = subscriptionData.monthly
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            PrimaryButton(
+                text = stringResource(id = R.string.subscribe_now),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .alpha(determineSubscribeButtonAlpha(screenState)),
+            ) {
+                subscriptionData?.let {
+                    viewModel.purchase(subscriptionData.selected.value.id, context as Activity)
+                } ?: run {
+                    viewModel.navigateToWebsite()
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            SecondaryButton(
+                text = stringResource(id = R.string.login),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .testTag(":SignUpScreen:Login"),
+            ) {
+                viewModel.navigateToLogin()
+            }
+
+            // Pins the footer to the bottom when the content is shorter than the screen
+            Spacer(modifier = Modifier.weight(1f))
+            Footer(
+                modifier = Modifier.padding(8.dp),
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        },
+    )
 }
 
 private fun determineProductsAlpha(state: SignupScreenState): Float =

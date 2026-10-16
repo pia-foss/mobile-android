@@ -2,28 +2,20 @@ package com.kape.automation.ui.screens
 
 import android.content.Context
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,8 +33,7 @@ import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.AdaptiveContent
-import com.kape.ui.mobile.elements.AppColumn
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.NetworkCard
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.Hyperlink
@@ -111,56 +102,21 @@ fun AutomationScreenContent(
             AppBar(viewModel = appBarViewModel)
         },
     ) {
-        AdaptiveContent(
+        AdaptiveSplitContent(
             modifier =
                 Modifier
                     .padding(it)
                     .semantics { testTagsAsResourceId = true },
-            compact = { contentModifier ->
-                // The grid is the only scrolling container, so the information scrolls with it
-                Column(modifier = contentModifier, horizontalAlignment = CenterHorizontally) {
-                    AppColumn(modifier = Modifier.weight(1f)) {
-                        AutomationRules(
-                            rules = rules,
-                            onNetworkCardClick = onNetworkCardClick,
-                            navigateToAddRule = navigateToAddRule,
-                            header = { AutomationInformation() },
-                        )
-                    }
+            header = { AutomationInformation() },
+            body = { isCompact ->
+                if (!isCompact) {
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-            },
-            wide = { contentModifier ->
-                val visibleHeight = maxHeight
-                Row(modifier = contentModifier) {
-                    Column(
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .fillMaxHeight()
-                                .verticalScroll(rememberScrollState()),
-                        horizontalAlignment = CenterHorizontally,
-                    ) {
-                        AppColumn(modifier = Modifier.heightIn(min = visibleHeight), centerVertically = true) {
-                            AutomationInformation()
-                        }
-                    }
-                    Column(
-                        modifier =
-                            Modifier
-                                .weight(1f)
-                                .fillMaxHeight(),
-                        horizontalAlignment = CenterHorizontally,
-                    ) {
-                        AppColumn(modifier = Modifier.weight(1f)) {
-                            AutomationRules(
-                                rules = rules,
-                                onNetworkCardClick = onNetworkCardClick,
-                                navigateToAddRule = navigateToAddRule,
-                                modifier = Modifier.padding(top = 16.dp),
-                            )
-                        }
-                    }
-                }
+                AutomationRules(
+                    rules = rules,
+                    onNetworkCardClick = onNetworkCardClick,
+                    navigateToAddRule = navigateToAddRule,
+                )
             },
         )
     }
@@ -188,96 +144,112 @@ private fun AutomationInformation() {
 }
 
 /**
- * The rule cards with "Add rule" after them, in one scrolling grid so "Add rule" can't be
- * pushed out of reach by a long list. [header] spans the full width above the cards.
+ * The rule cards, two per row, with "Add rule" after them. Laid out eagerly: there are only a
+ * few rules, and the screen scrolls as a whole.
  */
 @Composable
 private fun AutomationRules(
     rules: List<NetworkItem>,
     onNetworkCardClick: (NetworkItem) -> Unit,
     navigateToAddRule: () -> Unit,
-    modifier: Modifier = Modifier,
-    header: (@Composable () -> Unit)? = null,
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = modifier,
-        contentPadding = PaddingValues(bottom = 24.dp),
-    ) {
-        header?.let {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Column { it() }
-            }
-        }
-        items(rules) { networkItem ->
-            val icon: Int
-            val title: String
-            val status = getStatus(behavior = networkItem.networkBehavior)
-
-            when (networkItem.networkType) {
-                NetworkType.MobileData -> {
-                    icon = R.drawable.ic_mobile_data
-                    title =
-                        stringResource(id = R.string.nmt_mobile_data)
-                }
-
-                NetworkType.WifiCustom -> {
-                    icon = R.drawable.ic_wifi_custom
-                    title = networkItem.networkName
-                }
-
-                NetworkType.WifiOpen -> {
-                    icon = R.drawable.ic_open_wifi
-                    title = networkItem.networkName
-                }
-
-                NetworkType.WifiSecure -> {
-                    icon = R.drawable.ic_secure_wifi
-                    title =
-                        stringResource(id = R.string.nmt_secure_wifi)
-                }
-            }
-            NetworkCard(
-                icon = icon,
-                title = title,
-                status = status,
-                color =
-                    when (networkItem.networkBehavior) {
-                        NetworkBehavior.AlwaysConnect -> LocalColors.current.primary
-                        NetworkBehavior.AlwaysDisconnect -> LocalColors.current.error
-                        NetworkBehavior.RetainState -> LocalColors.current.infoBlue()
-                    },
-                isDefault = networkItem.isDefault,
-                onClick = {
-                    onNetworkCardClick(networkItem)
-                },
-                testTag = ":AutomationScreen:networkCard_${networkItem.networkType}",
-            )
-        }
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Column(horizontalAlignment = CenterHorizontally) {
-                Spacer(modifier = Modifier.height(24.dp))
-                Row(
+    rules.chunked(RULES_PER_ROW).forEach { row ->
+        // Sized to the tallest card, which the others then fill. With the cards' own 8dp all round,
+        // 16dp at the edges and between cards and rows.
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .height(IntrinsicSize.Min),
+        ) {
+            row.forEach { networkItem ->
+                RuleCard(
+                    networkItem = networkItem,
+                    onClick = { onNetworkCardClick(networkItem) },
                     modifier =
-                        Modifier.clickable {
-                            navigateToAddRule()
-                        },
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_add),
-                        contentDescription = null,
-                        tint = LocalColors.current.primary,
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Hyperlink(
-                        content = stringResource(id = R.string.manage_automation_add),
-                        modifier = Modifier.align(CenterVertically),
-                    )
-                }
+                        Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                )
+            }
+            repeat(RULES_PER_ROW - row.size) {
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
+    Spacer(modifier = Modifier.height(24.dp))
+    Row(
+        modifier =
+            Modifier.clickable {
+                navigateToAddRule()
+            },
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_add),
+            contentDescription = null,
+            tint = LocalColors.current.primary,
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Hyperlink(
+            content = stringResource(id = R.string.manage_automation_add),
+            modifier = Modifier.align(CenterVertically),
+        )
+    }
+    Spacer(modifier = Modifier.height(24.dp))
 }
+
+@Composable
+private fun RuleCard(
+    networkItem: NetworkItem,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val icon: Int
+    val title: String
+    val status = getStatus(behavior = networkItem.networkBehavior)
+
+    when (networkItem.networkType) {
+        NetworkType.MobileData -> {
+            icon = R.drawable.ic_mobile_data
+            title =
+                stringResource(id = R.string.nmt_mobile_data)
+        }
+
+        NetworkType.WifiCustom -> {
+            icon = R.drawable.ic_wifi_custom
+            title = networkItem.networkName
+        }
+
+        NetworkType.WifiOpen -> {
+            icon = R.drawable.ic_open_wifi
+            title = networkItem.networkName
+        }
+
+        NetworkType.WifiSecure -> {
+            icon = R.drawable.ic_secure_wifi
+            title =
+                stringResource(id = R.string.nmt_secure_wifi)
+        }
+    }
+    NetworkCard(
+        icon = icon,
+        title = title,
+        status = status,
+        color =
+            when (networkItem.networkBehavior) {
+                NetworkBehavior.AlwaysConnect -> LocalColors.current.primary
+                NetworkBehavior.AlwaysDisconnect -> LocalColors.current.error
+                NetworkBehavior.RetainState -> LocalColors.current.infoBlue()
+            },
+        isDefault = networkItem.isDefault,
+        onClick = onClick,
+        modifier = modifier,
+        testTag = ":AutomationScreen:networkCard_${networkItem.networkType}",
+    )
+}
+
+private const val RULES_PER_ROW = 2
 
 @Composable
 private fun getStatus(behavior: NetworkBehavior): String =

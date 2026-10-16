@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -38,6 +37,7 @@ import com.kape.settings.ui.elements.mobile.SettingsItem
 import com.kape.settings.ui.elements.mobile.SettingsToggle
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
@@ -75,7 +75,7 @@ fun HelpScreen() =
                         },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                AppColumn(horizontalAlignment = Alignment.Start) {
                     with(viewModel.requestId.value) {
                         when {
                             this == null -> {

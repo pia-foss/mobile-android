@@ -48,6 +48,7 @@ import com.kape.sharedui.tiles.Snooze
 import com.kape.sharedui.tiles.Traffic
 import com.kape.sharedui.tiles.VpnLocationPicker
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Visibility
 import com.kape.ui.utils.LocalColors
@@ -94,46 +95,54 @@ fun CustomizationScreen() =
                 )
             },
         ) {
-            LazyColumn(
+            Column(
                 modifier =
                     Modifier
                         .padding(it)
-                        .fillMaxWidth()
-                        .testTag(":CustomizationScreen:elements_list")
-                        .semantics {
-                            testTagsAsResourceId = true
-                        },
-                state = lazyListState,
+                        .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                items(viewModel.items, key = { it.name }) {
-                    ReorderableItem(reorderableLazyColumnState, key = it.name) { dragging ->
-                        val elevation = animateDpAsState(if (dragging) 8.dp else 0.dp)
-                        Column(
-                            modifier =
-                                Modifier
-                                    .shadow(elevation.value)
-                                    .fillMaxWidth()
-                                    .background(LocalColors.current.surface),
-                        ) {
-                            when (it.element) {
-                                Element.ShadowsocksRegionSelection -> {
-                                    if (it.shouldDisplayElement) {
-                                        CreateCustomizableElement(
-                                            screenElement = it,
-                                            connectionViewModel = connectionViewModel,
-                                            onVisibilityToggled = viewModel::toggleVisibility,
-                                            modifier = Modifier.longPressDraggableHandle(),
-                                        )
+                AppColumn(horizontalAlignment = Alignment.Start) {
+                    LazyColumn(
+                        modifier =
+                            Modifier
+                                .testTag(":CustomizationScreen:elements_list")
+                                .semantics {
+                                    testTagsAsResourceId = true
+                                },
+                        state = lazyListState,
+                    ) {
+                        items(viewModel.items, key = { it.name }) {
+                            ReorderableItem(reorderableLazyColumnState, key = it.name) { dragging ->
+                                val elevation = animateDpAsState(if (dragging) 8.dp else 0.dp)
+                                Column(
+                                    modifier =
+                                        Modifier
+                                            .shadow(elevation.value)
+                                            .fillMaxWidth()
+                                            .background(LocalColors.current.surface),
+                                ) {
+                                    when (it.element) {
+                                        Element.ShadowsocksRegionSelection -> {
+                                            if (it.shouldDisplayElement) {
+                                                CreateCustomizableElement(
+                                                    screenElement = it,
+                                                    connectionViewModel = connectionViewModel,
+                                                    onVisibilityToggled = viewModel::toggleVisibility,
+                                                    modifier = Modifier.longPressDraggableHandle(),
+                                                )
+                                            }
+                                        }
+
+                                        else ->
+                                            CreateCustomizableElement(
+                                                screenElement = it,
+                                                connectionViewModel = connectionViewModel,
+                                                onVisibilityToggled = viewModel::toggleVisibility,
+                                                modifier = Modifier.longPressDraggableHandle(),
+                                            )
                                     }
                                 }
-
-                                else ->
-                                    CreateCustomizableElement(
-                                        screenElement = it,
-                                        connectionViewModel = connectionViewModel,
-                                        onVisibilityToggled = viewModel::toggleVisibility,
-                                        modifier = Modifier.longPressDraggableHandle(),
-                                    )
                             }
                         }
                     }

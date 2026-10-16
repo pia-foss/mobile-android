@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +38,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.data.RegionItemType
 import com.kape.regions.data.ServerData
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Search
 import com.kape.ui.mobile.text.MenuText
@@ -80,7 +80,7 @@ fun VpnRegionSelectionScreen() =
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AppBar(appBarViewModel)
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+            AppColumn(horizontalAlignment = Alignment.Start) {
                 Search(
                     modifier =
                         Modifier
