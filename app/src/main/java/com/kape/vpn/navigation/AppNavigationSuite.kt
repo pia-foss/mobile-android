@@ -31,10 +31,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import androidx.window.core.layout.WindowSizeClass.Companion.HEIGHT_DP_MEDIUM_LOWER_BOUND
 import androidx.window.core.layout.WindowSizeClass.Companion.WIDTH_DP_MEDIUM_LOWER_BOUND
 import com.kape.appbar.view.mobile.AppBarBackground
 import com.kape.appbar.view.mobile.AppBarHeight
 import com.kape.router.navigateToTopLevel
+import com.kape.sidemenu.ui.screens.mobile.MoreMenuDestination
 import com.kape.sidemenu.ui.screens.mobile.SideMenuMoreMenu
 import com.kape.ui.theme.brandGreen
 import com.kape.ui.utils.LocalColors
@@ -64,12 +66,17 @@ fun AppNavigationSuite(
         if (!showNavigation) moreExpanded = false
     }
 
+    val isShortWindow = !adaptiveInfo.windowSizeClass.isHeightAtLeastBreakpoint(HEIGHT_DP_MEDIUM_LOWER_BOUND)
     val navigationSuiteType =
-        if (showNavigation) {
-            NavigationSuiteScaffoldDefaults.navigationSuiteType(adaptiveInfo)
-        } else {
-            NavigationSuiteType.None
+        when {
+            !showNavigation -> NavigationSuiteType.None
+            // Material's default is a bottom bar here, which would take the little height
+            // a short window (e.g. a phone in landscape) has
+            isShortWindow -> NavigationSuiteType.WideNavigationRailCollapsed
+            else -> NavigationSuiteScaffoldDefaults.navigationSuiteType(adaptiveInfo)
         }
+    val railEntries = TopLevelDestination.railEntries(isShortWindow)
+    val moreMenuEntries = TopLevelDestination.moreMenuEntries(isShortWindow)
     val itemColors = navigationItemColors()
     // Shift rail items below the app bar band; an offset rather than a spacer, since the rail
     // gives every child at least an item's height
@@ -101,7 +108,7 @@ fun AppNavigationSuite(
                     ),
                 containerColor = Color.Transparent,
                 navigationItems = {
-                    TopLevelDestination.entries.forEach { destination ->
+                    railEntries.forEach { destination ->
                         NavigationSuiteItem(
                             selected = destination == selected,
                             onClick = {
@@ -115,12 +122,30 @@ fun AppNavigationSuite(
                         )
                     }
                     NavigationSuiteItem(
-                        selected = false,
+                        // Stands in for the destinations it holds
+                        selected = selected in moreMenuEntries,
                         onClick = { moreExpanded = true },
                         icon = {
                             Box {
                                 Icon(painterResource(UiR.drawable.ic_more_horizontal), contentDescription = null)
-                                SideMenuMoreMenu(expanded = moreExpanded, onDismiss = { moreExpanded = false })
+                                SideMenuMoreMenu(
+                                    expanded = moreExpanded,
+                                    onDismiss = { moreExpanded = false },
+                                    destinations =
+                                        moreMenuEntries.map { destination ->
+                                            MoreMenuDestination(
+                                                iconId = destination.iconId,
+                                                titleId = destination.titleId,
+                                                testTag = ":MoreMenu:${destination.name}",
+                                                onClick = {
+                                                    backStack.navigateToTopLevel(
+                                                        destination.key,
+                                                        root = TopLevelDestination.root,
+                                                    )
+                                                },
+                                            )
+                                        },
+                                )
                             }
                         },
                         label = { Text(stringResource(UiR.string.drawer_item_title_more)) },

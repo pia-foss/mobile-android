@@ -56,4 +56,22 @@ class TopLevelDestinationTest {
     fun `selectedFor - no top-level entry - is null`() {
         assertNull(TopLevelDestination.selectedFor(listOf<NavKey>(Splash)))
     }
+
+    @Test
+    fun `railEntries - tall window - shows every destination`() {
+        assertEquals(TopLevelDestination.entries, TopLevelDestination.railEntries(isShortWindow = false))
+        assertTrue(TopLevelDestination.moreMenuEntries(isShortWindow = false).isEmpty())
+    }
+
+    @Test
+    fun `railEntries - short window - moves dedicated ip and per app settings into more`() {
+        assertEquals(
+            listOf(TopLevelDestination.VPN, TopLevelDestination.ACCOUNT, TopLevelDestination.SETTINGS),
+            TopLevelDestination.railEntries(isShortWindow = true),
+        )
+        assertEquals(
+            listOf(TopLevelDestination.DEDICATED_IP, TopLevelDestination.PER_APP_SETTINGS),
+            TopLevelDestination.moreMenuEntries(isShortWindow = true),
+        )
+    }
 }

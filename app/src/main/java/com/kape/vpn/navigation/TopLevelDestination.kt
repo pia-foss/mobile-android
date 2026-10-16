@@ -21,12 +21,24 @@ enum class TopLevelDestination(
     val key: ComposeDestination,
     @DrawableRes val iconId: Int,
     @StringRes val titleId: Int,
+    // Whether it stays on the rail in short windows; otherwise it moves into the More menu
+    val onShortRail: Boolean,
 ) {
-    VPN(Connection, UiR.drawable.ic_shield, UiR.string.drawer_item_title_vpn),
-    ACCOUNT(Profile, SideMenuR.drawable.ic_account, UiR.string.drawer_item_title_account),
-    DEDICATED_IP(DedicatedIpActivateToken, SideMenuR.drawable.ic_ip, UiR.string.drawer_item_title_dedicated_ip),
-    PER_APP_SETTINGS(PerAppSettings, SideMenuR.drawable.ic_per_app, UiR.string.drawer_item_title_per_app_settings),
-    SETTINGS(Settings, UiR.drawable.ic_settings, UiR.string.drawer_item_title_settings),
+    VPN(Connection, UiR.drawable.ic_shield, UiR.string.drawer_item_title_vpn, onShortRail = true),
+    ACCOUNT(Profile, SideMenuR.drawable.ic_account, UiR.string.drawer_item_title_account, onShortRail = true),
+    DEDICATED_IP(
+        DedicatedIpActivateToken,
+        SideMenuR.drawable.ic_ip,
+        UiR.string.drawer_item_title_dedicated_ip,
+        onShortRail = false,
+    ),
+    PER_APP_SETTINGS(
+        PerAppSettings,
+        SideMenuR.drawable.ic_per_app,
+        UiR.string.drawer_item_title_per_app_settings,
+        onShortRail = false,
+    ),
+    SETTINGS(Settings, UiR.drawable.ic_settings, UiR.string.drawer_item_title_settings, onShortRail = true),
     ;
 
     companion object {
@@ -40,6 +52,12 @@ enum class TopLevelDestination(
             val top = backStack.lastOrNull() ?: return false
             return top::class !in excluded && backStack.any { it::class == root::class }
         }
+
+        // A short window (e.g. a phone in landscape) can't fit every item on the rail
+        fun railEntries(isShortWindow: Boolean): List<TopLevelDestination> =
+            if (isShortWindow) entries.filter { it.onShortRail } else entries
+
+        fun moreMenuEntries(isShortWindow: Boolean): List<TopLevelDestination> = entries - railEntries(isShortWindow).toSet()
 
         // The nearest top-level entry under the current screen, so sub-screens
         // (e.g. Settings → Protocol) keep their parent selected

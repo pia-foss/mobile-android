@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,6 +62,7 @@ fun ProfileScreen() =
                     modifier =
                         Modifier
                             .fillMaxWidth()
+                            .verticalScroll(rememberScrollState())
                             .padding(WindowInsets.navigationBars.asPaddingValues()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {

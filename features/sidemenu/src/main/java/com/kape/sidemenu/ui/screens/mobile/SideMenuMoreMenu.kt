@@ -35,7 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 /**
  * Overflow for the navigation rail: the side menu entries that are not top-level
  * destinations (account header with version / update link, logout, about, privacy
- * policy and contact support).
+ * policy and contact support), plus any [destinations] that don't fit on the rail.
  * Anchors to its parent, so place it in a Box next to the rail item's icon.
  */
 @OptIn(ExperimentalComposeUiApi::class)
@@ -43,6 +43,7 @@ import org.koin.androidx.compose.koinViewModel
 fun SideMenuMoreMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
+    destinations: List<MoreMenuDestination> = emptyList(),
 ) {
     val viewModel: SideMenuViewModel = koinViewModel()
     val hasUpdateAvailable by viewModel.updateAvailable.collectAsStateWithLifecycle()
@@ -79,6 +80,20 @@ fun SideMenuMoreMenu(
         }
 
         Separator()
+
+        if (destinations.isNotEmpty()) {
+            destinations.forEach { destination ->
+                MoreMenuItem(
+                    iconId = destination.iconId,
+                    titleId = destination.titleId,
+                    testTag = destination.testTag,
+                ) {
+                    onDismiss()
+                    destination.onClick()
+                }
+            }
+            Separator()
+        }
 
         MoreMenuItem(
             iconId = R.drawable.ic_log_out,
@@ -127,6 +142,14 @@ fun SideMenuMoreMenu(
         )
     }
 }
+
+/** A navigation destination shown in the More menu when it doesn't fit on the rail. */
+class MoreMenuDestination(
+    @DrawableRes val iconId: Int,
+    @StringRes val titleId: Int,
+    val testTag: String,
+    val onClick: () -> Unit,
+)
 
 @Composable
 private fun MoreMenuItem(

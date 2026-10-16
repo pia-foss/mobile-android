@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +36,8 @@ fun AccountDeletedScreen() {
             Modifier
                 .fillMaxSize()
                 .systemBarsPadding()
-                .widthIn(max = 520.dp),
+                .widthIn(max = 520.dp)
+                .verticalScroll(rememberScrollState()),
     ) {
         Image(
             painter = painterResource(id = R.drawable.pia_medium),
