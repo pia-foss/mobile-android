@@ -3,7 +3,6 @@ package com.kape.settings.ui.screens.mobile
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
@@ -15,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
@@ -30,6 +28,7 @@ import com.kape.settings.R
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.ui.elements.mobile.SettingsItem
 import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.utils.LocalSelectedListItem
 import org.koin.androidx.compose.koinViewModel
@@ -63,7 +62,7 @@ fun SettingsScreen() =
                         },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                AppColumn(horizontalAlignment = Alignment.Start) {
                     SettingsItem(
                         iconId = R.drawable.ic_settings_general,
                         titleId = com.kape.ui.R.string.general,

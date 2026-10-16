@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,6 +32,7 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.profile.ui.vm.ProfileViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.text.HyperlinkRed
@@ -66,12 +66,12 @@ fun ProfileScreen() =
                             .padding(WindowInsets.navigationBars.asPaddingValues()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Column(
+                    AppColumn(
                         modifier =
                             Modifier
-                                .widthIn(max = 520.dp)
                                 .background(LocalColors.current.surfaceVariant)
                                 .padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.Start,
                     ) {
                         Spacer(modifier = Modifier.height(24.dp))
                         Column(modifier = Modifier.semantics(mergeDescendants = true) {}) {
@@ -107,12 +107,12 @@ fun ProfileScreen() =
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     Separator()
-                    Column(
+                    AppColumn(
                         modifier =
                             Modifier
-                                .widthIn(max = 520.dp)
                                 .background(LocalColors.current.surfaceVariant)
                                 .padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.Start,
                     ) {
                         Spacer(modifier = Modifier.height(24.dp))
                         SettingsL2Text(content = stringResource(id = R.string.account_deletion_title))

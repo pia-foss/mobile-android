@@ -13,6 +13,13 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -192,10 +199,21 @@ class MainActivity : AppCompatActivity() {
                     startDestination = Splash,
                 ) { backStack ->
                     AppNavigationSuite(backStack = backStack, isTv = platformUtils.isTv()) {
-                        // Panes are sized from the space left beside the navigation rail
-                        BoxWithConstraints {
+                        // Keeps every screen clear of a camera cutout at the side (landscape). The rail
+                        // consumes the start side when shown, so screens that pad for the cutout
+                        // themselves aren't padded twice. Panes are sized from what is left.
+                        BoxWithConstraints(
+                            modifier =
+                                Modifier.windowInsetsPadding(
+                                    WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal),
+                                ),
+                        ) {
                             NavDisplay(
                                 backStack = backStack,
+                                // Screens shrink above the keyboard so focused fields and pinned
+                                // actions stay visible; inside the box so the pane layout doesn't
+                                // change while typing. TV keyboards cover the screen instead.
+                                modifier = if (platformUtils.isTv()) Modifier else Modifier.imePadding(),
                                 onBack = { backStack.navigateBack() },
                                 entryDecorators =
                                     listOf(

@@ -9,17 +9,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerState
@@ -83,8 +79,7 @@ import com.kape.sharedui.tiles.Traffic
 import com.kape.sharedui.tiles.VpnLocationPicker
 import com.kape.sidemenu.ui.screens.mobile.SideMenuContent
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.AdaptiveContent
-import com.kape.ui.mobile.elements.AppColumn
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.InfoCard
 import com.kape.ui.mobile.elements.RoundIconButton
 import com.kape.ui.mobile.elements.Screen
@@ -177,7 +172,7 @@ fun ConnectionScreen() =
                     }
                 },
             ) {
-                AdaptiveContent(
+                AdaptiveSplitContent(
                     modifier =
                         Modifier
                             .padding(it)
@@ -185,54 +180,14 @@ fun ConnectionScreen() =
                             .semantics {
                                 testTagsAsResourceId = true
                             },
-                    compact = { modifier ->
-                        Column(
-                            modifier = modifier.verticalScroll(rememberScrollState()),
-                            horizontalAlignment = CenterHorizontally,
-                        ) {
-                            ConnectButtonAndOptionalContent(connectionStatus, state, viewModel)
-                            CustomizableElements(screenElements, viewModel, state, connectionStatus)
+                    // Without tiles the button is centred across the whole width when wide
+                    hasBody = screenElements.any { it.shouldDisplayElement },
+                    header = { ConnectButtonAndOptionalContent(connectionStatus, state, viewModel) },
+                    body = { isCompact ->
+                        if (!isCompact) {
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
-                    },
-                    wide = { modifier ->
-                        val visibleHeight = maxHeight
-                        val hasVisibleElements = screenElements.any { it.shouldDisplayElement }
-                        Row(modifier = modifier) {
-                            // Takes the whole width when there are no tiles, centring the button
-                            Column(
-                                modifier =
-                                    Modifier
-                                        .weight(1f)
-                                        .fillMaxHeight()
-                                        .verticalScroll(rememberScrollState()),
-                                horizontalAlignment = CenterHorizontally,
-                            ) {
-                                ConnectButtonAndOptionalContent(
-                                    connectionStatus,
-                                    state,
-                                    viewModel,
-                                    modifier = Modifier.heightIn(min = visibleHeight),
-                                )
-                            }
-                            if (hasVisibleElements) {
-                                Column(
-                                    modifier =
-                                        Modifier
-                                            .weight(1f)
-                                            .fillMaxHeight()
-                                            .verticalScroll(rememberScrollState())
-                                            .padding(top = 16.dp),
-                                    horizontalAlignment = CenterHorizontally,
-                                ) {
-                                    CustomizableElements(
-                                        screenElements,
-                                        viewModel,
-                                        state,
-                                        connectionStatus,
-                                    )
-                                }
-                            }
-                        }
+                        CustomizableElements(screenElements, viewModel, state, connectionStatus)
                     },
                 )
 
@@ -289,11 +244,10 @@ private fun ConnectButtonAndOptionalContent(
     connectionStatus: ConnectionStatus,
     screenState: ConnectionScreenState,
     viewModel: ConnectionViewModel,
-    modifier: Modifier = Modifier,
 ) {
     // Derived from the ViewModel so the rating UI survives switching between layouts
     val ratingDialogType = screenState.ratingDialogType
-    AppColumn(modifier = modifier, centerVertically = true) {
+    Column(horizontalAlignment = CenterHorizontally) {
         var connectButtonDescription =
             stringResource(id = R.string.toggle_connection_button)
 
@@ -397,7 +351,7 @@ private fun CustomizableElements(
     state: ConnectionScreenState,
     connectionStatus: ConnectionStatus,
 ) {
-    AppColumn {
+    Column(horizontalAlignment = CenterHorizontally) {
         screenElements.forEach { screenElement ->
             DisplayComponent(
                 screenElement = screenElement,

@@ -4,13 +4,14 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.Input
@@ -42,24 +44,24 @@ fun EmailScreen(viewModel: SignupViewModel) =
         val email = rememberSaveable { mutableStateOf("") }
         var emailErrorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
-        Column(
+        AdaptiveSplitContent(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(WindowInsets.systemBars.asPaddingValues()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                Spacer(modifier = Modifier.height(48.dp))
+                    .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout)),
+            centerBodyVertically = true,
+            header = { isCompact ->
+                if (isCompact) {
+                    Spacer(modifier = Modifier.height(48.dp))
+                }
                 Image(
                     painter = painterResource(id = R.drawable.ic_logo_large),
                     contentDescription = null,
-                    modifier =
-                        Modifier
-                            .padding(48.dp)
-                            .align(Alignment.CenterHorizontally),
+                    modifier = Modifier.padding(if (isCompact) 48.dp else 24.dp),
                 )
-                Spacer(modifier = Modifier.height(64.dp))
+                if (isCompact) {
+                    Spacer(modifier = Modifier.height(64.dp))
+                }
                 Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
                     Text(
                         text = stringResource(id = R.string.email_title),
@@ -78,6 +80,8 @@ fun EmailScreen(viewModel: SignupViewModel) =
                                 .padding(horizontal = 24.dp),
                     )
                 }
+            },
+            body = {
                 Spacer(modifier = Modifier.height(24.dp))
                 Input(
                     modifier = Modifier.padding(horizontal = 24.dp),
@@ -102,6 +106,6 @@ fun EmailScreen(viewModel: SignupViewModel) =
                         emailErrorMessage = invalidEmailMessage
                     }
                 }
-            }
-        }
+            },
+        )
     }

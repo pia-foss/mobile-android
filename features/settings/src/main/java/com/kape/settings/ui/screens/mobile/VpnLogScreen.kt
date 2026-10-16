@@ -3,7 +3,6 @@ package com.kape.settings.ui.screens.mobile
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,6 +21,7 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.tiles.Dialog
 import com.kape.ui.utils.LocalColors
@@ -64,20 +64,21 @@ fun VpnLogScreen() =
                         listState.scrollToItem(debugLogs.lastIndex)
                     }
                 }
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.widthIn(max = 520.dp),
-                ) {
-                    items(debugLogs) {
-                        Text(
-                            text = it,
-                            color = LocalColors.current.outlineVariant,
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(4.dp),
-                            textAlign = TextAlign.Start,
-                        )
+                AppColumn(horizontalAlignment = Alignment.Start) {
+                    LazyColumn(
+                        state = listState,
+                    ) {
+                        items(debugLogs) {
+                            Text(
+                                text = it,
+                                color = LocalColors.current.outlineVariant,
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(4.dp),
+                                textAlign = TextAlign.Start,
+                            )
+                        }
                     }
                 }
             }

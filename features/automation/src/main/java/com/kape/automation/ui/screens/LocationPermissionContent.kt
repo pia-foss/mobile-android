@@ -1,18 +1,11 @@
 package com.kape.automation.ui.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -21,8 +14,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.automation.R
-import com.kape.ui.mobile.elements.AdaptiveContent
-import com.kape.ui.mobile.elements.AppColumn
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingFooterText
@@ -41,55 +33,16 @@ internal fun LocationPermissionContent(
     onActionClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    AdaptiveContent(
+    AdaptiveSplitContent(
         modifier = modifier.semantics { testTagsAsResourceId = true },
-        compact = { contentModifier ->
-            // A minimum height of the visible area lets the spacer push the action to the bottom,
-            // while taller content still scrolls
-            val visibleHeight = maxHeight
-            Column(
-                modifier = contentModifier.verticalScroll(rememberScrollState()),
-                horizontalAlignment = CenterHorizontally,
-            ) {
-                AppColumn(modifier = Modifier.heightIn(min = visibleHeight)) {
-                    Header(title = title, isCompact = true)
-                    Message(message)
-                    Spacer(modifier = Modifier.weight(1f))
-                    Action(action = action, testTag = actionTestTag, onClick = onActionClick)
-                }
+        header = { isCompact -> Header(title = title, isCompact = isCompact) },
+        body = { isCompact ->
+            if (!isCompact) {
+                Spacer(modifier = Modifier.height(16.dp))
             }
-        },
-        wide = { contentModifier ->
-            val visibleHeight = maxHeight
-            Row(modifier = contentModifier) {
-                Column(
-                    modifier =
-                        Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = CenterHorizontally,
-                ) {
-                    AppColumn(modifier = Modifier.heightIn(min = visibleHeight), centerVertically = true) {
-                        Header(title = title, isCompact = false)
-                    }
-                }
-                Column(
-                    modifier =
-                        Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = CenterHorizontally,
-                ) {
-                    AppColumn(modifier = Modifier.heightIn(min = visibleHeight)) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Message(message)
-                        Spacer(modifier = Modifier.weight(1f))
-                        Action(action = action, testTag = actionTestTag, onClick = onActionClick)
-                    }
-                }
-            }
+            Message(message)
+            Spacer(modifier = Modifier.weight(1f))
+            Action(action = action, testTag = actionTestTag, onClick = onActionClick)
         },
     )
 }

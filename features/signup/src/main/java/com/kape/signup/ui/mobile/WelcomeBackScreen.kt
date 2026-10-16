@@ -4,25 +4,21 @@ import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -38,6 +34,7 @@ import com.kape.login.utils.LoginError
 import com.kape.login.utils.LoginScreenState
 import com.kape.signup.ui.vm.WelcomeBackViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.ErrorCard
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -69,11 +66,7 @@ private fun WelcomeBackScreenContent(
     BackHandler {
         activity?.finish()
     }
-    val configuration = LocalConfiguration.current
-    val isLandscapeTablet =
-        configuration.orientation == Configuration.ORIENTATION_LANDSCAPE &&
-            configuration.smallestScreenWidthDp >= 600
-    Column(
+    AdaptiveSplitContent(
         modifier =
             Modifier
                 .fillMaxSize()
@@ -81,35 +74,28 @@ private fun WelcomeBackScreenContent(
                     painter = painterResource(com.kape.signup.R.drawable.background),
                     alignment = Alignment.TopEnd,
                     alpha = 0.2f,
-                ).semantics {
+                ).windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout))
+                .semantics {
                     testTagsAsResourceId = true
                 },
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Column(
-            modifier =
-                Modifier
-                    .padding(WindowInsets.systemBars.asPaddingValues())
-                    .padding(horizontal = 20.dp)
-                    .widthIn(max = 520.dp)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        horizontalPadding = 20.dp,
+        centerBodyVertically = true,
+        header = { isCompact ->
             Spacer(modifier = Modifier.height(24.dp))
             Image(
                 painter = painterResource(id = com.kape.signup.R.drawable.pia_full_name),
                 contentDescription = null,
             )
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(if (isCompact) 40.dp else 24.dp))
             Image(
                 painter = painterResource(id = com.kape.signup.R.drawable.welcome_back_hero),
                 contentDescription = null,
+                // Kept smaller beside the sign-in options, where height is scarce
                 modifier =
-                    if (isLandscapeTablet) {
-                        Modifier.fillMaxWidth().height(160.dp)
-                    } else {
+                    if (isCompact) {
                         Modifier
+                    } else {
+                        Modifier.fillMaxWidth().height(160.dp)
                     },
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -123,7 +109,11 @@ private fun WelcomeBackScreenContent(
                 content = stringResource(id = R.string.welcome_back_description),
                 modifier = Modifier.fillMaxWidth(),
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            if (isCompact) {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
+        },
+        body = {
             Text(
                 text = stringResource(id = R.string.welcome_back_sign_in_with),
                 color = LocalColors.current.onSurface,
@@ -161,8 +151,8 @@ private fun WelcomeBackScreenContent(
                 onUsernameAndPasswordClick()
             }
             Spacer(modifier = Modifier.height(24.dp))
-        }
-    }
+        },
+    )
 }
 
 @Composable

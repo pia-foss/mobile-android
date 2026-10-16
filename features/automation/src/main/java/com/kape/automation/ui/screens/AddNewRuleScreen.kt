@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -30,6 +29,7 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.ui.elements.BehaviorDialog
 import com.kape.automation.ui.viewmodel.AutomationViewModel
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.mobile.text.OnboardingFooterText
@@ -66,7 +66,7 @@ fun AddNewRuleScreen() =
                         .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                AppColumn(horizontalAlignment = Alignment.Start) {
                     OnboardingFooterText(
                         content = stringResource(id = com.kape.ui.R.string.add_rule_title),
                         modifier = Modifier.padding(16.dp),
