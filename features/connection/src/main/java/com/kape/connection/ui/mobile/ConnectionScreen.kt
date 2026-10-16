@@ -9,12 +9,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,13 +39,10 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -85,6 +83,8 @@ import com.kape.sharedui.tiles.Traffic
 import com.kape.sharedui.tiles.VpnLocationPicker
 import com.kape.sidemenu.ui.screens.mobile.SideMenuContent
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AdaptiveContent
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.InfoCard
 import com.kape.ui.mobile.elements.RoundIconButton
 import com.kape.ui.mobile.elements.Screen
@@ -99,7 +99,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ConnectionScreen() =
     Screen {
@@ -114,9 +113,7 @@ fun ConnectionScreen() =
             if (navigationSuiteVisible) drawerState.close()
         }
         val state by viewModel.state.collectAsStateWithLifecycle()
-        val showRatingGeneralDialog = rememberSaveable { mutableStateOf(false) }
-        val showRatingReviewDialog = rememberSaveable { mutableStateOf(false) }
-        val showRatingFeedbackDialog = rememberSaveable { mutableStateOf(false) }
+
         val lifecycleOwner = LocalLifecycleOwner.current
         val activity = LocalActivity.current
         val shouldShowProtocolNotAvailable by viewModel.showProtocolNotAvailableDialog
@@ -180,133 +177,64 @@ fun ConnectionScreen() =
                     }
                 },
             ) {
-                Column(
+                AdaptiveContent(
                     modifier =
                         Modifier
                             .padding(it)
                             .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
                             .semantics {
                                 testTagsAsResourceId = true
                             },
-                    horizontalAlignment = CenterHorizontally,
-                ) {
-                    Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                        var connectButtonDescription =
-                            stringResource(id = R.string.toggle_connection_button)
-
-                        connectButtonDescription +=
-                            when (connectionStatus) {
-                                ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING ->
-                                    stringResource(
-                                        id = R.string.disconnect_from_vpn,
-                                    )
-
-                                else -> stringResource(id = R.string.connect_to_vpn)
-                            }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                        if (viewModel.showDedicatedIpHomeBanner.value) {
-                            DedicatedIpBanner(
-                                onAcceptClick = {
-                                    viewModel.navigateToDedicatedIpPlans()
-                                },
-                                onCancelClick = {
-                                    viewModel.hideDedicatedIpSignupBanner()
-                                },
-                            )
-                        }
-                        ConnectButton(
-                            status = connectionStatus,
-                            onTvLayout = false,
-                            modifier =
-                                Modifier
-                                    .align(CenterHorizontally)
-                                    .testTag(":ConnectionScreen:connection_button")
-                                    .semantics(mergeDescendants = true) {
-                                        role = Role.Button
-                                        contentDescription = connectButtonDescription
-                                    },
+                    compact = { modifier ->
+                        Column(
+                            modifier = modifier.verticalScroll(rememberScrollState()),
+                            horizontalAlignment = CenterHorizontally,
                         ) {
-                            viewModel.onConnectionButtonClicked()
+                            ConnectButtonAndOptionalContent(connectionStatus, state, viewModel)
+                            CustomizableElements(screenElements, viewModel, state, connectionStatus)
                         }
-                        Spacer(modifier = Modifier.height(36.dp))
-                        if (showRatingGeneralDialog.value) {
-                            RatingCard(
+                    },
+                    wide = { modifier ->
+                        val visibleHeight = maxHeight
+                        val hasVisibleElements = screenElements.any { it.shouldDisplayElement }
+                        Row(modifier = modifier) {
+                            // Takes the whole width when there are no tiles, centring the button
+                            Column(
                                 modifier =
                                     Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                onClose = {
-                                    viewModel.setRatingStateInactive()
-                                    showRatingGeneralDialog.value = false
-                                },
-                                onThumbsUp = viewModel::showReviewPrompt,
-                                onThumbsDown = viewModel::showFeedbackPrompt,
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                        .verticalScroll(rememberScrollState()),
+                                horizontalAlignment = CenterHorizontally,
+                            ) {
+                                ConnectButtonAndOptionalContent(
+                                    connectionStatus,
+                                    state,
+                                    viewModel,
+                                    modifier = Modifier.heightIn(min = visibleHeight),
+                                )
+                            }
+                            if (hasVisibleElements) {
+                                Column(
+                                    modifier =
+                                        Modifier
+                                            .weight(1f)
+                                            .fillMaxHeight()
+                                            .verticalScroll(rememberScrollState())
+                                            .padding(top = 16.dp),
+                                    horizontalAlignment = CenterHorizontally,
+                                ) {
+                                    CustomizableElements(
+                                        screenElements,
+                                        viewModel,
+                                        state,
+                                        connectionStatus,
+                                    )
+                                }
+                            }
                         }
-                        screenElements.forEach { screenElement ->
-                            DisplayComponent(
-                                screenElement = screenElement,
-                                isVisible = screenElement.shouldDisplayElement,
-                                viewModel = viewModel,
-                                screenState = state,
-                                connectionStatus = connectionStatus,
-                                isConnected = connectionStatus == ConnectionStatus.CONNECTED,
-                            )
-                        }
-                        showRatingGeneralDialog.value =
-                            state.ratingDialogType is RatingDialogType.General
-                        showRatingReviewDialog.value =
-                            state.ratingDialogType is RatingDialogType.Review
-                        showRatingFeedbackDialog.value =
-                            state.ratingDialogType is RatingDialogType.Feedback
-
-                        if (showRatingReviewDialog.value) {
-                            val url = stringResource(id = R.string.app_url)
-                            val context = LocalContext.current
-
-                            RatingReviewDialog(
-                                onConfirm = {
-                                    val launchIntent = Intent(Intent.ACTION_VIEW)
-                                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    launchIntent.data = url.toUri()
-
-                                    // Silently fail if Google Play Store isn't installed.
-                                    if (launchIntent.resolveActivity(context.packageManager) != null) {
-                                        context.startActivity(launchIntent)
-                                    }
-                                    viewModel.setRatingStateInactive()
-                                },
-                                onDismiss = {
-                                    viewModel.setRatingStateInactive()
-                                },
-                            )
-                        }
-
-                        if (showRatingFeedbackDialog.value) {
-                            val url = stringResource(id = R.string.url_support_new_ticket)
-                            val context = LocalContext.current
-
-                            RatingFeedbackDialog(
-                                onConfirm = {
-                                    val launchIntent = Intent(Intent.ACTION_VIEW)
-                                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    launchIntent.data = url.toUri()
-
-                                    // Silently fail if Google Play Store isn't installed.
-                                    if (launchIntent.resolveActivity(context.packageManager) != null) {
-                                        context.startActivity(launchIntent)
-                                    }
-                                },
-                                onDismiss = {
-                                    viewModel.updateRatingDate()
-                                },
-                            )
-                        }
-                    }
-                }
+                    },
+                )
 
                 if (shouldShowProtocolNotAvailable) {
                     Dialog(
@@ -355,6 +283,133 @@ fun ConnectionScreen() =
             }
         }
     }
+
+@Composable
+private fun ConnectButtonAndOptionalContent(
+    connectionStatus: ConnectionStatus,
+    screenState: ConnectionScreenState,
+    viewModel: ConnectionViewModel,
+    modifier: Modifier = Modifier,
+) {
+    // Derived from the ViewModel so the rating UI survives switching between layouts
+    val ratingDialogType = screenState.ratingDialogType
+    AppColumn(modifier = modifier, centerVertically = true) {
+        var connectButtonDescription =
+            stringResource(id = R.string.toggle_connection_button)
+
+        connectButtonDescription +=
+            when (connectionStatus) {
+                ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING ->
+                    stringResource(
+                        id = R.string.disconnect_from_vpn,
+                    )
+
+                else -> stringResource(id = R.string.connect_to_vpn)
+            }
+
+        Spacer(modifier = Modifier.height(16.dp))
+        if (viewModel.showDedicatedIpHomeBanner.value) {
+            DedicatedIpBanner(
+                onAcceptClick = {
+                    viewModel.navigateToDedicatedIpPlans()
+                },
+                onCancelClick = {
+                    viewModel.hideDedicatedIpSignupBanner()
+                },
+            )
+        }
+        ConnectButton(
+            status = connectionStatus,
+            onTvLayout = false,
+            modifier =
+                Modifier
+                    .testTag(":ConnectionScreen:connection_button")
+                    .semantics(mergeDescendants = true) {
+                        role = Role.Button
+                        contentDescription = connectButtonDescription
+                    },
+        ) {
+            viewModel.onConnectionButtonClicked()
+        }
+        Spacer(modifier = Modifier.height(36.dp))
+        if (ratingDialogType is RatingDialogType.General) {
+            RatingCard(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                onClose = viewModel::setRatingStateInactive,
+                onThumbsUp = viewModel::showReviewPrompt,
+                onThumbsDown = viewModel::showFeedbackPrompt,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+
+    if (ratingDialogType is RatingDialogType.Review) {
+        val url = stringResource(id = R.string.app_url)
+        val context = LocalContext.current
+
+        RatingReviewDialog(
+            onConfirm = {
+                val launchIntent = Intent(Intent.ACTION_VIEW)
+                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                launchIntent.data = url.toUri()
+
+                // Silently fail if Google Play Store isn't installed.
+                if (launchIntent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(launchIntent)
+                }
+                viewModel.setRatingStateInactive()
+            },
+            onDismiss = {
+                viewModel.setRatingStateInactive()
+            },
+        )
+    }
+
+    if (ratingDialogType is RatingDialogType.Feedback) {
+        val url = stringResource(id = R.string.url_support_new_ticket)
+        val context = LocalContext.current
+
+        RatingFeedbackDialog(
+            onConfirm = {
+                val launchIntent = Intent(Intent.ACTION_VIEW)
+                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                launchIntent.data = url.toUri()
+
+                // Silently fail if Google Play Store isn't installed.
+                if (launchIntent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(launchIntent)
+                }
+            },
+            onDismiss = {
+                viewModel.updateRatingDate()
+            },
+        )
+    }
+}
+
+@Composable
+private fun CustomizableElements(
+    screenElements: List<ScreenElement>,
+    viewModel: ConnectionViewModel,
+    state: ConnectionScreenState,
+    connectionStatus: ConnectionStatus,
+) {
+    AppColumn {
+        screenElements.forEach { screenElement ->
+            DisplayComponent(
+                screenElement = screenElement,
+                isVisible = screenElement.shouldDisplayElement,
+                viewModel = viewModel,
+                screenState = state,
+                connectionStatus = connectionStatus,
+                isConnected = connectionStatus == ConnectionStatus.CONNECTED,
+            )
+        }
+    }
+}
 
 @Composable
 private fun DisplayComponent(

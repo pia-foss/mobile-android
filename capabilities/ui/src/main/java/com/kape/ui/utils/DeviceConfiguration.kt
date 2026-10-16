@@ -33,7 +33,8 @@ enum class DeviceConfiguration {
 
             return when {
                 isWidthCompact && (isHeightMedium || heightAtLeastExpanded) -> MOBILE_PORTRAIT
-                widthAtLeastExpanded && isHeightCompact -> MOBILE_LANDSCAPE
+                // Phones in landscape are often only 640-800dp wide, so any compact height counts
+                isHeightCompact -> MOBILE_LANDSCAPE
                 isWidthMedium && heightAtLeastExpanded -> TABLET_PORTRAIT
                 widthAtLeastExpanded && isHeightMedium -> TABLET_LANDSCAPE
                 else -> DESKTOP
