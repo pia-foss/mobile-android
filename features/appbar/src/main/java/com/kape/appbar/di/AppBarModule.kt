@@ -20,13 +20,11 @@ class AppBarModule {
         networkConnectionListener: NetworkConnectionListener,
         snoozeHandler: SnoozeHandler,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-        @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
     ): AppBarViewModel =
         AppBarViewModel(
             router,
             connectionStatusProvider,
             ioDispatcher,
-            mainDispatcher,
             networkConnectionListener,
             snoozeHandler,
         )

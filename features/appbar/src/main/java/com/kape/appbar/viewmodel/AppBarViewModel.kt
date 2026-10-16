@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
 
@@ -25,28 +24,23 @@ class AppBarViewModel(
     private val router: Router,
     private val connectionStatusProvider: ConnectionStatusProvider,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
-    @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
     networkConnectionListener: NetworkConnectionListener,
     snoozeHandler: SnoozeHandler,
 ) : ViewModel() {
     val isConnected = networkConnectionListener.isConnected
     val connectionStatus = connectionStatusProvider.status
-    private val _currentTitle = MutableStateFlow("")
-    val currentTitle = _currentTitle.asStateFlow()
-    private val connectionTitle = connectionStatusProvider.title
+
+    // Kept apart so neither can overwrite the other: the app bar shows the screen's title
+    // when it set one, otherwise the connection status
+    private val _screenTitle = MutableStateFlow<String?>(null)
+    val screenTitle = _screenTitle.asStateFlow()
+    val connectionTitle = connectionStatusProvider.title
 
     // Remaining snooze time formatted as m:ss / h:mm:ss, or null when no snooze is active.
     private val _snoozeCountdown = MutableStateFlow<String?>(null)
     val snoozeCountdown = _snoozeCountdown.asStateFlow()
 
     init {
-        viewModelScope.launch(ioDispatcher) {
-            connectionTitle.collectLatest { title ->
-                withContext(mainDispatcher) {
-                    _currentTitle.update { title }
-                }
-            }
-        }
         viewModelScope.launch(ioDispatcher) {
             snoozeHandler.snoozeEndTime.collectLatest { end ->
                 var remaining = end - System.currentTimeMillis()
@@ -62,7 +56,7 @@ class AppBarViewModel(
     }
 
     fun appBarText(title: String?) {
-        _currentTitle.update { title ?: connectionTitle.value }
+        _screenTitle.update { title }
     }
 
     fun navigateBack() = router.navigateBack()

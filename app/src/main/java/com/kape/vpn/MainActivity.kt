@@ -219,12 +219,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     // region private
+    // Only TV is locked; every other device follows the window so the app is never letterboxed
     private fun defineScreenOrientation() {
-        // TODO: Remove else clause once layouts are ready to handle landscape
         if (platformUtils.isTv()) {
-            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE // tv
-        } else {
-            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT // phone
+            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
     }
 

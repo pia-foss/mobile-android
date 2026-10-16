@@ -58,7 +58,9 @@ fun AppBar(
 ) {
     val isConnected by viewModel.isConnected.collectAsState()
     val connectionStatus by viewModel.connectionStatus.collectAsStateWithLifecycle()
-    val title by viewModel.currentTitle.collectAsStateWithLifecycle()
+    val screenTitle by viewModel.screenTitle.collectAsStateWithLifecycle()
+    val connectionTitle by viewModel.connectionTitle.collectAsStateWithLifecycle()
+    val title = screenTitle ?: connectionTitle
     val snoozeCountdown by viewModel.snoozeCountdown.collectAsStateWithLifecycle()
 
     val showSnoozeCountdown =
