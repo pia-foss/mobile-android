@@ -2,6 +2,7 @@ package com.kape.settings.ui.elements.mobile
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,12 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.text.SettingsL2Text
 import com.kape.ui.mobile.text.SettingsL2TextDescription
+import com.kape.ui.theme.brandGreen
 import com.kape.ui.utils.LocalColors
 
 @Composable
@@ -32,6 +35,8 @@ fun SettingsItem(
     @StringRes titleId: Int,
     subtitle: String? = null,
     testTag: String? = null,
+    // Marks the item whose content is open beside the list
+    selected: Boolean = false,
     onClick: (() -> Unit)? = null,
 ) {
     // Screen readers interpret the clickable modifier as an interactive element. By removing
@@ -46,8 +51,16 @@ fun SettingsItem(
         modifier =
             Modifier
                 .padding(vertical = 1.dp)
-                .then(clickableModifier)
-                .semantics(mergeDescendants = true) {},
+                .background(
+                    if (selected) {
+                        LocalColors.current.brandGreen().copy(alpha = SELECTED_ALPHA)
+                    } else {
+                        Color.Transparent
+                    },
+                ).then(clickableModifier)
+                .semantics(mergeDescendants = true) {
+                    this.selected = selected
+                },
     ) {
         Row(
             modifier =
@@ -94,3 +107,5 @@ fun SettingsItem(
         Separator()
     }
 }
+
+private const val SELECTED_ALPHA = 0.12f

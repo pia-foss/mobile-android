@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -25,6 +24,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.data.RegionItemType
 import com.kape.obfuscationregionselection.ui.vm.ShadowsocksRegionSelectionViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Search
 import com.kape.ui.mobile.text.MenuText
@@ -59,7 +59,7 @@ fun ShadowsocksRegionSelectionScreen() =
         ) {
             AppBar(appBarViewModel)
 
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+            AppColumn(horizontalAlignment = Alignment.Start) {
                 Search(
                     modifier =
                         Modifier

@@ -180,6 +180,7 @@ dependencies {
 
     implementation(libs.bundles.android)
     implementation(libs.bundles.compose)
+    implementation(libs.material3.adaptive.navigation.suite)
     androidTestImplementation(libs.compose.android.test)
     debugImplementation(libs.bundles.debugtest)
     implementation(libs.bundles.koin)

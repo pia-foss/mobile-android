@@ -2,16 +2,16 @@ package com.kape.signup.ui.mobile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
@@ -46,16 +47,13 @@ fun ConsentScreen(isFirstScreen: Boolean) =
         val viewModel: SignupViewModel = koinViewModel()
         var showMoreInfo by rememberSaveable { mutableStateOf(false) }
 
-        Column(
+        AdaptiveSplitContent(
             modifier =
                 Modifier
-                    .verticalScroll(rememberScrollState())
                     .fillMaxSize()
-                    .padding(WindowInsets.systemBars.asPaddingValues())
+                    .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout))
                     .semantics { testTagsAsResourceId = true },
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Column(modifier = Modifier.widthIn(max = 520.dp)) {
+            header = {
                 Image(
                     painter = painterResource(id = com.kape.signup.R.drawable.ic_consent),
                     contentDescription = null,
@@ -64,6 +62,8 @@ fun ConsentScreen(isFirstScreen: Boolean) =
                             .fillMaxWidth()
                             .padding(24.dp),
                 )
+            },
+            body = {
                 Text(
                     text = stringResource(id = R.string.consent_title),
                     fontSize = 16.sp,
@@ -110,8 +110,8 @@ fun ConsentScreen(isFirstScreen: Boolean) =
                 ) {
                     viewModel.allowEventSharing(false, isFirstScreen)
                 }
-            }
-        }
+            },
+        )
 
         if (showMoreInfo) {
             AlertDialog(

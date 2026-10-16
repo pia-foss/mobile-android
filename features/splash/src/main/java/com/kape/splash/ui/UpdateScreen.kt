@@ -3,21 +3,18 @@ package com.kape.splash.ui
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -26,96 +23,83 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.splash.ui.vm.SplashViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.OnboardingDescriptionPaymentText
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
-import com.kape.ui.utils.LocalColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun UpdateScreen(viewModel: SplashViewModel = koinViewModel()) =
     Screen {
         val context = LocalContext.current
-        Column(
+
+        AdaptiveSplitContent(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(top = 64.dp)
-                    .background(LocalColors.current.background),
-            verticalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Box(
-                modifier =
-                    Modifier
-                        .widthIn(max = 520.dp)
-                        .fillMaxHeight()
-                        .weight(1f, true),
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.shield),
-                        contentDescription = null,
-                        modifier =
-                            Modifier
-                                .padding(40.dp)
-                                .height(200.dp)
-                                .fillMaxWidth(),
-                    )
-                    Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
-                        OnboardingTitleText(
-                            content = stringResource(id = R.string.update_required_title),
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                        )
-
-                        OnboardingDescriptionText(
-                            content = stringResource(id = R.string.update_required_message),
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                        )
-                    }
+                    .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout)),
+            header = { isCompact ->
+                if (isCompact) {
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-
-                Column(modifier = Modifier.align(Alignment.BottomCenter)) {
-                    PrimaryButton(
-                        text = stringResource(id = R.string.update_required_action),
+                Image(
+                    painter = painterResource(id = R.drawable.shield),
+                    contentDescription = null,
+                    modifier =
+                        Modifier
+                            .padding(if (isCompact) 40.dp else 16.dp)
+                            .height(if (isCompact) 200.dp else 120.dp)
+                            .fillMaxWidth(),
+                )
+            },
+            body = {
+                Column(modifier = Modifier.semantics(mergeDescendants = true) { }) {
+                    OnboardingTitleText(
+                        content = stringResource(id = R.string.update_required_title),
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp)
-                                .align(Alignment.CenterHorizontally),
-                    ) {
-                        viewModel.onUpdateClicked(
-                            launchUpdate = { url ->
-                                val launchIntent = Intent(Intent.ACTION_VIEW)
-                                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                launchIntent.data = Uri.parse(url)
-                                // Silently fail if Google Play Store isn't installed.
-                                if (launchIntent.resolveActivity(context.packageManager) != null) {
-                                    context.startActivity(launchIntent)
-                                }
-                            },
-                        )
-                    }
+                                .padding(16.dp),
+                    )
 
-                    if (viewModel.isConnected()) {
-                        OnboardingDescriptionPaymentText(
-                            stringResource(R.string.update_required_info),
-                            Modifier.align(Alignment.CenterHorizontally),
-                        )
-
-                        Spacer(modifier = Modifier.padding(bottom = 40.dp))
-                    }
+                    OnboardingDescriptionText(
+                        content = stringResource(id = R.string.update_required_message),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                    )
                 }
-            }
-        }
+                // Pins the action to the bottom, below the message rather than over it
+                Spacer(modifier = Modifier.weight(1f))
+                PrimaryButton(
+                    text = stringResource(id = R.string.update_required_action),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp, top = 4.dp, bottom = 36.dp, end = 16.dp),
+                ) {
+                    viewModel.onUpdateClicked(
+                        launchUpdate = { url ->
+                            val launchIntent = Intent(Intent.ACTION_VIEW)
+                            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            launchIntent.data = Uri.parse(url)
+                            // Silently fail if Google Play Store isn't installed.
+                            if (launchIntent.resolveActivity(context.packageManager) != null) {
+                                context.startActivity(launchIntent)
+                            }
+                        },
+                    )
+                }
+
+                if (viewModel.isConnected()) {
+                    OnboardingDescriptionPaymentText(stringResource(R.string.update_required_info))
+
+                    Spacer(modifier = Modifier.padding(bottom = 40.dp))
+                }
+            },
+        )
     }
