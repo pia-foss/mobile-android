@@ -87,14 +87,26 @@ object TvSubscribe : ComposeDestination
 @Serializable
 object Settings : ComposeDestination
 
-@Serializable
-object GeneralSettings : ComposeDestination
+// Items of the Settings list replace each other rather than stacking up, so that when they
+// are shown beside the list (list-detail panes) back returns to the list, not to the
+// previously opened item. Opened from anywhere else, Settings isn't on the stack and this
+// has no effect.
+private val SettingsListChild = DestinationNavOptions.PopUpTo(Settings, inclusive = false)
 
 @Serializable
-object ProtocolSettings : ComposeDestination
+object GeneralSettings : ComposeDestination {
+    override val navOptions: DestinationNavOptions = SettingsListChild
+}
 
 @Serializable
-object AutomationSettings : ComposeDestination
+object ProtocolSettings : ComposeDestination {
+    override val navOptions: DestinationNavOptions = SettingsListChild
+}
+
+@Serializable
+object AutomationSettings : ComposeDestination {
+    override val navOptions: DestinationNavOptions = SettingsListChild
+}
 
 @Serializable
 object KillSwitchSettings : ComposeDestination
@@ -106,13 +118,19 @@ object About : ComposeDestination
 object PerAppSettings : ComposeDestination
 
 @Serializable
-object HelpSettings : ComposeDestination
+object HelpSettings : ComposeDestination {
+    override val navOptions: DestinationNavOptions = SettingsListChild
+}
 
 @Serializable
-object PrivacySettings : ComposeDestination
+object PrivacySettings : ComposeDestination {
+    override val navOptions: DestinationNavOptions = SettingsListChild
+}
 
 @Serializable
-object NetworkSettings : ComposeDestination
+object NetworkSettings : ComposeDestination {
+    override val navOptions: DestinationNavOptions = SettingsListChild
+}
 
 @Serializable
 object DedicatedIpActivateToken : ComposeDestination
@@ -172,7 +190,9 @@ object SideMenuRoute : ComposeDestination
 object SideMenu : ComposeDestination
 
 @Serializable
-object ObfuscationSettings : ComposeDestination
+object ObfuscationSettings : ComposeDestination {
+    override val navOptions: DestinationNavOptions = SettingsListChild
+}
 
 @Serializable
 object ExternalAppList : ComposeDestination

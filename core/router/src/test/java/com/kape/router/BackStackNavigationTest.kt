@@ -6,9 +6,12 @@ import com.kape.data.AutomationMain
 import com.kape.data.AutomationSettings
 import com.kape.data.Connection
 import com.kape.data.Consent
+import com.kape.data.GeneralSettings
+import com.kape.data.HelpSettings
 import com.kape.data.LoginWithCredentials
 import com.kape.data.NotificationPermission
 import com.kape.data.Profile
+import com.kape.data.ProtocolSettings
 import com.kape.data.Settings
 import com.kape.data.Splash
 import com.kape.data.VpnPermission
@@ -90,6 +93,42 @@ class BackStackNavigationTest {
         backStack.navigateTo(AutomationMain)
 
         assertEquals(listOf(AutomationSettings, Settings, AutomationSettings, AutomationMain), backStack)
+    }
+
+    @Test
+    fun `navigateTo - settings item from the list - is pushed on top`() {
+        val backStack = mutableListOf<NavKey>(Connection, Settings)
+
+        backStack.navigateTo(GeneralSettings)
+
+        assertEquals(listOf(Connection, Settings, GeneralSettings), backStack)
+    }
+
+    @Test
+    fun `navigateTo - settings item while another is open - replaces it`() {
+        val backStack = mutableListOf<NavKey>(Connection, Settings, GeneralSettings)
+
+        backStack.navigateTo(ProtocolSettings)
+
+        assertEquals(listOf(Connection, Settings, ProtocolSettings), backStack)
+    }
+
+    @Test
+    fun `navigateTo - settings item while a sub-screen of another is open - replaces both`() {
+        val backStack = mutableListOf<NavKey>(Connection, Settings, AutomationSettings, AutomationMain)
+
+        backStack.navigateTo(HelpSettings)
+
+        assertEquals(listOf(Connection, Settings, HelpSettings), backStack)
+    }
+
+    @Test
+    fun `navigateTo - settings item without the list on the stack - is pushed on top`() {
+        val backStack = mutableListOf<NavKey>(Connection)
+
+        backStack.navigateTo(ProtocolSettings)
+
+        assertEquals(listOf(Connection, ProtocolSettings), backStack)
     }
 
     @Test

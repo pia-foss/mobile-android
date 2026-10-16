@@ -45,6 +45,7 @@ import com.kape.ui.theme.connectedGradient
 import com.kape.ui.theme.connectingGradient
 import com.kape.ui.theme.errorGradient
 import com.kape.ui.utils.LocalColors
+import com.kape.ui.utils.LocalIsDetailPane
 
 @Composable
 fun AppBar(
@@ -54,7 +55,7 @@ fun AppBar(
     onRightIconClick: () -> Unit = {},
     rightIconId: Int? = null,
     rightIconContentDescription: String? = null,
-    showLeftIcon: Boolean = true,
+    showLeftIcon: Boolean = !LocalIsDetailPane.current,
 ) {
     val isConnected by viewModel.isConnected.collectAsState()
     val connectionStatus by viewModel.connectionStatus.collectAsStateWithLifecycle()
