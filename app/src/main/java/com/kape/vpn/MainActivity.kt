@@ -12,9 +12,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
@@ -115,6 +119,7 @@ import com.kape.settings.ui.screens.mobile.ObfuscationSettingsScreen
 import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
 import com.kape.settings.ui.screens.mobile.PrivacySettingsScreen
 import com.kape.settings.ui.screens.mobile.ProtocolSettingsScreen
+import com.kape.settings.ui.screens.mobile.SettingsDetailPlaceholder
 import com.kape.settings.ui.screens.mobile.SettingsScreen
 import com.kape.settings.ui.screens.mobile.VpnLogScreen
 import com.kape.settings.ui.screens.tv.TvConnectionStatsScreen
@@ -143,6 +148,10 @@ import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SERVER_SELECTION
 import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_SETTINGS
 import com.kape.utils.AutomationManager
 import com.kape.utils.PlatformUtils
+import com.kape.vpn.navigation.AppNavigationSuite
+import com.kape.vpn.navigation.detailPaneEntry
+import com.kape.vpn.navigation.listPaneEntry
+import com.kape.vpn.navigation.rememberListDetailPanesStrategy
 import com.kape.vpn.utils.ShortcutManager
 import com.kape.vpnregionselection.ui.mobile.VpnRegionSelectionScreen
 import com.kape.vpnregionselection.ui.tv.TvVpnRegionSelectionScreen
@@ -189,24 +198,36 @@ class MainActivity : AppCompatActivity() {
                     isTv = platformUtils.isTv(),
                     startDestination = Splash,
                 ) { backStack ->
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background,
-                    ) {
-                        NavDisplay(
-                            backStack = backStack,
-                            onBack = { backStack.navigateBack() },
-                            entryDecorators =
-                                listOf(
-                                    rememberSaveableStateHolderNavEntryDecorator(),
-                                    rememberViewModelStoreNavEntryDecorator(),
+                    AppNavigationSuite(backStack = backStack, isTv = platformUtils.isTv()) {
+                        // Keeps every screen clear of a camera cutout at the side (landscape). The rail
+                        // consumes the start side when shown, so screens that pad for the cutout
+                        // themselves aren't padded twice. Panes are sized from what is left.
+                        BoxWithConstraints(
+                            modifier =
+                                Modifier.windowInsetsPadding(
+                                    WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal),
                                 ),
-                            // Keep Navigation 2's default cross-fade
-                            transitionSpec = { crossFade() },
-                            popTransitionSpec = { crossFade() },
-                            predictivePopTransitionSpec = { crossFade() },
-                            entryProvider = entryProvider { defineNavigationGraph() },
-                        )
+                        ) {
+                            NavDisplay(
+                                backStack = backStack,
+                                // Screens shrink above the keyboard so focused fields and pinned
+                                // actions stay visible; inside the box so the pane layout doesn't
+                                // change while typing. TV keyboards cover the screen instead.
+                                modifier = if (platformUtils.isTv()) Modifier else Modifier.imePadding(),
+                                onBack = { backStack.navigateBack() },
+                                entryDecorators =
+                                    listOf(
+                                        rememberSaveableStateHolderNavEntryDecorator(),
+                                        rememberViewModelStoreNavEntryDecorator(),
+                                    ),
+                                sceneStrategies = listOf(rememberListDetailPanesStrategy(maxWidth, maxHeight)),
+                                // Keep Navigation 2's default cross-fade
+                                transitionSpec = { crossFade() },
+                                popTransitionSpec = { crossFade() },
+                                predictivePopTransitionSpec = { crossFade() },
+                                entryProvider = entryProvider { defineNavigationGraph(backStack) },
+                            )
+                        }
                     }
                 }
             }
@@ -225,12 +246,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     // region private
+    // Only TV is locked; every other device follows the window so the app is never letterboxed
     private fun defineScreenOrientation() {
-        // TODO: Remove else clause once layouts are ready to handle landscape
         if (platformUtils.isTv()) {
-            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE // tv
-        } else {
-            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT // phone
+            this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         }
     }
 
@@ -254,7 +273,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun EntryProviderScope<NavKey>.defineNavigationGraph() {
+    private fun EntryProviderScope<NavKey>.defineNavigationGraph(backStack: List<NavKey>) {
         if (platformUtils.isTv()) {
             entry<Splash> { SplashScreen() }
             entry<TvConsent> { route -> TvConsentScreen(route.isFirstScreen) }
@@ -289,10 +308,10 @@ class MainActivity : AppCompatActivity() {
             entry<Consent> { route -> ConsentScreen(route.isFirstScreen) }
             entry<LoginWithCredentials> { LoginScreen() }
             entry<LoginWithEmail> { LoginWithEmailScreen() }
-            entry<Settings> { SettingsScreen() }
+            listPaneEntry<Settings>(backStack, detailPlaceholder = { SettingsDetailPlaceholder() }) { SettingsScreen() }
             entry<VpnPermission> { VpnPermissionScreen() }
             entry<NotificationPermission> { NotificationPermissionScreen() }
-            entry<AutomationSettings> { AutomationSettingsScreen() }
+            detailPaneEntry<AutomationSettings> { AutomationSettingsScreen() }
             entry<AutomationMain> { AutomationScreen() }
             entry<AutomationAddRule> { AddNewRuleScreen() }
             entry<AutomationLocation> { LocationPermissionScreen() }
@@ -339,12 +358,12 @@ class MainActivity : AppCompatActivity() {
             entry<Customization> { CustomizationScreen() }
             entry<AccountDeleted> { AccountDeletedScreen() }
             entry<Update> { UpdateScreen() }
-            entry<GeneralSettings> { GeneralSettingsScreen() }
-            entry<ProtocolSettings> { ProtocolSettingsScreen() }
-            entry<NetworkSettings> { NetworkSettingsScreen() }
-            entry<PrivacySettings> { PrivacySettingsScreen() }
-            entry<HelpSettings> { HelpScreen() }
-            entry<ObfuscationSettings> { ObfuscationSettingsScreen() }
+            detailPaneEntry<GeneralSettings> { GeneralSettingsScreen() }
+            detailPaneEntry<ProtocolSettings> { ProtocolSettingsScreen() }
+            detailPaneEntry<NetworkSettings> { NetworkSettingsScreen() }
+            detailPaneEntry<PrivacySettings> { PrivacySettingsScreen() }
+            detailPaneEntry<HelpSettings> { HelpScreen() }
+            detailPaneEntry<ObfuscationSettings> { ObfuscationSettingsScreen() }
             entry<DebugLogs> { VpnLogScreen() }
             entry<ConnectionStats> { ConnectionStatsScreen() }
             entry<ExternalAppList> { ExternalProxyAppList() }

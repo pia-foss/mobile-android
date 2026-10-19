@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.CircularProgressIndicator
@@ -40,6 +39,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Search
 import com.kape.ui.utils.LocalColors
@@ -87,7 +87,7 @@ fun PerAppSettingsScreen() =
                     .background(LocalColors.current.background),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                AppColumn(horizontalAlignment = Alignment.Start) {
                     Search(
                         modifier =
                             Modifier

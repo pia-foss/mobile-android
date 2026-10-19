@@ -1,5 +1,6 @@
 package com.kape.sidemenu.ui.screens.mobile
 
+import android.content.Context
 import android.content.Intent
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -87,12 +88,7 @@ fun SideMenuContent(
             versionName = viewModel.getVersionName(),
             hasUpdateAvailable = hasUpdateAvailable,
             onClick = {
-                if (hasUpdateAvailable) {
-                    val launchIntent = Intent(Intent.ACTION_VIEW)
-                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    launchIntent.data = viewModel.getDownloadLink().toUri()
-                    context.startActivity(launchIntent)
-                }
+                if (hasUpdateAvailable) openUpdateDownload(context, viewModel.getDownloadLink())
             },
         )
 
@@ -201,8 +197,18 @@ fun SideMenuContent(
     }
 }
 
+internal fun openUpdateDownload(
+    context: Context,
+    downloadLink: String,
+) {
+    val launchIntent = Intent(Intent.ACTION_VIEW)
+    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    launchIntent.data = downloadLink.toUri()
+    context.startActivity(launchIntent)
+}
+
 @Composable
-private fun SideMenuHeaderItem(
+internal fun SideMenuHeaderItem(
     username: String,
     versionCode: String,
     versionName: String,

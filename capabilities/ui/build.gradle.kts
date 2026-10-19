@@ -25,6 +25,10 @@ dependencies {
 
     implementation(libs.bundles.compose)
     implementation(libs.bundles.koin)
+    implementation(libs.androidx.adaptive)
+    implementation(libs.androidx.adaptive.layout)
+    implementation(libs.androidx.adaptive.navigation)
+    implementation(libs.androidx.adaptive.navigation3)
     androidTestImplementation(libs.bundles.koinandroidtest)
     androidTestImplementation(libs.bundles.composeandroidtest)
     testImplementation(libs.bundles.test)

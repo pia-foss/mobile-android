@@ -1,4 +1,5 @@
 [versions]
+adaptive = "1.4.0-alpha03"
 kape-platform-sdk-vpn-pia = "0.5.1"
 mobile-android-obfuscation-proxy = "0.1.6.1"
 mobile-android-openvpn = "0.4.15-pia"
@@ -46,6 +47,10 @@ tink = "1.23.0"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "plugin-gradle" }
+androidx-adaptive = { module = "androidx.compose.material3.adaptive:adaptive", version.ref = "adaptive" }
+androidx-adaptive-layout = { module = "androidx.compose.material3.adaptive:adaptive-layout", version.ref = "adaptive" }
+androidx-adaptive-navigation = { module = "androidx.compose.material3.adaptive:adaptive-navigation", version.ref = "adaptive" }
+androidx-adaptive-navigation3 = { module = "androidx.compose.material3.adaptive:adaptive-navigation3", version.ref = "adaptive" }
 kape-platform-sdk-vpn-pia = { module = "com.github.pia-foss:platform-sdk", version.ref = "kape-platform-sdk-vpn-pia" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "plugin-kotlin" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -58,12 +63,13 @@ compose-android-test = { group = "androidx.compose.ui", name = "ui-test-junit4" 
 debug-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 debug-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-material3" }
+material3-adaptive-navigation-suite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite", version.ref = "androidx-material3" }
 compose-tv-material = { module = "androidx.tv:tv-material", version.ref = "compose-tv-material" }
 navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "compose-jetpack" }
 mobile-android-obfuscation-proxy = { module = "com.github.pia-foss:mobile-android-obfuscation-proxy", version.ref = "mobile-android-obfuscation-proxy" }
-mobile-android-openvpn= { module = "com.github.pia-foss.mobile-android-vpn-manager:openvpn", version.ref = "mobile-android-openvpn" }
+mobile-android-openvpn = { module = "com.github.pia-foss.mobile-android-vpn-manager:openvpn", version.ref = "mobile-android-openvpn" }
 mobile-shared-account = { module = "com.github.pia-foss:mobile-shared-account", version.ref = "mobile-shared-account" }
 mobile-shared-csi = { module = "com.github.pia-foss:mobile-shared-csi", version.ref = "mobile-shared-csi" }
 mobile-shared-kpi = { module = "com.github.pia-foss:mobile-shared-kpi", version.ref = "mobile-shared-kpi" }
@@ -123,7 +129,7 @@ configuration = { id = "configuration", version = "1.0" }
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 
 [bundles]
-compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-foundation", "compose-runtime", "navigation3-runtime", "navigation3-ui", "lifecycle-viewmodel-navigation3", "compose-tv-material", "material3"]
+compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-foundation", "compose-runtime", "navigation3-runtime", "navigation3-ui", "lifecycle-viewmodel-navigation3", "compose-tv-material", "material3", "androidx-adaptive", "androidx-adaptive-layout", "androidx-adaptive-navigation", "androidx-adaptive-navigation3"]
 composeandroidtest = ["compose-android-test"]
 debugtest = ["debug-manifest", "debug-tooling"]
 android = ["viewmodel", "androidx-core", "lifecycle", "lifecyclecompose", "lifecycleprocess", "activity", "appcompat"]

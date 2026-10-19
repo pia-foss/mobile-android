@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowColumn
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -48,6 +50,7 @@ import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dip.data.DedicatedIpSelectedCountry
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AppColumn
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -118,93 +121,97 @@ fun SignupDedicatedIpCountryScreen() =
                     AppBar(viewModel = appBarViewModel)
                 },
             ) {
-                Column(
+                // The purchase section follows the content: pinned to the bottom by the weighted
+                // spacer while everything fits, below the expanded country list otherwise
+                BoxWithConstraints(
                     modifier =
                         Modifier
                             .padding(it)
-                            .verticalScroll(rememberScrollState())
                             .fillMaxSize(),
                 ) {
-                    Spacer(modifier = Modifier.height(40.dp))
-                    DedicatedIpSignupCountryTitleText(
-                        stringResource(id = R.string.dip_signup_country_title),
-                        Modifier.padding(horizontal = 16.dp),
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Box(
+                    val visibleHeight = maxHeight
+                    Column(
                         modifier =
                             Modifier
-                                .padding(horizontal = 16.dp)
-                                .border(
-                                    0.5.dp,
-                                    LocalColors.current.outlineVariant,
-                                    shape = RoundedCornerShape(12.dp),
-                                ).background(
-                                    LocalColors.current.onPrimary,
-                                    shape = RoundedCornerShape(12.dp),
-                                ),
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        dipSelectedCountry?.let { dedicatedIpSelectedCountry ->
-                            DipCountryItem(dedicatedIpSelectedCountry) {
-                                showAllLocations.value = !showAllLocations.value
-                            }
-                        }
-                        Icon(
-                            painter = painterResource(R.drawable.ic_chevron_down),
-                            contentDescription = null,
-                            modifier =
-                                Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .padding(end = 16.dp),
-                        )
-                    }
-
-                    if (showAllLocations.value) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Card(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            border = BorderStroke(1.dp, LocalColors.current.onPrimary),
+                        AppColumn(
+                            modifier = Modifier.heightIn(min = visibleHeight),
+                            horizontalAlignment = Alignment.Start,
                         ) {
-                            viewModel.supportedDipCountriesList.value?.let {
-                                FlowColumn {
-                                    it.dedicatedIpCountriesAvailable.forEach { country ->
-                                        DipCountryItem(country = country) { dedicatedIpSelectedCountry ->
-                                            viewModel.selectDipCountry(dedicatedIpSelectedCountry)
-                                            showAllLocations.value = !showAllLocations.value
+                            Spacer(modifier = Modifier.height(40.dp))
+                            DedicatedIpSignupCountryTitleText(
+                                stringResource(id = R.string.dip_signup_country_title),
+                                Modifier.padding(horizontal = 16.dp),
+                            )
+                            Spacer(modifier = Modifier.height(20.dp))
+
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .border(
+                                            0.5.dp,
+                                            LocalColors.current.outlineVariant,
+                                            shape = RoundedCornerShape(12.dp),
+                                        ).background(
+                                            LocalColors.current.onPrimary,
+                                            shape = RoundedCornerShape(12.dp),
+                                        ),
+                            ) {
+                                dipSelectedCountry?.let { dedicatedIpSelectedCountry ->
+                                    DipCountryItem(dedicatedIpSelectedCountry) {
+                                        showAllLocations.value = !showAllLocations.value
+                                    }
+                                }
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_chevron_down),
+                                    contentDescription = null,
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.CenterEnd)
+                                            .padding(end = 16.dp),
+                                )
+                            }
+
+                            if (showAllLocations.value) {
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Card(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                    shape = RoundedCornerShape(12.dp),
+                                    border = BorderStroke(1.dp, LocalColors.current.onPrimary),
+                                ) {
+                                    viewModel.supportedDipCountriesList.value?.let {
+                                        FlowColumn {
+                                            it.dedicatedIpCountriesAvailable.forEach { country ->
+                                                DipCountryItem(country = country) { dedicatedIpSelectedCountry ->
+                                                    viewModel.selectDipCountry(dedicatedIpSelectedCountry)
+                                                    showAllLocations.value = !showAllLocations.value
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                    }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    DedicatedIpSignupCountryDisclaimerText(
-                        stringResource(id = R.string.dip_signup_country_disclaimer),
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                    )
-                    if (showAllLocations.value) {
-                        BottomScreen(
-                            showAllLocations = showAllLocations.value,
-                            viewModel = viewModel,
-                            appBarViewModel::navigateBack,
-                        )
-                    }
-                }
-                Column {
-                    if (!showAllLocations.value) {
-                        BottomScreen(
-                            showAllLocations = showAllLocations.value,
-                            viewModel = viewModel,
-                            appBarViewModel::navigateBack,
-                        )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            DedicatedIpSignupCountryDisclaimerText(
+                                stringResource(id = R.string.dip_signup_country_disclaimer),
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            BottomScreen(
+                                viewModel = viewModel,
+                                navigateBack = appBarViewModel::navigateBack,
+                            )
+                        }
                     }
                 }
             }
@@ -235,7 +242,6 @@ fun SignupDedicatedIpCountryScreen() =
 
 @Composable
 fun BottomScreen(
-    showAllLocations: Boolean,
     viewModel: DipViewModel,
     navigateBack: () -> Unit,
 ) {
@@ -245,9 +251,6 @@ fun BottomScreen(
             Modifier
                 .padding(8.dp),
     ) {
-        if (!showAllLocations) {
-            Spacer(modifier = Modifier.weight(1f))
-        }
         Spacer(modifier = Modifier.height(16.dp))
         PrimaryButton(
             text = stringResource(id = R.string.logjn_continue),

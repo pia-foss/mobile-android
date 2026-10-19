@@ -5,12 +5,16 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.DedicatedIpSignupActivateTokenDescriptionText
@@ -62,110 +67,99 @@ fun SignupDedicatedIpTokenDetailsScreen() =
                 }
             }
 
-        Column(
+        AdaptiveSplitContent(
             modifier =
                 Modifier
-                    .systemBarsPadding()
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_dip),
-                tint = LocalColors.current.primary,
-                contentDescription = null,
-                modifier =
-                    Modifier
-                        .padding(16.dp)
-                        .height(40.dp)
-                        .fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Card(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, color = LocalColors.current.onPrimaryContainer),
-            ) {
-                Column(
+                    .fillMaxSize()
+                    .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout))
+                    .padding(8.dp),
+            header = { DipSignupIcon() },
+            body = {
+                Card(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 24.dp),
+                            .padding(16.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, color = LocalColors.current.onPrimaryContainer),
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_error),
-                            contentDescription = null,
-                            tint = LocalColors.current.connectionError(),
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        DedicatedIpSignupActivateTokenTitleText(
-                            content = stringResource(id = R.string.dip_signup_save_your_token_title),
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    DedicatedIpSignupActivateTokenDescriptionText(
-                        content = stringResource(id = R.string.dip_signup_save_your_token_description),
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Card(
-                        modifier = Modifier.height(48.dp),
-                        colors =
-                            CardDefaults.cardColors(
-                                containerColor = LocalColors.current.infoBackground(),
-                            ),
-                        border = BorderStroke(1.dp, color = LocalColors.current.infoOutline()),
-                        shape = RoundedCornerShape(12.dp),
-                        onClick = {
-                            clipboardManager.setText(AnnotatedString(dipToken))
-                            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
-                            viewModel.enableActivateTokenButton()
-                        },
+                    Column(
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 24.dp),
                     ) {
                         Row(
-                            modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            DedicatedIpSignupActivateTokenDescriptionText(
-                                modifier = Modifier.weight(1.0f),
-                                content = dipToken,
-                                color = LocalColors.current.infoBlue(),
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_error),
+                                contentDescription = null,
+                                tint = LocalColors.current.connectionError(),
                             )
                             Spacer(modifier = Modifier.width(8.dp))
-                            Icon(
-                                painter = painterResource(id = R.drawable.content_copy),
-                                contentDescription = null,
-                                tint = LocalColors.current.infoBlue(),
+                            DedicatedIpSignupActivateTokenTitleText(
+                                content = stringResource(id = R.string.dip_signup_save_your_token_title),
                             )
                         }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        DedicatedIpSignupActivateTokenDescriptionText(
+                            content = stringResource(id = R.string.dip_signup_save_your_token_description),
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Card(
+                            modifier = Modifier.height(48.dp),
+                            colors =
+                                CardDefaults.cardColors(
+                                    containerColor = LocalColors.current.infoBackground(),
+                                ),
+                            border = BorderStroke(1.dp, color = LocalColors.current.infoOutline()),
+                            shape = RoundedCornerShape(12.dp),
+                            onClick = {
+                                clipboardManager.setText(AnnotatedString(dipToken))
+                                Toast.makeText(context, toastText, Toast.LENGTH_LONG).show()
+                                viewModel.enableActivateTokenButton()
+                            },
+                        ) {
+                            Row(
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                DedicatedIpSignupActivateTokenDescriptionText(
+                                    modifier = Modifier.weight(1.0f),
+                                    content = dipToken,
+                                    color = LocalColors.current.infoBlue(),
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Icon(
+                                    painter = painterResource(id = R.drawable.content_copy),
+                                    contentDescription = null,
+                                    tint = LocalColors.current.infoBlue(),
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        DedicatedIpSignupActivateTokenFooter(
+                            content = footerText,
+                        )
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    DedicatedIpSignupActivateTokenFooter(
-                        content = footerText,
-                    )
                 }
-            }
 
-            Spacer(modifier = Modifier.weight(1.0f))
-            PrimaryButton(
-                enabled = viewModel.activateTokenButtonState.value,
-                text = stringResource(id = R.string.dip_signup_activate_token),
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-            ) {
-                viewModel.navigateToDedicatedIpTokenActivate()
-            }
-            Spacer(modifier = Modifier.height(64.dp))
-        }
+                Spacer(modifier = Modifier.weight(1.0f))
+                PrimaryButton(
+                    enabled = viewModel.activateTokenButtonState.value,
+                    text = stringResource(id = R.string.dip_signup_activate_token),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                ) {
+                    viewModel.navigateToDedicatedIpTokenActivate()
+                }
+                Spacer(modifier = Modifier.height(64.dp))
+            },
+        )
     }

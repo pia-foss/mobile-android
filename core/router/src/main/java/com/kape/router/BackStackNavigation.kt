@@ -18,6 +18,26 @@ fun MutableList<NavKey>.navigateTo(destination: ComposeDestination) {
 }
 
 /**
+ * Switches to a top-level destination, as a navigation rail does: keeps the stack up to
+ * and including [root], then pushes [destination] unless it is [root] itself.
+ * Falls back to [navigateTo] when [root] is not on the stack.
+ */
+fun MutableList<NavKey>.navigateToTopLevel(
+    destination: ComposeDestination,
+    root: ComposeDestination,
+) {
+    val rootIndex = indexOfFirst { it::class == root::class }
+    if (rootIndex == -1) {
+        navigateTo(destination)
+        return
+    }
+    while (size > rootIndex + 1) {
+        removeAt(lastIndex)
+    }
+    if (destination::class != root::class) add(destination)
+}
+
+/**
  * Removes the top entry, unless it is the only one left.
  *
  * @return true if an entry was removed.

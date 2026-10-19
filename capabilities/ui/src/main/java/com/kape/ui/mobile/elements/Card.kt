@@ -242,12 +242,13 @@ fun NetworkCard(
     color: Color,
     isDefault: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     testTag: String = "",
 ) {
     Card(
         modifier =
-            Modifier
-                .padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp)
+            modifier
+                .padding(8.dp)
                 .testTag(testTag)
                 .clickable {
                     onClick()

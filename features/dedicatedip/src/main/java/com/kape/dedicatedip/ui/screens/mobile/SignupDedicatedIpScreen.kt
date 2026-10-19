@@ -5,13 +5,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
@@ -34,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
+import com.kape.ui.mobile.elements.AdaptiveSplitContent
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.PrimaryButton
 import com.kape.ui.mobile.elements.Screen
@@ -61,127 +66,111 @@ fun SignupDedicatedIpScreen() =
             viewModel.getDipYearlyPlan()
         }
 
-        Column(
+        AdaptiveSplitContent(
             modifier =
                 Modifier
-                    .systemBarsPadding()
-                    .padding(8.dp)
-                    .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_dip),
-                tint = LocalColors.current.primary,
-                contentDescription = null,
-                modifier =
-                    Modifier
-                        .padding(16.dp)
-                        .height(40.dp)
-                        .fillMaxWidth(),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            if (viewModel.showFetchingPlansSpinner.value) {
-                Column(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 64.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
+                    .fillMaxSize()
+                    .windowInsetsPadding(WindowInsets.systemBars.union(WindowInsets.displayCutout))
+                    .padding(8.dp),
+            header = {
+                DipSignupIcon()
+                if (!viewModel.showFetchingPlansSpinner.value) {
+                    Column {
+                        DedicatedIpSignupTitleText(
+                            content = stringResource(id = R.string.dip_signup_addon_title),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(horizontal = 16.dp),
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        DedicatedIpSignupDescriptionText(
+                            content = stringResource(id = R.string.dip_signup_addon_description),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .padding(horizontal = 16.dp),
+                        )
+                    }
+                }
+            },
+            body = {
+                if (viewModel.showFetchingPlansSpinner.value) {
+                    // Centres the progress in the space below the icon, or beside it when wide
+                    Spacer(modifier = Modifier.weight(1f))
                     CircularProgressIndicator(modifier = Modifier.padding(8.dp))
-                }
-            } else {
-                Column {
-                    DedicatedIpSignupTitleText(
-                        content = stringResource(id = R.string.dip_signup_addon_title),
+                    Spacer(modifier = Modifier.weight(1f))
+                } else {
+                    Spacer(modifier = Modifier.height(32.dp))
+                    SubscriptionCard(
+                        selected = viewModel.selectedPlanProductId.collectAsState().value == viewModel.dipYearlyPlan.value?.id,
+                        price =
+                            viewModel.dipYearlyPlan.value
+                                ?.yearlyPrice
+                                .toString(),
+                        additionalText =
+                            viewModel.dipYearlyPlan.value
+                                ?.monthlyPrice
+                                .toString(),
                         modifier =
                             Modifier
-                                .align(Alignment.CenterHorizontally)
+                                .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                    )
+                        freeTrialDays = null,
+                        isYearlyPlan = true,
+                        showFreeTrialRow = false,
+                    ) {
+                        viewModel.dipYearlyPlan.value?.let {
+                            viewModel.selectPlanProductId(it.id)
+                        }
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
-                    DedicatedIpSignupDescriptionText(
-                        content = stringResource(id = R.string.dip_signup_addon_description),
+                    SubscriptionCard(
+                        selected = viewModel.selectedPlanProductId.collectAsState().value == viewModel.dipMonthlyPlan.value?.id,
+                        price =
+                            viewModel.dipMonthlyPlan.value
+                                ?.monthlyPrice
+                                .toString(),
                         modifier =
                             Modifier
-                                .align(Alignment.CenterHorizontally)
+                                .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                    )
-                }
-                Spacer(modifier = Modifier.height(32.dp))
-                SubscriptionCard(
-                    selected = viewModel.selectedPlanProductId.collectAsState().value == viewModel.dipYearlyPlan.value?.id,
-                    price =
-                        viewModel.dipYearlyPlan.value
-                            ?.yearlyPrice
-                            .toString(),
-                    additionalText =
-                        viewModel.dipYearlyPlan.value
-                            ?.monthlyPrice
-                            .toString(),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                    freeTrialDays = null,
-                    isYearlyPlan = true,
-                    showFreeTrialRow = false,
-                ) {
-                    viewModel.dipYearlyPlan.value?.let {
-                        viewModel.selectPlanProductId(it.id)
+                        freeTrialDays = null,
+                        isYearlyPlan = false,
+                        additionalText = "",
+                        showFreeTrialRow = false,
+                    ) {
+                        viewModel.dipMonthlyPlan.value?.let {
+                            viewModel.selectPlanProductId(it.id)
+                        }
                     }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                SubscriptionCard(
-                    selected = viewModel.selectedPlanProductId.collectAsState().value == viewModel.dipMonthlyPlan.value?.id,
-                    price =
-                        viewModel.dipMonthlyPlan.value
-                            ?.monthlyPrice
-                            .toString(),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                    freeTrialDays = null,
-                    isYearlyPlan = false,
-                    additionalText = "",
-                    showFreeTrialRow = false,
-                ) {
-                    viewModel.dipMonthlyPlan.value?.let {
-                        viewModel.selectPlanProductId(it.id)
+                    Spacer(modifier = Modifier.height(24.dp))
+                    PrimaryButton(
+                        text = stringResource(id = R.string.logjn_continue),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                    ) {
+                        viewModel.navigateToDedicatedIpLocationSelection()
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    SecondaryButton(
+                        text = stringResource(id = R.string.cancel),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                    ) {
+                        viewModel.navigateBack()
+                    }
+                    // Pins the footer to the bottom when the content is shorter than the screen
+                    Spacer(modifier = Modifier.weight(1f))
+                    Footer(modifier = Modifier.padding(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                Spacer(modifier = Modifier.height(24.dp))
-                PrimaryButton(
-                    text = stringResource(id = R.string.logjn_continue),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                ) {
-                    viewModel.navigateToDedicatedIpLocationSelection()
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                SecondaryButton(
-                    text = stringResource(id = R.string.cancel),
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                ) {
-                    viewModel.navigateBack()
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                Footer(
-                    modifier =
-                        Modifier
-                            .padding(16.dp)
-                            .align(Alignment.CenterHorizontally),
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
+            },
+        )
 
         if (viewModel.hasAnActivePlaystoreSubscription.value) {
             if (viewModel.showSupportedCountriesDialog.value) {
@@ -205,6 +194,22 @@ fun SignupDedicatedIpScreen() =
             )
         }
     }
+
+/** The Dedicated IP icon the signup steps open with. */
+@Composable
+internal fun DipSignupIcon() {
+    Icon(
+        painter = painterResource(id = R.drawable.ic_dip),
+        tint = LocalColors.current.primary,
+        contentDescription = null,
+        modifier =
+            Modifier
+                .padding(16.dp)
+                .height(40.dp)
+                .fillMaxWidth(),
+    )
+    Spacer(modifier = Modifier.height(16.dp))
+}
 
 @Composable
 private fun DipSignupSupportedCountriesDialog(
