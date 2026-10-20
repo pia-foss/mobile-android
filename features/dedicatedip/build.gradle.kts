@@ -26,6 +26,13 @@ android {
             dimension = "provider"
         }
     }
+
+    // Flavors without Google Play share their no-op implementations.
+    sourceSets {
+        listOf("amazon", "noinapp", "meta", "fdroid").forEach {
+            getByName(it).kotlin.srcDir("src/nogms/java")
+        }
+    }
     namespace = "com.kape.dedicatedip"
     buildFeatures {
         compose = true

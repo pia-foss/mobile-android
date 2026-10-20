@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.settings.data.DnsOptions
+import com.kape.settings.ui.elements.rememberMockLocationToggleState
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
 import com.kape.settings.ui.screens.mobile.WarningDialog
 import com.kape.settings.ui.vm.SettingsViewModel
@@ -47,6 +48,7 @@ fun TvPrivacySettingsScreen() =
         val showWarning = remember { mutableStateOf(false) }
         val maceEnabled by viewModel.maceEnabled.collectAsStateWithLifecycle()
         val dnsSelectedOption by viewModel.selectedDnsOption.collectAsStateWithLifecycle()
+        val mockLocationToggleState = rememberMockLocationToggleState(viewModel)
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
@@ -112,6 +114,12 @@ fun TvPrivacySettingsScreen() =
                                 viewModel.toggleMace(it)
                                 viewModel.showReconnectDialogIfVpnConnected()
                             },
+                        )
+                        TvSettingsToggle(
+                            titleId = R.string.mock_location_title,
+                            subtitleId = R.string.mock_location_description,
+                            enabled = mockLocationToggleState.enabled,
+                            toggle = mockLocationToggleState.toggle,
                         )
                     }
                     Column(

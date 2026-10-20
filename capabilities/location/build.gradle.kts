@@ -13,6 +13,7 @@ dependencies {
     implementation(libs.bundles.koin)
     testImplementation(libs.bundles.kointest)
     androidTestImplementation(libs.bundles.koinandroidtest)
+    implementation(libs.coroutines)
 }
 
 koinCompiler {

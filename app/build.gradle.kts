@@ -92,6 +92,11 @@ configure<ApplicationExtension> {
         getByName("noinapp").manifest.srcFile("noinapp/AndroidManifest.xml")
         getByName("meta").manifest.srcFile("meta/AndroidManifest.xml")
         getByName("fdroid").manifest.srcFile("fdroid/AndroidManifest.xml")
+
+        // Flavors without Google Play Services share their no-op implementations.
+        listOf("amazon", "noinapp", "meta", "fdroid").forEach {
+            getByName(it).kotlin.srcDir("src/nogms/java")
+        }
     }
 
     compileOptions {
@@ -195,6 +200,7 @@ dependencies {
     testImplementation(libs.bundles.test)
     runtimeOnly(libs.launcher)
     "googleImplementation"(libs.billing.google)
+    "googleImplementation"(libs.play.services.location)
     androidTestImplementation(libs.bundles.androidtest)
     "androidTestUtil"(libs.orchestrator)
 }

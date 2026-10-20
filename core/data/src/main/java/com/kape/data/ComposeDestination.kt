@@ -100,6 +100,9 @@ object AutomationSettings : ComposeDestination
 object KillSwitchSettings : ComposeDestination
 
 @Serializable
+object MockLocationSettings : ComposeDestination
+
+@Serializable
 object About : ComposeDestination
 
 @Serializable

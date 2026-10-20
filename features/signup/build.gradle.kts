@@ -28,6 +28,14 @@ android {
             dimension = "provider"
         }
     }
+
+    // Flavors without in-app billing share their no-op implementations. Amazon keeps its own
+    // SignupBillingModule since it emits a different signup state.
+    sourceSets {
+        listOf("noinapp", "meta", "fdroid").forEach {
+            getByName(it).kotlin.srcDir("src/nogms/java")
+        }
+    }
     testOptions {
         unitTests {
             isReturnDefaultValues = true
