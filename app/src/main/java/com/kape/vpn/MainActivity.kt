@@ -57,6 +57,7 @@ import com.kape.data.HelpSettings
 import com.kape.data.KillSwitchSettings
 import com.kape.data.LoginWithCredentials
 import com.kape.data.LoginWithEmail
+import com.kape.data.MockLocationSettings
 import com.kape.data.NetworkSettings
 import com.kape.data.NotificationPermission
 import com.kape.data.ObfuscationSettings
@@ -110,6 +111,7 @@ import com.kape.settings.ui.screens.mobile.ExternalProxyAppList
 import com.kape.settings.ui.screens.mobile.GeneralSettingsScreen
 import com.kape.settings.ui.screens.mobile.HelpScreen
 import com.kape.settings.ui.screens.mobile.KillSwitchSettingScreen
+import com.kape.settings.ui.screens.mobile.MockLocationSettingScreen
 import com.kape.settings.ui.screens.mobile.NetworkSettingsScreen
 import com.kape.settings.ui.screens.mobile.ObfuscationSettingsScreen
 import com.kape.settings.ui.screens.mobile.PerAppSettingsScreen
@@ -120,6 +122,7 @@ import com.kape.settings.ui.screens.mobile.VpnLogScreen
 import com.kape.settings.ui.screens.tv.TvConnectionStatsScreen
 import com.kape.settings.ui.screens.tv.TvGeneralSettingsScreen
 import com.kape.settings.ui.screens.tv.TvHelpScreen
+import com.kape.settings.ui.screens.tv.TvMockLocationSettingScreen
 import com.kape.settings.ui.screens.tv.TvNetworkSettingsScreen
 import com.kape.settings.ui.screens.tv.TvPerAppSettingsScreen
 import com.kape.settings.ui.screens.tv.TvPrivacySettingsScreen
@@ -284,6 +287,7 @@ class MainActivity : AppCompatActivity() {
             entry<ProtocolSettings> { TvProtocolSettingsScreen() }
             entry<NetworkSettings> { TvNetworkSettingsScreen() }
             entry<PrivacySettings> { TvPrivacySettingsScreen() }
+            entry<MockLocationSettings> { TvMockLocationSettingScreen() }
             entry<ConnectionStats> { TvConnectionStatsScreen() }
         } else {
             entry<Consent> { route -> ConsentScreen(route.isFirstScreen) }
@@ -335,6 +339,7 @@ class MainActivity : AppCompatActivity() {
             entry<DedicatedIpSignupTokenActivate> { SignupDedicatedIpTokenActivateScreen() }
             entry<DedicatedIpPurchaseSuccess> { SignupDedicatedIpPurchaseSuccessScreen() }
             entry<KillSwitchSettings> { KillSwitchSettingScreen() }
+            entry<MockLocationSettings> { MockLocationSettingScreen() }
             entry<About> { AboutScreen() }
             entry<Customization> { CustomizationScreen() }
             entry<AccountDeleted> { AccountDeletedScreen() }

@@ -9,14 +9,20 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.KpiDataSource
+import com.kape.data.ConnectionStatus
+import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
+import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.location.mocklocation.MockLocationManager
 import com.kape.vpn.di.AppModule
 import com.kape.widget.WidgetReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -33,9 +39,18 @@ class App : Application() {
     private val connectionInfoProvider: ConnectionInfoProvider by inject()
     private val consentPrefs: ConsentPrefs by inject()
     private val csiPrefs: CsiPrefs by inject()
+    private val settingsPrefs: SettingsPrefs by inject()
+    private val connectionPrefs: ConnectionPrefs by inject()
+    private val mockLocationManager: MockLocationManager by inject()
 
     private val lifecycleObserver =
         object : DefaultLifecycleObserver {
+            override fun onStart(owner: LifecycleOwner) {
+                super.onStart(owner)
+                // The mock location app can be changed in Developer options while we're in the background.
+                mockLocationManager.refreshMockLocationAppSelected()
+            }
+
             override fun onStop(owner: LifecycleOwner) {
                 kpiDataSource.flush()
                 super.onStop(owner)
@@ -53,6 +68,7 @@ class App : Application() {
             workManagerFactory()
         }
         observeConnectionStateForWidget()
+        observeConnectionStateForMockLocation()
         appScope.launch {
             consentPrefs.allowSharing.collectLatest {
                 when (it) {
@@ -76,6 +92,34 @@ class App : Application() {
             connectionInfoProvider.status
                 .distinctUntilChangedBy { it }
                 .collect { refreshWidget() }
+        }
+    }
+
+    // While enabled, PIA is the selected mock location app and the VPN is connected, the device
+    // location is mocked to the connected server's coordinates.
+    private fun observeConnectionStateForMockLocation() {
+        appScope.launch {
+            combine(
+                settingsPrefs.isMockLocationEnabled,
+                mockLocationManager.mockLocationAppSelected,
+                connectionInfoProvider.status,
+                connectionPrefs.selectedVpnServer,
+            ) { enabled, appSelected, status, server ->
+                val latitude = server?.latitude?.toDoubleOrNull()
+                val longitude = server?.longitude?.toDoubleOrNull()
+                if (enabled && appSelected && status == ConnectionStatus.CONNECTED && latitude != null && longitude != null) {
+                    latitude to longitude
+                } else {
+                    null
+                }
+            }.distinctUntilChanged()
+                .collect { coordinates ->
+                    if (coordinates != null) {
+                        mockLocationManager.start(coordinates.first, coordinates.second)
+                    } else {
+                        mockLocationManager.stop()
+                    }
+                }
         }
     }
 

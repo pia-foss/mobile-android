@@ -98,6 +98,12 @@
     <string name="vpn_protected_to_format">Protected | %s</string>
     <string name="vpn_not_protected">Not Protected</string>
     <string name="vpn_notification_title_format" translatable="false">%s - privateinternetaccess.com</string>
+    <string name="mock_location_notification_title" translatable="false">Location spoofing active</string>
+    <string name="mock_location_title">Match location to VPN server</string>
+    <string name="mock_location_description">While connected, set your device location to the location of the VPN server.</string>
+    <string name="mock_location_setup_title">Set PIA as your mock location app</string>
+    <string name="mock_location_setup_description">To match your device location to the VPN server, Android needs PIA to be selected as the mock location app.\n\n1. Turn on Developer options: open Settings > About and tap Build number seven times.\n2. In Developer options, tap Select mock location app.\n3. Choose Private Internet Access, then come back to PIA.\n\nThe setting turns on automatically once PIA is selected.</string>
+    <string name="mock_location_open_developer_options">Open Developer options</string>
 
     <string name="bits_per_second" translatable="false">%.0f bit/s</string>
     <string name="kbits_per_second" translatable="false">%.1f kbit/s</string>

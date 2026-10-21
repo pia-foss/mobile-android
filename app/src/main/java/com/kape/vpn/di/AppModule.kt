@@ -30,6 +30,7 @@ import com.kape.localprefs.prefs.NetworkManagementPrefs
 import com.kape.localprefs.prefs.RatingPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.location.di.LocationModule
+import com.kape.location.mocklocation.MockLocationNotificationProvider
 import com.kape.login.di.LoginModule
 import com.kape.login.di.LoginWithReceiptModule
 import com.kape.networkmanagement.di.NetworkManagementModule
@@ -133,6 +134,7 @@ import java.io.BufferedReader
         CsiModule::class,
         NetworkManagementModule::class,
         LocationModule::class,
+        FlavorLocationModule::class,
         PaymentsModule::class,
         VpnServersModule::class,
         ShadowsocksServersModule::class,
@@ -414,6 +416,14 @@ class AppModule {
     @Singleton
     fun provideVpnNotificationManager(context: Context): VpnNotificationManager =
         VpnNotificationManager(context, R.drawable.ic_stat_pia_robot_white)
+
+    @Singleton
+    fun provideMockLocationNotificationProvider(context: Context): MockLocationNotificationProvider =
+        MockLocationNotificationProvider(
+            context,
+            R.drawable.ic_stat_pia_robot_white,
+            context.getString(com.kape.ui.R.string.mock_location_notification_title),
+        )
 
     @Singleton
     @Named(DI.WIDGET_PENDING_INTENT)
