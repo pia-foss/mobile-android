@@ -106,6 +106,7 @@ class SettingsViewModel(
     val requestId = mutableStateOf<String?>(null)
     val selectedProtocol = prefs.selectedProtocol
     val maceEnabled = prefs.isMaceEnabled
+    val isMockLocationAvailable = mockLocationManager.isMockLocationSupported
     val mockLocationEnabled = prefs.isMockLocationEnabled
     val mockLocationAppSelected = mockLocationManager.mockLocationAppSelected
     val wireGuardSettings = prefs.wireGuardSettings

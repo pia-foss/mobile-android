@@ -115,12 +115,14 @@ fun TvPrivacySettingsScreen() =
                                 viewModel.showReconnectDialogIfVpnConnected()
                             },
                         )
-                        TvSettingsToggle(
-                            titleId = R.string.mock_location_title,
-                            subtitleId = R.string.mock_location_description,
-                            enabled = mockLocationToggleState.enabled,
-                            toggle = mockLocationToggleState.toggle,
-                        )
+                        if (viewModel.isMockLocationAvailable) {
+                            TvSettingsToggle(
+                                titleId = R.string.mock_location_title,
+                                subtitleId = R.string.mock_location_description,
+                                enabled = mockLocationToggleState.enabled,
+                                toggle = mockLocationToggleState.toggle,
+                            )
+                        }
                     }
                     Column(
                         modifier = Modifier.weight(1.0f),

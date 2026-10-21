@@ -78,12 +78,14 @@ fun PrivacySettingsScreen() =
                             viewModel.showReconnectDialogIfVpnConnected()
                         },
                     )
-                    SettingsToggle(
-                        titleId = R.string.mock_location_title,
-                        subtitleId = R.string.mock_location_description,
-                        enabled = mockLocationToggleState.enabled,
-                        toggle = mockLocationToggleState.toggle,
-                    )
+                    if (viewModel.isMockLocationAvailable) {
+                        SettingsToggle(
+                            titleId = R.string.mock_location_title,
+                            subtitleId = R.string.mock_location_description,
+                            enabled = mockLocationToggleState.enabled,
+                            toggle = mockLocationToggleState.toggle,
+                        )
+                    }
                     if (viewModel.reconnectDialogVisible.value) {
                         ReconnectDialog(
                             onReconnect = {

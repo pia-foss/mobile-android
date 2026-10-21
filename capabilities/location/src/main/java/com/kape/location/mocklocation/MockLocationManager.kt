@@ -25,6 +25,13 @@ class MockLocationManager(
      */
     val mockLocationAppSelected: StateFlow<Boolean> = _mockLocationAppSelected
 
+    /**
+     * Mock location is only offered on devices with a location provider to mock. The passive
+     * provider is always present and only relays other providers' fixes, so it doesn't count.
+     */
+    val isMockLocationSupported: Boolean
+        get() = locationManager.allProviders.any { it != LocationManager.PASSIVE_PROVIDER && it != CHECK_PROVIDER }
+
     fun refreshMockLocationAppSelected(): Boolean = checkMockLocationAppSelected().also { _mockLocationAppSelected.value = it }
 
     fun isLocationPermissionGranted(): Boolean = locationPermissionManager.isFineLocationPermissionGranted()
@@ -33,7 +40,7 @@ class MockLocationManager(
         latitude: Double,
         longitude: Double,
     ) {
-        if (!isLocationPermissionGranted() || !mockLocationAppSelected.value) return
+        if (!isMockLocationSupported || !isLocationPermissionGranted() || !mockLocationAppSelected.value) return
         val intent =
             Intent(context, MockLocationService::class.java)
                 .putExtra(MockLocationService.EXTRA_LATITUDE, latitude)
