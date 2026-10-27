@@ -95,7 +95,9 @@ class RegionListProvider(
 
     private fun setRegionsListToDefault() {
         ioScope.launch {
-            val assetServers = readVpnRegionsDetailsUseCase.readVpnRegionsDetailsFromAssetsFolder()
+            val (assetServers, assetServerInfo) =
+                readVpnRegionsDetailsUseCase.readVpnRegionsDetailsAndServerInfoFromAssetsFolder()
+            regionRepository.setDefaultServerInfo(assetServerInfo)
             _servers.update { regionRepository.addDipsToServerList(assetServers) }
             _isDefaultList.update { true }
         }

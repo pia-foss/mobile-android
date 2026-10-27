@@ -1,6 +1,7 @@
 package com.kape.vpnregions.data
 
 import com.kape.data.vpnserver.VpnServer
+import com.kape.data.vpnserver.VpnServerInfo
 import com.kape.localprefs.prefs.DipPrefs
 import com.kape.vpnregions.domain.VpnRegionDataSource
 import com.privateinternetaccess.regions.RegionLowerLatencyInformation
@@ -76,6 +77,24 @@ class VpnRegionRepositoryTest {
 
             Assertions.assertEquals(cachedList, actual)
         }
+
+    @Test
+    fun setDefaultServerInfoPopulatesEmptyPorts() {
+        repository.setDefaultServerInfo(VpnServerInfo(listOf("auto"), listOf(8080, 53), listOf(80, 443)))
+
+        Assertions.assertEquals(listOf(8080, 53), repository.getUdpPorts())
+        Assertions.assertEquals(listOf(80, 443), repository.getTcpPorts())
+    }
+
+    @Test
+    fun setDefaultServerInfoDoesNotOverrideValidServerInfo() {
+        repository.setDefaultServerInfo(VpnServerInfo(listOf("auto"), listOf(8080), listOf(443)))
+
+        repository.setDefaultServerInfo(VpnServerInfo(listOf("auto"), listOf(53), listOf(80)))
+
+        Assertions.assertEquals(listOf(8080), repository.getUdpPorts())
+        Assertions.assertEquals(listOf(443), repository.getTcpPorts())
+    }
 
     companion object {
         private val response = VpnRegionsResponse()

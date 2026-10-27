@@ -63,6 +63,13 @@ class VpnRegionRepository(
 
     fun getTcpPorts() = serverInfo.tcpPorts ?: emptyList()
 
+    fun setDefaultServerInfo(defaultServerInfo: VpnServerInfo) {
+        // Server info from the network takes precedence over the bundled defaults.
+        if (!serverInfo.isValid()) {
+            serverInfo = defaultServerInfo
+        }
+    }
+
     fun getServers(isConnected: Boolean): Flow<List<VpnServer>> =
         flow {
             populateLatencies(isConnected)
