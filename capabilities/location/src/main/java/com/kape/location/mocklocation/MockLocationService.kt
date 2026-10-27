@@ -7,23 +7,19 @@ import android.os.Build
 import android.os.IBinder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.time.Duration.Companion.milliseconds
 
 class MockLocationService :
     Service(),
     KoinComponent {
     private val notificationProvider: MockLocationNotificationProvider by inject()
     private val fusedLocationMocker: FusedLocationMocker by inject()
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    private var tickJob: Job? = null
+
+    // The burst pushes every 50ms, so keep those binder calls off the main thread.
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var mock: MockLocationProvider? = null
 
     override fun onStartCommand(
@@ -45,26 +41,12 @@ class MockLocationService :
             startForeground(MockLocationNotificationProvider.NOTIFICATION_ID, notification)
         }
 
-        val provider =
-            mock ?: try {
-                MockLocationProvider(this, fusedLocationMocker).also {
-                    it.start()
-                    mock = it
-                }
-            } catch (_: SecurityException) {
-                // PIA is no longer the selected mock location app in Developer options.
-                stopSelf()
-                return START_NOT_STICKY
-            }
-
-        tickJob?.cancel()
-        tickJob =
-            scope.launch {
-                while (isActive) {
-                    provider.push(lat, lng)
-                    delay(1000.milliseconds)
-                }
-            }
+        val provider = mock ?: MockLocationProvider(this, fusedLocationMocker, scope).also { mock = it }
+        if (!provider.push(lat, lng)) {
+            // PIA is no longer the selected mock location app in Developer options.
+            stopSelf()
+            return START_NOT_STICKY
+        }
         return START_STICKY
     }
 

@@ -1,9 +1,10 @@
 package com.kape.location.mocklocation
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.location.Criteria
 import android.location.LocationManager
-import android.location.provider.ProviderProperties
 import androidx.core.content.ContextCompat
 import com.kape.location.data.LocationPermissionManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,6 +61,8 @@ class MockLocationManager(
 
     // Adding a test provider throws a SecurityException unless PIA is the selected mock location
     // app. A dedicated provider name is used so a running MockLocationService isn't disturbed.
+    // Criteria constants match the ProviderProperties ones S+ annotates these params with.
+    @SuppressLint("WrongConstant")
     private fun checkMockLocationAppSelected(): Boolean =
         try {
             @Suppress("DEPRECATION")
@@ -72,8 +75,8 @@ class MockLocationManager(
                 true,
                 true,
                 true,
-                ProviderProperties.POWER_USAGE_LOW,
-                ProviderProperties.ACCURACY_FINE,
+                Criteria.POWER_LOW,
+                Criteria.ACCURACY_FINE,
             )
             locationManager.removeTestProvider(CHECK_PROVIDER)
             true
