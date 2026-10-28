@@ -6,6 +6,7 @@ mobile-shared-account = "1.6.8"
 mobile-shared-csi = "1.3.5"
 mobile-shared-kpi = "1.2.7"
 mobile-shared-regions = "1.7.5"
+play-services-location = "21.4.0"
 plugin-gradle = "9.4.1"
 plugin-kotlin = "2.4.20"
 plugin-ktlint = "14.2.0"
@@ -68,6 +69,7 @@ mobile-shared-account = { module = "com.github.pia-foss:mobile-shared-account", 
 mobile-shared-csi = { module = "com.github.pia-foss:mobile-shared-csi", version.ref = "mobile-shared-csi" }
 mobile-shared-kpi = { module = "com.github.pia-foss:mobile-shared-kpi", version.ref = "mobile-shared-kpi" }
 mobile-shared-regions = { module = "com.github.pia-foss:mobile-shared-regions", version.ref = "mobile-shared-regions" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
 viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "compose-jetpack" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "compose-jetpack" }

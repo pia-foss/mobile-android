@@ -25,6 +25,7 @@ import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.ReconnectDialog
 import com.kape.settings.ui.elements.mobile.SettingsItem
 import com.kape.settings.ui.elements.mobile.SettingsToggle
+import com.kape.settings.ui.elements.rememberMockLocationToggleState
 import com.kape.settings.ui.vm.SettingsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Screen
@@ -41,6 +42,7 @@ fun PrivacySettingsScreen() =
         val showWarning = rememberSaveable { mutableStateOf(false) }
         val maceEnabled by viewModel.maceEnabled.collectAsStateWithLifecycle()
         val selectedDnsOption by viewModel.selectedDnsOption.collectAsStateWithLifecycle()
+        val mockLocationToggleState = rememberMockLocationToggleState(viewModel)
 
         Scaffold(
             topBar = {
@@ -76,6 +78,14 @@ fun PrivacySettingsScreen() =
                             viewModel.showReconnectDialogIfVpnConnected()
                         },
                     )
+                    if (viewModel.isMockLocationAvailable) {
+                        SettingsToggle(
+                            titleId = R.string.mock_location_title,
+                            subtitleId = R.string.mock_location_description,
+                            enabled = mockLocationToggleState.enabled,
+                            toggle = mockLocationToggleState.toggle,
+                        )
+                    }
                     if (viewModel.reconnectDialogVisible.value) {
                         ReconnectDialog(
                             onReconnect = {

@@ -52,6 +52,7 @@ private val PORT_FORWARDING = booleanPreferencesKey("port-forwarding")
 private val ALLOW_LOCAL_TRAFFIC = booleanPreferencesKey("allow-local-traffic")
 private val AUTOMATION = booleanPreferencesKey("setting-automation")
 private val MACE = booleanPreferencesKey("setting-mace")
+private val MOCK_LOCATION = booleanPreferencesKey("setting-mock-location")
 
 /**
  * Protocol settings used to persist an explicit `mtu` field. It is now derived from
@@ -183,6 +184,8 @@ class SettingsPrefs(
         getAutomationEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
     val isMaceEnabled: StateFlow<Boolean> =
         getMaceEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
+    val isMockLocationEnabled: StateFlow<Boolean> =
+        getMockLocationEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
 
     suspend fun setEnableLaunchOnStartup(enabled: Boolean) {
         dataStore.edit { it[LAUNCH_ON_STARTUP] = enabled }
@@ -302,6 +305,10 @@ class SettingsPrefs(
         dataStore.edit { it[MACE] = enabled }
     }
 
+    suspend fun setMockLocationEnabled(enabled: Boolean) {
+        dataStore.edit { it[MOCK_LOCATION] = enabled }
+    }
+
     private fun getLaunchOnStartupEnabled(): Flow<Boolean> = dataStore.data.map { it[LAUNCH_ON_STARTUP] ?: false }
 
     private fun getConnectOnLaunchEnabled(): Flow<Boolean> = dataStore.data.map { it[CONNECT_ON_LAUNCH] ?: false }
@@ -383,4 +390,6 @@ class SettingsPrefs(
     private fun getAutomationEnabled(): Flow<Boolean> = dataStore.data.map { it[AUTOMATION] ?: false }
 
     private fun getMaceEnabled(): Flow<Boolean> = dataStore.data.map { it[MACE] ?: false }
+
+    private fun getMockLocationEnabled(): Flow<Boolean> = dataStore.data.map { it[MOCK_LOCATION] ?: false }
 }

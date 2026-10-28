@@ -20,6 +20,7 @@ import com.kape.data.ExternalAppList
 import com.kape.data.GeneralSettings
 import com.kape.data.HelpSettings
 import com.kape.data.KillSwitchSettings
+import com.kape.data.MockLocationSettings
 import com.kape.data.NetworkSettings
 import com.kape.data.ObfuscationSettings
 import com.kape.data.PrivacySettings
@@ -31,6 +32,7 @@ import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.location.mocklocation.MockLocationManager
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.CustomObfuscation
 import com.kape.settings.data.DataEncryption
@@ -81,6 +83,7 @@ class SettingsViewModel(
     private val connectionManager: ConnectionManager,
     private val connectionInfoProvider: ConnectionInfoProvider,
     private val updateAvailableManager: UpdateAvailableManager,
+    private val mockLocationManager: MockLocationManager,
     @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     companion object {
@@ -106,6 +109,9 @@ class SettingsViewModel(
     val requestId = mutableStateOf<String?>(null)
     val selectedProtocol = prefs.selectedProtocol
     val maceEnabled = prefs.isMaceEnabled
+    val isMockLocationAvailable = mockLocationManager.isMockLocationSupported
+    val mockLocationEnabled = prefs.isMockLocationEnabled
+    val mockLocationAppSelected = mockLocationManager.mockLocationAppSelected
     val wireGuardSettings = prefs.wireGuardSettings
     val openVpnSettings = prefs.openVpnSettings
     val autoSettings = prefs.autoSettings
@@ -141,6 +147,8 @@ class SettingsViewModel(
     fun navigateToObfuscationSettings() = router.updateDestination(ObfuscationSettings)
 
     fun navigateToKillSwitch() = router.updateDestination(KillSwitchSettings)
+
+    fun navigateToMockLocationSettings() = router.updateDestination(MockLocationSettings)
 
     fun navigateToConnectionStats() = router.updateDestination(ConnectionStats)
 
@@ -193,6 +201,21 @@ class SettingsViewModel(
         viewModelScope.launch(ioDispatcher) {
             prefs.setMaceEnabled(enabled)
         }
+
+    fun toggleMockLocation(enabled: Boolean) =
+        viewModelScope.launch(ioDispatcher) {
+            prefs.setMockLocationEnabled(enabled)
+        }
+
+    fun isLocationPermissionGranted(): Boolean = mockLocationManager.isLocationPermissionGranted()
+
+    fun refreshMockLocationAppSelected(): Boolean = mockLocationManager.refreshMockLocationAppSelected()
+
+    // Called when the user returns from Developer options with PIA selected as the mock location app.
+    fun onMockLocationAppSelected() {
+        toggleMockLocation(true)
+        router.navigateBack()
+    }
 
     fun toggleEnablePortForwarding(enabled: Boolean) =
         viewModelScope.launch(ioDispatcher) {

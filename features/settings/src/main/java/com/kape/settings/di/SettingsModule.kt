@@ -12,6 +12,7 @@ import com.kape.localprefs.prefs.ConsentPrefs
 import com.kape.localprefs.prefs.CsiPrefs
 import com.kape.localprefs.prefs.DipPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.location.mocklocation.MockLocationManager
 import com.kape.settings.domain.IsNumericIpAddressUseCase
 import com.kape.settings.domain.IsNumericIpAddressUseCaseImpl
 import com.kape.settings.ui.vm.SettingsViewModel
@@ -50,6 +51,7 @@ class SettingsModule {
         connectionManager: ConnectionManager,
         connectionInfoProvider: ConnectionInfoProvider,
         updateAvailableManager: UpdateAvailableManager,
+        mockLocationManager: MockLocationManager,
         @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
     ): SettingsViewModel =
         SettingsViewModel(
@@ -70,6 +72,7 @@ class SettingsModule {
             connectionManager,
             connectionInfoProvider,
             updateAvailableManager,
+            mockLocationManager,
             ioDispatcher,
         )
 }
