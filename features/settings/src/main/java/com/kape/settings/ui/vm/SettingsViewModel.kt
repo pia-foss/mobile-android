@@ -59,6 +59,9 @@ import kotlinx.coroutines.withContext
 import org.koin.core.annotation.KoinViewModel
 import org.koin.core.annotation.Named
 
+private const val DEFAULT_UDP_PORT = 8080
+private const val DEFAULT_TCP_PORT = 80
+
 @KoinViewModel
 class SettingsViewModel(
     private val router: Router,
@@ -280,16 +283,17 @@ class SettingsViewModel(
         viewModelScope.launch(ioDispatcher) {
             val currentSettings = openVpnSettings.first()
             val hasSettingChanged = currentSettings.transport != transport
-            val ports =
+            // The port lists are empty until a regions fetch succeeds, so fall back to a default port.
+            val port =
                 if (transport == Transport.UDP) {
-                    regionsRepository.getUdpPorts()
+                    regionsRepository.getUdpPorts().firstOrNull() ?: DEFAULT_UDP_PORT
                 } else {
-                    regionsRepository.getTcpPorts()
+                    regionsRepository.getTcpPorts().firstOrNull() ?: DEFAULT_TCP_PORT
                 }
             prefs.setOpenVpnSettings(
                 currentSettings.copy(
                     transport = transport,
-                    port = ports[0].toString(),
+                    port = port.toString(),
                 ),
             )
 

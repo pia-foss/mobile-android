@@ -10,7 +10,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.io.File
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ReadVpnRegionsDetailsUseCaseTest {
     private val regionInputStream: RegionInputStream = mockk()
@@ -35,4 +37,17 @@ class ReadVpnRegionsDetailsUseCaseTest {
             val actual = useCase.readVpnRegionsDetailsFromAssetsFolder()
             assertEquals(0, actual.size)
         }
+
+    @Test
+    fun `bundled vpn regions asset provides servers and openvpn ports`() {
+        val asset = File("../../app/src/main/assets/vpn-regions.json").readText()
+        every { regionInputStream.readAssetsFile(any()) } returns asset
+        every { regionSerialization.decodeVpnRegionsFromString(any()) } answers
+            { RegionSerialization().decodeVpnRegionsFromString(firstArg()) }
+
+        val (servers, serverInfo) = useCase.readVpnRegionsDetailsAndServerInfoFromAssetsFolder()
+
+        assertTrue(servers.isNotEmpty())
+        assertTrue(serverInfo.isValid())
+    }
 }
