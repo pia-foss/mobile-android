@@ -33,7 +33,7 @@ android {
     // SignupBillingModule since it emits a different signup state.
     sourceSets {
         listOf("noinapp", "meta", "fdroid").forEach {
-            getByName(it).kotlin.srcDir("src/nogms/java")
+            getByName(it).kotlin.directories += "src/nogms/java"
         }
     }
     testOptions {
