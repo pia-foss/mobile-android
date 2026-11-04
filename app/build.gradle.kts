@@ -95,10 +95,10 @@ configure<ApplicationExtension> {
 
         // Flavors that ship Google Play Services share its implementations, the rest share no-ops.
         listOf("google", "noinapp").forEach {
-            getByName(it).kotlin.srcDir("src/gms/java")
+            getByName(it).kotlin.directories += "src/gms/java"
         }
         listOf("amazon", "meta", "fdroid").forEach {
-            getByName(it).kotlin.srcDir("src/nogms/java")
+            getByName(it).kotlin.directories += "src/nogms/java"
         }
     }
 

@@ -9,10 +9,10 @@ plugins {
 }
 
 subprojects {
-    plugins.withId("com.android.application") {
-        apply(plugin = "configuration")
+    pluginManager.withPlugin("com.android.application") {
+        pluginManager.apply("configuration")
     }
-    plugins.withId("com.android.library") {
-        apply(plugin = "configuration")
+    pluginManager.withPlugin("com.android.library") {
+        pluginManager.apply("configuration")
     }
 }
