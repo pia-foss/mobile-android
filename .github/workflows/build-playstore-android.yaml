@@ -2,10 +2,6 @@ name: Build Playstore Android
 on:
   workflow_call:
     secrets:
-      USERNAME_GITHUB:
-        required: true
-      TOKEN_GITHUB:
-        required: true
       SIGNING_PLAYSTORE_KEYSTORE:
         required: true
       SIGNING_PLAYSTORE_STORE_PASSWORD:
@@ -26,9 +22,6 @@ permissions:
 jobs:
   build:
     name: Generate App Bundle
-    env:
-      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     runs-on: ubuntu-latest
     outputs:
       full_version: ${{ steps.version.outputs.full_version }}
