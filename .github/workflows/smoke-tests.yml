@@ -36,9 +36,6 @@ jobs:
       # Gradle build cache enabled means the matrix jobs hit cache on compile/dex/resource tasks
       # instead of redundantly rebuilding the app from scratch in every leg.
       - name: Build E2E APKs
-        env:
-          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         run: ./gradlew :app:assembleNoinappDebug :app:assembleNoinappDebugAndroidTest
 
   # Populates the AVD snapshot cache with no secrets in the job environment at all, so a
@@ -138,8 +135,6 @@ jobs:
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
         env:
           FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         with:
           api-level: 33
           arch: x86_64

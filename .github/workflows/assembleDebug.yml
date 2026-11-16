@@ -90,9 +90,6 @@ jobs:
     needs: [detect-dependency-changes]
     if: needs.detect-dependency-changes.outputs.dependencies-changed == 'true'
     runs-on: ubuntu-latest
-    env:
-      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     steps:
       - name: Checkout the code
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -173,9 +170,6 @@ jobs:
         uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
 
       - name: Run Debug and GoogleDebug Unit Tests
-        env:
-          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         run: ./gradlew testGoogleDebugUnitTest testDebugUnitTest --parallel
 
   build-apk:
@@ -224,9 +218,6 @@ jobs:
         uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
 
       - name: Build debug APK
-        env:
-          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         run: ./gradlew assembleGoogleDebug --no-daemon
 
       - name: Rename APK with build ID
@@ -273,13 +264,10 @@ jobs:
       # don't also build every library module's own standalone androidTest variant, which nothing
       # in this workflow otherwise exercises.
       - name: Build E2E APKs
-        env:
-          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         run: ./gradlew :app:assembleNoinappDebug :app:assembleNoinappDebugAndroidTest
 
   # Populates the AVD snapshot cache with no secrets in the job environment at all (no
-  # GITHUB_TOKEN, no PIA_VALID_*), so a compromised reactivecircus/android-emulator-runner
+  # PIA_VALID_*), so a compromised reactivecircus/android-emulator-runner
   # invocation while creating the snapshot has nothing to exfiltrate. Runs once, ahead of the
   # matrix below, instead of racing a cache-miss snapshot build inside every credentialed
   # matrix job.
@@ -395,8 +383,6 @@ jobs:
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
         env:
           FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-          GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
         with:
           api-level: 33
           arch: x86_64

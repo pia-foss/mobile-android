@@ -2,10 +2,6 @@ name: Build Website Android
 on:
   workflow_call:
     secrets:
-      USERNAME_GITHUB:
-        required: true
-      TOKEN_GITHUB:
-        required: true
       SIGNING_WEB_KEYSTORE:
         required: true
       SIGNING_WEB_STORE_PASSWORD:
@@ -19,9 +15,6 @@ permissions:
 jobs:
   build:
     name: Generate APK
-    env:
-      GITHUB_USERNAME: ${{ secrets.USERNAME_GITHUB }}
-      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6

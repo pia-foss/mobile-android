@@ -57,9 +57,6 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build debug APK
-        env:
-          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew assembleGoogleDebug --no-daemon
 
       - name: Rename APK with build ID
@@ -78,8 +75,6 @@ jobs:
   build-playstore-version:
     uses: ./.github/workflows/build-playstore-android.yaml
     secrets:
-      USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}
-      TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
       SIGNING_PLAYSTORE_KEYSTORE: ${{ secrets.SIGNING_PLAYSTORE_KEYSTORE }}
       SIGNING_PLAYSTORE_STORE_PASSWORD: ${{ secrets.SIGNING_PLAYSTORE_STORE_PASSWORD }}
       SIGNING_PLAYSTORE_KEY_PASSWORD: ${{ secrets.SIGNING_PLAYSTORE_KEY_PASSWORD }}
@@ -88,8 +83,6 @@ jobs:
   build-website-version:
     uses: ./.github/workflows/build-website-android.yaml
     secrets:
-      USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}
-      TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
       SIGNING_WEB_KEYSTORE: ${{ secrets.SIGNING_WEB_KEYSTORE }}
       SIGNING_WEB_STORE_PASSWORD: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
       SIGNING_WEB_KEY_PASSWORD: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
@@ -98,8 +91,6 @@ jobs:
   build-amazon-version:
     uses: ./.github/workflows/build-amazon-android.yaml
     secrets:
-      USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}
-      TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
       SIGNING_WEB_KEYSTORE: ${{ secrets.SIGNING_WEB_KEYSTORE }}
       SIGNING_WEB_STORE_PASSWORD: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
       SIGNING_WEB_KEY_PASSWORD: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
@@ -108,8 +99,6 @@ jobs:
   build-meta-version:
     uses: ./.github/workflows/build-meta-android.yaml
     secrets:
-      USERNAME_GITHUB: ${{ secrets.USERNAME_GITHUB }}
-      TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
       SIGNING_WEB_KEYSTORE: ${{ secrets.SIGNING_WEB_KEYSTORE }}
       SIGNING_WEB_STORE_PASSWORD: ${{ secrets.SIGNING_WEB_STORE_PASSWORD }}
       SIGNING_WEB_KEY_PASSWORD: ${{ secrets.SIGNING_WEB_KEY_PASSWORD }}
