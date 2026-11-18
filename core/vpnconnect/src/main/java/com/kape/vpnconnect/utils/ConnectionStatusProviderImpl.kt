@@ -61,7 +61,13 @@ class ConnectionStatusProviderImpl(
             }
 
         if (currentStatus != _status.value) {
-            notificationHandler.update(currentStatus.toString())
+            // PiaService has already left the foreground (or been stopped) by the time we see
+            // DISCONNECTED, so posting a status update here would leave an orphaned notification.
+            if (currentStatus == ConnectionStatus.DISCONNECTED) {
+                notificationHandler.cancel()
+            } else {
+                notificationHandler.update(currentStatus.toString())
+            }
         }
         _status.update { currentStatus }
         _vpnManagerConnectionStatus.update { status }

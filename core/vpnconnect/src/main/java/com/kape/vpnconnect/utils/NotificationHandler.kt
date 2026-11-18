@@ -19,4 +19,8 @@ class NotificationHandler(
     ) {
         notificationManager.notify(NOTIFICATION_ID, vpnNotificationManager.updateConnectionInfo(title, intent))
     }
+
+    fun cancel() {
+        notificationManager.cancel(NOTIFICATION_ID)
+    }
 }
