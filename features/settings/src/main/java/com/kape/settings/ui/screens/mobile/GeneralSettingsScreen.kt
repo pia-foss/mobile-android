@@ -8,7 +8,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -17,17 +16,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.ui.elements.mobile.SettingsToggle
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.vm.GeneralSettingsViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
-import org.koin.androidx.compose.koinViewModel
+import com.kape.ui.Screen
+import com.kape.ui.mobile.elements.SettingsToggle
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun GeneralSettingsScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
+        val viewModel: GeneralSettingsViewModel = koinViewModel()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.general))

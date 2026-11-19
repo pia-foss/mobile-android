@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -20,26 +21,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Text
-import com.kape.contracts.ConnectionInfoProvider
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.appbar.view.topBarColor
+import com.kape.contracts.ConnectionStatusSource
+import com.kape.settings.ui.vm.ConnectionStatsViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TvConnectionStatsScreen() =
     Screen {
-        val viewModel: SettingsViewModel =
-            koinViewModel<SettingsViewModel>().apply {
-                getRecentEvents()
-            }
-        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val viewModel: ConnectionStatsViewModel =
+            koinViewModel<ConnectionStatsViewModel>()
+        val eventListState by viewModel.eventList.collectAsStateWithLifecycle()
+        val connectionStatus by koinInject<ConnectionStatusSource>().status.collectAsStateWithLifecycle()
 
         Box(
             modifier =
@@ -50,9 +50,7 @@ fun TvConnectionStatsScreen() =
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 4.dp,
                 color =
-                    connectionInfoProvider.getTopBarConnectionColor(
-                        scheme = LocalColors.current,
-                    ),
+                    connectionStatus.topBarColor(LocalColors.current),
             )
             Column(
                 modifier =
@@ -88,7 +86,7 @@ fun TvConnectionStatsScreen() =
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.Top,
                     ) {
-                        val events = viewModel.eventList.value
+                        val events = eventListState
                         if (events.isEmpty()) {
                             Text(
                                 text = stringResource(id = R.string.connection_stats_no_events),

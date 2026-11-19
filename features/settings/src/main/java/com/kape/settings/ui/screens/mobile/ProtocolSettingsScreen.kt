@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -26,20 +25,19 @@ import com.kape.settings.data.Transport
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.ui.elements.OptionsDialog
-import com.kape.settings.ui.elements.ReconnectDialog
-import com.kape.settings.ui.elements.mobile.SettingsItem
-import com.kape.settings.ui.elements.mobile.SettingsToggle
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.elements.ReconnectPromptDialog
+import com.kape.settings.ui.vm.ProtocolSettingsViewModel
 import com.kape.settings.utils.getDefaultButtons
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
-import org.koin.androidx.compose.koinViewModel
+import com.kape.ui.Screen
+import com.kape.ui.mobile.elements.SettingsItem
+import com.kape.ui.mobile.elements.SettingsToggle
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProtocolSettingsScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
+        val viewModel: ProtocolSettingsViewModel = koinViewModel()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.protocols))
@@ -112,23 +110,13 @@ fun ProtocolSettingsScreen() =
                                 protocolDialogVisible.value = false
 
                                 if (hasProtocolChanged) {
-                                    viewModel.showReconnectDialogIfVpnConnected()
+                                    viewModel.reconnectPrompt.onSettingChanged()
                                 }
                             },
                             selection = protocolSelection,
                         )
                     }
-                    if (viewModel.reconnectDialogVisible.value) {
-                        ReconnectDialog(
-                            onReconnect = {
-                                viewModel.reconnect()
-                                viewModel.reconnectDialogVisible.value = false
-                            },
-                            onLater = {
-                                viewModel.reconnectDialogVisible.value = false
-                            },
-                        )
-                    }
+                    ReconnectPromptDialog(viewModel.reconnectPrompt)
                 }
             }
         }
@@ -136,7 +124,7 @@ fun ProtocolSettingsScreen() =
 
 @Composable
 fun OpenVpnProtocolSettingsScreen(
-    viewModel: SettingsViewModel,
+    viewModel: ProtocolSettingsViewModel,
     protocolDialogVisible: MutableState<Boolean>,
 ) {
     val openVpnSettings by viewModel.openVpnSettings.collectAsStateWithLifecycle()
@@ -213,7 +201,7 @@ fun OpenVpnProtocolSettingsScreen(
 
 @Composable
 fun WireGuardProtocolSettingsScreen(
-    viewModel: SettingsViewModel,
+    viewModel: ProtocolSettingsViewModel,
     protocolDialogVisible: MutableState<Boolean>,
     wireGuardSettings: WireGuardSettings,
 ) {
@@ -286,7 +274,7 @@ fun HandshakeLine(handshake: String) {
 
 @Composable
 fun TransportSelectionDialog(
-    viewModel: SettingsViewModel,
+    viewModel: ProtocolSettingsViewModel,
     transportDialogVisible: MutableState<Boolean>,
     transportSelection: Transport,
     portSelection: MutableState<String>,
@@ -310,7 +298,7 @@ fun TransportSelectionDialog(
 
 @Composable
 fun EncryptionSelectionDialog(
-    viewModel: SettingsViewModel,
+    viewModel: ProtocolSettingsViewModel,
     encryptionDialogVisible: MutableState<Boolean>,
     encryptionSelection: DataEncryption,
 ) {
@@ -335,13 +323,14 @@ fun EncryptionSelectionDialog(
 
 @Composable
 fun PortSelectionDialog(
-    viewModel: SettingsViewModel,
+    viewModel: ProtocolSettingsViewModel,
     portDialogVisible: MutableState<Boolean>,
     portSelection: String,
 ) {
+    val ports by viewModel.ports.collectAsStateWithLifecycle()
     OptionsDialog(
         R.string.protocol_port_title,
-        options = viewModel.getPorts(),
+        options = ports,
         buttons = getDefaultButtons(),
         onDismiss = {
             portDialogVisible.value = false

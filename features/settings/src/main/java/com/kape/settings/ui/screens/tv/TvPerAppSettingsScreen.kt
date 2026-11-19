@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTvMaterial3Api::class)
-
 package com.kape.settings.ui.screens.tv
 
 import android.graphics.drawable.Drawable
@@ -21,7 +19,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -42,29 +38,28 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import com.kape.contracts.ConnectionInfoProvider
-import com.kape.settings.ui.elements.ReconnectDialog
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.appbar.view.topBarColor
+import com.kape.contracts.ConnectionStatusSource
+import com.kape.settings.ui.elements.ReconnectPromptDialog
+import com.kape.settings.ui.vm.PerAppSettingsViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.Search
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.tv.text.SecondaryButtonText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvPerAppSettingsScreen() =
     Screen {
         val packageManager = LocalContext.current.packageManager
-        val viewModel: SettingsViewModel =
-            koinViewModel<SettingsViewModel>().apply {
-                getInstalledApplications(packageManager)
-            }
-        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val viewModel: PerAppSettingsViewModel =
+            koinViewModel<PerAppSettingsViewModel>()
+        val appListState by viewModel.appList.collectAsStateWithLifecycle()
+        val connectionStatus by koinInject<ConnectionStatusSource>().status.collectAsStateWithLifecycle()
         val initialFocusRequester = remember { FocusRequester() }
         val keyboardController = LocalSoftwareKeyboardController.current
         val excluded by viewModel.vpnExcludedApps.collectAsStateWithLifecycle()
@@ -83,9 +78,7 @@ fun TvPerAppSettingsScreen() =
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 4.dp,
                 color =
-                    connectionInfoProvider.getTopBarConnectionColor(
-                        scheme = LocalColors.current,
-                    ),
+                    connectionStatus.topBarColor(LocalColors.current),
             )
             Column(
                 modifier =
@@ -133,13 +126,13 @@ fun TvPerAppSettingsScreen() =
                                         }
                                     },
                         ) {
-                            viewModel.filterAppsByName(it, packageManager)
+                            viewModel.filterAppsByName(it)
                         }
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(1),
                             contentPadding = PaddingValues(vertical = 16.dp),
                         ) {
-                            val applicationPackages = viewModel.appList.value
+                            val applicationPackages = appListState
                             items(applicationPackages.size) { index ->
                                 val applicationPackage = applicationPackages[index]
                                 val icon = applicationPackage.loadIcon(packageManager)
@@ -188,24 +181,7 @@ fun TvPerAppSettingsScreen() =
             }
         }
 
-        if (viewModel.reconnectDialogVisible.value) {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.6f),
-            ) {
-                ReconnectDialog(
-                    onReconnect = {
-                        viewModel.reconnect()
-                        viewModel.reconnectDialogVisible.value = false
-                        viewModel.navigateBack()
-                    },
-                    onLater = {
-                        viewModel.reconnectDialogVisible.value = false
-                        viewModel.navigateBack()
-                    },
-                )
-            }
-        }
+        ReconnectPromptDialog(viewModel.reconnectPrompt, onDone = viewModel::navigateBack, dimBackground = true)
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
@@ -269,13 +245,13 @@ private fun PerAppSettingPackageItem(
 }
 
 private fun onBackPressed(
-    viewModel: SettingsViewModel,
+    viewModel: PerAppSettingsViewModel,
     lastExcludedApps: List<String>,
     excluded: List<String>,
     navigateBack: () -> Unit,
 ) {
     if (viewModel.isConnected() && lastExcludedApps != excluded) {
-        viewModel.showReconnectDialogIfVpnConnected()
+        viewModel.reconnectPrompt.onSettingChanged()
     } else {
         navigateBack()
     }

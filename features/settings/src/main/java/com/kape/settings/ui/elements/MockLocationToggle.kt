@@ -11,20 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.vm.MockLocationViewModel
 
 class MockLocationToggleState(
     val enabled: Boolean,
     val toggle: (Boolean) -> Unit,
 )
 
-/**
- * Mock location only takes effect when the setting is on and PIA is the selected mock location
- * app, so the toggle shows both. Enabling it needs the fine location permission (for the location
- * foreground service); if PIA isn't selected yet, the user is taken through the setup screen.
- */
 @Composable
-fun rememberMockLocationToggleState(viewModel: SettingsViewModel): MockLocationToggleState {
+fun rememberMockLocationToggleState(viewModel: MockLocationViewModel): MockLocationToggleState {
     val settingEnabled by viewModel.mockLocationEnabled.collectAsStateWithLifecycle()
     val appSelected by viewModel.mockLocationAppSelected.collectAsStateWithLifecycle()
 
@@ -53,10 +48,6 @@ fun rememberMockLocationToggleState(viewModel: SettingsViewModel): MockLocationT
     }
 }
 
-/**
- * Opens Developer options, or the About screen when Developer options aren't turned on yet
- * (the user enables them there by tapping Build number).
- */
 fun openDeveloperSettings(context: Context) {
     val developerOptionsEnabled =
         Settings.Global.getInt(context.contentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) == 1
@@ -73,12 +64,8 @@ fun openDeveloperSettings(context: Context) {
     }
 }
 
-/**
- * Re-checks the mock location app whenever the setup screen resumes, i.e. when the user comes back
- * from Developer options, and finishes the setup once PIA is selected.
- */
 @Composable
-fun MockLocationSetupEffect(viewModel: SettingsViewModel) {
+fun MockLocationSetupEffect(viewModel: MockLocationViewModel) {
     LifecycleResumeEffect(Unit) {
         if (viewModel.refreshMockLocationAppSelected()) {
             viewModel.onMockLocationAppSelected()

@@ -22,19 +22,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.data.DnsOptions
-import com.kape.settings.ui.elements.ReconnectDialog
-import com.kape.settings.ui.elements.mobile.SettingsItem
-import com.kape.settings.ui.elements.mobile.SettingsToggle
+import com.kape.settings.ui.elements.ReconnectPromptDialog
 import com.kape.settings.ui.elements.rememberMockLocationToggleState
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.vm.MockLocationViewModel
+import com.kape.settings.ui.vm.PrivacySettingsViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
-import org.koin.androidx.compose.koinViewModel
+import com.kape.ui.Screen
+import com.kape.ui.mobile.elements.SettingsItem
+import com.kape.ui.mobile.elements.SettingsToggle
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PrivacySettingsScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
+        val viewModel: PrivacySettingsViewModel = koinViewModel()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.privacy))
@@ -42,7 +43,7 @@ fun PrivacySettingsScreen() =
         val showWarning = rememberSaveable { mutableStateOf(false) }
         val maceEnabled by viewModel.maceEnabled.collectAsStateWithLifecycle()
         val selectedDnsOption by viewModel.selectedDnsOption.collectAsStateWithLifecycle()
-        val mockLocationToggleState = rememberMockLocationToggleState(viewModel)
+        val mockLocationToggleState = rememberMockLocationToggleState(koinViewModel<MockLocationViewModel>())
 
         Scaffold(
             topBar = {
@@ -70,12 +71,11 @@ fun PrivacySettingsScreen() =
                         subtitleId = R.string.mace_description,
                         enabled = maceEnabled,
                         toggle = {
-                            // MACE requires using PIA DNS
                             if (selectedDnsOption != DnsOptions.PIA && !maceEnabled) {
                                 showWarning.value = true
                             }
                             viewModel.toggleMace(it)
-                            viewModel.showReconnectDialogIfVpnConnected()
+                            viewModel.reconnectPrompt.onSettingChanged()
                         },
                     )
                     if (viewModel.isMockLocationAvailable) {
@@ -86,17 +86,7 @@ fun PrivacySettingsScreen() =
                             toggle = mockLocationToggleState.toggle,
                         )
                     }
-                    if (viewModel.reconnectDialogVisible.value) {
-                        ReconnectDialog(
-                            onReconnect = {
-                                viewModel.reconnect()
-                                viewModel.reconnectDialogVisible.value = false
-                            },
-                            onLater = {
-                                viewModel.reconnectDialogVisible.value = false
-                            },
-                        )
-                    }
+                    ReconnectPromptDialog(viewModel.reconnectPrompt)
                     if (showWarning.value) {
                         WarningDialog(
                             onConfirm = {

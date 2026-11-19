@@ -9,23 +9,26 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.vm.ConnectionStatsViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ConnectionStatsScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
+        val viewModel: ConnectionStatsViewModel = koinViewModel()
+        val eventListState by viewModel.eventList.collectAsStateWithLifecycle()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.connection_stats_title))
@@ -36,7 +39,6 @@ fun ConnectionStatsScreen() =
                 AppBar(viewModel = appBarViewModel)
             },
         ) {
-            viewModel.getRecentEvents()
             Column(
                 modifier =
                     Modifier
@@ -45,7 +47,7 @@ fun ConnectionStatsScreen() =
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                    if (viewModel.eventList.value.isEmpty()) {
+                    if (eventListState.isEmpty()) {
                         Text(
                             text = stringResource(id = R.string.connection_stats_no_events),
                             color = LocalColors.current.outlineVariant,
@@ -57,7 +59,7 @@ fun ConnectionStatsScreen() =
                         )
                     } else {
                         LazyColumn {
-                            items(viewModel.eventList.value) {
+                            items(eventListState) {
                                 Text(
                                     text = it,
                                     color = LocalColors.current.outlineVariant,

@@ -1,78 +1,8 @@
 package com.kape.settings.di
 
-import com.kape.contracts.AppInfo
-import com.kape.contracts.ConnectionInfoProvider
-import com.kape.contracts.ConnectionManager
-import com.kape.contracts.KpiDataSource
-import com.kape.contracts.Router
-import com.kape.csi.domain.SendLogUseCase
-import com.kape.data.DI
-import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.ConsentPrefs
-import com.kape.localprefs.prefs.CsiPrefs
-import com.kape.localprefs.prefs.DipPrefs
-import com.kape.localprefs.prefs.SettingsPrefs
-import com.kape.location.mocklocation.MockLocationManager
-import com.kape.settings.domain.IsNumericIpAddressUseCase
-import com.kape.settings.domain.IsNumericIpAddressUseCaseImpl
-import com.kape.settings.ui.vm.SettingsViewModel
-import com.kape.utils.UpdateAvailableManager
-import com.kape.vpnconnect.domain.ClearDebugLogsUseCase
-import com.kape.vpnconnect.domain.ConnectionDataSource
-import com.kape.vpnconnect.domain.GetLogsUseCase
-import com.kape.vpnregions.data.VpnRegionRepository
-import kotlinx.coroutines.CoroutineDispatcher
-import org.koin.core.annotation.KoinViewModel
+import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
-import org.koin.core.annotation.Named
-import org.koin.core.annotation.Singleton
 
 @Module
-class SettingsModule {
-    @Singleton(binds = [IsNumericIpAddressUseCase::class])
-    fun provideIsNumericIpAddressUseCase(): IsNumericIpAddressUseCase = IsNumericIpAddressUseCaseImpl()
-
-    @KoinViewModel
-    fun provideSettingsViewModel(
-        router: Router,
-        appInfo: AppInfo,
-        prefs: SettingsPrefs,
-        consentPrefs: ConsentPrefs,
-        connectionPrefs: ConnectionPrefs,
-        csiPrefs: CsiPrefs,
-        dipPrefs: DipPrefs,
-        regionsRepository: VpnRegionRepository,
-        kpiDataSource: KpiDataSource,
-        connectionDataSource: ConnectionDataSource,
-        getDebugLogsUseCase: GetLogsUseCase,
-        clearDebugLogsUseCase: ClearDebugLogsUseCase,
-        sendLogUseCase: SendLogUseCase,
-        isNumericIpAddressUseCase: IsNumericIpAddressUseCase,
-        connectionManager: ConnectionManager,
-        connectionInfoProvider: ConnectionInfoProvider,
-        updateAvailableManager: UpdateAvailableManager,
-        mockLocationManager: MockLocationManager,
-        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-    ): SettingsViewModel =
-        SettingsViewModel(
-            router,
-            appInfo,
-            prefs,
-            consentPrefs,
-            connectionPrefs,
-            csiPrefs,
-            dipPrefs,
-            regionsRepository,
-            kpiDataSource,
-            connectionDataSource,
-            getDebugLogsUseCase,
-            clearDebugLogsUseCase,
-            sendLogUseCase,
-            isNumericIpAddressUseCase,
-            connectionManager,
-            connectionInfoProvider,
-            updateAvailableManager,
-            mockLocationManager,
-            ioDispatcher,
-        )
-}
+@ComponentScan("com.kape.settings")
+class SettingsModule

@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -33,23 +34,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kape.contracts.ConnectionInfoProvider
+import com.kape.appbar.view.topBarColor
+import com.kape.contracts.ConnectionStatusSource
 import com.kape.settings.ui.elements.tv.TvSettingsItem
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
 import com.kape.settings.ui.screens.mobile.SuccessDialog
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.vm.HelpViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvHelpScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
-        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val viewModel: HelpViewModel = koinViewModel()
+        val scope = rememberCoroutineScope()
+        val requestIdState by viewModel.requestId.collectAsStateWithLifecycle()
+        val connectionStatus by koinInject<ConnectionStatusSource>().status.collectAsStateWithLifecycle()
         val initialFocusRequester = remember { FocusRequester() }
 
         val context = LocalContext.current
@@ -59,7 +64,7 @@ fun TvHelpScreen() =
         val improvePiaEnabled by viewModel.improvePiaEnabled.collectAsStateWithLifecycle()
         val hasUpdateAvailable by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
 
-        with(viewModel.requestId.value) {
+        with(requestIdState) {
             when {
                 this == null -> {
                     showDialog.value = false
@@ -89,9 +94,7 @@ fun TvHelpScreen() =
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 4.dp,
                 color =
-                    connectionInfoProvider.getTopBarConnectionColor(
-                        scheme = LocalColors.current,
-                    ),
+                    connectionStatus.topBarColor(LocalColors.current),
             )
             Column(
                 modifier =
@@ -149,11 +152,11 @@ fun TvHelpScreen() =
                                 TvSettingsItem(
                                     titleId = R.string.app_update_available_title,
                                 ) {
-                                    context.startActivity(
-                                        Intent(Intent.ACTION_VIEW).apply {
-                                            data = viewModel.getDownloadLink().toUri()
-                                        },
-                                    )
+                                    scope.launch {
+                                        viewModel.getDownloadUrl()?.let { url ->
+                                            context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+                                        }
+                                    }
                                 }
                             }
                             TvSettingsToggle(
@@ -218,7 +221,7 @@ fun TvHelpScreen() =
                     color = Color.Black.copy(alpha = 0.6f),
                 ) {
                     SuccessDialog(
-                        requestId = viewModel.requestId.value ?: "",
+                        requestId = requestIdState ?: "",
                         showDialog = showDialog,
                     ) {
                         viewModel.resetRequestId()
