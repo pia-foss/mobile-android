@@ -1,8 +1,5 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.serialization)
-    alias(libs.plugins.ktlint)
+    alias(libs.plugins.pia.android.library)
 }
 
 android {
@@ -10,6 +7,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.bundles.serialization)
-    implementation(libs.mobile.shared.account)
+    implementation(libs.bundles.serialization.bundle)
+    api(libs.mobile.shared.account)
 }

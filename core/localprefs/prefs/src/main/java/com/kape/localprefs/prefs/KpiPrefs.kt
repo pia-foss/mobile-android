@@ -3,13 +3,17 @@ package com.kape.localprefs.prefs
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.kape.contracts.di.Qualifiers
 import com.kape.localprefs.Prefs
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 private val ACTIVE_PROTOCOL = stringPreferencesKey("active-protocol")
@@ -17,7 +21,9 @@ private val ACTIVE_PROTOCOL = stringPreferencesKey("active-protocol")
 @Singleton
 class KpiPrefs(
     context: Context,
-) : Prefs(context, "kpi") {
+    @Named(Qualifiers.APP_SCOPE) appScope: CoroutineScope,
+    @Named(Qualifiers.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+) : Prefs(context, "kpi", appScope, ioDispatcher) {
     val activeProtocol: StateFlow<String> =
         getActiveProtocol().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
 

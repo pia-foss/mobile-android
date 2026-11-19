@@ -6,10 +6,6 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-/**
- * The "Use Amnezia" toggle is persisted as part of the WireGuard settings JSON, so it must survive
- * a round trip and default to off for settings stored before the toggle existed.
- */
 class WireGuardAmneziaSettingsTest {
     @Test
     fun `amnezia is off by default`() {

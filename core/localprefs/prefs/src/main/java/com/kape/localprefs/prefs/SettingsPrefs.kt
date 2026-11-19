@@ -6,7 +6,9 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.kape.contracts.AppInfo
+import com.kape.contracts.di.Qualifiers
 import com.kape.localprefs.Prefs
+import com.kape.localprefs.api.SettingsStore
 import com.kape.localprefs.data.settings.AutomaticSettings
 import com.kape.settings.data.CustomDns
 import com.kape.settings.data.CustomObfuscation
@@ -16,6 +18,8 @@ import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +29,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 private val LAUNCH_ON_STARTUP = booleanPreferencesKey("launch-on-startup")
@@ -54,20 +59,9 @@ private val AUTOMATION = booleanPreferencesKey("setting-automation")
 private val MACE = booleanPreferencesKey("setting-mace")
 private val MOCK_LOCATION = booleanPreferencesKey("setting-mock-location")
 
-/**
- * Protocol settings used to persist an explicit `mtu` field. It is now derived from
- * `useSmallPackets`, so previously stored JSON still carries a stale `mtu` key that must be ignored.
- */
+// Previously stored JSON still carries a stale `mtu` key that must be ignored.
 internal val protocolSettingsJson = Json { ignoreUnknownKeys = true }
 
-/**
- * The protocol default is flipping from WireGuard to Automatic, but only for installs that have
- * never resolved a default before — an existing install must keep behaving as WireGuard even
- * though it may never have written [SELECTED_PROTOCOL] explicitly (that key is only ever written
- * by an explicit user choice in Settings). Returns the protocol to backfill into [SELECTED_PROTOCOL]
- * so a later read of an unset key falls through to the new Automatic default, or null if there's
- * nothing to backfill (already pinned before, a fresh install, or the user already has a choice).
- */
 internal fun resolveLegacyProtocolBackfill(
     isFreshInstall: Boolean,
     alreadyPinned: Boolean,
@@ -79,11 +73,14 @@ internal fun resolveLegacyProtocolBackfill(
         null
     }
 
-@Singleton
+@Singleton(binds = [SettingsPrefs::class, SettingsStore::class])
 class SettingsPrefs(
     context: Context,
     private val appInfo: AppInfo,
-) : Prefs(context, "settings") {
+    @Named(Qualifiers.APP_SCOPE) appScope: CoroutineScope,
+    @Named(Qualifiers.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+) : Prefs(context, "settings", appScope, ioDispatcher),
+    SettingsStore {
     // Existing installs must keep resolving WireGuard even after the fallback below changes to
     // Automatic; only a device that has never been upgraded gets the new default. Every read of
     // the selected protocol waits on this so there's no race with the one-time backfill.
@@ -96,144 +93,144 @@ class SettingsPrefs(
         }
     }
 
-    val isLaunchOnStartupEnabled: StateFlow<Boolean> =
+    override val isLaunchOnStartupEnabled: StateFlow<Boolean> =
         getLaunchOnStartupEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
-    val isConnectOnLaunchEnabled: StateFlow<Boolean> =
+    override val isConnectOnLaunchEnabled: StateFlow<Boolean> =
         getConnectOnLaunchEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
-    val isConnectOnAppUpdateEnabled: StateFlow<Boolean> =
+    override val isConnectOnAppUpdateEnabled: StateFlow<Boolean> =
         getConnectOnAppUpdateEnabled().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             false,
         )
-    val isShowGeoLocatedServersEnabled: StateFlow<Boolean> =
+    override val isShowGeoLocatedServersEnabled: StateFlow<Boolean> =
         getShowGeoLocatedServersEnabled().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             true,
         )
-    val selectedProtocol: StateFlow<VpnProtocols> =
+    override val selectedProtocol: StateFlow<VpnProtocols> =
         getSelectedProtocol().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             VpnProtocols.Automatic,
         )
-    val wireGuardSettings: StateFlow<WireGuardSettings> =
+    override val wireGuardSettings: StateFlow<WireGuardSettings> =
         getWireGuardSettings().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             WireGuardSettings(),
         )
-    val openVpnSettings: StateFlow<OpenVpnSettings> =
+    override val openVpnSettings: StateFlow<OpenVpnSettings> =
         getOpenVpnSettings().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             OpenVpnSettings(),
         )
 
-    val autoSettings: StateFlow<AutomaticSettings> =
+    override val autoSettings: StateFlow<AutomaticSettings> =
         getAutoSettings().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             AutomaticSettings(),
         )
 
-    val selectedDnsOption: StateFlow<DnsOptions> =
+    override val selectedDnsOption: StateFlow<DnsOptions> =
         getSelectedDnsOption().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             DnsOptions.PIA,
         )
-    val customDns: StateFlow<CustomDns> =
+    override val customDns: StateFlow<CustomDns> =
         getCustomDns().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), CustomDns())
-    val isShadowsocksObfuscationEnabled: StateFlow<Boolean> =
+    override val isShadowsocksObfuscationEnabled: StateFlow<Boolean> =
         getShadowsocksObfuscationEnabled().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             false,
         )
-    val isExternalProxyAppEnabled: StateFlow<Boolean> =
+    override val isExternalProxyAppEnabled: StateFlow<Boolean> =
         getExternalProxyAppEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
-    val externalProxyAppPackageName: StateFlow<String> =
+    override val externalProxyAppPackageName: StateFlow<String> =
         getExternalProxyAppPackageName().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             "",
         )
-    val selectedObfuscationOption: StateFlow<ObfuscationOptions> =
+    override val selectedObfuscationOption: StateFlow<ObfuscationOptions> =
         getSelectedObfuscationOption().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             ObfuscationOptions.PIA,
         )
-    val customObfuscation: StateFlow<CustomObfuscation?> =
+    override val customObfuscation: StateFlow<CustomObfuscation?> =
         getCustomObfuscation().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
-    val isDebugLoggingEnabled: StateFlow<Boolean> =
+    override val isDebugLoggingEnabled: StateFlow<Boolean> =
         getDebugLoggingEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
-    val vpnExcludedApps: StateFlow<List<String>> =
+    override val vpnExcludedApps: StateFlow<List<String>> =
         getVpnExcludedApps().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
-    val isPortForwardingEnabled: StateFlow<Boolean> =
+    override val isPortForwardingEnabled: StateFlow<Boolean> =
         getPortForwardingEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
-    val isAllowLocalTrafficEnabled: StateFlow<Boolean> =
+    override val isAllowLocalTrafficEnabled: StateFlow<Boolean> =
         getAllowLocalTrafficEnabled().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
             false,
         )
-    val isAutomationEnabled: StateFlow<Boolean> =
+    override val isAutomationEnabled: StateFlow<Boolean> =
         getAutomationEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
-    val isMaceEnabled: StateFlow<Boolean> =
+    override val isMaceEnabled: StateFlow<Boolean> =
         getMaceEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
-    val isMockLocationEnabled: StateFlow<Boolean> =
+    override val isMockLocationEnabled: StateFlow<Boolean> =
         getMockLocationEnabled().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
 
-    suspend fun setEnableLaunchOnStartup(enabled: Boolean) {
+    override suspend fun setEnableLaunchOnStartup(enabled: Boolean) {
         dataStore.edit { it[LAUNCH_ON_STARTUP] = enabled }
     }
 
-    suspend fun setEnableConnectOnLaunch(enabled: Boolean) {
+    override suspend fun setEnableConnectOnLaunch(enabled: Boolean) {
         dataStore.edit { it[CONNECT_ON_LAUNCH] = enabled }
     }
 
-    suspend fun setEnableConnectOnAppUpdate(enabled: Boolean) {
+    override suspend fun setEnableConnectOnAppUpdate(enabled: Boolean) {
         dataStore.edit { it[CONNECT_ON_APP_UPDATE] = enabled }
     }
 
-    suspend fun setEnabledShowGeoLocatedServers(enabled: Boolean) {
+    override suspend fun setEnabledShowGeoLocatedServers(enabled: Boolean) {
         dataStore.edit { it[SHOW_GEO_SERVERS] = enabled }
     }
 
-    suspend fun setSelectedProtocol(protocol: VpnProtocols) {
+    override suspend fun setSelectedProtocol(protocol: VpnProtocols) {
         dataStore.edit { it[SELECTED_PROTOCOL] = Json.encodeToString(protocol) }
     }
 
-    suspend fun setWireGuardSettings(settings: WireGuardSettings) {
+    override suspend fun setWireGuardSettings(settings: WireGuardSettings) {
         dataStore.edit { it[WIRE_GUARD_SETTINGS] = protocolSettingsJson.encodeToString(settings) }
     }
 
-    suspend fun setOpenVpnSettings(settings: OpenVpnSettings) {
+    override suspend fun setOpenVpnSettings(settings: OpenVpnSettings) {
         dataStore.edit { it[OPEN_VPN_SETTINGS] = protocolSettingsJson.encodeToString(settings) }
     }
 
-    suspend fun setAutoSettings(settings: AutomaticSettings) {
+    override suspend fun setAutoSettings(settings: AutomaticSettings) {
         dataStore.edit { it[AUTO_SETTINGS] = protocolSettingsJson.encodeToString(settings) }
     }
 
-    suspend fun setSelectedDnsOption(dnsOptions: DnsOptions) {
+    override suspend fun setSelectedDnsOption(dnsOptions: DnsOptions) {
         dataStore.edit { it[SELECTED_DNS_OPTION_SETTINGS] = Json.encodeToString(dnsOptions) }
     }
 
-    suspend fun setCustomDns(customDns: CustomDns) {
+    override suspend fun setCustomDns(customDns: CustomDns) {
         dataStore.edit { it[CUSTOM_DNS_SETTINGS] = Json.encodeToString(customDns) }
     }
 
-    suspend fun getSelectedProtocolNow(): VpnProtocols = getSelectedProtocol().first()
+    override suspend fun getSelectedProtocolNow(): VpnProtocols = getSelectedProtocol().first()
 
-    suspend fun getOpenVpnSettingsNow(): OpenVpnSettings = getOpenVpnSettings().first()
+    override suspend fun getOpenVpnSettingsNow(): OpenVpnSettings = getOpenVpnSettings().first()
 
-    suspend fun getWireGuardSettingsNow(): WireGuardSettings = getWireGuardSettings().first()
+    override suspend fun getWireGuardSettingsNow(): WireGuardSettings = getWireGuardSettings().first()
 
-    suspend fun getAutoSettingsNow(): AutomaticSettings = getAutoSettings().first()
+    override suspend fun getAutoSettingsNow(): AutomaticSettings = getAutoSettings().first()
 
     suspend fun isMaceEnabledNow(): Boolean = getMaceEnabled().first()
 
@@ -241,13 +238,15 @@ class SettingsPrefs(
 
     suspend fun getCustomDnsNow(): CustomDns = getCustomDns().first()
 
-    suspend fun getVpnExcludedAppsNow(): List<String> = getVpnExcludedApps().first()
+    override suspend fun getVpnExcludedAppsNow(): List<String> = getVpnExcludedApps().first()
 
     suspend fun isAllowLocalTrafficEnabledNow(): Boolean = getAllowLocalTrafficEnabled().first()
 
-    suspend fun isAutomationEnabledNow(): Boolean = getAutomationEnabled().first()
+    override suspend fun isAutomationEnabledNow(): Boolean = getAutomationEnabled().first()
 
     suspend fun isExternalProxyAppEnabledNow(): Boolean = getExternalProxyAppEnabled().first()
+
+    override suspend fun getExternalProxyAppPackageNameNow(): String = getExternalProxyAppPackageName().first()
 
     suspend fun isShadowsocksObfuscationEnabledNow(): Boolean = getShadowsocksObfuscationEnabled().first()
 
@@ -257,55 +256,55 @@ class SettingsPrefs(
 
     suspend fun isLaunchOnBootEnabledNow(): Boolean = getLaunchOnStartupEnabled().first()
 
-    suspend fun isConnectOnLaunchEnabledNow(): Boolean = getConnectOnLaunchEnabled().first()
+    override suspend fun isConnectOnLaunchEnabledNow(): Boolean = getConnectOnLaunchEnabled().first()
 
-    suspend fun setShadowsocksObfuscationEnabled(enabled: Boolean) {
+    override suspend fun setShadowsocksObfuscationEnabled(enabled: Boolean) {
         dataStore.edit { it[SHADOWSOCKS_OBFUSCATION_ENABLED] = enabled }
     }
 
-    suspend fun setExternalProxyAppEnabled(enabled: Boolean) {
+    override suspend fun setExternalProxyAppEnabled(enabled: Boolean) {
         dataStore.edit { it[EXTERNAL_PROXY_APP_ENABLED] = enabled }
     }
 
-    suspend fun setExternalProxyAppPackageName(packageName: String) {
+    override suspend fun setExternalProxyAppPackageName(packageName: String) {
         dataStore.edit { it[EXTERNAL_PROXY_APP_PACKAGE_NAME] = packageName }
     }
 
-    suspend fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) {
+    override suspend fun setSelectedObfuscationOption(obfuscationOptions: ObfuscationOptions) {
         dataStore.edit {
             it[SELECTED_OBFUSCATION_OPTION_SETTINGS] = Json.encodeToString(obfuscationOptions)
         }
     }
 
-    suspend fun setCustomObfuscation(customObfuscation: CustomObfuscation) {
+    override suspend fun setCustomObfuscation(customObfuscation: CustomObfuscation) {
         dataStore.edit { it[CUSTOM_OBFUSCATION_SETTINGS] = Json.encodeToString(customObfuscation) }
     }
 
-    suspend fun setDebugLoggingEnabled(enabled: Boolean) {
+    override suspend fun setDebugLoggingEnabled(enabled: Boolean) {
         dataStore.edit { it[DEBUG_LOGGING] = enabled }
     }
 
-    suspend fun setVpnExcludedApps(apps: List<String>) {
+    override suspend fun setVpnExcludedApps(apps: List<String>) {
         dataStore.edit { it[VPN_EXCLUDED_APPS] = apps.toSet() }
     }
 
-    suspend fun setEnablePortForwarding(enabled: Boolean) {
+    override suspend fun setEnablePortForwarding(enabled: Boolean) {
         dataStore.edit { it[PORT_FORWARDING] = enabled }
     }
 
-    suspend fun setAllowLocalTrafficEnabled(enabled: Boolean) {
+    override suspend fun setAllowLocalTrafficEnabled(enabled: Boolean) {
         dataStore.edit { it[ALLOW_LOCAL_TRAFFIC] = enabled }
     }
 
-    suspend fun setAutomationEnabled(enabled: Boolean) {
+    override suspend fun setAutomationEnabled(enabled: Boolean) {
         dataStore.edit { it[AUTOMATION] = enabled }
     }
 
-    suspend fun setMaceEnabled(enabled: Boolean) {
+    override suspend fun setMaceEnabled(enabled: Boolean) {
         dataStore.edit { it[MACE] = enabled }
     }
 
-    suspend fun setMockLocationEnabled(enabled: Boolean) {
+    override suspend fun setMockLocationEnabled(enabled: Boolean) {
         dataStore.edit { it[MOCK_LOCATION] = enabled }
     }
 
