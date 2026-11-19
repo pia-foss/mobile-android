@@ -24,10 +24,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-/**
- * Regression tests for the "Use Small Packets" toggle: the MTU handed to the VPN library must follow
- * the toggle for every protocol, including Automatic.
- */
 class ConfigurationGeneratorMtuTest {
     private val settingsPrefs = mockk<SettingsPrefs>(relaxed = true)
     private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)
@@ -128,10 +124,8 @@ class ConfigurationGeneratorMtuTest {
             val wireGuard = configurations.filterIsInstance<WireGuardVpnConfiguration>()
             val openVpn = configurations.filterIsInstance<OpenVpnConfiguration>()
 
-            // WireGuard and AmneziaWG endpoints
             assertEquals(2, wireGuard.size)
             wireGuard.forEach { assertEquals(1280, it.mtu) }
-            // OpenVPN UDP and TCP endpoints
             assertEquals(2, openVpn.size)
             openVpn.forEach { assertEquals(1350, it.mtu) }
         }

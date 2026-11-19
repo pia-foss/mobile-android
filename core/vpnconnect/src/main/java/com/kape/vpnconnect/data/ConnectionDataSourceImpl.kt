@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.kape.data.DI
+import com.kape.contracts.di.Qualifiers
 import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
@@ -17,7 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
-import org.koin.core.component.KoinComponent
 import java.util.concurrent.TimeUnit
 
 @Singleton(binds = [ConnectionDataSource::class])
@@ -27,9 +26,8 @@ class ConnectionDataSourceImpl(
     private val connectionPrefs: ConnectionPrefs,
     private val workManager: WorkManager,
     private val settingsPrefs: SettingsPrefs,
-    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
-) : ConnectionDataSource,
-    KoinComponent {
+    @Named(Qualifiers.APP_SCOPE) private val ioScope: CoroutineScope,
+) : ConnectionDataSource {
     override fun getVpnToken(): String = accountApi.vpnToken() ?: ""
 
     override fun startPortForwarding() {

@@ -1,5 +1,6 @@
-package com.kape.vpnconnect.domain
+package com.kape.vpnconnect.data
 
+import com.kape.vpnconnect.domain.ConnectionDataSource
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -7,17 +8,17 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class ClearDebugLogsUseCaseTest {
+class DebugLogCleanerImplTest {
     private val connectionSource: ConnectionDataSource =
         mockk<ConnectionDataSource>().apply {
             coEvery { clearDebugLogs() } returns Unit
         }
 
-    private lateinit var useCase: ClearDebugLogsUseCase
+    private lateinit var useCase: DebugLogCleanerImpl
 
     @BeforeEach
     fun setUp() {
-        useCase = ClearDebugLogsUseCase(connectionSource)
+        useCase = DebugLogCleanerImpl(connectionSource)
     }
 
     @Test

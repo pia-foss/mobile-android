@@ -2,154 +2,118 @@ package com.kape.vpnconnect.data
 
 import android.content.Context
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.kape.data.WorkerTags
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.kape.vpnconnect.platformsdk.ServiceLogger
+import com.kape.vpnconnect.worker.PortForwardingWorker
 import com.privateinternetaccess.account.AndroidAccountAPI
 import io.mockk.coEvery
-import io.mockk.coVerify
+import io.mockk.coVerifyOrder
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkConstructor
-import io.mockk.runs
-import io.mockk.unmockkConstructor
+import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
+import java.io.File
+import java.util.concurrent.TimeUnit
 
-/**
- * Covers only what's actually live in [ConnectionDataSourceImpl] today. startConnection/
- * stopConnection/updateConfigurationServers were removed with the account/vpnmanager API during
- * the platform-SDK migration (connecting now goes through PiaService via ConnectionManagerImpl —
- * see ConnectionManagerImplTest) and are commented out pending a replacement, so there's nothing
- * left to test for them here.
- */
-@OptIn(ExperimentalCoroutinesApi::class)
-class ConnectionDataSourceImplTest {
-    private val context = mockk<Context>(relaxed = true)
-    private val accountApi = mockk<AndroidAccountAPI>()
-    private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)
-    private val workManager = mockk<WorkManager>(relaxed = true)
-    private val settingsPrefs = mockk<SettingsPrefs>(relaxed = true)
+internal class ConnectionDataSourceImplTest {
+    @TempDir
+    lateinit var filesDir: File
 
-    private fun newDataSource(scope: CoroutineScope) =
-        ConnectionDataSourceImpl(
-            context = context,
-            accountApi = accountApi,
-            connectionPrefs = connectionPrefs,
-            workManager = workManager,
-            settingsPrefs = settingsPrefs,
-            ioScope = scope,
-        )
+    private val context: Context = mockk()
+    private val accountApi: AndroidAccountAPI = mockk()
+    private val connectionPrefs: ConnectionPrefs = mockk(relaxed = true)
+    private val workManager: WorkManager = mockk(relaxed = true)
+    private val settingsPrefs: SettingsPrefs = mockk()
 
-    // region getVpnToken
+    @BeforeEach
+    fun setUp() {
+        every { context.filesDir } returns filesDir
+        coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.WireGuard
+    }
+
+    private fun createDataSource(scope: CoroutineScope) =
+        ConnectionDataSourceImpl(context, accountApi, connectionPrefs, workManager, settingsPrefs, scope)
 
     @Test
-    fun `getVpnToken - account API returns a token - returns that token`() =
+    fun `getVpnToken - no token available - returns an empty string`() =
         runTest {
-            val dataSource = newDataSource(this)
-            every { accountApi.vpnToken() } returns "vpn_token_123"
-
-            assertEquals("vpn_token_123", dataSource.getVpnToken())
-        }
-
-    @Test
-    fun `getVpnToken - account API returns null - returns empty string`() =
-        runTest {
-            val dataSource = newDataSource(this)
             every { accountApi.vpnToken() } returns null
 
-            assertEquals("", dataSource.getVpnToken())
+            assertEquals("", createDataSource(backgroundScope).getVpnToken())
         }
 
-    // endregion
+    @Test
+    fun `getVpnToken - token available - returns it`() =
+        runTest {
+            every { accountApi.vpnToken() } returns "vpn_token_abc"
 
-    // region startPortForwarding
+            assertEquals("vpn_token_abc", createDataSource(backgroundScope).getVpnToken())
+        }
 
     @Test
-    fun `startPortForwarding - enqueues unique periodic work with KEEP policy`() =
+    fun `startPortForwarding - enqueues a unique 15-minute worker that keeps an existing one`() =
         runTest {
-            val dataSource = newDataSource(this)
+            val request = slot<PeriodicWorkRequest>()
 
-            dataSource.startPortForwarding()
+            createDataSource(backgroundScope).startPortForwarding()
 
             verify {
                 workManager.enqueueUniquePeriodicWork(
                     WorkerTags.PORT_FORWARDING_WORKER,
                     ExistingPeriodicWorkPolicy.KEEP,
-                    any(),
+                    capture(request),
                 )
             }
+            assertEquals(PortForwardingWorker::class.java.name, request.captured.workSpec.workerClassName)
+            assertEquals(TimeUnit.MINUTES.toMillis(15), request.captured.workSpec.intervalDuration)
         }
 
-    // endregion
-
-    // region stopPortForwarding
-
     @Test
-    fun `stopPortForwarding - clears gateway, port binding info, and cancels the worker`() =
+    fun `stopPortForwarding - clears the gateway and binding info, then cancels the worker`() =
         runTest {
-            val dataSource = newDataSource(this)
+            createDataSource(this).stopPortForwarding()
+            testScheduler.advanceUntilIdle()
 
-            dataSource.stopPortForwarding()
-            advanceUntilIdle() // the cleanup runs on ioScope, not inline
-
-            coVerify { connectionPrefs.clearGateway() }
-            coVerify { connectionPrefs.clearPortBindingInfo() }
-            verify { workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER) }
-        }
-
-    // endregion
-
-    // region getDebugLogs
-
-    @Test
-    fun `getDebugLogs - delegates to a ServiceLogger tagged for the selected protocol`() =
-        runTest {
-            mockkConstructor(ServiceLogger::class)
-            try {
-                coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.WireGuard
-                coEvery { anyConstructed<ServiceLogger>().getLogs() } returns listOf("log1", "log2")
-
-                val dataSource = newDataSource(this)
-
-                val result = dataSource.getDebugLogs()
-
-                assertEquals(listOf("log1", "log2"), result)
-            } finally {
-                unmockkConstructor(ServiceLogger::class)
+            coVerifyOrder {
+                connectionPrefs.clearGateway()
+                connectionPrefs.clearPortBindingInfo()
+                workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER)
             }
         }
 
-    // endregion
-
-    // region clearDebugLogs
-
     @Test
-    fun `clearDebugLogs - delegates to a ServiceLogger tagged for the selected protocol`() =
+    fun `getDebugLogs - returns the lines in the shared service log store`() =
         runTest {
-            mockkConstructor(ServiceLogger::class)
-            try {
-                coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.OpenVPN
-                coEvery { anyConstructed<ServiceLogger>().clearLogs() } just runs
+            coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.OpenVPN
+            ServiceLogger(context, ServiceLogger.VpnServiceLoggerTag.WireGuard).info("tunnel up")
 
-                val dataSource = newDataSource(this)
+            val logs = createDataSource(backgroundScope).getDebugLogs()
 
-                dataSource.clearDebugLogs()
-
-                coVerify { anyConstructed<ServiceLogger>().clearLogs() }
-            } finally {
-                unmockkConstructor(ServiceLogger::class)
-            }
+            assertEquals(1, logs.size)
+            assertTrue(logs.single().contains("I/WireGuard: tunnel up"))
         }
 
-    // endregion
+    @Test
+    fun `clearDebugLogs - empties the shared service log store`() =
+        runTest {
+            coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.Automatic
+            ServiceLogger(context, ServiceLogger.VpnServiceLoggerTag.OpenVpn).info("tunnel up")
+            val dataSource = createDataSource(backgroundScope)
+
+            dataSource.clearDebugLogs()
+
+            assertEquals(emptyList<String>(), dataSource.getDebugLogs())
+        }
 }
