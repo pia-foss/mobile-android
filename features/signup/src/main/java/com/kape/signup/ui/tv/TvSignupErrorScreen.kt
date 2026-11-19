@@ -27,13 +27,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.text.SignUpTitleText
 import com.kape.ui.tv.text.SignupErrorDescriptionText
 import com.kape.ui.tv.text.SignupErrorTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvSignupErrorScreen() =
@@ -80,7 +80,7 @@ fun TvSignupErrorScreen() =
                             ),
                     ) {
                         Image(
-                            painter = painterResource(id = com.kape.login.R.drawable.ic_tv_onboarding),
+                            painter = painterResource(id = com.kape.ui.R.drawable.ic_tv_onboarding),
                             contentScale = ContentScale.Fit,
                             contentDescription = null,
                             modifier =

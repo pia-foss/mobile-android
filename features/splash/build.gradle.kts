@@ -1,66 +1,23 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.compose)
+    alias(libs.plugins.pia.android.feature)
 }
 
 android {
     namespace = "com.kape.splash"
-
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-        create("fdroid") {
-            dimension = "provider"
-        }
-    }
-
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
-
-    implementation(project(":core:contracts"))
-    implementation(project(":core:data"))
     implementation(project(":core:regions"))
-    implementation(project(":core:httpclient"))
-    implementation(project(":core:vpnconnect"))
-    implementation(project(":core:utils"))
+    implementation(project(":core:account"))
     implementation(project(":core:localprefs:prefs"))
-    implementation(project(":capabilities:ui"))
-    implementation(project(":capabilities:notifications"))
+    implementation(project(":core:utils"))
     implementation(project(":capabilities:featureflags"))
-    implementation(project(":features:signup"))
+    implementation(project(":capabilities:buildconfig"))
 
-    implementation(libs.mobile.shared.account)
-    implementation(libs.bundles.compose)
-    androidTestImplementation(libs.bundles.composeandroidtest)
-    implementation(libs.bundles.android)
-    implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
-    androidTestImplementation(libs.bundles.koinandroidtest)
-    implementation(libs.coroutines)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
     testImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.bundles.coroutines.androidtest)
-    testImplementation(libs.bundles.test)
-    runtimeOnly(libs.launcher)
-}
-
-koinCompiler {
-    compileSafety = false
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
 }

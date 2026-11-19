@@ -28,7 +28,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -50,13 +49,14 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.signup.ui.NO_IN_APP_SUBSCRIPTIONS
+import com.kape.signup.ui.SUBSCRIPTIONS_FAILED_TO_LOAD
+import com.kape.signup.ui.SignupScreenState
+import com.kape.signup.ui.SubscriptionData
 import com.kape.signup.ui.shared.CheckmarkText
 import com.kape.signup.ui.shared.SubscriptionDescriptionText
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
-import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
-import com.kape.signup.utils.SignupScreenState
-import com.kape.signup.utils.SubscriptionData
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.PrimaryButton
@@ -65,12 +65,12 @@ import com.kape.ui.mobile.elements.SubscriptionCard
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.naturalSpace
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun NewPaywallSignUpScreen() {
     val viewModel: SignupViewModel = koinViewModel()
-    val screenState by viewModel.state.collectAsState()
+    val screenState by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {

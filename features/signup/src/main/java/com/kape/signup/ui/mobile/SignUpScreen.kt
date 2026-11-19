@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -37,21 +36,21 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.signup.ui.META_SUBSCRIPTIONS
+import com.kape.signup.ui.NO_IN_APP_SUBSCRIPTIONS
+import com.kape.signup.ui.SUBSCRIPTIONS_FAILED_TO_LOAD
+import com.kape.signup.ui.SignupScreenState
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.signup.utils.META_SUBSCRIPTIONS
-import com.kape.signup.utils.NO_IN_APP_SUBSCRIPTIONS
-import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
-import com.kape.signup.utils.SignupScreenState
 import com.kape.ui.R
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.PrimaryButton
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.SubscriptionCard
 import com.kape.ui.mobile.text.OnboardingDescriptionPaymentText
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SignUpScreen() =
@@ -70,7 +69,7 @@ fun SignUpScreen() =
 @Composable
 fun OldSignUpScreen() {
     val viewModel: SignupViewModel = koinViewModel()
-    val screenState by viewModel.state.collectAsState()
+    val screenState by viewModel.state.collectAsStateWithLifecycle()
     val subscriptionData = screenState.subscriptionData
     val context = LocalContext.current
     val activity = LocalActivity.current

@@ -3,18 +3,18 @@ package com.kape.login.ui.vm.tv
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.kape.login.domain.tv.LoginUsernameUseCase
+import org.koin.core.annotation.InjectedParam
 import org.koin.core.annotation.KoinViewModel
 
 @KoinViewModel
 class LoginPasswordViewModel(
-    private val loginUsernameUseCase: LoginUsernameUseCase,
+    @InjectedParam private val username: String,
 ) : ViewModel() {
-    private var password: MutableState<String> = mutableStateOf("")
+    private val password: MutableState<String> = mutableStateOf("")
 
-    fun isValidPassword(): Boolean = password.value.isNotEmpty()
+    fun getLoginUsername(): String = username
 
     fun getPassword(): MutableState<String> = password
 
-    fun getLoginUsername(): String = loginUsernameUseCase.getLoginUsername()
+    fun isValidPassword(): Boolean = password.value.isNotEmpty()
 }

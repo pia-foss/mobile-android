@@ -21,13 +21,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -41,29 +39,29 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.login.R
+import com.kape.login.ui.LoginError
+import com.kape.login.ui.LoginScreenState
 import com.kape.login.ui.vm.LoginViewModel
-import com.kape.login.utils.LoginError
-import com.kape.login.utils.LoginScreenState
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.ErrorCard
 import com.kape.ui.mobile.elements.NoNetworkBanner
 import com.kape.ui.mobile.elements.PrimaryButton
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.Input
 import com.kape.ui.mobile.text.SignInText
 import com.kape.ui.tiles.Dialog
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen() =
     Screen {
         val viewModel: LoginViewModel = koinViewModel()
 
-        val state by remember(viewModel) { viewModel.state }.collectAsState()
-        val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
-        val showSupportDialog by remember(viewModel) { viewModel.showSupportDialog }.collectAsState()
+        val state by remember(viewModel) { viewModel.state }.collectAsStateWithLifecycle()
+        val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsStateWithLifecycle()
+        val showSupportDialog by remember(viewModel) { viewModel.showSupportDialog }.collectAsStateWithLifecycle()
         val currentContext = LocalContext.current
         val noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet)
 
