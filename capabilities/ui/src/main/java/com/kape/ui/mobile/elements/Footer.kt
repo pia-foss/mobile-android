@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -24,7 +23,6 @@ import com.kape.ui.R
 import com.kape.ui.utils.LocalColors
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Footer(modifier: Modifier = Modifier) {
     ProvideTextStyle(
@@ -63,10 +61,7 @@ fun ClickableText(
         modifier =
             Modifier
                 .clickable { router.updateDestination(destination) }
-                // This draws the underline.
-                // We could add the underline by defining the style as TextDecoration.Underline
-                // However, this causes the font size to change, which makes it quite hard to
-                // align texts vertically
+                // TextDecoration.Underline would change the font size, so the underline is drawn here.
                 .drawBehind {
                     val verticalOffset = size.height - 4.sp.toPx()
                     drawLine(

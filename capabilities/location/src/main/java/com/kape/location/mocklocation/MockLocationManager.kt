@@ -20,16 +20,8 @@ class MockLocationManager(
 
     private val _mockLocationAppSelected = MutableStateFlow(checkMockLocationAppSelected())
 
-    /**
-     * Whether PIA is selected as the mock location app in Developer options. This can change
-     * while the app is in the background, so call [refreshMockLocationAppSelected] on resume.
-     */
     val mockLocationAppSelected: StateFlow<Boolean> = _mockLocationAppSelected
 
-    /**
-     * Mock location is only offered on devices with a location provider to mock. The passive
-     * provider is always present and only relays other providers' fixes, so it doesn't count.
-     */
     val isMockLocationSupported: Boolean
         get() = locationManager.allProviders.any { it != LocationManager.PASSIVE_PROVIDER && it != CHECK_PROVIDER }
 
@@ -49,9 +41,7 @@ class MockLocationManager(
         try {
             ContextCompat.startForegroundService(context, intent)
         } catch (_: IllegalStateException) {
-            // Foreground service start not allowed from the background (Android 12+).
         } catch (_: SecurityException) {
-            // Location foreground service type requires the location permission (Android 14+).
         }
     }
 
@@ -61,7 +51,6 @@ class MockLocationManager(
 
     // Adding a test provider throws a SecurityException unless PIA is the selected mock location
     // app. A dedicated provider name is used so a running MockLocationService isn't disturbed.
-    // Criteria constants match the ProviderProperties ones S+ annotates these params with.
     @SuppressLint("WrongConstant")
     private fun checkMockLocationAppSelected(): Boolean =
         try {
@@ -83,7 +72,6 @@ class MockLocationManager(
         } catch (_: SecurityException) {
             false
         } catch (_: IllegalArgumentException) {
-            // A previous check left the provider registered, which also means we're allowed.
             locationManager.removeTestProvider(CHECK_PROVIDER)
             true
         }
