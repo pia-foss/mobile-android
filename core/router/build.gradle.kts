@@ -1,9 +1,5 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.junit5)
+    alias(libs.plugins.pia.android.library)
 }
 
 android {
@@ -11,18 +7,11 @@ android {
 }
 
 dependencies {
+    api(platform(libs.androidx.compose.bom))
+    api(libs.bundles.compose.bundle)
+    implementation(libs.coroutines.android)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.annotations)
     implementation(project(":core:contracts"))
-    implementation(project(":core:data"))
-    implementation(libs.coroutines)
-    implementation(libs.bundles.compose)
-    implementation(libs.bundles.koin)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.bundles.test)
-    testImplementation(libs.bundles.kointest)
-    runtimeOnly(libs.launcher)
-    androidTestImplementation(libs.bundles.coroutines.androidtest)
-}
-
-koinCompiler {
-    compileSafety = false
 }

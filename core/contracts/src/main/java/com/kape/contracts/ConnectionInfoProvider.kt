@@ -1,21 +1,20 @@
 package com.kape.contracts
 
-import androidx.compose.material3.ColorScheme
-import androidx.compose.ui.graphics.Color
 import com.kape.data.ConnectionStatus
 import com.kape.data.portforwarding.PortForwardingStatus
-import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
 import kotlinx.coroutines.flow.StateFlow
 
 interface ConnectionInfoProvider {
     val status: StateFlow<ConnectionStatus>
     val title: StateFlow<String>
-    val vpnManagerConnectionStatus: StateFlow<KapeVPNConnectionStatus?>
-    var name: String
-    var iso: String
-    var isManual: Boolean
+
+    val name: String
+    val iso: String
+    val isManual: Boolean
+
     val publicIp: StateFlow<String>
     val vpnIp: StateFlow<String>
+
     val portForwardingStatus: StateFlow<PortForwardingStatus>
     val port: StateFlow<String>
 
@@ -24,16 +23,6 @@ interface ConnectionInfoProvider {
     fun isInConnectState(): Boolean
 
     fun shouldAllowDisconnect(): Boolean
-
-    fun updateInfo(
-        name: String,
-        iso: String,
-        isManual: Boolean,
-    )
-
-    fun resetConnectionInfo()
-
-    fun getTopBarConnectionColor(scheme: ColorScheme): Color
 
     fun requestClientIp()
 }

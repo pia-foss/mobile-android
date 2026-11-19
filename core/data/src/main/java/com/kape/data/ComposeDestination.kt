@@ -19,8 +19,6 @@ sealed interface DestinationNavOptions {
     data object ClearAll : DestinationNavOptions
 }
 
-// Mobile screens
-
 @Serializable
 object Splash : ComposeDestination {
     override val navOptions: DestinationNavOptions =
@@ -169,12 +167,6 @@ object AccountDeleted : ComposeDestination {
 object Update : ComposeDestination
 
 @Serializable
-object SideMenuRoute : ComposeDestination
-
-@Serializable
-object SideMenu : ComposeDestination
-
-@Serializable
 object ObfuscationSettings : ComposeDestination
 
 @Serializable
@@ -206,8 +198,6 @@ sealed class WebDestination(
     object DeleteAccount : WebDestination("delete-account")
 }
 
-// TV screens
-
 @Serializable
 data class TvConsent(
     val isFirstScreen: Boolean,
@@ -218,13 +208,12 @@ data class TvConsent(
 }
 
 @Serializable
-object TvLogin : ComposeDestination
-
-@Serializable
 object TvLoginUsername : ComposeDestination
 
 @Serializable
-object TvLoginPassword : ComposeDestination
+data class TvLoginPassword(
+    val username: String,
+) : ComposeDestination
 
 @Serializable
 object TvWelcome : ComposeDestination {
@@ -238,18 +227,3 @@ object TvWelcomeBack : ComposeDestination {
 
 @Serializable
 object TvSideMenu : ComposeDestination
-
-@Serializable
-object TvVpnPermission : ComposeDestination {
-    override val navOptions: DestinationNavOptions =
-        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
-}
-
-@Serializable
-object TvNotificationPermission : ComposeDestination {
-    override val navOptions: DestinationNavOptions =
-        DestinationNavOptions.PopUpTo(Splash, inclusive = true)
-}
-
-@Serializable
-object TvConnect : ComposeDestination
