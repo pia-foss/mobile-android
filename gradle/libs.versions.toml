@@ -1,140 +1,151 @@
 [versions]
-kape-platform-sdk-vpn-pia = "0.5.1"
-mobile-android-obfuscation-proxy = "0.1.6.1"
-mobile-android-openvpn = "0.4.15-pia"
-mobile-shared-account = "1.6.8"
-mobile-shared-csi = "1.3.5"
-mobile-shared-kpi = "1.2.7"
-mobile-shared-regions = "1.7.5"
-play-services-location = "21.4.0"
-plugin-gradle = "9.5.1"
-plugin-kotlin = "2.4.20"
-plugin-ktlint = "14.2.0"
-compose-bom = "2026.09.00"
-compose-tv-material = "1.1.0"
-navigation3 = "1.2.0"
-compose-jetpack = "2.11.0"
-koin = "4.2.2"
-koin-plugin = "1.2.1"
-desugar = "2.1.5"
-androidx-core = "1.19.1"
-androidx-activity = "1.13.0"
-androidx-appcompat = "1.8.0"
-androidx-crypto = "1.1.0"
-multiplatform-settings = "1.3.0"
-serialization = "1.11.0"
-date-time = "0.6.2"
-ktor = "3.6.0"
-billing-google = "9.1.0"
-spongy-castle = "1.58.0.0"
-coroutines = "1.11.0"
-drawable-painter = "0.37.3"
+testUiAutomator = "2.4.0"
+testRunner = "1.7.0"
+drawablePainter = "0.37.3"
 glance = "1.2.0"
-reorderable = "3.1.0"
-androidx-constraint-layout = "1.1.2"
-androidx-material3 = "1.4.0"
-test-junit = "4.13.2"
-test-mockk = "1.14.11"
-test-jupiter-params = "6.1.3"
-test-runtime = "6.1.3"
-test-ui-automator = "2.4.0"
-test-androidx-runner = "1.7.0"
-test-orchestrator = "1.6.1"
-junit5 = "2.0.1"
-shortcuts = "1.1.0"
+agp = "9.5.1"
+coreKtx = "1.19.1"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+lifecycleRuntimeKtx = "2.11.0"
+activityCompose = "1.13.0"
+kotlin = "2.4.20"
+composeBom = "2026.09.00"
+koinCompiler = "1.2.3"
+ktlint = "14.2.0"
+kover = "0.9.11"
+junit5 = "2.0.2"
+koin = "4.2.2"
+junitJupiter = "6.1.3"
+espressoCore = "3.7.0"
+appcompat = "1.8.0"
+material = "1.14.0"
+ktor = "3.6.1"
+spongycastle = "1.58.0.0"
+serialization = "1.13.0"
+datetime = "0.6.2"
+coroutines = "1.11.0"
+mobileSharedRegions = "1.7.5"
 datastore = "1.2.1"
+mobileSharedAccount = "1.6.8"
+securityCrypto = "1.1.0"
 tink = "1.23.0"
+navigation3 = "1.2.1"
+composeTvMaterial = "1.1.0"
+constraintLayoutCompose = "1.1.2"
+desugar = "2.1.5"
+testOrchestrator = "1.6.1"
+googleShortcuts = "1.1.0"
+billingGoogle = "9.1.0"
+kapePlatformSdk = "0.5.1"
+mockk = "1.14.11"
+mobileSharedKpi = "1.2.7"
+mobileSharedCsi = "1.3.5"
+playServicesLocation = "21.4.0"
+obfuscationProxy = "0.1.6.1"
+piaOpenVpn = "0.4.15-pia"
+
+reorderable = "3.1.0"
 
 [libraries]
-android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "plugin-gradle" }
-kape-platform-sdk-vpn-pia = { module = "com.github.pia-foss:platform-sdk", version.ref = "kape-platform-sdk-vpn-pia" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "plugin-kotlin" }
-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-compose-ui-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
-compose-android-test = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-debug-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-debug-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-material3 = { module = "androidx.compose.material3:material3", version.ref = "androidx-material3" }
-compose-tv-material = { module = "androidx.tv:tv-material", version.ref = "compose-tv-material" }
-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "compose-jetpack" }
-mobile-android-obfuscation-proxy = { module = "com.github.pia-foss:mobile-android-obfuscation-proxy", version.ref = "mobile-android-obfuscation-proxy" }
-mobile-android-openvpn= { module = "com.github.pia-foss.mobile-android-vpn-manager:openvpn", version.ref = "mobile-android-openvpn" }
-mobile-shared-account = { module = "com.github.pia-foss:mobile-shared-account", version.ref = "mobile-shared-account" }
-mobile-shared-csi = { module = "com.github.pia-foss:mobile-shared-csi", version.ref = "mobile-shared-csi" }
-mobile-shared-kpi = { module = "com.github.pia-foss:mobile-shared-kpi", version.ref = "mobile-shared-kpi" }
-mobile-shared-regions = { module = "com.github.pia-foss:mobile-shared-regions", version.ref = "mobile-shared-regions" }
-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "compose-jetpack" }
-androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
-lifecycle = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "compose-jetpack" }
-lifecyclecompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "compose-jetpack" }
-lifecycleprocess = { module = "androidx.lifecycle:lifecycle-process", version.ref = "compose-jetpack" }
-activity = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
-desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin" }
-koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
-koin-testjunit5 = { module = "io.insert-koin:koin-test-junit5", version.ref = "koin" }
-koin-testandroid = { module = "io.insert-koin:koin-android-test", version.ref = "koin" }
-koin-andoridtest = { module = "io.insert-koin:koin-test", version.ref = "koin" }
-crypto = { module = "androidx.security:security-crypto-ktx", version.ref = "androidx-crypto" }
-multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "serialization" }
-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "date-time" }
-ktorCore = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
-ktorHttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
-billing-google = { module = "com.android.billingclient:billing-ktx", version.ref = "billing-google" }
-spongycastle = { module = "com.madgag.spongycastle:core", version.ref = "spongy-castle" }
-junit = { module = "junit:junit", version.ref = "test-junit" }
-mockk = { module = "io.mockk:mockk-android", version.ref = "test-mockk" }
-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "test-jupiter-params" }
-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "test-runtime" }
-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "test-ui-automator" }
-testrunner = { module = "androidx.test:runner", version.ref = "test-androidx-runner" }
-orchestrator = { module = "androidx.test:orchestrator", version.ref = "test-orchestrator" }
-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "drawable-painter" }
-glance = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
-glancematerial = { module = "androidx.glance:glance-material3", version.ref = "glance" }
-reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
-constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-constraint-layout" }
-shortcuts = { module = "androidx.core:core-google-shortcuts", version.ref = "shortcuts" }
-koin-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
-tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kover-gradle-plugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
+koin-core = { group = "io.insert-koin", name = "koin-core" }
+koin-android = { group = "io.insert-koin", name = "koin-android" }
+koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose" }
+koin-annotations = { group = "io.insert-koin", name = "koin-annotations" }
+koin-test = { group = "io.insert-koin", name = "koin-test" }
+koin-test-junit5 = { group = "io.insert-koin", name = "koin-test-junit5" }
+junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junitJupiter" }
+junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api" }
+junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine" }
+junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-params" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+junit5-android-test-core = { group = "de.mannodermaus.junit5", name = "android-test-core", version.ref = "junit5" }
+junit5-android-test-runner = { group = "de.mannodermaus.junit5", name = "android-test-runner", version.ref = "junit5" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+spongycastle = { group = "com.madgag.spongycastle", name = "core", version.ref = "spongycastle" }
+serialization-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-core", version.ref = "serialization" }
+serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "datetime" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+mobile-shared-regions = { group = "com.github.pia-foss", name = "mobile-shared-regions", version.ref = "mobileSharedRegions" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+mobile-shared-account = { group = "com.github.pia-foss", name = "mobile-shared-account", version.ref = "mobileSharedAccount" }
+security-crypto = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "securityCrypto" }
+tink-android = { group = "com.google.crypto.tink", name = "tink-android", version.ref = "tink" }
+navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "navigation3" }
+mobile-shared-kpi = { group = "com.github.pia-foss", name = "mobile-shared-kpi", version.ref = "mobileSharedKpi" }
+mobile-shared-csi = { group = "com.github.pia-foss", name = "mobile-shared-csi", version.ref = "mobileSharedCsi" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleRuntimeKtx" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+kape-platform-sdk = { group = "com.github.pia-foss", name = "platform-sdk", version.ref = "kapePlatformSdk" }
+mobile-android-obfuscation-proxy = { group = "com.github.pia-foss", name = "mobile-android-obfuscation-proxy", version.ref = "obfuscationProxy" }
+mobile-android-openvpn = { group = "com.github.pia-foss.mobile-android-vpn-manager", name = "openvpn", version.ref = "piaOpenVpn" }
+koin-androidx-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager" }
+billing-google = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billingGoogle" }
+desugar = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar" }
+androidx-test-orchestrator = { group = "androidx.test", name = "orchestrator", version.ref = "testOrchestrator" }
+androidx-core-google-shortcuts = { group = "androidx.core", name = "core-google-shortcuts", version.ref = "googleShortcuts" }
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintLayoutCompose" }
+androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "composeTvMaterial" }
+navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3" }
+lifecycle-viewmodel-navigation3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycleRuntimeKtx" }
 
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
+glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
+glance-material3 = { module = "androidx.glance:glance-material3", version.ref = "glance" }
+accompanist-drawablepainter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "drawablePainter" }
+androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "testUiAutomator" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testRunner" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 [plugins]
-application = { id = "com.android.application", version.ref = "plugin-gradle" }
-library = { id = "com.android.library", version.ref = "plugin-gradle" }
-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "plugin-kotlin" }
-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "plugin-kotlin" }
-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "plugin-kotlin" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "plugin-ktlint" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+configuration = { id = "configuration" }
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koinCompiler" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junit5" }
-configuration = { id = "configuration", version = "1.0" }
-koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+pia-android-library = { id = "pia.android.library" }
+pia-android-library-compose = { id = "pia.android.library.compose" }
+pia-android-feature = { id = "pia.android.feature" }
+pia-android-application = { id = "pia.android.application" }
+pia-android-flavors = { id = "pia.android.flavors" }
 
 [bundles]
-compose = ["compose-ui", "compose-ui-graphics", "compose-ui-preview", "compose-foundation", "compose-runtime", "navigation3-runtime", "navigation3-ui", "lifecycle-viewmodel-navigation3", "compose-tv-material", "material3"]
-composeandroidtest = ["compose-android-test"]
-debugtest = ["debug-manifest", "debug-tooling"]
-android = ["viewmodel", "androidx-core", "lifecycle", "lifecyclecompose", "lifecycleprocess", "activity", "appcompat"]
-koin = ["koin-core", "koin-android", "koin-compose", "koin-annotations", "koin-workmanager"]
-kointest = ["koin-testjunit5", "koin-testandroid"]
-koinandroidtest = ["koin-testandroid", "koin-andoridtest"]
-serialization = ["serialization-core", "serialization-json", "datetime"]
-ktor = ["ktorHttp", "ktorCore"]
-test = ["junit", "mockk", "params"]
-androidtest = ["uiautomator", "testrunner"]
-coroutines-androidtest = ["coroutines", "coroutines-test"]
-glance = ["glance", "glancematerial", "material3"]
+androidtest-bundle = ["androidx-test-uiautomator", "androidx-test-runner", "androidx-junit", "kotlin-test"]
+glance-bundle = ["glance-appwidget", "glance-material3"]
+koin-bundle = ["koin-core", "koin-android", "koin-androidx-compose", "koin-annotations"]
+koin-test-bundle = ["koin-test", "koin-test-junit5"]
+junit5-bundle = ["junit-jupiter-api", "junit-jupiter-params"]
+junit5-runtime-bundle = ["junit-jupiter-engine", "junit-platform-launcher"]
+ktor-bundle = ["ktor-client-core", "ktor-client-okhttp"]
+serialization-bundle = ["serialization-core", "serialization-json", "datetime"]
+coroutines-androidtest-bundle = ["coroutines-android", "coroutines-test"]
+android-bundle = ["androidx-core-ktx", "androidx-appcompat", "material", "androidx-lifecycle-runtime-ktx"]
+compose-bundle = ["androidx-compose-ui", "androidx-compose-ui-graphics", "androidx-compose-ui-tooling-preview", "androidx-compose-material3", "androidx-tv-material", "androidx-activity-compose", "navigation3-runtime", "navigation3-ui", "lifecycle-viewmodel-navigation3"]
+compose-debug-bundle = ["androidx-compose-ui-tooling", "androidx-compose-ui-test-manifest"]

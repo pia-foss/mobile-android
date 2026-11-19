@@ -1,6 +1,4 @@
-import org.gradle.kotlin.dsl.`kotlin-dsl`
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     `kotlin-dsl`
@@ -9,17 +7,25 @@ plugins {
 repositories {
     google()
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
-    gradleApi()
-    implementation(libs.kotlin.gradle.plugin)
-    implementation(libs.android.gradle.plugin)
+    compileOnly(libs.kotlin.gradle.plugin)
+    compileOnly(libs.android.gradle.plugin)
+    compileOnly(libs.kover.gradle.plugin)
 }
 
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+kotlin {
+    jvmToolchain(21)
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
     }
 }
 
@@ -29,29 +35,25 @@ gradlePlugin {
             id = "configuration"
             implementationClass = "ConfigurationPlugin"
         }
-    }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
-
-tasks {
-    compileKotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
+        create("androidLibrary") {
+            id = "pia.android.library"
+            implementationClass = "AndroidLibraryConventionPlugin"
         }
-        kotlin {
-            jvmToolchain(21)
+        create("androidComposeLibrary") {
+            id = "pia.android.library.compose"
+            implementationClass = "AndroidComposeLibraryConventionPlugin"
         }
-    }
-    compileTestKotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
+        create("androidFeature") {
+            id = "pia.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
         }
-        kotlin {
-            jvmToolchain(21)
+        create("providerFlavors") {
+            id = "pia.android.flavors"
+            implementationClass = "ProviderFlavorsConventionPlugin"
+        }
+        create("androidApplication") {
+            id = "pia.android.application"
+            implementationClass = "AndroidApplicationConventionPlugin"
         }
     }
 }
