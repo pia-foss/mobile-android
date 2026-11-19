@@ -1,12 +1,12 @@
 package com.kape.vpnconnect.domain
 
-import com.kape.contracts.ConnectionStatusProvider
+import com.kape.contracts.ConnectionStatusSource
+import com.kape.contracts.NetworkStatus
 import com.kape.contracts.UsageProvider
 import com.kape.data.ConnectionStatus
-import com.kape.localprefs.prefs.AutoProtocolNudgePrefs
-import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.localprefs.api.AutoProtocolNudgeStore
+import com.kape.localprefs.api.SettingsStore
 import com.kape.settings.data.VpnProtocols
-import com.kape.utils.NetworkConnectionListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -24,7 +24,6 @@ import kotlin.time.Duration.Companion.seconds
 
 private val CONNECT_TIMEOUT = 30.seconds
 
-// Samples the local tunnel byte counters (no network traffic), so this can be fine-grained.
 private val DEAD_TUNNEL_CHECK_INTERVAL = 5.seconds
 
 private val DEAD_TUNNEL_THRESHOLD = 60.seconds
@@ -38,22 +37,14 @@ private const val PROMPT_LIFETIME_CAP = 3
 private val DISMISS_COOLDOWN = 7.days
 private const val DISMISS_PERMANENT_STOP_COUNT = 2
 
-/**
- * Watches connection attempts for a manually-pinned protocol and, once enough of them look like
- * protocol trouble rather than something the protocol can't fix (no network, permission/DIP/
- * license issues, a user-initiated action), surfaces a one-tap "switch to Automatic" nudge —
- * frequency-capped and permanently retired once accepted or dismissed twice. See
- * `AutoProtocolNudgePrefs` for the persisted counters this reads/writes.
- */
 class ConnectionProblemDetector(
-    private val connectionStatusProvider: ConnectionStatusProvider,
-    private val settingsPrefs: SettingsPrefs,
+    private val connectionStatusProvider: ConnectionStatusSource,
+    private val hasTunnelError: () -> Boolean,
+    private val settingsPrefs: SettingsStore,
     private val usageProvider: UsageProvider,
-    private val networkConnectionListener: NetworkConnectionListener,
-    private val nudgePrefs: AutoProtocolNudgePrefs,
+    private val networkStatus: NetworkStatus,
+    private val nudgePrefs: AutoProtocolNudgeStore,
     private val scope: CoroutineScope,
-    // Indirected so tests can drive elapsed-time checks off the coroutine test scheduler's
-    // virtual clock instead of real wall-clock time.
     private val nowMillis: () -> Long = System::currentTimeMillis,
 ) {
     private val _showNudge = MutableStateFlow(false)
@@ -63,23 +54,18 @@ class ConnectionProblemDetector(
     private var timeoutJob: Job? = null
     private var deadTunnelJob: Job? = null
 
-    // Set right before ConnectionManager tears down a connection itself (user disconnect,
-    // protocol/region change, logout, reconnect, ...) so the DISCONNECTED transition that
-    // follows is never mistaken for the tunnel dropping on its own.
     private var nextDisconnectIsUserInitiated = false
 
-    fun start() {
+    init {
         scope.launch {
             connectionStatusProvider.status.collectLatest { status -> handleStatus(status) }
         }
     }
 
-    /** Fed by the existing "protocol not available on this server" pre-check (see ConnectionManagerImpl.connect()). */
     fun onProtocolNotAvailable() {
         scope.launch { recordQualifyingFailureIfEligible() }
     }
 
-    /** Fed by ConnectionManager.disconnect() - a disconnect the app itself requested is never connection trouble. */
     fun onUserInitiatedDisconnect() {
         nextDisconnectIsUserInitiated = true
     }
@@ -141,8 +127,6 @@ class ConnectionProblemDetector(
         deadTunnelJob?.cancel()
         deadTunnelJob =
             scope.launch {
-                // A dead tunnel shows up as outbound bytes with nothing coming back. An idle tunnel
-                // (neither counter moving) is inconclusive and never counts as a failure.
                 var last = usageProvider.tunnelTraffic.value
                 var stalledSinceMillis: Long? = null
                 while (isActive) {
@@ -168,8 +152,8 @@ class ConnectionProblemDetector(
 
     private suspend fun recordQualifyingFailureIfEligible() {
         if (settingsPrefs.getSelectedProtocolNow() == VpnProtocols.Automatic) return
-        if (connectionStatusProvider.lastTunnelError.value != null) return
-        if (!networkConnectionListener.isConnected.value) return
+        if (hasTunnelError()) return
+        if (!networkStatus.isOnline.value) return
 
         val now = nowMillis()
         val current = nudgePrefs.getStateNow()

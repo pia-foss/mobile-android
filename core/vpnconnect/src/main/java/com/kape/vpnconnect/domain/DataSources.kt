@@ -11,3 +11,9 @@ interface ConnectionDataSource {
 
     suspend fun clearDebugLogs()
 }
+
+interface ClientStateDataSource {
+    suspend fun getPublicIp(): String
+
+    suspend fun getVpnIp(): String
+}

@@ -2,13 +2,16 @@ package com.kape.vpnconnect.platformsdk
 
 import android.util.Base64
 import androidx.core.net.toUri
-import com.kape.httpclient.data.CertificatePinningClientImpl
 import com.kape.localprefs.prefs.ConnectionPrefs
+import com.kape.network.pinning.EndpointIdentity
+import com.kape.network.pinning.PinnedHttpClientFactory
+import com.kape.network.pinning.SocketProtector
 import com.kape.platformsdk.vpn.service.models.IpAddress
 import com.kape.platformsdk.vpn.wireguard.WireGuardAuthConfiguration
 import com.kape.platformsdk.vpn.wireguard.WireGuardAuthenticator
 import com.kape.platformsdk.vpn.wireguard.WireGuardEndpointConfiguration
 import com.kape.vpnconnect.domain.ConnectionDataSource
+import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -20,23 +23,22 @@ import org.amnezia.awg.crypto.KeyPair
 import java.net.Socket
 
 class PiaWgAuthenticator(
-    caCertificate: String,
+    private val clients: PinnedHttpClientFactory,
     private val connectionSource: ConnectionDataSource,
     private val connectionPrefs: ConnectionPrefs,
-    // The addKey request must reach the server before that server's own tunnel exists, so its
-    // socket needs protect()-ing to bypass the kill-switch's network-lock tunnel — otherwise it's
-    // captured and silently dropped, and every WireGuard connection attempt times out.
-    protect: (Socket) -> Boolean,
+    private val protect: (Socket) -> Boolean,
 ) : WireGuardAuthenticator {
-    private val certificatePinningClient = CertificatePinningClientImpl(caCertificate, protect)
-    private val client = certificatePinningClient.client()
+    private val pinnedClients = mutableMapOf<EndpointIdentity, HttpClient>()
+
+    private fun clientFor(identity: EndpointIdentity): HttpClient =
+        synchronized(pinnedClients) {
+            pinnedClients.getOrPut(identity) { clients.create(listOf(identity), SocketProtector { protect(it) }) }
+        }
 
     override suspend fun authenticate(endpointConfiguration: WireGuardEndpointConfiguration): WireGuardAuthConfiguration {
         val authIp = endpointConfiguration.authIp.asString()
 
-        certificatePinningClient.setKnownEndpointCommonName(
-            listOf(authIp to endpointConfiguration.certDn),
-        )
+        val client = clientFor(EndpointIdentity(endpoint = authIp, commonName = endpointConfiguration.certDn))
 
         val keyPair = KeyPair()
         val vpnTokenBase64 = Base64.encodeToString(connectionSource.getVpnToken().toByteArray(), Base64.NO_WRAP)
@@ -78,10 +80,6 @@ class PiaWgAuthenticator(
         private const val ADD_KEY_PATH = "addKey"
         private const val PUBLIC_KEY_PARAM = "pubkey"
 
-        // wireguard-go's own default for an unset preshared key is 32 zero bytes — PIA's addKey
-        // endpoint never issues one, and WireGuardAuthConfiguration.psk isn't nullable like the
-        // SDK's presharedKeyBase64 field, so this reproduces "no PSK" without SDK support for
-        // actually omitting it.
         private const val NO_PRESHARED_KEY_BASE64 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
     }
 }

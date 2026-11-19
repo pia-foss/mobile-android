@@ -1,7 +1,8 @@
-package com.kape.vpnconnect.domain
+package com.kape.vpnconnect.data
 
 import android.content.Context
 import android.net.ConnectivityManager
+import com.kape.vpnconnect.domain.GetActiveInterfaceDnsUseCase
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [GetActiveInterfaceDnsUseCase::class])
