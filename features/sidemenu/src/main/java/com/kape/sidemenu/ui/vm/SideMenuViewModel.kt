@@ -1,116 +1,79 @@
 package com.kape.sidemenu.ui.vm
 
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.account.domain.usecase.GetAccountDetailsUseCase
 import com.kape.contracts.AppInfo
+import com.kape.contracts.AppUpdateStatus
 import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
 import com.kape.data.About
 import com.kape.data.Connection
-import com.kape.data.DI
 import com.kape.data.DedicatedIpActivateToken
 import com.kape.data.PerAppSettings
 import com.kape.data.Profile
 import com.kape.data.Settings
 import com.kape.data.Splash
 import com.kape.data.WebDestination
-import com.kape.profile.domain.GetProfileUseCase
-import com.kape.utils.UpdateAvailableManager
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.annotation.Named
-import kotlin.time.Duration.Companion.milliseconds
 
 @KoinViewModel
 class SideMenuViewModel(
-    private val profileUseCase: GetProfileUseCase,
+    private val getAccountDetails: GetAccountDetailsUseCase,
     private val logoutUseCase: LogoutUseCase,
-    private val appInfo: AppInfo,
     private val router: Router,
-    private val updateAvailableManager: UpdateAvailableManager,
-    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
+    private val appUpdateStatus: AppUpdateStatus,
+    appInfo: AppInfo,
 ) : ViewModel() {
-    val username = mutableStateOf("")
-    val showExpire = mutableStateOf(false)
-    val daysRemaining = mutableIntStateOf(0)
-    val updateAvailable = updateAvailableManager.hasUpdateAvailable
+    private val _username = MutableStateFlow("")
+    val username: StateFlow<String> = _username.asStateFlow()
+
+    val hasUpdateAvailable: StateFlow<Boolean> = appUpdateStatus.hasUpdateAvailable
+    val versionName: String = appInfo.versionName
+    val versionCode: String = appInfo.versionCode.toString()
+
+    private var loadingUsername: Job? = null
 
     init {
-        refreshProfile()
+        refreshUsername()
     }
 
-    // getProfile() can transiently return null (network blip, encrypted token store not yet
-    // warmed up after process start) even when the user is genuinely logged in. Retry a few
-    // times so a transient failure doesn't leave the header blank for the rest of the session.
-    // Safe to call repeatedly (e.g. every time the drawer opens): it only ever overwrites the
-    // displayed values on success, never clears them on failure.
-    fun refreshProfile() {
-        if (username.value.isNotEmpty()) return
-        viewModelScope.launch(ioDispatcher) {
-            repeat(PROFILE_FETCH_ATTEMPTS) { attempt ->
-                val profile = profileUseCase.getProfile()
-                if (profile != null) {
-                    username.value = profile.username.uppercase()
-                    showExpire.value = profile.subscription.showExpire
-                    daysRemaining.value = profile.subscription.daysRemaining
-                    return@launch
-                }
-                if (attempt < PROFILE_FETCH_ATTEMPTS - 1) delay(PROFILE_FETCH_RETRY_DELAY_MS.milliseconds)
+    fun refreshUsername() {
+        if (_username.value.isNotEmpty() || loadingUsername?.isActive == true) return
+        loadingUsername =
+            viewModelScope.launch {
+                getAccountDetails()?.let { _username.value = it.username.uppercase() }
             }
-        }
     }
 
-    fun logout() =
-        viewModelScope.launch(ioDispatcher) {
+    suspend fun getDownloadUrl(): String? = appUpdateStatus.getDownloadUrl()
+
+    fun logout() {
+        viewModelScope.launch {
             logoutUseCase.logout()
-            username.value = ""
+            _username.value = ""
             router.updateDestination(Splash)
         }
-
-    fun getDownloadLink(): String = updateAvailableManager.getDownloadUrl()
-
-    fun navigateToVpnConnect() {
-        router.updateDestination(Connection)
     }
 
-    fun navigateToProfile() {
-        router.updateDestination(Profile)
-    }
+    fun navigateToVpnConnect() = router.updateDestination(Connection)
 
-    fun navigateToSettings() {
-        router.updateDestination(Settings)
-    }
+    fun navigateToProfile() = router.updateDestination(Profile)
 
-    fun navigateToPerAppSettings() {
-        router.updateDestination(PerAppSettings)
-    }
+    fun navigateToSettings() = router.updateDestination(Settings)
 
-    fun navigateToDedicatedIp() {
-        router.updateDestination(DedicatedIpActivateToken)
-    }
+    fun navigateToPerAppSettings() = router.updateDestination(PerAppSettings)
 
-    fun navigateToPrivacyPolicy() {
-        router.updateDestination(WebDestination.Privacy)
-    }
+    fun navigateToDedicatedIp() = router.updateDestination(DedicatedIpActivateToken)
 
-    fun navigateToSupport() {
-        router.updateDestination(WebDestination.Support)
-    }
+    fun navigateToPrivacyPolicy() = router.updateDestination(WebDestination.Privacy)
 
-    fun navigateToAbout() {
-        router.updateDestination(About)
-    }
+    fun navigateToSupport() = router.updateDestination(WebDestination.Support)
 
-    fun getVersionName(): String = appInfo.versionName
-
-    fun getVersionCode(): String = "${appInfo.versionCode}"
-
-    companion object {
-        private const val PROFILE_FETCH_ATTEMPTS = 5
-        private const val PROFILE_FETCH_RETRY_DELAY_MS = 300L
-    }
+    fun navigateToAbout() = router.updateDestination(About)
 }

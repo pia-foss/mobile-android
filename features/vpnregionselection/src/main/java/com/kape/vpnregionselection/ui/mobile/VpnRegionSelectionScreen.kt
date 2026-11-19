@@ -1,6 +1,5 @@
 package com.kape.vpnregionselection.ui.mobile
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,12 +19,8 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -34,41 +30,35 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.data.RegionItemType
-import com.kape.regions.data.ServerData
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.Search
 import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.utils.LocalColors
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun VpnRegionSelectionScreen() =
+fun VpnRegionSelectionScreen(viewModel: VpnRegionSelectionViewModel = koinViewModel()) =
     Screen {
         val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
-        val isLoading = remember { mutableStateOf(false) }
-        val viewModel: VpnRegionSelectionViewModel =
-            koinViewModel<VpnRegionSelectionViewModel>().apply {
-                autoRegionIso = stringResource(id = R.string.automatic_iso)
-                autoRegionName = stringResource(id = R.string.optimal_vpn_region)
-                LaunchedEffect(Unit) {
-                    locale?.let {
-                        loadVpnRegions(it, isLoading, false)
-                    }
-                }
-            }
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.location_selection_title))
             }
-        val isSearchEnabled = rememberSaveable { mutableStateOf(false) }
-        val showToast = remember { mutableStateOf(false) }
-        val showChangeLocationDialog = rememberSaveable { mutableStateOf(false) }
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val isPortForwardingEnabled by viewModel.isPortForwardingEnabled.collectAsStateWithLifecycle()
+        val pendingLocationChange by viewModel.pendingLocationChange.collectAsStateWithLifecycle()
+        val context = LocalContext.current
+        val pingingWhileConnectedMessage = stringResource(id = R.string.error_pinging_while_connected)
+
+        LaunchedEffect(Unit) {
+            locale?.let { viewModel.refresh(it, force = false) }
+        }
 
         Column(
             modifier =
@@ -79,7 +69,7 @@ fun VpnRegionSelectionScreen() =
                     .padding(WindowInsets.navigationBars.asPaddingValues()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            AppBar(appBarViewModel)
+            AppBar(viewModel = appBarViewModel)
             Column(modifier = Modifier.widthIn(max = 520.dp)) {
                 Search(
                     modifier =
@@ -87,70 +77,32 @@ fun VpnRegionSelectionScreen() =
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                             .testTag(":VpnRegionSelectionScreen:searchBar"),
-                ) {
-                    viewModel.filterByName(it, isSearchEnabled)
-                }
-
-                val context: Context = LocalContext.current
-                val message = stringResource(id = R.string.error_pinging_while_connected)
+                    onTextChanged = viewModel::search,
+                )
 
                 PullToRefreshBox(
                     modifier = Modifier.testTag(":VpnRegionSelectionScreen:list"),
                     state = rememberPullToRefreshState(),
-                    isRefreshing = isLoading.value,
+                    isRefreshing = state.isRefreshing,
                     onRefresh = {
-                        showToast.value = viewModel.isVpnConnectionActive()
-                        if (showToast.value) {
-                            Toast
-                                .makeText(
-                                    context,
-                                    message,
-                                    Toast.LENGTH_SHORT,
-                                ).show()
+                        if (viewModel.isConnected()) {
+                            Toast.makeText(context, pingingWhileConnectedMessage, Toast.LENGTH_SHORT).show()
                         } else {
-                            locale?.let {
-                                viewModel.loadVpnRegions(locale, isLoading, true)
-                            }
+                            locale?.let { viewModel.refresh(it, force = true) }
                         }
                     },
                 ) {
                     LazyColumn {
-                        val items =
-                            if (isSearchEnabled.value) {
-                                viewModel.sorted.value
-                            } else {
-                                viewModel.servers.value
-                            }
-                        items(items.size) { index ->
-                            val item = items[index]
+                        itemsIndexed(state.visibleRegions) { index, item ->
                             when (val type = item.type) {
                                 is RegionItemType.Content -> {
                                     LocationPickerItem(
                                         server = type.server,
                                         isFavorite = type.isFavorite,
                                         enableFavorite = type.enableFavorite,
-                                        isPortForwardingEnabled = viewModel.isPortForwardingEnabled.collectAsState().value,
-                                        isOffline = type.server.isOffline,
-                                        onClick = {
-                                            if (viewModel.isVpnConnectionActive()) {
-                                                showChangeLocationDialog.value =
-                                                    viewModel.selectServer(type.server)
-                                                if (!showChangeLocationDialog.value) {
-                                                    appBarViewModel.navigateBack()
-                                                }
-                                            } else {
-                                                viewModel.onVpnRegionSelected(it)
-                                                appBarViewModel.navigateBack()
-                                            }
-                                        },
-                                        onFavoriteVpnClick = {
-                                            viewModel.onFavoriteVpnClicked(
-                                                ServerData(
-                                                    type.server.name,
-                                                    type.server.isDedicatedIp,
-                                                ),
-                                            )
-                                        },
+                                        isPortForwardingEnabled = isPortForwardingEnabled,
+                                        onClick = viewModel::onRegionClicked,
+                                        onFavoriteClick = { viewModel.onFavoriteClicked(type.server) },
                                         testTag = ":VpnRegionSelectionScreen:locationItem_$index",
                                     )
                                 }
@@ -176,17 +128,10 @@ fun VpnRegionSelectionScreen() =
                     }
                 }
 
-                if (showChangeLocationDialog.value) {
+                if (pendingLocationChange != null) {
                     LocationChangeDialog(
-                        {
-                            viewModel.selectedServer.value?.let {
-                                viewModel.onVpnRegionSelected(it)
-                            }
-                            showChangeLocationDialog.value = false
-                        },
-                        {
-                            showChangeLocationDialog.value = false
-                        },
+                        onConnect = viewModel::onLocationChangeConfirmed,
+                        onCancel = viewModel::onLocationChangeDismissed,
                     )
                 }
             }
@@ -194,7 +139,7 @@ fun VpnRegionSelectionScreen() =
     }
 
 @Composable
-fun LocationChangeDialog(
+private fun LocationChangeDialog(
     onConnect: () -> Unit,
     onCancel: () -> Unit,
 ) {
