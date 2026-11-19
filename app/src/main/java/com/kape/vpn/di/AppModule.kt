@@ -1,163 +1,118 @@
 package com.kape.vpn.di
 
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.kape.about.di.AboutModule
+import com.kape.account.di.AccountModule
 import com.kape.appbar.di.AppBarModule
 import com.kape.automation.di.AutomationModule
-import com.kape.buildconfig.data.BuildConfigProvider
+import com.kape.buildconfig.di.BuildConfigModule
 import com.kape.connection.di.ConnectionModule
 import com.kape.contracts.AppInfo
-import com.kape.contracts.ConfigInfo
-import com.kape.contracts.ConnectionStatusProvider
 import com.kape.contracts.DeviceInfo
-import com.kape.contracts.LicenceReader
-import com.kape.contracts.NetworkManager
+import com.kape.contracts.di.Qualifiers
 import com.kape.csi.di.CsiModule
-import com.kape.customization.di.CustomizationModule
-import com.kape.data.DI
-import com.kape.dedicatedip.di.DipModule
-import com.kape.dedicatedip.di.DipPurchaseModule
+import com.kape.dedicatedip.di.DedicatedIpModule
 import com.kape.featureflags.di.FeatureFlagsModule
-import com.kape.httpclient.data.CertificatePinningClientImpl
-import com.kape.httpclient.domain.CertificatePinningClient
 import com.kape.localprefs.di.PrefsModule
-import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.localprefs.prefs.CsiPrefs
-import com.kape.localprefs.prefs.NetworkManagementPrefs
-import com.kape.localprefs.prefs.RatingPrefs
-import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.location.di.LocationModule
-import com.kape.location.mocklocation.MockLocationNotificationProvider
 import com.kape.login.di.LoginModule
-import com.kape.login.di.LoginWithReceiptModule
+import com.kape.network.di.NetworkModule
 import com.kape.networkmanagement.di.NetworkManagementModule
-import com.kape.notifications.data.NotificationPermissionManager
-import com.kape.obfuscationregionselection.di.ShadowsocksRegionModule
+import com.kape.obfuscationregionselection.di.ObfuscationRegionSelectionModule
 import com.kape.obfuscator.di.ObfuscatorModule
-import com.kape.payments.di.PaymentsModule
 import com.kape.permissions.di.PermissionsModule
-import com.kape.portforwarding.data.PortForwardingApiImpl
 import com.kape.portforwarding.di.PortForwardingModule
-import com.kape.portforwarding.domain.PortForwardingApi
-import com.kape.portforwarding.domain.PortForwardingUseCase
 import com.kape.profile.di.ProfileModule
-import com.kape.rating.utils.RatingTool
+import com.kape.rating.di.RatingModule
+import com.kape.regions.di.RegionsModule
 import com.kape.router.di.RouterModule
 import com.kape.settings.di.SettingsModule
-import com.kape.shadowsocksregions.di.ShadowsocksServersModule
 import com.kape.shareevents.di.KpiModule
 import com.kape.sidemenu.di.SideMenuModule
-import com.kape.signup.di.SignupBillingModule
 import com.kape.signup.di.SignupModule
 import com.kape.snooze.di.SnoozeModule
 import com.kape.splash.di.SplashModule
 import com.kape.tvwelcome.di.TvWelcomeModule
-import com.kape.ui.utils.ExternallyUsed.Constants.ACTION_AUTOMATION
-import com.kape.ui.utils.PriceFormatter
-import com.kape.utils.AutomationManager
-import com.kape.utils.NetworkConnectionListener
-import com.kape.utils.VpnNotificationManager
 import com.kape.utils.di.UtilsModule
 import com.kape.vpn.BuildConfig
 import com.kape.vpn.MainActivity
-import com.kape.vpn.R
-import com.kape.vpn.provider.AccountModuleStateProvider
-import com.kape.vpn.provider.CSI_TEAM_IDENTIFIER
-import com.kape.vpn.provider.CsiDataProvider
-import com.kape.vpn.provider.CsiEndpointProvider
-import com.kape.vpn.provider.KPI_PREFS_NAME
-import com.kape.vpn.provider.KpiModuleStateProvider
-import com.kape.vpn.provider.MetaEndpointsProvider
-import com.kape.vpn.provider.RegionsModuleStateProvider
-import com.kape.vpn.receiver.OnRulesChangedReceiver
-import com.kape.vpn.service.AutomationService
-import com.kape.vpn.service.WidgetProviderService
-import com.kape.vpn.utils.LicenceReaderImpl
-import com.kape.vpn.utils.NetworkManagerImpl
-import com.kape.vpn.utils.USE_STAGING
 import com.kape.vpnconnect.di.VpnConnectModule
-import com.kape.vpnlauncher.VpnLauncher
 import com.kape.vpnlauncher.di.VpnLauncherModule
-import com.kape.vpnregions.di.VpnServersModule
-import com.kape.vpnregionselection.di.VpnRegionModule
-import com.privateinternetaccess.account.AccountBuilder
-import com.privateinternetaccess.account.AndroidAccountAPI
-import com.privateinternetaccess.account.Platform
-import com.privateinternetaccess.csi.CSIAPI
-import com.privateinternetaccess.csi.CSIBuilder
-import com.privateinternetaccess.kpi.KPIAPI
-import com.privateinternetaccess.kpi.KPIBuilder
-import com.privateinternetaccess.kpi.KPIRequestFormat
-import com.privateinternetaccess.kpi.KPISendEventsMode
-import com.privateinternetaccess.kpi.internals.utils.KTimeUnit
-import com.privateinternetaccess.regions.PlatformInstancesProvider
-import com.privateinternetaccess.regions.RegionsAPI
-import com.privateinternetaccess.regions.RegionsBuilder
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.kape.vpnregionselection.di.VpnRegionSelectionModule
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
-import java.io.BufferedReader
 
 @Module(
     includes = [
-        PrefsModule::class,
         UtilsModule::class,
+        NetworkModule::class,
         RouterModule::class,
-        ObfuscatorModule::class,
-        KpiModule::class,
-        LoginModule::class,
-        LoginWithReceiptModule::class,
-        SplashModule::class,
-        ConnectionModule::class,
-        SettingsModule::class,
-        ProfileModule::class,
-        SignupModule::class,
-        SignupBillingModule::class,
-        AutomationModule::class,
-        DipModule::class,
-        DipPurchaseModule::class,
-        AppBarModule::class,
-        TvWelcomeModule::class,
-        CustomizationModule::class,
-        PermissionsModule::class,
-        VpnRegionModule::class,
-        ShadowsocksRegionModule::class,
-        SnoozeModule::class,
+        PrefsModule::class,
+        RegionsModule::class,
+        AccountModule::class,
         FeatureFlagsModule::class,
+        SplashModule::class,
+        LoginModule::class,
+        SignupModule::class,
+        AppBarModule::class,
+        DedicatedIpModule::class,
+        VpnConnectModule::class,
+        ObfuscatorModule::class,
+        PortForwardingModule::class,
+        BuildConfigModule::class,
         CsiModule::class,
+        KpiModule::class,
+        VpnLauncherModule::class,
+        SnoozeModule::class,
         NetworkManagementModule::class,
         LocationModule::class,
-        FlavorLocationModule::class,
-        PaymentsModule::class,
-        VpnServersModule::class,
-        ShadowsocksServersModule::class,
-        VpnConnectModule::class,
-        PortForwardingModule::class,
-        VpnLauncherModule::class,
+        RatingModule::class,
+        PermissionsModule::class,
+        AboutModule::class,
+        TvWelcomeModule::class,
+        VpnRegionSelectionModule::class,
+        ObfuscationRegionSelectionModule::class,
+        ProfileModule::class,
         SideMenuModule::class,
+        ConnectionModule::class,
+        AutomationModule::class,
+        SettingsModule::class,
     ],
 )
-@ComponentScan("com.kape.vpn", "com.kape.obfuscator")
+@ComponentScan("com.kape.vpn")
 class AppModule {
-    @Singleton(binds = [AppInfo::class])
-    fun provideAppInfo(context: Context): AppInfo =
-        object : AppInfo {
-            override val buildFlavor: String = BuildConfig.FLAVOR
-            override val buildType: String = BuildConfig.BUILD_TYPE
-            override val versionName: String = BuildConfig.VERSION_NAME
-            override val versionCode: Int = BuildConfig.VERSION_CODE
-            override val isFreshInstall: Boolean =
-                context.packageManager.getPackageInfo(context.packageName, 0).let {
-                    it.firstInstallTime == it.lastUpdateTime
-                }
-        }
+    @Singleton
+    @Named(Qualifiers.CERTIFICATE)
+    fun providePinnedCertificate(context: Context): String =
+        context.assets
+            .open("rsa4096.pem")
+            .bufferedReader()
+            .use { it.readText() }
+
+    @Singleton
+    @Named(Qualifiers.USER_AGENT)
+    fun provideUserAgent(appInfo: AppInfo): String =
+        "privateinternetaccess.com Android Client/${appInfo.versionName}(${appInfo.versionCode})"
+
+    @Singleton
+    @Named(Qualifiers.UPDATE_URL)
+    fun provideUpdateUrl(): String = BuildConfig.UPDATE_URL
+
+    @Singleton
+    @Named(Qualifiers.VPN_NOTIFICATION_INTENT)
+    fun provideVpnNotificationIntent(context: Context): PendingIntent =
+        PendingIntent.getActivity(
+            context,
+            VPN_NOTIFICATION_REQUEST_CODE,
+            Intent(context, MainActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP),
+            PendingIntent.FLAG_IMMUTABLE,
+        )
 
     @Singleton(binds = [DeviceInfo::class])
     fun provideDeviceInfo(): DeviceInfo =
@@ -167,271 +122,18 @@ class AppModule {
             override val osVersion: String = Build.VERSION.RELEASE
         }
 
-    @Singleton(binds = [ConfigInfo::class])
-    fun provideConfigInfo(context: Context): ConfigInfo =
-        object : ConfigInfo {
-            override val certificate: String =
-                context.assets
-                    .open("rsa4096.pem")
-                    .bufferedReader()
-                    .use(BufferedReader::readText)
-            override val userAgent: String =
-                "privateinternetaccess.com Android Client/${BuildConfig.VERSION_NAME}(${BuildConfig.VERSION_CODE}))"
-            override val updateUrl: String = BuildConfig.UPDATE_URL
+    @Singleton(binds = [AppInfo::class])
+    fun provideAppInfo(context: Context): AppInfo =
+        object : AppInfo {
+            override val buildFlavor: String = BuildConfig.FLAVOR
+            override val buildType: String = BuildConfig.BUILD_TYPE
+            override val versionName: String = BuildConfig.VERSION_NAME
+            override val versionCode: Int = BuildConfig.VERSION_CODE
+            override val isFreshInstall: Boolean =
+                context.packageManager
+                    .getPackageInfo(context.packageName, 0)
+                    .let { it.firstInstallTime == it.lastUpdateTime }
         }
-
-    @Singleton(binds = [LicenceReader::class])
-    fun provideLicenceReader(
-        context: Context,
-        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-    ): LicenceReader = LicenceReaderImpl(context, ioDispatcher)
-
-    @Singleton
-    @Named(DI.UPDATE_URL)
-    fun provideUpdateUrl(configInfo: ConfigInfo): String = configInfo.updateUrl
-
-    @Singleton
-    @Named(DI.MAIN_DISPATCHER)
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @Singleton
-    @Named(DI.IO_DISPATCHER)
-    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
-
-    @Singleton
-    @Named(DI.IO_SCOPE)
-    fun provideIOScope(
-        @Named(DI.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
-    ) = CoroutineScope(ioDispatcher)
-
-    @Singleton
-    fun provideNotificationManager(context: Context): NotificationManager =
-        context.getSystemService(
-            Context.NOTIFICATION_SERVICE,
-        ) as NotificationManager
-
-    @Singleton
-    fun provideBuildConfigProvider(appInfo: AppInfo): BuildConfigProvider = BuildConfigProvider(appInfo)
-
-    @Singleton(binds = [CertificatePinningClient::class])
-    fun provideCertificatePinningClient(configInfo: ConfigInfo): CertificatePinningClient =
-        CertificatePinningClientImpl(configInfo.certificate)
-
-    @Singleton(binds = [PortForwardingApi::class])
-    fun providePortForwardingApi(
-        client: CertificatePinningClient,
-        configInfo: ConfigInfo,
-    ): PortForwardingApi = PortForwardingApiImpl(client, configInfo.userAgent)
-
-    @Singleton
-    fun providePortForwardingUseCase(
-        api: PortForwardingApi,
-        connectionPrefs: ConnectionPrefs,
-        settingsPrefs: SettingsPrefs,
-    ): PortForwardingUseCase = PortForwardingUseCase(api, connectionPrefs, settingsPrefs)
-
-    @Singleton
-    fun provideAccountStateProvider(
-        configInfo: ConfigInfo,
-        metaEndpointsProvider: MetaEndpointsProvider,
-    ): AccountModuleStateProvider = AccountModuleStateProvider(configInfo.certificate, metaEndpointsProvider, USE_STAGING)
-
-    @Singleton(binds = [AndroidAccountAPI::class])
-    fun provideAndroidAccountApi(
-        provider: AccountModuleStateProvider,
-        configInfo: ConfigInfo,
-    ): AndroidAccountAPI =
-        AccountBuilder<AndroidAccountAPI>()
-            .setEndpointProvider(provider)
-            .setCertificate(provider.certificate)
-            .setPlatform(Platform.ANDROID)
-            .setUserAgentValue(configInfo.userAgent)
-            .build()
-
-    @Singleton
-    fun provideKpiStateProvider(
-        configInfo: ConfigInfo,
-        accountAPI: AndroidAccountAPI,
-    ): KpiModuleStateProvider = KpiModuleStateProvider(configInfo.certificate, accountAPI, USE_STAGING)
-
-    @Singleton(binds = [KPIAPI::class])
-    fun provideKpiApi(
-        provider: KpiModuleStateProvider,
-        configInfo: ConfigInfo,
-    ): KPIAPI =
-        KPIBuilder()
-            .setKPIClientStateProvider(provider)
-            .setKPIFlushEventMode(KPISendEventsMode.PER_BATCH)
-            .setEventTimeRoundGranularity(KTimeUnit.HOURS)
-            .setEventTimeSendGranularity(KTimeUnit.MILLISECONDS)
-            .setRequestFormat(KPIRequestFormat.KAPE)
-            .setPreferenceName(KPI_PREFS_NAME)
-            .setUserAgent(configInfo.userAgent)
-            .setCertificate(provider.certificate)
-            .build()
-
-    @Singleton
-    fun provideRegionsStateProvider(
-        configInfo: ConfigInfo,
-        metaEndpointsProvider: MetaEndpointsProvider,
-    ): RegionsModuleStateProvider = RegionsModuleStateProvider(configInfo.certificate, metaEndpointsProvider, USE_STAGING)
-
-    @Singleton([RegionsAPI::class])
-    fun provideRegionsApi(
-        provider: RegionsModuleStateProvider,
-        platformProvider: PlatformInstancesProvider,
-        configInfo: ConfigInfo,
-    ): RegionsAPI =
-        RegionsBuilder()
-            .setEndpointProvider(provider)
-            .setCertificate(provider.certificate)
-            .setUserAgent(configInfo.userAgent)
-            .setMetadataRequestPath("/vpninfo/regions/v2")
-            .setVpnRegionsRequestPath("/vpninfo/servers/v7")
-            .setShadowsocksRegionsRequestPath("/shadow_socks")
-            .setPlatformInstancesProvider(platformProvider)
-            .build()
-
-    @Singleton
-    fun provideCsiEndpoints(): CsiEndpointProvider = CsiEndpointProvider(USE_STAGING)
-
-    @Singleton
-    fun provideCsiDataProvider(
-        csiPrefs: CsiPrefs,
-        settingsPrefs: SettingsPrefs,
-        configInfo: ConfigInfo,
-    ): CsiDataProvider = CsiDataProvider(csiPrefs, settingsPrefs, configInfo.userAgent)
-
-    @Singleton([CSIAPI::class])
-    fun provideCsiApi(
-        configInfo: ConfigInfo,
-        endpointProvider: CsiEndpointProvider,
-        csiDataProvider: CsiDataProvider,
-    ): CSIAPI =
-        CSIBuilder()
-            .setTeamIdentifier(CSI_TEAM_IDENTIFIER)
-            .setAppVersion(BuildConfig.VERSION_NAME)
-            .setCertificate(configInfo.certificate)
-            .setUserAgent(configInfo.userAgent)
-            .setEndPointProvider(endpointProvider)
-            .setRequestTimeoutMs(10000)
-            .addLogProviders(
-                csiDataProvider.applicationInformationProvider,
-                csiDataProvider.deviceInformationProvider,
-                csiDataProvider.lastKnownExceptionProvider,
-                csiDataProvider.protocolInformationProvider,
-                csiDataProvider.regionInformationProvider,
-                csiDataProvider.userSettingsProvider,
-                csiDataProvider.protocolDebugLogsProvider,
-            ).build()
-
-    @Singleton
-    fun provideAutomationManager(
-        context: Context,
-        @Named(DI.AUTOMATION_SERVICE_INTENT) automationServiceIntent: Intent,
-        vpnNotificationManager: VpnNotificationManager,
-    ): AutomationManager = AutomationManager(context, automationServiceIntent, vpnNotificationManager)
-
-    @Singleton
-    fun provideNetworkManager(
-        context: Context,
-        networkPrefs: NetworkManagementPrefs,
-        vpnLauncher: VpnLauncher,
-        settingsPrefs: SettingsPrefs,
-        connectionPrefs: ConnectionPrefs,
-        connectionStatusProvider: ConnectionStatusProvider,
-        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
-    ): NetworkManager =
-        NetworkManagerImpl(
-            context,
-            networkPrefs,
-            vpnLauncher,
-            settingsPrefs,
-            connectionPrefs,
-            connectionStatusProvider,
-            ioScope,
-        )
-
-    @Singleton
-    fun provideNetworkConnectionListener(
-        context: Context,
-        networkManager: NetworkManager,
-    ): NetworkConnectionListener = NetworkConnectionListener(context, networkManager)
-
-    @Singleton
-    fun provideRatingTool(
-        connectionStatusProvider: ConnectionStatusProvider,
-        ratingPrefs: RatingPrefs,
-        @Named(DI.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
-    ): RatingTool = RatingTool(connectionStatusProvider, ratingPrefs, mainDispatcher)
-
-    @Singleton
-    fun provideNotificationPermissionManager(context: Context): NotificationPermissionManager = NotificationPermissionManager(context)
-
-    @Singleton
-    fun providePriceFormatter(context: Context): PriceFormatter = PriceFormatter(context)
-
-    @Singleton
-    @Named(DI.RULES_UPDATED_INTENT)
-    fun providesRulesUpdatedIntent(context: Context): Intent = Intent(context, OnRulesChangedReceiver::class.java)
-
-    @Singleton
-    @Named(DI.AUTOMATION_PENDING_INTENT)
-    fun provideAutomationPendingIntent(context: Context): PendingIntent {
-        val intent =
-            Intent(context, MainActivity::class.java).apply {
-                action = ACTION_AUTOMATION
-                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }
-        return PendingIntent.getActivity(
-            context,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
-    }
-
-    @Singleton
-    @Named(DI.AUTOMATION_SERVICE_INTENT)
-    fun provideAutomationServiceIntent(context: Context): Intent = Intent(context, AutomationService::class.java)
-
-    @Singleton
-    fun provideLauncherIntent(context: Context): Intent =
-        Intent(context, MainActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        }
-
-    @Singleton
-    fun providePendingIntent(
-        context: Context,
-        intent: Intent,
-    ): PendingIntent =
-        PendingIntent.getActivity(
-            context,
-            123,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE,
-        )
-
-    @Singleton
-    fun provideVpnNotificationManager(context: Context): VpnNotificationManager =
-        VpnNotificationManager(context, R.drawable.ic_stat_pia_robot_white)
-
-    @Singleton
-    fun provideMockLocationNotificationProvider(context: Context): MockLocationNotificationProvider =
-        MockLocationNotificationProvider(
-            context,
-            R.drawable.ic_stat_pia_robot_white,
-            context.getString(com.kape.ui.R.string.mock_location_notification_title),
-        )
-
-    @Singleton
-    @Named(DI.WIDGET_PENDING_INTENT)
-    fun provideWidgetServiceIntent(context: Context): PendingIntent =
-        PendingIntent.getService(
-            context,
-            0,
-            Intent(context, WidgetProviderService::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-        )
 }
+
+private const val VPN_NOTIFICATION_REQUEST_CODE = 123
