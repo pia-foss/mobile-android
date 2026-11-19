@@ -2,38 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <queries>
-        <package android:name="com.privateinternetaccess.android" />
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="https" />
-        </intent>
-        <intent>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent>
-        <intent>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-        </intent>
-
-        <package android:name="androidx.test.orchestrator.OrchestratorService" />
-    </queries>
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <!--Keeps the OpenVPN subprocess from being frozen by Doze/App Standby while connected,
-        which was causing it to miss ping-restart windows and reconnect on a ~60s loop-->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <!--Android 13-->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!--Android 14-->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
-
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
@@ -41,20 +9,19 @@
         android:name="android.software.leanback"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".App"
         android:banner="@mipmap/ic_banner"
-        android:fullBackupContent="false"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.PIA">
-
-        <provider
-            android:name="com.privateinternetaccess.account.AccountContentProvider"
-            android:authorities="com.privateinternetaccess.account.AccountContentProvider"
-            android:exported="false" />
-
+        <!-- Koin's workManagerFactory() configures WorkManager, so its default initializer is removed. -->
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -69,14 +36,14 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.PIA">
+            android:theme="@style/Theme.PIA"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
             <intent-filter>
@@ -94,84 +61,39 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
                     android:host="www.privateinternetaccess.com"
-                    android:pathPrefix="/login" />
+                    android:pathPrefix="/login"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 
-        <!-- Boot receiver -->
         <receiver
-            android:name=".receiver.OnBootReceiver"
+            android:name=".system.OnBootReceiver"
             android:exported="true">
-            <intent-filter android:priority="999">
+            <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" /> <!-- HTC boot notification -->
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
         <receiver
-            android:name=".receiver.OnAppUpdateReceiver"
+            android:name=".system.OnAppUpdateReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receiver.OnRulesChangedReceiver" />
-
-        <service
-            android:name="com.kape.vpnconnect.platformsdk.PiaService"
-            android:exported="true"
-            android:foregroundServiceType="specialUse"
-            android:permission="android.permission.BIND_VPN_SERVICE">
-            <intent-filter>
-                <action android:name="android.net.VpnService" />
-            </intent-filter>
-            <meta-data
-                android:name="android.net.VpnService.SUPPORTS_ALWAYS_ON"
-                android:value="true" />
-        </service>
-
-        <service
-            android:name=".service.AutomationService"
-            android:exported="false"
-            android:foregroundServiceType="specialUse"
-            android:permission="android.permission.BIND_VPN_SERVICE" />
-
-        <service
-            android:name=".service.WidgetProviderService"
-            android:exported="true"
-            android:permission="android.permission.BIND_VPN_SERVICE">
-            <intent-filter>
-                <action android:name="android.net.VpnService" />
-            </intent-filter>
-        </service>
-
         <service
             android:name=".service.QuickSettingService"
             android:exported="true"
             android:icon="@drawable/ic_stat_pia_robot_white"
             android:label="@string/qs_title"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
-            android:value="true">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
-            <meta-data
-                android:name="android.service.quicksettings.ACTIVE_TILE"
-                android:value="false" />
         </service>
-
-        <receiver
-            android:name="com.kape.widget.WidgetReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_info" />
-        </receiver>
     </application>
+
 </manifest>
