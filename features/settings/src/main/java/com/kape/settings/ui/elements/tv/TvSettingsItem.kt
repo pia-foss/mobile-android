@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTvMaterial3Api::class)
-
 package com.kape.settings.ui.elements.tv
 
 import androidx.annotation.StringRes
@@ -12,7 +10,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Button
 import androidx.tv.material3.ButtonDefaults
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.kape.ui.tv.text.SettingsL2Text
 import com.kape.ui.tv.text.SettingsL2TextDescription
 import com.kape.ui.utils.LocalColors

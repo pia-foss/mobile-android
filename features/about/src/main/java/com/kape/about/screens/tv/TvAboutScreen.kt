@@ -12,35 +12,29 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.tv.material3.Text
-import com.kape.contracts.ConnectionInfoProvider
-import com.kape.contracts.LicenceReader
+import com.kape.about.ui.vm.AboutViewModel
+import com.kape.appbar.view.topBarColor
+import com.kape.contracts.ConnectionStatusSource
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.elements.AboutButton
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun TvAboutScreen() =
     Screen {
-        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-        val licenceReader: LicenceReader = koinInject()
-        val licences = remember { mutableStateOf<List<String>>(emptyList()) }
-
-        LaunchedEffect(Unit) {
-            licences.value = licenceReader.readLicences()
-        }
+        val connectionStatus by koinInject<ConnectionStatusSource>().status.collectAsStateWithLifecycle()
+        val licences by koinViewModel<AboutViewModel>().licences.collectAsStateWithLifecycle()
 
         Box(
             modifier =
@@ -50,10 +44,7 @@ fun TvAboutScreen() =
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 4.dp,
-                color =
-                    connectionInfoProvider.getTopBarConnectionColor(
-                        scheme = LocalColors.current,
-                    ),
+                color = connectionStatus.topBarColor(LocalColors.current),
             )
             Column(
                 modifier =
@@ -82,8 +73,8 @@ fun TvAboutScreen() =
                             .padding(32.dp),
                     columns = GridCells.Fixed(1),
                 ) {
-                    items(licences.value.size) { index ->
-                        val license = licences.value[index]
+                    items(licences.size) { index ->
+                        val license = licences[index]
                         AboutButton {
                             Text(text = license)
                         }

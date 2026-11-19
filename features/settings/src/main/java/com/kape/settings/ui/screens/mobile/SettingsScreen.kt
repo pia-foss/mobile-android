@@ -8,7 +8,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -20,23 +19,22 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.settings.R
 import com.kape.settings.data.VpnProtocols
-import com.kape.settings.ui.elements.mobile.SettingsItem
-import com.kape.settings.ui.vm.SettingsViewModel
-import com.kape.ui.mobile.elements.Screen
-import org.koin.androidx.compose.koinViewModel
+import com.kape.settings.ui.vm.SettingsMenuViewModel
+import com.kape.ui.Screen
+import com.kape.ui.mobile.elements.SettingsItem
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SettingsScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
+        val viewModel: SettingsMenuViewModel = koinViewModel()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = com.kape.ui.R.string.settings))
             }
         val protocol by viewModel.selectedProtocol.collectAsStateWithLifecycle()
         val shouldShowObfuscation = protocol == VpnProtocols.OpenVPN
-        val automationEnabled by viewModel.isAutomationEnabled().collectAsStateWithLifecycle()
+        val automationEnabled by viewModel.isAutomationEnabled.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {

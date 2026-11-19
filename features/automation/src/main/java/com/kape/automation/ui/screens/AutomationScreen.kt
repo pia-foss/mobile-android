@@ -21,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -33,19 +32,19 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.ui.elements.BehaviorDialog
-import com.kape.automation.ui.viewmodel.AutomationViewModel
+import com.kape.automation.ui.vm.AutomationViewModel
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
 import com.kape.ui.R
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.NetworkCard
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.Hyperlink
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
 import com.kape.ui.theme.infoBlue
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AutomationScreen() =
@@ -79,10 +78,10 @@ fun AutomationScreen() =
                     showDialog,
                 ) {
                     if (it == removeRule) {
-                        viewModel.removeRule(context, rule)
+                        viewModel.removeRule(rule)
                     } else {
                         rule.let { item ->
-                            viewModel.updateRule(context, item, getRuleForStatus(context, status = it))
+                            viewModel.updateRule(item, getRuleForStatus(context, status = it))
                         }
                     }
                 }
@@ -90,7 +89,6 @@ fun AutomationScreen() =
         }
     }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AutomationScreenContent(
     appBarViewModel: AppBarViewModel,

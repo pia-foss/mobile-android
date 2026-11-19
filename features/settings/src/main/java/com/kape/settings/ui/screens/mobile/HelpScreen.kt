@@ -20,7 +20,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -32,19 +31,19 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.ui.elements.mobile.SettingsItem
-import com.kape.settings.ui.elements.mobile.SettingsToggle
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.vm.HelpViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
+import com.kape.ui.mobile.elements.SettingsItem
+import com.kape.ui.mobile.elements.SettingsToggle
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HelpScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
+        val viewModel: HelpViewModel = koinViewModel()
+        val requestIdState by viewModel.requestId.collectAsStateWithLifecycle()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.help))
@@ -73,7 +72,7 @@ fun HelpScreen() =
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                    with(viewModel.requestId.value) {
+                    with(requestIdState) {
                         when {
                             this == null -> {
                                 showDialog.value = false
@@ -160,7 +159,7 @@ fun HelpScreen() =
                     if (showDialog.value) {
                         showSpinner.value = false
                         SuccessDialog(
-                            requestId = viewModel.requestId.value ?: "",
+                            requestId = requestIdState ?: "",
                             showDialog = showDialog,
                         ) { viewModel.resetRequestId() }
                     }
@@ -178,7 +177,6 @@ fun HelpScreen() =
         }
     }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SuccessDialog(
     requestId: String,
