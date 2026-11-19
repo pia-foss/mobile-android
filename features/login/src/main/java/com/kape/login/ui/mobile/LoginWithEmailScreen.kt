@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,22 +25,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.login.ui.LoginError
+import com.kape.login.ui.LoginScreenState
 import com.kape.login.ui.vm.mobile.LoginWithEmailViewModel
-import com.kape.login.utils.LoginError
-import com.kape.login.utils.LoginScreenState
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.NoNetworkBanner
 import com.kape.ui.mobile.elements.PrimaryButton
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.Input
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginWithEmailScreen() =
     Screen {
         val viewModel: LoginWithEmailViewModel = koinViewModel()
 
-        val state by remember(viewModel) { viewModel.state }.collectAsState()
-        val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsState()
+        val state by remember(viewModel) { viewModel.state }.collectAsStateWithLifecycle()
+        val isConnected by remember(viewModel) { viewModel.isConnected }.collectAsStateWithLifecycle()
         val currentContext = LocalContext.current
         val noNetworkMessage = stringResource(id = com.kape.ui.R.string.no_internet)
         val email = rememberSaveable { mutableStateOf("") }
@@ -111,7 +111,7 @@ fun LoginWithEmailScreen() =
 @Composable
 private fun getErrorMessage(state: LoginScreenState): String? =
     when (state.error) {
-        LoginError.Expired -> "account expired flow" // TODO: handle when signup module is built
+        LoginError.Expired -> stringResource(id = com.kape.ui.R.string.error_account_expired)
         LoginError.Failed,
         LoginError.ReceiptFailed,
         LoginError.Invalid,

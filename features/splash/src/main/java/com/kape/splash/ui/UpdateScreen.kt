@@ -1,7 +1,6 @@
 package com.kape.splash.ui
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,18 +23,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.kape.splash.ui.vm.SplashViewModel
+import androidx.core.net.toUri
 import com.kape.ui.R
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.PrimaryButton
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.OnboardingDescriptionPaymentText
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.mobile.text.OnboardingTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun UpdateScreen(viewModel: SplashViewModel = koinViewModel()) =
+fun UpdateScreen(viewModel: UpdateViewModel = koinViewModel()) =
     Screen {
         val context = LocalContext.current
         Column(
@@ -98,8 +97,7 @@ fun UpdateScreen(viewModel: SplashViewModel = koinViewModel()) =
                             launchUpdate = { url ->
                                 val launchIntent = Intent(Intent.ACTION_VIEW)
                                 launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                launchIntent.data = Uri.parse(url)
-                                // Silently fail if Google Play Store isn't installed.
+                                launchIntent.data = url.toUri()
                                 if (launchIntent.resolveActivity(context.packageManager) != null) {
                                     context.startActivity(launchIntent)
                                 }
