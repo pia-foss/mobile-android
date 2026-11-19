@@ -22,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,11 +31,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.dedicatedip.domain.DipCountry
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.ui.R
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.PrimaryButton
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.SubscriptionCard
 import com.kape.ui.mobile.text.DedicatedIpSignupDescriptionText
@@ -46,8 +47,7 @@ import com.kape.ui.mobile.text.SupportedDipRegionsInCountry
 import com.kape.ui.theme.connectionError
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.privateinternetaccess.account.model.response.DipCountriesResponse
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SignupDedicatedIpScreen() =
@@ -111,7 +111,7 @@ fun SignupDedicatedIpScreen() =
                 }
                 Spacer(modifier = Modifier.height(32.dp))
                 SubscriptionCard(
-                    selected = viewModel.selectedPlanProductId.collectAsState().value == viewModel.dipYearlyPlan.value?.id,
+                    selected = viewModel.selectedPlanProductId.collectAsStateWithLifecycle().value == viewModel.dipYearlyPlan.value?.id,
                     price =
                         viewModel.dipYearlyPlan.value
                             ?.yearlyPrice
@@ -134,7 +134,7 @@ fun SignupDedicatedIpScreen() =
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 SubscriptionCard(
-                    selected = viewModel.selectedPlanProductId.collectAsState().value == viewModel.dipMonthlyPlan.value?.id,
+                    selected = viewModel.selectedPlanProductId.collectAsStateWithLifecycle().value == viewModel.dipMonthlyPlan.value?.id,
                     price =
                         viewModel.dipMonthlyPlan.value
                             ?.monthlyPrice
@@ -226,9 +226,9 @@ private fun DipSignupSupportedCountriesDialog(
             ) {
                 viewModel.supportedDipCountriesList.value?.let {
                     LazyColumn {
-                        val items = it.dedicatedIpCountriesAvailable
+                        val items = it
                         items(items.size) { index ->
-                            val item: DipCountriesResponse.DedicatedIpCountriesAvailable =
+                            val item: DipCountry =
                                 items[index]
                             SupportedCountryItem(country = item)
                         }
@@ -301,7 +301,7 @@ fun DipSignupErrorDialog(
 }
 
 @Composable
-fun SupportedCountryItem(country: DipCountriesResponse.DedicatedIpCountriesAvailable) {
+fun SupportedCountryItem(country: DipCountry) {
     Row(modifier = Modifier.fillMaxWidth()) {
         Image(
             painter =

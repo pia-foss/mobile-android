@@ -32,11 +32,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kape.contracts.ConnectionInfoProvider
+import com.kape.appbar.view.topBarColor
+import com.kape.contracts.ConnectionStatusSource
+import com.kape.dedicatedip.domain.DipActivationResult
 import com.kape.dedicatedip.ui.vm.DipViewModel
-import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.theme.connectionError
 import com.kape.ui.tiles.Dialog
 import com.kape.ui.tv.elements.PrimaryButton
@@ -47,14 +48,14 @@ import com.kape.ui.tv.text.DedicatedIpDescription
 import com.kape.ui.tv.text.DedicatedIpTitle
 import com.kape.ui.tv.text.Input
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvDedicatedIpScreen() =
     Screen {
         val viewModel: DipViewModel = koinViewModel<DipViewModel>()
-        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val connectionStatus by koinInject<ConnectionStatusSource>().status.collectAsStateWithLifecycle()
         val showActivationDialog = remember { mutableStateOf(false) }
         val showDeletionDialog = remember { mutableStateOf(false) }
         val text = remember { mutableStateOf("") }
@@ -69,9 +70,7 @@ fun TvDedicatedIpScreen() =
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 4.dp,
                 color =
-                    connectionInfoProvider.getTopBarConnectionColor(
-                        scheme = LocalColors.current,
-                    ),
+                    connectionStatus.topBarColor(LocalColors.current),
             )
             Column(
                 modifier =
@@ -141,7 +140,7 @@ fun TvDedicatedIpScreen() =
                 color = Color.Black.copy(alpha = 0.6f),
             ) {
                 when (viewModel.activationState.value) {
-                    DipApiResult.Active -> {
+                    DipActivationResult.Active -> {
                         Dialog(
                             title = stringResource(id = R.string.you_are_all_set),
                             text = stringResource(id = R.string.your_dedicated_ip_is_now_active),
@@ -152,7 +151,7 @@ fun TvDedicatedIpScreen() =
                         )
                     }
 
-                    DipApiResult.Expired -> {
+                    DipActivationResult.Expired -> {
                         Dialog(
                             title = stringResource(id = R.string.something_went_wrong),
                             text = stringResource(id = R.string.dip_expired_warning),
@@ -168,8 +167,8 @@ fun TvDedicatedIpScreen() =
                         )
                     }
 
-                    DipApiResult.Error,
-                    DipApiResult.Invalid,
+                    DipActivationResult.Error,
+                    DipActivationResult.Invalid,
                     null,
                     -> {
                         Dialog(
