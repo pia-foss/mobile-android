@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
@@ -28,6 +27,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import com.kape.data.vpnserver.VpnServer
+import com.kape.regions.vpn.domain.VPN_PING_TIMEOUT_MS
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.FavoriteIcon
 import com.kape.ui.mobile.elements.Separator
@@ -38,18 +38,17 @@ import com.kape.ui.mobile.text.RegionSelectionText
 import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
+import com.kape.vpnregionselection.ui.displayIso
+import com.kape.vpnregionselection.ui.displayName
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LocationPickerItem(
     server: VpnServer,
     isFavorite: Boolean,
     enableFavorite: Boolean,
     isPortForwardingEnabled: Boolean,
-    isOffline: Boolean,
     onClick: ((server: VpnServer) -> Unit),
-    onFavoriteVpnClick: ((vpnServerName: String) -> Unit),
+    onFavoriteClick: () -> Unit,
     testTag: String,
 ) {
     Column(Modifier.semantics { testTagsAsResourceId = true }) {
@@ -57,7 +56,7 @@ fun LocationPickerItem(
             modifier =
                 Modifier
                     .then(
-                        if (!isOffline) {
+                        if (!server.isOffline) {
                             Modifier.clickable { onClick(server) }
                         } else {
                             val offlineDescription = stringResource(id = R.string.offline)
@@ -73,7 +72,7 @@ fun LocationPickerItem(
             Icon(
                 painter =
                     painterResource(
-                        id = getFlagResource(LocalContext.current, server.iso),
+                        id = getFlagResource(LocalContext.current, server.displayIso()),
                     ),
                 contentDescription = null,
                 tint = Color.Unspecified,
@@ -89,7 +88,7 @@ fun LocationPickerItem(
                         .weight(12f),
             ) {
                 Row {
-                    RegionSelectionText(content = server.name, isOffline = server.isOffline, testTag = "$testTag:regionName")
+                    RegionSelectionText(content = server.displayName(), isOffline = server.isOffline, testTag = "$testTag:regionName")
                     if (!server.allowsPortForwarding && isPortForwardingEnabled) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(
@@ -120,7 +119,7 @@ fun LocationPickerItem(
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-            if (isOffline) {
+            if (server.isOffline) {
                 Icon(
                     painter = painterResource(id = com.kape.vpnregionselection.R.drawable.ic_offline),
                     contentDescription = null,
@@ -129,7 +128,7 @@ fun LocationPickerItem(
                 )
             } else {
                 server.latency?.let {
-                    if (it.toInt() < VPN_REGIONS_PING_TIMEOUT) {
+                    if (it.toInt() < VPN_PING_TIMEOUT_MS) {
                         Box(
                             modifier =
                                 Modifier
@@ -159,7 +158,7 @@ fun LocationPickerItem(
                             .align(CenterVertically)
                             .testTag("$testTag:favorite")
                             .clickable {
-                                onFavoriteVpnClick(server.name)
+                                onFavoriteClick()
                             },
                 )
             }
