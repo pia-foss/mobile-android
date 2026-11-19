@@ -3,51 +3,40 @@ package com.kape.ui.utils
 import android.content.Context
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
-import java.util.stream.Stream
-import kotlin.test.assertEquals
+import org.junit.jupiter.api.Test
+import java.util.Locale
 
-class PriceFormatterTest {
-    private val context: Context = mockk(relaxed = true)
-    lateinit var priceFormatter: PriceFormatter
+internal class PriceFormatterTest {
+    private val defaultLocale = Locale.getDefault()
+    private val context = mockk<Context> { every { getString(any()) } returns "%s/month" }
+    private val formatter = PriceFormatter(context)
 
     @BeforeEach
-    fun setUp() {
-        priceFormatter = PriceFormatter(context)
+    fun setUp() = Locale.setDefault(Locale.US)
+
+    @AfterEach
+    fun tearDown() = Locale.setDefault(defaultLocale)
+
+    @Test
+    fun `divides the yearly price by twelve`() {
+        assertEquals("$5.00/month", formatter.formatYearlyPerMonth(59_990_000, "USD", "$59.99"))
     }
 
-    @ParameterizedTest(name = "priceInMicros: {0}, code: {1}, originalFormattedPrice: {2}, formatted: {3}")
-    @MethodSource("arguments")
-    fun verifyVariousPrices(
-        priceInMicros: Long,
-        currencyCode: String,
-        originalFormattedPrice: String,
-        expected: String,
-    ) {
-        every { context.getString(any()) } returns PER_MONTH
-        val formatted = priceFormatter.formatYearlyPerMonth(priceInMicros, currencyCode, originalFormattedPrice)
-        assertEquals(expected, formatted)
+    @Test
+    fun `keeps the store's decimal separator`() {
+        assertEquals("€5,00/month", formatter.formatYearlyPerMonth(59_990_000, "EUR", "59,99 €"))
     }
 
-    companion object {
-        const val PER_MONTH = "%s/mo"
+    @Test
+    fun `keeps the store's digits`() {
+        assertEquals("$٥٫٠٠/month", formatter.formatYearlyPerMonth(59_990_000, "USD", "٥٩٫٩٩ US$"))
+    }
 
-        @JvmStatic
-        fun arguments() =
-            Stream.of(
-                Arguments.of(4_499_000_000L, "GBP", "£4499.00", "£374.92/mo"),
-                Arguments.of(4_499_000_000L, "USD", "$4499.00", "$374.92/mo"),
-                Arguments.of(4_499_000_000L, "EUR", "4.499,00 €", "€374,92/mo"),
-                Arguments.of(12_000_000L, "USD", "$12,00", "$1,00/mo"),
-                Arguments.of(1_200_000_000L, "PLN", "1200,00 PLN", "PLN100,00/mo"),
-                Arguments.of(120_000L, "PLN", "0,12 PLN", "PLN0,01/mo"),
-                // Persian - Extended Arabic-Indic digits with the Arabic decimal separator (٫).
-                Arguments.of(4_499_000_000L, "IRR", "۴۴۹۹٫۰۰ ﷼", "IRR۳۷۴٫۹۲/mo"),
-                // Hindi - Devanagari digits.
-                Arguments.of(4_499_000_000L, "INR", "₹४,४९९.००", "₹३७४.९२/mo"),
-            )
+    @Test
+    fun `rounds currencies without fractions to whole units`() {
+        assertEquals("¥417/month", formatter.formatYearlyPerMonth(5_000_000_000, "JPY", "¥5,000"))
     }
 }

@@ -1,35 +1,18 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.compose)
-    alias(libs.plugins.configuration)
+    alias(libs.plugins.pia.android.library.compose)
 }
 
 android {
     namespace = "com.kape.sharedui"
-
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.desugar)
-
     implementation(project(":core:contracts"))
-    implementation(project(":core:data"))
-    implementation(project(":core:localprefs:prefs"))
     implementation(project(":capabilities:ui"))
+    implementation(libs.bundles.android.bundle)
 
-    implementation(libs.bundles.compose)
-    implementation(libs.bundles.koin)
-}
-
-ktlint {
-    android.set(true)
-    outputColorName.set("RED")
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
+    testImplementation(libs.coroutines.test)
 }

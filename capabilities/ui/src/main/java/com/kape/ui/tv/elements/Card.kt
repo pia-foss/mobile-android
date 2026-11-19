@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTvMaterial3Api::class)
-
 package com.kape.ui.tv.elements
 
 import androidx.compose.foundation.BorderStroke
@@ -21,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.tv.material3.Border
 import androidx.tv.material3.Card
 import androidx.tv.material3.CardDefaults
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.OptionButton
 import com.kape.ui.mobile.text.BestValueBannerText

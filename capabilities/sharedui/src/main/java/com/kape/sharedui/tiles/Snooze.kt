@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,7 +27,7 @@ import com.kape.ui.utils.LocalColors
 @Composable
 fun Snooze(
     modifier: Modifier = Modifier,
-    active: MutableState<Boolean>,
+    active: Boolean,
     timeUntilResume: String,
     onClick: (interval: Int) -> Unit,
     onResumeClick: () -> Unit,
@@ -42,7 +41,7 @@ fun Snooze(
         TileTitleText(content = stringResource(id = R.string.vpn_snooze))
         Spacer(modifier = Modifier.height(8.dp))
         Row {
-            if (active.value) {
+            if (active) {
                 SnoozeItem(
                     iconId = R.drawable.ic_snooze_resume,
                     label = timeUntilResume,
