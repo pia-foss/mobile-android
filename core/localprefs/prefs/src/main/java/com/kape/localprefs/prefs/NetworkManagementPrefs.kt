@@ -3,26 +3,35 @@ package com.kape.localprefs.prefs
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.kape.contracts.di.Qualifiers
 import com.kape.localprefs.Prefs
+import com.kape.localprefs.api.NetworkManagementStore
 import com.kape.networkmanagement.data.NetworkBehavior
 import com.kape.networkmanagement.data.NetworkItem
 import com.kape.networkmanagement.data.NetworkType
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 private val NETWORK_RULES = stringSetPreferencesKey("network-rules")
 
-@Singleton
+@Singleton(binds = [NetworkManagementPrefs::class, NetworkManagementStore::class])
 class NetworkManagementPrefs(
     context: Context,
-) : Prefs(context, "network-management") {
+    @Named(Qualifiers.APP_SCOPE) appScope: CoroutineScope,
+    @Named(Qualifiers.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+) : Prefs(context, "network-management", appScope, ioDispatcher),
+    NetworkManagementStore {
     val allRules: StateFlow<List<NetworkItem>> =
         getAllRules().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
 
@@ -71,6 +80,8 @@ class NetworkManagementPrefs(
             prefs[NETWORK_RULES] = current
         }
     }
+
+    override suspend fun getAllRulesNow(): List<NetworkItem> = getAllRules().first()
 
     fun getRuleForNetwork(ssid: String): Flow<NetworkItem?> =
         dataStore.data.map { prefs ->
