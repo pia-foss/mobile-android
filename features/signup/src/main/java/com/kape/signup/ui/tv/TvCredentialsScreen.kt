@@ -31,17 +31,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kape.signup.data.models.Credentials
+import com.kape.signup.domain.Credentials
 import com.kape.signup.ui.vm.SignupViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.theme.OutlineBackground
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.text.SignUpTitleText
 import com.kape.ui.tv.text.SignupSuccessDescriptionText
 import com.kape.ui.tv.text.SignupSuccessTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvCredentialsScreen(credentials: Credentials) =

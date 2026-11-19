@@ -30,23 +30,19 @@ class ConfigurationPlugin : Plugin<Project> {
         }
     }
 
-    /** Shared config for all modules */
     private fun CommonExtension.applySharedConfig(project: Project) {
         compileSdk = Config.COMPILE_SDK
 
-        // Kotlin JVM target for all modules
         project.tasks.withType<KotlinJvmCompile>().configureEach {
             compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
         }
 
-        // Java plugin compatibility (if applied)
         project.extensions.findByType<JavaPluginExtension>()?.apply {
             sourceCompatibility = JavaVersion.VERSION_21
             targetCompatibility = JavaVersion.VERSION_21
         }
     }
 
-    /** App-specific config */
     private fun ApplicationExtension.applyAndroidConfig(project: Project) {
         applySharedConfig(project)
 
@@ -61,7 +57,6 @@ class ConfigurationPlugin : Plugin<Project> {
         }
     }
 
-    /** Library-specific config */
     private fun LibraryExtension.applyAndroidConfig(project: Project) {
         applySharedConfig(project)
 

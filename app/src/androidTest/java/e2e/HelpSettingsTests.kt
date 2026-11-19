@@ -7,10 +7,6 @@ import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
-// Split into separate @Test methods (rather than one walk through every Help row) so Test
-// Orchestrator runs each in its own process - viewing the debug log, a real Send Log network
-// round trip, and the Shared Data screen all in a single test were accumulating enough memory
-// in one process to crash the CI emulator.
 class HelpSettingsTests {
     @Test
     fun helpScreenOptionsAreInteractable() =
@@ -18,9 +14,6 @@ class HelpSettingsTests {
             login()
             navigateToHelpScreen()
 
-            // The Version row opens the Play Store via a market:// intent, which isn't
-            // guaranteed to resolve on a CI emulator - confirm it's displayed and enabled
-            // without following it out of the app.
             assertTrue(
                 onElement { viewIdResourceName == Help.VERSION }.isEnabled,
             )
@@ -37,7 +30,6 @@ class HelpSettingsTests {
             login()
             navigateToHelpScreen()
 
-            // Improve PIA defaults to off; enabling it reveals the View Shared Data row.
             assertInteractableAndClick(Help.IMPROVE_PIA_TOGGLE)
             assertInteractableAndClick(Help.VIEW_SHARED_DATA)
             assertNotNull(

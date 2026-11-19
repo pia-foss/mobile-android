@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.kape.signup.utils.Plan
-import com.kape.signup.utils.SubscriptionData
+import com.kape.signup.domain.Plan
+import com.kape.signup.ui.SubscriptionData
 import com.kape.ui.R
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.brandGreen

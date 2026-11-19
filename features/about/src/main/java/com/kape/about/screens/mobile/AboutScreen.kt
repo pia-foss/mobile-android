@@ -9,21 +9,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.kape.about.ui.vm.AboutViewModel
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.contracts.LicenceReader
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
-import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
+import com.kape.ui.Screen
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AboutScreen() =
@@ -32,12 +30,7 @@ fun AboutScreen() =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.about))
             }
-        val licenceReader: LicenceReader = koinInject()
-        val licences = remember { mutableStateOf<List<String>>(emptyList()) }
-
-        LaunchedEffect(Unit) {
-            licences.value = licenceReader.readLicences()
-        }
+        val licences by koinViewModel<AboutViewModel>().licences.collectAsStateWithLifecycle()
 
         Scaffold(
             topBar = {
@@ -54,7 +47,7 @@ fun AboutScreen() =
                 LazyColumn(
                     modifier = Modifier.widthIn(max = 520.dp),
                 ) {
-                    items(licences.value) {
+                    items(licences) {
                         Text(text = it, modifier = Modifier.padding(horizontal = 16.dp))
                     }
                 }

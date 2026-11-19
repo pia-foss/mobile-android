@@ -2,74 +2,52 @@ package com.kape.profile.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.account.domain.usecase.GetAccountDetailsUseCase
 import com.kape.contracts.LogoutUseCase
 import com.kape.contracts.Router
-import com.kape.data.AccountDeleted
-import com.kape.data.DI
-import com.kape.data.LoginWithCredentials
 import com.kape.data.Splash
-import com.kape.data.Subscribe
 import com.kape.data.WebDestination
-import com.kape.profile.data.models.Profile
-import com.kape.profile.domain.DeleteAccountUseCase
-import com.kape.profile.domain.GetProfileUseCase
-import com.kape.profile.ui.screens.mobile.IDLE
-import com.kape.profile.ui.screens.mobile.LOADING
-import com.kape.profile.ui.screens.mobile.ProfileScreenState
-import com.kape.profile.ui.screens.mobile.createSuccessState
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.annotation.Named
-import org.koin.core.component.KoinComponent
+
+data class ProfileState(
+    val isLoading: Boolean = true,
+    val username: String = "",
+    val expiresAtMillis: Long? = null,
+    val isExpired: Boolean = false,
+)
 
 @KoinViewModel
 class ProfileViewModel(
-    private val useCase: GetProfileUseCase,
-    private val deleteAccountUseCase: DeleteAccountUseCase,
+    private val getAccountDetails: GetAccountDetailsUseCase,
     private val logoutUseCase: LogoutUseCase,
     private val router: Router,
-    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
-) : ViewModel(),
-    KoinComponent {
-    private val _state = MutableStateFlow(IDLE)
-    val state: StateFlow<ProfileScreenState> = _state
+) : ViewModel() {
+    private val _state = MutableStateFlow(ProfileState())
+    val state: StateFlow<ProfileState> = _state.asStateFlow()
 
     init {
-        loadProfile()
+        viewModelScope.launch {
+            val account = getAccountDetails()
+            _state.value =
+                ProfileState(
+                    isLoading = false,
+                    username = account?.username.orEmpty(),
+                    expiresAtMillis = account?.expiresAtMillis(System.currentTimeMillis()),
+                    isExpired = account?.isExpired ?: false,
+                )
+        }
     }
 
-    fun logout() =
-        viewModelScope.launch(ioDispatcher) {
+    fun logout() {
+        viewModelScope.launch {
             logoutUseCase.logout()
             router.updateDestination(Splash)
         }
-
-    fun navigateToLogin() = router.updateDestination(LoginWithCredentials)
-
-    fun navigateToSubscribe() = router.updateDestination(Subscribe)
-
-    fun navigateToAccountDeleted() = router.updateDestination(AccountDeleted)
+    }
 
     fun navigateToDeleteAccount() = router.updateDestination(WebDestination.DeleteAccount)
-
-    private fun loadProfile() =
-        viewModelScope.launch(ioDispatcher) {
-            _state.emit(LOADING)
-            val profile = useCase.getProfile()
-            if (profile == null) {
-                _state.emit(IDLE)
-            } else {
-                _state.emit(getState(profile))
-            }
-        }
-
-    private fun getState(profile: Profile): ProfileScreenState =
-        createSuccessState(
-            profile.username,
-            profile.subscription.expirationDate,
-            profile.subscription.isExpired,
-        )
 }

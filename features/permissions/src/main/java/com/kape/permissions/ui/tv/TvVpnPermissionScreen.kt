@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.permissions.ui.mobile.getVpnProfileToastText
 import com.kape.permissions.ui.vm.PermissionsViewModel
 import com.kape.permissions.utils.GRANTED
@@ -34,19 +34,19 @@ import com.kape.permissions.utils.IDLE
 import com.kape.permissions.utils.NOT_GRANTED
 import com.kape.permissions.utils.REQUEST
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.text.OnboardingDescriptionText
 import com.kape.ui.tv.text.OnboardingFooterText
 import com.kape.ui.tv.text.OnboardingTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvVpnPermissionScreen() =
     Screen {
         val viewModel: PermissionsViewModel = koinViewModel()
-        val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsState()
+        val state by remember(viewModel) { viewModel.vpnPermissionState }.collectAsStateWithLifecycle()
         val initialFocusRequester = remember { FocusRequester() }
         val startForResult =
             rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -72,9 +72,7 @@ fun TvVpnPermissionScreen() =
                     viewModel.onVpnProfileStateChange()
                 }
             }
-            GRANTED -> {
-                // Do nothing. The viewmodel is handling the navigation on success.
-            }
+            GRANTED -> {}
             NOT_GRANTED -> {
                 ShowTvVpnPermissionScreen(
                     viewModel = viewModel,

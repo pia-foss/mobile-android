@@ -1,10 +1,5 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.serialization)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.junit5)
+    alias(libs.plugins.pia.android.library)
 }
 
 android {
@@ -13,17 +8,20 @@ android {
 
 dependencies {
     implementation(project(":core:contracts"))
-    implementation(project(":core:data"))
-    implementation(project(":core:localprefs:data"))
-    implementation(libs.bundles.koin)
-    implementation(libs.bundles.serialization)
-    implementation(libs.mobile.shared.account)
-    implementation(libs.crypto)
-    implementation(libs.datastore.preferences)
-    implementation(libs.tink.android)
-    implementation(libs.coroutines)
+    api(project(":core:localprefs:api"))
+    api(project(":core:localprefs:data"))
+    api(libs.datastore.preferences)
 
-    testImplementation(libs.bundles.kointest)
-    testImplementation(libs.bundles.test)
-    testRuntimeOnly(libs.launcher)
+    implementation(libs.bundles.serialization.bundle)
+    implementation(libs.coroutines.android)
+    implementation(libs.security.crypto)
+    implementation(libs.tink.android)
+
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.annotations)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
 }

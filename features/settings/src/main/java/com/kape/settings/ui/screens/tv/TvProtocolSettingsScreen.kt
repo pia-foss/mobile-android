@@ -27,34 +27,35 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kape.contracts.ConnectionInfoProvider
+import com.kape.appbar.view.topBarColor
+import com.kape.contracts.ConnectionStatusSource
 import com.kape.settings.data.OpenVpnSettings
 import com.kape.settings.data.VpnProtocols
 import com.kape.settings.data.WireGuardSettings
 import com.kape.settings.ui.elements.OptionsDialog
-import com.kape.settings.ui.elements.ReconnectDialog
+import com.kape.settings.ui.elements.ReconnectPromptDialog
 import com.kape.settings.ui.elements.tv.TvSettingsItem
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
 import com.kape.settings.ui.screens.mobile.EncryptionSelectionDialog
 import com.kape.settings.ui.screens.mobile.PortSelectionDialog
 import com.kape.settings.ui.screens.mobile.TransportSelectionDialog
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.vm.ProtocolSettingsViewModel
 import com.kape.settings.utils.getDefaultButtons
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvProtocolSettingsScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
+        val viewModel: ProtocolSettingsViewModel = koinViewModel()
         val openVpnSettings by viewModel.openVpnSettings.collectAsStateWithLifecycle()
         val wireGuardSettings by viewModel.wireGuardSettings.collectAsStateWithLifecycle()
         val autoSettings by viewModel.autoSettings.collectAsStateWithLifecycle()
-        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val connectionStatus by koinInject<ConnectionStatusSource>().status.collectAsStateWithLifecycle()
         val initialFocusRequester = remember { FocusRequester() }
 
         val protocolDialogVisible = remember { mutableStateOf(false) }
@@ -77,9 +78,7 @@ fun TvProtocolSettingsScreen() =
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 4.dp,
                 color =
-                    connectionInfoProvider.getTopBarConnectionColor(
-                        scheme = LocalColors.current,
-                    ),
+                    connectionStatus.topBarColor(LocalColors.current),
             )
             Column(
                 modifier =
@@ -188,29 +187,14 @@ fun TvProtocolSettingsScreen() =
                             protocolDialogVisible.value = false
 
                             if (hasProtocolChanged) {
-                                viewModel.showReconnectDialogIfVpnConnected()
+                                viewModel.reconnectPrompt.onSettingChanged()
                             }
                         },
                         selection = protocolSelection,
                     )
                 }
             }
-            if (viewModel.reconnectDialogVisible.value) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.Black.copy(alpha = 0.6f),
-                ) {
-                    ReconnectDialog(
-                        onReconnect = {
-                            viewModel.reconnect()
-                            viewModel.reconnectDialogVisible.value = false
-                        },
-                        onLater = {
-                            viewModel.reconnectDialogVisible.value = false
-                        },
-                    )
-                }
-            }
+            ReconnectPromptDialog(viewModel.reconnectPrompt, dimBackground = true)
 
             if (transportDialogVisible.value) {
                 Surface(
@@ -257,7 +241,7 @@ fun TvProtocolSettingsScreen() =
 
 @Composable
 private fun TvOpenVpnProtocolSettingsScreen(
-    viewModel: SettingsViewModel,
+    viewModel: ProtocolSettingsViewModel,
     initialFocusRequester: FocusRequester,
     protocolDialogVisible: MutableState<Boolean>,
     transportDialogVisible: MutableState<Boolean>,
@@ -313,7 +297,7 @@ private fun TvOpenVpnProtocolSettingsScreen(
 
 @Composable
 private fun TvWireguardProtocolSettingsScreen(
-    viewModel: SettingsViewModel,
+    viewModel: ProtocolSettingsViewModel,
     initialFocusRequester: FocusRequester,
     protocolDialogVisible: MutableState<Boolean>,
     wireGuardSettings: WireGuardSettings,

@@ -63,8 +63,6 @@ class ServiceLoggerTest {
             val logger = ServiceLogger(context, ServiceLogger.VpnServiceLoggerTag.Automatic)
             val bigMessage = "x".repeat(1024)
 
-            // One MiB cap per file; ~1100 lines of 1 KiB each forces at least one rotation while
-            // staying well clear of exhausting test time/disk.
             repeat(1100) { logger.debug(bigMessage) }
             logger.info("marker-after-rotation")
 
@@ -87,7 +85,7 @@ class ServiceLoggerTest {
         runTest {
             val logger = ServiceLogger(context, ServiceLogger.VpnServiceLoggerTag.WireGuard)
             val bigMessage = "x".repeat(1024)
-            repeat(1100) { logger.debug(bigMessage) } // forces a rotation, so a backup file also exists
+            repeat(1100) { logger.debug(bigMessage) }
 
             logger.clearLogs()
 

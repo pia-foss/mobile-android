@@ -1,8 +1,8 @@
 package com.kape.vpnconnect.domain
 
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Factory
 
-@Singleton
+@Factory
 class GetLogsUseCase(
     private val connectionSource: ConnectionDataSource,
 ) {

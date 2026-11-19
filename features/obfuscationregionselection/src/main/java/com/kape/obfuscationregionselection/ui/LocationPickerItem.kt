@@ -30,7 +30,7 @@ fun LocationPickerItem(
     isFavorite: Boolean,
     enableFavorite: Boolean,
     onClick: ((server: ShadowsocksServer) -> Unit),
-    onFavoriteShadowsocksClick: ((shadowsocksServerName: String) -> Unit),
+    onFavoriteClick: () -> Unit,
 ) {
     Column {
         Row(
@@ -66,7 +66,7 @@ fun LocationPickerItem(
                         Modifier
                             .align(CenterVertically)
                             .clickable {
-                                onFavoriteShadowsocksClick(server.region)
+                                onFavoriteClick()
                             },
                 )
             }

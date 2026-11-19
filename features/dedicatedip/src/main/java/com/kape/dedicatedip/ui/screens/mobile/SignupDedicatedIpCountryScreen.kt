@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,12 +44,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.dedicatedip.domain.DipCountry
 import com.kape.dedicatedip.ui.vm.DipViewModel
 import com.kape.dip.data.DedicatedIpSelectedCountry
 import com.kape.ui.R
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.Footer
 import com.kape.ui.mobile.elements.PrimaryButton
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.text.DedicatedIpSignupCountryDisclaimerText
 import com.kape.ui.mobile.text.DedicatedIpSignupCountryTitleText
@@ -58,10 +58,8 @@ import com.kape.ui.mobile.text.SupportedDipRegions
 import com.kape.ui.mobile.text.SupportedDipRegionsInCountry
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.privateinternetaccess.account.model.response.DipCountriesResponse
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SignupDedicatedIpCountryScreen() =
     Screen {
@@ -172,7 +170,7 @@ fun SignupDedicatedIpCountryScreen() =
                         ) {
                             viewModel.supportedDipCountriesList.value?.let {
                                 FlowColumn {
-                                    it.dedicatedIpCountriesAvailable.forEach { country ->
+                                    it.forEach { country ->
                                         DipCountryItem(country = country) { dedicatedIpSelectedCountry ->
                                             viewModel.selectDipCountry(dedicatedIpSelectedCountry)
                                             showAllLocations.value = !showAllLocations.value
@@ -328,7 +326,7 @@ fun DipCountryItem(
 
 @Composable
 fun DipCountryItem(
-    country: DipCountriesResponse.DedicatedIpCountriesAvailable,
+    country: DipCountry,
     onClick: (dedicatedIpSelectedCountry: DedicatedIpSelectedCountry) -> Unit,
 ) {
     Column {

@@ -23,18 +23,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.ui.elements.ReconnectDialog
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.elements.ReconnectPromptDialog
+import com.kape.settings.ui.vm.KillSwitchViewModel
 import com.kape.ui.R
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.PrimaryButton
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun KillSwitchSettingScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
+        val viewModel: KillSwitchViewModel = koinViewModel()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.privacy_kill_switch_title))
@@ -89,22 +89,10 @@ fun KillSwitchSettingScreen() =
                     ) {
                         context.startActivity(Intent(Settings.ACTION_VPN_SETTINGS))
 
-                        // There is no way for us to know if the settings have changed
-                        // We always show the dialog
-                        viewModel.showReconnectDialogIfVpnConnected()
+                        viewModel.reconnectPrompt.onSettingChanged()
                     }
                 }
             }
-            if (viewModel.reconnectDialogVisible.value) {
-                ReconnectDialog(
-                    onReconnect = {
-                        viewModel.reconnect()
-                        viewModel.reconnectDialogVisible.value = false
-                    },
-                    onLater = {
-                        viewModel.reconnectDialogVisible.value = false
-                    },
-                )
-            }
+            ReconnectPromptDialog(viewModel.reconnectPrompt)
         }
     }

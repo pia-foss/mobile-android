@@ -1,30 +1,28 @@
+import com.android.build.api.dsl.LibraryExtension
+import org.gradle.kotlin.dsl.configure
+
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.junit5)
+    alias(libs.plugins.pia.android.library)
+    alias(libs.plugins.pia.android.flavors)
 }
 
-android {
+configure<LibraryExtension> {
     namespace = "com.kape.location"
-    testOptions {
-        unitTests {
-            isReturnDefaultValues = true
-        }
-    }
+
+    shareFlavorSources("playservices", ProviderFlavor.WITH_PLAY_SERVICES)
+    shareFlavorSources("noplayservices", listOf(ProviderFlavor.AMAZON, ProviderFlavor.META, ProviderFlavor.FDROID))
 }
 
 dependencies {
-    implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
-    androidTestImplementation(libs.bundles.koinandroidtest)
-    implementation(libs.coroutines)
-    testImplementation(libs.coroutines.test)
-    testImplementation(libs.bundles.test)
-    runtimeOnly(libs.launcher)
-}
+    implementation(project(":core:contracts"))
+    implementation(project(":core:localprefs:prefs"))
+    implementation(project(":capabilities:ui"))
+    implementation(libs.coroutines.android)
+    implementation(libs.androidx.core.ktx)
+    ProviderFlavor.WITH_PLAY_SERVICES.forEach { add("${it}Implementation", libs.play.services.location) }
 
-koinCompiler {
-    compileSafety = false
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.annotations)
 }

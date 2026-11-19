@@ -1,5 +1,6 @@
 package e2e
 
+import android.graphics.Rect
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
@@ -24,22 +25,14 @@ const val INVALID = "invalid"
 const val PROTECTED = "Protected"
 const val TIMEOUT = 5000L
 const val LONG_TIMEOUT = 10000L
+private const val DRAWER_SETTLE_POLL_MS = 200L
 
-// Waiting for a real network transition (WiFi <-> cellular) plus the automation service
-// reacting to it and the VPN connecting/disconnecting takes longer than a UI-only wait.
 const val NETWORK_TRANSITION_TIMEOUT = 20000L
 
-// A pull-to-refresh re-pings every region, which takes longer than a plain UI wait.
 const val REGION_REFRESH_TIMEOUT = 30000L
 
-// Reading back a just-changed local setting (e.g. protocol) is a DataStore write + StateFlow
-// re-collection round trip. Test Orchestrator clears app data before every test, so this is
-// always the first encrypted-prefs access in a fresh process - Keystore key generation on that
-// first access can be slower than a plain UI wait, especially on a constrained CI emulator.
 const val SETTINGS_PROPAGATION_TIMEOUT = 15000L
 
-// Real per-protocol byte counters only update once the tunnel has actually carried traffic,
-// which can take longer than a UI-only wait to be reported after the handshake completes.
 const val TRAFFIC_TIMEOUT = 20000L
 val IP_PATTERN =
     Pattern.compile(
@@ -53,14 +46,10 @@ object RegionSelection {
     const val SEARCH_RESULT_FAVORITE_ICON = "$SEARCH_RESULT_ITEM:favorite"
     const val REGION = "Moldova"
 
-    // A region flagged as geo-located in the committed regions asset (app/src/main/assets/vpn-regions.json)
-    // - only shown in the list while Settings > General > "Show geo located servers" is enabled.
     const val GEO_REGION = "Bosnia and Herzegovina"
     const val LIST = ":VpnRegionSelectionScreen:list"
     const val FAVORITES_HEADING = ":VpnRegionSelectionScreen:favoritesHeading"
 
-    // A single favorite is always the first entry right after the heading (see
-    // VpnRegionSelectionViewModel.arrangeVpnServers).
     const val FIRST_FAVORITE_NAME = ":VpnRegionSelectionScreen:locationItem_1:regionName"
 }
 
@@ -199,16 +188,8 @@ object SideMenu {
 
 fun reachLogin() =
     uiAutomator {
-        // VPN activation consent is a one-time, OS-level grant per package (it survives
-        // Test Orchestrator's clearPackageData) - once any test earns it, every later test
-        // skips VpnPermissionScreen entirely (see PermissionUtil.getNextDestination). Granting
-        // it here up front means the real system "Connection request" dialog - which can be
-        // slow to render on a cold CI emulator - never has to appear at all, even on the very
-        // first test of a run.
         device.executeShellCommand("appops set ${BuildConfig.APPLICATION_ID} ACTIVATE_VPN allow")
         startApp(BuildConfig.APPLICATION_ID)
-        // The one-time data-sharing consent screen is now the first screen for a logged-out
-        // user (see ConsentScreen.kt) - dismiss it before the paywall's real Login link appears.
         onElement(timeoutMs = LONG_TIMEOUT) { viewIdResourceName == Consent.NO_THANKS_BUTTON }.click()
         onElement(timeoutMs = LONG_TIMEOUT) { viewIdResourceName == SignUp.LOGIN_BUTTON }.click()
     }
@@ -263,8 +244,7 @@ fun assertDisconnected(timeoutMs: Long = LONG_TIMEOUT) =
 
 private fun openProtocolsSettings() =
     uiAutomator {
-        onElement { viewIdResourceName == Main.SIDE_MENU }.click()
-        device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
+        openSideMenu()
         onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
         onElement { viewIdResourceName == Settings.PROTOCOLS_BUTTON }.click()
     }
@@ -306,8 +286,7 @@ fun selectTransport(transportButton: String) =
 
 fun toggleGeoLocatedServers() =
     uiAutomator {
-        onElement { viewIdResourceName == Main.SIDE_MENU }.click()
-        device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
+        openSideMenu()
         onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
         onElement { viewIdResourceName == Settings.GENERAL_BUTTON }.click()
         onElement { viewIdResourceName == GeneralSettings.GEO_SERVERS_TOGGLE }.click()
@@ -332,9 +311,6 @@ fun pullToRefreshRegionList() =
         onElement { viewIdResourceName == RegionSelection.LIST }.swipe(Direction.DOWN, 1f)
     }
 
-// The "Trouble Connecting?" nudge (see ConnectionProblemDetector) is frequency-capped and
-// only surfaces after repeated connection failures, so it's not guaranteed to appear - dismiss
-// it ("Not Now") only if it does, rather than asserting on it.
 fun dismissAutoProtocolNudgeIfShown() =
     uiAutomator {
         onElementOrNull(TIMEOUT) { viewIdResourceName == AutoProtocolNudge.DISMISS_BUTTON }?.click()
@@ -346,11 +322,6 @@ fun disconnect() =
         device.waitForIdle()
     }
 
-// Traffic and ConnectionInfo are hidden by default AND are the last two entries in
-// CustomizationPrefs.defaultList() - reaching their toggle can take more than a fixed number of
-// scrolls on a smaller/slower device (e.g. CI's pixel_4 profile has a much smaller viewport than
-// a typical local emulator), so scroll on a time budget via scrollToElement rather than a fixed
-// attempt count.
 private fun enableCustomizationElement(visibilityToggle: String) =
     uiAutomator {
         onElement { viewIdResourceName == Main.REORDER_BUTTON }.click()
@@ -360,6 +331,23 @@ private fun enableCustomizationElement(visibilityToggle: String) =
             }.click()
         onElement { viewIdResourceName == Customization.SAVE_BUTTON }.click()
         device.waitForIdle()
+    }
+
+// Taps on menu items are ignored until the drawer has finished sliding in, and the items exist
+// well before that, so wait until the drawer stops moving.
+fun openSideMenu() =
+    uiAutomator {
+        device.waitForIdle()
+        onElement(timeoutMs = NETWORK_TRANSITION_TIMEOUT) { viewIdResourceName == Main.SIDE_MENU }.click()
+        val deadline = System.currentTimeMillis() + TIMEOUT
+        var previous: Rect? = null
+        var current = device.findObject(By.res(SideMenu.USERNAME))?.visibleBounds
+        while ((current == null || current != previous) && System.currentTimeMillis() < deadline) {
+            Thread.sleep(DRAWER_SETTLE_POLL_MS)
+            previous = current
+            current = device.findObject(By.res(SideMenu.USERNAME))?.visibleBounds
+        }
+        assertTrue("Side menu did not finish opening", current != null && current == previous)
     }
 
 fun enableTrafficTile() =
@@ -372,14 +360,13 @@ fun enableConnectionInfoTile() =
         enableCustomizationElement(Customization.CONNECTION_INFO_VISIBILITY_TOGGLE)
     }
 
-// Traffic and ConnectionInfoTile sit at the bottom of the (non-lazy) scrollable connection screen,
-// so their entries fall outside Compose's accessibility bounds until scrolled into view -
-// reasserting after every settings round trip since the connection screen resets its scroll
-// position on return.
+// The screen only becomes scrollable once its tiles don't fit, so it may have nothing to scroll.
 private fun scrollConnectionScreenToElement(targetViewId: String) =
     uiAutomator {
-        onElement { isScrollable }.scrollToElement(Direction.DOWN, timeoutMs = LONG_TIMEOUT) {
-            viewIdResourceName == targetViewId
+        if (!device.hasObject(By.res(targetViewId))) {
+            onElement { isScrollable }.scrollToElement(Direction.DOWN, timeoutMs = LONG_TIMEOUT) {
+                viewIdResourceName == targetViewId
+            }
         }
     }
 
@@ -393,12 +380,6 @@ fun scrollToTrafficTile() =
         scrollConnectionScreenToElement(Traffic.DOWNLOAD)
     }
 
-// Automation requires fine + background location permission. The runtime "Allow all the
-// time" background-location dialog varies too much across Android versions/OEMs to reliably
-// automate (and granting it isn't what this test is about), so both are granted directly via
-// shell before toggling automation on - this makes the toggle enable automation immediately
-// without navigating through LocationPermissionScreen/BackgroundLocationPermissionScreen, so
-// "Manage Automation" is clicked explicitly to reach the rules screen.
 fun enableAutomation() =
     uiAutomator {
         device.executeShellCommand(
@@ -408,8 +389,7 @@ fun enableAutomation() =
             "pm grant ${BuildConfig.APPLICATION_ID} android.permission.ACCESS_BACKGROUND_LOCATION",
         )
 
-        onElement { viewIdResourceName == Main.SIDE_MENU }.click()
-        device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
+        openSideMenu()
         onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
         onElement { viewIdResourceName == Settings.AUTOMATION_BUTTON }.click()
         onElement { viewIdResourceName == Automation.ENABLE_TOGGLE }.click()
@@ -426,18 +406,6 @@ fun setNetworkRuleBehavior(
     onElement { viewIdResourceName == BehaviorDialog.OK_BUTTON }.click()
 }
 
-// Returning to the connection screen re-triggers its LaunchedEffect(Unit) autoConnect check,
-// so the hamburger button can take a beat longer to settle than a plain connect-button wait -
-// give it more headroom than the default onElement timeout before giving up.
-fun openSideMenu() =
-    uiAutomator {
-        device.waitForIdle()
-        onElement(timeoutMs = NETWORK_TRANSITION_TIMEOUT) { viewIdResourceName == Main.SIDE_MENU }.click()
-        device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
-    }
-
-// Confirms an option is displayed and enabled before exercising the click - the subsequent
-// navigation/state assertion at each call site is what proves the click itself did something.
 fun assertInteractableAndClick(viewId: String) =
     uiAutomator {
         val item = onElement { viewIdResourceName == viewId }

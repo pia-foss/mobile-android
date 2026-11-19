@@ -1,14 +1,14 @@
 package com.kape.vpnconnect.domain
 
-import com.kape.contracts.ConnectionStatusProvider
+import com.kape.contracts.ConnectionStatusSource
+import com.kape.contracts.NetworkStatus
 import com.kape.contracts.TunnelTraffic
 import com.kape.contracts.UsageProvider
 import com.kape.data.ConnectionStatus
-import com.kape.localprefs.prefs.AutoProtocolNudgePrefs
-import com.kape.localprefs.prefs.SettingsPrefs
+import com.kape.localprefs.api.AutoProtocolNudgeStore
+import com.kape.localprefs.api.SettingsStore
 import com.kape.platformsdk.vpn.service.models.KapeVpnTunnelError
 import com.kape.settings.data.VpnProtocols
-import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnconnect.data.AutoProtocolNudgeState
 import io.mockk.coEvery
 import io.mockk.every
@@ -31,11 +31,11 @@ import kotlin.time.Duration.Companion.days
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ConnectionProblemDetectorTest {
-    private val connectionStatusProvider = mockk<ConnectionStatusProvider>(relaxed = true)
-    private val settingsPrefs = mockk<SettingsPrefs>(relaxed = true)
+    private val connectionStatusProvider = mockk<ConnectionStatusSource>(relaxed = true)
+    private val settingsPrefs = mockk<SettingsStore>(relaxed = true)
     private val usageProvider = mockk<UsageProvider>(relaxed = true)
-    private val networkConnectionListener = mockk<NetworkConnectionListener>(relaxed = true)
-    private val nudgePrefs = mockk<AutoProtocolNudgePrefs>(relaxed = true)
+    private val networkConnectionListener = mockk<NetworkStatus>(relaxed = true)
+    private val nudgePrefs = mockk<AutoProtocolNudgeStore>(relaxed = true)
 
     private val statusFlow = MutableStateFlow<ConnectionStatus>(ConnectionStatus.DISCONNECTED)
     private val tunnelErrorFlow = MutableStateFlow<KapeVpnTunnelError?>(null)
@@ -43,17 +43,12 @@ class ConnectionProblemDetectorTest {
     private val nudgeStateFlow = MutableStateFlow(AutoProtocolNudgeState())
     private val trafficFlow = MutableStateFlow(TunnelTraffic.ZERO)
 
-    // Anchors the detector's virtual "now" to a real epoch so it stays comparable to the
-    // real-wall-clock timestamps other tests bake into nudgeStateFlow (e.g. "8 days ago"),
-    // while still advancing deterministically off the test scheduler via `currentTime`.
     private val baseMillis = System.currentTimeMillis()
 
     @BeforeEach
     fun setUp() {
         every { connectionStatusProvider.status } returns statusFlow
-        every { connectionStatusProvider.lastTunnelError } returns tunnelErrorFlow
-        every { networkConnectionListener.isConnected } returns isConnectedFlow
-        every { nudgePrefs.state } returns nudgeStateFlow
+        every { networkConnectionListener.isOnline } returns isConnectedFlow
         coEvery { nudgePrefs.getStateNow() } answers { nudgeStateFlow.value }
         coEvery { nudgePrefs.setState(any()) } answers { nudgeStateFlow.value = firstArg() }
         coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.WireGuard
@@ -65,6 +60,7 @@ class ConnectionProblemDetectorTest {
         now: () -> Long,
     ) = ConnectionProblemDetector(
         connectionStatusProvider,
+        { tunnelErrorFlow.value != null },
         settingsPrefs,
         usageProvider,
         networkConnectionListener,
@@ -73,13 +69,10 @@ class ConnectionProblemDetectorTest {
         now,
     )
 
-    // region qualifying failures
-
     @Test
     fun `connect timeout - two attempts stuck past 30s within the short window - triggers the nudge`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTING
             advanceTimeBy(31_000)
@@ -97,7 +90,6 @@ class ConnectionProblemDetectorTest {
     fun `immediate drop - disconnects within 15s of connecting - counts as a qualifying failure`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -110,7 +102,6 @@ class ConnectionProblemDetectorTest {
     fun `stays connected past 15s then disconnects - not counted as a failure`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(20_000)
@@ -123,7 +114,6 @@ class ConnectionProblemDetectorTest {
     fun `dead tunnel - sending with nothing received for 60s while connected - counts as a failure`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             sendOnly(seconds = 70)
@@ -135,7 +125,6 @@ class ConnectionProblemDetectorTest {
     fun `dead tunnel - bytes received again before 60s - does not count as a failure`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             sendOnly(seconds = 40)
@@ -150,7 +139,6 @@ class ConnectionProblemDetectorTest {
     fun `dead tunnel - idle tunnel with no traffic either way - does not count as a failure`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(300_000)
@@ -162,7 +150,6 @@ class ConnectionProblemDetectorTest {
     fun `dead tunnel - steady two-way traffic - does not count as a failure`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             repeat(60) {
@@ -184,23 +171,17 @@ class ConnectionProblemDetectorTest {
     fun `protocol not available pre-check - counts as a qualifying failure`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             detector.onProtocolNotAvailable()
 
             assertEquals(1, nudgeStateFlow.value.failureTimestamps.size)
         }
 
-    // endregion
-
-    // region exclusions
-
     @Test
     fun `already on Automatic - does not record failures`() =
         runTest(UnconfinedTestDispatcher()) {
             coEvery { settingsPrefs.getSelectedProtocolNow() } returns VpnProtocols.Automatic
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -214,7 +195,6 @@ class ConnectionProblemDetectorTest {
         runTest(UnconfinedTestDispatcher()) {
             tunnelErrorFlow.value = KapeVpnTunnelError.VpnPermissionRevoked
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -227,7 +207,6 @@ class ConnectionProblemDetectorTest {
     fun `user-initiated disconnect - immediate drop is not blamed on the protocol`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -241,7 +220,6 @@ class ConnectionProblemDetectorTest {
     fun `user-initiated disconnect flag only suppresses the very next disconnect`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -260,7 +238,6 @@ class ConnectionProblemDetectorTest {
         runTest(UnconfinedTestDispatcher()) {
             isConnectedFlow.value = false
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -269,16 +246,11 @@ class ConnectionProblemDetectorTest {
             assertTrue(nudgeStateFlow.value.failureTimestamps.isEmpty())
         }
 
-    // endregion
-
-    // region frequency capping
-
     @Test
     fun `already prompted within 14 days - does not prompt again`() =
         runTest(UnconfinedTestDispatcher()) {
             nudgeStateFlow.value = AutoProtocolNudgeState(promptTimestamps = listOf(System.currentTimeMillis()))
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -294,7 +266,6 @@ class ConnectionProblemDetectorTest {
             nudgeStateFlow.value =
                 AutoProtocolNudgeState(dismissCount = 1, lastDismissedAt = System.currentTimeMillis())
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -312,7 +283,6 @@ class ConnectionProblemDetectorTest {
                     lastDismissedAt = System.currentTimeMillis() - 8.days.inWholeMilliseconds,
                 )
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -330,7 +300,6 @@ class ConnectionProblemDetectorTest {
                     lastDismissedAt = System.currentTimeMillis() - 8.days.inWholeMilliseconds,
                 )
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -344,7 +313,6 @@ class ConnectionProblemDetectorTest {
         runTest(UnconfinedTestDispatcher()) {
             nudgeStateFlow.value = AutoProtocolNudgeState(accepted = true)
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             statusFlow.value = ConnectionStatus.CONNECTED
             advanceTimeBy(5_000)
@@ -353,15 +321,10 @@ class ConnectionProblemDetectorTest {
             assertTrue(nudgeStateFlow.value.failureTimestamps.isEmpty())
         }
 
-    // endregion
-
-    // region user actions
-
     @Test
     fun `switching to Automatic is accepted - marks state accepted and hides the dialog`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             detector.onSwitchToAutomaticAccepted()
 
@@ -373,7 +336,6 @@ class ConnectionProblemDetectorTest {
     fun `dismissing the nudge - records the dismissal and hides the dialog`() =
         runTest(UnconfinedTestDispatcher()) {
             val detector = createDetector(backgroundScope, now = { baseMillis + currentTime })
-            detector.start()
 
             detector.onNudgeDismissed()
 
@@ -381,6 +343,4 @@ class ConnectionProblemDetectorTest {
             assertNotNull(nudgeStateFlow.value.lastDismissedAt)
             assertFalse(detector.showNudge.value)
         }
-
-    // endregion
 }

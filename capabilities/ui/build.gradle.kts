@@ -1,38 +1,22 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.compose)
-    alias(libs.plugins.configuration)
+    alias(libs.plugins.pia.android.library.compose)
 }
 
 android {
     namespace = "com.kape.ui"
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.desugar)
+    api(project(":core:contracts"))
+    api(project(":core:router"))
+    implementation(libs.bundles.android.bundle)
+    api(platform(libs.androidx.compose.bom))
+    api(libs.bundles.compose.bundle)
+    api(platform(libs.koin.bom))
+    api(libs.bundles.koin.bundle)
 
-    implementation(project(":core:contracts"))
-    implementation(project(":core:router"))
-    implementation(project(":core:data"))
-
-    implementation(libs.bundles.compose)
-    implementation(libs.bundles.koin)
-    androidTestImplementation(libs.bundles.koinandroidtest)
-    androidTestImplementation(libs.bundles.composeandroidtest)
-    testImplementation(libs.bundles.test)
-    testImplementation(libs.bundles.kointest)
-    testImplementation(libs.coroutines.test)
-    runtimeOnly(libs.launcher)
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
+    testImplementation(libs.mockk)
 }

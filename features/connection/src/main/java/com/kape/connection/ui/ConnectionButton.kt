@@ -60,7 +60,6 @@ fun ConnectButton(
             -> colorScheme.connectionDefault()
         }
 
-    // If it's focused. We want to invert them.
     val targetColor =
         if (hasFocus.value) {
             val updatedColor = backgroundColor
@@ -94,7 +93,7 @@ fun ConnectButton(
             ConnectionStatus.ERROR,
             ->
                 ButtonBackground(
-                    loadingColor = color, // Intentional. The arc color stays the same on all scenarios.
+                    loadingColor = color,
                     backgroundColor = backgroundColor,
                 )
 
@@ -102,7 +101,7 @@ fun ConnectButton(
             ConnectionStatus.RECONNECTING,
             ->
                 LoadingButtonBackground(
-                    loadingColor = color, // Intentional. The arc color stays the same on all scenarios.
+                    loadingColor = color,
                     backgroundColor = backgroundColor,
                 )
         }
@@ -126,7 +125,7 @@ private fun ButtonBackground(
         onDraw = {
             drawCircle(color = loadingColor.copy(alpha = 0.1f))
             drawArc(
-                startAngle = 270f, // 270 is 0 degree
+                startAngle = 270f,
                 sweepAngle = progress,
                 useCenter = false,
                 color = loadingColor,
@@ -165,7 +164,7 @@ private fun LoadingButtonBackground(
         onDraw = {
             drawCircle(color = loadingColor.copy(alpha = 0.1f))
             drawArc(
-                startAngle = startAnimation, // 270 is 0 degree
+                startAngle = startAnimation,
                 sweepAngle = endAnimation,
                 useCenter = false,
                 color = loadingColor,

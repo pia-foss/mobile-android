@@ -28,29 +28,30 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kape.contracts.ConnectionInfoProvider
+import com.kape.appbar.view.topBarColor
+import com.kape.contracts.ConnectionStatusSource
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.CustomDnsDialog
 import com.kape.settings.ui.elements.DnsSelectionDialog
-import com.kape.settings.ui.elements.ReconnectDialog
+import com.kape.settings.ui.elements.ReconnectPromptDialog
 import com.kape.settings.ui.elements.tv.TvSettingsItem
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
 import com.kape.settings.ui.screens.mobile.AllowLanDialog
 import com.kape.settings.ui.screens.mobile.UnsafeDnsWarningDialog
 import com.kape.settings.ui.screens.mobile.getCustomDnsInfo
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.vm.NetworkSettingsViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvNetworkSettingsScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
-        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val viewModel: NetworkSettingsViewModel = koinViewModel()
+        val connectionStatus by koinInject<ConnectionStatusSource>().status.collectAsStateWithLifecycle()
         val initialFocusRequester = remember { FocusRequester() }
         val customDns by viewModel.customDns.collectAsStateWithLifecycle()
 
@@ -92,9 +93,7 @@ fun TvNetworkSettingsScreen() =
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 4.dp,
                 color =
-                    connectionInfoProvider.getTopBarConnectionColor(
-                        scheme = LocalColors.current,
-                    ),
+                    connectionStatus.topBarColor(LocalColors.current),
             )
             Column(
                 modifier =
@@ -144,7 +143,7 @@ fun TvNetworkSettingsScreen() =
                             enabled = portForwardingEnabled,
                             toggle = {
                                 viewModel.toggleEnablePortForwarding(it)
-                                viewModel.showReconnectDialogIfVpnConnected()
+                                viewModel.reconnectPrompt.onSettingChanged()
                             },
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -154,7 +153,7 @@ fun TvNetworkSettingsScreen() =
                             enabled = localTrafficEnabled,
                             toggle = {
                                 viewModel.toggleAllowLocalNetwork(it)
-                                viewModel.showReconnectDialogIfVpnConnected()
+                                viewModel.reconnectPrompt.onSettingChanged()
                             },
                         )
                     }
@@ -194,11 +193,10 @@ fun TvNetworkSettingsScreen() =
                             }
 
                             if (hasDnsOptionChanged) {
-                                // Only show the warning dialog if the user was on a safe DNS option (PIA DNS)
                                 if (previousDnsSelectionWasPIA) {
                                     dnsWarningDialogVisible.value = true
                                 } else {
-                                    viewModel.showReconnectDialogIfVpnConnected()
+                                    viewModel.reconnectPrompt.onSettingChanged()
                                 }
                                 if (it != DnsOptions.PIA) {
                                     viewModel.toggleMace(false)
@@ -233,11 +231,11 @@ fun TvNetworkSettingsScreen() =
                             if (it.isInUse()) {
                                 viewModel.setSelectedDnsOption(DnsOptions.CUSTOM)
                                 if (hasCustomDnsChanged) {
-                                    viewModel.showReconnectDialogIfVpnConnected()
+                                    viewModel.reconnectPrompt.onSettingChanged()
                                 }
                             } else {
                                 viewModel.setSelectedDnsOption(DnsOptions.PIA)
-                                viewModel.showReconnectDialogIfVpnConnected()
+                                viewModel.reconnectPrompt.onSettingChanged()
                             }
                         },
                         onDismiss = { customDnsDialogVisible.value = false },
@@ -246,22 +244,7 @@ fun TvNetworkSettingsScreen() =
                 }
             }
 
-            if (viewModel.reconnectDialogVisible.value) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.Black.copy(alpha = 0.6f),
-                ) {
-                    ReconnectDialog(
-                        onReconnect = {
-                            viewModel.reconnect()
-                            viewModel.reconnectDialogVisible.value = false
-                        },
-                        onLater = {
-                            viewModel.reconnectDialogVisible.value = false
-                        },
-                    )
-                }
-            }
+            ReconnectPromptDialog(viewModel.reconnectPrompt, dimBackground = true)
 
             if (allowLocalTrafficDialogVisible.value) {
                 Surface(
@@ -271,7 +254,8 @@ fun TvNetworkSettingsScreen() =
                     AllowLanDialog(
                         titleId = R.string.network_dns_selection_system,
                         descriptionId = R.string.network_dns_selection_system_lan_requirement,
-                        viewModel = viewModel,
+                        onAllowLocalNetwork = { viewModel.toggleAllowLocalNetwork(true) },
+                        reconnectPrompt = viewModel.reconnectPrompt,
                         allowLocalTrafficDialogVisible = allowLocalTrafficDialogVisible,
                         onDismiss = {
                             viewModel.setSelectedDnsOption(DnsOptions.PIA)

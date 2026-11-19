@@ -1,51 +1,40 @@
 package com.kape.permissions.ui.vm
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.kape.contracts.PermissionStatus
 import com.kape.contracts.Router
 import com.kape.data.Connection
-import com.kape.data.DI
 import com.kape.data.NotificationPermission
 import com.kape.permissions.utils.GRANTED
 import com.kape.permissions.utils.IDLE
 import com.kape.permissions.utils.NOT_GRANTED
-import com.kape.permissions.utils.PermissionUtil
 import com.kape.permissions.utils.REQUEST
 import com.kape.permissions.utils.VpnProfileState
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.asStateFlow
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.annotation.Named
 
 @KoinViewModel
 class PermissionsViewModel(
-    private val permissionUtil: PermissionUtil,
+    private val permissions: PermissionStatus,
     private val router: Router,
-    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
     private val _vpnPermissionState = MutableStateFlow(IDLE)
-    val vpnPermissionState: StateFlow<VpnProfileState> = _vpnPermissionState
+    val vpnPermissionState: StateFlow<VpnProfileState> = _vpnPermissionState.asStateFlow()
 
-    fun onOkButtonClicked() =
-        viewModelScope.launch(ioDispatcher) {
-            _vpnPermissionState.emit(REQUEST)
-        }
+    fun onOkButtonClicked() {
+        _vpnPermissionState.value = REQUEST
+    }
 
-    fun onVpnProfileStateChange() =
-        viewModelScope.launch(ioDispatcher) {
-            if (permissionUtil.isVpnProfileInstalled()) {
-                _vpnPermissionState.emit(GRANTED)
-                if (!permissionUtil.isNotificationPermissionGranted()) {
-                    router.updateDestination(NotificationPermission)
-                } else {
-                    navigateToConnection()
-                }
-                return@launch
-            }
-            _vpnPermissionState.emit(NOT_GRANTED)
+    fun onVpnProfileStateChange() {
+        if (!permissions.isVpnProfileInstalled()) {
+            _vpnPermissionState.value = NOT_GRANTED
+            return
         }
+        _vpnPermissionState.value = GRANTED
+        router.updateDestination(if (permissions.areNotificationsAllowed()) Connection else NotificationPermission)
+    }
 
     fun navigateToConnection() = router.updateDestination(Connection)
 }

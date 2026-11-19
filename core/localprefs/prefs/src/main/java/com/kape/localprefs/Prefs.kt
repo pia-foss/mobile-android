@@ -7,9 +7,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.kape.regions.data.ServerData
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
@@ -17,8 +16,10 @@ import kotlinx.serialization.json.Json
 open class Prefs(
     context: Context,
     name: String,
+    appScope: CoroutineScope,
+    ioDispatcher: CoroutineDispatcher,
 ) {
-    protected val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    protected val scope = CoroutineScope(appScope.coroutineContext + ioDispatcher)
     val waitTime = 5000L
 
     val dataStore: DataStore<Preferences> =

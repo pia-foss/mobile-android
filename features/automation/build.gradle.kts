@@ -1,42 +1,23 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.compose)
+    alias(libs.plugins.pia.android.feature)
+    alias(libs.plugins.pia.android.flavors)
 }
 
 android {
     namespace = "com.kape.automation"
-
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
-    implementation(project(":core:contracts"))
-    implementation(project(":core:utils"))
-    implementation(project(":core:data"))
     implementation(project(":core:localprefs:prefs"))
-    implementation(project(":core:localprefs:data"))
-    implementation(project(":capabilities:ui"))
+    implementation(project(":core:vpnconnect"))
+    implementation(project(":core:vpnlauncher"))
     implementation(project(":capabilities:location"))
     implementation(project(":capabilities:networkmanagement"))
-    implementation(project(":features:appbar"))
-    implementation(libs.bundles.compose)
-    androidTestImplementation(libs.bundles.composeandroidtest)
-    implementation(libs.bundles.android)
-    implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
-    androidTestImplementation(libs.bundles.koinandroidtest)
-    implementation(libs.coroutines)
-    testImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.bundles.coroutines.androidtest)
-    testImplementation(libs.bundles.test)
-    runtimeOnly(libs.launcher)
-}
+    implementation(project(":capabilities:appbar"))
 
-koinCompiler {
-    compileSafety = false
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.mockk)
 }

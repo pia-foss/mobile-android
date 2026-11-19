@@ -86,8 +86,6 @@ class ConfigurationGenerator(
                     } else {
                         emptyList()
                     }
-                // Not every region offers AmneziaWG endpoints; fall back to plain WireGuard so the
-                // toggle never leaves the user unable to connect.
                 awgConfigurations.ifEmpty {
                     generateWireGuardVpnConfigurations(wireGuardSettings, server, dnsServers, false)
                 }
@@ -155,7 +153,7 @@ class ConfigurationGenerator(
                     DataEncryption.AES_128_GCM -> "AES-128-GCM"
                     DataEncryption.AES_256_GCM -> "AES-256-GCM"
                     DataEncryption.CHA_CHA_20 -> "CHACHA20-POLY1305"
-                    DataEncryption.AUTO -> "" // never used
+                    DataEncryption.AUTO -> ""
                 }
             val commandLineParams =
                 mutableListOf(
@@ -306,8 +304,6 @@ class ConfigurationGenerator(
         val udp = { generateOpenVpnConfigurations(udpSettings, server, dnsServers, isCensorship) }
         val tcp = { generateOpenVpnConfigurations(tcpSettings, server, dnsServers, isCensorship) }
 
-        // Pecking order: which protocol to try first, and how many endpoints of each (see the
-        // C_MAX_*/NC_MAX_* constants) differs between censored and uncensored regions.
         val order = if (isCensorship) listOf(awg, tcp, wg, udp) else listOf(wg, udp, tcp, awg)
 
         return order.flatMap { it() }

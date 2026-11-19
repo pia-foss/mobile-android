@@ -32,7 +32,7 @@ import com.kape.ui.tv.text.SignUpTitleText
 import com.kape.ui.tv.text.SignupConsentDescriptionText
 import com.kape.ui.tv.text.SignupConsentTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvConsentScreen(isFirstScreen: Boolean) {
@@ -78,7 +78,7 @@ fun TvConsentScreen(isFirstScreen: Boolean) {
                         ),
                 ) {
                     Image(
-                        painter = painterResource(id = com.kape.login.R.drawable.ic_tv_onboarding),
+                        painter = painterResource(id = com.kape.ui.R.drawable.ic_tv_onboarding),
                         contentScale = ContentScale.Fit,
                         contentDescription = null,
                         modifier =

@@ -1,27 +1,16 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.junit5)
+    alias(libs.plugins.pia.android.library)
 }
 
 android {
-    namespace = "com.kape.obfuscator"
+    namespace = "com.kape.obfuscator.core"
 }
 
 dependencies {
     implementation(libs.mobile.android.obfuscation.proxy)
-    implementation(libs.coroutines)
-    testImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.bundles.coroutines.androidtest)
-    implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
-    androidTestImplementation(libs.bundles.koinandroidtest)
-    testImplementation(libs.bundles.test)
-    runtimeOnly(libs.launcher)
-}
+    implementation(libs.coroutines.android)
 
-koinCompiler {
-    compileSafety = false
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.annotations)
 }

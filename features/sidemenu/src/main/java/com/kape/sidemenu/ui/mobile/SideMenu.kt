@@ -1,0 +1,299 @@
+package com.kape.sidemenu.ui.mobile
+
+import android.content.Intent
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusGroup
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DrawerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.sidemenu.R
+import com.kape.sidemenu.ui.vm.SideMenuViewModel
+import com.kape.ui.mobile.elements.Separator
+import com.kape.ui.mobile.text.MenuText
+import com.kape.ui.mobile.text.SideMenuUpdateAvailableText
+import com.kape.ui.mobile.text.SideMenuUsernameText
+import com.kape.ui.mobile.text.SideMenuVersionText
+import com.kape.ui.tiles.LogoutDialog
+import com.kape.ui.utils.LocalColors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun SideMenuContent(
+    scope: CoroutineScope,
+    state: DrawerState,
+    viewModel: SideMenuViewModel = koinViewModel(),
+) {
+    val logoutDialogVisible = rememberSaveable { mutableStateOf(false) }
+    val hasUpdateAvailable by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
+    val username by viewModel.username.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(state.isOpen) {
+        if (state.isOpen) viewModel.refreshUsername()
+    }
+
+    Column(
+        modifier =
+            Modifier
+                .background(color = LocalColors.current.surface)
+                .padding(horizontal = 24.dp, vertical = 24.dp)
+                .width(250.dp)
+                .fillMaxHeight()
+                .focusGroup()
+                .verticalScroll(rememberScrollState())
+                .semantics {
+                    testTagsAsResourceId = true
+                },
+    ) {
+        SideMenuHeaderItem(
+            username = username,
+            versionCode = viewModel.versionCode,
+            versionName = viewModel.versionName,
+            hasUpdateAvailable = hasUpdateAvailable,
+            onClick = {
+                if (hasUpdateAvailable) {
+                    scope.launch {
+                        viewModel.getDownloadUrl()?.let { url ->
+                            context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                        }
+                    }
+                }
+            },
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        SideMenuItem(
+            iconId = R.drawable.ic_account,
+            titleId = com.kape.ui.R.string.drawer_item_title_account,
+            ":SideMenu:Account",
+        ) {
+            scope.launch {
+                state.close()
+            }
+            viewModel.navigateToProfile()
+        }
+
+        SideMenuItem(
+            iconId = R.drawable.ic_ip,
+            titleId = com.kape.ui.R.string.drawer_item_title_dedicated_ip,
+            ":SideMenu:DedicatedIP",
+        ) {
+            scope.launch {
+                state.close()
+            }
+            viewModel.navigateToDedicatedIp()
+        }
+
+        SideMenuItem(
+            iconId = R.drawable.ic_per_app,
+            titleId = com.kape.ui.R.string.drawer_item_title_per_app_settings,
+            ":SideMenu:PerAppSettings",
+        ) {
+            scope.launch {
+                state.close()
+            }
+            viewModel.navigateToPerAppSettings()
+        }
+
+        SideMenuItem(
+            iconId = com.kape.ui.R.drawable.ic_settings,
+            titleId = com.kape.ui.R.string.drawer_item_title_settings,
+            ":SideMenu:Settings",
+        ) {
+            scope.launch {
+                state.close()
+            }
+            viewModel.navigateToSettings()
+        }
+
+        SideMenuItem(
+            iconId = R.drawable.ic_log_out,
+            titleId = com.kape.ui.R.string.drawer_item_title_logout,
+            ":SideMenu:Logout",
+        ) {
+            scope.launch {
+                state.close()
+            }
+            logoutDialogVisible.value = true
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Separator()
+        Spacer(modifier = Modifier.height(16.dp))
+        SideMenuItem(
+            iconId = R.drawable.ic_about,
+            titleId = com.kape.ui.R.string.drawer_item_title_about,
+            ":SideMenu:About",
+        ) {
+            scope.launch {
+                state.close()
+            }
+            viewModel.navigateToAbout()
+        }
+        SideMenuItem(
+            iconId = R.drawable.ic_privacy,
+            titleId = com.kape.ui.R.string.drawer_item_title_privacy_policy,
+            ":SideMenu:PrivacyPolicy",
+        ) {
+            scope.launch {
+                state.close()
+            }
+            viewModel.navigateToPrivacyPolicy()
+        }
+
+        SideMenuItem(
+            iconId = com.kape.ui.R.drawable.ic_help,
+            titleId = com.kape.ui.R.string.drawer_item_title_contact_support,
+            ":SideMenu:ContactSupport",
+        ) {
+            scope.launch {
+                state.close()
+            }
+            viewModel.navigateToSupport()
+        }
+    }
+
+    if (logoutDialogVisible.value) {
+        LogoutDialog(
+            onDismiss = {
+                logoutDialogVisible.value = false
+            },
+            onConfirm = {
+                viewModel.logout()
+                logoutDialogVisible.value = false
+            },
+        )
+    }
+}
+
+@Composable
+private fun SideMenuHeaderItem(
+    username: String,
+    versionCode: String,
+    versionName: String,
+    hasUpdateAvailable: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .focusable()
+                .clickable(onClick = onClick),
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.drawer_icon),
+            modifier =
+                Modifier
+                    .align(CenterVertically)
+                    .size(48.dp),
+            contentDescription = null,
+        )
+        Spacer(modifier = Modifier.width(24.dp))
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .align(CenterVertically),
+        ) {
+            val usernamePrefix = stringResource(id = com.kape.ui.R.string.username)
+            SideMenuUsernameText(
+                content = username,
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .testTag(":SideMenu:Username")
+                        .semantics {
+                            contentDescription = "$usernamePrefix $username"
+                        },
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            SideMenuVersionText(
+                content =
+                    stringResource(com.kape.ui.R.string.drawer_item_description_app_version_format).format(
+                        versionName,
+                        versionCode,
+                    ),
+                modifier = Modifier.wrapContentWidth(),
+            )
+            if (hasUpdateAvailable) {
+                Spacer(modifier = Modifier.height(4.dp))
+                SideMenuUpdateAvailableText(
+                    content = stringResource(com.kape.ui.R.string.app_update_available_title),
+                    modifier = Modifier.wrapContentWidth(),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SideMenuItem(
+    @DrawableRes iconId: Int,
+    @StringRes titleId: Int,
+    testTag: String,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .clickable {
+                    onClick.invoke()
+                }.focusable(),
+    ) {
+        Image(
+            modifier =
+                Modifier
+                    .align(CenterVertically)
+                    .size(24.dp)
+                    .testTag(testTag),
+            painter = painterResource(id = iconId),
+            contentScale = ContentScale.Inside,
+            contentDescription = null,
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        MenuText(
+            content = stringResource(id = titleId),
+            modifier = Modifier.align(CenterVertically),
+        )
+    }
+}

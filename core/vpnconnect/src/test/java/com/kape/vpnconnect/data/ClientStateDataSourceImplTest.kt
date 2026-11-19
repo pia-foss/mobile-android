@@ -1,224 +1,166 @@
 package com.kape.vpnconnect.data
 
+import com.kape.contracts.NetworkStatus
 import com.kape.data.NO_IP
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.utils.NetworkConnectionListener
+import com.kape.vpnconnect.utils.DELAY_BETWEEN_RETRY
 import com.privateinternetaccess.account.AccountRequestError
 import com.privateinternetaccess.account.AndroidAccountAPI
 import com.privateinternetaccess.account.model.response.ClientStatusInformation
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.slot
 import io.mockk.verify
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.currentTime
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class ClientStateDataSourceImplTest {
-    private val accountAPI = mockk<AndroidAccountAPI>()
-    private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)
-    private val isNetworkConnected = MutableStateFlow(true)
-    private val networkConnectionListener =
-        mockk<NetworkConnectionListener> { every { isConnected } returns isNetworkConnected }
+@OptIn(ExperimentalCoroutinesApi::class)
+internal class ClientStateDataSourceImplTest {
+    private val accountApi: AndroidAccountAPI = mockk()
+    private val connectionPrefs: ConnectionPrefs = mockk(relaxed = true)
+    private val networkStatus = FakeNetworkStatus()
 
-    private lateinit var dataSource: ClientStateDataSourceImpl
+    private val responses = ArrayDeque<ClientStatusInformation?>()
+    private var requests = 0
 
-    // region getPublicIp
+    @BeforeEach
+    fun setUp() {
+        every { accountApi.clientStatus(any(), any()) } answers {
+            requests++
+            val response = if (responses.size > 1) responses.removeFirst() else responses.firstOrNull()
+            secondArg<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()(response, emptyList())
+        }
+        coEvery { connectionPrefs.getClientIpNow() } returns CLIENT_IP
+    }
+
+    private fun createDataSource(scope: CoroutineScope) = ClientStateDataSourceImpl(accountApi, connectionPrefs, networkStatus, scope)
 
     @Test
-    fun `getPublicIp - disconnected - returns IP, sets client IP and clears VPN IP`() =
+    fun `getPublicIp - disconnected status - stores the client ip and clears the vpn ip`() =
         runTest {
-            dataSource =
-                ClientStateDataSourceImpl(
-                    accountAPI = accountAPI,
-                    connectionPrefs = connectionPrefs,
-                    networkConnectionListener = networkConnectionListener,
-                    ioScope = this,
-                )
-            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
-                slot.captured.invoke(ClientStatusInformation(connected = false, ip = "192.168.1.1"), emptyList())
-            }
+            responses += ClientStatusInformation(connected = false, ip = CLIENT_IP)
 
-            val result = dataSource.getPublicIp()
+            val ip = createDataSource(backgroundScope).getPublicIp()
 
-            assertEquals("192.168.1.1", result)
-            coVerify { connectionPrefs.setClientIp("192.168.1.1") }
+            assertEquals(CLIENT_IP, ip)
+            assertEquals(1, requests)
+            coVerify { connectionPrefs.setClientIp(CLIENT_IP) }
             coVerify { connectionPrefs.setVpnIp(NO_IP) }
         }
 
     @Test
-    fun `getPublicIp - connected - returns IP without setting client IP`() =
+    fun `getPublicIp - status reports connected - returns the ip without storing it as the client ip`() =
         runTest {
-            dataSource =
-                ClientStateDataSourceImpl(
-                    accountAPI = accountAPI,
-                    connectionPrefs = connectionPrefs,
-                    networkConnectionListener = networkConnectionListener,
-                    ioScope = this,
-                )
-            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
-                slot.captured.invoke(ClientStatusInformation(connected = true, ip = "10.0.0.1"), emptyList())
-            }
+            responses += ClientStatusInformation(connected = true, ip = VPN_IP)
 
-            val result = dataSource.getPublicIp()
+            val ip = createDataSource(backgroundScope).getPublicIp()
 
-            assertEquals("10.0.0.1", result)
+            assertEquals(VPN_IP, ip)
+            coVerify(exactly = 0) { connectionPrefs.setClientIp(any()) }
+            coVerify(exactly = 0) { connectionPrefs.setVpnIp(any()) }
+        }
+
+    @Test
+    fun `getPublicIp - request fails then succeeds - retries after a delay`() =
+        runTest {
+            responses += null
+            responses += ClientStatusInformation(connected = false, ip = CLIENT_IP)
+
+            val ip = createDataSource(backgroundScope).getPublicIp()
+
+            assertEquals(CLIENT_IP, ip)
+            assertEquals(2, requests)
+            assertEquals(DELAY_BETWEEN_RETRY, currentTime)
+        }
+
+    @Test
+    fun `getPublicIp - every request fails - gives up after three attempts`() =
+        runTest {
+            responses += null
+
+            val ip = createDataSource(backgroundScope).getPublicIp()
+
+            assertEquals(NO_IP, ip)
+            assertEquals(3, requests)
             coVerify(exactly = 0) { connectionPrefs.setClientIp(any()) }
         }
 
     @Test
-    fun `getPublicIp - null response - returns NO_IP`() =
+    fun `getPublicIp - request fails while offline - stops without retrying`() =
         runTest {
-            dataSource =
-                ClientStateDataSourceImpl(
-                    accountAPI = accountAPI,
-                    connectionPrefs = connectionPrefs,
-                    networkConnectionListener = networkConnectionListener,
-                    ioScope = this,
-                )
+            networkStatus.isOnline.value = false
+            responses += null
 
-            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
-                slot.captured.invoke(null, emptyList())
-            }
+            val ip = createDataSource(backgroundScope).getPublicIp()
 
-            val result = dataSource.getPublicIp()
-
-            assertEquals(NO_IP, result)
+            assertEquals(NO_IP, ip)
+            assertEquals(1, requests)
+            assertEquals(0L, currentTime)
         }
 
     @Test
-    fun `getPublicIp - fails while offline - does not retry`() =
+    fun `getVpnIp - connected with an ip different from the client ip - stores and returns it`() =
         runTest {
-            dataSource =
-                ClientStateDataSourceImpl(
-                    accountAPI = accountAPI,
-                    connectionPrefs = connectionPrefs,
-                    networkConnectionListener = networkConnectionListener,
-                    ioScope = this,
-                )
-            isNetworkConnected.value = false
-            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
-                slot.captured.invoke(null, emptyList())
-            }
+            responses += ClientStatusInformation(connected = true, ip = VPN_IP)
 
-            val result = dataSource.getPublicIp()
+            val ip = createDataSource(backgroundScope).getVpnIp()
 
-            assertEquals(NO_IP, result)
-            verify(exactly = 1) { accountAPI.clientStatus(any(), any()) }
+            assertEquals(VPN_IP, ip)
+            assertEquals(1, requests)
+            coVerify { connectionPrefs.setVpnIp(VPN_IP) }
+            coVerify(exactly = 0) { connectionPrefs.setClientIp(any()) }
         }
 
     @Test
-    fun `getPublicIp - fails while online - retries`() =
+    fun `getVpnIp - ip still matches the client ip - retries until the tunnel ip shows up`() =
         runTest {
-            dataSource =
-                ClientStateDataSourceImpl(
-                    accountAPI = accountAPI,
-                    connectionPrefs = connectionPrefs,
-                    networkConnectionListener = networkConnectionListener,
-                    ioScope = this,
-                )
-            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
-                slot.captured.invoke(null, emptyList())
-            }
+            responses += ClientStatusInformation(connected = false, ip = CLIENT_IP)
+            responses += ClientStatusInformation(connected = false, ip = CLIENT_IP)
+            responses += ClientStatusInformation(connected = true, ip = VPN_IP)
 
-            dataSource.getPublicIp()
+            val ip = createDataSource(backgroundScope).getVpnIp()
 
-            verify(exactly = 3) { accountAPI.clientStatus(any(), any()) }
-        }
-
-    // endregion
-
-    // region getVpnIp
-
-    @Test
-    fun `getVpnIp - connected on first attempt - returns VPN IP`() =
-        runTest {
-            dataSource =
-                ClientStateDataSourceImpl(
-                    accountAPI = accountAPI,
-                    connectionPrefs = connectionPrefs,
-                    networkConnectionListener = networkConnectionListener,
-                    ioScope = this,
-                )
-            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
-                slot.captured.invoke(ClientStatusInformation(connected = true, ip = "10.8.0.1"), emptyList())
-            }
-
-            val result = dataSource.getVpnIp()
-
-            assertEquals("10.8.0.1", result)
-            coVerify { connectionPrefs.setVpnIp("10.8.0.1") }
+            assertEquals(VPN_IP, ip)
+            assertEquals(3, requests)
+            assertEquals(2 * DELAY_BETWEEN_RETRY, currentTime)
         }
 
     @Test
-    fun `getVpnIp - never connected - returns NO_IP after retries`() =
+    fun `getVpnIp - ip never changes from the client ip - gives up after five attempts`() =
         runTest {
-            dataSource =
-                ClientStateDataSourceImpl(
-                    accountAPI = accountAPI,
-                    connectionPrefs = connectionPrefs,
-                    networkConnectionListener = networkConnectionListener,
-                    ioScope = this,
-                )
-            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
-                slot.captured.invoke(ClientStatusInformation(connected = false, ip = NO_IP), emptyList())
-            }
+            responses += ClientStatusInformation(connected = false, ip = CLIENT_IP)
 
-            val result = dataSource.getVpnIp()
+            val ip = createDataSource(backgroundScope).getVpnIp()
 
-            assertEquals(NO_IP, result)
+            assertEquals(NO_IP, ip)
+            assertEquals(5, requests)
         }
 
     @Test
-    fun `getVpnIp - null response - returns NO_IP`() =
+    fun `getVpnIp - request fails while offline - stops without retrying`() =
         runTest {
-            dataSource =
-                ClientStateDataSourceImpl(
-                    accountAPI = accountAPI,
-                    connectionPrefs = connectionPrefs,
-                    networkConnectionListener = networkConnectionListener,
-                    ioScope = this,
-                )
-            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
-                slot.captured.invoke(null, emptyList())
-            }
+            networkStatus.isOnline.value = false
+            responses += null
 
-            val result = dataSource.getVpnIp()
+            val ip = createDataSource(backgroundScope).getVpnIp()
 
-            assertEquals(NO_IP, result)
+            assertEquals(NO_IP, ip)
+            verify(exactly = 1) { accountApi.clientStatus(any(), any()) }
         }
 
-    @Test
-    fun `getVpnIp - fails while offline - does not retry`() =
-        runTest {
-            dataSource =
-                ClientStateDataSourceImpl(
-                    accountAPI = accountAPI,
-                    connectionPrefs = connectionPrefs,
-                    networkConnectionListener = networkConnectionListener,
-                    ioScope = this,
-                )
-            isNetworkConnected.value = false
-            val slot = slot<(ClientStatusInformation?, List<AccountRequestError>) -> Unit>()
-            every { accountAPI.clientStatus(any(), capture(slot)) } answers {
-                slot.captured.invoke(null, emptyList())
-            }
+    private class FakeNetworkStatus : NetworkStatus {
+        override val isOnline = MutableStateFlow(true)
+    }
 
-            val result = dataSource.getVpnIp()
-
-            assertEquals(NO_IP, result)
-            verify(exactly = 1) { accountAPI.clientStatus(any(), any()) }
-        }
-
-    // endregion
+    private companion object {
+        const val CLIENT_IP = "1.2.3.4"
+        const val VPN_IP = "10.0.0.1"
+    }
 }

@@ -26,29 +26,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kape.contracts.ConnectionInfoProvider
+import com.kape.appbar.view.topBarColor
+import com.kape.contracts.ConnectionStatusSource
 import com.kape.settings.data.DnsOptions
 import com.kape.settings.ui.elements.rememberMockLocationToggleState
 import com.kape.settings.ui.elements.tv.TvSettingsToggle
 import com.kape.settings.ui.screens.mobile.WarningDialog
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.vm.MockLocationViewModel
+import com.kape.settings.ui.vm.PrivacySettingsViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.text.AppBarTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvPrivacySettingsScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
-        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
+        val viewModel: PrivacySettingsViewModel = koinViewModel()
+        val connectionStatus by koinInject<ConnectionStatusSource>().status.collectAsStateWithLifecycle()
         val initialFocusRequester = remember { FocusRequester() }
         val showWarning = remember { mutableStateOf(false) }
         val maceEnabled by viewModel.maceEnabled.collectAsStateWithLifecycle()
         val dnsSelectedOption by viewModel.selectedDnsOption.collectAsStateWithLifecycle()
-        val mockLocationToggleState = rememberMockLocationToggleState(viewModel)
+        val mockLocationToggleState = rememberMockLocationToggleState(koinViewModel<MockLocationViewModel>())
 
         LaunchedEffect(key1 = Unit) {
             initialFocusRequester.requestFocus()
@@ -63,9 +65,7 @@ fun TvPrivacySettingsScreen() =
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 4.dp,
                 color =
-                    connectionInfoProvider.getTopBarConnectionColor(
-                        scheme = LocalColors.current,
-                    ),
+                    connectionStatus.topBarColor(LocalColors.current),
             )
             Column(
                 modifier =
@@ -107,12 +107,11 @@ fun TvPrivacySettingsScreen() =
                             subtitleId = R.string.mace_description,
                             enabled = maceEnabled,
                             toggle = {
-                                // MACE requires using PIA DNS
                                 if (dnsSelectedOption != DnsOptions.PIA && !maceEnabled) {
                                     showWarning.value = true
                                 }
                                 viewModel.toggleMace(it)
-                                viewModel.showReconnectDialogIfVpnConnected()
+                                viewModel.reconnectPrompt.onSettingChanged()
                             },
                         )
                         if (viewModel.isMockLocationAvailable) {

@@ -1,5 +1,6 @@
 package com.kape.connection.ui.mobile
 
+import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
@@ -38,13 +39,10 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -66,28 +64,17 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.connection.ui.ConnectButton
+import com.kape.connection.ui.tiles.ConnectionTile
+import com.kape.connection.ui.vm.ConnectionTilesViewModel
 import com.kape.connection.ui.vm.ConnectionViewModel
-import com.kape.connection.utils.ConnectionScreenState
 import com.kape.customization.data.Element
 import com.kape.data.ConnectionStatus
-import com.kape.data.vpnserver.VpnServer
-import com.kape.localprefs.data.customization.ScreenElement
 import com.kape.rating.data.RatingDialogType
 import com.kape.rating.ui.RatingFeedbackDialog
 import com.kape.rating.ui.RatingReviewDialog
-import com.kape.sharedui.tiles.ConnectionInfo
-import com.kape.sharedui.tiles.IPTile
-import com.kape.sharedui.tiles.QuickConnect
-import com.kape.sharedui.tiles.QuickSettings
-import com.kape.sharedui.tiles.ShadowsocksLocationPicker
-import com.kape.sharedui.tiles.Snooze
-import com.kape.sharedui.tiles.Traffic
-import com.kape.sharedui.tiles.VpnLocationPicker
-import com.kape.sidemenu.ui.screens.mobile.SideMenuContent
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.InfoCard
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.RoundIconButton
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.mobile.elements.TertiaryButton
 import com.kape.ui.mobile.text.DedicatedIpHomeBannerText
@@ -96,391 +83,191 @@ import com.kape.ui.tiles.Dialog
 import com.kape.ui.utils.LocalColors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ConnectionScreen() =
-    Screen {
-        val viewModel: ConnectionViewModel = koinViewModel()
-        val connectionStatus by viewModel.connectionInfoProvider.status.collectAsStateWithLifecycle()
-        val appBarViewModel: AppBarViewModel = koinViewModel()
-        val scope: CoroutineScope = rememberCoroutineScope()
-        val drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed)
-        val state by viewModel.state.collectAsStateWithLifecycle()
-        val showRatingGeneralDialog = rememberSaveable { mutableStateOf(false) }
-        val showRatingReviewDialog = rememberSaveable { mutableStateOf(false) }
-        val showRatingFeedbackDialog = rememberSaveable { mutableStateOf(false) }
-        val lifecycleOwner = LocalLifecycleOwner.current
-        val activity = LocalActivity.current
-        val shouldShowProtocolNotAvailable by viewModel.showProtocolNotAvailableDialog
-        val shouldShowAutoProtocolNudge by viewModel.showAutoProtocolNudgeDialog.collectAsStateWithLifecycle()
-        val screenElements by viewModel
-            .getOrderedElements()
-            .collectAsStateWithLifecycle(emptyList())
-        val showUpdateAvailableDialog by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
-        val snackbarHostState = remember { SnackbarHostState() }
+fun ConnectionScreen(
+    drawerContent: @Composable (scope: CoroutineScope, state: DrawerState) -> Unit,
+    viewModel: ConnectionViewModel = koinViewModel(),
+    tiles: ConnectionTilesViewModel = koinViewModel(),
+) = Screen {
+    val connectionStatus by viewModel.status.collectAsStateWithLifecycle()
+    val elements by viewModel.elements.collectAsStateWithLifecycle()
+    val showDedicatedIpBanner by viewModel.showDedicatedIpBanner.collectAsStateWithLifecycle()
+    val ratingPrompt by viewModel.ratingPrompt.collectAsStateWithLifecycle()
+    val showProtocolNotAvailable by viewModel.showProtocolNotAvailable.collectAsStateWithLifecycle()
+    val showAutoProtocolNudge by viewModel.showAutoProtocolNudge.collectAsStateWithLifecycle()
+    val hasUpdateAvailable by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
+    val appBarViewModel: AppBarViewModel = koinViewModel()
+    val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val snackbarHostState = remember { SnackbarHostState() }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val activity = LocalActivity.current
+    val context = LocalContext.current
 
-        BackHandler {
-            activity?.finish()
+    BackHandler {
+        activity?.finish()
+    }
+
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            activity?.let(viewModel::checkForPaymentIssues)
         }
+    }
 
-        LaunchedEffect(lifecycleOwner) {
-            lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                viewModel.refreshState()
-                activity?.let { viewModel.checkForPaymentIssues(it) }
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                drawerContent(scope, drawerState)
             }
-        }
-
-        LaunchedEffect(connectionStatus) {
-            viewModel.refreshState()
-        }
-
-        LaunchedEffect(key1 = Unit) {
-            viewModel.shouldShowDedicatedIpSignupBanner()
-            viewModel.autoConnect()
-        }
-
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                ModalDrawerSheet {
-                    SideMenuContent(scope = scope, state = drawerState)
+        },
+    ) {
+        Scaffold(
+            topBar = {
+                AppBar(
+                    viewModel = appBarViewModel,
+                    type = AppBarType.Connection,
+                    onLeftIconClick = { scope.launch { drawerState.open() } },
+                    onRightIconClick = viewModel::navigateToCustomization,
+                )
+            },
+            snackbarHost = {
+                SnackbarHost(snackbarHostState) { data ->
+                    Snackbar(snackbarData = data, actionContentColor = LocalColors.current.inversePrimary)
                 }
             },
-        ) {
-            Scaffold(
-                topBar = {
-                    AppBar(
-                        viewModel = appBarViewModel,
-                        type = AppBarType.Connection,
-                        onLeftIconClick = {
-                            scope.launch {
-                                drawerState.open()
-                            }
-                        },
-                        onRightIconClick = { viewModel.navigateToCustomization() },
-                    )
-                },
-                snackbarHost = {
-                    SnackbarHost(snackbarHostState) { data ->
-                        Snackbar(
-                            snackbarData = data,
-                            actionContentColor = LocalColors.current.inversePrimary,
-                        )
-                    }
-                },
+        ) { padding ->
+            Column(
+                modifier =
+                    Modifier
+                        .padding(padding)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .semantics { testTagsAsResourceId = true },
+                horizontalAlignment = CenterHorizontally,
             ) {
-                Column(
-                    modifier =
-                        Modifier
-                            .padding(it)
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .semantics {
-                                testTagsAsResourceId = true
-                            },
-                    horizontalAlignment = CenterHorizontally,
-                ) {
-                    Column(modifier = Modifier.widthIn(max = 520.dp)) {
-                        var connectButtonDescription =
-                            stringResource(id = R.string.toggle_connection_button)
-
-                        connectButtonDescription +=
+                Column(modifier = Modifier.widthIn(max = 520.dp)) {
+                    val connectButtonDescription =
+                        stringResource(id = R.string.toggle_connection_button) +
                             when (connectionStatus) {
                                 ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING ->
-                                    stringResource(
-                                        id = R.string.disconnect_from_vpn,
-                                    )
+                                    stringResource(id = R.string.disconnect_from_vpn)
 
                                 else -> stringResource(id = R.string.connect_to_vpn)
                             }
 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        if (viewModel.showDedicatedIpHomeBanner.value) {
-                            DedicatedIpBanner(
-                                onAcceptClick = {
-                                    viewModel.navigateToDedicatedIpPlans()
-                                },
-                                onCancelClick = {
-                                    viewModel.hideDedicatedIpSignupBanner()
-                                },
-                            )
-                        }
-                        ConnectButton(
-                            status = connectionStatus,
-                            onTvLayout = false,
-                            modifier =
-                                Modifier
-                                    .align(CenterHorizontally)
-                                    .testTag(":ConnectionScreen:connection_button")
-                                    .semantics(mergeDescendants = true) {
-                                        role = Role.Button
-                                        contentDescription = connectButtonDescription
-                                    },
-                        ) {
-                            viewModel.onConnectionButtonClicked()
-                        }
-                        Spacer(modifier = Modifier.height(36.dp))
-                        if (showRatingGeneralDialog.value) {
-                            RatingCard(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                onClose = {
-                                    viewModel.setRatingStateInactive()
-                                    showRatingGeneralDialog.value = false
-                                },
-                                onThumbsUp = viewModel::showReviewPrompt,
-                                onThumbsDown = viewModel::showFeedbackPrompt,
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
-                        screenElements.forEach { screenElement ->
-                            DisplayComponent(
-                                screenElement = screenElement,
-                                isVisible = screenElement.shouldDisplayElement,
-                                viewModel = viewModel,
-                                screenState = state,
-                                connectionStatus = connectionStatus,
-                                isConnected = connectionStatus == ConnectionStatus.CONNECTED,
-                            )
-                        }
-                        showRatingGeneralDialog.value =
-                            state.ratingDialogType is RatingDialogType.General
-                        showRatingReviewDialog.value =
-                            state.ratingDialogType is RatingDialogType.Review
-                        showRatingFeedbackDialog.value =
-                            state.ratingDialogType is RatingDialogType.Feedback
-
-                        if (showRatingReviewDialog.value) {
-                            val url = stringResource(id = R.string.app_url)
-                            val context = LocalContext.current
-
-                            RatingReviewDialog(
-                                onConfirm = {
-                                    val launchIntent = Intent(Intent.ACTION_VIEW)
-                                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    launchIntent.data = url.toUri()
-
-                                    // Silently fail if Google Play Store isn't installed.
-                                    if (launchIntent.resolveActivity(context.packageManager) != null) {
-                                        context.startActivity(launchIntent)
-                                    }
-                                    viewModel.setRatingStateInactive()
-                                },
-                                onDismiss = {
-                                    viewModel.setRatingStateInactive()
-                                },
-                            )
-                        }
-
-                        if (showRatingFeedbackDialog.value) {
-                            val url = stringResource(id = R.string.url_support_new_ticket)
-                            val context = LocalContext.current
-
-                            RatingFeedbackDialog(
-                                onConfirm = {
-                                    val launchIntent = Intent(Intent.ACTION_VIEW)
-                                    launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    launchIntent.data = url.toUri()
-
-                                    // Silently fail if Google Play Store isn't installed.
-                                    if (launchIntent.resolveActivity(context.packageManager) != null) {
-                                        context.startActivity(launchIntent)
-                                    }
-                                },
-                                onDismiss = {
-                                    viewModel.updateRatingDate()
-                                },
-                            )
-                        }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    if (showDedicatedIpBanner) {
+                        DedicatedIpBanner(
+                            onAcceptClick = viewModel::navigateToDedicatedIpPlans,
+                            onCancelClick = viewModel::hideDedicatedIpBanner,
+                        )
                     }
-                }
-
-                if (shouldShowProtocolNotAvailable) {
-                    Dialog(
-                        stringResource(R.string.protocol_unavailable_title),
-                        stringResource(R.string.protocol_unavailable_message),
-                        stringResource(R.string.protocol_unavailable_action),
-                        onConfirm = { viewModel.resetProtocolNotAvailable() },
-                    )
-                }
-
-                if (shouldShowAutoProtocolNudge) {
-                    Dialog(
-                        stringResource(R.string.auto_protocol_nudge_title),
-                        stringResource(R.string.auto_protocol_nudge_message),
-                        stringResource(R.string.auto_protocol_nudge_confirm),
-                        stringResource(R.string.auto_protocol_nudge_dismiss),
-                        onConfirm = { viewModel.switchToAutomaticProtocol() },
-                        onDismiss = { viewModel.dismissAutoProtocolNudge() },
-                    )
-                }
-
-                val message = stringResource(R.string.app_update_available_title)
-                val action = stringResource(R.string.app_update_available_positive_action)
-                val context = LocalContext.current
-
-                LaunchedEffect(showUpdateAvailableDialog) {
-                    if (showUpdateAvailableDialog) {
-                        val result =
-                            snackbarHostState.showSnackbar(
-                                message = message,
-                                actionLabel = action,
-                                withDismissAction = true,
-                                duration = SnackbarDuration.Short,
-                            )
-                        when (result) {
-                            SnackbarResult.Dismissed -> snackbarHostState.currentSnackbarData?.dismiss()
-                            SnackbarResult.ActionPerformed -> {
-                                val launchIntent = Intent(Intent.ACTION_VIEW)
-                                launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                launchIntent.data = viewModel.getDownloadLink().toUri()
-                                context.startActivity(launchIntent)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-@Composable
-private fun DisplayComponent(
-    screenElement: ScreenElement,
-    isVisible: Boolean,
-    viewModel: ConnectionViewModel,
-    screenState: ConnectionScreenState,
-    connectionStatus: ConnectionStatus,
-    isConnected: Boolean,
-) {
-    if (isVisible) {
-        when (screenElement.element) {
-            Element.ConnectionInfo -> {
-                val settings by viewModel.getConnectionSettings().collectAsStateWithLifecycle()
-                ConnectionInfo(
-                    connection = settings.name,
-                    port = settings.port,
-                    auth = settings.auth,
-                    transport = settings.transport.value,
-                    encryption = settings.dataEncryption.value,
-                    handshake = settings.handshake,
-                )
-                Separator()
-            }
-
-            Element.IpInfo -> {
-                IPTile()
-                Separator()
-            }
-
-            Element.QuickConnect -> {
-                val quickConnectMap = mutableMapOf<VpnServer?, Boolean>()
-                val quickConnectServers by viewModel.quickConnectServers.collectAsStateWithLifecycle()
-                for (server in quickConnectServers) {
-                    quickConnectMap[server] =
-                        viewModel.isVpnServerFavorite(server.name, server.isDedicatedIp)
-                }
-                QuickConnect(
-                    servers = quickConnectMap,
-                    isConnected = isConnected,
-                    onClick = {
-                        viewModel.quickConnect(it)
-                    },
-                )
-                Separator()
-            }
-
-            Element.QuickSettings -> {
-                QuickSettings(
-                    onKillSwitchClick = {
-                        viewModel.navigateToKillSwitch()
-                    },
-                    onAutomationClick = {
-                        viewModel.navigateToAutomation()
-                    },
-                    onProtocolsClick = {
-                        viewModel.navigateToProtocols()
-                    },
-                )
-                Separator()
-            }
-
-            Element.VpnRegionSelection -> {
-                screenState.server?.let { server ->
-                    VpnLocationPicker(
-                        modifier = Modifier.testTag(":ConnectionScreen:VpnLocationPicker"),
-                        server = server,
-                        isConnected = connectionStatus == ConnectionStatus.CONNECTED,
-                        isOptimal = screenState.isCurrentServerOptimal,
-                    ) {
-                        viewModel.showVpnRegionSelection()
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-                if (screenState.showOptimalLocationInfo) {
-                    InfoCard(
-                        content = stringResource(id = R.string.optimal_location_hint),
+                    ConnectButton(
+                        status = connectionStatus,
+                        onTvLayout = false,
                         modifier =
                             Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
+                                .align(CenterHorizontally)
+                                .testTag(":ConnectionScreen:connection_button")
+                                .semantics(mergeDescendants = true) {
+                                    role = Role.Button
+                                    contentDescription = connectButtonDescription
+                                },
+                        onClick = viewModel::onConnectionButtonClicked,
                     )
-                }
-            }
-
-            Element.ShadowsocksRegionSelection -> {
-                val selectedServer by viewModel
-                    .getSelectedShadowsocksServer()
-                    .collectAsStateWithLifecycle()
-                selectedServer?.let {
-                    ShadowsocksLocationPicker(
-                        server = it,
-                        isConnected = connectionStatus == ConnectionStatus.CONNECTED,
-                    ) {
-                        viewModel.showShadowsocksRegionSelection()
+                    Spacer(modifier = Modifier.height(36.dp))
+                    if (ratingPrompt == RatingDialogType.General) {
+                        RatingCard(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                            onClose = viewModel::onRatingFinished,
+                            onThumbsUp = viewModel::onRatingThumbsUp,
+                            onThumbsDown = viewModel::onRatingThumbsDown,
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                    elements.filter { it.shouldDisplayElement }.forEach { element ->
+                        ConnectionTile(element = element.element, tiles = tiles, actions = viewModel)
+                        if (element.element.hasSeparator()) Separator()
                     }
                 }
             }
 
-            Element.Snooze -> {
-                Snooze(
-                    active = viewModel.isSnoozeActive,
-                    timeUntilResume =
-                        when (viewModel.timeUntilResume.intValue) {
-                            1 ->
-                                String.format(
-                                    stringResource(id = R.string.minute_to_format),
-                                    viewModel.timeUntilResume.intValue,
-                                )
-
-                            else ->
-                                String.format(
-                                    stringResource(id = R.string.minutes_to_format),
-                                    viewModel.timeUntilResume.intValue,
-                                )
+            when (ratingPrompt) {
+                RatingDialogType.Review -> {
+                    val url = stringResource(id = R.string.app_url)
+                    RatingReviewDialog(
+                        onConfirm = {
+                            context.openUrl(url)
+                            viewModel.onRatingFinished()
                         },
-                    onClick = {
-                        if (connectionStatus == ConnectionStatus.CONNECTED) {
-                            viewModel.snooze(it)
-                        }
-                    },
-                    onResumeClick = {
-                        viewModel.onSnoozeResumed()
-                    },
-                )
-                Separator()
+                        onDismiss = viewModel::onRatingFinished,
+                    )
+                }
+
+                RatingDialogType.Feedback -> {
+                    val url = stringResource(id = R.string.url_support_new_ticket)
+                    RatingFeedbackDialog(
+                        onConfirm = {
+                            context.openUrl(url)
+                            viewModel.onFeedbackFinished()
+                        },
+                        onDismiss = viewModel::onFeedbackFinished,
+                    )
+                }
+
+                else -> Unit
             }
 
-            Element.Traffic -> {
-                Traffic()
-                Separator()
+            if (showProtocolNotAvailable) {
+                Dialog(
+                    stringResource(R.string.protocol_unavailable_title),
+                    stringResource(R.string.protocol_unavailable_message),
+                    stringResource(R.string.protocol_unavailable_action),
+                    onConfirm = viewModel::dismissProtocolNotAvailable,
+                )
+            }
+
+            if (showAutoProtocolNudge) {
+                Dialog(
+                    stringResource(R.string.auto_protocol_nudge_title),
+                    stringResource(R.string.auto_protocol_nudge_message),
+                    stringResource(R.string.auto_protocol_nudge_confirm),
+                    stringResource(R.string.auto_protocol_nudge_dismiss),
+                    onConfirm = viewModel::acceptAutomaticProtocol,
+                    onDismiss = viewModel::dismissAutoProtocolNudge,
+                )
+            }
+
+            val updateMessage = stringResource(R.string.app_update_available_title)
+            val updateAction = stringResource(R.string.app_update_available_positive_action)
+            LaunchedEffect(hasUpdateAvailable) {
+                if (!hasUpdateAvailable) return@LaunchedEffect
+                val result =
+                    snackbarHostState.showSnackbar(
+                        message = updateMessage,
+                        actionLabel = updateAction,
+                        withDismissAction = true,
+                        duration = SnackbarDuration.Short,
+                    )
+                if (result == SnackbarResult.ActionPerformed) {
+                    viewModel.getDownloadUrl()?.let(context::openUrl)
+                }
             }
         }
     }
+}
+
+private fun Element.hasSeparator() = this != Element.VpnRegionSelection && this != Element.ShadowsocksRegionSelection
+
+private fun Context.openUrl(url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, url.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    if (intent.resolveActivity(packageManager) != null) startActivity(intent)
 }
 
 @Composable

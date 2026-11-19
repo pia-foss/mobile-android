@@ -5,11 +5,15 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
+import com.kape.contracts.di.Qualifiers
 import com.kape.dip.data.DedicatedIpSelectedCountry
 import com.kape.dip.data.DedicatedIpSignupPlans
 import com.kape.dip.data.DedicatedIpSupportedCountries
 import com.kape.localprefs.Prefs
+import com.kape.localprefs.api.DipStore
 import com.privateinternetaccess.account.model.response.DedicatedIPInformationResponse
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +22,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 private val DEDICATED_IPS = stringSetPreferencesKey("dedicated-ips")
@@ -29,12 +34,16 @@ private val DIP_SIGNUP_PURCHASED_TOKEN = stringPreferencesKey("dip-signup-purcha
 private val DIP_SIGNUP_SELECTED_PRODUCT_ID = stringPreferencesKey("dip-signup-selected-product-id")
 private val DIP_SIGNUP_SELECTED_COUNTRY = stringPreferencesKey("dip-signup-selected-country")
 
-@Singleton
+@Singleton(binds = [DipPrefs::class, DipStore::class])
 class DipPrefs(
     context: Context,
-) : Prefs(context, "dip") {
+    @Named(Qualifiers.APP_SCOPE) appScope: CoroutineScope,
+    @Named(Qualifiers.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+) : Prefs(context, "dip", appScope, ioDispatcher),
+    DipStore {
     val dedicatedIps: StateFlow<List<DedicatedIPInformationResponse.DedicatedIPInformation>> =
         getDedicatedIps().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), emptyList())
+    override val dedicatedIpPorts: Flow<List<Map<String, List<Int>>>> = getDedicatedIps().map { dips -> dips.map { it.ports } }
     val purchasedSignupDipToken: StateFlow<String> =
         getPurchasedSignupDipToken().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), "")
     val dedicatedIpHomeBannerVisible: StateFlow<Boolean> =
@@ -71,7 +80,13 @@ class DipPrefs(
         dataStore.edit { it.remove(DIP_SIGNUP_PURCHASED_TOKEN) }
     }
 
+    suspend fun getDedicatedIpsNow(): List<DedicatedIPInformationResponse.DedicatedIPInformation> = getDedicatedIps().first()
+
+    fun observeHomeBannerVisible(): Flow<Boolean> = getDedicatedIpHomeBannerVisible()
+
     suspend fun getDedicatedIpSignupPlansNow(): DedicatedIpSignupPlans? = getDedicatedIpSignupPlans().first()
+
+    suspend fun getDedicatedIpSelectedCountryNow(): DedicatedIpSelectedCountry? = getDedicatedIpSelectedCountry().first()
 
     suspend fun getDedicatedIpSupportedCountriesNow(): DedicatedIpSupportedCountries? = getDedicatedIpSupportedCountries().first()
 

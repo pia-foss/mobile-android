@@ -1,0 +1,301 @@
+package com.kape.appbar.view.mobile
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterEnd
+import androidx.compose.ui.Alignment.Companion.CenterStart
+import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.appbar.viewmodel.AppBarViewModel
+import com.kape.data.ConnectionStatus
+import com.kape.ui.R
+import com.kape.ui.mobile.text.AppBarConnectionTextDefault
+import com.kape.ui.mobile.text.AppBarTitleText
+import com.kape.ui.theme.connectedGradient
+import com.kape.ui.theme.connectingGradient
+import com.kape.ui.theme.errorGradient
+import com.kape.ui.utils.LocalColors
+
+@Composable
+fun AppBar(
+    viewModel: AppBarViewModel,
+    type: AppBarType = AppBarType.Navigation,
+    onLeftIconClick: () -> Unit = viewModel::navigateBack,
+    onRightIconClick: () -> Unit = {},
+    rightIconId: Int? = null,
+    rightIconContentDescription: String? = null,
+) {
+    val isConnected by viewModel.isConnected.collectAsStateWithLifecycle()
+    val connectionStatus by viewModel.connectionStatus.collectAsStateWithLifecycle()
+    val title by viewModel.currentTitle.collectAsStateWithLifecycle()
+    val snoozeCountdown by viewModel.snoozeCountdown.collectAsStateWithLifecycle()
+
+    val showSnoozeCountdown =
+        snoozeCountdown != null &&
+            type in listOf(AppBarType.Connection, AppBarType.Customization) &&
+            connectionStatus in
+            listOf(
+                ConnectionStatus.DISCONNECTED,
+                ConnectionStatus.DISCONNECTING,
+                ConnectionStatus.PAUSED,
+            )
+
+    AppBarContent(
+        type = type,
+        status = if (isConnected) connectionStatus else ConnectionStatus.ERROR,
+        title =
+            when {
+                !isConnected -> stringResource(id = R.string.no_internet_connection)
+                showSnoozeCountdown ->
+                    stringResource(
+                        id = R.string.snoozed_to_format,
+                        snoozeCountdown.orEmpty(),
+                    )
+
+                else -> title
+            },
+        onLeftIconClick,
+        onRightIconClick,
+        rightIconId,
+        rightIconContentDescription,
+    )
+}
+
+@Composable
+private fun AppBarContent(
+    type: AppBarType,
+    status: ConnectionStatus,
+    title: String? = null,
+    onLeftIconClick: () -> Unit,
+    onRightIconClick: () -> Unit,
+    rightIconId: Int? = null,
+    rightIconContentDescription: String? = null,
+) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(getAppBarBackgroundColor(status, LocalColors.current)),
+    ) {
+        Spacer(
+            Modifier.windowInsetsTopHeight(
+                WindowInsets.statusBars,
+            ),
+        )
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .semantics {
+                        testTagsAsResourceId = true
+                    },
+        ) {
+            val menuContentDescription = stringResource(id = R.string.menu)
+            val backContentDescription = stringResource(id = R.string.back)
+            IconButton(
+                onClick = { onLeftIconClick() },
+                modifier =
+                    Modifier
+                        .align(CenterStart)
+                        .testTag(if (type == AppBarType.Connection) ":AppBar:side_menu" else ":AppBar:back")
+                        .semantics {
+                            contentDescription =
+                                when (type) {
+                                    AppBarType.Connection -> menuContentDescription
+                                    AppBarType.Customization,
+                                    AppBarType.InAppBrowser,
+                                    AppBarType.Navigation,
+                                    -> backContentDescription
+                                }
+                        },
+            ) {
+                Icon(
+                    painter = painterResource(id = getAppBarLeftIcon(type)),
+                    contentDescription = null,
+                    tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
+                )
+            }
+
+            when (type) {
+                AppBarType.Connection -> {
+                    AppBarConnectionStatus(
+                        status = status,
+                        title = title,
+                        onRightIconClick = onRightIconClick,
+                        R.drawable.ic_reorder,
+                        rightIconTestTag = ":AppBar:reorder",
+                    )
+                }
+
+                AppBarType.Customization -> {
+                    AppBarConnectionStatus(
+                        status = status,
+                        title = title,
+                        onRightIconClick = onRightIconClick,
+                        R.drawable.ic_save,
+                        rightIconTestTag = ":AppBar:save",
+                    )
+                }
+
+                AppBarType.InAppBrowser -> {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_logo_medium),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier =
+                            Modifier
+                                .align(Center)
+                                .fillMaxWidth(),
+                    )
+                }
+
+                AppBarType.Navigation -> {
+                    AppBarTitleText(
+                        content = title ?: "",
+                        isError = status == ConnectionStatus.ERROR,
+                        modifier =
+                            Modifier
+                                .padding(start = 56.dp, end = if (rightIconId != null) 56.dp else 0.dp)
+                                .align(Center)
+                                .fillMaxWidth(),
+                    )
+                    rightIconId?.let {
+                        IconButton(
+                            onClick = { onRightIconClick() },
+                            modifier =
+                                Modifier
+                                    .align(CenterEnd)
+                                    .testTag(":AppBar:right_icon")
+                                    .semantics {
+                                        contentDescription = rightIconContentDescription.orEmpty()
+                                    },
+                        ) {
+                            Icon(
+                                painter = painterResource(id = it),
+                                contentDescription = null,
+                                tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+private fun getAppBarLeftIcon(type: AppBarType): Int =
+    when (type) {
+        AppBarType.Connection -> R.drawable.ic_menu
+        AppBarType.Customization,
+        AppBarType.InAppBrowser,
+        AppBarType.Navigation,
+        -> R.drawable.ic_back
+    }
+
+private fun getAppBarBackgroundColor(
+    status: ConnectionStatus,
+    scheme: ColorScheme,
+): Brush =
+    when (status) {
+        ConnectionStatus.ERROR, ConnectionStatus.DISCONNECTING, ConnectionStatus.DISCONNECTED, ConnectionStatus.PAUSED ->
+            Brush.verticalGradient(
+                scheme.errorGradient(),
+            )
+
+        ConnectionStatus.CONNECTED -> Brush.verticalGradient(scheme.connectedGradient())
+        ConnectionStatus.CONNECTING,
+        ConnectionStatus.RECONNECTING,
+        -> Brush.verticalGradient(scheme.connectingGradient())
+    }
+
+@Composable
+private fun AppBarConnectionStatus(
+    status: ConnectionStatus,
+    title: String? = null,
+    onRightIconClick: (() -> Unit)? = null,
+    rightIconId: Int? = null,
+    rightIconTestTag: String? = null,
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Row(
+            modifier =
+                Modifier
+                    .align(Center)
+                    .testTag(":AppBar:connection_status"),
+        ) {
+            val statusPrefix = stringResource(id = R.string.vpn_status)
+            AppBarConnectionTextDefault(
+                content = title ?: "",
+                isError = (status == ConnectionStatus.ERROR),
+                modifier =
+                    Modifier
+                        .align(CenterVertically)
+                        .semantics {
+                            contentDescription = "$statusPrefix $title"
+                        }.testTag(":AppBar:connection_text_default"),
+            )
+        }
+
+        onRightIconClick?.let {
+            IconButton(
+                onClick = { it() },
+                modifier =
+                    Modifier
+                        .align(CenterEnd)
+                        .testTag(rightIconTestTag.orEmpty())
+                        .semantics {
+                            hideFromAccessibility()
+                        },
+            ) {
+                rightIconId?.let {
+                    Icon(
+                        painter = painterResource(id = it),
+                        contentDescription = null,
+                        tint = if (status == ConnectionStatus.ERROR) LocalColors.current.onPrimary else Color.Unspecified,
+                        modifier = Modifier.size(24.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+sealed class AppBarType {
+    data object Connection : AppBarType()
+
+    data object Navigation : AppBarType()
+
+    data object InAppBrowser : AppBarType()
+
+    data object Customization : AppBarType()
+}

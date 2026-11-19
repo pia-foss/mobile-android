@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTvMaterial3Api::class)
-
 package com.kape.vpnregionselection.ui.tv
 
 import androidx.compose.foundation.background
@@ -35,61 +33,47 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
+import com.kape.appbar.view.topBarColor
 import com.kape.appbar.view.tv.TvHomeHeaderItem
-import com.kape.contracts.ConnectionInfoProvider
+import com.kape.contracts.ConnectionStatusSource
 import com.kape.data.RegionItemType
-import com.kape.regions.data.ServerData
+import com.kape.regions.vpn.domain.VPN_PING_TIMEOUT_MS
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.elements.Search
 import com.kape.ui.tv.text.RegionSelectionGridSectionText
 import com.kape.ui.utils.LocalColors
-import com.kape.vpnregions.utils.VPN_REGIONS_PING_TIMEOUT
+import com.kape.vpnregionselection.ui.displayIso
+import com.kape.vpnregionselection.ui.displayName
 import com.kape.vpnregionselection.ui.vm.VpnRegionSelectionViewModel
-import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalTvMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun TvVpnRegionSelectionScreen() =
+fun TvVpnRegionSelectionScreen(viewModel: VpnRegionSelectionViewModel = koinViewModel()) =
     Screen {
         val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.language
         val initialFocusRequester = remember { FocusRequester() }
         val allButtonFocusRequester = remember { FocusRequester() }
         val favoriteButtonFocusRequester = remember { FocusRequester() }
         val searchButtonFocusRequester = remember { FocusRequester() }
-        val connectionInfoProvider: ConnectionInfoProvider = koinInject()
-        val status by connectionInfoProvider.status.collectAsStateWithLifecycle()
+        val status by koinInject<ConnectionStatusSource>().status.collectAsStateWithLifecycle()
         val isFavoriteSelected = remember { mutableStateOf(false) }
         val isSearchEnabled = remember { mutableStateOf(false) }
-        val hasSearchQuery = remember { mutableStateOf(false) }
-        val viewModel: VpnRegionSelectionViewModel =
-            koinViewModel<VpnRegionSelectionViewModel>().apply {
-                autoRegionIso = stringResource(id = R.string.automatic_iso)
-                autoRegionName = stringResource(id = R.string.optimal_vpn_region)
-                LaunchedEffect(Unit) {
-                    initialFocusRequester.requestFocus()
-                    locale?.let {
-                        loadVpnRegions(it, mutableStateOf(false), false)
-                    }
-                }
-            }
+        LaunchedEffect(Unit) {
+            initialFocusRequester.requestFocus()
+            locale?.let { viewModel.refresh(it, force = false) }
+        }
+        val state by viewModel.state.collectAsStateWithLifecycle()
         val hasUpdateAvailable by viewModel.hasUpdateAvailable.collectAsStateWithLifecycle()
 
         val serverItems =
-            if (isFavoriteSelected.value) {
-                viewModel.getTvVpnServers().value.filter {
-                    val type = it.type
-                    type is RegionItemType.Content && type.isFavorite
-                }
-            } else {
-                if (isSearchEnabled.value && hasSearchQuery.value) {
-                    viewModel.getTvSearchVpnServers().value
-                } else {
-                    viewModel.getTvVpnServers().value
-                }
+            when {
+                isFavoriteSelected.value -> state.favoriteRegions
+                isSearchEnabled.value -> state.searchResults ?: state.allRegions
+                else -> state.allRegions
             }
 
         Box(
@@ -100,10 +84,7 @@ fun TvVpnRegionSelectionScreen() =
             HorizontalDivider(
                 modifier = Modifier.fillMaxWidth(),
                 thickness = 4.dp,
-                color =
-                    connectionInfoProvider.getTopBarConnectionColor(
-                        scheme = LocalColors.current,
-                    ),
+                color = status.topBarColor(LocalColors.current),
             )
             Column(
                 modifier =
@@ -144,19 +125,19 @@ fun TvVpnRegionSelectionScreen() =
                             onAllSelected = {
                                 isFavoriteSelected.value = false
                                 isSearchEnabled.value = false
-                                hasSearchQuery.value = false
+                                viewModel.search("")
                             },
                             onAllFocusRequester = allButtonFocusRequester,
                             onFavoriteSelected = {
                                 isFavoriteSelected.value = true
                                 isSearchEnabled.value = false
-                                hasSearchQuery.value = false
+                                viewModel.search("")
                             },
                             onFavoriteFocusRequester = favoriteButtonFocusRequester,
                             onSearchSelected = {
                                 isFavoriteSelected.value = false
                                 isSearchEnabled.value = true
-                                hasSearchQuery.value = false
+                                viewModel.search("")
                             },
                             onSearchFocusRequester = searchButtonFocusRequester,
                         )
@@ -190,9 +171,8 @@ fun TvVpnRegionSelectionScreen() =
                                     Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 16.dp, vertical = 8.dp),
-                            ) {
-                                viewModel.filterByName(it, hasSearchQuery)
-                            }
+                                onTextChanged = viewModel::search,
+                            )
                         }
                         if (isFavoriteSelected.value) {
                             if (serverItems.isEmpty()) {
@@ -230,25 +210,16 @@ fun TvVpnRegionSelectionScreen() =
                                 when (val type = serverItem.type) {
                                     is RegionItemType.Content -> {
                                         TvLocationPickerItem(
-                                            vpnServerIso = type.server.iso,
-                                            vpnServerName = type.server.name,
+                                            vpnServerIso = type.server.displayIso(),
+                                            vpnServerName = type.server.displayName(),
                                             vpnServerLatency = type.server.latency,
-                                            vpnServerLatencyTimeout = VPN_REGIONS_PING_TIMEOUT.toString(),
+                                            vpnServerLatencyTimeout = VPN_PING_TIMEOUT_MS.toString(),
                                             enableFavorite = type.enableFavorite,
                                             isFavorite = type.isFavorite,
                                             isDedicatedIp = type.server.isDedicatedIp,
-                                            onClick = {
-                                                viewModel.onVpnRegionSelected(type.server)
-                                            },
+                                            onClick = { viewModel.connectTo(type.server) },
                                             onLongClick = {
-                                                if (type.enableFavorite) {
-                                                    viewModel.onFavoriteVpnClicked(
-                                                        ServerData(
-                                                            type.server.name,
-                                                            type.server.isDedicatedIp,
-                                                        ),
-                                                    )
-                                                }
+                                                if (type.enableFavorite) viewModel.onFavoriteClicked(type.server)
                                             },
                                         )
                                     }

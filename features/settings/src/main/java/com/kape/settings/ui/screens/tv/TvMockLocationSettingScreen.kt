@@ -25,19 +25,19 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.kape.settings.ui.elements.MockLocationSetupEffect
 import com.kape.settings.ui.elements.openDeveloperSettings
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.vm.MockLocationViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.text.OnboardingDescriptionText
 import com.kape.ui.tv.text.OnboardingTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvMockLocationSettingScreen() =
     Screen {
-        val viewModel: SettingsViewModel = koinViewModel()
+        val viewModel: MockLocationViewModel = koinViewModel()
         val context = LocalContext.current
         val initialFocusRequester = remember { FocusRequester() }
 

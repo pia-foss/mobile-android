@@ -20,7 +20,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,32 +32,34 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.login.ui.EXPIRED
+import com.kape.login.ui.FAILED
+import com.kape.login.ui.IDLE
+import com.kape.login.ui.INVALID
+import com.kape.login.ui.LOADING
+import com.kape.login.ui.LoginError
+import com.kape.login.ui.SERVICE_UNAVAILABLE
+import com.kape.login.ui.SUCCESS
+import com.kape.login.ui.THROTTLED
 import com.kape.login.ui.vm.LoginViewModel
 import com.kape.login.ui.vm.tv.LoginPasswordViewModel
-import com.kape.login.utils.EXPIRED
-import com.kape.login.utils.FAILED
-import com.kape.login.utils.IDLE
-import com.kape.login.utils.INVALID
-import com.kape.login.utils.LOADING
-import com.kape.login.utils.LoginError
-import com.kape.login.utils.SERVICE_UNAVAILABLE
-import com.kape.login.utils.SUCCESS
-import com.kape.login.utils.THROTTLED
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.text.EnterUsernameScreenTitleText
 import com.kape.ui.tv.text.Input
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun LoginPasswordScreen() =
+fun LoginPasswordScreen(username: String) =
     Screen {
-        val loginPasswordViewModel: LoginPasswordViewModel = koinViewModel()
+        val loginPasswordViewModel: LoginPasswordViewModel = koinViewModel { parametersOf(username) }
         val loginViewModel: LoginViewModel = koinViewModel()
 
         val evaluatePasswordError = remember { mutableStateOf(false) }
-        val loginState by remember(loginViewModel) { loginViewModel.state }.collectAsState()
+        val loginState by remember(loginViewModel) { loginViewModel.state }.collectAsStateWithLifecycle()
 
         when (loginState) {
             IDLE -> {
@@ -82,7 +83,6 @@ fun LoginPasswordScreen() =
             }
 
             SUCCESS -> {
-                // Do nothing. The viewmodel is handling the navigation on success.
             }
 
             THROTTLED,
@@ -200,7 +200,7 @@ fun ShowLoginPasswordScreen(
                             ),
                     ) {
                         Image(
-                            painter = painterResource(id = com.kape.login.R.drawable.ic_tv_onboarding),
+                            painter = painterResource(id = com.kape.ui.R.drawable.ic_tv_onboarding),
                             contentScale = ContentScale.Fit,
                             contentDescription = null,
                             modifier =

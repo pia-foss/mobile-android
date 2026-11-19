@@ -61,10 +61,22 @@ data class VpnServer(
             return true
         }
 
-        if (key != other.key || isDedicatedIp != other.isDedicatedIp || iso != other.iso) {
+        // A region and each dedicated IP in it are different servers; latency and endpoints change between refreshes.
+        if (key != other.key || iso != other.iso || dedicatedIpOrNull != other.dedicatedIpOrNull) {
             return false
         }
 
         return true
     }
+
+    // Must hash only what equals compares, or sets and distinct() treat equal servers as different.
+    override fun hashCode(): Int {
+        var result = key.hashCode()
+        result = 31 * result + iso.hashCode()
+        result = 31 * result + dedicatedIpOrNull.hashCode()
+        return result
+    }
+
+    private val dedicatedIpOrNull: String?
+        get() = dedicatedIp?.takeIf { isDedicatedIp }
 }
