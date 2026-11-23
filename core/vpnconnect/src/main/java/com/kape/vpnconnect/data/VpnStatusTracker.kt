@@ -40,9 +40,6 @@ class VpnStatusTracker(
     private val _title = MutableStateFlow(titles[ConnectionStatus.DISCONNECTED].orEmpty())
     override val title: StateFlow<String> = _title.asStateFlow()
 
-    private val _sdkStatus = MutableStateFlow<KapeVPNConnectionStatus?>(null)
-    val sdkStatus: StateFlow<KapeVPNConnectionStatus?> = _sdkStatus.asStateFlow()
-
     private val _lastTunnelError = MutableStateFlow<KapeVpnTunnelError?>(null)
     val lastTunnelError: StateFlow<KapeVpnTunnelError?> = _lastTunnelError.asStateFlow()
 
@@ -68,7 +65,6 @@ class VpnStatusTracker(
             }
         }
         _status.value = status
-        _sdkStatus.value = sdkStatus
         when (status) {
             ConnectionStatus.CONNECTED -> if (connectedTimerJob == null) startConnectedTimer()
             ConnectionStatus.DISCONNECTED -> stopConnectedTimer()

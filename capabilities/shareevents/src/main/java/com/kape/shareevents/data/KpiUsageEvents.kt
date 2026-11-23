@@ -3,9 +3,9 @@ package com.kape.shareevents.data
 import com.kape.contracts.ConnectionEvents
 import com.kape.contracts.PurchaseEvents
 import com.kape.contracts.UsageEventsControl
+import com.kape.data.ConnectionStatus
 import com.kape.data.kpi.KpiConnectionEvent
 import com.kape.data.kpi.KpiConnectionSource
-import com.kape.data.kpi.KpiConnectionStatus
 import com.privateinternetaccess.kpi.KPIAPI
 import com.privateinternetaccess.kpi.KPIClientEvent
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -19,7 +19,7 @@ internal class KpiUsageEvents(
 ) : UsageEventsControl,
     ConnectionEvents,
     PurchaseEvents {
-    private var lastConnectionStatus: KpiConnectionStatus = KpiConnectionStatus.NotConnected
+    private var lastConnectionStatus: ConnectionStatus = ConnectionStatus.DISCONNECTED
 
     override fun start() = api.start()
 
@@ -35,7 +35,7 @@ internal class KpiUsageEvents(
         }
 
     override suspend fun connectionStatusChanged(
-        status: KpiConnectionStatus,
+        status: ConnectionStatus,
         isManual: Boolean,
     ) {
         if (status == lastConnectionStatus) return
@@ -59,12 +59,14 @@ internal class KpiUsageEvents(
 }
 
 internal fun connectionEventFor(
-    status: KpiConnectionStatus,
-    previous: KpiConnectionStatus,
+    status: ConnectionStatus,
+    previous: ConnectionStatus,
 ): KpiConnectionEvent? =
     when (status) {
-        KpiConnectionStatus.Connected -> KpiConnectionEvent.ConnectionEstablished
-        KpiConnectionStatus.Connecting, KpiConnectionStatus.Reconnecting -> KpiConnectionEvent.ConnectionAttempt
-        KpiConnectionStatus.NotConnected -> if (previous == KpiConnectionStatus.Connecting) KpiConnectionEvent.ConnectionCancelled else null
-        KpiConnectionStatus.Paused -> null
+        ConnectionStatus.CONNECTED -> KpiConnectionEvent.ConnectionEstablished
+        ConnectionStatus.CONNECTING, ConnectionStatus.RECONNECTING -> KpiConnectionEvent.ConnectionAttempt
+        // DISCONNECTING can be conflated away, so either state after CONNECTING is a cancellation.
+        ConnectionStatus.DISCONNECTING, ConnectionStatus.DISCONNECTED ->
+            if (previous == ConnectionStatus.CONNECTING) KpiConnectionEvent.ConnectionCancelled else null
+        ConnectionStatus.PAUSED, ConnectionStatus.ERROR -> null
     }

@@ -1,7 +1,7 @@
 package com.kape.shareevents.data
 
+import com.kape.data.ConnectionStatus
 import com.kape.data.kpi.KpiConnectionEvent
-import com.kape.data.kpi.KpiConnectionStatus
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
@@ -11,11 +11,11 @@ internal class ConnectionEventsTest {
     fun `connecting and reconnecting are attempts`() {
         assertEquals(
             KpiConnectionEvent.ConnectionAttempt,
-            connectionEventFor(KpiConnectionStatus.Connecting, KpiConnectionStatus.NotConnected),
+            connectionEventFor(ConnectionStatus.CONNECTING, ConnectionStatus.DISCONNECTED),
         )
         assertEquals(
             KpiConnectionEvent.ConnectionAttempt,
-            connectionEventFor(KpiConnectionStatus.Reconnecting, KpiConnectionStatus.Connected),
+            connectionEventFor(ConnectionStatus.RECONNECTING, ConnectionStatus.CONNECTED),
         )
     }
 
@@ -23,7 +23,7 @@ internal class ConnectionEventsTest {
     fun `connected is established`() {
         assertEquals(
             KpiConnectionEvent.ConnectionEstablished,
-            connectionEventFor(KpiConnectionStatus.Connected, KpiConnectionStatus.Connecting),
+            connectionEventFor(ConnectionStatus.CONNECTED, ConnectionStatus.CONNECTING),
         )
     }
 
@@ -31,13 +31,18 @@ internal class ConnectionEventsTest {
     fun `disconnecting is only an event when an attempt was given up`() {
         assertEquals(
             KpiConnectionEvent.ConnectionCancelled,
-            connectionEventFor(KpiConnectionStatus.NotConnected, KpiConnectionStatus.Connecting),
+            connectionEventFor(ConnectionStatus.DISCONNECTED, ConnectionStatus.CONNECTING),
         )
-        assertNull(connectionEventFor(KpiConnectionStatus.NotConnected, KpiConnectionStatus.Connected))
+        assertEquals(
+            KpiConnectionEvent.ConnectionCancelled,
+            connectionEventFor(ConnectionStatus.DISCONNECTING, ConnectionStatus.CONNECTING),
+        )
+        assertNull(connectionEventFor(ConnectionStatus.DISCONNECTED, ConnectionStatus.CONNECTED))
+        assertNull(connectionEventFor(ConnectionStatus.DISCONNECTED, ConnectionStatus.DISCONNECTING))
     }
 
     @Test
     fun `pausing isn't an event`() {
-        assertNull(connectionEventFor(KpiConnectionStatus.Paused, KpiConnectionStatus.Connected))
+        assertNull(connectionEventFor(ConnectionStatus.PAUSED, ConnectionStatus.CONNECTED))
     }
 }

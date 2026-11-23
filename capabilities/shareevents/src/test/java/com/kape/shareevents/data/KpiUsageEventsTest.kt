@@ -1,7 +1,7 @@
 package com.kape.shareevents.data
 
 import android.os.SystemClock
-import com.kape.data.kpi.KpiConnectionStatus
+import com.kape.data.ConnectionStatus
 import com.kape.localprefs.prefs.SettingsPrefs
 import com.kape.settings.data.VpnProtocols
 import com.privateinternetaccess.kpi.KPIAPI
@@ -39,8 +39,8 @@ internal class KpiUsageEventsTest {
     @Test
     fun `submits an event for each connection step`() =
         runTest {
-            events.connectionStatusChanged(KpiConnectionStatus.Connecting, isManual = true)
-            events.connectionStatusChanged(KpiConnectionStatus.Connected, isManual = true)
+            events.connectionStatusChanged(ConnectionStatus.CONNECTING, isManual = true)
+            events.connectionStatusChanged(ConnectionStatus.CONNECTED, isManual = true)
 
             assertEquals(listOf("VPN_CONNECTION_ATTEMPT", "VPN_CONNECTION_ESTABLISHED"), api.submitted.map { it.eventName })
         }
@@ -48,8 +48,8 @@ internal class KpiUsageEventsTest {
     @Test
     fun `a repeated status isn't submitted again`() =
         runTest {
-            events.connectionStatusChanged(KpiConnectionStatus.Connecting, isManual = true)
-            events.connectionStatusChanged(KpiConnectionStatus.Connecting, isManual = true)
+            events.connectionStatusChanged(ConnectionStatus.CONNECTING, isManual = true)
+            events.connectionStatusChanged(ConnectionStatus.CONNECTING, isManual = true)
 
             assertEquals(1, api.submitted.size)
         }
@@ -57,7 +57,7 @@ internal class KpiUsageEventsTest {
     @Test
     fun `the starting disconnected status isn't an event`() =
         runTest {
-            events.connectionStatusChanged(KpiConnectionStatus.NotConnected, isManual = true)
+            events.connectionStatusChanged(ConnectionStatus.DISCONNECTED, isManual = true)
 
             assertTrue(api.submitted.isEmpty())
         }
@@ -65,18 +65,28 @@ internal class KpiUsageEventsTest {
     @Test
     fun `giving up a connection attempt is a cancellation`() =
         runTest {
-            events.connectionStatusChanged(KpiConnectionStatus.Connecting, isManual = false)
-            events.connectionStatusChanged(KpiConnectionStatus.NotConnected, isManual = false)
+            events.connectionStatusChanged(ConnectionStatus.CONNECTING, isManual = false)
+            events.connectionStatusChanged(ConnectionStatus.DISCONNECTED, isManual = false)
 
             assertEquals("VPN_CONNECTION_CANCELLED", api.submitted.last().eventName)
         }
 
     @Test
+    fun `cancelling through disconnecting is one cancellation`() =
+        runTest {
+            events.connectionStatusChanged(ConnectionStatus.CONNECTING, isManual = false)
+            events.connectionStatusChanged(ConnectionStatus.DISCONNECTING, isManual = false)
+            events.connectionStatusChanged(ConnectionStatus.DISCONNECTED, isManual = false)
+
+            assertEquals(listOf("VPN_CONNECTION_ATTEMPT", "VPN_CONNECTION_CANCELLED"), api.submitted.map { it.eventName })
+        }
+
+    @Test
     fun `statuses without an event still count as the previous one`() =
         runTest {
-            events.connectionStatusChanged(KpiConnectionStatus.Connecting, isManual = false)
-            events.connectionStatusChanged(KpiConnectionStatus.Paused, isManual = false)
-            events.connectionStatusChanged(KpiConnectionStatus.NotConnected, isManual = false)
+            events.connectionStatusChanged(ConnectionStatus.CONNECTING, isManual = false)
+            events.connectionStatusChanged(ConnectionStatus.PAUSED, isManual = false)
+            events.connectionStatusChanged(ConnectionStatus.DISCONNECTED, isManual = false)
 
             assertEquals(listOf("VPN_CONNECTION_ATTEMPT"), api.submitted.map { it.eventName })
         }
@@ -84,8 +94,8 @@ internal class KpiUsageEventsTest {
     @Test
     fun `the source follows whether the change was manual`() =
         runTest {
-            events.connectionStatusChanged(KpiConnectionStatus.Connecting, isManual = false)
-            events.connectionStatusChanged(KpiConnectionStatus.Connected, isManual = true)
+            events.connectionStatusChanged(ConnectionStatus.CONNECTING, isManual = false)
+            events.connectionStatusChanged(ConnectionStatus.CONNECTED, isManual = true)
 
             assertEquals(listOf("Automatic", "Manual"), api.submitted.map { it.eventProperties["connection_source"] })
         }

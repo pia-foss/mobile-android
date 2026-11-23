@@ -5,10 +5,8 @@ import com.kape.contracts.ConnectionInfoProvider
 import com.kape.contracts.NetworkStatus
 import com.kape.contracts.di.Qualifiers
 import com.kape.data.ConnectionStatus
-import com.kape.data.kpi.KpiConnectionStatus
 import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
 import com.kape.portforwarding.data.PortForwardingManager
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import kotlinx.coroutines.CoroutineScope
@@ -17,7 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
@@ -61,7 +58,7 @@ class ConnectionInfoProviderImpl(
                 .collect { if (status.value == ConnectionStatus.DISCONNECTED) refreshPublicIp() }
         }
         appScope.launch {
-            statusTracker.sdkStatus.filterNotNull().collectLatest { events.connectionStatusChanged(it.toKpiStatus(), isManual) }
+            status.collectLatest { events.connectionStatusChanged(it, isManual) }
         }
     }
 
@@ -98,13 +95,4 @@ class ConnectionInfoProviderImpl(
         publicIpJob?.cancel()
         publicIpJob = null
     }
-
-    private fun KapeVPNConnectionStatus.toKpiStatus(): KpiConnectionStatus =
-        when (this) {
-            KapeVPNConnectionStatus.Connected -> KpiConnectionStatus.Connected
-            KapeVPNConnectionStatus.Connecting -> KpiConnectionStatus.Connecting
-            KapeVPNConnectionStatus.Reconnecting -> KpiConnectionStatus.Reconnecting
-            KapeVPNConnectionStatus.Disconnected, KapeVPNConnectionStatus.Disconnecting -> KpiConnectionStatus.NotConnected
-            KapeVPNConnectionStatus.Paused -> KpiConnectionStatus.Paused
-        }
 }

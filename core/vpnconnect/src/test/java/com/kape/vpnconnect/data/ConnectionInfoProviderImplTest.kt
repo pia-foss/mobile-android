@@ -3,8 +3,8 @@ package com.kape.vpnconnect.data
 import android.content.Context
 import com.kape.contracts.ConnectionEvents
 import com.kape.contracts.NetworkStatus
+import com.kape.data.ConnectionStatus
 import com.kape.data.NO_IP
-import com.kape.data.kpi.KpiConnectionStatus
 import com.kape.data.portforwarding.PortForwardingStatus
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.platformsdk.vpn.service.models.KapeVPNConnectionStatus
@@ -151,23 +151,24 @@ internal class ConnectionInfoProviderImplTest {
 
             assertEquals(
                 listOf(
-                    KpiConnectionStatus.Connecting to true,
-                    KpiConnectionStatus.Connected to true,
-                    KpiConnectionStatus.Reconnecting to true,
-                    KpiConnectionStatus.Paused to true,
-                    KpiConnectionStatus.NotConnected to false,
-                    KpiConnectionStatus.NotConnected to false,
+                    ConnectionStatus.DISCONNECTED to false,
+                    ConnectionStatus.CONNECTING to true,
+                    ConnectionStatus.CONNECTED to true,
+                    ConnectionStatus.RECONNECTING to true,
+                    ConnectionStatus.PAUSED to true,
+                    ConnectionStatus.DISCONNECTING to false,
+                    ConnectionStatus.DISCONNECTED to false,
                 ),
                 events.reported,
             )
         }
 
     @Test
-    fun `no sdk status yet - reports no kpi event`() =
+    fun `no sdk status yet - reports the initial disconnected status`() =
         runTest(UnconfinedTestDispatcher()) {
             createProvider()
 
-            assertTrue(events.reported.isEmpty())
+            assertEquals(listOf(ConnectionStatus.DISCONNECTED to false), events.reported)
         }
 
     @Test
@@ -243,10 +244,10 @@ internal class ConnectionInfoProviderImplTest {
     }
 
     private class RecordingConnectionEvents : ConnectionEvents {
-        val reported = mutableListOf<Pair<KpiConnectionStatus, Boolean>>()
+        val reported = mutableListOf<Pair<ConnectionStatus, Boolean>>()
 
         override suspend fun connectionStatusChanged(
-            status: KpiConnectionStatus,
+            status: ConnectionStatus,
             isManual: Boolean,
         ) {
             reported += status to isManual

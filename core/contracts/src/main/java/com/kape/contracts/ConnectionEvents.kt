@@ -1,10 +1,10 @@
 package com.kape.contracts
 
-import com.kape.data.kpi.KpiConnectionStatus
+import com.kape.data.ConnectionStatus
 
 fun interface ConnectionEvents {
     suspend fun connectionStatusChanged(
-        status: KpiConnectionStatus,
+        status: ConnectionStatus,
         isManual: Boolean,
     )
 }
