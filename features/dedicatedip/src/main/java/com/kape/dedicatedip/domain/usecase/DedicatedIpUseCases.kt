@@ -1,7 +1,7 @@
 package com.kape.dedicatedip.domain.usecase
 
 import com.kape.contracts.AppInfo
-import com.kape.contracts.VpnConnectionControl
+import com.kape.contracts.ConnectionManager
 import com.kape.data.vpnserver.VpnServer
 import com.kape.dedicatedip.domain.DedicatedIpRepository
 import com.kape.dedicatedip.domain.DipActivationResult
@@ -37,7 +37,7 @@ class ActivateDedicatedIpUseCase(
 class RemoveDedicatedIpUseCase(
     private val repository: DedicatedIpRepository,
     private val serverSelection: ServerSelectionRepository,
-    private val vpnConnection: VpnConnectionControl,
+    private val vpnConnection: ConnectionManager,
 ) {
     suspend operator fun invoke(
         serverKey: String,

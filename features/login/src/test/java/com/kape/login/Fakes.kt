@@ -2,9 +2,10 @@ package com.kape.login
 
 import com.kape.account.domain.AuthenticationRepository
 import com.kape.account.domain.LoginResult
+import com.kape.contracts.ConnectionManager
 import com.kape.contracts.DebugLogCleaner
 import com.kape.contracts.PermissionStatus
-import com.kape.contracts.VpnConnectionControl
+import com.kape.data.vpnserver.VpnServer
 import com.kape.login.domain.LocalSessionRepository
 
 internal class Recorder {
@@ -65,11 +66,25 @@ internal class FakeLocalSession(
 
 internal class FakeVpn(
     private val recorder: Recorder,
-) : VpnConnectionControl {
+) : ConnectionManager {
     var connected = false
     var connecting = false
 
     override fun isConnected() = connected
+
+    override suspend fun connect(
+        server: VpnServer,
+        isManual: Boolean,
+        stopCallback: () -> Unit,
+        showDialog: () -> Unit,
+    ) = Unit
+
+    override suspend fun connectToLastKnownOrOptimalServer() = Unit
+
+    override suspend fun reconnect(
+        server: VpnServer,
+        stopCallback: () -> Unit,
+    ) = Unit
 
     override fun isConnectionInProgress() = connecting
 

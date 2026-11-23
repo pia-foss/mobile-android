@@ -2,8 +2,9 @@ package com.kape.dedicatedip.domain.usecase
 
 import android.app.Activity
 import com.kape.contracts.AppInfo
-import com.kape.contracts.VpnConnectionControl
+import com.kape.contracts.ConnectionManager
 import com.kape.data.model.DipPurchaseData
+import com.kape.data.vpnserver.VpnServer
 import com.kape.dedicatedip.domain.DedicatedIpRepository
 import com.kape.dedicatedip.domain.DipActivationResult
 import com.kape.dedicatedip.domain.DipCountry
@@ -26,8 +27,22 @@ internal class DedicatedIpUseCasesTest {
     private val selection = FakeSelection(events)
     private val signupState = FakeSignupState()
     private val vpn =
-        object : VpnConnectionControl {
+        object : ConnectionManager {
             override fun isConnected() = true
+
+            override suspend fun connect(
+                server: VpnServer,
+                isManual: Boolean,
+                stopCallback: () -> Unit,
+                showDialog: () -> Unit,
+            ) = Unit
+
+            override suspend fun connectToLastKnownOrOptimalServer() = Unit
+
+            override suspend fun reconnect(
+                server: VpnServer,
+                stopCallback: () -> Unit,
+            ) = Unit
 
             override fun isConnectionInProgress() = false
 

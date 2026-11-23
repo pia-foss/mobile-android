@@ -19,5 +19,7 @@ interface ConnectionManager {
         stopCallback: () -> Unit,
     )
 
+    fun isConnected(): Boolean
+
     fun isConnectionInProgress(): Boolean
 }

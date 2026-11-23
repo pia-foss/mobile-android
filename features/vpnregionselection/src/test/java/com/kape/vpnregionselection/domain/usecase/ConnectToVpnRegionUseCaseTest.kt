@@ -81,6 +81,8 @@ private class RecordingConnectionManager(
         stopCallback: () -> Unit,
     ) = Unit
 
+    override fun isConnected() = false
+
     override fun isConnectionInProgress() = inProgress
 }
 

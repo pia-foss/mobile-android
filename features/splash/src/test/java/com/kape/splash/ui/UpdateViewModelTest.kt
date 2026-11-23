@@ -1,6 +1,7 @@
 package com.kape.splash.ui
 
-import com.kape.contracts.VpnConnectionControl
+import com.kape.contracts.ConnectionManager
+import com.kape.data.vpnserver.VpnServer
 import com.kape.splash.domain.AppRelease
 import com.kape.splash.domain.AppUpdateRepository
 import com.kape.splash.domain.usecase.GetUpdateUrlUseCase
@@ -62,11 +63,25 @@ internal class UpdateViewModelTest {
 
 private class FakeVpn(
     private val events: MutableList<String>,
-) : VpnConnectionControl {
+) : ConnectionManager {
     var connected = false
     var connecting = false
 
     override fun isConnected() = connected
+
+    override suspend fun connect(
+        server: VpnServer,
+        isManual: Boolean,
+        stopCallback: () -> Unit,
+        showDialog: () -> Unit,
+    ) = Unit
+
+    override suspend fun connectToLastKnownOrOptimalServer() = Unit
+
+    override suspend fun reconnect(
+        server: VpnServer,
+        stopCallback: () -> Unit,
+    ) = Unit
 
     override fun isConnectionInProgress() = connecting
 

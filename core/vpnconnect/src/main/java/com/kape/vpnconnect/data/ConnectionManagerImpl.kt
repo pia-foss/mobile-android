@@ -8,7 +8,6 @@ import android.os.IBinder
 import androidx.core.content.ContextCompat
 import com.kape.contracts.ConnectionManager
 import com.kape.contracts.IsUserLoggedInUseCase
-import com.kape.contracts.VpnConnectionControl
 import com.kape.contracts.di.Qualifiers
 import com.kape.data.ConnectionStatus
 import com.kape.data.vpnserver.VpnServer
@@ -42,7 +41,7 @@ import org.koin.core.annotation.Singleton
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
 
-@Singleton(binds = [ConnectionManager::class, VpnConnectionControl::class])
+@Singleton(binds = [ConnectionManager::class])
 class ConnectionManagerImpl(
     private val context: Context,
     private val connectionSource: ConnectionDataSource,
@@ -61,8 +60,7 @@ class ConnectionManagerImpl(
     private val getOptimalVpnServer: GetOptimalVpnServerUseCase,
     @Named(Qualifiers.APP_SCOPE) appScope: CoroutineScope,
     @Named(Qualifiers.MAIN_DISPATCHER) mainDispatcher: CoroutineDispatcher,
-) : ConnectionManager,
-    VpnConnectionControl {
+) : ConnectionManager {
     private val scope = CoroutineScope(appScope.coroutineContext + mainDispatcher)
 
     private var statusCollectionJob: Job? = null

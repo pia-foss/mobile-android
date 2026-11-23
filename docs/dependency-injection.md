@@ -98,7 +98,7 @@ The interfaces that cross module boundaries live in `core/contracts`, so modules
 | Interface | Implemented in |
 |-----------|----------------|
 | `Router` | `core/router` |
-| `ConnectionManager`, `VpnConnectionControl`, `ConnectionInfoProvider`, `ConnectionStatusSource`, `UsageProvider` | `core/vpnconnect` |
+| `ConnectionManager`, `ConnectionInfoProvider`, `ConnectionStatusSource`, `UsageProvider` | `core/vpnconnect` |
 | `IsUserLoggedInUseCase`, `LogoutUseCase` | `features/login` |
 | `StorePurchaseHistory` | `features/login` (per store) |
 | `SubscriptionBilling` | `features/signup` (per store) |
