@@ -13,7 +13,7 @@ internal class OptimalServerSelectionTest {
         val fastest = vpnServer("b", latency = "20")
         val servers = listOf(vpnServer("a", latency = "80"), fastest, vpnServer("c", latency = null))
 
-        assertEquals(fastest, selectOptimalServer(servers, random))
+        assertEquals(fastest, getOptimalServer(servers, random))
     }
 
     @Test
@@ -27,14 +27,14 @@ internal class OptimalServerSelectionTest {
                 eligible,
             )
 
-        assertEquals(eligible, selectOptimalServer(servers, random))
+        assertEquals(eligible, getOptimalServer(servers, random))
     }
 
     @Test
     fun `picks an auto region at random while no latencies are known`() {
         val servers = listOf(vpnServer("a"), vpnServer("b"), vpnServer("manual", autoRegion = false))
 
-        val picked = selectOptimalServer(servers, random)
+        val picked = getOptimalServer(servers, random)
 
         assertEquals(true, picked.key in setOf("a", "b"))
     }
@@ -43,6 +43,6 @@ internal class OptimalServerSelectionTest {
     fun `falls back to the first server when there is no auto region`() {
         val servers = listOf(vpnServer("a", autoRegion = false), vpnServer("b", autoRegion = false))
 
-        assertEquals(servers.first(), selectOptimalServer(servers, random))
+        assertEquals(servers.first(), getOptimalServer(servers, random))
     }
 }

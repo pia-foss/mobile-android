@@ -3,7 +3,7 @@ package com.kape.regions.vpn.domain
 import com.kape.data.vpnserver.VpnServer
 import kotlin.random.Random
 
-internal fun selectOptimalServer(
+internal fun getOptimalServer(
     servers: List<VpnServer>,
     random: Random,
 ): VpnServer {
