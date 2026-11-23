@@ -1,10 +1,6 @@
 package com.kape.network.pinning
 
-import android.util.Log
 import com.kape.contracts.di.Qualifiers
-import com.kape.network.pinning.EndpointIdentity
-import com.kape.network.pinning.PinnedHttpClientFactory
-import com.kape.network.pinning.SocketProtector
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
@@ -54,17 +50,14 @@ internal class PinnedHttpClientFactoryImpl(
             try {
                 session.peerCertificates.firstOrNull() as? X509Certificate
             } catch (e: SSLPeerUnverifiedException) {
-                Log.w(TAG, "Rejecting $endpoint: peer not verified", e)
                 return false
             }
         val commonName = leaf?.let { commonNameOf(it.subjectX500Principal) }
         val matches = verifier.matches(endpoint, commonName)
-        if (!matches) Log.w(TAG, "Rejecting $endpoint: unexpected certificate common name $commonName")
         return matches
     }
 
     companion object {
         private const val REQUEST_TIMEOUT_MS = 8_000L
-        private const val TAG = "PinnedHttpClient"
     }
 }
