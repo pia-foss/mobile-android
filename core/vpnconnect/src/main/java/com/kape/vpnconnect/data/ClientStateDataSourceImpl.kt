@@ -21,7 +21,7 @@ class ClientStateDataSourceImpl(
     private val accountAPI: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
     private val networkStatus: NetworkStatus,
-    @Named(Qualifiers.APP_SCOPE) private val ioScope: CoroutineScope,
+    @Named(Qualifiers.APP_SCOPE) private val appScope: CoroutineScope,
 ) : ClientStateDataSource {
     override suspend fun getPublicIp(): String {
         repeat(3) { _ ->
@@ -52,7 +52,7 @@ class ClientStateDataSourceImpl(
     private suspend fun getVpnIpOnce(): String =
         suspendCancellableCoroutine { continuation ->
             accountAPI.clientStatus { clientStatusInfo, errors ->
-                ioScope.launch {
+                appScope.launch {
                     val ip = clientStatusInfo?.ip ?: NO_IP
                     if (clientStatusInfo?.connected == true) {
                         connectionPrefs.setVpnIp(ip)
@@ -65,7 +65,7 @@ class ClientStateDataSourceImpl(
     private suspend fun getPublicIpOnce(): String =
         suspendCancellableCoroutine { continuation ->
             accountAPI.clientStatus { clientStatusInfo, errors ->
-                ioScope.launch {
+                appScope.launch {
                     val ip = clientStatusInfo?.ip ?: NO_IP
                     if (clientStatusInfo?.connected == false) {
                         connectionPrefs.setClientIp(ip)

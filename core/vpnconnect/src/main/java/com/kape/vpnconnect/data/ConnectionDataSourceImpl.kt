@@ -26,7 +26,7 @@ class ConnectionDataSourceImpl(
     private val connectionPrefs: ConnectionPrefs,
     private val workManager: WorkManager,
     private val settingsPrefs: SettingsPrefs,
-    @Named(Qualifiers.APP_SCOPE) private val ioScope: CoroutineScope,
+    @Named(Qualifiers.APP_SCOPE) private val appScope: CoroutineScope,
 ) : ConnectionDataSource {
     override fun getVpnToken(): String = accountApi.vpnToken() ?: ""
 
@@ -44,7 +44,7 @@ class ConnectionDataSourceImpl(
     }
 
     override fun stopPortForwarding() {
-        ioScope.launch {
+        appScope.launch {
             connectionPrefs.clearGateway()
             connectionPrefs.clearPortBindingInfo()
             workManager.cancelUniqueWork(WorkerTags.PORT_FORWARDING_WORKER)
