@@ -26,6 +26,10 @@ class MockLocationProvider(
     private var pumpJob: Job? = null
     private var registeredProviders: List<String> = emptyList()
 
+    /**
+     * Sets the mock location. On first call, registers the test providers and starts pushing.
+     * Returns false if no provider could be registered (caller should stop the service).
+     */
     @Synchronized
     fun push(
         latitude: Double,
@@ -63,8 +67,11 @@ class MockLocationProvider(
         var lastDispatched: Coordinates? = null
         var burstRemaining = 0
         while (true) {
+            // Read the target once per round so every provider receives the same fix.
             val coordinates = target
             if (coordinates != null) {
+                // Push aggressively after every target change to overwrite cached locations in the
+                // fused provider, then settle into the steady cadence once the mock has taken hold.
                 if (coordinates != lastDispatched) {
                     burstRemaining = BURST_ITERATIONS
                     lastDispatched = coordinates
@@ -79,7 +86,7 @@ class MockLocationProvider(
                 } else {
                     PUSH_INTERVAL_MS
                 }
-            delay(interval.milliseconds)
+            delay(interval.milliseconds) // this delay avoids "blocked - too fast" rejections from the fused provider
         }
     }
 
@@ -110,12 +117,14 @@ class MockLocationProvider(
             locationManager.setTestProviderEnabled(name, true)
             true
         } catch (_: SecurityException) {
+            // PIA is no longer the selected mock location app in Developer options.
             false
         } catch (_: IllegalArgumentException) {
             false
         }
     }
 
+    // Criteria constants match the ProviderProperties ones S+ annotates these params with.
     @SuppressLint("WrongConstant")
     private fun addTestProvider(name: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -173,14 +182,18 @@ class MockLocationProvider(
     private companion object {
         const val PUSH_INTERVAL_MS = 1_000L
 
+        // For the first 3s (60 * 50ms) after each location change, we push a burst of mock locations
+        // at a faster rate to ensure overwriting potentially cached locations.
         const val BURST_ITERATIONS = 60
         const val BURST_INTERVAL_MS = 50L
 
+        // LocationManager.FUSED_PROVIDER is API 31+; the value is the same on all versions.
         const val FUSED_PROVIDER_NAME = "fused"
 
         const val GPS_HARDWARE_PROVIDER =
-            "gps_hardware"
+            "gps_hardware" // Works on some devices (e.g. Huawei P9 Lite)
 
+        // addTestProvider accepts any name, so these are only registered when the device actually has them.
         val DEVICE_SPECIFIC_PROVIDERS = setOf(GPS_HARDWARE_PROVIDER)
 
         val TARGET_PROVIDERS =
