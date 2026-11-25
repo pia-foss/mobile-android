@@ -9,11 +9,10 @@ import com.kape.localprefs.api.ConsentStore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.WhileSubscribed
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import org.koin.core.annotation.Named
@@ -32,16 +31,12 @@ class ConsentPrefs(
         getAllowSharing()
             .stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
 
-    private val _hasMadeConsentDecision = MutableStateFlow(false)
-    val hasMadeConsentDecision: StateFlow<Boolean> = _hasMadeConsentDecision.asStateFlow()
-
     override suspend fun setAllowSharing(allow: Boolean) {
         dataStore.edit { it[SHARE_EVENTS_CONSENT] = allow }
     }
 
-    fun setConsentDecisionMade(made: Boolean) {
-        _hasMadeConsentDecision.value = made
-    }
+    // The key is written by any answer and removed on logout, so its presence is the persisted decision.
+    suspend fun hasMadeConsentDecisionNow(): Boolean = dataStore.data.first().contains(SHARE_EVENTS_CONSENT)
 
     suspend fun clearAllowSharing() {
         dataStore.edit { it.remove(SHARE_EVENTS_CONSENT) }

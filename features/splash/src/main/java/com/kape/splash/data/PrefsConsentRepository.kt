@@ -8,5 +8,5 @@ import org.koin.core.annotation.Singleton
 internal class PrefsConsentRepository(
     private val consentPrefs: ConsentPrefs,
 ) : ConsentRepository {
-    override fun hasMadeConsentDecision(): Boolean = consentPrefs.hasMadeConsentDecision.value
+    override suspend fun hasMadeConsentDecision(): Boolean = consentPrefs.hasMadeConsentDecisionNow()
 }

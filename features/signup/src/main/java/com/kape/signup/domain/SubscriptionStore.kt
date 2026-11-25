@@ -32,5 +32,5 @@ fun interface PurchaseSignupRepository {
 interface SharingConsentRepository {
     suspend fun setAllowSharing(allow: Boolean)
 
-    fun hasMadeDecision(): Boolean
+    suspend fun hasMadeDecision(): Boolean
 }

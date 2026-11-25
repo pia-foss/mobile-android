@@ -45,13 +45,14 @@ internal class SignupUseCasesTest {
         }
 
     @Test
-    fun `after a purchase, asks for consent only if it was never answered`() {
-        val step = GetPostPurchaseStepUseCase(consent)
-        assertEquals(PostPurchaseStep.Consent, step())
+    fun `after a purchase, asks for consent only if it was never answered`() =
+        runTest {
+            val step = GetPostPurchaseStepUseCase(consent)
+            assertEquals(PostPurchaseStep.Consent, step())
 
-        consent.decided = true
-        assertEquals(PostPurchaseStep.Email, step())
-    }
+            consent.decided = true
+            assertEquals(PostPurchaseStep.Email, step())
+        }
 
     @Test
     fun `signup needs an email`() =
@@ -89,7 +90,7 @@ private class FakeConsent : SharingConsentRepository {
         decided = true
     }
 
-    override fun hasMadeDecision() = decided
+    override suspend fun hasMadeDecision() = decided
 }
 
 private class FakeStore(

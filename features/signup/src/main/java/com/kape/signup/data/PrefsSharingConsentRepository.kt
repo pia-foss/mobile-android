@@ -10,8 +10,7 @@ internal class PrefsSharingConsentRepository(
 ) : SharingConsentRepository {
     override suspend fun setAllowSharing(allow: Boolean) {
         prefs.setAllowSharing(allow)
-        prefs.setConsentDecisionMade(true)
     }
 
-    override fun hasMadeDecision(): Boolean = prefs.hasMadeConsentDecision.value
+    override suspend fun hasMadeDecision(): Boolean = prefs.hasMadeConsentDecisionNow()
 }
