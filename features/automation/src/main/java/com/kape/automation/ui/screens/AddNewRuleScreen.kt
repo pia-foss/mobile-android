@@ -17,6 +17,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,7 +44,7 @@ fun AddNewRuleScreen() =
                 appBarText(stringResource(id = com.kape.ui.R.string.trusted_network_plural))
             }
         val showDialog = rememberSaveable { mutableStateOf(false) }
-        var currentItem: String? = null
+        var currentItem by rememberSaveable { mutableStateOf<String?>(null) }
         val context: Context = LocalContext.current
         val availableNetworks by viewModel.availableNetwork.collectAsStateWithLifecycle()
 

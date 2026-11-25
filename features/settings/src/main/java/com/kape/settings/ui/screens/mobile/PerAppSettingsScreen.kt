@@ -21,7 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -55,7 +55,8 @@ fun PerAppSettingsScreen() =
                 appBarText(stringResource(id = R.string.per_app_settings))
             }
         val excluded by viewModel.vpnExcludedApps.collectAsStateWithLifecycle()
-        val lastExcludedApps = remember { excluded.map { it } }
+        // Saveable so a rotation doesn't replace the snapshot taken on entry with the edited list
+        val lastExcludedApps = rememberSaveable { ArrayList(excluded) }
 
         BackHandler {
             onBackPressed(viewModel, lastExcludedApps, excluded, appBarViewModel::navigateBack)

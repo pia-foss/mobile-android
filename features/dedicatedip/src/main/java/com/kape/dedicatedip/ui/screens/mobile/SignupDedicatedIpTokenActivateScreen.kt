@@ -18,7 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,7 +46,7 @@ fun SignupDedicatedIpTokenActivateScreen() =
     Screen {
         val context = LocalContext.current
         val viewModel: DipViewModel = koinViewModel()
-        val showSpinner = remember { mutableStateOf(false) }
+        val showSpinner = rememberSaveable { mutableStateOf(false) }
         val dipToken by viewModel.getSignupDipToken().collectAsStateWithLifecycle()
 
         Column(

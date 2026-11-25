@@ -37,6 +37,8 @@ class SplashViewModel(
     private val refreshVpnServers: RefreshVpnServersUseCase,
     @Named(Qualifiers.APP_SCOPE) private val appScope: CoroutineScope,
 ) : ViewModel() {
+    private var isLoadStarted = false
+    private var isPricesLoadStarted = false
     private val featureFlagsRefresh: Job = viewModelScope.launch { refreshFeatureFlags() }
 
     private val isLoggedIn: Deferred<Boolean> by lazy { viewModelScope.async { isUserLoggedIn.invoke() } }
@@ -48,6 +50,10 @@ class SplashViewModel(
     }
 
     fun load(activity: Activity?) {
+        // Called from the screen's first composition, which runs again on every configuration
+        // change; load only once per ViewModel so a rotation can't navigate away twice.
+        if (isLoadStarted) return
+        isLoadStarted = true
         // In the app scope, not viewModelScope: splash closes quickly, and the refresh
         // should finish so the next screens get the network list and latencies.
         appScope.launch {
@@ -71,5 +77,9 @@ class SplashViewModel(
 
     suspend fun shouldPreloadPrices(): Boolean = !isLoggedIn.await()
 
-    fun loadPrices(activity: Activity) = subscriptionBilling.loadPrices(activity)
+    fun loadPrices(activity: Activity) {
+        if (isPricesLoadStarted) return
+        isPricesLoadStarted = true
+        subscriptionBilling.loadPrices(activity)
+    }
 }

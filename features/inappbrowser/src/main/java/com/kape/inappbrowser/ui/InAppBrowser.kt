@@ -1,6 +1,8 @@
 package com.kape.inappbrowser.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Bundle
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -14,10 +16,11 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -30,7 +33,6 @@ import com.kape.ui.Screen
 import com.kape.ui.utils.LocalColors
 import org.koin.compose.viewmodel.koinViewModel
 
-@SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun InAppBrowser(url: String) =
     Screen {
@@ -38,18 +40,8 @@ fun InAppBrowser(url: String) =
         var loading by remember { mutableStateOf(true) }
         val context = LocalContext.current
 
-        val webview =
+        val webViewClient =
             remember {
-                WebView(context).apply {
-                    settings.javaScriptEnabled = true
-                    settings.allowFileAccess = false
-                    WebView.setWebContentsDebuggingEnabled(false)
-                    setBackgroundColor(android.graphics.Color.TRANSPARENT)
-                }
-            }
-
-        LaunchedEffect(url) {
-            webview.webViewClient =
                 object : WebViewClient() {
                     override fun onPageFinished(
                         view: WebView?,
@@ -69,8 +61,23 @@ fun InAppBrowser(url: String) =
                         )
                     }
                 }
-            webview.loadUrl(url)
-        }
+            }
+
+        // Saveable so a rotation restores the browsing history instead of reloading the start url
+        val webview =
+            rememberSaveable(
+                saver =
+                    Saver(
+                        save = { Bundle().apply { it.saveState(this) } },
+                        restore = { state ->
+                            createWebView(context, webViewClient).apply {
+                                if (restoreState(state) == null) loadUrl(url)
+                            }
+                        },
+                    ),
+            ) {
+                createWebView(context, webViewClient).apply { loadUrl(url) }
+            }
 
         Column(
             modifier =
@@ -99,3 +106,15 @@ fun InAppBrowser(url: String) =
             }
         }
     }
+
+@SuppressLint("SetJavaScriptEnabled")
+private fun createWebView(
+    context: Context,
+    client: WebViewClient,
+) = WebView(context).apply {
+    settings.javaScriptEnabled = true
+    settings.allowFileAccess = false
+    WebView.setWebContentsDebuggingEnabled(false)
+    setBackgroundColor(android.graphics.Color.TRANSPARENT)
+    webViewClient = client
+}

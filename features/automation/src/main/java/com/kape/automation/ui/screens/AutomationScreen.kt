@@ -18,7 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -54,15 +54,16 @@ fun AutomationScreen() =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.trusted_network_plural))
             }
-        val showDialog = remember { mutableStateOf(false) }
-        val currentItem = remember { mutableStateOf<NetworkItem?>(null) }
+        val showDialog = rememberSaveable { mutableStateOf(false) }
+        // Saved by name and type: NetworkItem can't go in a Bundle
+        val currentItemKey = rememberSaveable { mutableStateOf<Pair<String, NetworkType>?>(null) }
         val context: Context = LocalContext.current
         val rules by viewModel.rules.collectAsStateWithLifecycle(emptyList())
 
         AutomationScreenContent(
             appBarViewModel,
             onNetworkCardClick = { item ->
-                currentItem.value = item
+                currentItemKey.value = item.networkName to item.networkType
                 showDialog.value = true
             },
             viewModel::navigateToAutomationAddNewRule,
@@ -71,7 +72,7 @@ fun AutomationScreen() =
 
         if (showDialog.value) {
             val removeRule = stringResource(id = R.string.nmt_remove_rule)
-            currentItem.value?.let { rule ->
+            rules.find { (it.networkName to it.networkType) == currentItemKey.value }?.let { rule ->
                 BehaviorDialog(
                     status = getStatus(behavior = rule.networkBehavior),
                     showRemoveOption = !rule.isDefault,

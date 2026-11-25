@@ -52,7 +52,7 @@ fun HelpScreen() =
         val context = LocalContext.current
         val showDialog = rememberSaveable { mutableStateOf(false) }
         val showToast = remember { mutableStateOf(false) }
-        val showSpinner = remember { mutableStateOf(false) }
+        val showSpinner = rememberSaveable { mutableStateOf(false) }
         val improvePiaEnabled by viewModel.improvePiaEnabled.collectAsStateWithLifecycle()
         val debugLoggingEnabled by viewModel.debugLoggingEnabled.collectAsStateWithLifecycle()
 
