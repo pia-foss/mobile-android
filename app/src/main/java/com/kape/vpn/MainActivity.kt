@@ -46,8 +46,7 @@ class MainActivity : AppCompatActivity() {
             // Keeps account and connection details out of screenshots and the recent apps screen.
             window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
         }
-        requestedOrientation =
-            if (isTv) ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        if (isTv) requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         // Only on a fresh start, so a rotation doesn't handle the same intent again.
         if (savedInstanceState == null) viewModel.onIntent(intent.action, intent.dataString)
 

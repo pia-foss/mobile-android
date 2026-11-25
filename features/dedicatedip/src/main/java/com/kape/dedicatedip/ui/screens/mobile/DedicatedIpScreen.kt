@@ -34,6 +34,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -80,9 +81,10 @@ fun DedicatedIpScreen() =
                 appBarText(stringResource(id = com.kape.ui.R.string.dedicated_ip_title))
             }
         val showToast = remember { mutableStateOf(false) }
-        val showDialog = remember { mutableStateOf(false) }
+        val showDialog = rememberSaveable { mutableStateOf(false) }
         val showSpinner = remember { mutableStateOf(false) }
-        val serverForDeletion = remember { mutableStateOf<VpnServer?>(null) }
+        // Saved by IP: VpnServer can't go in a Bundle and carries the DIP token
+        val dedicatedIpForDeletion = rememberSaveable { mutableStateOf<String?>(null) }
         val context = LocalContext.current
         val showDipSignupBanner by viewModel.showDedicatedIpSignupBanner().collectAsState(false)
         val dipList by viewModel.dipList.collectAsStateWithLifecycle()
@@ -220,7 +222,7 @@ fun DedicatedIpScreen() =
                         val items = dipList
                         items(items.size) { index ->
                             val item = items[index]
-                            DipItem(server = item, showDialog, serverForDeletion)
+                            DipItem(server = item, showDialog, dedicatedIpForDeletion)
                             Separator()
                         }
                     }
@@ -246,7 +248,7 @@ fun DedicatedIpScreen() =
                 }
 
                 if (showDialog.value) {
-                    serverForDeletion.value?.let { server ->
+                    dipList.find { it.dedicatedIp == dedicatedIpForDeletion.value }?.let { server ->
                         server.dipToken?.let { dipToken ->
                             DeleteDipDialog(
                                 showDialog = showDialog,
@@ -257,7 +259,7 @@ fun DedicatedIpScreen() =
                                         dipToken = dipToken,
                                     )
                                 },
-                                onCancelClicked = { serverForDeletion.value = null },
+                                onCancelClicked = { dedicatedIpForDeletion.value = null },
                             )
                         }
                     }
@@ -270,7 +272,7 @@ fun DedicatedIpScreen() =
 fun DipItem(
     server: VpnServer,
     showDialog: MutableState<Boolean>,
-    serverForDeletion: MutableState<VpnServer?>,
+    dedicatedIpForDeletion: MutableState<String?>,
 ) {
     ConstraintLayout(
         modifier =
@@ -337,7 +339,7 @@ fun DipItem(
 
         IconButton(
             onClick = {
-                serverForDeletion.value = server
+                dedicatedIpForDeletion.value = server.dedicatedIp
                 showDialog.value = true
             },
             modifier =
