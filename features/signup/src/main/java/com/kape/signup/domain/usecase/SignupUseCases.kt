@@ -40,7 +40,7 @@ enum class PostPurchaseStep { Consent, Email }
 class GetPostPurchaseStepUseCase(
     private val consent: SharingConsentRepository,
 ) {
-    operator fun invoke(): PostPurchaseStep = if (consent.hasMadeDecision()) PostPurchaseStep.Email else PostPurchaseStep.Consent
+    suspend operator fun invoke(): PostPurchaseStep = if (consent.hasMadeDecision()) PostPurchaseStep.Email else PostPurchaseStep.Consent
 }
 
 sealed interface SignupResult {
