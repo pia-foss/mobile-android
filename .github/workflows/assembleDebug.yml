@@ -344,6 +344,8 @@ jobs:
       needs.warm-avd-cache.result == 'success'
     runs-on: ubuntu-latest
     strategy:
+      # The e2e tests share one account and the login API is rate-limited.
+      max-parallel: 3
       fail-fast: false
       matrix:
         test-class:
