@@ -37,7 +37,8 @@ class LogoutTests {
             onElement { viewIdResourceName == SideMenu.LOGOUT_BUTTON }.click()
             device.waitForIdle()
             onElement { viewIdResourceName == SideMenu.LOGOUT_DIALOG_CONFIRM_BUTTON }.click()
-
+            device.waitForIdle()
+            onElement(timeoutMs = LONG_TIMEOUT) { viewIdResourceName == Consent.NO_THANKS_BUTTON }.click()
             assertNotNull(
                 device.wait(Until.hasObject(By.res(SignUp.LOGIN_BUTTON)), TIMEOUT),
             )
@@ -46,7 +47,7 @@ class LogoutTests {
             onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
 
             assertNotNull(
-                device.wait(Until.hasObject(By.textContains("WireGuard")), TIMEOUT),
+                device.wait(Until.hasObject(By.textContains("Automatic")), TIMEOUT),
             )
         }
 }
