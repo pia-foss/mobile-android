@@ -11,8 +11,8 @@ plugins {
 }
 
 // Please update both and keep them static, otherwise Fdroid fails to pull
-val googleAppVersionCode = 719
-val noInAppVersionCode = 10719
+val googleAppVersionCode = 720
+val noInAppVersionCode = 10720
 val appVersionName = "4.1.6"
 
 configure<ApplicationExtension> {
