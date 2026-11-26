@@ -31,11 +31,11 @@ class MockLocationService :
         val lng = intent?.getDoubleExtra(EXTRA_LONGITUDE, 0.0) ?: 0.0
 
         val notification = notificationProvider.build()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(
                 MockLocationNotificationProvider.NOTIFICATION_ID,
                 notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
             )
         } else {
             startForeground(MockLocationNotificationProvider.NOTIFICATION_ID, notification)
