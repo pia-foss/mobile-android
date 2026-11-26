@@ -84,17 +84,19 @@ class ConfigurationGeneratorAmneziaTest {
         }
 
     @Test
-    fun `wireguard uses amnezia endpoints when amnezia toggled on`() =
+    fun `wireguard tries amnezia endpoints first and falls back to plain wireguard when amnezia toggled on`() =
         runTest {
             coEvery { settingsPrefs.getWireGuardSettingsNow() } returns WireGuardSettings().copy(useAmnezia = true)
 
             val configurations = generator.generateConfigurations().filterIsInstance<WireGuardVpnConfiguration>()
 
-            assertEquals(1, configurations.size)
-            val configuration = configurations.single()
-            assertEquals("10.1.0.4", configuration.host)
-            assertEquals(1338, configuration.port)
-            assertTrue(configuration.obfuscation is WireGuardObfuscation.Amnezia)
+            assertEquals(2, configurations.size)
+            val (amnezia, wireGuard) = configurations
+            assertEquals("10.1.0.4", amnezia.host)
+            assertEquals(1338, amnezia.port)
+            assertTrue(amnezia.obfuscation is WireGuardObfuscation.Amnezia)
+            assertEquals("10.1.0.1", wireGuard.host)
+            assertEquals(WireGuardObfuscation.None, wireGuard.obfuscation)
         }
 
     @Test
@@ -132,7 +134,7 @@ class ConfigurationGeneratorAmneziaTest {
             coEvery { settingsPrefs.getWireGuardSettingsNow() } returns
                 WireGuardSettings().copy(useAmnezia = true, useSmallPackets = true)
 
-            val configuration = generator.generateConfigurations().filterIsInstance<WireGuardVpnConfiguration>().single()
+            val configuration = generator.generateConfigurations().filterIsInstance<WireGuardVpnConfiguration>().first()
 
             assertEquals(1280, configuration.mtu)
         }
@@ -155,7 +157,7 @@ class ConfigurationGeneratorAmneziaTest {
             coEvery { connectionPrefs.getAwgObfuscationNow() } returns stored
             coEvery { settingsPrefs.getWireGuardSettingsNow() } returns WireGuardSettings().copy(useAmnezia = true)
 
-            val configuration = generator.generateConfigurations().filterIsInstance<WireGuardVpnConfiguration>().single()
+            val configuration = generator.generateConfigurations().filterIsInstance<WireGuardVpnConfiguration>().first()
 
             assertEquals(stored.toAmnezia(), configuration.obfuscation)
         }

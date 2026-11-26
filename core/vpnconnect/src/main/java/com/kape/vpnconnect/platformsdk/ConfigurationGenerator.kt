@@ -86,9 +86,8 @@ class ConfigurationGenerator(
                     } else {
                         emptyList()
                     }
-                awgConfigurations.ifEmpty {
-                    generateWireGuardVpnConfigurations(wireGuardSettings, server, dnsServers, false)
-                }
+                // Plain WireGuard goes last so a failed Amnezia handshake still has something to fall back to.
+                awgConfigurations + generateWireGuardVpnConfigurations(wireGuardSettings, server, dnsServers, false)
             }
 
             VpnProtocols.Automatic ->
