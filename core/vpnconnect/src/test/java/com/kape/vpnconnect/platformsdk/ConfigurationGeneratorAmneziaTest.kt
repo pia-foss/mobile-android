@@ -23,10 +23,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-/**
- * The "Use Amnezia" toggle switches the WireGuard protocol from plain WireGuard endpoints to
- * AmneziaWG endpoints.
- */
 class ConfigurationGeneratorAmneziaTest {
     private val settingsPrefs = mockk<SettingsPrefs>(relaxed = true)
     private val connectionPrefs = mockk<ConnectionPrefs>(relaxed = true)

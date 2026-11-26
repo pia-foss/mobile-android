@@ -20,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,29 +36,26 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.ui.elements.ReconnectDialog
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.elements.ReconnectPromptDialog
+import com.kape.settings.ui.vm.PerAppSettingsViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.Search
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PerAppSettingsScreen() =
     Screen {
         val packageManager = LocalContext.current.packageManager
-        val viewModel: SettingsViewModel = koinViewModel()
+        val viewModel: PerAppSettingsViewModel = koinViewModel()
+        val appListState by viewModel.appList.collectAsStateWithLifecycle()
         val appBarViewModel: AppBarViewModel =
             koinViewModel<AppBarViewModel>().apply {
                 appBarText(stringResource(id = R.string.per_app_settings))
             }
         val excluded by viewModel.vpnExcludedApps.collectAsStateWithLifecycle()
         val lastExcludedApps = remember { excluded.map { it } }
-
-        LaunchedEffect(key1 = Unit) {
-            viewModel.getInstalledApplications(packageManager)
-        }
 
         BackHandler {
             onBackPressed(viewModel, lastExcludedApps, excluded, appBarViewModel::navigateBack)
@@ -94,16 +90,16 @@ fun PerAppSettingsScreen() =
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                     ) {
-                        viewModel.filterAppsByName(it, packageManager)
+                        viewModel.filterAppsByName(it)
                     }
-                    if (viewModel.appList.value.isEmpty()) {
+                    if (appListState.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize()) {
                             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     LazyColumn {
-                        val items = viewModel.appList.value
+                        val items = appListState
                         items(items.size) { index ->
                             val item = items[index]
                             val isExcluded =
@@ -124,19 +120,7 @@ fun PerAppSettingsScreen() =
                     }
                 }
             }
-            if (viewModel.reconnectDialogVisible.value) {
-                ReconnectDialog(
-                    onReconnect = {
-                        viewModel.reconnect()
-                        viewModel.reconnectDialogVisible.value = false
-                        appBarViewModel.navigateBack()
-                    },
-                    onLater = {
-                        viewModel.reconnectDialogVisible.value = false
-                        appBarViewModel.navigateBack()
-                    },
-                )
-            }
+            ReconnectPromptDialog(viewModel.reconnectPrompt, onDone = appBarViewModel::navigateBack)
         }
     }
 
@@ -221,13 +205,13 @@ private fun SelectedCheckBox(
 }
 
 private fun onBackPressed(
-    viewModel: SettingsViewModel,
+    viewModel: PerAppSettingsViewModel,
     lastExcludedApps: List<String>,
     excluded: List<String>,
     navigateBack: () -> Unit,
 ) {
     if (viewModel.isConnected() && lastExcludedApps != excluded) {
-        viewModel.showReconnectDialogIfVpnConnected()
+        viewModel.reconnectPrompt.onSettingChanged()
     } else {
         navigateBack()
     }

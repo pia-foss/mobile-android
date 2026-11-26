@@ -1,92 +1,91 @@
 package com.kape.obfuscationregionselection.ui.vm
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kape.contracts.Router
-import com.kape.data.DI
-import com.kape.data.RegionItemType
 import com.kape.data.RegionServerItem
+import com.kape.data.arrangeRegions
+import com.kape.data.searchByName
 import com.kape.data.shadowsocksserver.ShadowsocksServer
-import com.kape.localprefs.prefs.ShadowsocksRegionPrefs
-import com.kape.shadowsocksregions.domain.GetShadowsocksRegionsUseCase
-import com.kape.utils.arrangeServers
-import com.kape.utils.filterServersByName
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
+import com.kape.localprefs.api.ShadowsocksRegionStore
+import com.kape.regions.shadowsocks.domain.usecase.ObserveShadowsocksServersUseCase
+import com.kape.regions.shadowsocks.domain.usecase.RefreshShadowsocksServersUseCase
+import com.kape.regions.shadowsocks.domain.usecase.SelectShadowsocksServerUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.annotation.Named
+
+data class ShadowsocksRegionsState(
+    val regions: List<RegionServerItem<ShadowsocksServer>> = emptyList(),
+    val searchResults: List<RegionServerItem<ShadowsocksServer>>? = null,
+    val isRefreshing: Boolean = false,
+) {
+    val visibleRegions: List<RegionServerItem<ShadowsocksServer>> get() = searchResults ?: regions
+}
 
 @KoinViewModel
 class ShadowsocksRegionSelectionViewModel(
+    observeShadowsocksServers: ObserveShadowsocksServersUseCase,
+    private val refreshShadowsocksServers: RefreshShadowsocksServersUseCase,
+    private val selectShadowsocksServer: SelectShadowsocksServerUseCase,
+    private val shadowsocksRegionPrefs: ShadowsocksRegionStore,
     private val router: Router,
-    private val getShadowsocksRegionsUseCase: GetShadowsocksRegionsUseCase,
-    private val shadowsocksRegionPrefs: ShadowsocksRegionPrefs,
-    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
-    val servers = mutableStateOf(emptyList<RegionServerItem<ShadowsocksServer>>())
-    val sorted = mutableStateOf(emptyList<RegionServerItem<ShadowsocksServer>>())
+    private val query = MutableStateFlow("")
+    private val isRefreshing = MutableStateFlow(false)
 
-    fun getShadowsocksRegions() =
-        viewModelScope.launch(ioDispatcher) {
-            arrangeShadowsocksServers(getShadowsocksRegionsUseCase.getShadowsocksServers())
+    val state: StateFlow<ShadowsocksRegionsState> =
+        combine(
+            observeShadowsocksServers(),
+            shadowsocksRegionPrefs.observeFavorites(),
+            query,
+            isRefreshing,
+        ) { servers, favorites, query, isRefreshing ->
+            val regions = arrangeRegions(servers, isFavorite = { it.region in favorites }, includeFavoritesInAll = false)
+            ShadowsocksRegionsState(
+                regions = regions,
+                searchResults = query.takeIf { it.isNotEmpty() }?.let { regions.searchByName(it) { server -> server.region } },
+                isRefreshing = isRefreshing,
+            )
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), ShadowsocksRegionsState())
+
+    fun refresh(locale: String) {
+        viewModelScope.launch {
+            isRefreshing.value = true
+            try {
+                refreshShadowsocksServers(locale)
+            } finally {
+                isRefreshing.value = false
+            }
         }
-
-    fun fetchShadowsocksRegions(
-        locale: String,
-        isLoading: MutableState<Boolean>,
-    ) = viewModelScope.launch(ioDispatcher) {
-        isLoading.value = true
-        val servers = getShadowsocksRegionsUseCase.fetchShadowsocksServers(locale)
-        arrangeShadowsocksServers(servers)
-        isLoading.value = false
     }
 
-    fun onShadowsocksRegionSelected(server: ShadowsocksServer) =
-        viewModelScope.launch(ioDispatcher) {
-            shadowsocksRegionPrefs.setSelectShadowsocksServer(server)
-        }
+    fun search(query: String) {
+        this.query.value = query
+    }
 
-    fun onFavoriteShadowsocksClicked(serverName: String) =
-        viewModelScope.launch(ioDispatcher) {
-            if (shadowsocksRegionPrefs.isFavorite(serverName).first()) {
-                shadowsocksRegionPrefs.removeFromFavorites(serverName)
+    /** Saving first, as closing the screen cancels this view model's work. */
+    fun onRegionClicked(server: ShadowsocksServer) {
+        viewModelScope.launch {
+            selectShadowsocksServer(server)
+            router.navigateBack()
+        }
+    }
+
+    fun onFavoriteClicked(server: ShadowsocksServer) {
+        viewModelScope.launch {
+            if (shadowsocksRegionPrefs.isFavorite(server.region).first()) {
+                shadowsocksRegionPrefs.removeFromFavorites(server.region)
             } else {
-                shadowsocksRegionPrefs.addToFavorites(serverName)
+                shadowsocksRegionPrefs.addToFavorites(server.region)
             }
-            arrangeShadowsocksServers()
         }
-
-    fun filterByName(
-        value: String,
-        isSearchEnabled: MutableState<Boolean>,
-    ) = viewModelScope.launch(ioDispatcher) {
-        isSearchEnabled.value = value.isNotEmpty()
-        sorted.value =
-            filterServersByName(servers.value, value) { item ->
-                (item.type as? RegionItemType.Content)?.server?.region
-            }
     }
-
-    private fun isShadowsocksServerFavorite(serverName: String): Flow<Boolean> = shadowsocksRegionPrefs.isFavorite(serverName)
-
-    private fun arrangeShadowsocksServers(items: List<ShadowsocksServer>? = null) =
-        viewModelScope.launch(ioDispatcher) {
-            servers.value =
-                arrangeServers(
-                    items = items,
-                    currentItems = servers.value,
-                    toServer = { item -> (item.type as? RegionItemType.Content)?.server },
-                    isFavorite = { server -> isShadowsocksServerFavorite(server.region).first() },
-                    toItem = { server, favorite ->
-                        RegionServerItem(type = RegionItemType.Content(isFavorite = favorite, server = server))
-                    },
-                    headingFavorites = RegionServerItem(type = RegionItemType.HeadingFavorites),
-                    headingAll = RegionServerItem(type = RegionItemType.HeadingAll),
-                    includeFavoritesInAll = false,
-                )
-        }
 }
+
+private const val STOP_TIMEOUT_MS = 5_000L

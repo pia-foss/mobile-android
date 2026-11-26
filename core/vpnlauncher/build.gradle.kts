@@ -1,8 +1,5 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.ktlint)
+    alias(libs.plugins.pia.android.library)
 }
 
 android {
@@ -10,17 +7,14 @@ android {
 }
 
 dependencies {
-    implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
-    androidTestImplementation(libs.bundles.koinandroidtest)
-    implementation(project(":core:data"))
     implementation(project(":core:contracts"))
-    implementation(project(":core:localprefs:prefs"))
-    implementation(project(":core:localprefs:data"))
-    implementation(project(":core:vpnconnect"))
-    implementation(project(":core:regions"))
-}
 
-koinCompiler {
-    compileSafety = false
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.annotations)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
+    testImplementation(libs.coroutines.test)
 }

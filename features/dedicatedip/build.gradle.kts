@@ -1,71 +1,31 @@
+import com.android.build.api.dsl.LibraryExtension
+import org.gradle.kotlin.dsl.configure
+
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.junit5)
-    alias(libs.plugins.compose)
+    alias(libs.plugins.pia.android.feature)
+    alias(libs.plugins.pia.android.flavors)
 }
 
-android {
-    flavorDimensions.add("provider")
-    productFlavors {
-        create("amazon") {
-            dimension = "provider"
-        }
-        create("google") {
-            dimension = "provider"
-        }
-        create("noinapp") {
-            dimension = "provider"
-        }
-        create("meta") {
-            dimension = "provider"
-        }
-        create("fdroid") {
-            dimension = "provider"
-        }
-    }
-
-    // Flavors without Google Play share their no-op implementations.
-    sourceSets {
-        listOf("amazon", "noinapp", "meta", "fdroid").forEach {
-            getByName(it).kotlin.directories += "src/nogms/java"
-        }
-    }
+configure<LibraryExtension> {
     namespace = "com.kape.dedicatedip"
-    buildFeatures {
-        compose = true
-    }
+
+    shareFlavorSources(
+        directory = "nostore",
+        flavors = listOf(ProviderFlavor.AMAZON, ProviderFlavor.NO_IN_APP, ProviderFlavor.META, ProviderFlavor.FDROID),
+    )
 }
 
 dependencies {
-    implementation(project(":core:data"))
-    implementation(project(":core:contracts"))
+    implementation(project(":core:account"))
     implementation(project(":core:regions"))
-    implementation(project(":core:payments"))
-    implementation(project(":core:vpnconnect"))
     implementation(project(":core:localprefs:prefs"))
-    implementation(project(":core:localprefs:data"))
-    implementation(project(":features:appbar"))
-    implementation(project(":capabilities:ui"))
-    implementation(project(":capabilities:buildconfig"))
-    implementation(libs.mobile.shared.account)
-    implementation(libs.mobile.shared.regions)
-    implementation(libs.bundles.compose)
-    androidTestImplementation(libs.bundles.composeandroidtest)
-    implementation(libs.bundles.android)
-    implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
-    androidTestImplementation(libs.bundles.koinandroidtest)
-    implementation(libs.coroutines)
-    testImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.bundles.coroutines.androidtest)
-    testImplementation(libs.bundles.test)
-    runtimeOnly(libs.launcher)
-    implementation(libs.constraintlayout)
-}
+    implementation(project(":capabilities:appbar"))
+    implementation(libs.androidx.constraintlayout.compose)
+    "googleImplementation"(project(":core:payments"))
 
-koinCompiler {
-    compileSafety = false
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.mockk)
 }

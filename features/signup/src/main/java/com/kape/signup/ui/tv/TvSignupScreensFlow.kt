@@ -2,20 +2,20 @@ package com.kape.signup.ui.tv
 
 import android.app.Activity
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.signup.ui.SignupError
+import com.kape.signup.ui.SignupStep
 import com.kape.signup.ui.vm.SignupViewModel
-import com.kape.signup.utils.SignupError
-import com.kape.signup.utils.SignupStep
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvSignupScreensFlow() {
     val viewModel: SignupViewModel = koinViewModel()
-    val state by remember(viewModel) { viewModel.state }.collectAsState()
-    val connectionState by remember(viewModel) { viewModel.isConnected }.collectAsState()
+    val state by remember(viewModel) { viewModel.state }.collectAsStateWithLifecycle()
+    val connectionState by remember(viewModel) { viewModel.isConnected }.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     when (state.step) {

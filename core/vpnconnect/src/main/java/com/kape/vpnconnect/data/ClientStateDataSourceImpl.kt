@@ -1,9 +1,9 @@
 package com.kape.vpnconnect.data
 
-import com.kape.data.DI
+import com.kape.contracts.NetworkStatus
+import com.kape.contracts.di.Qualifiers
 import com.kape.data.NO_IP
 import com.kape.localprefs.prefs.ConnectionPrefs
-import com.kape.utils.NetworkConnectionListener
 import com.kape.vpnconnect.domain.ClientStateDataSource
 import com.kape.vpnconnect.utils.DELAY_BETWEEN_RETRY
 import com.privateinternetaccess.account.AndroidAccountAPI
@@ -20,8 +20,8 @@ import kotlin.time.Duration.Companion.milliseconds
 class ClientStateDataSourceImpl(
     private val accountAPI: AndroidAccountAPI,
     private val connectionPrefs: ConnectionPrefs,
-    private val networkConnectionListener: NetworkConnectionListener,
-    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
+    private val networkStatus: NetworkStatus,
+    @Named(Qualifiers.APP_SCOPE) private val appScope: CoroutineScope,
 ) : ClientStateDataSource {
     override suspend fun getPublicIp(): String {
         repeat(3) { _ ->
@@ -47,13 +47,12 @@ class ClientStateDataSourceImpl(
         return NO_IP
     }
 
-    // A retry can't succeed without a network, so give up instead of burning the remaining attempts.
-    private fun isOffline(): Boolean = !networkConnectionListener.isConnected.value
+    private fun isOffline(): Boolean = !networkStatus.isOnline.value
 
     private suspend fun getVpnIpOnce(): String =
         suspendCancellableCoroutine { continuation ->
             accountAPI.clientStatus { clientStatusInfo, errors ->
-                ioScope.launch {
+                appScope.launch {
                     val ip = clientStatusInfo?.ip ?: NO_IP
                     if (clientStatusInfo?.connected == true) {
                         connectionPrefs.setVpnIp(ip)
@@ -66,7 +65,7 @@ class ClientStateDataSourceImpl(
     private suspend fun getPublicIpOnce(): String =
         suspendCancellableCoroutine { continuation ->
             accountAPI.clientStatus { clientStatusInfo, errors ->
-                ioScope.launch {
+                appScope.launch {
                     val ip = clientStatusInfo?.ip ?: NO_IP
                     if (clientStatusInfo?.connected == false) {
                         connectionPrefs.setClientIp(ip)

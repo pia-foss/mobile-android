@@ -12,8 +12,7 @@ class DedicatedIpTests {
     fun acceptValidToken() =
         uiAutomator {
             login()
-            onElement { viewIdResourceName == Main.SIDE_MENU }.click()
-            device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
+            openSideMenu()
             onElement { viewIdResourceName == SideMenu.DEDICATED_IP }.click()
             onElement { viewIdResourceName == Dip.FIELD }.text = TestCredentials.dipToken
             onElement { viewIdResourceName == Dip.ACTIVATE_BUTTON }.click()
@@ -33,8 +32,7 @@ class DedicatedIpTests {
     fun rejectInvalidDip() =
         uiAutomator {
             login()
-            onElement { viewIdResourceName == Main.SIDE_MENU }.click()
-            device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
+            openSideMenu()
             onElement { viewIdResourceName == SideMenu.DEDICATED_IP }.click()
             device.wait(Until.hasObject(By.res(Dip.FIELD)), TIMEOUT)
             onElement { viewIdResourceName == Dip.FIELD }.text = INVALID

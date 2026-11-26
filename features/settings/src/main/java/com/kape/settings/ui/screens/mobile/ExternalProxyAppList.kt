@@ -32,20 +32,19 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.settings.ui.elements.ReconnectDialog
-import com.kape.settings.ui.vm.SettingsViewModel
+import com.kape.settings.ui.elements.ReconnectPromptDialog
+import com.kape.settings.ui.vm.ExternalProxyAppsViewModel
 import com.kape.ui.R
 import com.kape.ui.mobile.elements.Search
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ExternalProxyAppList() {
     val packageManager = LocalContext.current.packageManager
-    val viewModel: SettingsViewModel =
-        koinViewModel<SettingsViewModel>().apply {
-            getInstalledApplications(packageManager)
-        }
+    val viewModel: ExternalProxyAppsViewModel =
+        koinViewModel<ExternalProxyAppsViewModel>()
+    val appListState by viewModel.appList.collectAsStateWithLifecycle()
     val appBarViewModel: AppBarViewModel =
         koinViewModel<AppBarViewModel>().apply {
             appBarText(stringResource(id = R.string.proxy_selection_title))
@@ -82,10 +81,10 @@ fun ExternalProxyAppList() {
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                 ) {
-                    viewModel.filterAppsByName(it, packageManager)
+                    viewModel.filterAppsByName(it)
                 }
                 LazyColumn {
-                    val items = viewModel.appList.value
+                    val items = appListState
                     items(items.size) { index ->
                         val item = items[index]
                         val isSelected = externalProxyPackageName == item.packageName
@@ -96,7 +95,6 @@ fun ExternalProxyAppList() {
                             onClick = { name, isChecked ->
                                 if (isChecked) {
                                     viewModel.setExternalProxyAppPackageName(item.packageName)
-                                    viewModel.showExternalProxyTcpDialogIfNeeded()
                                 } else {
                                     viewModel.setExternalProxyAppPackageName("")
                                 }
@@ -106,19 +104,7 @@ fun ExternalProxyAppList() {
                 }
             }
         }
-        if (viewModel.reconnectDialogVisible.value) {
-            ReconnectDialog(
-                onReconnect = {
-                    viewModel.reconnect()
-                    viewModel.reconnectDialogVisible.value = false
-                    appBarViewModel.navigateBack()
-                },
-                onLater = {
-                    viewModel.reconnectDialogVisible.value = false
-                    appBarViewModel.navigateBack()
-                },
-            )
-        }
+        ReconnectPromptDialog(viewModel.reconnectPrompt, onDone = appBarViewModel::navigateBack)
     }
 }
 
@@ -193,13 +179,13 @@ private fun SelectedCheckBox(
 }
 
 private fun onBackPressed(
-    viewModel: SettingsViewModel,
+    viewModel: ExternalProxyAppsViewModel,
     lastExcludedApps: List<String>,
     excluded: List<String>,
     navigateBack: () -> Unit,
 ) {
     if (viewModel.isConnected() && lastExcludedApps != excluded) {
-        viewModel.showReconnectDialogIfVpnConnected()
+        viewModel.reconnectPrompt.onSettingChanged()
     } else {
         navigateBack()
     }

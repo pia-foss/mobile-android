@@ -26,9 +26,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.view.mobile.AppBarType
 import com.kape.appbar.viewmodel.AppBarViewModel
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -44,7 +44,7 @@ fun InAppBrowser(url: String) =
                     settings.javaScriptEnabled = true
                     settings.allowFileAccess = false
                     WebView.setWebContentsDebuggingEnabled(false)
-                    setBackgroundColor(android.graphics.Color.TRANSPARENT) // important
+                    setBackgroundColor(android.graphics.Color.TRANSPARENT)
                 }
             }
 
@@ -66,7 +66,7 @@ fun InAppBrowser(url: String) =
                         return!(
                             host.endsWith("privateinternetaccess.com") ||
                                 host.endsWith("helpdesk.privateinternetaccess.com")
-                        ) // allow WebView to load
+                        )
                     }
                 }
             webview.loadUrl(url)

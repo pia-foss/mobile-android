@@ -12,7 +12,6 @@ data class OpenVpnSettings(
     override var useSmallPackets: Boolean = false,
     override var handshake: String = "RSA4096",
 ) : ProtocolSettings {
-    // Derived rather than stored so toggling useSmallPackets (via copy()) always takes effect.
     override val mtu: Int
         get() = if (useSmallPackets) 1350 else 1420
 }

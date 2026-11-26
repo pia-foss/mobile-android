@@ -2,181 +2,154 @@ package com.kape.signup.ui.vm
 
 import android.app.Activity
 import android.util.Patterns
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kape.account.domain.usecase.GetPostLoginDestinationUseCase
+import com.kape.contracts.NetworkStatus
 import com.kape.contracts.Router
-import com.kape.data.DI
 import com.kape.data.LoginWithCredentials
-import com.kape.data.Subscribe
 import com.kape.data.TvLoginUsername
 import com.kape.data.TvWelcome
-import com.kape.data.TvWelcomeBack
 import com.kape.data.WebDestination
-import com.kape.data.WelcomeBack
-import com.kape.permissions.utils.PermissionUtil
-import com.kape.shareevents.data.KpiEventGenerator
-import com.kape.shareevents.domain.SubmitKpiEventUseCase
-import com.kape.signup.domain.ConsentUseCase
-import com.kape.signup.domain.SignupBillingHandler
-import com.kape.signup.domain.SignupHandler
-import com.kape.signup.utils.DEFAULT
-import com.kape.signup.utils.EMAIL
-import com.kape.signup.utils.ERROR_EMAIL_INVALID
-import com.kape.signup.utils.ERROR_REGISTRATION
-import com.kape.signup.utils.IN_PROCESS
-import com.kape.signup.utils.SUBSCRIPTIONS_FAILED_TO_LOAD
-import com.kape.signup.utils.SignupScreenState
-import com.kape.signup.utils.signedUp
-import com.kape.utils.NetworkConnectionListener
+import com.kape.signup.domain.StoreOffer
+import com.kape.signup.domain.SubscriptionStore
+import com.kape.signup.domain.usecase.CompleteSignupUseCase
+import com.kape.signup.domain.usecase.GetPostPurchaseStepUseCase
+import com.kape.signup.domain.usecase.PostPurchaseStep
+import com.kape.signup.domain.usecase.SignupResult
+import com.kape.signup.domain.usecase.SubmitConsentUseCase
+import com.kape.signup.ui.AMAZON_LOGIN
+import com.kape.signup.ui.CONSENT
+import com.kape.signup.ui.DEFAULT
+import com.kape.signup.ui.EMAIL
+import com.kape.signup.ui.ERROR_EMAIL_INVALID
+import com.kape.signup.ui.ERROR_REGISTRATION
+import com.kape.signup.ui.IN_PROCESS
+import com.kape.signup.ui.LOADING
+import com.kape.signup.ui.NO_IN_APP_SUBSCRIPTIONS
+import com.kape.signup.ui.SUBSCRIPTIONS_FAILED_TO_LOAD
+import com.kape.signup.ui.SignupScreenState
+import com.kape.signup.ui.SubscriptionData
+import com.kape.signup.ui.signedUp
+import com.kape.signup.ui.subscriptions
 import com.kape.utils.PlatformUtils
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import org.koin.core.annotation.Named
 
 @KoinViewModel
 class SignupViewModel(
     private val router: Router,
-    private val billingHandler: SignupBillingHandler,
-    private val consentUseCase: ConsentUseCase,
-    private val signupHandler: SignupHandler,
-    private val permissionUtil: PermissionUtil,
-    private val submitKpiEventUseCase: SubmitKpiEventUseCase,
+    private val store: SubscriptionStore,
+    private val submitConsent: SubmitConsentUseCase,
+    private val getPostPurchaseStep: GetPostPurchaseStepUseCase,
+    private val completeSignup: CompleteSignupUseCase,
+    private val getPostLoginDestination: GetPostLoginDestinationUseCase,
     private val platformUtils: PlatformUtils,
-    private val eventGenerator: KpiEventGenerator,
-    @Named(DI.IO_DISPATCHER) private val ioDispatcher: CoroutineDispatcher,
-    @Named(DI.MAIN_DISPATCHER) private val mainDispatcher: CoroutineDispatcher,
-    networkConnectionListener: NetworkConnectionListener,
+    networkStatus: NetworkStatus,
 ) : ViewModel() {
-    private val _state =
-        MutableStateFlow(billingHandler.billingState.replayCache.firstOrNull() ?: DEFAULT)
-    val state: StateFlow<SignupScreenState> = _state
-
-    val isConnected = networkConnectionListener.isConnected
+    private val _state = MutableStateFlow(DEFAULT)
+    val state: StateFlow<SignupScreenState> = _state.asStateFlow()
+    val isConnected: StateFlow<Boolean> = networkStatus.isOnline
 
     init {
-        viewModelScope.launch(ioDispatcher) {
-            billingHandler.billingState.collect { _state.emit(it) }
+        viewModelScope.launch {
+            store.offer.collect { _state.value = it.toScreenState() }
         }
-        billingHandler.initialize(mainDispatcher)
+        viewModelScope.launch {
+            store.purchaseCompleted.collect {
+                _state.value =
+                    when (getPostPurchaseStep()) {
+                        PostPurchaseStep.Consent -> CONSENT
+                        PostPurchaseStep.Email -> EMAIL
+                    }
+            }
+        }
     }
 
     fun loadPrices(activity: Activity) =
-        viewModelScope.launch(ioDispatcher) {
-            if (billingHandler.hasResumablePurchase()) {
-                _state.emit(EMAIL)
+        viewModelScope.launch {
+            if (store.hasResumablePurchase()) {
+                _state.value = EMAIL
             } else {
-                billingHandler.loadPrices(mainDispatcher, activity)
+                store.loadPlans(activity)
             }
         }
 
-    fun loadEmptyPrices() =
-        viewModelScope.launch(ioDispatcher) {
-            _state.emit(SUBSCRIPTIONS_FAILED_TO_LOAD)
-        }
+    fun loadEmptyPrices() {
+        _state.value = SUBSCRIPTIONS_FAILED_TO_LOAD
+    }
 
     fun purchase(
         id: String,
         activity: Activity,
-    ) = viewModelScope.launch(ioDispatcher) {
-        submitKpiEventUseCase.submitEvent(eventGenerator.getProcessingPurchaseEvent())
-        billingHandler.purchase(id, activity)
-    }
+    ) = store.purchase(id, activity)
+
+    fun registerClientIfNeeded(activity: Activity) = store.register(activity)
 
     fun navigateToLogin() {
         router.updateDestination(LoginWithCredentials)
-        billingHandler.reset()
+        store.reset()
     }
 
     fun navigateToTvLogin() {
         router.updateDestination(TvLoginUsername)
-        billingHandler.reset()
+        store.reset()
     }
 
-    fun navigateToTvWelcome() {
-        router.updateDestination(TvWelcome)
-    }
+    fun navigateToTvWelcome() = router.updateDestination(TvWelcome)
 
-    fun navigateToPrivacyPolicy() {
-        router.updateDestination(WebDestination.Privacy)
-    }
+    fun navigateToPrivacyPolicy() = router.updateDestination(WebDestination.Privacy)
 
-    fun navigateToTermsOfService() {
-        router.updateDestination(WebDestination.Terms)
-    }
+    fun navigateToTermsOfService() = router.updateDestination(WebDestination.Terms)
 
-    fun navigateToWebsite() {
-        router.updateDestination(WebDestination.NoInAppRegistration)
-    }
+    fun navigateToWebsite() = router.updateDestination(WebDestination.NoInAppRegistration)
 
     fun allowEventSharing(
         allow: Boolean,
         isFirstScreen: Boolean,
-    ) = viewModelScope.launch(ioDispatcher) {
-        consentUseCase.setConsent(allow)
-        if (isFirstScreen) {
-            if (platformUtils.isTv()) {
-                if (billingHandler.hasActiveSubscription().first()) {
-                    router.updateDestination(TvWelcomeBack)
-                } else {
-                    router.updateDestination(TvWelcome)
-                }
-            } else if (billingHandler.hasActiveSubscription().first()) {
-                router.updateDestination(WelcomeBack)
-            } else {
-                router.updateDestination(Subscribe)
-            }
+    ) = viewModelScope.launch {
+        val destination = submitConsent(allow, isFirstScreen, platformUtils.isTv())
+        if (destination != null) {
+            router.updateDestination(destination)
         } else {
-            _state.emit(EMAIL)
+            _state.value = EMAIL
         }
     }
 
     fun isValidEmail(email: String): Boolean = Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
     fun register(email: String) =
-        viewModelScope.launch(ioDispatcher) {
-            if (email.isEmpty()) {
-                _state.emit(ERROR_EMAIL_INVALID)
-                return@launch
-            }
-            _state.emit(IN_PROCESS)
-            val result = signupHandler.vpnSignup(email)
-            if (result == null) {
-                _state.emit(ERROR_REGISTRATION)
-            } else {
-                _state.emit(signedUp(result))
-            }
+        viewModelScope.launch {
+            _state.value = IN_PROCESS
+            _state.value =
+                when (val result = completeSignup(email)) {
+                    SignupResult.InvalidEmail -> ERROR_EMAIL_INVALID
+                    SignupResult.Failed -> ERROR_REGISTRATION
+                    is SignupResult.SignedUp -> signedUp(result.credentials)
+                }
         }
 
     fun completeSubscription() {
-        router.updateDestination(permissionUtil.getNextDestination())
-        billingHandler.reset()
+        router.updateDestination(getPostLoginDestination())
+        store.reset()
     }
 
-    fun registerClientIfNeeded(activity: Activity) {
-        billingHandler.registerClientIfNeeded(activity)
-    }
+    // Fully qualified: the domain function has the same name as this one.
+    fun isoDurationToDays(duration: String?): Int? =
+        com.kape.signup.domain
+            .isoDurationToDays(duration)
 
-    fun isoDurationToDays(duration: String?): Int? {
-        val regex = Regex("^P(\\d+)([DWMY])$")
-        return duration?.let {
-            val match =
-                regex.matchEntire(duration)
-                    ?: throw IllegalArgumentException("Unsupported duration format: $duration")
-
-            val (valueStr, unit) = match.destructured
-            val value = valueStr.toInt()
-
-            return when (unit) {
-                "D" -> value * 1
-                "W" -> value * 7
-                "M" -> value * 30 // approximation
-                "Y" -> value * 365 // approximation
-                else -> null
-            }
+    private fun StoreOffer.toScreenState(): SignupScreenState =
+        when (this) {
+            StoreOffer.None -> DEFAULT
+            StoreOffer.Loading -> LOADING
+            is StoreOffer.Plans -> subscriptions(SubscriptionData(mutableStateOf(yearly), yearly, monthly))
+            StoreOffer.PlansUnavailable -> SUBSCRIPTIONS_FAILED_TO_LOAD
+            StoreOffer.WebsiteOnly -> NO_IN_APP_SUBSCRIPTIONS
+            StoreOffer.StoreLoginOnly -> AMAZON_LOGIN
         }
-    }
 }

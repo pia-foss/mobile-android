@@ -1,12 +1,10 @@
 package com.kape.snooze
 
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.kape.data.DI
-import com.kape.data.WorkerTags
+import com.kape.contracts.SnoozeStatus
+import com.kape.contracts.di.Qualifiers
 import com.kape.localprefs.prefs.ConnectionPrefs
 import com.kape.vpnlauncher.VpnLauncher
 import kotlinx.coroutines.CoroutineScope
@@ -15,85 +13,81 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Named
-import java.util.Calendar
+import org.koin.core.annotation.Singleton
 import java.util.concurrent.TimeUnit
 
-private const val MINUTE = 60 * 1000L
+private const val MINUTE_MS = 60_000L
+private const val SNOOZE_WORK = "snooze"
 
+@Singleton(binds = [SnoozeStatus::class])
 class SnoozeHandler(
     private val workManager: WorkManager,
     private val connectionPrefs: ConnectionPrefs,
     private val vpnLauncher: VpnLauncher,
-    @Named(DI.IO_SCOPE) private val ioScope: CoroutineScope,
-) {
-    val isSnoozeActive = mutableStateOf(false)
-    val timeUntilResume = mutableIntStateOf(0)
+    @Named(Qualifiers.APP_SCOPE) private val appScope: CoroutineScope,
+) : SnoozeStatus {
     private val _snoozeEndTime = MutableStateFlow(0L)
+    override val snoozeEndTime: StateFlow<Long> = _snoozeEndTime.asStateFlow()
 
-    // Epoch millis at which the active snooze ends, or 0 when no snooze is active.
-    val snoozeEndTime: StateFlow<Long> = _snoozeEndTime.asStateFlow()
-    private var countDownJob: Job? = null
+    private val _isSnoozeActive = MutableStateFlow(false)
+    val isSnoozeActive: StateFlow<Boolean> = _isSnoozeActive.asStateFlow()
+
+    private val _minutesUntilResume = MutableStateFlow(0)
+
+    val minutesUntilResume: StateFlow<Int> = _minutesUntilResume.asStateFlow()
+
+    private var countdownJob: Job? = null
 
     init {
-        restoreSnooze()
+        appScope.launch {
+            val end = connectionPrefs.getLastSnoozeEndTimeNow()
+            if (end > System.currentTimeMillis() && _snoozeEndTime.value == 0L) startCountdown(end)
+        }
     }
 
-    fun setSnooze(interval: Int) {
-        ioScope.launch {
-            isSnoozeActive.value = true
-            val nowInMillis = Calendar.getInstance().timeInMillis
-            val end = nowInMillis + interval
-            _snoozeEndTime.value = end
-            setCountdownTimer(end)
-            val workRequest =
-                OneTimeWorkRequestBuilder<SnoozeWorker>()
-                    .setInitialDelay(interval.toLong(), TimeUnit.MILLISECONDS)
-                    .build()
+    fun setSnooze(intervalMillis: Int) {
+        appScope.launch {
+            val end = System.currentTimeMillis() + intervalMillis
+            startCountdown(end)
             workManager.enqueueUniqueWork(
-                WorkerTags.SNOOZE_WORKER,
+                SNOOZE_WORK,
                 ExistingWorkPolicy.REPLACE,
-                workRequest,
+                OneTimeWorkRequestBuilder<SnoozeWorker>().setInitialDelay(intervalMillis.toLong(), TimeUnit.MILLISECONDS).build(),
             )
             connectionPrefs.setLastSnoozeEndTime(end)
             vpnLauncher.stopVpn()
         }
     }
 
-    fun cancelSnooze() {
-        ioScope.launch {
-            isSnoozeActive.value = false
+    override fun cancelSnooze() {
+        appScope.launch {
+            countdownJob?.cancel()
+            countdownJob = null
+            _isSnoozeActive.value = false
             _snoozeEndTime.value = 0L
-            workManager.cancelUniqueWork(WorkerTags.SNOOZE_WORKER)
+            workManager.cancelUniqueWork(SNOOZE_WORK)
             connectionPrefs.setLastSnoozeEndTime(0)
-            countDownJob?.cancel()
-            countDownJob = null
         }
     }
 
-    // The in-memory state is lost when the process dies, but the SnoozeWorker stays scheduled and the
-    // end time is persisted, so pick an ongoing snooze back up from prefs.
-    private fun restoreSnooze() {
-        ioScope.launch {
-            val end = connectionPrefs.getLastSnoozeEndTimeNow()
-            if (end > Calendar.getInstance().timeInMillis && _snoozeEndTime.value == 0L) {
-                isSnoozeActive.value = true
-                _snoozeEndTime.value = end
-                setCountdownTimer(end)
-            }
-        }
-    }
-
-    private fun setCountdownTimer(end: Long) {
-        countDownJob?.cancel()
-        countDownJob =
-            ioScope.launch {
-                while (true) {
-                    val remaining = end - Calendar.getInstance().timeInMillis
-                    timeUntilResume.intValue = ((remaining + MINUTE - 1) / MINUTE).toInt()
-                    delay(MINUTE)
+    private fun startCountdown(end: Long) {
+        _isSnoozeActive.value = true
+        _snoozeEndTime.value = end
+        countdownJob?.cancel()
+        countdownJob =
+            appScope.launch {
+                while (isActive) {
+                    _minutesUntilResume.value = minutesUntil(end, System.currentTimeMillis())
+                    delay(MINUTE_MS)
                 }
             }
     }
 }
+
+internal fun minutesUntil(
+    end: Long,
+    now: Long,
+): Int = ((end - now + MINUTE_MS - 1) / MINUTE_MS).toInt().coerceAtLeast(0)

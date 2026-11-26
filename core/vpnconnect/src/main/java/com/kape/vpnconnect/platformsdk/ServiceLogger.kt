@@ -68,10 +68,6 @@ class ServiceLogger(
     }
 }
 
-// System logcat is a small ring buffer shared with every other app and process on the device, so
-// VPN debug lines routinely get evicted by unrelated log noise long before a user opens the log
-// screen or sends a support report. This keeps its own bounded copy on disk instead: a single
-// backup file is rotated in so total usage never exceeds twice MAX_LOG_FILE_SIZE_BYTES.
 internal object ServiceLogFileStore {
     private const val MAX_LOG_FILE_SIZE_BYTES = 1L * 1024 * 1024
     private const val LOG_FILE_NAME = "vpn_debug.log"

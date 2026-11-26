@@ -1,37 +1,25 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.serialization)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.junit5)
+    alias(libs.plugins.pia.android.library)
 }
 
 android {
-    namespace = "com.kape.vpnregions"
+    // Not "com.kape.regions": the mobile-shared-regions library already uses that namespace.
+    namespace = "com.kape.regions.core"
 }
 
 dependencies {
-    implementation(project(":core:data"))
-    implementation(project(":core:localprefs:prefs"))
-    implementation(project(":core:localprefs:prefs"))
-    implementation(project(":core:localprefs:data"))
     implementation(project(":core:contracts"))
-
-    implementation(libs.bundles.serialization)
+    implementation(libs.bundles.serialization.bundle)
+    implementation(libs.coroutines.android)
+    implementation(project(":core:localprefs:prefs"))
     implementation(libs.mobile.shared.regions)
-    implementation(libs.mobile.shared.account)
 
-    implementation(libs.coroutines)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.annotations)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
     testImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.bundles.coroutines.androidtest)
-    implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
-    androidTestImplementation(libs.bundles.koinandroidtest)
-    testImplementation(libs.bundles.test)
-    runtimeOnly(libs.launcher)
-}
-
-koinCompiler {
-    compileSafety = false
 }

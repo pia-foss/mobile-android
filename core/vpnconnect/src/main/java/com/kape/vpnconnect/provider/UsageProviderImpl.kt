@@ -9,7 +9,7 @@ import org.koin.core.annotation.Singleton
 import kotlin.math.ln
 import kotlin.math.pow
 
-@Singleton([UsageProvider::class])
+@Singleton(binds = [UsageProvider::class])
 class UsageProviderImpl(
     private val context: Context,
 ) : UsageProvider {
@@ -22,7 +22,7 @@ class UsageProviderImpl(
     override val widgetUpload = MutableStateFlow(humanReadableByteCount(0, false, context))
     override val tunnelTraffic = MutableStateFlow(TunnelTraffic.ZERO)
 
-    override fun byteCount(
+    fun byteCount(
         tx: Long,
         rx: Long,
     ) {
@@ -37,7 +37,7 @@ class UsageProviderImpl(
         widgetUploadSpeed.value = humanReadableByteCount(tx, true, context)
     }
 
-    override fun reset() {
+    fun reset() {
         tunnelTraffic.value = TunnelTraffic.ZERO
         Snapshot.withMutableSnapshot {
             download.value = humanReadableByteCountSI(0)

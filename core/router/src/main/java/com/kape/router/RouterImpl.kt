@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.update
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [Router::class])
-class RouterImpl : Router {
+internal class RouterImpl : Router {
     private val destination = MutableStateFlow<ComposeDestination?>(null)
     private val navigateBack = MutableStateFlow(false)
 

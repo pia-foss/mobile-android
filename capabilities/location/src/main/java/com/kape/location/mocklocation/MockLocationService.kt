@@ -18,7 +18,6 @@ class MockLocationService :
     private val notificationProvider: MockLocationNotificationProvider by inject()
     private val fusedLocationMocker: FusedLocationMocker by inject()
 
-    // The burst pushes every 50ms, so keep those binder calls off the main thread.
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var mock: MockLocationProvider? = null
 
@@ -43,7 +42,6 @@ class MockLocationService :
 
         val provider = mock ?: MockLocationProvider(this, fusedLocationMocker, scope).also { mock = it }
         if (!provider.push(lat, lng)) {
-            // PIA is no longer the selected mock location app in Developer options.
             stopSelf()
             return START_NOT_STICKY
         }

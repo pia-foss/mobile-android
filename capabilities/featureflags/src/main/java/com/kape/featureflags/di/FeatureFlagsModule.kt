@@ -1,21 +1,8 @@
 package com.kape.featureflags.di
 
-import com.kape.featureflags.data.FeatureFlagsDataSourceImpl
-import com.kape.featureflags.domain.FeatureFlagsDataSource
-import com.kape.featureflags.domain.ForceUpdateUseCase
-import com.kape.localprefs.prefs.FeaturePrefs
-import com.privateinternetaccess.account.AndroidAccountAPI
+import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
-import org.koin.core.annotation.Singleton
 
 @Module
-class FeatureFlagsModule {
-    @Singleton(binds = [FeatureFlagsDataSource::class])
-    fun provideFeatureFlagsDataSource(
-        api: AndroidAccountAPI,
-        featurePrefs: FeaturePrefs,
-    ): FeatureFlagsDataSource = FeatureFlagsDataSourceImpl(api, featurePrefs)
-
-    @Singleton
-    fun provideForceUpdateUseCase(featurePrefs: FeaturePrefs): ForceUpdateUseCase = ForceUpdateUseCase(featurePrefs)
-}
+@ComponentScan("com.kape.featureflags")
+class FeatureFlagsModule

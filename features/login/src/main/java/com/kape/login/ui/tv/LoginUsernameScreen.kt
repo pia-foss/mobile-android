@@ -32,11 +32,11 @@ import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.unit.dp
 import com.kape.login.ui.vm.tv.LoginUsernameViewModel
 import com.kape.ui.R
-import com.kape.ui.mobile.elements.Screen
+import com.kape.ui.Screen
 import com.kape.ui.tv.text.EnterUsernameScreenTitleText
 import com.kape.ui.tv.text.Input
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginUsernameScreen() =
@@ -100,7 +100,7 @@ fun LoginUsernameScreen() =
                             ),
                     ) {
                         Image(
-                            painter = painterResource(id = com.kape.login.R.drawable.ic_tv_onboarding),
+                            painter = painterResource(id = com.kape.ui.R.drawable.ic_tv_onboarding),
                             contentScale = ContentScale.Fit,
                             contentDescription = null,
                             modifier =
@@ -149,7 +149,6 @@ fun LoginUsernameScreen() =
                                     onNext = {
                                         evaluateUsernameError.value = true
                                         if (viewModel.isValidUsername()) {
-                                            viewModel.setLoginUsername(viewModel.getUsername().value)
                                             viewModel.navigateToPassword()
                                         }
                                     },

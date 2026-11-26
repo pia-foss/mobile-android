@@ -1,49 +1,18 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.junit5)
-    alias(libs.plugins.compose)
+    alias(libs.plugins.pia.android.feature)
 }
 
 android {
     namespace = "com.kape.profile"
-
-    testOptions {
-        unitTests {
-            isReturnDefaultValues = true
-        }
-    }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.desugar)
+    implementation(project(":core:account"))
+    implementation(project(":capabilities:appbar"))
 
-    implementation(libs.mobile.shared.account)
-    implementation(project(":core:contracts"))
-    implementation(project(":core:utils"))
-    implementation(project(":core:data"))
-    implementation(project(":core:vpnconnect"))
-    implementation(project(":capabilities:ui"))
-    implementation(project(":features:appbar"))
-
-    implementation(libs.bundles.compose)
-    androidTestImplementation(libs.bundles.composeandroidtest)
-    implementation(libs.bundles.android)
-    implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
-    androidTestImplementation(libs.bundles.koinandroidtest)
-    implementation(libs.coroutines)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
     testImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.bundles.coroutines.androidtest)
-    testImplementation(libs.bundles.test)
-    runtimeOnly(libs.launcher)
-}
-
-koinCompiler {
-    compileSafety = false
+    testImplementation(libs.mockk)
 }

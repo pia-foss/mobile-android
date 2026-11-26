@@ -30,21 +30,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Text
-import com.kape.login.utils.IDLE
-import com.kape.login.utils.LoginScreenState
+import com.kape.account.domain.usecase.ReceiptLoginProgress
 import com.kape.signup.ui.mobile.getErrorMessage
 import com.kape.signup.ui.vm.WelcomeBackViewModel
 import com.kape.ui.R
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.ErrorCard
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.PreviewTheme
 import com.kape.ui.tv.elements.PrimaryButton
 import com.kape.ui.tv.text.WelcomeTitleText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun TvWelcomeBackScreen(viewModel: WelcomeBackViewModel = koinViewModel()) {
@@ -57,10 +55,9 @@ fun TvWelcomeBackScreen(viewModel: WelcomeBackViewModel = koinViewModel()) {
     )
 }
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 private fun TvWelcomeBackScreenContent(
-    state: LoginScreenState = IDLE,
+    state: ReceiptLoginProgress = ReceiptLoginProgress.Idle,
     onPlayStoreAccountClick: () -> Unit,
     onUsernameAndPasswordClick: () -> Unit,
 ) = Screen {
@@ -118,7 +115,7 @@ private fun TvWelcomeBackScreenContent(
                 style = PiaTypography.body3,
             )
             Spacer(modifier = Modifier.height(16.dp))
-            if (state.loading) {
+            if (state == ReceiptLoginProgress.Loading) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Absolute.Center,
@@ -133,10 +130,10 @@ private fun TvWelcomeBackScreenContent(
                     onPlayStoreAccountClick()
                 }
             }
-            if (state.error != null) {
+            getErrorMessage(state)?.let { message ->
                 Spacer(modifier = Modifier.height(8.dp))
                 ErrorCard(
-                    content = getErrorMessage(state),
+                    content = message,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }

@@ -1,9 +1,5 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.junit5)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.pia.android.library)
 }
 
 android {
@@ -11,23 +7,20 @@ android {
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.desugar)
-
-    implementation(libs.mobile.shared.kpi)
     implementation(project(":core:contracts"))
-    implementation(project(":core:data"))
+    implementation(project(":core:account"))
     implementation(project(":core:localprefs:prefs"))
-    implementation(project(":core:localprefs:data"))
+    implementation(libs.mobile.shared.kpi)
+    implementation(libs.bundles.serialization.bundle)
+    implementation(libs.coroutines.android)
 
-    implementation(libs.bundles.serialization)
-    implementation(libs.bundles.koin)
-    implementation(libs.coroutines)
-    testImplementation(libs.bundles.test)
-    testImplementation(libs.bundles.kointest)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.annotations)
+
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
     testImplementation(libs.coroutines.test)
-    runtimeOnly(libs.launcher)
-}
-
-koinCompiler {
-    compileSafety = false
+    testImplementation(libs.mockk)
 }

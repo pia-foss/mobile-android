@@ -1,63 +1,25 @@
 plugins {
-    alias(libs.plugins.library)
-    alias(libs.plugins.configuration)
-    alias(libs.plugins.koin.compiler)
-    alias(libs.plugins.ktlint)
-    alias(libs.plugins.serialization)
-    alias(libs.plugins.junit5)
-    alias(libs.plugins.compose)
+    alias(libs.plugins.pia.android.feature)
+    alias(libs.plugins.pia.android.flavors)
 }
 
 android {
     namespace = "com.kape.settings"
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
-    }
-    testOptions {
-        unitTests {
-            isReturnDefaultValues = true
-        }
-    }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
-    coreLibraryDesugaring(libs.desugar)
-
-    implementation(project(":core:contracts"))
-    implementation(project(":core:data"))
     implementation(project(":core:regions"))
-    implementation(project(":core:utils"))
-    implementation(project(":core:vpnconnect"))
     implementation(project(":core:localprefs:prefs"))
-    implementation(project(":core:localprefs:data"))
-    implementation(project(":capabilities:ui"))
-    implementation(project(":capabilities:shareevents"))
+    implementation(project(":core:vpnconnect"))
     implementation(project(":capabilities:csi"))
     implementation(project(":capabilities:location"))
-    implementation(project(":features:appbar"))
-    implementation(project(":features:vpnregionselection"))
-    implementation(project(":features:automation"))
+    implementation(project(":capabilities:appbar"))
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.accompanist.drawablepainter)
 
-    implementation(libs.bundles.compose)
-    androidTestImplementation(libs.bundles.composeandroidtest)
-    implementation(libs.bundles.android)
-    implementation(libs.bundles.koin)
-    testImplementation(libs.bundles.kointest)
-    androidTestImplementation(libs.bundles.koinandroidtest)
-    implementation(libs.coroutines)
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.bundles.junit5.bundle)
+    testRuntimeOnly(libs.bundles.junit5.runtime.bundle)
     testImplementation(libs.coroutines.test)
-    androidTestImplementation(libs.bundles.coroutines.androidtest)
-    testImplementation(libs.bundles.test)
-    runtimeOnly(libs.launcher)
-    implementation(libs.bundles.serialization)
-    implementation(libs.drawablepainter)
-    implementation(libs.mobile.shared.account)
-    implementation(libs.constraintlayout)
-}
-
-koinCompiler {
-    compileSafety = false
+    testImplementation(libs.mockk)
 }

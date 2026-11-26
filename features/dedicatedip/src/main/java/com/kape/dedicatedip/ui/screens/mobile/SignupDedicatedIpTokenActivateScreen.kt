@@ -28,18 +28,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kape.dedicatedip.domain.DipActivationResult
 import com.kape.dedicatedip.ui.vm.DipViewModel
-import com.kape.dedicatedip.utils.DipApiResult
 import com.kape.ui.R
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.PrimaryButton
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.text.DedicatedIpSignupActivateTokenDescriptionText
 import com.kape.ui.mobile.text.Input
 import com.kape.ui.theme.warningBackground
 import com.kape.ui.theme.warningOrange
 import com.kape.ui.theme.warningOutline
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SignupDedicatedIpTokenActivateScreen() =
@@ -133,7 +133,7 @@ fun SignupDedicatedIpTokenActivateScreen() =
         }
 
         when (viewModel.activationState.value) {
-            DipApiResult.Active -> {
+            DipActivationResult.Active -> {
                 showToast(
                     context = context,
                     message = stringResource(id = R.string.dip_success),
@@ -143,7 +143,7 @@ fun SignupDedicatedIpTokenActivateScreen() =
                 viewModel.navigateToActivateToken()
             }
 
-            DipApiResult.Expired -> {
+            DipActivationResult.Expired -> {
                 showToast(
                     context = context,
                     message = stringResource(id = R.string.dip_expired_warning),
@@ -152,8 +152,8 @@ fun SignupDedicatedIpTokenActivateScreen() =
                 showSpinner.value = false
             }
 
-            DipApiResult.Invalid,
-            DipApiResult.Error,
+            DipActivationResult.Invalid,
+            DipActivationResult.Error,
             -> {
                 showToast(
                     context = context,
@@ -164,7 +164,6 @@ fun SignupDedicatedIpTokenActivateScreen() =
             }
 
             null -> {
-                // do nothing
             }
         }
     }

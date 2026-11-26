@@ -8,9 +8,13 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.kape.connection.model.AwgObfuscationSettings
 import com.kape.connection.model.PortBindInformation
 import com.kape.connection.model.QuickConnectServer
+import com.kape.contracts.di.Qualifiers
 import com.kape.data.NO_IP
 import com.kape.data.vpnserver.VpnServer
 import com.kape.localprefs.Prefs
+import com.kape.localprefs.api.ConnectionStore
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +22,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 private val QUICK_CONNECT = stringPreferencesKey("quick-connect-server-list")
@@ -32,11 +37,14 @@ private val PROXY_PORT = stringPreferencesKey("proxy-port")
 private const val DEFAULT_PROXY_PORT_VALUE = "8080"
 private val AWG_OBFUSCATION = stringPreferencesKey("awg-obfuscation")
 
-@Singleton
+@Singleton(binds = [ConnectionPrefs::class, ConnectionStore::class])
 class ConnectionPrefs(
     context: Context,
-) : Prefs(context, "connection") {
-    val quickConnectServers: StateFlow<List<QuickConnectServer>> =
+    @Named(Qualifiers.APP_SCOPE) appScope: CoroutineScope,
+    @Named(Qualifiers.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+) : Prefs(context, "connection", appScope, ioDispatcher),
+    ConnectionStore {
+    override val quickConnectServers: StateFlow<List<QuickConnectServer>> =
         getQuickConnectServers().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
@@ -46,8 +54,10 @@ class ConnectionPrefs(
         getClientIp().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), NO_IP)
     val vpnIp: StateFlow<String> =
         getVpnIp().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), NO_IP)
+
+    // Eagerly: MetaEndpointsProvider reads .value from synchronous KAPE library callbacks.
     val selectedVpnServer: StateFlow<VpnServer?> =
-        getSelectedVpnServer().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
+        getSelectedVpnServer().stateIn(scope, SharingStarted.Eagerly, null)
     val lastSnoozeEndTime: StateFlow<Long> =
         getLastSnoozeEndTime().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), 0L)
     val gateway: StateFlow<String> =
@@ -56,7 +66,7 @@ class ConnectionPrefs(
         getPortBindingInfo().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), null)
     val isDisconnectedByUser: StateFlow<Boolean> =
         getDisconnectedByUser().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), false)
-    val proxyPort: StateFlow<String> =
+    override val proxyPort: StateFlow<String> =
         getProxyPort().stateIn(
             scope,
             SharingStarted.WhileSubscribed(waitTime),
@@ -101,15 +111,19 @@ class ConnectionPrefs(
         dataStore.edit { it[VPN_IP] = vpnIp }
     }
 
-    suspend fun getSelectedVpnServerNow(): VpnServer? = getSelectedVpnServer().first()
+    override fun observeSelectedVpnServer(): Flow<VpnServer?> = getSelectedVpnServer()
+
+    override suspend fun getSelectedVpnServerNow(): VpnServer? = getSelectedVpnServer().first()
 
     suspend fun getGatewayNow(): String = getGateway().first()
+
+    suspend fun getPortBindingInfoNow(): PortBindInformation? = getPortBindingInfo().first()
 
     suspend fun getClientIpNow(): String = getClientIp().first()
 
     suspend fun isDisconnectedByUserNow(): Boolean = getDisconnectedByUser().first()
 
-    suspend fun getLastSnoozeEndTimeNow(): Long = getLastSnoozeEndTime().first()
+    override suspend fun getLastSnoozeEndTimeNow(): Long = getLastSnoozeEndTime().first()
 
     suspend fun getAwgObfuscationNow(): AwgObfuscationSettings? = getAwgObfuscation().first()
 
@@ -133,11 +147,11 @@ class ConnectionPrefs(
 
     suspend fun clearPortBindingInfo() = setPortBindingInformation(null)
 
-    suspend fun setDisconnectedByUser(byUser: Boolean) {
+    override suspend fun setDisconnectedByUser(byUser: Boolean) {
         dataStore.edit { it[DISCONNECTED_BY_USER] = byUser }
     }
 
-    suspend fun setProxyPort(port: String?) {
+    override suspend fun setProxyPort(port: String?) {
         dataStore.edit { prefs ->
             if (port != null) prefs[PROXY_PORT] = port else prefs.remove(PROXY_PORT)
         }

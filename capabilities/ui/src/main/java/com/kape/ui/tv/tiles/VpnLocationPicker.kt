@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.tv.material3.ExperimentalTvMaterial3Api
 import androidx.tv.material3.Icon
 import com.kape.data.vpnserver.VpnServer
 import com.kape.ui.R
@@ -30,7 +29,6 @@ import com.kape.ui.tv.text.SelectedRegionServerText
 import com.kape.ui.tv.text.SelectedRegionTitleText
 import com.kape.ui.utils.getFlagResource
 
-@OptIn(ExperimentalTvMaterial3Api::class)
 @Composable
 fun VpnLocationPicker(
     modifier: Modifier = Modifier,

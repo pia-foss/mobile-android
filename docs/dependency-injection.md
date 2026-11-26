@@ -2,64 +2,23 @@
 
 ## Framework
 
-The project uses **Koin 4.2.2** with the **Koin Compiler Plugin 1.2.1** (`io.insert-koin.compiler.plugin`) for compile-time annotation processing. Versions live in `gradle/libs.versions.toml` (`koin`, `koin-plugin`).
+The project uses **Koin 4.2** with the **Koin compiler plugin** (`io.insert-koin.compiler.plugin`), configured with annotations. Versions live in `gradle/libs.versions.toml` (`koin`, `koinCompiler`).
 
-Key dependencies (bundled as `libs.bundles.koin` / `kointest` / `koinandroidtest`):
-- `koin-core` — core DI container
-- `koin-android` — Android integration
-- `koin-annotations` — annotation support
-- `koin-androidx-compose` — Jetpack Compose integration
-- `koin-androidx-workmanager` — WorkManager worker injection
-- `koin-test-junit5` — testing framework
-- `koin-android-test`, `koin-test` — Android test utilities
+The convention plugins in `configuration/` apply the compiler plugin to every module (`pia.android.library` and `pia.android.application`), so a module only adds the Koin libraries it uses:
 
----
-
-## Module Architecture
-
-Modules follow a 3-tier hierarchy (see `settings.gradle.kts` for the full list):
-
+```kotlin
+implementation(platform(libs.koin.bom))
+implementation(libs.koin.core)
+implementation(libs.koin.annotations)
 ```
-app/
-├── core/             # Foundational infrastructure
-│   ├── contracts     # Shared interfaces (AppInfo, ConfigInfo, Router, ConnectionManager, etc.)
-│   ├── data          # Shared models, destinations, DI qualifier constants
-│   ├── localprefs    # Preference storage (+ prefs, data submodules)
-│   ├── utils
-│   ├── router
-│   ├── httpclient
-│   ├── vpnconnect
-│   ├── vpnlauncher
-│   ├── portforwarding
-│   ├── payments
-│   ├── regions
-│   └── obfuscator
-│
-├── capabilities/     # Cross-cutting concerns
-│   ├── shareevents (KPI/analytics)
-│   ├── notifications
-│   ├── csi
-│   ├── networkmanagement
-│   ├── featureflags
-│   ├── location
-│   ├── snooze
-│   ├── buildconfig
-│   ├── ui, sharedui
-│
-└── features/         # User-facing screens (19 modules)
-    ├── login, signup, splash
-    ├── connection
-    ├── settings, profile
-    ├── vpnregionselection, obfuscationregionselection
-    ├── dedicatedip
-    └── ...
-```
+
+**Compile safety is on.** The compiler plugin checks at build time that every dependency of every definition can be resolved, for every flavor. A missing binding is a build error, not a crash at runtime.
 
 ---
 
 ## Initialization
 
-`App.kt` bootstraps Koin using the `@KoinApplication` annotation and the compiler plugin's `startKoin<App>`:
+`App.kt` starts Koin from the generated root module:
 
 ```kotlin
 @KoinApplication(modules = [AppModule::class])
@@ -74,187 +33,130 @@ class App : Application() {
 }
 ```
 
-`AppModule` (`app/src/main/java/com/kape/vpn/di/AppModule.kt`) is the root module. It:
-- Includes every core/capability/feature module (~35) via `@Module(includes = [...])`, including the flavor-specific ones (`PaymentsModule`, `SignupBillingModule`, `FlavorLocationModule`)
-- Uses `@ComponentScan` to auto-discover components in the `com.kape.vpn` and `com.kape.obfuscator` packages
-- Directly provides top-level singletons: `AndroidAccountAPI`, `KPIAPI`, `CSIAPI`, `RegionsAPI`, `AppInfo`, `DeviceInfo`, `ConfigInfo`, `LicenceReader`, `CertificatePinningClient`, `PortForwardingApi`, coroutine dispatchers/scope, Intent/PendingIntent builders, and notification-related managers
+`workManagerFactory()` lets Koin create the `@KoinWorker` workers (port forwarding, snooze), which is why the app manifest removes WorkManager's default initializer.
+
+`AppModule` (`app/src/main/java/com/kape/vpn/di/AppModule.kt`) is the root:
+- It includes every module's `@Module` class via `@Module(includes = [...])`.
+- It scans `com.kape.vpn` with `@ComponentScan`.
+- It provides what only the app knows: the pinned certificate, the user agent, the update URL, the VPN notification's `PendingIntent`, and the `AppInfo` and `DeviceInfo` implementations built from `BuildConfig` and `Build`.
 
 ---
 
-## Module Declaration Pattern
+## Module declaration pattern
 
-Bindings are declared as explicit provider methods on an `@Module` class:
+Each module has one `@Module` class that scans its own package:
 
 ```kotlin
 @Module
-@ComponentScan("com.kape.vpnconnect.worker")
-class VpnConnectModule {
-    @Singleton(binds = [UsageProvider::class])
-    fun provideUsageProvider(context: Context): UsageProvider = UsageProviderImpl(context)
+@ComponentScan("com.kape.vpnregionselection")
+class VpnRegionSelectionModule
+```
 
-    @Singleton([ConnectionStatusProvider::class])
-    fun provideConnectionStatusProvider(
-        connectionValues: Map<ConnectionStatus, String>,
-        notificationHandler: NotificationHandler,
-        @Named(DI.IO_SCOPE) ioScope: CoroutineScope,
-    ): ConnectionStatusProvider = ConnectionStatusProviderImpl(connectionValues, notificationHandler, ioScope)
+Classes declare themselves with class-level annotations:
+
+```kotlin
+@Factory
+class ObserveVpnRegionsUseCase(...)
+
+@Singleton(binds = [AccountDetailsRepository::class])
+internal class ApiAccountDetailsRepository(...) : AccountDetailsRepository
+
+@KoinViewModel
+class VpnRegionSelectionViewModel(...) : ViewModel()
+```
+
+- **`@Factory`** for use cases and other stateless classes.
+- **`@Singleton(binds = [Interface::class])`** for repositories, data sources and anything holding state. Bind the interface, so other code depends on it rather than the implementation, which can stay `internal`.
+- **`@KoinViewModel`** for ViewModels, which Compose screens get with `koinViewModel()`.
+
+Use provider functions on the `@Module` class only for objects the module doesn't own, such as library APIs built with a builder (`AndroidAccountAPI`, `RegionsAPI`, `CSIAPI`, `KPIAPI`).
+
+Android components the system creates (services, receivers, the tile and widget) can't take constructor parameters, so they use `KoinComponent` and `inject()`/`get()`. Keep their logic in injected use cases.
+
+### Qualifiers
+
+When several bindings share a type, they're told apart with `@Named` and the constants in `Qualifiers` (`core/contracts/src/main/java/com/kape/contracts/di/Qualifiers.kt`):
+
+| Qualifier | Type | Provided by |
+|-----------|------|-------------|
+| `IO_DISPATCHER` | `CoroutineDispatcher` | `core/utils` |
+| `MAIN_DISPATCHER` | `CoroutineDispatcher` | `core/utils` |
+| `APP_SCOPE` | `CoroutineScope` | `core/utils` |
+| `CERTIFICATE` | `String` | `app` |
+| `USER_AGENT` | `String` | `app` |
+| `UPDATE_URL` | `String` | `app` |
+| `VPN_NOTIFICATION_INTENT` | `PendingIntent` | `app` |
+
+Use `APP_SCOPE` for work that must outlive a screen, such as connecting, so leaving the screen doesn't cancel it.
+
+---
+
+## `core/contracts`
+
+The interfaces that cross module boundaries live in `core/contracts`, so modules depend on them rather than on each other. Each is implemented by exactly one module, for example:
+
+| Interface | Implemented in |
+|-----------|----------------|
+| `Router` | `core/router` |
+| `ConnectionManager`, `ConnectionInfoProvider`, `ConnectionStatusSource`, `UsageProvider` | `core/vpnconnect` |
+| `IsUserLoggedInUseCase`, `LogoutUseCase` | `features/login` |
+| `StorePurchaseHistory` | `features/login` (per store) |
+| `SubscriptionBilling` | `features/signup` (per store) |
+| `AppUpdateStatus` | `features/splash` |
+| `DedicatedIpHome` | `features/dedicatedip` |
+| `SnoozeStatus` | `capabilities/snooze` |
+| `UsageEventsControl`, `ConnectionEvents`, `PurchaseEvents` | `capabilities/shareevents` |
+| `PermissionStatus`, `NetworkStatus` | `core/utils` |
+| `AutomationServiceLauncher` | `features/automation` |
+| `AppInfo`, `DeviceInfo` | `app` |
+
+When a feature needs something from another feature, add a narrow interface here instead of a dependency between the two features. Composing two features' UI, such as the side menu inside the connection screen, happens in `app`'s navigation graph.
+
+---
+
+## Store flavors
+
+Product flavors (dimension `provider`): `google`, `amazon`, `noinapp`, `meta`, `fdroid`. A module gets them by applying the `pia.android.flavors` convention plugin. Only modules with store-specific code or a flavored dependency need it; the rest work with every flavor.
+
+Flavor-specific code lives in flavor source sets. Several flavors can share one source directory with `shareFlavorSources(directory, flavors)`, named after what those flavors have in common:
+
+| Module | Source sets |
+|--------|-------------|
+| `features/signup` | `google`, `amazon`, `websiteonly` (noinapp, meta, fdroid) |
+| `features/login` | `google`, `nostore` (amazon, noinapp, meta, fdroid) |
+| `features/dedicatedip` | `google`, `nostore` (amazon, noinapp, meta, fdroid) |
+| `capabilities/location` | `playservices` (google, noinapp), `noplayservices` (amazon, meta, fdroid) |
+
+`core/payments` (Google Play Billing) isn't flavored. Modules depend on it from their `google` flavor only (`"googleImplementation"(project(":core:payments"))`), so other builds don't ship the Play Billing library.
+
+### Flavor-specific bindings
+
+Each flavor source set has a `@Module` class with **the same name and package**, and the module's main `@Module` includes it by that name:
+
+```kotlin
+// features/signup/src/main/.../di/SignupModule.kt
+@Module(includes = [StoreModule::class])
+@ComponentScan("com.kape.signup")
+class SignupModule
+
+// features/signup/src/websiteonly/.../di/StoreModule.kt
+@Module
+class StoreModule {
+    @Singleton(binds = [SubscriptionStore::class, SubscriptionBilling::class])
+    fun provideStore(): NoInAppSubscriptionStore = NoInAppSubscriptionStore(offerInstead = StoreOffer.WebsiteOnly)
 }
 ```
 
-ViewModels are registered with `@KoinViewModel` provider methods (or class annotations). A few classes (e.g. `ConnectionManagerImpl`) are `KoinComponent`s that `inject()` their dependencies lazily.
-
-Use `@Named(DI.SOME_CONSTANT)` qualifiers where multiple bindings of the same type exist. The constants live in `DI` in `core/data/src/main/java/com/kape/data/Constants.kt` (e.g. `DI.IO_DISPATCHER`, `DI.MAIN_DISPATCHER`, `DI.IO_SCOPE`, `DI.AUTOMATION_PENDING_INTENT`, `DI.VPN_LAUNCHER`).
-
----
-
-## `core/contracts` Module
-
-This module defines shared interfaces that cut across layers, enforcing proper dependency inversion. Features depend on contracts, not concrete classes.
-
-| Interface | Purpose |
-|-----------|---------|
-| `AppInfo` | Build metadata (version, package name, etc.) |
-| `ConfigInfo` | App configuration — certificate, user agent, update URL |
-| `DeviceInfo` | Device characteristics |
-| `Router` | Navigation bus |
-| `AuthenticationDataSource` | Login/logout operations |
-| `IsUserLoggedInUseCase`, `LogoutUseCase` | Shared auth use cases |
-| `ConnectionManager` | Connect / disconnect / reconnect the VPN |
-| `ConnectionInfoProvider`, `ConnectionStatusProvider` | Observable VPN connection state |
-| `UsageProvider` | Data usage |
-| `KpiDataSource` | Analytics event tracking |
-| `NetworkManager` | Network operations |
-| `MetaEndpoints` | Endpoint configuration |
-| `LicenceReader`, `GetAppLatestVersion`, `ScreenElementProvider` | Misc. shared services |
-
----
-
-## Key Singletons by Category
-
-**Authentication & Accounts**
-- `AndroidAccountAPI` — PIA account API (`mobile-shared-account`)
-- `AuthenticationDataSourceImpl` — implements `AuthenticationDataSource`
-- `LoginUseCase`, `GetUserLoggedInUseCase`, `LogoutUseCase`
-
-**VPN Connection**
-- `ConnectionManager` → `ConnectionManagerImpl` — drives `PiaService` (KAPE platform SDK)
-- `ConnectionStatusProvider`, `ConnectionInfoProvider` — connection state
-- `ConnectionDataSource`, `ClientStateDataSource`
-- `ConnectionPrefs` — connection preferences storage
-
-**Analytics & Logging**
-- `KPIAPI`, `CSIAPI`
-- `KpiDataSourceImpl` — implements `KpiDataSource`
-- `SubmitKpiEventUseCase`
-
-**Network & Regions**
-- `RegionsAPI` — region metadata
-- `VpnRegionRepository`, `RegionListProvider`
-
-**Preferences**
-- Multiple `*Prefs` singletons from `core/localprefs/prefs`: `SettingsPrefs`, `ConnectionPrefs`, `CsiPrefs`, `ConsentPrefs`, etc.
+The main module's `@ComponentScan` also finds class-level annotations in the flavor source sets, since they share its package. Stores without a feature get no-op implementations rather than no binding, so compile safety passes for every flavor.
 
 ---
 
 ## Testing
 
-Unit tests use JUnit5 + `mockk`. Most tests construct the class under test directly with mocks rather than loading Koin modules:
+Unit tests use JUnit 5 and MockK, and construct the class under test directly with fakes or mocks instead of starting Koin:
 
 ```kotlin
-@BeforeEach
-fun setUp() {
-    source = KpiDataSourceImpl(api, eventGenerator)
-}
+private val viewModel = PermissionsViewModel(FakePermissionStatus(), RecordingRouter())
 ```
 
-Classes that resolve dependencies through `KoinComponent` (e.g. `ConnectionManagerImpl`) are tested by starting Koin with a small module of mocks (`startKoin { modules(...) }` / `stopKoin()`), with the test implementing `KoinTest`.
-
----
-
-## Flavor-Specific Bindings
-
-Product flavors (dimension `provider`): `google`, `amazon`, `noinapp`, `meta`, `fdroid`.
-
-### Modules with flavor-specific implementations
-
-Flavor differences are isolated in **flavor-specific Koin modules**: the same `@Module` class name exists in each flavor source set with different bindings, and `AppModule` includes it by name.
-
-| Module | Source sets | Flavored `@Module` |
-|--------|-------------|--------------------|
-| `core/payments` | `src/google`; `src/nogms` (amazon, noinapp, meta, fdroid) | `PaymentsModule` |
-| `features/signup` | `src/google`; `src/amazon`; `src/nogms` (noinapp, meta, fdroid) | `SignupBillingModule` (flavor-agnostic bindings stay in `SignupModule` in `src/main`) |
-| `app` | `src/gms` (google, noinapp); `src/nogms` (amazon, meta, fdroid) | `FlavorLocationModule` |
-
-**Rules:**
-- Register flavor-specific classes via **explicit `@Singleton` provider methods** in the flavored `@Module`. Do **not** rely on class-level `@Singleton` annotations — the Koin compiler plugin does not reliably auto-discover them across flavor source sets in multi-module builds.
-- Every flavor's version of the module must have the same class name and package so `AppModule` compiles for all flavors.
-- Non-billing flavors provide no-op implementations (e.g. `NoOpPaymentIssueHandler`, `NoOpSignupBillingHandler`).
-
-```kotlin
-// features/signup/src/google/.../di/SignupBillingModule.kt
-@Module
-class SignupBillingModule {
-    @Singleton(binds = [SignupDataSource::class])
-    fun provideSignupDataSource(
-        api: AndroidAccountAPI,
-        eventGenerator: KpiEventGenerator,
-        submitKpiEventUseCase: SubmitKpiEventUseCase,
-    ): SignupDataSource = SignupDataSourceImpl(api, eventGenerator, submitKpiEventUseCase)
-}
-
-// features/signup/src/nogms/.../di/SignupBillingModule.kt
-@Module
-class SignupBillingModule {
-    @Singleton(binds = [SignupBillingHandler::class])
-    fun provideSignupBillingHandler(): SignupBillingHandler = NoOpSignupBillingHandler(NO_IN_APP_SUBSCRIPTIONS)
-}
-```
-
-### Compile safety
-
-Koin compile-time safety is disabled in the Koin modules (it can't verify definitions that only exist in some flavors, or across module boundaries):
-
-```kotlin
-koinCompiler {
-    compileSafety = false
-}
-```
-
-### Flavor dimension propagation
-
-Gradle requires that any module depending (directly or transitively) on a module with `productFlavors` must also declare the same flavor dimension and flavors, so variant matching can resolve correctly.
-
-The following library modules declare `flavorDimensions.add("provider")` with all five flavors:
-
-| Module | Reason |
-|--------|--------|
-| `core/payments` | Has flavor-specific source sets |
-| `features/signup` | Has flavor-specific source sets; depends on `core/payments` and `features/login` |
-| `features/login` | Depends on `core/payments` |
-| `features/dedicatedip` | Depends on `core/payments` |
-| `features/connection` | Depends on `core/payments` and `features/dedicatedip` |
-| `features/customization` | Depends on `features/connection` |
-| `features/splash` | Depends on `features/signup` |
-| `features/tvwelcome` | Depends on `features/signup` |
-
-Any new module that adds a direct or transitive dependency on `core/payments` or `features/signup` must also add the flavor dimension declaration.
-
----
-
-## Migration: DSL to Annotations (KM-15137)
-
-The project migrated from manual DSL-based module functions to annotation-based Koin modules.
-
-| | Before | After |
-|---|---|---|
-| Module declaration | `fun appModule()` | `@Module class AppModule` |
-| App initialization | Manual `startKoin { modules(...) }` with 30+ imports | `@KoinApplication(modules = [AppModule::class])` on `App` |
-| ViewModel registration | Factory functions returning instances | `@KoinViewModel` annotation |
-| Module dependencies | Function parameters e.g. `vpnConnectModule(appModule)` | `@Module(includes = [...])` |
-
-**Benefits of the new approach:**
-- Annotation-driven module generation via the compiler plugin
-- Better IDE support and autocomplete
-- Significantly less boilerplate in `App.kt`
-- Cleaner module dependency declarations
-- Simplified test setup and isolation
+Keep logic out of `KoinComponent` classes (services, receivers) and in use cases, so it can be tested this way.

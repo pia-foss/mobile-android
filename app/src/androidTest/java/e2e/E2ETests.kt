@@ -9,7 +9,6 @@ import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
 class E2ETests {
-    // Connection tests
     @Test
     fun connectAfterLogin() =
         uiAutomator {
@@ -41,9 +40,6 @@ class E2ETests {
             setNetworkRuleBehavior(Automation.MOBILE_DATA_RULE_CARD, BehaviorDialog.DISCONNECT_OPTION)
             returnToConnectionScreen()
 
-            // Restoring wifi is in `finally` so a failed assertion here can't leave it disabled
-            // for the rest of the suite - Test Orchestrator resets app data between tests, but
-            // not real OS-level radio state.
             try {
                 device.executeShellCommand("svc wifi disable")
                 assertDisconnected(NETWORK_TRANSITION_TIMEOUT)
@@ -92,15 +88,10 @@ class E2ETests {
             onElement { viewIdResourceName == Main.LOCATION_PICKER }.click()
             searchRegion(RegionSelection.REGION)
 
-            // Favoriting is a DataStore write + StateFlow re-collection round trip (see
-            // SETTINGS_PROPAGATION_TIMEOUT) before the search results list re-renders with the
-            // matching row, which can take longer than a plain UI wait on a constrained CI emulator.
             onElement(timeoutMs = SETTINGS_PROPAGATION_TIMEOUT) {
                 viewIdResourceName == RegionSelection.SEARCH_RESULT_FAVORITE_ICON
             }.click()
 
-            // Clearing the search text drops back to the full, unfiltered list, where a
-            // favorited region gets pinned under its own heading.
             onElement { viewIdResourceName == RegionSelection.SEARCH_BAR }.text = ""
             assertNotNull(
                 device.wait(Until.hasObject(By.res(RegionSelection.FAVORITES_HEADING)), TIMEOUT),
@@ -147,7 +138,6 @@ class E2ETests {
             )
             returnToConnectionScreen()
 
-            // Restore the default so other tests aren't affected by this one.
             toggleGeoLocatedServers()
 
             onElement { viewIdResourceName == Main.LOCATION_PICKER }.click()

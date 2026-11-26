@@ -169,8 +169,17 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
 
-      - name: Run Debug and GoogleDebug Unit Tests
-        run: ./gradlew testGoogleDebugUnitTest testDebugUnitTest --parallel
+      # The Kover report task runs testGoogleDebugUnitTest/testDebugUnitTest itself
+      - name: Run Debug and GoogleDebug Unit Tests and generate aggregated coverage report
+        run: ./gradlew :koverHtmlReportCoverage --parallel
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        if: always()
+        with:
+          name: coverage-report
+          path: ${{ github.workspace }}/build/reports/kover/htmlCoverage/
+          overwrite: true
 
   build-apk:
     name: Build PR APK

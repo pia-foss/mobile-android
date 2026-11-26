@@ -8,11 +8,6 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-/**
- * Regression tests for the "Use Small Packets" toggle. The MTU used to be a stored constructor
- * property whose default depended on useSmallPackets, so `copy(useSmallPackets = true)` kept the
- * old 1420 value and the toggle had no effect on the tunnel MTU.
- */
 class ProtocolSettingsMtuTest {
     @Test
     fun `wireguard small packets toggle changes mtu`() {
@@ -64,7 +59,6 @@ class ProtocolSettingsMtuTest {
 
     @Test
     fun `legacy stored settings with stale mtu are decoded using the toggle`() {
-        // What the previous version wrote to disk after the user enabled Small Packets.
         val wireGuard = protocolSettingsJson.decodeFromString<WireGuardSettings>("""{"useSmallPackets":true,"mtu":1420}""")
         val openVpn = protocolSettingsJson.decodeFromString<OpenVpnSettings>("""{"useSmallPackets":true,"mtu":1420}""")
         val automatic = protocolSettingsJson.decodeFromString<AutomaticSettings>("""{"useSmallPackets":true,"mtu":1420}""")

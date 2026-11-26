@@ -38,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Alignment.Companion.TopEnd
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -60,19 +59,18 @@ import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.data.vpnserver.VpnServer
 import com.kape.dedicatedip.R
+import com.kape.dedicatedip.domain.DipActivationResult
 import com.kape.dedicatedip.ui.vm.DipViewModel
-import com.kape.dedicatedip.utils.DipApiResult
-import com.kape.ui.mobile.elements.Screen
+import com.kape.regions.vpn.domain.VPN_PING_TIMEOUT_MS
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.elements.Separator
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.getLatencyColor
 import com.kape.ui.utils.LocalColors
 import com.kape.ui.utils.getFlagResource
-import com.privateinternetaccess.regions.REGIONS_PING_TIMEOUT
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun DedicatedIpScreen() =
     Screen {
@@ -236,10 +234,10 @@ fun DedicatedIpScreen() =
                         .makeText(
                             context,
                             when (viewModel.activationState.value) {
-                                DipApiResult.Active -> stringResource(id = com.kape.ui.R.string.dip_success)
-                                DipApiResult.Error -> stringResource(id = com.kape.ui.R.string.dip_invalid)
-                                DipApiResult.Expired -> stringResource(id = com.kape.ui.R.string.dip_expired_warning)
-                                DipApiResult.Invalid -> stringResource(id = com.kape.ui.R.string.dip_invalid)
+                                DipActivationResult.Active -> stringResource(id = com.kape.ui.R.string.dip_success)
+                                DipActivationResult.Error -> stringResource(id = com.kape.ui.R.string.dip_invalid)
+                                DipActivationResult.Expired -> stringResource(id = com.kape.ui.R.string.dip_expired_warning)
+                                DipActivationResult.Invalid -> stringResource(id = com.kape.ui.R.string.dip_invalid)
                                 null -> ""
                             },
                             Toast.LENGTH_LONG,
@@ -372,7 +370,7 @@ fun DipItem(
 
         Text(
             text =
-                if (server.latency != null && server.latency!!.toInt() < REGIONS_PING_TIMEOUT) {
+                if (server.latency != null && server.latency!!.toInt() < VPN_PING_TIMEOUT_MS) {
                     stringResource(id = com.kape.ui.R.string.latency_to_format).format(
                         server.latency,
                     )

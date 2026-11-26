@@ -33,20 +33,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kape.login.utils.IDLE
-import com.kape.login.utils.LoginError
-import com.kape.login.utils.LoginScreenState
+import com.kape.account.domain.LoginResult
+import com.kape.account.domain.usecase.ReceiptLoginProgress
 import com.kape.signup.ui.vm.WelcomeBackViewModel
 import com.kape.ui.R
+import com.kape.ui.Screen
 import com.kape.ui.mobile.elements.ErrorCard
 import com.kape.ui.mobile.elements.PrimaryButton
-import com.kape.ui.mobile.elements.Screen
 import com.kape.ui.mobile.elements.SecondaryButton
 import com.kape.ui.mobile.text.OnboardingDescriptionText
 import com.kape.ui.theme.PiaTypography
 import com.kape.ui.theme.PreviewTheme
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun WelcomeBackScreen(viewModel: WelcomeBackViewModel = koinViewModel()) {
@@ -61,7 +60,7 @@ fun WelcomeBackScreen(viewModel: WelcomeBackViewModel = koinViewModel()) {
 
 @Composable
 private fun WelcomeBackScreenContent(
-    state: LoginScreenState = IDLE,
+    state: ReceiptLoginProgress = ReceiptLoginProgress.Idle,
     onPlayStoreAccountClick: () -> Unit,
     onUsernameAndPasswordClick: () -> Unit,
 ) = Screen {
@@ -133,14 +132,14 @@ private fun WelcomeBackScreenContent(
             PrimaryButton(
                 text = stringResource(id = R.string.welcome_back_play_store_account),
                 modifier = Modifier.fillMaxWidth(),
-                isLoading = state.loading,
+                isLoading = state == ReceiptLoginProgress.Loading,
             ) {
                 onPlayStoreAccountClick()
             }
-            if (state.error != null) {
+            getErrorMessage(state)?.let { message ->
                 Spacer(modifier = Modifier.height(12.dp))
                 ErrorCard(
-                    content = getErrorMessage(state),
+                    content = message,
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
@@ -166,13 +165,19 @@ private fun WelcomeBackScreenContent(
 }
 
 @Composable
-internal fun getErrorMessage(state: LoginScreenState): String =
-    when (state.error) {
-        LoginError.ReceiptFailed -> stringResource(id = R.string.error_receipt_login_failed)
-        LoginError.Expired -> stringResource(id = R.string.error_account_expired)
-        LoginError.Throttled -> stringResource(id = R.string.error_throttled)
-        LoginError.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
-        LoginError.Invalid, LoginError.Failed, null -> ""
+internal fun getErrorMessage(state: ReceiptLoginProgress): String? =
+    when (state) {
+        ReceiptLoginProgress.NoPurchase -> stringResource(id = R.string.error_receipt_login_failed)
+        is ReceiptLoginProgress.Failed ->
+            when (state.result) {
+                LoginResult.Failed -> stringResource(id = R.string.error_receipt_login_failed)
+                LoginResult.Expired -> stringResource(id = R.string.error_account_expired)
+                LoginResult.Throttled -> stringResource(id = R.string.error_throttled)
+                is LoginResult.ServiceUnavailable -> stringResource(id = R.string.error_operation_failed)
+                LoginResult.InvalidInput -> ""
+                LoginResult.Success -> null
+            }
+        ReceiptLoginProgress.Idle, ReceiptLoginProgress.Loading, is ReceiptLoginProgress.Succeeded -> null
     }
 
 @Preview(name = "Light")

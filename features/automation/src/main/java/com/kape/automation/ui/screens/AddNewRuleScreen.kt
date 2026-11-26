@@ -27,12 +27,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kape.appbar.view.mobile.AppBar
 import com.kape.appbar.viewmodel.AppBarViewModel
 import com.kape.automation.ui.elements.BehaviorDialog
-import com.kape.automation.ui.viewmodel.AutomationViewModel
-import com.kape.ui.mobile.elements.Screen
+import com.kape.automation.ui.vm.AutomationViewModel
+import com.kape.ui.Screen
 import com.kape.ui.mobile.text.MenuText
 import com.kape.ui.mobile.text.OnboardingFooterText
 import com.kape.ui.utils.LocalColors
-import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AddNewRuleScreen() =
@@ -84,7 +84,7 @@ fun AddNewRuleScreen() =
                     showDialog,
                 ) {
                     currentItem?.let { item ->
-                        viewModel.addRule(context, item, getRuleForStatus(context, it))
+                        viewModel.addRule(item, getRuleForStatus(context, it))
                     }
                 }
             }

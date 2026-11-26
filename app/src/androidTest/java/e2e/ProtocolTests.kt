@@ -1,7 +1,5 @@
 package e2e
 
-import androidx.test.uiautomator.By
-import androidx.test.uiautomator.Until
 import androidx.test.uiautomator.uiAutomator
 import org.junit.Test
 
@@ -10,9 +8,7 @@ class ProtocolTests {
     fun protocolsConnectWithAndWithoutSmallPacketsEnabled() =
         uiAutomator {
             login()
-            // OpenVpn
-            onElement { viewIdResourceName == Main.SIDE_MENU }.click()
-            device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
+            openSideMenu()
             onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
             onElement { viewIdResourceName == Settings.PROTOCOLS_BUTTON }.click()
             onElement { viewIdResourceName == Protocols.PROTOCOL_SELECTION_BUTTON }.click()
@@ -26,11 +22,9 @@ class ProtocolTests {
             dismissAutoProtocolNudgeIfShown()
             assertConnected()
 
-            // disconnect
             onElement { viewIdResourceName == Main.CONNECT_BUTTON }.click()
             dismissAutoProtocolNudgeIfShown()
-            onElement { viewIdResourceName == Main.SIDE_MENU }.click()
-            device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
+            openSideMenu()
             onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
             onElement { viewIdResourceName == Settings.PROTOCOLS_BUTTON }.click()
             onElement { viewIdResourceName == Protocols.PROTOCOL_SELECTION_BUTTON }.click()
@@ -45,12 +39,9 @@ class ProtocolTests {
             dismissAutoProtocolNudgeIfShown()
             assertConnected()
 
-            // Wireguard
-            // disconnect
             onElement { viewIdResourceName == Main.CONNECT_BUTTON }.click()
             dismissAutoProtocolNudgeIfShown()
-            onElement { viewIdResourceName == Main.SIDE_MENU }.click()
-            device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("p")), TIMEOUT)
+            openSideMenu()
             onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
             onElement { viewIdResourceName == Settings.PROTOCOLS_BUTTON }.click()
             onElement { viewIdResourceName == Protocols.PROTOCOL_SELECTION_BUTTON }.click()
@@ -64,11 +55,9 @@ class ProtocolTests {
             dismissAutoProtocolNudgeIfShown()
             assertConnected()
 
-            // disconnect
             onElement { viewIdResourceName == Main.CONNECT_BUTTON }.click()
             dismissAutoProtocolNudgeIfShown()
-            onElement { viewIdResourceName == Main.SIDE_MENU }.click()
-            device.wait(Until.hasObject(By.res(SideMenu.USERNAME).textStartsWith("P")), TIMEOUT)
+            openSideMenu()
             onElement { viewIdResourceName == SideMenu.SETTINGS_BUTTON }.click()
             onElement { viewIdResourceName == Settings.PROTOCOLS_BUTTON }.click()
             onElement { viewIdResourceName == Protocols.PROTOCOL_SELECTION_BUTTON }.click()

@@ -5,17 +5,12 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.kape.location.R
+import org.koin.core.annotation.Singleton
 
-/**
- * Builds the foreground notification for [MockLocationService].
- *
- * Kept separate from the VPN notification so the mock location service never mutates
- * the shared VPN notification state, and gets its own channel.
- */
+@Singleton
 class MockLocationNotificationProvider(
     private val context: Context,
-    private val smallIconRes: Int,
-    private val title: String,
 ) {
     fun build(): Notification {
         val builder =
@@ -27,8 +22,8 @@ class MockLocationNotificationProvider(
                 Notification.Builder(context)
             }
         return builder
-            .setSmallIcon(smallIconRes)
-            .setContentTitle(title)
+            .setSmallIcon(R.drawable.ic_stat_pia_robot_white)
+            .setContentTitle(context.getString(com.kape.ui.R.string.mock_location_notification_title))
             .setCategory(Notification.CATEGORY_SERVICE)
             .setOngoing(true)
             .build()

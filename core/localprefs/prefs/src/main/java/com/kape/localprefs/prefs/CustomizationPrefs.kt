@@ -3,9 +3,13 @@ package com.kape.localprefs.prefs
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.kape.contracts.di.Qualifiers
 import com.kape.customization.data.Element
 import com.kape.localprefs.Prefs
+import com.kape.localprefs.api.CustomizationStore
 import com.kape.localprefs.data.customization.ScreenElement
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -14,16 +18,20 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Named
 import org.koin.core.annotation.Singleton
 
 private val ORDERED_ELEMENTS = stringPreferencesKey("ordered-elements")
 private val ORDERED_ELEMENTS_V2 = stringPreferencesKey("ordered-elements-v2")
 
-@Singleton
+@Singleton(binds = [CustomizationPrefs::class, CustomizationStore::class])
 class CustomizationPrefs(
     context: Context,
-) : Prefs(context, "customization") {
-    val elements: StateFlow<List<ScreenElement>> =
+    @Named(Qualifiers.APP_SCOPE) appScope: CoroutineScope,
+    @Named(Qualifiers.IO_DISPATCHER) ioDispatcher: CoroutineDispatcher,
+) : Prefs(context, "customization", appScope, ioDispatcher),
+    CustomizationStore {
+    override val elements: StateFlow<List<ScreenElement>> =
         getElements().stateIn(scope, SharingStarted.WhileSubscribed(waitTime), defaultList())
 
     @Deprecated("Deprecated in favor of setElements()")
@@ -31,7 +39,7 @@ class CustomizationPrefs(
         dataStore.edit { it[ORDERED_ELEMENTS] = Json.encodeToString(orderedElements) }
     }
 
-    suspend fun setElements(orderedElements: List<ScreenElement>) {
+    override suspend fun setElements(orderedElements: List<ScreenElement>) {
         dataStore.edit { it[ORDERED_ELEMENTS_V2] = Json.encodeToString(orderedElements) }
     }
 
